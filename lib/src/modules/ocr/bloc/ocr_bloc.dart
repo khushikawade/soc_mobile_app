@@ -145,7 +145,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<SubjectDetailList> _list = response.data['body']
             .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
             .toList();
-        print(_list);
+        print('Subject List fetched : ${_list.length}');
         LocalDatabase<SubjectDetailList> _localDb =
             LocalDatabase(Strings.ocrSubjectObjectName);
         await _localDb.clear();
@@ -168,7 +168,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       LocalDatabase<SubjectDetailList> _localDb =
           LocalDatabase(Strings.ocrSubjectObjectName);
       List<SubjectDetailList>? _localData = await _localDb.getData();
-      print(_localData);
+      print('Subject Local data : ${_localData.length}');
       List<SubjectDetailList> detailsList = [];
       if (type == 'subject') {
         grade = keyword;
@@ -316,7 +316,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         }
 
-        print(schoolgrade);
+        print('School grades : ${schoolgrade.length}');
         return [
           schoolIdNew.isNotEmpty ? schoolIdNew[0] : '',
           schoolgrade.isNotEmpty ? schoolgrade[0] : ''

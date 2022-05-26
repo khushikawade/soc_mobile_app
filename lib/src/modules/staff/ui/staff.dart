@@ -107,11 +107,12 @@ class _StaffPageState extends State<StaffPage> {
       context,
       screen: GoogleAuthWebview(
         title: title!,
-        url: Overrides.secureLoginURL +
-            '?' +
-            Globals.appSetting.appLogoC +
-            '?' +
-            themeColor.toString().split('0xff')[1].split(')')[0],
+        url: Globals.appSetting.authenticationURL ??
+            '' + //Overrides.secureLoginURL +
+                '?' +
+                Globals.appSetting.appLogoC +
+                '?' +
+                themeColor.toString().split('0xff')[1].split(')')[0],
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
@@ -321,6 +322,7 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: !isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
+                    print(Globals.appSetting.authenticationURL);
                     //  Globals.localUserInfo.clear(); // COMMENT
                     //  await localdb();
                     print(Globals.userprofilelocalData);

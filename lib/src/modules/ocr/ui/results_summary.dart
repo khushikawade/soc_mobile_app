@@ -7,12 +7,14 @@ import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:share/share.dart';
+
+import '../../custom/ui/open_external_browser_button.dart';
 
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({Key? key, required this.assessmentDetailPage, this.fileId})
@@ -29,7 +31,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   @override
   void initState() {
-    // TODO: implement initState
     if (widget.assessmentDetailPage!) {
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
     }
@@ -215,11 +216,19 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   .copyWith(fontWeight: FontWeight.bold)),
         ),
         index == 1
-            ? Image(
-                width: Globals.deviceType == "phone" ? 34 : 32,
-                height: Globals.deviceType == "phone" ? 34 : 32,
-                image: AssetImage(
-                  "assets/images/drive_ico.png",
+            ? GestureDetector(
+                onTap: () {
+                  print(
+                      'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                  Utility.launchUrlOnExternalBrowser(
+                      Globals.googleDriveFolderPath!);
+                },
+                child: Image(
+                  width: Globals.deviceType == "phone" ? 34 : 32,
+                  height: Globals.deviceType == "phone" ? 34 : 32,
+                  image: AssetImage(
+                    "assets/images/drive_ico.png",
+                  ),
                 ),
               )
             : Expanded(
@@ -238,16 +247,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             : AppTheme.kButtonColor,
                   ),
                   onPressed: () {
-                    if (index == 2) {
+                    if (index == 0) {
+                      Share.share(Globals.shareableLink!);
+                    } else if (index == 2) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => AssessmentSummary()),
                       );
-                    }
-                    if (index == 0) {
-                      Share.share(Globals.shareableLink!);
-                    }
+                    } else {}
                   },
                 ),
               ),

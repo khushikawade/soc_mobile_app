@@ -143,7 +143,26 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       ),
                     ),
                   )
-                : Container()
+                : Container(),
+        Container(
+          padding: widget.isFailureState != true
+              ? EdgeInsets.only(right: 10, top: 5)
+              : EdgeInsets.zero,
+          child: IconButton(
+            onPressed: () {
+              Globals.localUserInfo.clear();
+              Globals.userprofilelocalData.clear();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                  (_) => false);
+            },
+            icon: Icon(
+              Icons.logout,
+              size: 26,
+              color: AppTheme.kButtonColor,
+            ),
+          ),
+        ),
       ],
     );
   }
