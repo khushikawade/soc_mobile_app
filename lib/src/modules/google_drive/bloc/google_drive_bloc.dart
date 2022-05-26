@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -40,7 +41,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           } else {
             print("Folder Id received : ${folderObject['id']}");
             print("Folder path received : ${folderObject['webViewLink']}");
-
+            print(event.refreshtoken);
+            _torefreshAuthenticationToken(event.refreshtoken!);
             Globals.googleDriveFolderId = folderObject['id'];
             Globals.googleDriveFolderPath = folderObject['webViewLink'];
             // Globals.
@@ -51,7 +53,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           print('Authentication required');
-          _torefreshAuthenticationToken();
+          _torefreshAuthenticationToken(event.refreshtoken!);
         }
       } catch (e) {
         throw (e);
@@ -326,6 +328,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
             .toList();
         return _list;
+      } else {
+        throw ('something_went_wrong');
       }
     } catch (e) {
       throw (e);
@@ -419,9 +423,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future _torefreshAuthenticationToken() async {
-    try {} catch (e) {}
-
-    return "k";
+  Future _torefreshAuthenticationToken(String refreshToken) async {
+    try {
+      print(refreshToken);
+      final body = {
+        "refreshToken": refreshToken
+      };
+      final ResponseModel response = await _dbServices.postapi(
+          "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/refreshGoogleAuthenticationz",
+          body: body,
+          isGoogleApi: true);
+      if (response.statusCode == 200) {
+        print("refresh done");
+        return true;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      print(e);
+      throw (e);
+    }
   }
 }

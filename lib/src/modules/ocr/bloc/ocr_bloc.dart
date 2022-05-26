@@ -90,7 +90,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is VerifyUserWithDatabase) {
       try {
-        yield OcrLoading();
+        print("calling api to verifyUserWithDatabase");
         //  var data =
         bool result =
             await verifyUserWithDatabase(email: event.email.toString());
@@ -98,7 +98,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           await verifyUserWithDatabase(email: event.email.toString());
         }
       } catch (e) {
-        await verifyUserWithDatabase(email: event.email.toString());
+        print(e);
+        throw (e);
 
         // yield OcrErrorReceived(err: e);
       }
@@ -344,11 +345,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       var res = response.data;
       var data = res["body"];
       if (data == false) {
+        print("this is a new uer now create a user contaact inside database");
         bool result = await _createContact(email: email.toString());
         if (!result) {
           await _createContact(email: email.toString());
         }
       } else if (data['Assessment_App_User__c'] != 'true') {
+        print("this is a older user now updating datils in database");
         bool result = await _updateContact(recordId: data['Id']);
         if (!result) {
           await _updateContact(recordId: data['Id']);
@@ -362,6 +365,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   }
 
   Future<bool> _createContact({required String? email}) async {
+     print(email!.split("@")[0]);
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -369,7 +373,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     final body = {
       "AccountId": "0017h00000k3TgjAAE",
       "Assessment_App_User__c": "true",
-      "LastName": email!.split("@")[0],
+      "LastName": email.split("@")[0],
       "Email": email
     };
 
@@ -379,8 +383,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: body,
         headers: headers);
     if (response.statusCode == 200) {
-      print("contact created");
-
+      print("new user created ---->sucessfully ");
       return true;
     } else {
       return false;
@@ -401,7 +404,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: body,
         headers: headers);
     if (response.statusCode == 200) {
-      print("contact updated");
+      print("old user data updated --> sucessfully ");
       return true;
     } else {
       return false;

@@ -283,7 +283,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     // SuccessScreen()
                     SubjectSelection(
                       selectedClass: selectedClassIndex.toString(),
-                    )),
+                    )
+                    ),
           );
         },
         label: Row(

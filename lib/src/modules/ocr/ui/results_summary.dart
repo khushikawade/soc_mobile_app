@@ -11,10 +11,8 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:share/share.dart';
 
-import '../../custom/ui/open_external_browser_button.dart';
 
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({Key? key, required this.assessmentDetailPage, this.fileId})
