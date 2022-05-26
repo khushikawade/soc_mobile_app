@@ -115,7 +115,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   ),
                 ))
             : Container(),
-        widget.assessmentDetailPage == null
+        widget.assessmentDetailPage != null
             ? Container()
             : widget.isFailureState == true || widget.isResultScreen == true
                 ? Container(

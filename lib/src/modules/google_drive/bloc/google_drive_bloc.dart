@@ -93,11 +93,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         File file = await GoogleDriveAccess.createSheet(
             data: assessmentData, name: Globals.assessmentName!);
 
-        bool uploadresult = await uploadSheetOnDrive(
-            file, Globals.fileId, Globals.authorizationToken);
+        bool uploadresult = await uploadSheetOnDrive(file, Globals.fileId,
+            Globals.userprofilelocalData[0].authorizationToken);
         if (!uploadresult) {
-          await uploadSheetOnDrive(
-              file, Globals.fileId, Globals.authorizationToken);
+          await uploadSheetOnDrive(file, Globals.fileId,
+              Globals.userprofilelocalData[0].authorizationToken);
         }
         bool deleted = await GoogleDriveAccess.deleteFile(file);
         if (!deleted) {
@@ -114,19 +114,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           List<HistoryAssessment> _list = await _fetchHistoryAssessment(
               Globals.userprofilelocalData[0].authorizationToken,
               Globals.folderId);
-          if (_list.length > 0) {
-            // for (int i = 0; i < data.length; i++) {
-            _list.forEach((element) {
-              print(element.label['trashed']);
-              if (element.label['trashed'] != true) {
-                assessmentList.add(element);
-              }
-            });
+          //     if (_list.length > 0) {
+          // for (int i = 0; i < data.length; i++) {
+          _list.forEach((element) {
+            print(element.label['trashed']);
+            if (element.label['trashed'] != true) {
+              assessmentList.add(element);
+            }
+          });
 
-            yield GoogleDriveGetSuccess(obj: assessmentList);
-          } else {
-            yield GoogleNoAssessment();
-          }
+          yield GoogleDriveGetSuccess(obj: assessmentList);
+          //   }
         } else {
           GetDriveFolderIdEvent(
               //  filePath: file,
@@ -140,6 +138,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
     if (event is GetAssessmentDetail) {
       try {
+        List<StudentAssessmentInfo> _list = [];
         String link = await _getAssessmentDetail(
             Globals.userprofilelocalData[0].authorizationToken, event.fileId);
 
@@ -148,18 +147,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               link, "test3", (await getExternalStorageDirectory())!.path);
 
           if (file != "") {
-            List<StudentAssessmentInfo> _list =
-                await GoogleDriveAccess.excelToJson(file);
+            //  List<StudentAssessmentInfo>
+            _list = await GoogleDriveAccess.excelToJson(file);
 
             bool deleted = await GoogleDriveAccess.deleteFile(File(file));
             if (!deleted) {
               GoogleDriveAccess.deleteFile(File(file));
             }
-            if (_list.length > 0) {
-              yield AssessmentDetailSuccess(obj: _list);
-            } else {
-              yield GoogleNoAssessment();
-            }
+            // if (_list.length > 0) {
+            //   yield AssessmentDetailSuccess(obj: _list);
+            // } else {
+            //   yield GoogleNoAssessment();
+            // }
+            yield AssessmentDetailSuccess(obj: _list);
           }
         }
       } catch (e) {
@@ -216,7 +216,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (data[i]['name'] == folderName &&
               data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
               data[i]["trashed"] == false) {
-            print("foler is already exits : ${data[i]['id']}");
+            print("folder is already exits : ${data[i]['id']}");
             return data[i]['id'];
           }
         }
@@ -257,9 +257,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       String fileId = response.data['id'];
       Globals.fileId = fileId;
-      bool result = await spreadsheetSharable(accessToken!, fileId);
+      bool result = await _updateSheetPermission(accessToken!, fileId);
       if (!result) {
-        await spreadsheetSharable(accessToken, fileId);
+        await _updateSheetPermission(accessToken, fileId);
       }
 
       bool link = await _getShareableLink(accessToken, fileId);
@@ -316,7 +316,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  spreadsheetSharable(String token, String folderId) async {
+  _updateSheetPermission(String token, String folderId) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer $token'

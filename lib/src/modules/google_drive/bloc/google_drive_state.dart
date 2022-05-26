@@ -26,10 +26,10 @@ class GoogleDriveGetSuccess extends GoogleDriveState {
   List<Object> get props => [];
 }
 
-class GoogleNoAssessment extends GoogleDriveState {
-  @override
-  List<Object> get props => [];
-}
+// class GoogleNoAssessment extends GoogleDriveState {
+//   @override
+//   List<Object> get props => [];
+// }
 
 // ignore: must_be_immutable
 class AssessmentDetailSuccess extends GoogleDriveState {

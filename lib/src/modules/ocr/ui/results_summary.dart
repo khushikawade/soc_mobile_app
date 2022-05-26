@@ -8,6 +8,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -89,6 +90,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             body: Container(
               //     padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.50),
@@ -120,20 +122,28 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           builder:
                               (BuildContext contxt, GoogleDriveState state) {
                             if (state is AssessmentDetailSuccess) {
-                              return listView(
-                                state.obj,
-                              );
-                            } else if (state is GoogleNoAssessment) {
-                              return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                child: Center(
-                                    child: Text(
-                                  "No assessment available",
-                                  style: Theme.of(context).textTheme.bodyText1!,
-                                )),
-                              );
+                              return state.obj.length > 0
+                                  ? listView(
+                                      state.obj,
+                                    )
+                                  : Expanded(
+                                      child: NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: true,
+                                          isNews: false,
+                                          isEvents: false),
+                                    );
                             }
+                            //  else if (state is GoogleNoAssessment) {
+                            //   return Container(
+                            //     height:
+                            //         MediaQuery.of(context).size.height * 0.7,
+                            //     child: Center(
+                            //         child: Text(
+                            //       "No assessment available",
+                            //       style: Theme.of(context).textTheme.bodyText1!,
+                            //     )),
+                            //   );
+                            // }
                             return Container(
                               height: MediaQuery.of(context).size.height * 0.7,
                               child: Center(

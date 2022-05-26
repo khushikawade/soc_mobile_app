@@ -123,7 +123,7 @@ class Globals {
   static bool iscameraPopup = true;
   static String? folderId;
   static String? fileId;
-  static String? authorizationToken;
+ // static String? authorizationToken;
   static late List<StudentAssessmentInfo>? studentInfo = [];
   static String? shareableLink;
   static String? pointpossible = '2';
