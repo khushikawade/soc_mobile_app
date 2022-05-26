@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
@@ -29,7 +31,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // Globals.authorizationToken = event.token;
         parentId = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
-        print('FolderId = $parentId');
 
         if (parentId != '401') {
           if (parentId == '') {
@@ -54,21 +55,22 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is CreateExcelSheetToDrive) {
       try {
+        List<UserInformation> _userprofilelocalData = await getUserProfile();
         Globals.assessmentName = event.name;
         bool result = await createSheetOnDrive(
-          name: event.name!,
-          folderId: Globals.folderId,
-          accessToken: Globals.userprofilelocalData[0].authorizationToken
-          //  image: file
-        );
+            name: event.name!,
+            folderId: Globals.folderId,
+            accessToken: _userprofilelocalData[0].authorizationToken
+            //  image: file
+            );
         if (!result) {
           print(
               "Failed to create. Trying to create the excel sheet again : ${event.name!}");
           await createSheetOnDrive(
-            folderId: Globals.folderId,
-            accessToken: Globals.userprofilelocalData[0].authorizationToken
-            // image: file
-          );
+              folderId: Globals.folderId,
+              accessToken: _userprofilelocalData[0].authorizationToken
+              // image: file
+              );
         } else {
           print("Excel sheet created successfully : ${event.name!}");
         }
@@ -104,10 +106,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetHistoryAssessmentFromDrive) {
       try {
         yield GoogleDriveLoading();
+        List<UserInformation> _userprofilelocalData = await getUserProfile();
         if (Globals.folderId != null) {
           List<Assessment> _list = await _fetchHistoryAssessment(
-              Globals.userprofilelocalData[0].authorizationToken,
-              Globals.folderId);
+              _userprofilelocalData[0].authorizationToken, Globals.folderId);
           if (_list.length > 0) {
             yield GoogleDriveGetSuccess(obj: _list);
           } else {
@@ -116,7 +118,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           GetDriveFolderIdEvent(
               //  filePath: file,
-              token: Globals.userprofilelocalData[0].authorizationToken,
+              token: _userprofilelocalData[0].authorizationToken,
               folderName: "Assessments",
               fetchHistory: true);
         }
@@ -131,6 +133,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         _getAssessmentDetail(Globals.authorizationToken, event.fileId);
       } catch (e) {}
     }
+  }
+
+  Future<List<UserInformation>> getUserProfile() async {
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    List<UserInformation> _userInformation = await _localDb.getData();
+    return _userInformation;
   }
 
   Future<String> _createFolderOnDrive(
@@ -219,7 +227,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (response.statusCode == 200) {
       print("file created successfully : ${response.data['id']}");
-     
+
       String fileId = response.data['id'];
       Globals.fileId = fileId;
       bool result = await spreadsheetSharable(accessToken!, fileId);
@@ -234,7 +242,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return true;
     }
     return false;
-   
   }
 
   Future uploadSheetOnDrive(File? file, String? id, String? accessToken) async {

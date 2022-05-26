@@ -3,8 +3,10 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -15,6 +17,7 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:googleapis/classroom/v1.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 // import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
@@ -65,7 +68,6 @@ class _StaffPageState extends State<StaffPage> {
     if (widget.isFromOcr) {
       _homeBloc.add(FetchStandardNavigationBar());
     }
-    localdb();
     _scrollController.addListener(_scrollListener);
   }
 
@@ -78,26 +80,9 @@ class _StaffPageState extends State<StaffPage> {
       if (isScrolling.value == true) return;
       isScrolling.value = true;
     }
-    // }
-    // if (isScrolling.value == true) return;
-    // isScrolling.value = true;
-    // if (isScrolling.value == false) return;
-    // await Future.delayed(Duration(milliseconds: 900));
-    // isScrolling.value = false;
-    // setState(() {});
   }
 
-  Future localdb() async {
-    Globals.userprofilelocalData = await Globals.localUserInfo.getData();
-    if(Globals.userprofilelocalData.isNotEmpty){
-    print(Globals.userprofilelocalData[0].authorizationToken);
-    print(Globals.userprofilelocalData[0].userEmail);
-    print(Globals.userprofilelocalData[0].userName);
-    print(Globals.userprofilelocalData[0].profilePicture);}
-    return Globals.userprofilelocalData;
-  }
-
-//To authenticate the user via google
+  //To authenticate the user via google
   _launchURL(String? title) async {
     var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
         ? Color(0xff000000)
@@ -124,7 +109,8 @@ class _StaffPageState extends State<StaffPage> {
     if (value.toString().contains('displayName')) {
       value = value.split('?')[1];
       //Save user profile
-      saveUserProfile(value);
+      await saveUserProfile(value);
+      await verifyUserAndGetDriveFolder();
       // Push to the grading system
       pushNewScreen(
         context,
@@ -141,36 +127,57 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
-  saveUserProfile(profileData) async {
-    var profile = profileData.split('+');
-    Globals.localUserInfo.clear();
-    
-    Globals.localUserInfo.addData(UserInformation(
+  saveUserProfile(String profileData) async {
+    List<String> profile = profileData.split('+');
+    UserInformation _userInformation = UserInformation(
         userName: profile[0].toString().split('=')[1],
         userEmail: profile[1].toString().split('=')[1],
         profilePicture: profile[2].toString().split('=')[1],
         authorizationToken:
-            profile[3].toString().split('=')[1].replaceAll('#', '')));
-    
-      await localdb();
-
-    _ocrBloc.add(VerifyUserWithDatabase(
-        email: profile[1].toString().split('=')[1]));
-    //Creating a assessment folder in users google drive to maintain all the assessments together at one place
-    _googleDriveBloc.add(GetDriveFolderIdEvent(
-        //  filePath: file,
-        token: profile[3].toString().split('=')[1].replaceAll('#', ''),
-        folderName: "Assessments"));
+            profile[3].toString().split('=')[1].replaceAll('#', ''));
+    print(_userInformation);
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    await _localDb.addData(_userInformation);
   }
 
-  apiCall() {
-    print(Globals.userprofilelocalData[0].authorizationToken);
-    _ocrBloc.add(VerifyUserWithDatabase(
-        email: Globals.userprofilelocalData[0].userEmail));
+  Future<List<UserInformation>> getUserProfile() async {
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    List<UserInformation> _userInformation = await _localDb.getData();
+    return _userInformation;
+  }
+
+  // saveUserProfile(profileData) async {
+  //   var profile = profileData.split('+');
+  //   Globals.localUserInfo.clear();
+
+  //   await Globals.localUserInfo.addData(UserInformation(
+  //       userName: profile[0].toString().split('=')[1],
+  //       userEmail: profile[1].toString().split('=')[1],
+  //       profilePicture: profile[2].toString().split('=')[1],
+  //       authorizationToken:
+  //           profile[3].toString().split('=')[1].replaceAll('#', '')));
+
+  //   final temp = await Globals.localUserInfo.getData();
+  //   Globals.userprofilelocalData = temp;
+
+  //   setState(() {});
+  //   _ocrBloc.add(
+  //       VerifyUserWithDatabase(email: profile[1].toString().split('=')[1]));
+  //   //Creating a assessment folder in users google drive to maintain all the assessments together at one place
+  //   _googleDriveBloc.add(GetDriveFolderIdEvent(
+  //       //  filePath: file,
+  //       token: profile[3].toString().split('=')[1].replaceAll('#', ''),
+  //       folderName: "Assessments"));
+  // }
+
+  verifyUserAndGetDriveFolder() async {
+    List<UserInformation> _userprofilelocalData = await getUserProfile();
+    _ocrBloc
+        .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
-        token: Globals.userprofilelocalData[0].authorizationToken,
+        token: _userprofilelocalData[0].authorizationToken,
         folderName: "Assessments"));
   }
 
@@ -325,14 +332,12 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: !isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
-                    //  Globals.localUserInfo.clear(); // COMMENT
-                  //  await localdb();
-                   print(Globals.userprofilelocalData);
-                  //  if(result!=null &&result.length>0){
-                    if (Globals.userprofilelocalData.isEmpty) {
+                    // Globals.localUserInfo.clear(); // COMMENT
+                    List<UserInformation> _profileData = await getUserProfile();
+                    if (_profileData.isEmpty) {
                       await _launchURL('Google Authentication');
                     } else {
-                      apiCall();
+                      verifyUserAndGetDriveFolder();
                       pushNewScreen(
                         context,
                         screen: OpticalCharacterRecognition(),
