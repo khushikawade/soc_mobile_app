@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -63,7 +64,6 @@ class _StaffPageState extends State<StaffPage> {
     if (widget.isFromOcr) {
       _homeBloc.add(FetchStandardNavigationBar());
     }
-    localdb();
     _scrollController.addListener(_scrollListener);
   }
 
@@ -76,27 +76,9 @@ class _StaffPageState extends State<StaffPage> {
       if (isScrolling.value == true) return;
       isScrolling.value = true;
     }
-    // }
-    // if (isScrolling.value == true) return;
-    // isScrolling.value = true;
-    // if (isScrolling.value == false) return;
-    // await Future.delayed(Duration(milliseconds: 900));
-    // isScrolling.value = false;
-    // setState(() {});
   }
 
-  Future localdb() async {
-    Globals.userprofilelocalData = await Globals.localUserInfo.getData();
-    if (Globals.userprofilelocalData.isNotEmpty) {
-      print(Globals.userprofilelocalData[0].authorizationToken);
-      print(Globals.userprofilelocalData[0].userEmail);
-      print(Globals.userprofilelocalData[0].userName);
-      print(Globals.userprofilelocalData[0].profilePicture);
-    }
-    return Globals.userprofilelocalData;
-  }
-
-//To authenticate the user via google
+  //To authenticate the user via google
   _launchURL(String? title) async {
     var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
         ? Color(0xff000000)
@@ -131,7 +113,8 @@ class _StaffPageState extends State<StaffPage> {
     } else {
       value = value.split('?')[1] ?? '';
       //Save user profile
-      saveUserProfile(value);
+      await saveUserProfile(value);
+      await verifyUserAndGetDriveFolder();
       // Push to the grading system
       pushNewScreen(
         context,
@@ -141,42 +124,60 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
-  saveUserProfile(profileData) async {
-    var profile = profileData.split('+');
-
-    Globals.localUserInfo.clear();
-
-    Globals.localUserInfo.addData(UserInformation(
+  Future<void> saveUserProfile(String profileData) async {
+    List<String> profile = profileData.split('+');
+    UserInformation _userInformation = UserInformation(
         userName: profile[0].toString().split('=')[1],
         userEmail: profile[1].toString().split('=')[1],
         profilePicture: profile[2].toString().split('=')[1],
         authorizationToken:
             profile[3].toString().split('=')[1].replaceAll('#', ''),
         refreshAuthorizationToken:
-            profile[4].toString().split('=')[1].replaceAll('#', '')));
-    await localdb();
-    _ocrBloc.add(
-        VerifyUserWithDatabase(email: profile[1].toString().split('=')[1]));
-    //Creating a assessment folder in users google drive to maintain all the assessments together at one place
-    _googleDriveBloc.add(GetDriveFolderIdEvent(
-        //  filePath: file,
-        token: profile[3].toString().split('=')[1].replaceAll('#', ''),
-        folderName: "Assessments",
-        refreshtoken: profile[4].toString().split('=')[1].replaceAll('#', '')));
+            profile[4].toString().split('=')[1].replaceAll('#', ''));
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    await _localDb.addData(_userInformation);
   }
 
-  getDriveFolderId() {
-    print(Globals.userprofilelocalData[0].authorizationToken);
+  Future<List<UserInformation>> getUserProfile() async {
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    List<UserInformation> _userInformation = await _localDb.getData();
+    return _userInformation;
+  }
 
-    //Verify the user with SF database
-    _ocrBloc.add(VerifyUserWithDatabase(
-        email: Globals.userprofilelocalData[0].userEmail));
+  // saveUserProfile(profileData) async {
+  //   var profile = profileData.split('+');
+  //   Globals.localUserInfo.clear();
 
+  //   await Globals.localUserInfo.addData(UserInformation(
+  //       userName: profile[0].toString().split('=')[1],
+  //       userEmail: profile[1].toString().split('=')[1],
+  //       profilePicture: profile[2].toString().split('=')[1],
+  //       authorizationToken:
+  //           profile[3].toString().split('=')[1].replaceAll('#', '')));
+
+  //   final temp = await Globals.localUserInfo.getData();
+  //   Globals.userprofilelocalData = temp;
+
+  //   setState(() {});
+  //   _ocrBloc.add(
+  //       VerifyUserWithDatabase(email: profile[1].toString().split('=')[1]));
+  //   //Creating a assessment folder in users google drive to maintain all the assessments together at one place
+  //   _googleDriveBloc.add(GetDriveFolderIdEvent(
+  //       //  filePath: file,
+  //       token: profile[3].toString().split('=')[1].replaceAll('#', ''),
+  //       folderName: "Assessments"));
+  // }
+
+  verifyUserAndGetDriveFolder() async {
+    List<UserInformation> _userprofilelocalData = await getUserProfile();
+    _ocrBloc
+        .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
-        token: Globals.userprofilelocalData[0].authorizationToken,
-        folderName: "Assessments"));
+        token: _userprofilelocalData[0].authorizationToken,
+        folderName: "Assessments",
+        refreshtoken: _userprofilelocalData[0].refreshAuthorizationToken));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -315,20 +316,19 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: !isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
-                    print(Globals.appSetting.authenticationURL);
-                    //  Globals.localUserInfo.clear(); // COMMENT
-                    //  await localdb();
-                    print(Globals.userprofilelocalData);
-                    if (Globals.userprofilelocalData.isEmpty) {
-                      await _launchURL('Google Authentication');
-                    } else {
-                      getDriveFolderId();
-                      pushNewScreen(
-                        context,
-                        screen: OpticalCharacterRecognition(),
-                        withNavBar: false,
-                      );
-                    }
+                    await _launchURL('Google Authentication');
+                    // Globals.localUserInfo.clear(); // COMMENT
+                    // List<UserInformation> _profileData = await getUserProfile();
+                    // if (_profileData.isEmpty) {
+                    //   await _launchURL('Google Authentication');
+                    // } else {
+                    //   verifyUserAndGetDriveFolder();
+                    //   pushNewScreen(
+                    //     context,
+                    //     screen: OpticalCharacterRecognition(),
+                    //     withNavBar: false,
+                    //   );
+                    // }
                   },
                   icon:
                       Icon(Icons.add, color: Theme.of(context).backgroundColor),

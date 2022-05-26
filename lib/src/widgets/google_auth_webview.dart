@@ -125,6 +125,8 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                         },
                         navigationDelegate: (NavigationRequest request) {
                           // widget.callBackFunction(request.url);
+                          print("Changed URL::::::");
+                          print(request.url);
                           if (request.url.toString().contains('displayName')) {
                             Navigator.pop(context, request.url);
                           }

@@ -129,7 +129,6 @@ class Globals {
   static String? shareableLink;
   static String? pointpossible = '2';
   static String? assessmentName;
-  static LocalDatabase<UserInformation> localUserInfo =
-      LocalDatabase('user_profile');
-  static List<UserInformation> userprofilelocalData = [];
+  // static LocalDatabase<UserInformation> localUserInfo = LocalDatabase('user_profile');
+  // static List<UserInformation> userprofilelocalData = [];
 }

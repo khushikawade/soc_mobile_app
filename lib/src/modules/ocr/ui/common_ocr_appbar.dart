@@ -150,8 +150,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
               : EdgeInsets.zero,
           child: IconButton(
             onPressed: () {
-              Globals.localUserInfo.clear();
-              Globals.userprofilelocalData.clear();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => HomePage()),
                   (_) => false);
