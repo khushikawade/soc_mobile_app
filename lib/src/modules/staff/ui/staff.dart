@@ -127,7 +127,7 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
-  saveUserProfile(String profileData) async {
+  Future<void> saveUserProfile(String profileData) async {
     List<String> profile = profileData.split('+');
     UserInformation _userInformation = UserInformation(
         userName: profile[0].toString().split('=')[1],
