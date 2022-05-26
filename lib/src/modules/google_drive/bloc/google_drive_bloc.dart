@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
@@ -33,9 +34,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // Globals.authorizationToken = event.token;
         folderObject = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
-        print('FolderId = ${folderObject['id']}');
+        //  print('FolderId = ${folderObject['id']}');
 
-        if (folderObject['id'] != '401') {
+        if (folderObject != 401) {
           if (folderObject['id'] == '') {
             await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
@@ -43,8 +44,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           } else {
             print("Folder Id received : ${folderObject['id']}");
             print("Folder path received : ${folderObject['webViewLink']}");
-            print(event.refreshtoken);
-            _torefreshAuthenticationToken(event.refreshtoken!);
             Globals.googleDriveFolderId = folderObject['id'];
             Globals.googleDriveFolderPath = folderObject['webViewLink'];
             // Globals.
@@ -194,6 +193,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future<List<UserInformation>> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
+    _localDb.close();
     return _userInformation;
   }
 
@@ -251,7 +251,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } else if (response.statusCode == 401) {
         print("Invalid credentials");
-        return response.statusCode.toString();
+        return response.statusCode;
       }
       return "";
     } catch (e) {
@@ -437,7 +437,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   Future _torefreshAuthenticationToken(String refreshToken) async {
     try {
-      print(refreshToken);
       final body = {"refreshToken": refreshToken};
       final ResponseModel response = await _dbServices.postapi(
           "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
@@ -445,9 +444,21 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           isGoogleApi: true);
       if (response.statusCode == 200) {
         print("new token is recived");
-        String token = response.data['body']["access_token"];
-        print(token);
-        //  return true;
+        String newToken = response.data['body']["access_token"];
+
+        List<UserInformation> _userprofilelocalData = await getUserProfile();
+
+        UserInformation updatedObj = UserInformation(
+            userName: _userprofilelocalData[0].userName,
+            userEmail: _userprofilelocalData[0].userEmail,
+            profilePicture: _userprofilelocalData[0].profilePicture,
+            refreshAuthorizationToken:
+                _userprofilelocalData[0].refreshAuthorizationToken,
+            authorizationToken: newToken);
+        await updateUserProfileIntoDB(updatedObj);
+        //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
+
+        return true;
       } else {
         throw ('something_went_wrong');
       }
@@ -455,5 +466,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       print(e);
       throw (e);
     }
+  }
+
+  updateUserProfileIntoDB(updatedObj) {
+    HiveDbServices _localdb = HiveDbServices();
+    _localdb.updateListData("user_profile", 0, updatedObj);
   }
 }
