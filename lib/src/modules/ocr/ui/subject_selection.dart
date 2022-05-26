@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/subject_list_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
@@ -42,7 +41,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final _debouncer = Debouncer(milliseconds: 10);
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   @override
-  void initState() {
+  initState() {
     fatchList(classNo: widget.selectedClass!);
     _ocrBloc.add(
         FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
@@ -228,6 +227,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       bloc: _ocrBloc,
                       listener: (context, state) {
                         if (state is SubjectDataSuccess) {
+                          
                           setState(() {
                             indexGlobal = 0;
                           });
@@ -253,9 +253,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget secondPage({required List<SubjectDetailList> list}) {
-    return gridButton(list: list, page: 2);
-  }
+
 
   Widget loadingPage() {
     return Container(

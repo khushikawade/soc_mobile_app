@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class Bouncing extends StatefulWidget {
@@ -20,7 +22,7 @@ class _BouncingWidgetState extends State<Bouncing>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 200),
     );
     _scale = Tween<double>(begin: 1.0, end: 0.8)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.ease));
@@ -39,9 +41,11 @@ class _BouncingWidgetState extends State<Bouncing>
         _controller.forward();
       },
       onPointerUp: (PointerUpEvent event) {
-        _controller.reverse();
-        if (widget.onPress == null) return;
-        widget.onPress!();
+        Timer(Duration(milliseconds: 180), () {
+          _controller.reverse();
+          if (widget.onPress == null) return;
+          widget.onPress!();
+        });
       },
       child: ScaleTransition(
         scale: _scale,
