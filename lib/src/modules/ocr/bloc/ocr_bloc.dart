@@ -223,7 +223,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         if (!result) {
           await _createContact(email: email.toString());
         }
-      } else if(data['Assessment_App_User__c']!='true') {
+      } else if (data['Assessment_App_User__c'] != 'true') {
         bool result = await _updateContact(recordId: data['Id']);
         if (!result) {
           await _updateContact(recordId: data['Id']);
