@@ -21,7 +21,18 @@ class VerifyUserWithDatabase extends OcrEvent {
 class FatchSubjectDetails extends OcrEvent {
   final String? type;
   final String? keyword;
-  FatchSubjectDetails({required this.type,required this.keyword});
+  FatchSubjectDetails({required this.type, required this.keyword});
+
+  @override
+  List<Object> get props => [type!];
+}
+
+class SearchSubjectDetails extends OcrEvent {
+  final String? type;
+  final String? keyword;
+  final String? searchKeyword;
+  SearchSubjectDetails(
+      {required this.type, required this.keyword, required this.searchKeyword});
 
   @override
   List<Object> get props => [type!];

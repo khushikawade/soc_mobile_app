@@ -131,6 +131,7 @@ class _OpticalCharacterRecognitionPageState
             onPressed: () async {
               _bloc.add(SaveSubjectListDetails());
               Globals.studentInfo = [];
+              _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
               // Navigator.push(
               //   context,
