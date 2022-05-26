@@ -132,14 +132,14 @@ class _OpticalCharacterRecognitionPageState
               _bloc.add(SaveSubjectListDetails());
               Globals.studentInfo = [];
               //UNCOMMENT
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CameraScreen()),
-              );
               // Navigator.push(
               //   context,
-              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              //   MaterialPageRoute(builder: (context) => CameraScreen()),
               // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
+              );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(

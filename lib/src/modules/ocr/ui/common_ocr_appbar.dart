@@ -1,8 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
-import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
@@ -50,9 +50,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           ? Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                highlightText(
+                Utility.textWidget(
                     text: 'Scane Failure',
-                    theme: Theme.of(context)
+                    context: context,
+                    textTheme: Theme.of(context)
                         .textTheme
                         .headline4!
                         .copyWith(fontWeight: FontWeight.bold)),
@@ -144,23 +145,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   )
                 : Container()
       ],
-    );
-  }
-
-  Widget highlightText({required String text, required theme}) {
-    return TranslationWidget(
-      message: text,
-      toLanguage: Globals.selectedLanguage,
-      fromLanguage: "en",
-      builder: (translatedMessage) => Center(
-        child: Text(
-          translatedMessage.toString(),
-          // maxLines: 2,
-          //overflow: TextOverflow.ellipsis,
-          // textAlign: TextAlign.center,
-          style: theme,
-        ),
-      ),
     );
   }
 
@@ -283,9 +267,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        highlightText(
+                        Utility.textWidget(
                             text: 'Finished!',
-                            theme: Theme.of(context)
+                            context: context,
+                            textTheme: Theme.of(context)
                                 .textTheme
                                 .headline6!
                                 .copyWith(
@@ -301,19 +286,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         ),
                       ],
                     )),
-                // SpacerWidget(_KVertcalSpace / 3),
-                // lineSeparater(),
-
-//           ),
-                //  TranslationWidget(
-                //     message: "you may loss scaned sheet if you exit",
-                //     fromLanguage: "en",
-                //     toLanguage: Globals.selectedLanguage,
-                //     builder: (translatedMessage) {
-                //       return Text(translatedMessage.toString(),
-                //           style: Theme.of(context).textTheme.headline2!);
-                //     }),
-
                 actions: [
                   Container(
                     height: 1,
