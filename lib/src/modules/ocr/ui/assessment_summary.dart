@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +41,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
               SpacerWidget(_KVertcalSpace * 0.50),
               Padding(
@@ -58,17 +60,25 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   bloc: _driveBloc,
                   builder: (BuildContext contxt, GoogleDriveState state) {
                     if (state is GoogleDriveGetSuccess) {
-                      return listView(state.obj);
-                    } else if (state is GoogleNoAssessment) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: Center(
-                            child: Text(
-                          "No assessment available",
-                          style: Theme.of(context).textTheme.bodyText1!,
-                        )),
-                      );
+                      return state.obj.length > 0
+                          ? listView(state.obj)
+                          : Expanded(
+                              child: NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: true,
+                                  isNews: false,
+                                  isEvents: false),
+                            );
                     }
+                    //  else if (state is GoogleNoAssessment) {
+                    //   return Container(
+                    //     height: MediaQuery.of(context).size.height * 0.7,
+                    //     child: Center(
+                    //         child: Text(
+                    //       "No assessment available",
+                    //       style: Theme.of(context).textTheme.bodyText1!,
+                    //     )),
+                    //   );
+                    // }
                     return Container(
                       height: MediaQuery.of(context).size.height * 0.7,
                       child: Center(
