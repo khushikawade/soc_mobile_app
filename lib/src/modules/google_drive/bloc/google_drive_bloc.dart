@@ -426,16 +426,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future _torefreshAuthenticationToken(String refreshToken) async {
     try {
       print(refreshToken);
-      final body = {
-        "refreshToken": refreshToken
-      };
+      final body = {"refreshToken": refreshToken};
       final ResponseModel response = await _dbServices.postapi(
-          "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/refreshGoogleAuthenticationz",
+          "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
           body: body,
           isGoogleApi: true);
       if (response.statusCode == 200) {
-        print("refresh done");
-        return true;
+        print("new token is recived");
+        String token = response.data["access_token"];
+        print(token);
+        //  return true;
       } else {
         throw ('something_went_wrong');
       }
