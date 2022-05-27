@@ -132,8 +132,7 @@ class _StaffPageState extends State<StaffPage> {
         profilePicture: profile[2].toString().split('=')[1],
         authorizationToken:
             profile[3].toString().split('=')[1].replaceAll('#', ''),
-        refreshAuthorizationToken:
-            profile[4].toString().split('=')[1].replaceAll('#', ''));
+        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);
   }
@@ -176,8 +175,8 @@ class _StaffPageState extends State<StaffPage> {
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
         token: _userprofilelocalData[0].authorizationToken,
-        folderName: "Assessments",
-        refreshtoken: _userprofilelocalData[0].refreshAuthorizationToken));
+        folderName: "Solved Assessment",
+        refreshtoken: _userprofilelocalData[0].refreshToken));
   }
 
   Widget _body(String key) => RefreshIndicator(

@@ -15,6 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
+import '../model/user_profile.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -54,10 +55,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           print('Authentication required');
-          bool result =
-              await _torefreshAuthenticationToken(event.refreshtoken!);
+          bool result = await _regenerateGoogleAccessToken(event.refreshtoken!);
           if (!result) {
-            await _torefreshAuthenticationToken(event.refreshtoken!);
+            await _regenerateGoogleAccessToken(event.refreshtoken!);
           }
         }
       } catch (e) {
@@ -439,7 +439,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<bool> _torefreshAuthenticationToken(String refreshToken) async {
+  Future<bool> _regenerateGoogleAccessToken(String refreshToken) async {
     try {
       final body = {"refreshToken": refreshToken};
       final ResponseModel response = await _dbServices.postapi(
@@ -456,10 +456,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             userName: _userprofilelocalData[0].userName,
             userEmail: _userprofilelocalData[0].userEmail,
             profilePicture: _userprofilelocalData[0].profilePicture,
-            refreshAuthorizationToken:
-                _userprofilelocalData[0].refreshAuthorizationToken,
+            refreshToken: _userprofilelocalData[0].refreshToken,
             authorizationToken: newToken);
-        await updateUserProfileIntoDB(updatedObj);
+        await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
         //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 
         return true;
@@ -471,10 +470,5 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       print(e);
       throw (e);
     }
-  }
-
-  updateUserProfileIntoDB(updatedObj) {
-    HiveDbServices _localdb = HiveDbServices();
-    _localdb.updateListData("user_profile", 0, updatedObj);
   }
 }
