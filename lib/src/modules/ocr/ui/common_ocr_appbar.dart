@@ -431,7 +431,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             ListTile(
                               // horizontalTitleGap: 20,
                               title: Text(
-                                userInformation.userName!,
+                                userInformation.userName!.replaceAll("%20", " "),
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline3!
