@@ -44,138 +44,152 @@ class CustomOcrAppBarWidget extends StatefulWidget
 
 class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   double lineProgress = 0.0;
-  UserInformation? userProfile;
+
   SharePopUp shareobj = new SharePopUp();
-  @override
-  void initState() {
-    // TODO: implement initState
-    _getUserProfile();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   _getUserProfile();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leadingWidth: widget.isFailureState == true ? 200 : null,
-      automaticallyImplyLeading: false,
-      leading: widget.isFailureState == true
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Utility.textWidget(
-                    text: 'Scane Failure',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline4!
-                        .copyWith(fontWeight: FontWeight.bold)),
-                SizedBox(
-                  width: 5.0,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffCF6679),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leadingWidth: widget.isFailureState == true ? 200 : null,
+        automaticallyImplyLeading: false,
+        leading: widget.isFailureState == true
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Utility.textWidget(
+                      text: 'Scan Failure',
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline4!
+                          .copyWith(fontWeight: FontWeight.bold)),
+                  SizedBox(
+                    width: 5.0,
                   ),
-                  child: Icon(
-                      IconData(0xe838,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      size: 19,
-                      color: Colors.white),
-                ),
-              ],
-            )
-          : widget.isBackButton == true
-              ? IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    IconData(0xe80d,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kButtonColor,
-                  ),
-                )
-              : null,
-      actions: [
-        widget.assessmentDetailPage == null
-            ? Container(
-                padding: widget.isFailureState != true
-                    ? EdgeInsets.only(right: 10)
-                    : EdgeInsets.zero,
-                child: IconButton(
-                  onPressed: () {
-                    if (widget.isHomeButtonPopup == true) {
-                      _onHomePressed();
-                    } else {
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                          (_) => false);
-                    }
-
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(builder: (context) => HomePage()),
-                    // );
-                  },
-                  icon: Icon(
-                    IconData(0xe874,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kButtonColor,
-                    size: 30,
-                  ),
-                ))
-            : Container(),
-        widget.assessmentDetailPage == true
-            ? Container()
-            : widget.isFailureState == true || widget.isResultScreen == true
-                ? Container(
-                    padding: widget.isFailureState != true
-                        ? EdgeInsets.only(right: 10)
-                        : EdgeInsets.zero,
-                    child: IconButton(
-                      onPressed: () {
-                        if (widget.isFailureState == true) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => CameraScreen()));
-                        } else if (widget.isResultScreen == true) {
-                          onFinishedPopup();
-                        }
-                      },
-                      icon: Icon(
-                        IconData(0xe877,
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xffCF6679),
+                    ),
+                    child: Icon(
+                        IconData(0xe838,
                             fontFamily: Overrides.kFontFam,
                             fontPackage: Overrides.kFontPkg),
-                        size: 30,
-                        color: AppTheme.kButtonColor,
-                      ),
+                        size: 19,
+                        color: Colors.white),
+                  ),
+                ],
+              )
+            : widget.isBackButton == true
+                ? IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      IconData(0xe80d,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: AppTheme.kButtonColor,
                     ),
                   )
-                : Container(),
-        Container(
-          padding: widget.isFailureState != true
-              ? EdgeInsets.only(right: 10, top: 5)
-              : EdgeInsets.zero,
-          child: IconButton(
-            onPressed: () {
-              UserGoogleProfile.clearUserProfile();
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                  (_) => false);
-            },
-            icon: Icon(
-              Icons.logout,
-              size: 26,
-              color: AppTheme.kButtonColor,
-            ),))
-      ]
-    );
+                : null,
+        actions: [
+          widget.assessmentDetailPage == null
+              ? Container(
+                  padding: widget.isFailureState != true
+                      ? EdgeInsets.only(right: 10)
+                      : EdgeInsets.zero,
+                  child: IconButton(
+                    onPressed: () {
+                      if (widget.isHomeButtonPopup == true) {
+                        _onHomePressed();
+                      } else {
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                            (_) => false);
+                      }
+
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(builder: (context) => HomePage()),
+                      // );
+                    },
+                    icon: Icon(
+                      IconData(0xe874,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: AppTheme.kButtonColor,
+                      size: 30,
+                    ),
+                  ))
+              : Container(),
+          widget.assessmentDetailPage == true
+              ? Container()
+              : widget.isFailureState == true || widget.isResultScreen == true
+                  ? Container(
+                      padding: widget.isFailureState != true
+                          ? EdgeInsets.only(right: 10)
+                          : EdgeInsets.zero,
+                      child: IconButton(
+                        onPressed: () {
+                          if (widget.isFailureState == true) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => CameraScreen()));
+                          } else if (widget.isResultScreen == true) {
+                            onFinishedPopup();
+                          }
+                        },
+                        icon: Icon(
+                          IconData(0xe877,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          size: 30,
+                          color: AppTheme.kButtonColor,
+                        ),
+                      ),
+                    )
+                  : Container(),
+          Container(
+            margin: EdgeInsets.all(10),
+            padding: widget.isFailureState != true
+                ? EdgeInsets.only(right: 10, top: 5)
+                : EdgeInsets.zero,
+            child: FutureBuilder(
+                future: getUserProfile(),
+                builder: (context, AsyncSnapshot<UserInformation> snapshot) {
+                  if (snapshot.hasData) {
+                    return InkWell(
+                      onTap: () {
+                        _showPopUp(snapshot.data!);
+                        print("profile url");
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(60),
+                        child: CachedNetworkImage(
+                          // height: 30,
+                          fit: BoxFit.cover,
+                          imageUrl: snapshot.data!.profilePicture!,
+                          placeholder: (context, url) =>
+                              CupertinoActivityIndicator(
+                                  animating: true, radius: 10),
+                        ),
+                      ),
+                    );
+                  }
+                  return CupertinoActivityIndicator(
+                      animating: true, radius: 10);
+                }),
+          ),
+        ]);
   }
 
   _onHomePressed() {
@@ -365,18 +379,12 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
-    _localDb.close();
+    print(_userInformation.length);
+    print("printing length");
     return _userInformation[0];
   }
 
-  _getUserProfile() async {
-    userProfile = await getUserProfile();
-    if (userProfile != null) {
-      setState(() {});
-    }
-  }
-
-  void _showPopUp() {
+  void _showPopUp(UserInformation userInformation) {
     showCupertinoModalPopup(
         barrierDismissible: true,
         context: context,
@@ -416,51 +424,46 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                 color: Colors.black.withOpacity(.1),
                                 blurRadius: 8)
                           ]),
-                      child: userProfile != null
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                  ListTile(
-                                    // horizontalTitleGap: 20,
-                                    title: Text(
-                                      userProfile!.userName!
-                                          .replaceAll("%20", " "),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline3!
-                                          .copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: Padding(
-                                      padding: const EdgeInsets.only(top: 5.0),
-                                      child: Text(userProfile!.userEmail!,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .subtitle2!),
-                                    ),
-                                  ),
-                                  SpacerWidget(10),
-                                  Center(
-                                    child: IconButton(
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pushAndRemoveUntil(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        HomePage()),
-                                                (_) => false);
-                                      },
-                                      icon: Icon(
-                                        Icons.logout,
-                                        size: 26,
-                                        color: AppTheme.kButtonColor,
-                                      ),
-                                    ),
-                                  ),
-                                ])
-                          : Container()),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              // horizontalTitleGap: 20,
+                              title: Text(
+                                userInformation.userName!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline3!
+                                    .copyWith(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: Text(userInformation.userEmail!,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2!),
+                              ),
+                            ),
+                            SpacerWidget(10),
+                            Center(
+                              child: IconButton(
+                                onPressed: () {
+                                  UserGoogleProfile.clearUserProfile();
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) => HomePage()),
+                                      (_) => false);
+                                },
+                                icon: Icon(
+                                  Icons.logout,
+                                  size: 26,
+                                  color: AppTheme.kButtonColor,
+                                ),
+                              ),
+                            ),
+                          ])),
                 ),
               ],
             ),
