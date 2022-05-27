@@ -36,6 +36,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            key: GlobalKey(),
             isBackButton: true,
             assessmentDetailPage: true,
           ),

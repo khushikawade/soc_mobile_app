@@ -58,6 +58,7 @@ class _OpticalCharacterRecognitionPageState
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            key: GlobalKey(),
             isBackButton: false,
           ),
           body: ListView(

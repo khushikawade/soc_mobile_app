@@ -46,6 +46,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //   FloatingActionButtonLocation.centerFloat,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              key: GlobalKey(),
               isBackButton: false,
               isHomeButtonPopup: true,
             ),
