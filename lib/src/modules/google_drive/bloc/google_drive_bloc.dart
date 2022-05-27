@@ -122,8 +122,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is GetHistoryAssessmentFromDrive) {
       try {
-        print("calling _fetchHistoryAssessment");
-        yield GoogleDriveLoading();
+        LocalDatabase<HistoryAssessment> _localDb =
+            LocalDatabase("HistoryAssessment");
+
+        List<HistoryAssessment>? _localData = await _localDb.getData();
+
+        if (_localData.isNotEmpty) {
+          yield GoogleDriveGetSuccess(obj: _localData);
+        }
         List<UserInformation> _userprofilelocalData = await getUserProfile();
         List<HistoryAssessment> assessmentList = [];
         if (Globals.googleDriveFolderId != null) {
@@ -137,6 +143,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             if (element.label['trashed'] != true) {
               assessmentList.add(element);
             }
+          });
+          await _localDb.clear();
+          assessmentList.forEach((HistoryAssessment e) {
+            _localDb.addData(e);
           });
 
           yield GoogleDriveGetSuccess(obj: assessmentList);

@@ -45,6 +45,8 @@ class _CameraScreenState extends State<CameraScreen>
   bool isflashOff = true;
   bool flash = false;
   FlashMode? _currentFlashMode;
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     Globals.iscameraPopup
@@ -70,6 +72,7 @@ class _CameraScreenState extends State<CameraScreen>
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           toolbarHeight:
               MediaQuery.of(context).orientation == Orientation.portrait
@@ -94,11 +97,17 @@ class _CameraScreenState extends State<CameraScreen>
                 padding: EdgeInsets.only(right: 5),
                 child: IconButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CreateAssessment()),
-                    );
+                    Globals.studentInfo!.length > 0
+                        ? Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CreateAssessment()),
+                          )
+                        : Utility.showSnackBar(
+                            _scaffoldKey,
+                            "No Assessment Found! Scan Assessment Before Moving Forword",
+                            context,
+                            null);
                   },
                   icon: Icon(
                     IconData(0xe877,
