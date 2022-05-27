@@ -69,15 +69,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       Timer(Duration(seconds: 5), () {
                         updateDetails();
                         // COMMENT below section for enableing the camera
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateAssessment()),
-                        );
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => CreateAssessment()),
+                        // );
                         //UNCOMMENT below section for enableing the camera
 
-                        // Navigator.push(context,
-                        //     MaterialPageRoute(builder: (_) => CameraScreen()));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => CameraScreen()));
                       });
                     } else if (state is FetchTextFromImageFailure) {
                       onChange == false

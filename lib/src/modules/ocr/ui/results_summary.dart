@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
 
-
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({Key? key, required this.assessmentDetailPage, this.fileId})
       : super(key: key);

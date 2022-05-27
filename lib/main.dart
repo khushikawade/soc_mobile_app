@@ -25,6 +25,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
+import 'src/modules/google_drive/model/assessment.dart';
 import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
@@ -49,7 +50,8 @@ void main() async {
       ..registerAdapter(CalendarEventListAdapter())
       ..registerAdapter(CustomSettingAdapter())
       ..registerAdapter(UserInformationAdapter())
-      ..registerAdapter(SubjectDetailListAdapter());
+      ..registerAdapter(SubjectDetailListAdapter())
+      ..registerAdapter(HistoryAssessmentAdapter());
   }
   clearTheme();
   await disableDarkMode();

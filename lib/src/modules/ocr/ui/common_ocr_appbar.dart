@@ -8,6 +8,8 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:flutter/material.dart';
 
+import '../../google_drive/model/user_profile.dart';
+
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
@@ -150,6 +152,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
               : EdgeInsets.zero,
           child: IconButton(
             onPressed: () {
+              UserGoogleProfile.clearUserProfile();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => HomePage()),
                   (_) => false);
