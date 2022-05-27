@@ -51,6 +51,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              key: GlobalKey(),
               isBackButton: false,
               isFailureState: failure,
               isHomeButtonPopup: true,

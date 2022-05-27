@@ -46,6 +46,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              key: GlobalKey(),
               isBackButton: true,
               assessmentDetailPage: widget.assessmentDetailPage,
               isResultScreen: true,

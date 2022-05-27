@@ -1,18 +1,24 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../services/local_database/local_db.dart';
 
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
   CustomOcrAppBarWidget(
-      {Key? key,
+      {required Key? key,
       required this.isBackButton,
       this.isTitle,
       this.isFailureState,
@@ -37,7 +43,14 @@ class CustomOcrAppBarWidget extends StatefulWidget
 
 class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   double lineProgress = 0.0;
+  UserInformation? userProfile;
   SharePopUp shareobj = new SharePopUp();
+  @override
+  void initState() {
+    // TODO: implement initState
+    _getUserProfile();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,22 +158,84 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   )
                 : Container(),
         Container(
-          padding: widget.isFailureState != true
-              ? EdgeInsets.only(right: 10, top: 5)
-              : EdgeInsets.zero,
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                  (_) => false);
-            },
-            icon: Icon(
-              Icons.logout,
-              size: 26,
-              color: AppTheme.kButtonColor,
+            padding: widget.isFailureState != true
+                ? EdgeInsets.only(right: 10, top: 5)
+                : EdgeInsets.zero,
+            // height: 40,
+            // width: 40,
+            child: InkWell(
+                onTap: () {
+                  _showPopUp();
+                  print("profile url");
+                },
+                child: userProfile != null && userProfile != null
+                    ? CachedNetworkImage(
+                        imageUrl: userProfile!.profilePicture!,
+                        imageBuilder: (context, imageProvider) => Container(
+                          height: 27,
+                          width: 27,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: imageProvider, fit: BoxFit.cover),
+                          ),
+                        ),
+                        placeholder: (context, url) =>
+                            CupertinoActivityIndicator(
+                                animating: true, radius: 10),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      )
+                    : CupertinoActivityIndicator(animating: true, radius: 10)
+
+                //  Builder(builder: (context) {
+                //   return FutureBuilder(
+                //       future: getUserProfile(),
+                //       builder:
+                //           (context, AsyncSnapshot<UserInformation> snapshot) {
+                //         if (snapshot.hasData) {
+                //           return CachedNetworkImage(
+                //             imageUrl: snapshot.data!.profilePicture!,
+                //             imageBuilder: (context, imageProvider) => Container(
+                //               height: 27,
+                //               width: 27,
+                //               decoration: BoxDecoration(
+                //                 shape: BoxShape.circle,
+                //                 image: DecorationImage(
+                //                     image: imageProvider, fit: BoxFit.cover),
+                //               ),
+                //             ),
+                //             placeholder: (context, url) =>
+                //                 CupertinoActivityIndicator(
+                //                     animating: true, radius: 10),
+                //             errorWidget: (context, url, error) =>
+                //                 Icon(Icons.error),
+                //           );
+
+                //           //  CircleAvatar(
+                //           //   radius: 30.0,
+                //           //   backgroundImage: NetworkImage(snapshot.data!),
+                //           //   backgroundColor: Colors.transparent,
+                //           // );
+                //         }
+                //         return CupertinoActivityIndicator(
+                //             animating: true, radius: 10);
+                //       });
+                // }),
+                )
+
+            // IconButton(
+            //   onPressed: () {
+            //     Navigator.of(context).pushAndRemoveUntil(
+            //         MaterialPageRoute(builder: (context) => HomePage()),
+            //         (_) => false);
+            //   },
+            //   icon: Icon(
+            //     Icons.logout,
+            //     size: 26,
+            //     color: AppTheme.kButtonColor,
+            //   ),
+            // ),
             ),
-          ),
-        ),
       ],
     );
   }
@@ -342,5 +417,116 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 elevation: 16,
               );
             }));
+  }
+
+  // Future<String?> _getProfileUrl() async {
+  //   List<UserInformation> _userprofilelocalData = await getUserProfile();
+  //   return _userprofilelocalData[0].profilePicture!;
+  // }
+
+  Future<UserInformation> getUserProfile() async {
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    List<UserInformation> _userInformation = await _localDb.getData();
+    _localDb.close();
+    return _userInformation[0];
+  }
+
+  _getUserProfile() async {
+    userProfile = await getUserProfile();
+    if (userProfile != null) {
+      setState(() {});
+    }
+  }
+
+  void _showPopUp() {
+    showCupertinoModalPopup(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          RenderBox renderBox = (widget.key as GlobalKey)
+              .currentContext
+              ?.findAncestorRenderObjectOfType() as RenderBox;
+          Offset position = renderBox.localToGlobal(Offset.zero);
+          return Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: [
+                Positioned(
+                  right: 10,
+                  left: 0,
+                  top: MediaQuery.of(context).orientation ==
+                          Orientation.landscape
+                      ? MediaQuery.of(context).size.width / 10
+                      : MediaQuery.of(context).size.height / 10,
+                  child: Container(
+                      height: MediaQuery.of(context).orientation ==
+                              Orientation.landscape
+                          ? MediaQuery.of(context).size.height / 2
+                          : MediaQuery.of(context).size.height / 4.5,
+                      // height: 500,
+                      //  width: double.maxFinite,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.height / 60,
+                          vertical: MediaQuery.of(context).size.height / 60),
+                      margin: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width / 2.5),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(.1),
+                                blurRadius: 8)
+                          ]),
+                      child: userProfile != null
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                  ListTile(
+                                    // horizontalTitleGap: 20,
+                                    title: Text(
+                                      userProfile!.userName!
+                                          .replaceAll("%20", " "),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline3!
+                                          .copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: Text(userProfile!.userEmail!,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!),
+                                    ),
+                                  ),
+                                  SpacerWidget(10),
+                                  Center(
+                                    child: IconButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomePage()),
+                                                (_) => false);
+                                      },
+                                      icon: Icon(
+                                        Icons.logout,
+                                        size: 26,
+                                        color: AppTheme.kButtonColor,
+                                      ),
+                                    ),
+                                  ),
+                                ])
+                          : Container()),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
