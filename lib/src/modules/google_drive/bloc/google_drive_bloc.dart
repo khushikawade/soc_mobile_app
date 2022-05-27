@@ -54,7 +54,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           print('Authentication required');
-          _torefreshAuthenticationToken(event.refreshtoken!);
+          bool result =
+              await _torefreshAuthenticationToken(event.refreshtoken!);
+          if (!result) {
+            await _torefreshAuthenticationToken(event.refreshtoken!);
+          }
         }
       } catch (e) {
         throw (e);
@@ -435,7 +439,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future _torefreshAuthenticationToken(String refreshToken) async {
+  Future<bool> _torefreshAuthenticationToken(String refreshToken) async {
     try {
       final body = {"refreshToken": refreshToken};
       final ResponseModel response = await _dbServices.postapi(
@@ -460,7 +464,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         return true;
       } else {
-        throw ('something_went_wrong');
+        return false;
+        //  throw ('something_went_wrong');
       }
     } catch (e) {
       print(e);

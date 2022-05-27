@@ -365,7 +365,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   }
 
   Future<bool> _createContact({required String? email}) async {
-     print(email!.split("@")[0]);
+    print(email!.split("@")[0]);
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
