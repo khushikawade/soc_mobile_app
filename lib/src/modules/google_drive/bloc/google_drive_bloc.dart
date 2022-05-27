@@ -67,7 +67,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is CreateExcelSheetToDrive) {
       try {
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
         Globals.assessmentName = event.name;
         bool result = await createSheetOnDrive(
             name: event.name!,
@@ -93,7 +94,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is UpdateDocOnDrive) {
       try {
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
         assessmentData!.insert(
             0,
@@ -124,7 +126,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         print("calling _fetchHistoryAssessment");
         yield GoogleDriveLoading();
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
         List<HistoryAssessment> assessmentList = [];
         if (Globals.googleDriveFolderId != null) {
           List<HistoryAssessment> _list = await _fetchHistoryAssessment(
@@ -155,7 +158,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetAssessmentDetail) {
       try {
         List<StudentAssessmentInfo> _list = [];
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
         String link = await _getAssessmentDetail(
             _userprofilelocalData[0].authorizationToken, event.fileId);
 
@@ -192,13 +196,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         throw (e);
       }
     }
-  }
-
-  Future<List<UserInformation>> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
-    _localDb.close();
-    return _userInformation;
   }
 
   Future<String> _createFolderOnDrive(
@@ -450,7 +447,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print("new token is recived");
         String newToken = response.data['body']["access_token"];
 
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
 
         UserInformation updatedObj = UserInformation(
             userName: _userprofilelocalData[0].userName,
