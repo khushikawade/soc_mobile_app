@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services/local_database/local_db.dart';
+import '../../google_drive/model/user_profile.dart';
 
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
@@ -493,6 +494,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                           fontWeight: FontWeight.bold)),
                               IconButton(
                                 onPressed: () {
+                                  UserGoogleProfile.clearUserProfile();
                                   Navigator.of(context).pushAndRemoveUntil(
                                       MaterialPageRoute(
                                           builder: (context) => HomePage()),

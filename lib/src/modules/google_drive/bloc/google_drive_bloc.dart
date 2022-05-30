@@ -4,7 +4,6 @@ import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
-import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
@@ -15,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
+import '../model/user_profile.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -37,7 +37,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //  print('FolderId = ${folderObject['id']}');
 
         if (folderObject != 401) {
-          if (folderObject['id'] == '') {
+          if (folderObject == '') {
             await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
             print("Folder created successfully");
@@ -67,7 +67,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is CreateExcelSheetToDrive) {
       try {
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
         Globals.assessmentName = event.name;
         bool result = await createSheetOnDrive(
             name: event.name!,
@@ -93,7 +94,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is UpdateDocOnDrive) {
       try {
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
         assessmentData!.insert(
             0,
@@ -130,7 +132,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
         }
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
         List<HistoryAssessment> assessmentList = [];
         if (Globals.googleDriveFolderId != null) {
           List<HistoryAssessment> _list = await _fetchHistoryAssessment(
@@ -165,7 +168,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetAssessmentDetail) {
       try {
         List<StudentAssessmentInfo> _list = [];
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
         String link = await _getAssessmentDetail(
             _userprofilelocalData[0].authorizationToken, event.fileId);
 
@@ -202,13 +206,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         throw (e);
       }
     }
-  }
-
-  Future<List<UserInformation>> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
-    _localDb.close();
-    return _userInformation;
   }
 
   Future<String> _createFolderOnDrive(
@@ -259,7 +256,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (data[i]['name'] == folderName &&
               data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
               data[i]["trashed"] == false) {
-            print("folder is already exits : ${data[i]['id']}");
+            // print("folder is already exits : ${data[i]['id']}");
             return data[i];
           }
         }
@@ -458,19 +455,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           body: body,
           isGoogleApi: true);
       if (response.statusCode == 200) {
-        print("new token is recived");
+        print("New access token received");
         String newToken = response.data['body']["access_token"];
 
-        List<UserInformation> _userprofilelocalData = await getUserProfile();
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
 
         UserInformation updatedObj = UserInformation(
             userName: _userprofilelocalData[0].userName,
             userEmail: _userprofilelocalData[0].userEmail,
             profilePicture: _userprofilelocalData[0].profilePicture,
-            refreshAuthorizationToken:
-                _userprofilelocalData[0].refreshAuthorizationToken,
+            refreshToken: _userprofilelocalData[0].refreshToken,
             authorizationToken: newToken);
-        await updateUserProfileIntoDB(updatedObj);
+        await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
         //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 
         return true;
@@ -482,10 +479,5 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       print(e);
       throw (e);
     }
-  }
-
-  updateUserProfileIntoDB(updatedObj) {
-    HiveDbServices _localdb = HiveDbServices();
-    _localdb.updateListData("user_profile", 0, updatedObj);
   }
 }

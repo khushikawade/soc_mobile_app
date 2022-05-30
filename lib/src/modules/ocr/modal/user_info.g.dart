@@ -21,7 +21,7 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
       userEmail: fields[1] as String?,
       profilePicture: fields[2] as String?,
       authorizationToken: fields[3] as String?,
-      refreshAuthorizationToken: fields[4] as String?,
+      refreshToken: fields[4] as String?,
     );
   }
 
@@ -38,7 +38,7 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
       ..writeByte(3)
       ..write(obj.authorizationToken)
       ..writeByte(4)
-      ..write(obj.refreshAuthorizationToken);
+      ..write(obj.refreshToken);
   }
 
   @override

@@ -19,6 +19,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
+import '../../google_drive/model/user_profile.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
@@ -110,7 +111,7 @@ class _StaffPageState extends State<StaffPage> {
           'You are not authorized to access the feature. Please use the authorized account.',
           context,
           50.0);
-    } else {
+    } else if (value.toString().contains('success')) {
       value = value.split('?')[1] ?? '';
       //Save user profile
       await saveUserProfile(value);
@@ -132,17 +133,18 @@ class _StaffPageState extends State<StaffPage> {
         profilePicture: profile[2].toString().split('=')[1],
         authorizationToken:
             profile[3].toString().split('=')[1].replaceAll('#', ''),
-        refreshAuthorizationToken:
-            profile[4].toString().split('=')[1].replaceAll('#', ''));
+        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+
+    //Save user profile to locally
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);
   }
 
-  Future<List<UserInformation>> getUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    List<UserInformation> _userInformation = await _localDb.getData();
-    return _userInformation;
-  }
+  // Future<List<UserInformation>> getUserProfile() async {
+  //   LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+  //   List<UserInformation> _userInformation = await _localDb.getData();
+  //   return _userInformation;
+  // }
 
   // saveUserProfile(profileData) async {
   //   var profile = profileData.split('+');
@@ -169,15 +171,16 @@ class _StaffPageState extends State<StaffPage> {
   // }
 
   verifyUserAndGetDriveFolder() async {
-    List<UserInformation> _userprofilelocalData = await getUserProfile();
+    List<UserInformation> _userprofilelocalData =
+        await UserGoogleProfile.getUserProfile();
     _ocrBloc
         .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
         token: _userprofilelocalData[0].authorizationToken,
-        folderName: "Assessments",
-        refreshtoken: _userprofilelocalData[0].refreshAuthorizationToken));
+        folderName: "Solved Assessment",
+        refreshtoken: _userprofilelocalData[0].refreshToken));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -317,7 +320,8 @@ class _StaffPageState extends State<StaffPage> {
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     // Globals.localUserInfo.clear(); // COMMENT
-                    List<UserInformation> _profileData = await getUserProfile();
+                    List<UserInformation> _profileData =
+                        await UserGoogleProfile.getUserProfile();
                     if (_profileData.isEmpty) {
                       await _launchURL('Google Authentication');
                     } else {
