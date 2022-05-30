@@ -131,7 +131,8 @@ class _OpticalCharacterRecognitionPageState
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
               _bloc.add(SaveSubjectListDetails());
-              Globals.studentInfo = [];
+              // Globals.studentInfo = [];
+              Globals.studentInfo!.clear();
               _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
               Navigator.push(

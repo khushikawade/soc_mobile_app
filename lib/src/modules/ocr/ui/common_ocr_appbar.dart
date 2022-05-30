@@ -44,7 +44,6 @@ class CustomOcrAppBarWidget extends StatefulWidget
 
 class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   double lineProgress = 0.0;
-
   SharePopUp shareobj = new SharePopUp();
   // @override
   // void initState() {
