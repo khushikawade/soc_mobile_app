@@ -132,12 +132,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .primaryVariant
                     .withOpacity(0.5))),
         textFormField(
+            isStateFailure: true,
             controller: nameController,
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
               nameController.text = nameController.text;
               onChange = true;
             }),
+        Utility.textWidget(
+            text: ' some message',
+            context: context,
+            textTheme: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Colors.red)),
         SpacerWidget(_KVertcalSpace / 2),
         Utility.textWidget(
             text: 'Student ID',
@@ -148,12 +156,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .primaryVariant
                     .withOpacity(0.5))),
         textFormField(
+            isStateFailure: true,
             controller: idController,
             keyboardType: TextInputType.number,
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
               onChange = true;
             }),
+        Utility.textWidget(
+            text: ' some message',
+            context: context,
+            textTheme: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: Colors.red)),
         SpacerWidget(_KVertcalSpace / 2),
         Center(
           child: Utility.textWidget(
@@ -190,6 +206,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .primaryVariant
                     .withOpacity(0.3))),
         textFormField(
+            isStateFailure: false,
             controller: nameController,
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
@@ -205,6 +222,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .primaryVariant
                     .withOpacity(0.5))),
         textFormField(
+            isStateFailure: false,
             controller: idController,
             keyboardType: TextInputType.number,
             onSaved: (String value) {
@@ -336,7 +354,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget textFormField(
       {required TextEditingController controller,
       required onSaved,
-      TextInputType? keyboardType}) {
+      TextInputType? keyboardType,
+      required bool? isStateFailure}) {
     return TextFormField(
       keyboardType: keyboardType ?? null,
       textAlign: TextAlign.start,
@@ -351,19 +370,24 @@ class _SuccessScreenState extends State<SuccessScreen> {
         fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+            color: isStateFailure!
+                ? Colors.red
+                : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
           ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-              // color:AppTheme.kButtonColor,
-              ),
+            color: isStateFailure
+                ? Colors.red
+                : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+            // color:AppTheme.kButtonColor,
+          ),
         ),
         border: UnderlineInputBorder(
           borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+            color: isStateFailure
+                ? Colors.red
+                : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
           ),
         ),
       ),
