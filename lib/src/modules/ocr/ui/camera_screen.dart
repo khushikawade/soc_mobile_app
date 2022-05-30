@@ -95,7 +95,14 @@ class _CameraScreenState extends State<CameraScreen>
           actions: [
             Container(
                 padding: EdgeInsets.only(right: 5),
-                child: IconButton(
+                child: TextButton(
+                  style: ButtonStyle(alignment: Alignment.center),
+                  child: Text("DONE",
+                      style: TextStyle(
+                        color: AppTheme.kButtonColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      )),
                   onPressed: () {
                     Globals.studentInfo!.length > 0
                         ? Navigator.pushReplacement(
@@ -109,13 +116,13 @@ class _CameraScreenState extends State<CameraScreen>
                             context,
                             null);
                   },
-                  icon: Icon(
-                    IconData(0xe877,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kButtonColor,
-                    size: 30,
-                  ),
+                  // icon: Icon(
+                  //   IconData(0xe877,
+                  //       fontFamily: Overrides.kFontFam,
+                  //       fontPackage: Overrides.kFontPkg),
+                  //   color: AppTheme.kButtonColor,
+                  //   size: 30,
+                  // ),
                 )),
           ],
           backgroundColor: Colors.black,
@@ -193,10 +200,8 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Instantiating the camera controller
     final CameraController cameraController = CameraController(
-      cameraDescription,
-      ResolutionPreset.high,
-      imageFormatGroup: ImageFormatGroup.jpeg,
-    );
+        cameraDescription, ResolutionPreset.high,
+        imageFormatGroup: ImageFormatGroup.jpeg, enableAudio: false);
 
     // Dispose the previous controller
     await previousCameraController?.dispose();

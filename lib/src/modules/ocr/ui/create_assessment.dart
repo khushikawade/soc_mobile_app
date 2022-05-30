@@ -28,6 +28,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   //int scoringColor = 0;
   @override
   void initState() {
+    Globals.fileId = '';
     super.initState();
   }
 
@@ -275,8 +276,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
           Globals.assessmentName =
               "${assessmentController.text}_${classController.text}";
           print(Globals.assessmentName);
-          _googleDriveBloc.add(CreateExcelSheetToDrive(
-              name: "${assessmentController.text}_${classController.text}"));
+          Globals.fileId != ""
+              ? _googleDriveBloc.add(CreateExcelSheetToDrive(
+                  name: "${assessmentController.text}_${classController.text}"))
+              : print("file is already exists on drive ");
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -284,8 +287,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     // SuccessScreen()
                     SubjectSelection(
                       selectedClass: selectedClassIndex.toString(),
-                    )
-                    ),
+                    )),
           );
         },
         label: Row(

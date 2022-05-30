@@ -10,6 +10,7 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share/share.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 
 class AssessmentSummary extends StatefulWidget {
@@ -39,6 +40,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             key: GlobalKey(),
             isBackButton: true,
             assessmentDetailPage: true,
+            assessmentPage: true,
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +157,19 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             //       return Text(translatedMessage.toString(),
             //           style: Theme.of(context).textTheme.bodyText1!);
             //     }),
-            trailing: Icon(Icons.arrow_forward_ios)),
+            trailing: InkWell(
+              onTap: () {
+                list[index].webContentLink != null &&
+                        list[index].webContentLink != ''
+                    ? Share.share(list[index].webContentLink!)
+                    : print("no web link $index");
+              },
+              child: Icon(
+                IconData(Globals.ocrResultIcons[0],
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+              ),
+            )),
       ),
     );
   }

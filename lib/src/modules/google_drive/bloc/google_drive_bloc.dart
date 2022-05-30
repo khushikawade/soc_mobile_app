@@ -55,9 +55,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           print('Authentication required');
           bool result =
-              await _torefreshAuthenticationToken(event.refreshtoken!);
+              await _toRefreshAuthenticationToken(event.refreshtoken!);
           if (!result) {
-            await _torefreshAuthenticationToken(event.refreshtoken!);
+            await _toRefreshAuthenticationToken(event.refreshtoken!);
           }
         }
       } catch (e) {
@@ -126,7 +126,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             LocalDatabase("HistoryAssessment");
 
         List<HistoryAssessment>? _localData = await _localDb.getData();
-
+        _localData.clear();
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
         }
@@ -350,6 +350,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       if (response.statusCode == 200) {
         print("assessment list is received ");
+        print(response.data);
         List<HistoryAssessment> _list = response.data['items']
             .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
             .toList();
@@ -449,7 +450,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<bool> _torefreshAuthenticationToken(String refreshToken) async {
+  Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
     try {
       final body = {"refreshToken": refreshToken};
       final ResponseModel response = await _dbServices.postapi(

@@ -8,12 +8,14 @@ import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +44,7 @@ class _OpticalCharacterRecognitionPageState
   final OcrBloc _bloc = new OcrBloc();
   File? myImagePath;
   String pathOfImage = '';
+  static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
 
   @override
   void initState() {
@@ -85,13 +88,39 @@ class _OpticalCharacterRecognitionPageState
                     SpacerWidget(_KVertcalSpace / 4),
                     smallButton(),
                     SpacerWidget(_KVertcalSpace / 2),
-                    Utility.textWidget(
-                        text: 'Scoring Rubric',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Utility.textWidget(
+                            text: 'Scoring Rubric',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(fontWeight: FontWeight.bold)),
+                        SpacerWidget(5),
+                        IconButton(
+                          onPressed: () async {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        OcrPdfViewer(
+                                          url:
+                                              "https://solved-schools.s3.us-east-2.amazonaws.com/graded_doc/NYS+Rubric+3-8+ELA+MATH.pdf",
+                                          tittle: "information",
+                                          isbuttomsheet: true,
+                                          language: Globals.selectedLanguage,
+                                        )));
+                          },
+                          icon: Icon(
+                            info,
+                            color: Colors.grey.shade400,
+                          ),
+                        )
+                      ],
+                    ),
                     SpacerWidget(_KVertcalSpace / 4),
                     scoringRubric(),
                     Container(
