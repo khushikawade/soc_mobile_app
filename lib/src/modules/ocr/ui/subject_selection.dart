@@ -227,7 +227,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       bloc: _ocrBloc,
                       listener: (context, state) {
                         if (state is SubjectDataSuccess) {
-                          
                           setState(() {
                             indexGlobal = 0;
                           });
@@ -252,8 +251,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       ),
     );
   }
-
-
 
   Widget loadingPage() {
     return Container(

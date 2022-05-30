@@ -97,6 +97,7 @@ class HiveDbServices {
       throw (e);
     }
   }
+
   Future getSingleData(String tableName, key) async {
     try {
       final hiveBox = await Hive.openBox(tableName);

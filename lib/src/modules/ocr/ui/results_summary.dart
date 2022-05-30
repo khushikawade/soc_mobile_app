@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
+import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -25,14 +26,30 @@ class ResultsSummary extends StatefulWidget {
 class _ResultsSummaryState extends State<ResultsSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+  int assessmentCount = 0;
+  ScrollController _scrollController = new ScrollController();
+  final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     if (widget.assessmentDetailPage!) {
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
+    } else {
+      assessmentCount = Globals.studentInfo!.length;
     }
-
+    _scrollController.addListener(_scrollListener);
     super.initState();
+  }
+
+  _scrollListener() async {
+    bool isTop = _scrollController.position.pixels < 150;
+    if (isTop) {
+      if (isScrolling.value == false) return;
+      isScrolling.value = false;
+    } else {
+      if (isScrolling.value == true) return;
+      isScrolling.value = true;
+    }
   }
 
   @override
@@ -104,34 +121,56 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   //     )),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Utility.textWidget(
-                        text: 'Results Summary',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Utility.textWidget(
+                            text: 'Results Summary',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(fontWeight: FontWeight.bold)),
+                        Text(
+                            "${assessmentCount > 1 ? assessmentCount - 1 : assessmentCount}",
+                            style: Theme.of(context).textTheme.displayMedium),
+                      ],
+                    ),
                   ),
                   SpacerWidget(_KVertcalSpace / 3),
                   !widget.assessmentDetailPage!
                       ? listView(
                           Globals.studentInfo!,
                         )
-                      : BlocBuilder(
+                      : BlocConsumer(
                           bloc: _driveBloc,
                           builder:
                               (BuildContext contxt, GoogleDriveState state) {
                             if (state is AssessmentDetailSuccess) {
-                              return state.obj.length > 0
-                                  ? listView(
-                                      state.obj,
-                                    )
-                                  : Expanded(
-                                      child: NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: true,
-                                          isNews: false,
-                                          isEvents: false),
-                                    );
+                              if (state.obj.length > 1) {
+                                return listView(
+                                  state.obj,
+                                );
+                              } else {
+                                return Expanded(
+                                  child: NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: true,
+                                      isNews: false,
+                                      isEvents: false),
+                                );
+                              }
+                              // return
+
+                              // state.obj.length > 1
+                              //     ? listView(
+                              //         state.obj,
+                              //       )
+                              //     : Expanded(
+                              //         child: NoDataFoundErrorWidget(
+                              //             isResultNotFoundMsg: true,
+                              //             isNews: false,
+                              //             isEvents: false),
+                              //       );
                             }
                             //  else if (state is GoogleNoAssessment) {
                             //   return Container(
@@ -153,46 +192,66 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     .primaryVariant,
                               )),
                             );
-                          })
+                          },
+                          listener:
+                              (BuildContext contxt, GoogleDriveState state) {
+                            if (state is AssessmentDetailSuccess) {
+                              if (state.obj.length > 1) {
+                                setState(() {
+                                  assessmentCount = state.obj.length;
+                                });
+                              }
+                            }
+                          },
+                        )
                 ],
               ),
             ),
-            floatingActionButton: !widget.assessmentDetailPage!
-                ? Container(
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        boxShadow: [
-                          new BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, 0.1),
-                            blurRadius: 20.0,
-                          ),
-                        ],
-                        borderRadius: BorderRadius.circular(4)),
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    height: MediaQuery.of(context).orientation ==
-                            Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.086
-                        : MediaQuery.of(context).size.width * 0.086,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    //  color: Colors.blue,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: Globals.ocrResultIcons
-                          .map<Widget>((element) => _iconButton(
-                              Globals.ocrResultIcons.indexOf(element)))
-                          .toList(),
+            floatingActionButton: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                !widget.assessmentDetailPage!
+                    ? _scanFloatingWidget()
+                    : Container(),
+                SpacerWidget(10),
+                !widget.assessmentDetailPage!
+                    ? Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).backgroundColor,
+                            boxShadow: [
+                              new BoxShadow(
+                                color: Color.fromRGBO(0, 0, 0, 0.1),
+                                blurRadius: 20.0,
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(4)),
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        height: MediaQuery.of(context).orientation ==
+                                Orientation.portrait
+                            ? MediaQuery.of(context).size.height * 0.086
+                            : MediaQuery.of(context).size.width * 0.086,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        //  color: Colors.blue,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: Globals.ocrResultIcons
+                              .map<Widget>((element) => _iconButton(
+                                  Globals.ocrResultIcons.indexOf(element)))
+                              .toList(),
 
-                      // [
-                      //   Icon(Icons.star_border),
-                      //   Icon(Icons.star_border),
-                      //   Icon(Icons.star_border),
-                      //   Icon(Icons.star_border),
-                      // ],
-                    ))
-                : Container(),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
+                          // [
+                          //   Icon(Icons.star_border),
+                          //   Icon(Icons.star_border),
+                          //   Icon(Icons.star_border),
+                          //   Icon(Icons.star_border),
+                          // ],
+                        ))
+                    : Container(),
+              ],
+            ),
+            // floatingActionButtonLocation:
+            //     FloatingActionButtonLocation.centerFloat,
           ),
         ],
       ),
@@ -201,10 +260,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   Widget _iconButton(int index) {
     return Column(
+      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
-          padding: index == 1 ? null : EdgeInsets.only(top: 16),
+          padding: EdgeInsets.only(top: 16),
           child: Utility.textWidget(
               text: Globals.ocrResultIconsName[index],
               context: context,
@@ -214,18 +274,21 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   .copyWith(fontWeight: FontWeight.bold)),
         ),
         index == 1
-            ? GestureDetector(
+            ? InkWell(
                 onTap: () {
                   print(
                       'Google drive folder path : ${Globals.googleDriveFolderPath}');
                   Utility.launchUrlOnExternalBrowser(
                       Globals.googleDriveFolderPath!);
                 },
-                child: Image(
-                  width: Globals.deviceType == "phone" ? 34 : 32,
-                  height: Globals.deviceType == "phone" ? 34 : 32,
-                  image: AssetImage(
-                    "assets/images/drive_ico.png",
+                child: Container(
+                  margin: EdgeInsets.only(top: 5.0),
+                  child: Image(
+                    width: Globals.deviceType == "phone" ? 34 : 32,
+                    height: Globals.deviceType == "phone" ? 34 : 32,
+                    image: AssetImage(
+                      "assets/images/drive_ico.png",
+                    ),
                   ),
                 ),
               )
@@ -267,6 +330,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           ? MediaQuery.of(context).size.height * 0.72
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
+        controller: _scrollController,
         shrinkWrap: true,
         padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
@@ -315,5 +379,36 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     .copyWith(fontWeight: FontWeight.bold)),
       ),
     );
+  }
+
+  Widget _scanFloatingWidget() {
+    return ValueListenableBuilder<bool>(
+        valueListenable: isScrolling,
+        child: Container(),
+        builder: (BuildContext context, bool value, Widget? child) {
+          return Container(
+            width: isScrolling.value ? null : 200,
+            child: FloatingActionButton.extended(
+                isExtended: !isScrolling.value,
+                backgroundColor: AppTheme.kButtonColor,
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CameraScreen()));
+                },
+                icon: Icon(
+                    IconData(0xe875,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: Theme.of(context).backgroundColor,
+                    size: 16),
+                label: Utility.textWidget(
+                    text: 'Scan More',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: Theme.of(context).backgroundColor))),
+          );
+        });
   }
 }

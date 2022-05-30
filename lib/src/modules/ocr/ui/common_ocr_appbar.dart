@@ -25,7 +25,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isFailureState,
       this.isResultScreen,
       this.isHomeButtonPopup,
-      this.assessmentDetailPage})
+      this.assessmentDetailPage,
+      this.assessmentPage})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isFailureState;
@@ -34,6 +35,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? isResultScreen;
   bool? isHomeButtonPopup;
   bool? assessmentDetailPage;
+  bool? assessmentPage;
 
   @override
   final Size preferredSize;
@@ -45,12 +47,6 @@ class CustomOcrAppBarWidget extends StatefulWidget
 class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   double lineProgress = 0.0;
   SharePopUp shareobj = new SharePopUp();
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   _getUserProfile();
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -101,34 +97,55 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   )
                 : null,
         actions: [
-          widget.assessmentDetailPage == null
-              ? Container(
-                  padding: widget.isFailureState != true
-                      ? EdgeInsets.only(right: 10)
-                      : EdgeInsets.zero,
-                  child: IconButton(
-                    onPressed: () {
-                      if (widget.isHomeButtonPopup == true) {
-                        _onHomePressed();
-                      } else {
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                            (_) => false);
-                      }
-
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(builder: (context) => HomePage()),
-                      // );
-                    },
-                    icon: Icon(
-                      IconData(0xe874,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      color: AppTheme.kButtonColor,
-                      size: 30,
+          widget.assessmentPage == true
+              ? GestureDetector(
+                  onTap: () {
+                    print(
+                        'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                    Utility.launchUrlOnExternalBrowser(
+                        Globals.googleDriveFolderPath!);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Image(
+                      alignment: Alignment.center,
+                      width: Globals.deviceType == "phone" ? 34 : 32,
+                      height: Globals.deviceType == "phone" ? 34 : 32,
+                      image: AssetImage(
+                        "assets/images/drive_ico.png",
+                      ),
                     ),
-                  ))
-              : Container(),
+                  ),
+                )
+              : widget.assessmentDetailPage == null
+                  ? Container(
+                      padding: widget.isFailureState != true
+                          ? EdgeInsets.only(right: 10)
+                          : EdgeInsets.zero,
+                      child: IconButton(
+                        onPressed: () {
+                          if (widget.isHomeButtonPopup == true) {
+                            _onHomePressed();
+                          } else {
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage()),
+                                (_) => false);
+                          }
+
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(builder: (context) => HomePage()),
+                          // );
+                        },
+                        icon: Icon(
+                          IconData(0xe874,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: AppTheme.kButtonColor,
+                          size: 30,
+                        ),
+                      ))
+                  : Container(),
           widget.assessmentDetailPage == true
               ? Container()
               : widget.isFailureState == true || widget.isResultScreen == true
@@ -388,10 +405,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         barrierDismissible: true,
         context: context,
         builder: (context) {
-          RenderBox renderBox = (widget.key as GlobalKey)
-              .currentContext
-              ?.findAncestorRenderObjectOfType() as RenderBox;
-          Offset position = renderBox.localToGlobal(Offset.zero);
+          // RenderBox renderBox = (widget.key as GlobalKey)
+          //     .currentContext
+          //     .findAncestorRenderObjectOfType() as RenderBox;
+          // Offset position = renderBox.localToGlobal(Offset.zero);
           return Material(
             type: MaterialType.transparency,
             child: Stack(
@@ -414,7 +431,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                           horizontal: MediaQuery.of(context).size.height / 60,
                           vertical: MediaQuery.of(context).size.height / 60),
                       margin: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width / 2.5),
+                          left: MediaQuery.of(context).size.width / 1.9),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(24),
@@ -424,30 +441,57 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                 blurRadius: 8)
                           ]),
                       child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            ListTile(
-                              // horizontalTitleGap: 20,
-                              title: Text(
-                                userInformation.userName!.replaceAll("%20", " "),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline3!
-                                    .copyWith(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: Text(userInformation.userEmail!,
-                                    style:
-                                        Theme.of(context).textTheme.subtitle2!),
-                              ),
-                            ),
-                            SpacerWidget(10),
-                            Center(
-                              child: IconButton(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor:
+                                AppTheme.kButtonColor.withOpacity(0.4),
+                            radius: 28.0,
+                            child: ClipOval(
+                                child: CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    height: 50,
+                                    width: 50,
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                    imageUrl: userInformation.profilePicture!,
+                                    placeholder: (context, url) => Center(
+                                          child: CupertinoActivityIndicator(),
+                                        ))),
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Text(
+                            userInformation.userName!.replaceAll("%20", " "),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline3!
+                                .copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                          ),
+                          SpacerWidget(
+                            3.0,
+                          ),
+                          Text(userInformation.userEmail!,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(color: Colors.grey.shade500)),
+                          SpacerWidget(3.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text("Sign Out",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(
+                                          color: Colors.grey.shade500,
+                                          fontWeight: FontWeight.bold)),
+                              IconButton(
                                 onPressed: () {
                                   UserGoogleProfile.clearUserProfile();
                                   Navigator.of(context).pushAndRemoveUntil(
@@ -461,8 +505,52 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   color: AppTheme.kButtonColor,
                                 ),
                               ),
-                            ),
-                          ])),
+                            ],
+                          ),
+                        ],
+                      )
+
+                      //  Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     mainAxisAlignment: MainAxisAlignment.start,
+                      //     children: [
+                      //       ListTile(
+                      //         // horizontalTitleGap: 20,
+                      //         title: Text(
+                      //           userInformation.userName!,
+                      //           style: Theme.of(context)
+                      //               .textTheme
+                      //               .headline3!
+                      //               .copyWith(
+                      //                   color: Colors.black,
+                      //                   fontWeight: FontWeight.bold),
+                      //         ),
+                      //         subtitle: Padding(
+                      //           padding: const EdgeInsets.only(top: 5.0),
+                      //           child: Text(userInformation.userEmail!,
+                      //               style:
+                      //                   Theme.of(context).textTheme.subtitle2!),
+                      //         ),
+                      //       ),
+                      //       SpacerWidget(10),
+                      //       Center(
+                      //         child: IconButton(
+                      //           onPressed: () {
+                      //             Navigator.of(context).pushAndRemoveUntil(
+                      //                 MaterialPageRoute(
+                      //                     builder: (context) => HomePage()),
+                      //                 (_) => false);
+                      //           },
+                      //           icon: Icon(
+                      //             Icons.logout,
+                      //             size: 26,
+                      //             color: AppTheme.kButtonColor,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ])
+
+                      ),
                 ),
               ],
             ),
