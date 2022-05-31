@@ -33,10 +33,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             base64: event.base64, pointPossible: event.pointPossible);
         if (data[0] != '' && data[1] != '' && data[2] != '') {
           yield FetchTextFromImageSuccess(
-              studentId: data[1], grade: data[0], studentName: data[2]);
+              studentId: data[1],
+              grade: data[0].toString().length == 1 ? data[0] : '2',
+              studentName: data[2]);
         } else {
           yield FetchTextFromImageFailure(
-              studentId: data[1], grade: data[0], studentName: data[2]);
+              studentId: data[1],
+              grade: data[0].toString().length == 1 ? data[0] : '2',
+              studentName: data[2]);
         }
       } catch (e) {
         yield FetchTextFromImageFailure(
