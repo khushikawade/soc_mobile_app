@@ -13,12 +13,19 @@ class OcrLoading extends OcrState {}
 class SearchLoading extends OcrState {}
 
 class FetchTextFromImageSuccess extends OcrState {
-  final String? schoolId;
+  final String? studentId;
   final String? grade;
-  FetchTextFromImageSuccess({required this.schoolId, required this.grade});
-  FetchTextFromImageSuccess copyWith({final schoolId}) {
+  final String? studentName;
+  FetchTextFromImageSuccess(
+      {required this.studentId,
+      required this.grade,
+      required this.studentName});
+  FetchTextFromImageSuccess copyWith(
+      {final studentId, final grade, final studentName}) {
     return FetchTextFromImageSuccess(
-        schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
+        studentId: studentId ?? this.studentId,
+        grade: grade ?? this.grade,
+        studentName: studentName ?? this.studentName);
   }
 
   @override
@@ -111,15 +118,19 @@ class NycSubDataSuccess extends OcrState {
 }
 
 class FetchTextFromImageFailure extends OcrState {
-  final String? schoolId;
-
+  final String? studentId;
+  final String? studentName;
   final String? grade;
 
-  FetchTextFromImageFailure({required this.schoolId, required this.grade});
+  FetchTextFromImageFailure(
+      {required this.studentId, required this.grade, required this.studentName});
 
-  FetchTextFromImageFailure copyWith({final schoolId}) {
+  FetchTextFromImageFailure copyWith(
+      {final studentId, final grade, final studentName}) {
     return FetchTextFromImageFailure(
-        schoolId: schoolId ?? this.schoolId, grade: grade ?? this.grade);
+        studentId: studentId ?? this.studentId,
+        grade: grade ?? this.grade,
+        studentName: studentName ?? this.studentName);
   }
 
   @override
