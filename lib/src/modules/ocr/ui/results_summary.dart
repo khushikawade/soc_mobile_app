@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
@@ -9,6 +10,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,6 +67,19 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               key: GlobalKey(),
               isBackButton: true,
               assessmentDetailPage: widget.assessmentDetailPage,
+              actionIcon: IconButton(
+                onPressed: () {
+                  onFinishedPopup();
+                },
+                icon: Icon(
+                  IconData(0xe877,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: 30,
+                  color: AppTheme.kButtonColor,
+                ),
+              ),
+              //isBackButton: false,
               isResultScreen: true,
             ),
 
@@ -133,7 +148,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .copyWith(fontWeight: FontWeight.bold)),
                         Text(
                             "${assessmentCount > 1 ? assessmentCount - 1 : assessmentCount}",
-                            style: Theme.of(context).textTheme.displayMedium),
+                            style: Theme.of(context).textTheme.headline3),
                       ],
                     ),
                   ),
@@ -410,5 +425,89 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         .copyWith(color: Theme.of(context).backgroundColor))),
           );
         });
+  }
+
+  onFinishedPopup() {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Container(
+                    padding: Globals.deviceType == 'phone'
+                        ? null
+                        : const EdgeInsets.only(top: 10.0),
+                    height: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                    width: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Utility.textWidget(
+                            text: 'Finished!',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black)),
+                        SizedBox(width: 10),
+                        Icon(
+                          IconData(0xe878,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          size: 30,
+                          color: AppTheme.kButtonColor,
+                        ),
+                      ],
+                    )),
+                actions: [
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Center(
+                    child: Container(
+                      // height: 20,
+                      child: TextButton(
+                        child: TranslationWidget(
+                            message: "Done ",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppTheme.kButtonColor,
+                                      ));
+                            }),
+                        onPressed: () {
+                          //Globals.iscameraPopup = false;
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()),
+                              (_) => false);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                elevation: 16,
+              );
+            }));
   }
 }

@@ -14,6 +14,9 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
+  final String? pointPossible;
+
+  const CameraScreen({Key? key, this.pointPossible}) : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
@@ -178,6 +181,7 @@ class _CameraScreenState extends State<CameraScreen>
                                     builder: (context) => SuccessScreen(
                                           img64: img64,
                                           imgPath: imageFile,
+                                          pointPossible: widget.pointPossible,
                                         )),
                               );
                             },

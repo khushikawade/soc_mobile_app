@@ -413,6 +413,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           nycSubIndex = index;
                         });
                       }
+                      if (index > list.length &&
+                          index != list.length + userAddedSubjectList.length) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ResultsSummary(assessmentDetailPage: false,)),
+                        );
+                      }
                     },
                     child: Container(
                       child: AnimatedContainer(
@@ -743,7 +751,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       {required String subjectName, required String classNo}) async {
     LocalDatabase<String> _localDb = LocalDatabase('Subject_list$classNo');
     List<String>? _localData = await _localDb.getData();
-    _localData.add(subjectName);
+    if (!_localData.contains(subjectName) && subjectName != '') {
+      _localData.add(subjectName);
+    }
+
     // setState(() {
     //   userAddedSubjectList = _localData;
     // });
