@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -61,13 +62,7 @@ class Globals {
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
   static List pointsList = [1, 2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
-  static List scoringList = [
-    'NYC 0-2',
-    'Custom',
-    'NYC 0-3',
-    'None',
-    'NYC 0-4',
-  ];
+
   static List subjectDetailsList = [
     'NY-3.OA.1 Interpret Products of whole numbers',
     'NY-3.OA.2  Interpret whole-number quotients of whole numbers.',
@@ -129,6 +124,16 @@ class Globals {
   static String? shareableLink;
   static String? pointpossible = '2';
   static String? assessmentName;
+
+  static List<CustomRubicModal> scoringList = [
+    CustomRubicModal(name: "NYC", score: '0-2', img: ""),
+    CustomRubicModal(name: "Custom", score: '0-2', img: ""),
+    CustomRubicModal(name: "NYC", score: '0-3', img: ""),
+    CustomRubicModal(name: "None", score: '', img: ""),
+    CustomRubicModal(name: "NYC", score: '0-4', img: ""),
+  ];
+
+  // static late List<CustomRubicModal>? customRubicDetail = [];
   // static LocalDatabase<UserInformation> localUserInfo = LocalDatabase('user_profile');
   // static List<UserInformation> userprofilelocalData = [];
 }
