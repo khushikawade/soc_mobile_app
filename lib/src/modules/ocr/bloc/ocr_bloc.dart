@@ -158,16 +158,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     try {
       final ResponseModel response = await _dbServices.getapi(
           Uri.encodeFull(
-            "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
-          ),
-          //  'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
-          isGoogleApi: false);
+          //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
+          // ),
+           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
+          isGoogleApi: true);
 
       if (response.statusCode == 200) {
         List<SubjectDetailList> _list = response.data['body']
             .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
             .toList();
-        print(_list);
+        //print(_list);
         LocalDatabase<SubjectDetailList> _localDb =
             LocalDatabase(Strings.ocrSubjectObjectName);
         await _localDb.clear();
@@ -267,7 +267,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        Uri.encodeFull('http://3.142.181.122:5050/ocr_new'),
+        Uri.encodeFull('http://3.142.181.122:5050/ocr'),
         //'http://3.142.181.122:5050/ocr'), //https://1fb3-111-118-246-106.in.ngrok.io
         // Uri.encodeFull('https://1fb3-111-118-246-106.in.ngrok.io'),
         body: {
