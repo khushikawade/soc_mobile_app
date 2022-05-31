@@ -30,7 +30,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final idController = TextEditingController();
   static const double _KVertcalSpace = 60.0;
   OcrBloc _bloc = OcrBloc();
-  bool failure = false;
+  bool? successState = true;
   int? indexColor;
   bool isSelected = true;
   bool onChange = false;
@@ -44,6 +44,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(successState);
     return WillPopScope(
       onWillPop: () async => false,
       child: Stack(children: [
@@ -53,7 +54,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             appBar: CustomOcrAppBarWidget(
               key: GlobalKey(),
               isBackButton: false,
-              isFailureState: failure,
+              isSuccessState: successState,
               isHomeButtonPopup: true,
             ),
             body: Container(
@@ -87,7 +88,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       pointScored = state.grade;
                       updateDetails();
                       setState(() {
-                        failure = true;
+                        successState = false;
                       });
                     }
                     // do stuff here based on BlocA's state
@@ -127,49 +128,61 @@ class _SuccessScreenState extends State<SuccessScreen> {
             text: 'Student Name',
             context: context,
             textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryVariant
-                    .withOpacity(0.5))),
+                color: nameController.text.isEmpty
+                    ? Colors.red
+                    : Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
         textFormField(
-            isStateFailure: true,
+            isStateFailure: nameController.text.isEmpty ? true : false,
             controller: nameController,
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
               nameController.text = nameController.text;
               onChange = true;
             }),
-        Utility.textWidget(
-            text: ' some message',
-            context: context,
-            textTheme: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Colors.red)),
+        if (nameController.text.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Utility.textWidget(
+                text: ' some message',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: Colors.red)),
+          ),
         SpacerWidget(_KVertcalSpace / 2),
         Utility.textWidget(
             text: 'Student ID',
             context: context,
             textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryVariant
-                    .withOpacity(0.5))),
+                color: idController.text.isEmpty
+                    ? Colors.red
+                    : Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
         textFormField(
-            isStateFailure: true,
+            isStateFailure: idController.text.isEmpty ? true : false,
             controller: idController,
             keyboardType: TextInputType.number,
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
               onChange = true;
             }),
-        Utility.textWidget(
-            text: ' some message',
-            context: context,
-            textTheme: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Colors.red)),
+        if (idController.text.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Utility.textWidget(
+                text: ' some message',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: Colors.red)),
+          ),
         SpacerWidget(_KVertcalSpace / 2),
         Center(
           child: Utility.textWidget(

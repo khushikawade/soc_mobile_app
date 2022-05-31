@@ -22,14 +22,14 @@ class CustomOcrAppBarWidget extends StatefulWidget
       {required Key? key,
       required this.isBackButton,
       this.isTitle,
-      this.isFailureState,
+      this.isSuccessState,
       this.isResultScreen,
       this.isHomeButtonPopup,
       this.assessmentDetailPage,
       this.assessmentPage})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
-  bool? isFailureState;
+  bool? isSuccessState;
   bool? isBackButton;
   bool? isTitle;
   bool? isResultScreen;
@@ -54,9 +54,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leadingWidth: widget.isFailureState == true ? 200 : null,
+        leadingWidth: widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
-        leading: widget.isFailureState == true
+        leading: widget.isSuccessState == false
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -120,7 +120,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 )
               : widget.assessmentDetailPage == null
                   ? Container(
-                      padding: widget.isFailureState != true
+                      padding: widget.isSuccessState != false
                           ? EdgeInsets.only(right: 10)
                           : EdgeInsets.zero,
                       child: IconButton(
@@ -149,14 +149,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   : Container(),
           widget.assessmentDetailPage == true
               ? Container()
-              : widget.isFailureState == true || widget.isResultScreen == true
+              : widget.isSuccessState == false || widget.isResultScreen == true
                   ? Container(
-                      padding: widget.isFailureState != true
+                      padding: widget.isSuccessState != false
                           ? EdgeInsets.only(right: 10)
                           : EdgeInsets.zero,
                       child: IconButton(
                         onPressed: () {
-                          if (widget.isFailureState == true) {
+                          if (widget.isSuccessState == false) {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -177,7 +177,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   : Container(),
           Container(
             margin: EdgeInsets.all(10),
-            padding: widget.isFailureState != true
+            padding: widget.isSuccessState != false
                 ? EdgeInsets.only(right: 10, top: 5)
                 : EdgeInsets.zero,
             child: FutureBuilder(
