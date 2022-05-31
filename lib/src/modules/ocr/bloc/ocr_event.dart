@@ -24,7 +24,15 @@ class FatchSubjectDetails extends OcrEvent {
   FatchSubjectDetails({required this.type, required this.keyword});
 
   @override
-  List<Object> get props => [type!];
+  List<Object> get props => [type!,keyword!];
+}
+class SaveStudentDetails extends OcrEvent{
+  final String studentName;
+  final String studentId;
+  SaveStudentDetails({required this.studentName, required this.studentId});
+
+  @override
+  List<Object> get props => [studentName,studentId];
 }
 
 class SearchSubjectDetails extends OcrEvent {
@@ -45,12 +53,14 @@ class SaveSubjectListDetails extends OcrEvent {
 
 class FetchTextFromImage extends OcrEvent {
   final String base64;
+  final String pointPossible;
   FetchTextFromImage({
     required this.base64,
+    required this.pointPossible
   });
 
   @override
-  List<Object> get props => [base64];
+  List<Object> get props => [base64,pointPossible];
 
   @override
   String toString() => 'GlobalSearchEvent { keyword: $base64}';

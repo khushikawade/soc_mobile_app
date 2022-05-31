@@ -17,7 +17,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isTitle,
       this.isFailureState,
       this.isResultScreen,
-      this.isHomeButtonPopup})
+      this.isHomeButtonPopup,
+      this.actionIcon})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isFailureState;
@@ -25,6 +26,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? isTitle;
   bool? isResultScreen;
   bool? isHomeButtonPopup;
+  Widget? actionIcon;
 
   @override
   final Size preferredSize;
@@ -116,23 +118,24 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 padding: widget.isFailureState != true
                     ? EdgeInsets.only(right: 10)
                     : EdgeInsets.zero,
-                child: IconButton(
-                  onPressed: () {
-                    if (widget.isFailureState == true) {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => CameraScreen()));
-                    } else if (widget.isResultScreen == true) {
-                      onFinishedPopup();
-                    }
-                  },
-                  icon: Icon(
-                    IconData(0xe877,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    size: 30,
-                    color: AppTheme.kButtonColor,
-                  ),
-                ),
+                child: widget.actionIcon!, 
+                // IconButton(
+                //   onPressed: () {
+                //     if (widget.isFailureState == true) {
+                //       Navigator.push(context,
+                //           MaterialPageRoute(builder: (_) => CameraScreen()));
+                //     } else if (widget.isResultScreen == true) {
+                //       onFinishedPopup();
+                //     }
+                //   },
+                //   icon: Icon(
+                //     IconData(0xe877,
+                //         fontFamily: Overrides.kFontFam,
+                //         fontPackage: Overrides.kFontPkg),
+                //     size: 30,
+                //     color: AppTheme.kButtonColor,
+                //   ),
+                // ),
               )
             : Container()
       ],
@@ -251,99 +254,5 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
             }));
   }
 
-  onFinishedPopup() {
-    return showDialog(
-        context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return AlertDialog(
-                backgroundColor: Colors.white,
-                title: Container(
-                    padding: Globals.deviceType == 'phone'
-                        ? null
-                        : const EdgeInsets.only(top: 10.0),
-                    height: Globals.deviceType == 'phone'
-                        ? null
-                        : orientation == Orientation.portrait
-                            ? MediaQuery.of(context).size.height / 15
-                            : MediaQuery.of(context).size.width / 15,
-                    width: Globals.deviceType == 'phone'
-                        ? null
-                        : orientation == Orientation.portrait
-                            ? MediaQuery.of(context).size.width / 2
-                            : MediaQuery.of(context).size.height / 2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        highlightText(
-                            text: 'Finished!',
-                            theme: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
-                        SizedBox(width: 10),
-                        Icon(
-                          IconData(0xe878,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          size: 30,
-                          color: AppTheme.kButtonColor,
-                        ),
-                      ],
-                    )),
-                // SpacerWidget(_KVertcalSpace / 3),
-                // lineSeparater(),
-
-//           ),
-                //  TranslationWidget(
-                //     message: "you may loss scaned sheet if you exit",
-                //     fromLanguage: "en",
-                //     toLanguage: Globals.selectedLanguage,
-                //     builder: (translatedMessage) {
-                //       return Text(translatedMessage.toString(),
-                //           style: Theme.of(context).textTheme.headline2!);
-                //     }),
-
-                actions: [
-                  Container(
-                    height: 1,
-                    width: MediaQuery.of(context).size.height,
-                    color: Colors.grey.withOpacity(0.2),
-                  ),
-                  Center(
-                    child: Container(
-                      // height: 20,
-                      child: TextButton(
-                        child: TranslationWidget(
-                            message: "Done ",
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) {
-                              return Text(translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5!
-                                      .copyWith(
-                                        color: AppTheme.kButtonColor,
-                                      ));
-                            }),
-                        onPressed: () {
-                          //Globals.iscameraPopup = false;
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()),
-                              (_) => false);
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                elevation: 16,
-              );
-            }));
-  }
+ 
 }

@@ -12,13 +12,19 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SuccessScreen extends StatefulWidget {
-  final String? img64;
-  final File? imgPath;
-  SuccessScreen({Key? key, required this.img64, required this.imgPath})
+  final String img64;
+  final File imgPath;
+  final String? pointPossible;
+  SuccessScreen(
+      {Key? key,
+      required this.img64,
+      required this.imgPath,
+      this.pointPossible})
       : super(key: key);
 
   @override
@@ -26,20 +32,22 @@ class SuccessScreen extends StatefulWidget {
 }
 
 class _SuccessScreenState extends State<SuccessScreen> {
-  final nameController = TextEditingController(text: 'Ben Carney');
-  final idController = TextEditingController();
   static const double _KVertcalSpace = 60.0;
   OcrBloc _bloc = OcrBloc();
   bool failure = false;
   int? indexColor;
   bool isSelected = true;
   bool onChange = false;
+  String studentName = '';
+  String studentId = '';
+  final nameController = TextEditingController();
+  final idController = TextEditingController();
 
   String? pointScored;
   @override
   void initState() {
     super.initState();
-    _bloc.add(FetchTextFromImage(base64: widget.img64!));
+    _bloc.add(FetchTextFromImage(base64: widget.img64,pointPossible: widget.pointPossible ?? '2'));
   }
 
   @override
@@ -54,6 +62,32 @@ class _SuccessScreenState extends State<SuccessScreen> {
               isBackButton: false,
               isFailureState: failure,
               isHomeButtonPopup: true,
+              actionIcon: failure == true
+                  ? IconButton(
+                      onPressed: () {
+                        if (nameController.text != '' &&
+                            idController.text != '') {
+                          _bloc.add(SaveStudentDetails(
+                              studentName: nameController.text,
+                              studentId: idController.text));
+                        }
+                        // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => CameraScreen(
+                                      pointPossible: widget.pointPossible,
+                                    )));
+                      },
+                      icon: Icon(
+                        IconData(0xe877,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        size: 30,
+                        color: AppTheme.kButtonColor,
+                      ),
+                    )
+                  : null,
             ),
             body: Container(
               padding: EdgeInsets.only(left: 20, right: 20),
@@ -61,10 +95,19 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   bloc: _bloc, // provide the local bloc instance
                   listener: (context, state) {
                     if (state is FetchTextFromImageSuccess) {
+                      widget.pointPossible == '2'
+                          ? Globals.pointsEarnedList = [0, 1, 2]
+                          : widget.pointPossible == '3'
+                              ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                              : widget.pointPossible == '4'
+                                  ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                                  : Globals.pointsEarnedList.length = 3;
                       onChange == false
-                          ? idController.text = state.schoolId!
+                          ? idController.text = state.studentId!
                           : null;
                       pointScored = state.grade;
+
+                      nameController.text = state.studentName!;
 
                       Timer(Duration(seconds: 5), () {
                         updateDetails();
@@ -72,7 +115,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CreateAssessment()),
+                              builder: (context) => CameraScreen(pointPossible: widget.pointPossible,)),
                         );
                         //UNCOMMENT below section for enableing the camera
 
@@ -80,8 +123,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         //     MaterialPageRoute(builder: (_) => CameraScreen()));
                       });
                     } else if (state is FetchTextFromImageFailure) {
+                      widget.pointPossible == '2'
+                          ? Globals.pointsEarnedList = [0, 1, 2]
+                          : widget.pointPossible == '3'
+                              ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                              : widget.pointPossible == '4'
+                                  ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                                  : Globals.pointsEarnedList.length = 2;
                       onChange == false
-                          ? idController.text = state.schoolId ?? ''
+                          ? idController.text = state.studentId ?? ''
+                          : state.studentId == ''
+                              ? studentId
+                              : null;
+                      onChange == false
+                          ? nameController.text = state.studentName ?? ''
                           : null;
                       pointScored = state.grade;
                       updateDetails();
@@ -99,15 +154,18 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         ),
                       );
                     } else if (state is FetchTextFromImageSuccess) {
-                      idController.text = state.schoolId!;
+                      idController.text = state.studentId!;
+                      nameController.text = state.studentName!;
                       Globals.gradeList.add(state.grade!);
                       return successScreen(
-                          id: state.schoolId!, grade: state.grade!);
+                          id: state.studentId!, grade: state.grade!);
                     } else if (state is FetchTextFromImageFailure) {
-                      idController.text = state.schoolId!;
+                      // idController.text = state.studentId!;
+                      // nameController.text =
+                      //     onChange == true ? state.studentName! : studentName;
                       Globals.gradeList.add(state.grade!);
                       return failureScreen(
-                          id: state.schoolId!, grade: state.grade!);
+                          id: state.studentId!, grade: state.grade!);
                     }
                     return Container();
                     // return widget here based on BlocA's state
@@ -134,7 +192,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             controller: nameController,
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
-              nameController.text = nameController.text;
+              studentName = nameController.text;
               onChange = true;
             }),
         SpacerWidget(_KVertcalSpace / 2),
@@ -151,6 +209,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             keyboardType: TextInputType.number,
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
+              studentId = idController.text;
               onChange = true;
             }),
         SpacerWidget(_KVertcalSpace / 2),
@@ -262,7 +321,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6.52),
         child: Image.file(
-          widget.imgPath!,
+          widget.imgPath,
           fit: BoxFit.fill,
         ),
       ),
@@ -271,16 +330,29 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   Widget pointsEarnedButton(int grade) {
     return Container(
-      alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.75,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: Globals.pointsEarnedList
-            .map<Widget>((element) =>
-                pointsButton(Globals.pointsEarnedList.indexOf(element), grade))
-            .toList(),
-      ),
-    );
+        alignment: Alignment.center,
+        height: MediaQuery.of(context).size.height*0.1      ,
+        width: MediaQuery.of(context).size.width,
+        child: Globals.pointsEarnedList.length > 4
+            ? ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(child: pointsButton(index, grade));
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(
+                    width: 12,
+                  );
+                },
+                itemCount: Globals.pointsEarnedList.length)
+            : Row(
+                // scrollDirection: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: Globals.pointsEarnedList
+                    .map<Widget>((element) => pointsButton(
+                        Globals.pointsEarnedList.indexOf(element), grade))
+                    .toList(),
+              ));
   }
 
   Widget pointsButton(index, int grade) {
@@ -293,11 +365,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
           setState(() {
             isSelected = false;
             indexColor = index;
+            // nameController.text = studentName;
+            // idController.text = studentId;
+            //.text = studentId;
           });
         },
         child: AnimatedContainer(
           duration: Duration(microseconds: 100),
-          padding: EdgeInsets.only(bottom: 5),
+          padding: EdgeInsets.only(
+            bottom: 5,
+          ),
           decoration: BoxDecoration(
             color: index == indexColor ? AppTheme.kSelectedColor : Colors.grey,
             borderRadius: BorderRadius.all(
@@ -318,7 +395,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               child: TranslationWidget(
-                message: '$index',
+                message: Globals.pointsEarnedList[index].toString(),
                 toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
@@ -337,8 +414,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
       required onSaved,
       TextInputType? keyboardType}) {
     return TextFormField(
-      keyboardType: keyboardType ?? null,
-      textAlign: TextAlign.start,
+      // keyboardType: keyboardType ?? null,
+      //textAlign: TextAlign.start,
       style: Theme.of(context)
           .textTheme
           .headline6!
@@ -375,7 +452,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
       onTap: () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CameraScreen()),
+          MaterialPageRoute(builder: (context) => CameraScreen(
+            pointPossible: widget.pointPossible,
+          )),
         );
       },
       child: Container(

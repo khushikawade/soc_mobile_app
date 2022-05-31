@@ -57,14 +57,14 @@ class Globals {
   static String? themeType;
   static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
-  static List pointsList = [1, 2, 3, 4];
-  static List pointsEarnedList = [0, 1, 2];
+  static List pointsList = [2, 3, 4];
+  static List pointsEarnedList = [0, 1, 2, 3, 4];
   static List scoringList = [
-    'NYC 0-2',
+    'NYS 0-2',
     'Custom',
-    'NYC 0-3',
+    'NYS 0-3',
     'None',
-    'NYC 0-4',
+    'NYS 0-4',
   ];
   static List subjectDetailsList = [
     'NY-3.OA.1 Interpret Products of whole numbers',

@@ -29,14 +29,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is FetchTextFromImage) {
       try {
         yield OcrLoading();
-        List data = await fatchAndProcessDetails(base64: event.base64);
-        if (data[0] != '' && data[1] != '') {
-          yield FetchTextFromImageSuccess(schoolId: data[0], grade: data[1]);
+        List data = await fatchAndProcessDetails(
+            base64: event.base64, pointPossible: event.pointPossible);
+        if (data[0] != '' && data[1] != '' && data[2] != '') {
+          yield FetchTextFromImageSuccess(
+              studentId: data[1], grade: data[0], studentName: data[2]);
         } else {
-          yield FetchTextFromImageFailure(schoolId: data[0], grade: data[1]);
+          yield FetchTextFromImageFailure(
+              studentId: data[1], grade: data[0], studentName: data[2]);
         }
       } catch (e) {
-        yield FetchTextFromImageFailure(schoolId: '', grade: '');
+        yield FetchTextFromImageFailure(
+            studentId: '', grade: '', studentName: '');
         print(e);
       }
     }
@@ -85,6 +89,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             obj: list,
           );
         }
+      } catch (e) {
+        List<SubjectDetailList> list = [];
+        yield SearchSubjectDetailsSuccess(
+          obj: list,
+        );
+      }
+    }
+
+    if (event is SaveStudentDetails) {
+      try {
+        _saveStudentName(
+            studentName: event.studentName, studentId: event.studentId);
       } catch (e) {}
     }
 
@@ -138,8 +154,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     try {
       final ResponseModel response = await _dbServices.getapi(
           Uri.encodeFull(
-              'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
-          isGoogleApi: true);
+            "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
+          ),
+          //  'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
+          isGoogleApi: false);
 
       if (response.statusCode == 200) {
         List<SubjectDetailList> _list = response.data['body']
@@ -241,91 +259,69 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future fatchAndProcessDetails({required String base64}) async {
+  Future fatchAndProcessDetails(
+      {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        Uri.encodeFull('http://3.142.181.122:5050/ocr'),
-        body: {'data': '$base64'},
+        Uri.encodeFull('http://3.142.181.122:5050/ocr_new'),
+        //'http://3.142.181.122:5050/ocr'), //https://1fb3-111-118-246-106.in.ngrok.io
+        // Uri.encodeFull('https://1fb3-111-118-246-106.in.ngrok.io'),
+        body: {
+          'data': '$base64',
+          'account_id': Globals.appSetting.schoolNameC,
+          'point_possible': pointPossible
+        },
         isGoogleApi: true,
       );
 
       if (response.statusCode == 200) {
         // ***********  Process The respoance and collecting OSS ID  ***********
-        List schoolIdNew = [];
-        if (response.data['text']['responses'][0] != null) {
-          List text = response.data['text']['responses'][0]['textAnnotations'];
-          for (var i = 0; i < text.length; i++) {
-            if (text[i]['description'].toString().length == 9 &&
-                text[i]['description'][0] == '2') {
-              bool result = Utility.checkForInt(text[i]['description']);
-              if (result) {
-                schoolIdNew.add(text[i]['description']);
-              }
-            }
-          }
-          if (schoolIdNew.isEmpty) {
-            for (var i = 0; i < text.length - 1; i++) {
-              int sum = 0;
-              String id = '';
-              for (int j = i; j < text.length - (i + 1); j++) {
-                sum = sum + text[j]['description'].toString().length;
-                id = '$id${text[j]['description']}';
-                if (sum == 9 && text[i]['description'].toString()[0] == '2') {
-                  bool result = Utility.checkForInt(id);
-                  if (result) {
-                    schoolIdNew.add(id);
-                  }
-                } else if (sum > 9) {
-                  break;
-                }
-              }
-            }
-          }
-        }
-        // ***********  Process The respoance and collecting Point Scored  ***********
-        List schoolgrade = [];
-        if (response.data['text']['responses'][0] != null &&
-            response.data['coordinate'] != null) {
-          List coordinate = response.data['coordinate'];
-          List text = response.data['text']['responses'][0]['textAnnotations'];
-          for (var i = 0; i < text.length; i++) {
-            for (var j = 0; j < coordinate.length; j++) {
-              int circleX =
-                  Utility.covertStringtoInt(coordinate[j].split(',')[0]);
-              int circleY =
-                  Utility.covertStringtoInt(coordinate[j].split(',')[1]);
-              int radiusR =
-                  Utility.covertStringtoInt(coordinate[j].split(',')[1]);
+        var result = response.data;
 
-              int textx = Utility.covertStringtoInt(
-                  text[i]['boundingPoly']['vertices'][0]['x'].toString());
-              int texty = Utility.covertStringtoInt(
-                  text[i]['boundingPoly']['vertices'][0]['y'].toString());
-
-              if (text[i]['description'].toString().length == 1 &&
-                  textx < circleX + radiusR &&
-                  textx > circleX - radiusR &&
-                  texty < circleY + radiusR &&
-                  texty > circleY - radiusR &&
-                  (text[i]['description'] == '0' ||
-                      text[i]['description'] == '1' ||
-                      text[i]['description'] == '2')) {
-                schoolgrade.add(text[i]['description']);
-              }
-            }
-          }
-        }
-
-        print(schoolgrade);
         return [
-          schoolIdNew.isNotEmpty ? schoolIdNew[0] : '',
-          schoolgrade.isNotEmpty ? schoolgrade[0] : ''
+          result['StudentGrade'] == 'Something Went Wrong'
+              ? '2'
+              : result['StudentGrade'],
+          result['studentId'] == 'Something Went Wrong'
+              ? ''
+              : result['studentId'],
+          result['studentName'],
         ];
       }
     } catch (e) {
       print(
           '------------------------------------error-----------------------------------');
       print(e);
+    }
+  }
+
+  Future<bool> _saveStudentName(
+      {required String studentName, required studentId}) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    };
+    final body = {
+      "DBN__c": "05M194",
+      "First_Name__c": studentName.split(" ")[0],
+      "last_Name__c": studentName.split(" ")[0].length >= 1
+          ? studentName.split(" ")[1]
+          : '',
+      "School__c": Globals.appSetting.schoolNameC,
+      "Student_ID__c": studentId
+    };
+
+    final ResponseModel response = await _dbServices.postapi(
+        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Student__c",
+        isGoogleApi: true,
+        body: body,
+        headers: headers);
+    if (response.statusCode == 200) {
+      print("created");
+
+      return true;
+    } else {
+      return false;
     }
   }
 

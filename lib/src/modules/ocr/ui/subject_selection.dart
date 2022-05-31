@@ -227,7 +227,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       bloc: _ocrBloc,
                       listener: (context, state) {
                         if (state is SubjectDataSuccess) {
-                          
                           setState(() {
                             indexGlobal = 0;
                           });
@@ -252,8 +251,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       ),
     );
   }
-
-
 
   Widget loadingPage() {
     return Container(
@@ -415,6 +412,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         setState(() {
                           nycSubIndex = index;
                         });
+                      }
+                      if (index > list.length &&
+                          index != list.length + userAddedSubjectList.length) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ResultsSummary()),
+                        );
                       }
                     },
                     child: Container(
@@ -743,7 +748,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       {required String subjectName, required String classNo}) async {
     LocalDatabase<String> _localDb = LocalDatabase('Subject_list$classNo');
     List<String>? _localData = await _localDb.getData();
-    _localData.add(subjectName);
+    if (!_localData.contains(subjectName) && subjectName != '') {
+      _localData.add(subjectName);
+    }
+
     // setState(() {
     //   userAddedSubjectList = _localData;
     // });

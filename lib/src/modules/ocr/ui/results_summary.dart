@@ -1,10 +1,12 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -28,6 +30,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              actionIcon: IconButton(
+                onPressed: () {
+                  onFinishedPopup();
+                },
+                icon: Icon(
+                  IconData(0xe877,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: 30,
+                  color: AppTheme.kButtonColor,
+                ),
+              ),
               isBackButton: false,
               isResultScreen: true,
             ),
@@ -100,9 +114,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         ),
         index == 1
             ? Image(
-               width: Globals.deviceType == "phone" ? 34 : 32,
-          height: Globals.deviceType == "phone" ? 34 : 32,
-                image: AssetImage("assets/images/drive_ico.png",),
+                width: Globals.deviceType == "phone" ? 34 : 32,
+                height: Globals.deviceType == "phone" ? 34 : 32,
+                image: AssetImage(
+                  "assets/images/drive_ico.png",
+                ),
               )
             : Expanded(
                 child: IconButton(
@@ -169,7 +185,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       child: ListTile(
         visualDensity: VisualDensity(horizontal: 0, vertical: 0),
         leading: Utility.textWidget(
-            text: Globals.studentInfo![index].studentId ?? 'Unknown',
+            text: Globals.studentInfo![index].studentName ?? 'Unknown',
             context: context,
             textTheme: Theme.of(context).textTheme.headline2!),
         trailing: Utility.textWidget(
@@ -183,5 +199,102 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 .copyWith(fontWeight: FontWeight.bold)),
       ),
     );
+  }
+
+  onFinishedPopup() {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Container(
+                    padding: Globals.deviceType == 'phone'
+                        ? null
+                        : const EdgeInsets.only(top: 10.0),
+                    height: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                    width: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Utility.textWidget(
+                            text: 'Finished!',
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                            context: context),
+                        SizedBox(width: 10),
+                        Icon(
+                          IconData(0xe878,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          size: 30,
+                          color: AppTheme.kButtonColor,
+                        ),
+                      ],
+                    )),
+                // SpacerWidget(_KVertcalSpace / 3),
+                // lineSeparater(),
+
+//           ),
+                //  TranslationWidget(
+                //     message: "you may loss scaned sheet if you exit",
+                //     fromLanguage: "en",
+                //     toLanguage: Globals.selectedLanguage,
+                //     builder: (translatedMessage) {
+                //       return Text(translatedMessage.toString(),
+                //           style: Theme.of(context).textTheme.headline2!);
+                //     }),
+
+                actions: [
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Center(
+                    child: Container(
+                      // height: 20,
+                      child: TextButton(
+                        child: TranslationWidget(
+                            message: "Done ",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppTheme.kButtonColor,
+                                      ));
+                            }),
+                        onPressed: () {
+                          //Globals.iscameraPopup = false;
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()),
+                              (_) => false);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                elevation: 16,
+              );
+            }));
   }
 }
