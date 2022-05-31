@@ -165,13 +165,16 @@ class _OpticalCharacterRecognitionPageState
               //UNCOMMENT
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CameraScreen( pointPossible: scoringColor == 0
-                      ? '2'
-                      : scoringColor == 2
-                          ? '3'
-                          : scoringColor == 4
-                              ? '4'
-                              : '2',)),
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          pointPossible: scoringColor == 0
+                              ? '2'
+                              : scoringColor == 2
+                                  ? '3'
+                                  : scoringColor == 4
+                                      ? '4'
+                                      : '2',
+                        )),
               );
               // Navigator.push(
               //   context,
@@ -215,12 +218,14 @@ class _OpticalCharacterRecognitionPageState
 
   Widget smallButton() {
     return Container(
+      alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width / 70,
+        horizontal: MediaQuery.of(context).size.width / 90,
       ),
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.of(context).size.width * 0.9,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // crossAxisAlignment: CrossAxisAlignment.center,
         children: Globals.pointsList
             .map<Widget>(
                 (element) => pointsButton(Globals.pointsList.indexOf(element)))
@@ -255,7 +260,7 @@ class _OpticalCharacterRecognitionPageState
           ),
           duration: Duration(microseconds: 100),
           child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
               decoration: BoxDecoration(
                 color: Color(0xff000000) != Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)
@@ -275,7 +280,7 @@ class _OpticalCharacterRecognitionPageState
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
                         color: indexColor == index + 1
                             ? AppTheme.kSelectedColor
                             : Theme.of(context).colorScheme.primaryVariant,

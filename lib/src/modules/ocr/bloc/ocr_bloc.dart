@@ -28,7 +28,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   ) async* {
     if (event is FetchTextFromImage) {
       try {
-   //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
+        //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
         List data = await fatchAndProcessDetails(
             base64: event.base64, pointPossible: event.pointPossible);
@@ -40,7 +40,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         } else {
           yield FetchTextFromImageFailure(
               studentId: data[1],
-              grade: data[0].toString().length == 1 ? data[0] : '2',
+              grade: data[0].toString().length == 1 && data[0].toString() != 'S'
+                  ? data[0]
+                  : '2',
               studentName: data[2]);
         }
       } catch (e) {
@@ -158,11 +160,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<bool> saveSubjectListDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          Uri.encodeFull(
-          //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
-          // ),
-           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
+      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+              //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
+              // ),
+              'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
