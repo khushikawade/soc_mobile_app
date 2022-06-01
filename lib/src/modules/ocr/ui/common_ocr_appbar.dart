@@ -22,20 +22,22 @@ class CustomOcrAppBarWidget extends StatefulWidget
       {required Key? key,
       required this.isBackButton,
       this.isTitle,
-      this.isFailureState,
+      this.isSuccessState,
       this.isResultScreen,
       this.isHomeButtonPopup,
       this.assessmentDetailPage,
-      this.assessmentPage})
+      this.assessmentPage,
+      this.actionIcon})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
-  bool? isFailureState;
+  bool? isSuccessState;
   bool? isBackButton;
   bool? isTitle;
   bool? isResultScreen;
   bool? isHomeButtonPopup;
   bool? assessmentDetailPage;
   bool? assessmentPage;
+  Widget? actionIcon;
 
   @override
   final Size preferredSize;
@@ -53,9 +55,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leadingWidth: widget.isFailureState == true ? 200 : null,
+        leadingWidth: widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
-        leading: widget.isFailureState == true
+        leading: widget.isSuccessState == false
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -119,10 +121,12 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 )
               : widget.assessmentDetailPage == null
                   ? Container(
-                      padding: widget.isFailureState != true
+                      padding: widget.isSuccessState != false
                           ? EdgeInsets.only(right: 10)
                           : EdgeInsets.zero,
-                      child: IconButton(
+                      child:
+                          //widget.actionIcon,
+                          IconButton(
                         onPressed: () {
                           if (widget.isHomeButtonPopup == true) {
                             _onHomePressed();
@@ -148,35 +152,36 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   : Container(),
           widget.assessmentDetailPage == true
               ? Container()
-              : widget.isFailureState == true || widget.isResultScreen == true
-                  ? Container(
-                      padding: widget.isFailureState != true
-                          ? EdgeInsets.only(right: 10)
-                          : EdgeInsets.zero,
-                      child: IconButton(
-                        onPressed: () {
-                          if (widget.isFailureState == true) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => CameraScreen()));
-                          } else if (widget.isResultScreen == true) {
-                            onFinishedPopup();
-                          }
-                        },
-                        icon: Icon(
-                          IconData(0xe877,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          size: 30,
-                          color: AppTheme.kButtonColor,
-                        ),
-                      ),
-                    )
+              : widget.isSuccessState == false || widget.isResultScreen == true
+                  ? widget.actionIcon!
+                  // Container(
+                  //     padding: widget.isSuccessState != false
+                  //         ? EdgeInsets.only(right: 10)
+                  //         : EdgeInsets.zero,
+                  //     child: IconButton(
+                  //       onPressed: () {
+                  //         if (widget.isSuccessState == false) {
+                  //           Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (_) => CameraScreen()));
+                  //         } else if (widget.isResultScreen == true) {
+                  //           onFinishedPopup();
+                  //         }
+                  //       },
+                  //       icon: Icon(
+                  //         IconData(0xe877,
+                  //             fontFamily: Overrides.kFontFam,
+                  //             fontPackage: Overrides.kFontPkg),
+                  //         size: 30,
+                  //         color: AppTheme.kButtonColor,
+                  //       ),
+                  //     ),
+                  //   )
                   : Container(),
           Container(
             margin: EdgeInsets.all(10),
-            padding: widget.isFailureState != true
+            padding: widget.isSuccessState != false
                 ? EdgeInsets.only(right: 10, top: 5)
                 : EdgeInsets.zero,
             child: FutureBuilder(
@@ -303,89 +308,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
             }));
   }
 
-  onFinishedPopup() {
-    return showDialog(
-        context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return AlertDialog(
-                backgroundColor: Colors.white,
-                title: Container(
-                    padding: Globals.deviceType == 'phone'
-                        ? null
-                        : const EdgeInsets.only(top: 10.0),
-                    height: Globals.deviceType == 'phone'
-                        ? null
-                        : orientation == Orientation.portrait
-                            ? MediaQuery.of(context).size.height / 15
-                            : MediaQuery.of(context).size.width / 15,
-                    width: Globals.deviceType == 'phone'
-                        ? null
-                        : orientation == Orientation.portrait
-                            ? MediaQuery.of(context).size.width / 2
-                            : MediaQuery.of(context).size.height / 2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Utility.textWidget(
-                            text: 'Finished!',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
-                        SizedBox(width: 10),
-                        Icon(
-                          IconData(0xe878,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          size: 30,
-                          color: AppTheme.kButtonColor,
-                        ),
-                      ],
-                    )),
-                actions: [
-                  Container(
-                    height: 1,
-                    width: MediaQuery.of(context).size.height,
-                    color: Colors.grey.withOpacity(0.2),
-                  ),
-                  Center(
-                    child: Container(
-                      // height: 20,
-                      child: TextButton(
-                        child: TranslationWidget(
-                            message: "Done ",
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) {
-                              return Text(translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5!
-                                      .copyWith(
-                                        color: AppTheme.kButtonColor,
-                                      ));
-                            }),
-                        onPressed: () {
-                          //Globals.iscameraPopup = false;
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()),
-                              (_) => false);
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                elevation: 16,
-              );
-            }));
-  }
+ 
 
   // Future<String?> _getProfileUrl() async {
   //   List<UserInformation> _userprofilelocalData = await getUserProfile();

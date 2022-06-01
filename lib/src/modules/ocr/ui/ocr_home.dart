@@ -1,26 +1,22 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
+
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'assessment_summary.dart';
 
@@ -38,7 +34,7 @@ class _OpticalCharacterRecognitionPageState
   final assessmentController = TextEditingController();
   final classController = TextEditingController();
   // OcrBloc _bloc = OcrBloc();
-  int indexColor = 2;
+  int indexColor = 1;
   int scoringColor = 0;
   final HomeBloc _homeBloc = new HomeBloc();
   final OcrBloc _bloc = new OcrBloc();
@@ -162,11 +158,20 @@ class _OpticalCharacterRecognitionPageState
               _bloc.add(SaveSubjectListDetails());
               // Globals.studentInfo = [];
               Globals.studentInfo!.clear();
-              _bloc.add(SaveSubjectListDetails());
+              // _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CameraScreen()),
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          pointPossible: scoringColor == 0
+                              ? '2'
+                              : scoringColor == 2
+                                  ? '3'
+                                  : scoringColor == 4
+                                      ? '4'
+                                      : '2',
+                        )),
               );
               // Navigator.push(
               //   context,
@@ -210,31 +215,33 @@ class _OpticalCharacterRecognitionPageState
 
   Widget smallButton() {
     return Container(
+      alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width / 70,
+        horizontal: MediaQuery.of(context).size.width / 90,
       ),
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.of(context).size.width * 0.9,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: Globals.icons
+        // crossAxisAlignment: CrossAxisAlignment.center,
+        children: Globals.pointsList
             .map<Widget>(
-                (element) => pointsButton(Globals.icons.indexOf(element)))
+                (element) => pointsButton(Globals.pointsList.indexOf(element)))
             .toList(),
       ),
     );
   }
 
-  Widget pointsButton(index) {
+  Widget pointsButton(int index) {
     return InkWell(
         onTap: () {
-          Globals.pointpossible = "${index + 1}";
+          //Globals.pointpossible = "${index + 1}";
           setState(() {
             indexColor = index + 1;
-            if (index == 1) {
+            if (index == 0) {
               scoringColor = 0;
-            } else if (index == 2) {
+            } else if (index == 1) {
               scoringColor = 2;
-            } else if (index == 3) {
+            } else if (index == 2) {
               scoringColor = 4;
             }
           });
@@ -250,7 +257,7 @@ class _OpticalCharacterRecognitionPageState
           ),
           duration: Duration(microseconds: 100),
           child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
               decoration: BoxDecoration(
                 color: Color(0xff000000) != Theme.of(context).backgroundColor
                     ? Color(0xffF7F8F9)
@@ -265,12 +272,12 @@ class _OpticalCharacterRecognitionPageState
                 ),
               ),
               child: TranslationWidget(
-                message: '${index + 1}',
+                message: Globals.pointsList[index].toString(),
                 toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
                   translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
                         color: indexColor == index + 1
                             ? AppTheme.kSelectedColor
                             : Theme.of(context).colorScheme.primaryVariant,
@@ -282,15 +289,16 @@ class _OpticalCharacterRecognitionPageState
 
   Widget scoringRubric() {
     return Container(
-      height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.45
-          : MediaQuery.of(context).size.width * 0.30,
+      height: MediaQuery.of(context).size.height,
+      //  MediaQuery.of(context).orientation == Orientation.portrait
+      //     ? MediaQuery.of(context).size.height * 0.45
+      //     : MediaQuery.of(context).size.width * 0.30,
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
           padding: EdgeInsets.only(
               left: MediaQuery.of(context).size.width / 70,
               right: MediaQuery.of(context).size.width / 70),
-          physics: NeverScrollableScrollPhysics(),
+          physics: ScrollPhysics(),
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent:
                   MediaQuery.of(context).orientation == Orientation.portrait
@@ -306,6 +314,9 @@ class _OpticalCharacterRecognitionPageState
                 setState(() {
                   scoringColor = index;
                 });
+                Globals.scoringList[index].name == "Custom"
+                    ? showBottomSheet()
+                    : print("");
               },
               child: AnimatedContainer(
                 padding: EdgeInsets.only(bottom: 5),
@@ -326,7 +337,8 @@ class _OpticalCharacterRecognitionPageState
                   // width:Globals.scoringList.length -1 == index ? MediaQuery.of(context).size.width: null,
                   alignment: Alignment.center,
                   child: Utility.textWidget(
-                    text: Globals.scoringList[index],
+                    text:
+                        "${Globals.scoringList[index].name! + " " + Globals.scoringList[index].score!}",
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                         fontWeight: FontWeight.bold,
@@ -352,29 +364,22 @@ class _OpticalCharacterRecognitionPageState
     );
   }
 
-  void getGallaryImage() async {
-    ImagePicker _imagePicker = ImagePicker();
-    XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
-    final bytes = File(image!.path).readAsBytesSync();
-    String img64 = base64Encode(bytes);
-    setState(() {
-      myImagePath = File(image.path);
-      // isLoading2 = false;
-      pathOfImage = image.path.toString();
-    });
+  showBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => BottomSheetWidget(
+              update: _update,
+            ));
+  }
 
-    if (myImagePath != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SuccessScreen(
-                  img64: img64,
-                  imgPath: myImagePath,
-                )),
-      );
-
-      //_bloc.add(FetchTextFromImage(base64: img64));
-    }
-    // reconizeText(pathOfImage);
+  void _update(bool value) {
+    value ? setState(() {}) : print("");
   }
 }
