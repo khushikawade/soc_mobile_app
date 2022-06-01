@@ -320,7 +320,9 @@ class _OpticalCharacterRecognitionPageState
                 });
                 Globals.scoringList[index].name == "Custom"
                     ? showBottomSheet()
-                    : Globals.scoringRubric = Globals.scoringList[index].name;
+                    : Globals.scoringRubric =
+                        " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
+                print("printing ----> ${Globals.scoringRubric}");
               },
               child: AnimatedContainer(
                 padding: EdgeInsets.only(bottom: 5),

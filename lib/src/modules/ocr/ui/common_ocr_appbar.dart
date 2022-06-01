@@ -207,8 +207,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       ),
                     );
                   }
-                  return CupertinoActivityIndicator(
-                      animating: true, radius: 10);
+                  return Container(
+                    margin: EdgeInsets.all(10),
+                    padding: widget.isSuccessState != false
+                        ? EdgeInsets.only(right: 10, top: 5)
+                        : EdgeInsets.zero,
+                  );
+                  //  CupertinoActivityIndicator(
+                  //     animating: true, radius: 10);
                 }),
           ),
         ]);
@@ -308,8 +314,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
               );
             }));
   }
-
- 
 
   // Future<String?> _getProfileUrl() async {
   //   List<UserInformation> _userprofilelocalData = await getUserProfile();

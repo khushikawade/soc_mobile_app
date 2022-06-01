@@ -652,8 +652,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   pointpossible: element.pointpossible,
                   grade: widget.selectedClass,
                   subject: subject,
-                  learningStandard: learningStandard,
-                  subLearningStandard: subLearningStandard,
+                  learningStandard:
+                      learningStandard!.isEmpty ? "NA" : learningStandard,
+                  subLearningStandard:
+                      subLearningStandard!.isEmpty ? "NA" : subLearningStandard,
                   scoringRubric: Globals.scoringRubric));
             },
           );

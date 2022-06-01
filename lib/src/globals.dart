@@ -2,14 +2,12 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'modules/custom/model/custom_setting.dart';
 import 'modules/news/model/notification_list.dart';
-import 'modules/ocr/modal/user_info.dart';
 
 class Globals {
   static var iosInfo;
@@ -60,7 +58,7 @@ class Globals {
   static String? themeType;
   static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
-  static List pointsList = [1, 2, 3, 4];
+  static List pointsList = [2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
 
   static List subjectDetailsList = [
@@ -106,7 +104,7 @@ class Globals {
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe870];
   static List ocrResultIconsName = [
     "Share",
-    "Go to drive",
+    "Drive",
     "History",
     "Download"
   ];

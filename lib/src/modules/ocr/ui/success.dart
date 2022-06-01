@@ -118,7 +118,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CameraScreen()),
+                              builder: (context) => CameraScreen(
+                                    pointPossible: widget.pointPossible,
+                                  )),
                         );
                         //UNCOMMENT below section for enableing the camera
 
