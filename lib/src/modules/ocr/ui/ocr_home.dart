@@ -161,6 +161,7 @@ class _OpticalCharacterRecognitionPageState
               Globals.studentInfo = [];
               // _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
+              updateLocalDb();
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -195,6 +196,7 @@ class _OpticalCharacterRecognitionPageState
                     .copyWith(color: Theme.of(context).backgroundColor))),
         GestureDetector(
           onTap: () {
+            updateLocalDb();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AssessmentSummary()),
@@ -382,5 +384,15 @@ class _OpticalCharacterRecognitionPageState
 
   void _update(bool value) {
     value ? setState(() {}) : print("");
+  }
+
+  Future updateLocalDb() async {
+    //Save user profile to locally
+    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+
+    await _localDb.clear();
+    Globals.scoringList.forEach((CustomRubicModal e) {
+      _localDb.addData(e);
+    });
   }
 }

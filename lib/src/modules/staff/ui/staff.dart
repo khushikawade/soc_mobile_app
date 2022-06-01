@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -66,6 +67,8 @@ class _StaffPageState extends State<StaffPage> {
       _homeBloc.add(FetchStandardNavigationBar());
     }
     _scrollController.addListener(_scrollListener);
+
+    _getLocalDb();
   }
 
   _scrollListener() async {
@@ -356,5 +359,21 @@ class _StaffPageState extends State<StaffPage> {
         style: textTheme,
       ),
     );
+  }
+
+  _getLocalDb() async {
+    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+    List<CustomRubicModal> _localData = await _localDb.getData();
+
+    if (_localData.isEmpty) {
+      print("local db is empty");
+      Globals.scoringList.forEach((CustomRubicModal e) {
+        _localDb.addData(e);
+      });
+    } else {
+      print("local db is not empty");
+      Globals.scoringList = [];
+      Globals.scoringList.addAll(_localData);
+    }
   }
 }
