@@ -47,7 +47,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   @override
   void initState() {
     super.initState();
-    _bloc.add(FetchTextFromImage(base64: widget.img64,pointPossible: widget.pointPossible ?? '2'));
+    _bloc.add(FetchTextFromImage(
+        base64: widget.img64, pointPossible: widget.pointPossible ?? '2'));
   }
 
   @override
@@ -88,7 +89,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         color: AppTheme.kButtonColor,
                       ),
                     )
-                  : null, key: null,
+                  : null,
+              key: null,
             ),
             body: Container(
               padding: EdgeInsets.only(left: 20, right: 20),
@@ -332,7 +334,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget pointsEarnedButton(int grade) {
     return Container(
         alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height*0.1      ,
+        height: MediaQuery.of(context).size.height * 0.1,
         width: MediaQuery.of(context).size.width,
         child: Globals.pointsEarnedList.length > 4
             ? ListView.separated(
@@ -453,9 +455,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
       onTap: () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CameraScreen(
-            pointPossible: widget.pointPossible,
-          )),
+          MaterialPageRoute(
+              builder: (context) => CameraScreen(
+                    pointPossible: widget.pointPossible,
+                  )),
         );
       },
       child: Container(
@@ -497,7 +500,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade = pointScored;
         studentAssessmentInfo.pointpossible = Globals.pointpossible;
-       // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+        // studentAssessmentInfo.assessmentName = Globals.assessmentName;
         Globals.studentInfo!.add(studentAssessmentInfo);
       } else {
         List id = [];
@@ -510,7 +513,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentId = idController.text;
           studentAssessmentInfo.studentGrade = pointScored;
           studentAssessmentInfo.pointpossible = Globals.pointpossible;
-         // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+          // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           Globals.studentInfo!.add(studentAssessmentInfo);
         }
       }

@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -113,7 +114,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
             SpacerWidget(10),
             InkWell(
               onTap: () {
-                _showbottomSheet(context);
+                showActionsheet(context);
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -243,115 +244,151 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     }
   }
 
-  void _showbottomSheet(BuildContext context) {
-    showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.0),
-          topRight: Radius.circular(20.0),
-        )),
-        context: context,
-        builder: (context) {
-          return Container(
-            height: MediaQuery.of(context).size.height / 5,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        "Picture",
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                            fontWeight: FontWeight.bold, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            _cameraImage(context);
-                          },
-                          child: CircleAvatar(
-                            backgroundColor:
-                                AppTheme.kButtonColor.withOpacity(1.0),
-                            radius: 35,
-                            child: Icon(
-                              Icons.camera,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Text(
-                          "Camera",
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                          // style: AppTheme.userEmailStyle,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            _imgFromGallery(context);
-                          },
-                          child: CircleAvatar(
-                            backgroundColor:
-                                AppTheme.kButtonColor.withOpacity(1.0),
-                            radius: 35,
-                            child: Icon(
-                              Icons.phone_android,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Text(
-                          "Gallery",
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+  showActionsheet(context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: const Text(
+                "Camera",
+                style: TextStyle(color: Colors.blue),
+              ),
+              onPressed: () {
+                _cameraImage(context);
+              },
             ),
-          );
-        });
+            CupertinoActionSheetAction(
+              child: const Text(
+                "Gallery",
+                style: TextStyle(color: Colors.blue),
+              ),
+              isDestructiveAction: true,
+              onPressed: () {
+                _imgFromGallery(context);
+              },
+            )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.blue),
+            ),
+            onPressed: () {
+              Navigator.pop(context, 'Cancel');
+            },
+          )),
+    );
   }
+  // void _showbottomSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //       shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.only(
+  //         topLeft: Radius.circular(20.0),
+  //         topRight: Radius.circular(20.0),
+  //       )),
+  //       context: context,
+  //       builder: (context) {
+  //         return Container(
+  //           height: MediaQuery.of(context).size.height / 5,
+  //           child: Column(
+  //             children: [
+  //               Row(
+  //                 children: [
+  //                   SizedBox(
+  //                     width: 20,
+  //                   ),
+  //                   Padding(
+  //                     padding: const EdgeInsets.all(10.0),
+  //                     child: Text(
+  //                       "Picture",
+  //                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
+  //                           fontWeight: FontWeight.bold, color: Colors.black),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               SizedBox(
+  //                 height: 10,
+  //               ),
+  //               Row(
+  //                 children: [
+  //                   SizedBox(
+  //                     width: 20.0,
+  //                   ),
+  //                   Column(
+  //                     children: [
+  //                       InkWell(
+  //                         onTap: () {
+  //                           _cameraImage(context);
+  //                         },
+  //                         child: CircleAvatar(
+  //                           backgroundColor:
+  //                               AppTheme.kButtonColor.withOpacity(1.0),
+  //                           radius: 35,
+  //                           child: Icon(
+  //                             Icons.camera,
+  //                             color: Colors.white,
+  //                             size: 30,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 5.0,
+  //                       ),
+  //                       Text(
+  //                         "Camera",
+  //                         style: Theme.of(context)
+  //                             .textTheme
+  //                             .subtitle1!
+  //                             .copyWith(
+  //                                 fontWeight: FontWeight.bold,
+  //                                 color: Colors.black),
+  //                         // style: AppTheme.userEmailStyle,
+  //                       )
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     width: 20.0,
+  //                   ),
+  //                   Column(
+  //                     children: [
+  //                       InkWell(
+  //                         onTap: () {
+  //                           _imgFromGallery(context);
+  //                         },
+  //                         child: CircleAvatar(
+  //                           backgroundColor:
+  //                               AppTheme.kButtonColor.withOpacity(1.0),
+  //                           radius: 35,
+  //                           child: Icon(
+  //                             Icons.phone_android,
+  //                             color: Colors.white,
+  //                             size: 30,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       SizedBox(
+  //                         height: 5.0,
+  //                       ),
+  //                       Text(
+  //                         "Gallery",
+  //                         style: Theme.of(context)
+  //                             .textTheme
+  //                             .subtitle1!
+  //                             .copyWith(
+  //                                 fontWeight: FontWeight.bold,
+  //                                 color: Colors.black),
+  //                       )
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         );
+  //       });
+  // }
 
   Future<void> _cameraImage(BuildContext context) async {
     final XFile? photo = await _picker.pickImage(source: ImageSource.camera);

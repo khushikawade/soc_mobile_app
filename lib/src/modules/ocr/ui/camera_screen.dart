@@ -107,6 +107,7 @@ class _CameraScreenState extends State<CameraScreen>
                         fontSize: 18,
                       )),
                   onPressed: () {
+                    Globals.fileId = "";
                     Globals.studentInfo!.length > 0
                         ? Navigator.pushReplacement(
                             context,

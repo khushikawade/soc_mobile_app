@@ -133,6 +133,8 @@ class Globals {
     CustomRubicModal(name: "NYC", score: '0-4', img: ""),
   ];
 
+  static String? scoringRubric;
+
   // static late List<CustomRubicModal>? customRubicDetail = [];
   // static LocalDatabase<UserInformation> localUserInfo = LocalDatabase('user_profile');
   // static List<UserInformation> userprofilelocalData = [];
