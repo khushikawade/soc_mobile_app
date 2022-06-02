@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
@@ -7,7 +8,6 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
 import 'package:Soc/src/overrides.dart';
@@ -44,6 +44,9 @@ class _OpticalCharacterRecognitionPageState
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
 
+  bool? createCustomRubic = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
   @override
   void initState() {
     Globals.gradeList.clear();
@@ -162,20 +165,26 @@ class _OpticalCharacterRecognitionPageState
               Globals.studentInfo = [];
               // _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
-              updateLocalDb();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          pointPossible: scoringColor == 0
-                              ? '2'
-                              : scoringColor == 2
-                                  ? '3'
-                                  : scoringColor == 4
-                                      ? '4'
-                                      : '2',
-                        )),
-              );
+              print(
+                  "----> ${Globals.scoringList.last.name} B64-> ${Globals.scoringList.last.imgBase64}");
+              print(Globals.scoringList);
+              // _googleBloc.add(ImageToAwsBucked(
+              //     imgBase64: Globals.scoringList.last.imgBase64));
+              //  updateLocalDb();
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => CameraScreen(
+              //             pointPossible: scoringColor == 0
+              //                 ? '2'
+              //                 : scoringColor == 2
+              //                     ? '3'
+              //                     : scoringColor == 4
+              //                         ? '4'
+              //                         : '2',
+              //           )),
+              // );
+
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(builder: (context) => CreateAssessment()),
@@ -197,7 +206,7 @@ class _OpticalCharacterRecognitionPageState
                     .copyWith(color: Theme.of(context).backgroundColor))),
         GestureDetector(
           onTap: () {
-            updateLocalDb();
+            //   updateLocalDb();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AssessmentSummary()),
@@ -318,10 +327,19 @@ class _OpticalCharacterRecognitionPageState
                 setState(() {
                   scoringColor = index;
                 });
-                Globals.scoringList[index].name == "Custom"
-                    ? showBottomSheet()
-                    : Globals.scoringRubric =
-                        " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
+                if (Globals.scoringList[index].name == "Custom") {
+                  if (createCustomRubic == true) {
+                    Utility.showSnackBar(_scaffoldKey,
+                        "Create custom rubic section at a time", context, null);
+                  } else {
+                    createCustomRubic = true;
+                    showBottomSheet();
+                  }
+                } else {
+                  Globals.scoringRubric =
+                      " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
+                }
+
                 print("printing ----> ${Globals.scoringRubric}");
               },
               child: AnimatedContainer(
@@ -389,13 +407,13 @@ class _OpticalCharacterRecognitionPageState
     value ? setState(() {}) : print("");
   }
 
-  Future updateLocalDb() async {
-    //Save user profile to locally
-    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+  // Future updateLocalDb() async {
+  //   //Save user profile to locally
+  //   LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
 
-    await _localDb.clear();
-    Globals.scoringList.forEach((CustomRubicModal e) {
-      _localDb.addData(e);
-    });
-  }
+  //   await _localDb.clear();
+  //   Globals.scoringList.forEach((CustomRubicModal e) {
+  //     _localDb.addData(e);
+  //   });
+  // }
 }

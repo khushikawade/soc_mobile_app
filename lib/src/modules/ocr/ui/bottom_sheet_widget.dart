@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
@@ -167,10 +168,14 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                     if (nameController.text.isNotEmpty &&
                         customScoreController.text.isNotEmpty &&
                         imageFile != null) {
+                      List<int> imageBytes = imageFile!.readAsBytesSync();
+                      String imageB64 = base64Encode(imageBytes);
+                      print("image64 is recived --------->$imageB64");
                       Globals.scoringList.add(CustomRubicModal(
                           name: nameController.text,
                           score: customScoreController.text,
-                          img: imageFile!.path));
+                          imgBase64: imageB64));
+                      print("added to list--------->");
                       widget.update(true);
                       Navigator.pop(context);
                     } else {
@@ -395,6 +400,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     if (photo != null) {
       setState(() {
         imageFile = File(photo.path);
+
         Navigator.pop(context);
       });
     } else {

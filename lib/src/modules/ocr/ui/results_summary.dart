@@ -290,13 +290,21 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         ),
         index == 1
             ? Expanded(
-                child: Container(
-                  //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                  child: Image(
-                    width: Globals.deviceType == "phone" ? 35 : 32,
-                    height: Globals.deviceType == "phone" ? 35 : 32,
-                    image: AssetImage(
-                      "assets/images/drive_ico.png",
+                child: InkWell(
+                  onTap: () {
+                    print(
+                        'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                    Utility.launchUrlOnExternalBrowser(
+                        Globals.googleDriveFolderPath!);
+                  },
+                  child: Container(
+                    //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                    child: Image(
+                      width: Globals.deviceType == "phone" ? 35 : 32,
+                      height: Globals.deviceType == "phone" ? 35 : 32,
+                      image: AssetImage(
+                        "assets/images/drive_ico.png",
+                      ),
                     ),
                   ),
                 ),
