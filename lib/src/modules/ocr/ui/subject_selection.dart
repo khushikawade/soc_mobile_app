@@ -424,7 +424,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           nycSubIndex = index;
                         });
                       }
-                      if (index > list.length &&
+                      if (index >= list.length &&
                           index != list.length + userAddedSubjectList.length) {
                         Navigator.push(
                           context,
