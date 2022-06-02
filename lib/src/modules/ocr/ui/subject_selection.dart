@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
@@ -641,8 +642,21 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         onPressed: () async {
           if (nycSubIndex == null) return;
 
+          //Save user profile to locally
+          LocalDatabase<CustomRubicModal> _localDb =
+              LocalDatabase('custom_rubic');
+          List<CustomRubicModal>? _localData = await _localDb.getData();
+          String? rubicImgUrl;
+
+          for (int i = 0; i < _localData.length; i++) {
+            rubicImgUrl = _localData[i].customOrStandardRubic == "Custom" &&
+                    _localData[i].name == Globals.scoringRubric
+                ? _localData[i].imgUrl
+                : "NA";
+          }
           List<StudentAssessmentInfo> list = Globals.studentInfo!;
           Globals.studentInfo = [];
+
           list.forEach(
             (StudentAssessmentInfo element) {
               Globals.studentInfo!.add(StudentAssessmentInfo(
@@ -656,7 +670,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       learningStandard!.isEmpty ? "NA" : learningStandard,
                   subLearningStandard:
                       subLearningStandard!.isEmpty ? "NA" : subLearningStandard,
-                  scoringRubric: Globals.scoringRubric));
+                  scoringRubric: Globals.scoringRubric,
+                  customRubricImage: rubicImgUrl));
             },
           );
           _googleDriveBloc

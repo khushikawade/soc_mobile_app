@@ -21,13 +21,14 @@ class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
       score: fields[1] as String?,
       imgBase64: fields[2] as String?,
       imgUrl: fields[3] as String?,
+      customOrStandardRubic: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CustomRubicModal obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
       ..writeByte(2)
       ..write(obj.imgBase64)
       ..writeByte(3)
-      ..write(obj.imgUrl);
+      ..write(obj.imgUrl)
+      ..writeByte(4)
+      ..write(obj.customOrStandardRubic);
   }
 
   @override

@@ -42,6 +42,9 @@ class GoogleDriveAccess {
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
             .value = data[row].scoringRubric;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 9, rowIndex: row))
+            .value = data[row].customRubricImage;
 
         // if (data[row].subject == "Math" || data[row].subject == "ELA") {
         //         sheet

@@ -44,9 +44,10 @@ class _OpticalCharacterRecognitionPageState
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
 
-  bool? createCustomRubic = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
+  // bool? createCustomRubic = false;
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
+  
   @override
   void initState() {
     Globals.gradeList.clear();
@@ -104,6 +105,15 @@ class _OpticalCharacterRecognitionPageState
                         SpacerWidget(5),
                         IconButton(
                           onPressed: () async {
+                            // if (createCustomRubic == true &&
+                            //     Globals.scoringList.last.imgBase64 != null) {
+                            //   print("heeleeelo");
+                            //   _googleBloc.add(ImageToAwsBucked(
+                            //       imgBase64:
+                            //           Globals.scoringList.last.imgBase64));
+                            // } else {
+                               updateLocalDb();
+                            // }
                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -161,29 +171,43 @@ class _OpticalCharacterRecognitionPageState
         FloatingActionButton.extended(
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
+              // if (createCustomRubic == true &&
+              //     Globals.scoringList.last.imgBase64 != null) {
+              //   print("heeleeelo");
+              //   _googleBloc.add(ImageToAwsBucked(
+              //       imgBase64: Globals.scoringList.last.imgBase64));
+              // } else {
+                 updateLocalDb();
+              // }
               _bloc.add(SaveSubjectListDetails());
               Globals.studentInfo = [];
               // _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
               print(
                   "----> ${Globals.scoringList.last.name} B64-> ${Globals.scoringList.last.imgBase64}");
-              print(Globals.scoringList);
-              // _googleBloc.add(ImageToAwsBucked(
-              //     imgBase64: Globals.scoringList.last.imgBase64));
-              //  updateLocalDb();
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => CameraScreen(
-              //             pointPossible: scoringColor == 0
-              //                 ? '2'
-              //                 : scoringColor == 2
-              //                     ? '3'
-              //                     : scoringColor == 4
-              //                         ? '4'
-              //                         : '2',
-              //           )),
-              // );
+              // print(Globals.scoringList);
+              // if (createCustomRubic == true &&
+              //     Globals.scoringList.last.imgBase64 != null) {
+              //   print("heeleeelo");
+              //   _googleBloc.add(ImageToAwsBucked(
+              //       imgBase64: Globals.scoringList.last.imgBase64));
+              // } else {
+              //   updateLocalDb();
+              // }
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          pointPossible: scoringColor == 0
+                              ? '2'
+                              : scoringColor == 2
+                                  ? '3'
+                                  : scoringColor == 4
+                                      ? '4'
+                                      : '2',
+                        )),
+              );
 
               // Navigator.push(
               //   context,
@@ -206,7 +230,15 @@ class _OpticalCharacterRecognitionPageState
                     .copyWith(color: Theme.of(context).backgroundColor))),
         GestureDetector(
           onTap: () {
+               updateLocalDb();
+            // if (createCustomRubic == true &&
+            //     Globals.scoringList.last.imgBase64 != null) {
+            //   print("heeleeelo");
+            //   _googleBloc.add(ImageToAwsBucked(
+            //       imgBase64: Globals.scoringList.last.imgBase64));
+            // } else {
             //   updateLocalDb();
+            // }
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AssessmentSummary()),
@@ -328,16 +360,15 @@ class _OpticalCharacterRecognitionPageState
                   scoringColor = index;
                 });
                 if (Globals.scoringList[index].name == "Custom") {
-                  if (createCustomRubic == true) {
-                    Utility.showSnackBar(_scaffoldKey,
-                        "Create custom rubic section at a time", context, null);
-                  } else {
-                    createCustomRubic = true;
-                    showBottomSheet();
-                  }
+                  showBottomSheet();
+                  // if (createCustomRubic == true) {
+                  //   Utility.showSnackBar(_scaffoldKey,
+                  //       "Create custom rubic section at a time", context, null);
+                  // } else {
+                  //   showBottomSheet();
+                  // }
                 } else {
-                  Globals.scoringRubric =
-                      " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
+                  Globals.scoringRubric = Globals.scoringList[index].name;
                 }
 
                 print("printing ----> ${Globals.scoringRubric}");
@@ -404,16 +435,20 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _update(bool value) {
-    value ? setState(() {}) : print("");
+    value
+        ? setState(() {
+            //  createCustomRubic = value;
+          })
+        : print("");
   }
 
-  // Future updateLocalDb() async {
-  //   //Save user profile to locally
-  //   LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+  Future updateLocalDb() async {
+    //Save user profile to locally
+    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
 
-  //   await _localDb.clear();
-  //   Globals.scoringList.forEach((CustomRubicModal e) {
-  //     _localDb.addData(e);
-  //   });
-  // }
+    await _localDb.clear();
+    Globals.scoringList.forEach((CustomRubicModal e) {
+      _localDb.addData(e);
+    });
+  }
 }

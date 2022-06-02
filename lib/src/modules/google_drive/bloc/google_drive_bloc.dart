@@ -17,7 +17,6 @@ import '../../../services/db_service.dart';
 import 'package:path/path.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
 import '../model/user_profile.dart';
-import 'package:http/http.dart' as httpClient;
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -112,7 +111,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 subject: "Subject",
                 learningStandard: "Learning Standard",
                 subLearningStandard: "Sub Learning Standard",
-                scoringRubric: "Scoring Rubric"));
+                scoringRubric: "Scoring Rubric",
+                customRubricImage: "Custom Rubric Image"));
         print(assessmentData);
 
         File file = await GoogleDriveAccess.createSheet(
@@ -227,14 +227,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is ImageToAwsBucked) {
       try {
         String imgUrl = await _uploadImgB64AndGetUrl(event.imgBase64);
-        int index = Globals.scoringList.length - 1;
-
+        //  int index = Globals.scoringList.length - 1;
+        print(Globals.scoringList);
         imgUrl != ""
-            ? Globals.scoringList
-                .insert(index, CustomRubicModal(imgUrl: imgUrl))
+            ? Globals.scoringList.last.imgUrl = imgUrl
             : _uploadImgB64AndGetUrl(event.imgBase64);
+        print(Globals.scoringList);
         print("printing imag url");
-        updateLocalDb();
+        // updateLocalDb();
       } catch (e) {
         print("image upload error");
       }
@@ -539,19 +539,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return response.data['body']['Location'];
     } else {
       print(response.statusCode);
-      print("errorrrrrrrrrrrrr");
+
       return "";
     }
   }
 
-  Future updateLocalDb() async {
-    //Save user profile to locally
-    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+  // Future updateLocalDb() async {
+  //   //Save user profile to locally
+  //   LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
 
-    await _localDb.clear();
-    Globals.scoringList.forEach((CustomRubicModal e) {
-      _localDb.addData(e);
-    });
-    print("rubic data is updated on local drive");
-  }
+  //   await _localDb.clear();
+  //   Globals.scoringList.forEach((CustomRubicModal e) {
+  //     _localDb.addData(e);
+  //   });
+  //   print("rubic data is updated on local drive");
+  // }
 }
