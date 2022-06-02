@@ -27,6 +27,31 @@ class GoogleDriveAccess {
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row))
             .value = data[row].pointpossible;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
+            .value = data[row].grade;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row))
+            .value = data[row].subject;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
+            .value = data[row].learningStandard;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
+            .value = data[row].subLearningStandard;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
+            .value = data[row].scoringRubric;
+
+        // if (data[row].subject == "Math" || data[row].subject == "ELA") {
+        //         sheet
+        //             .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
+        //             .value = data[row].learningStandard;
+        //         sheet
+        //             .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
+        //             .value = data[row].subLearningStandard;
+        //       }
+
       }
       // sheet.updateCell(CellIndex.indexByColumnRow(rowIndex: 0), cellStyle);
 

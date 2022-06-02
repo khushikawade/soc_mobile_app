@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
 import 'package:Soc/src/overrides.dart';
@@ -47,6 +48,7 @@ class _OpticalCharacterRecognitionPageState
     Globals.gradeList.clear();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
+    Globals.scoringRubric = Globals.scoringList[0].name;
   }
 
   @override
@@ -318,7 +320,9 @@ class _OpticalCharacterRecognitionPageState
                 });
                 Globals.scoringList[index].name == "Custom"
                     ? showBottomSheet()
-                    : print("");
+                    : Globals.scoringRubric =
+                        " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
+                print("printing ----> ${Globals.scoringRubric}");
               },
               child: AnimatedContainer(
                 padding: EdgeInsets.only(bottom: 5),

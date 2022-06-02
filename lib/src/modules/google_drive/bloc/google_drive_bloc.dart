@@ -88,6 +88,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           print("Excel sheet created successfully : ${event.name!}");
         }
       } catch (e) {
+        print("error");
         print(e);
       }
     }
@@ -102,8 +103,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             StudentAssessmentInfo(
                 studentId: "Id",
                 studentName: "Name",
-                studentGrade: "PointsEarned",
-                pointpossible: "pointPossible"));
+                studentGrade: "Points Earned",
+                pointpossible: "Point Possible",
+                grade: "Grade",
+                subject: "Subject",
+                learningStandard: "Learning Standard",
+                subLearningStandard: "Sub Learning Standard",
+                scoringRubric: "Scoring Rubric"));
         print(assessmentData);
 
         File file = await GoogleDriveAccess.createSheet(
@@ -119,7 +125,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (!deleted) {
           GoogleDriveAccess.deleteFile(file);
         }
-      } catch (e) {}
+      } catch (e) {
+        print("inside bloc catch");
+        print(e);
+      }
     }
 
     if (event is GetHistoryAssessmentFromDrive) {
@@ -197,8 +206,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 StudentAssessmentInfo(
                     studentId: "Id",
                     studentName: "Name",
-                    studentGrade: "PointsEarned",
-                    pointpossible: "pointPossible"));
+                    studentGrade: "Points Earned",
+                    pointpossible: "Point Possible",
+                    grade: "Grade",
+                    subject: "Subject",
+                    learningStandard: "Learning Standard",
+                    subLearningStandard: "Sub Learning Standard",
+                    scoringRubric: "Scoring Rubric"));
             yield AssessmentDetailSuccess(obj: _list);
           }
         }
@@ -328,6 +342,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (response.statusCode == 200) {
       print("upload result data to assessment file completed");
       return true;
+    } else {
+      print("errorrrrr-------------> upload on drive");
+      print(response.statusCode);
     }
     return false;
   }
