@@ -143,36 +143,6 @@ class _StaffPageState extends State<StaffPage> {
     await _localDb.addData(_userInformation);
   }
 
-  // Future<List<UserInformation>> getUserProfile() async {
-  //   LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-  //   List<UserInformation> _userInformation = await _localDb.getData();
-  //   return _userInformation;
-  // }
-
-  // saveUserProfile(profileData) async {
-  //   var profile = profileData.split('+');
-  //   Globals.localUserInfo.clear();
-
-  //   await Globals.localUserInfo.addData(UserInformation(
-  //       userName: profile[0].toString().split('=')[1],
-  //       userEmail: profile[1].toString().split('=')[1],
-  //       profilePicture: profile[2].toString().split('=')[1],
-  //       authorizationToken:
-  //           profile[3].toString().split('=')[1].replaceAll('#', '')));
-
-  //   final temp = await Globals.localUserInfo.getData();
-  //   Globals.userprofilelocalData = temp;
-
-  //   setState(() {});
-  //   _ocrBloc.add(
-  //       VerifyUserWithDatabase(email: profile[1].toString().split('=')[1]));
-  //   //Creating a assessment folder in users google drive to maintain all the assessments together at one place
-  //   _googleDriveBloc.add(GetDriveFolderIdEvent(
-  //       //  filePath: file,
-  //       token: profile[3].toString().split('=')[1].replaceAll('#', ''),
-  //       folderName: "Assessments"));
-  // }
-
   verifyUserAndGetDriveFolder() async {
     List<UserInformation> _userprofilelocalData =
         await UserGoogleProfile.getUserProfile();

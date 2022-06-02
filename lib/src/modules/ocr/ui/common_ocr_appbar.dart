@@ -27,7 +27,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isHomeButtonPopup,
       this.assessmentDetailPage,
       this.assessmentPage,
-      this.actionIcon})
+      this.actionIcon,
+      this.scaffoldKey})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isSuccessState;
@@ -38,6 +39,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? assessmentDetailPage;
   bool? assessmentPage;
   Widget? actionIcon;
+  final scaffoldKey;
 
   @override
   final Size preferredSize;
@@ -88,6 +90,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
             : widget.isBackButton == true
                 ? IconButton(
                     onPressed: () {
+                      //To dispose the snackbar message before navigating back if exist
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       Navigator.pop(context);
                     },
                     icon: Icon(
@@ -104,8 +108,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   onTap: () {
                     print(
                         'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                    Utility.launchUrlOnExternalBrowser(
-                        Globals.googleDriveFolderPath!);
+                    Globals.googleDriveFolderPath != null
+                        ? Utility.launchUrlOnExternalBrowser(
+                            Globals.googleDriveFolderPath!)
+                        : Utility.showSnackBar(
+                            widget.scaffoldKey,
+                            "Unable to navigate at the moment. Please try again later",
+                            context,
+                            null);
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(top: 8.0),
@@ -322,8 +332,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
-    print(_userInformation.length);
-    print("printing length : ${_userInformation.length}");
+    print("printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
 
@@ -437,46 +446,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         ],
                       )
 
-                      //  Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     mainAxisAlignment: MainAxisAlignment.start,
-                      //     children: [
-                      //       ListTile(
-                      //         // horizontalTitleGap: 20,
-                      //         title: Text(
-                      //           userInformation.userName!,
-                      //           style: Theme.of(context)
-                      //               .textTheme
-                      //               .headline3!
-                      //               .copyWith(
-                      //                   color: Colors.black,
-                      //                   fontWeight: FontWeight.bold),
-                      //         ),
-                      //         subtitle: Padding(
-                      //           padding: const EdgeInsets.only(top: 5.0),
-                      //           child: Text(userInformation.userEmail!,
-                      //               style:
-                      //                   Theme.of(context).textTheme.subtitle2!),
-                      //         ),
-                      //       ),
-                      //       SpacerWidget(10),
-                      //       Center(
-                      //         child: IconButton(
-                      //           onPressed: () {
-                      //             Navigator.of(context).pushAndRemoveUntil(
-                      //                 MaterialPageRoute(
-                      //                     builder: (context) => HomePage()),
-                      //                 (_) => false);
-                      //           },
-                      //           icon: Icon(
-                      //             Icons.logout,
-                      //             size: 26,
-                      //             color: AppTheme.kButtonColor,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ])
-
+                     
                       ),
                 ),
               ],

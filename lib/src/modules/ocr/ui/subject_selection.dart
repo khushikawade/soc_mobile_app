@@ -18,6 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../../widgets/textfield_widget.dart';
+
 class SubjectSelection extends StatefulWidget {
   final String? selectedClass;
   SubjectSelection({Key? key, required this.selectedClass}) : super(key: key);
@@ -40,7 +42,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   List<String> userAddedSubjectList = [];
   final _debouncer = Debouncer(milliseconds: 10);
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   String? subject;
   String? learningStandard;
   String? subLearningStandard;
@@ -63,6 +65,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           children: [
             CommonBackGroundImgWidget(),
             Scaffold(
+              key: _scaffoldKey,
               bottomNavigationBar: progressIndicatorBar(),
               floatingActionButton:
                   indexGlobal == 2 ? textActionButton() : null,
@@ -536,41 +539,41 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget textFormField(
-      {required TextEditingController controller, required onSaved}) {
-    return TextFormField(
-      autofocus: true,
-      //
-      textAlign: TextAlign.start,
-      style: Theme.of(context)
-          .textTheme
-          .headline6!
-          .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-      controller: controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-        fillColor: Colors.transparent,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTheme.kButtonColor,
-          ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTheme
-                .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
-          ),
-        ),
-        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTheme.kButtonColor,
-          ),
-        ),
-      ),
-      onChanged: onSaved,
-    );
-  }
+  // Widget textFormField(
+  //     {required TextEditingController controller, required onSaved}) {
+  //   return TextFormField(
+  //     autofocus: true,
+  //     //
+  //     textAlign: TextAlign.start,
+  //     style: Theme.of(context)
+  //         .textTheme
+  //         .headline6!
+  //         .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
+  //     controller: controller,
+  //     cursorColor: Theme.of(context).colorScheme.primaryVariant,
+  //     decoration: InputDecoration(
+  //       fillColor: Colors.transparent,
+  //       enabledBorder: UnderlineInputBorder(
+  //         borderSide: BorderSide(
+  //           color: AppTheme.kButtonColor,
+  //         ),
+  //       ),
+  //       focusedBorder: UnderlineInputBorder(
+  //         borderSide: BorderSide(
+  //           color: AppTheme
+  //               .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
+  //         ),
+  //       ),
+  //       contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+  //       border: UnderlineInputBorder(
+  //         borderSide: BorderSide(
+  //           color: AppTheme.kButtonColor,
+  //         ),
+  //       ),
+  //     ),
+  //     onChanged: onSaved,
+  //   );
+  // }
 
   Widget _buildSearchbar(
       {required TextEditingController controller, required onSaved}) {
@@ -783,11 +786,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     List<String>? _localData = await _localDb.getData();
     if (!_localData.contains(subjectName) && subjectName != '') {
       _localData.add(subjectName);
+    } else {
+      Utility.showSnackBar(
+          _scaffoldKey, "Subject $subjectName already exist", context, null);
     }
 
-    // setState(() {
-    //   userAddedSubjectList = _localData;
-    // });
     await _localDb.clear();
     _localData.forEach((String e) {
       _localDb.addData(e);
@@ -857,7 +860,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: textFormField(
+                child: TextFieldWidget(
                     controller: addController, onSaved: (String value) {}),
               ),
               SizedBox(
@@ -872,9 +875,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       await updateList(
                           subjectName: addController.text,
                           classNo: widget.selectedClass!);
+                      _ocrBloc.add(FatchSubjectDetails(
+                          type: 'subject', keyword: widget.selectedClass));
 
-                      Navigator.pop(context, false);
                       await fatchList(classNo: widget.selectedClass!);
+                      Navigator.pop(context, false);
                     },
                     label: Row(
                       children: [

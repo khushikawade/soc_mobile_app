@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../../widgets/textfield_widget.dart';
+
 class BottomSheetWidget extends StatefulWidget {
   BottomSheetWidget({Key? key, required this.update}) : super(key: key);
   final ValueChanged<bool> update;
@@ -110,7 +112,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               padding: EdgeInsets.symmetric(
                 horizontal: 20,
               ),
-              child: textFormField(
+              child: TextFieldWidget(
                   controller: nameController, onSaved: (String value) {}),
             ),
             Container(
@@ -125,7 +127,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
-              child: textFormField(
+              child: TextFieldWidget(
                   controller: customScoreController,
                   onSaved: (String value) {}),
             ),
@@ -182,14 +184,14 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                   backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                   onPressed: () async {
                     if (nameController.text.isNotEmpty &&
-                        customScoreController.text.isNotEmpty 
+                            customScoreController.text.isNotEmpty
                         // &&
                         // imageFile != null
                         ) {
                       Globals.scoringList.add(CustomRubicModal(
                           name: nameController.text,
                           score: customScoreController.text,
-                          img: imageFile!=null?imageFile!.path:''));
+                          img: imageFile != null ? imageFile!.path : ''));
                       widget.update(true);
                       Navigator.pop(context);
                     } else {
@@ -212,45 +214,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget textFormField(
-      {required TextEditingController controller, required onSaved}) {
-    return TextFormField(
-      autofocus: false,
-      textAlign: TextAlign.start,
-      style: Theme.of(context)
-          .textTheme
-          .subtitle1!
-          .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-      controller: controller,
-      cursorColor: Color(0xff000000) !=
-                                          Theme.of(context).backgroundColor
-                                      ? Color(0xffFFFFFF)
-                                      : Color(0xff000000),//Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-        fillColor: Colors.transparent,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTheme.kButtonColor,
-          ),
-          
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTheme
-                .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
-          ),
-        ),
-        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTheme.kButtonColor,
-          ),
-        ),
-      ),
-      onChanged: onSaved,
     );
   }
 

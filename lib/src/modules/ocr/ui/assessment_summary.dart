@@ -22,7 +22,7 @@ class AssessmentSummary extends StatefulWidget {
 class _AssessmentSummaryState extends State<AssessmentSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     _driveBloc.add(GetHistoryAssessmentFromDrive());
@@ -35,12 +35,14 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       children: [
         CommonBackGroundImgWidget(),
         Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
             key: GlobalKey(),
             isBackButton: true,
             assessmentDetailPage: true,
             assessmentPage: true,
+            scaffoldKey: _scaffoldKey,
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
