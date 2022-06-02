@@ -514,6 +514,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         return true;
       } else {
+        // throw ('something_went_wrong');
         return false;
         // throw ('something_went_wrong');
       }

@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
@@ -16,7 +17,9 @@ import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
+import 'camera_screen.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -40,7 +43,7 @@ class _OpticalCharacterRecognitionPageState
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
 
-  bool? createCustomRubic = false;
+  // bool? createCustomRubic = false;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
   @override
@@ -163,22 +166,22 @@ class _OpticalCharacterRecognitionPageState
               print(
                   "----> ${Globals.scoringList.last.name} B64-> ${Globals.scoringList.last.imgBase64}");
               print(Globals.scoringList);
-              // _googleBloc.add(ImageToAwsBucked(
-              //     imgBase64: Globals.scoringList.last.imgBase64));
-              //  updateLocalDb();
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => CameraScreen(
-              //             pointPossible: scoringColor == 0
-              //                 ? '2'
-              //                 : scoringColor == 2
-              //                     ? '3'
-              //                     : scoringColor == 4
-              //                         ? '4'
-              //                         : '2',
-              //           )),
-              // );
+              _googleBloc.add(ImageToAwsBucked(
+                  imgBase64: Globals.scoringList.last.imgBase64));
+              updateLocalDb();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          pointPossible: scoringColor == 0
+                              ? '2'
+                              : scoringColor == 2
+                                  ? '3'
+                                  : scoringColor == 4
+                                      ? '4'
+                                      : '2',
+                        )),
+              );
 
               // Navigator.push(
               //   context,
@@ -323,13 +326,13 @@ class _OpticalCharacterRecognitionPageState
                   scoringColor = index;
                 });
                 if (Globals.scoringList[index].name == "Custom") {
-                  if (createCustomRubic == true) {
-                    Utility.showSnackBar(_scaffoldKey,
-                        "Create custom rubic section at a time", context, null);
-                  } else {
-                    createCustomRubic = true;
+                //   if (createCustomRubic == true) {
+                //     Utility.showSnackBar(_scaffoldKey,
+                //         "Create custom rubic section at a time", context, null);
+                //   } else {
+                //     createCustomRubic = true;
                     customRubricBottomSheet();
-                  }
+                //   }
                 } else {
                   Globals.scoringRubric =
                       " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
@@ -402,13 +405,13 @@ class _OpticalCharacterRecognitionPageState
     value ? setState(() {}) : print("");
   }
 
-  // Future updateLocalDb() async {
-  //   //Save user profile to locally
-  //   LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+  Future updateLocalDb() async {
+    //Save user profile to locally
+    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
 
-  //   await _localDb.clear();
-  //   Globals.scoringList.forEach((CustomRubicModal e) {
-  //     _localDb.addData(e);
-  //   });
-  // }
+    await _localDb.clear();
+    Globals.scoringList.forEach((CustomRubicModal e) {
+      _localDb.addData(e);
+    });
+  }
 }

@@ -67,8 +67,8 @@ class _StaffPageState extends State<StaffPage> {
       _homeBloc.add(FetchStandardNavigationBar());
     }
     _scrollController.addListener(_scrollListener);
-
-    _getLocalDb();
+    UserGoogleProfile.getUserProfile();
+    _getRubricScoreLocalDb();
   }
 
   _scrollListener() async {
@@ -146,8 +146,10 @@ class _StaffPageState extends State<StaffPage> {
   verifyUserAndGetDriveFolder() async {
     List<UserInformation> _userprofilelocalData =
         await UserGoogleProfile.getUserProfile();
+
     _ocrBloc
         .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
+
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
@@ -292,25 +294,36 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: !isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const OpticalCharacterRecognition()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) =>
+                    //           const OpticalCharacterRecognition()),
+                    // );
                     // Globals.localUserInfo.clear(); // COMMENT
-                    // List<UserInformation> _profileData =
-                    //     await UserGoogleProfile.getUserProfile();
-                    // if (_profileData.isEmpty) {
-                    //   await _launchURL('Google Authentication');
-                    // } else {
-                    //   verifyUserAndGetDriveFolder();
-                    //   pushNewScreen(
-                    //     context,
-                    //     screen: OpticalCharacterRecognition(),
-                    //     withNavBar: false,
-                    //   );
-                    // }
+                    List<UserInformation> _profileData =
+                        await UserGoogleProfile.getUserProfile();
+                    if (_profileData.isEmpty) {
+                      await _launchURL('Google Authentication');
+                    } else {
+                      // List<UserInformation> _userprofilelocalData =
+                      //     await UserGoogleProfile.getUserProfile();
+                      _ocrBloc.add(VerifyUserWithDatabase(
+                          email: _profileData[0].userEmail));
+
+                      //Creating a assessment folder in users google drive to maintain all the assessments together at one place
+                      _googleDriveBloc.add(GetDriveFolderIdEvent(
+                          //  filePath: file,
+                          token: _profileData[0].authorizationToken,
+                          folderName: "Solved Assessment",
+                          refreshtoken: _profileData[0].refreshToken));
+
+                      pushNewScreen(
+                        context,
+                        screen: OpticalCharacterRecognition(),
+                        withNavBar: false,
+                      );
+                    }
                   },
                   icon:
                       Icon(Icons.add, color: Theme.of(context).backgroundColor),
@@ -337,17 +350,17 @@ class _StaffPageState extends State<StaffPage> {
     );
   }
 
-  _getLocalDb() async {
+  _getRubricScoreLocalDb() async {
     LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
     List<CustomRubicModal> _localData = await _localDb.getData();
 
     if (_localData.isEmpty) {
-      print("local db is empty");
+      print("_getRubricScoreLocalDb local db is empty");
       Globals.scoringList.forEach((CustomRubicModal e) {
         _localDb.addData(e);
       });
     } else {
-      print("local db is not empty");
+      print("_getRubricScoreLocalDb local db is not empty : ");
       Globals.scoringList = [];
       Globals.scoringList.addAll(_localData);
     }
