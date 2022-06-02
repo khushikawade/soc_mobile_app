@@ -127,7 +127,7 @@ class Globals {
 
   static List<CustomRubicModal> scoringList = [
     CustomRubicModal(name: "NYC", score: '0-2', img: ""),
-    CustomRubicModal(name: "Custom", score: '0-2', img: ""),
+    CustomRubicModal(name: "Custom", score: '', img: ""),
     CustomRubicModal(name: "NYC", score: '0-3', img: ""),
     CustomRubicModal(name: "None", score: '', img: ""),
     CustomRubicModal(name: "NYC", score: '0-4', img: ""),

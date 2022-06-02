@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
@@ -12,12 +13,11 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
@@ -160,6 +160,7 @@ class _OpticalCharacterRecognitionPageState
               Globals.studentInfo!.clear();
               // _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
+              updateLocalDb();
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -194,6 +195,7 @@ class _OpticalCharacterRecognitionPageState
                     .copyWith(color: Theme.of(context).backgroundColor))),
         GestureDetector(
           onTap: () {
+            updateLocalDb();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AssessmentSummary()),
@@ -381,5 +383,15 @@ class _OpticalCharacterRecognitionPageState
 
   void _update(bool value) {
     value ? setState(() {}) : print("");
+  }
+
+  Future updateLocalDb() async {
+    //Save user profile to locally
+    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+
+    await _localDb.clear();
+    Globals.scoringList.forEach((CustomRubicModal e) {
+      _localDb.addData(e);
+    });
   }
 }
