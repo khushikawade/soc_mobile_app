@@ -276,7 +276,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
           Globals.assessmentName =
               "${assessmentController.text}_${classController.text}";
           print(Globals.assessmentName);
-          Globals.fileId != ""
+          Globals.fileId == ''
               ? _googleDriveBloc.add(CreateExcelSheetToDrive(
                   name: "${assessmentController.text}_${classController.text}"))
               : print("file is already exists on drive ");

@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -15,6 +17,7 @@ import '../../../services/db_service.dart';
 import 'package:path/path.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
 import '../model/user_profile.dart';
+import 'package:http/http.dart' as httpClient;
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -88,6 +91,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           print("Excel sheet created successfully : ${event.name!}");
         }
       } catch (e) {
+        print("error");
         print(e);
       }
     }
@@ -102,8 +106,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             StudentAssessmentInfo(
                 studentId: "Id",
                 studentName: "Name",
-                studentGrade: "PointsEarned",
-                pointpossible: "pointPossible"));
+                studentGrade: "Points Earned",
+                pointpossible: "Point Possible",
+                grade: "Grade",
+                subject: "Subject",
+                learningStandard: "Learning Standard",
+                subLearningStandard: "Sub Learning Standard",
+                scoringRubric: "Scoring Rubric"));
         print(assessmentData);
 
         File file = await GoogleDriveAccess.createSheet(
@@ -119,7 +128,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (!deleted) {
           GoogleDriveAccess.deleteFile(file);
         }
-      } catch (e) {}
+      } catch (e) {
+        print("inside bloc catch");
+        print(e);
+      }
     }
 
     if (event is GetHistoryAssessmentFromDrive) {
@@ -197,13 +209,34 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 StudentAssessmentInfo(
                     studentId: "Id",
                     studentName: "Name",
-                    studentGrade: "PointsEarned",
-                    pointpossible: "pointPossible"));
+                    studentGrade: "Points Earned",
+                    pointpossible: "Point Possible",
+                    grade: "Grade",
+                    subject: "Subject",
+                    learningStandard: "Learning Standard",
+                    subLearningStandard: "Sub Learning Standard",
+                    scoringRubric: "Scoring Rubric"));
             yield AssessmentDetailSuccess(obj: _list);
           }
         }
       } catch (e) {
         throw (e);
+      }
+    }
+
+    if (event is ImageToAwsBucked) {
+      try {
+        String imgUrl = await _uploadImgB64AndGetUrl(event.imgBase64);
+        int index = Globals.scoringList.length - 1;
+
+        imgUrl != ""
+            ? Globals.scoringList
+                .insert(index, CustomRubicModal(imgUrl: imgUrl))
+            : _uploadImgB64AndGetUrl(event.imgBase64);
+        print("printing imag url");
+        updateLocalDb();
+      } catch (e) {
+        print("image upload error");
       }
     }
   }
@@ -328,6 +361,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (response.statusCode == 200) {
       print("upload result data to assessment file completed");
       return true;
+    } else {
+      print("errorrrrr-------------> upload on drive");
+      print(response.statusCode);
     }
     return false;
   }
@@ -479,5 +515,43 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       print(e);
       throw (e);
     }
+  }
+
+  Future<String> _uploadImgB64AndGetUrl(String? imgBase64) async {
+    //  print(imgBase64);
+    Map body = {
+      "bucket": "graded/rubric-score",
+      "fileExtension": "png",
+      "image": imgBase64
+    };
+    // Map<String, String> headers = {
+    //   'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    // };
+    print("calling api ");
+    final ResponseModel response = await _dbServices.postapi(
+        "${OcrOverrides.OCR_API_BASE_URL}/uploadImage",
+        body: body,
+        // headers: headers,
+        isGoogleApi: true);
+
+    if (response.statusCode == 200) {
+      print("url is recived");
+      return response.data['body']['Location'];
+    } else {
+      print(response.statusCode);
+      print("errorrrrrrrrrrrrr");
+      return "";
+    }
+  }
+
+  Future updateLocalDb() async {
+    //Save user profile to locally
+    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+
+    await _localDb.clear();
+    Globals.scoringList.forEach((CustomRubicModal e) {
+      _localDb.addData(e);
+    });
+    print("rubic data is updated on local drive");
   }
 }

@@ -63,15 +63,15 @@ class DbServices {
           isGoogleApi == true
               ? Uri.parse('$api')
               : Uri.parse('${Overrides.API_BASE_URL}$api'),
-          headers: isGoogleApi == true && headers == null
-              ? {
-                  'Content-Type': 'application/json',
-                }
-              : headers ??
-                  {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'authorization': 'Bearer ${Globals.token}'
-                  },
+          // headers: isGoogleApi == true && headers == null
+          //     ? {
+          //         'Content-Type': 'application/json',
+          //       }
+          //     : headers ??
+          //         {
+          //           'Content-Type': 'application/x-www-form-urlencoded',
+          //           'authorization': 'Bearer ${Globals.token}'
+          //         },
           body: json.encode(body));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

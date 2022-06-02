@@ -279,7 +279,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
-          padding: EdgeInsets.only(top: 16),
+          padding: EdgeInsets.only(top: 10),
           child: Utility.textWidget(
               text: Globals.ocrResultIconsName[index],
               context: context,
@@ -289,20 +289,22 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   .copyWith(fontWeight: FontWeight.bold)),
         ),
         index == 1
-            ? InkWell(
-                onTap: () {
-                  print(
-                      'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                  Utility.launchUrlOnExternalBrowser(
-                      Globals.googleDriveFolderPath!);
-                },
-                child: Container(
-                  margin: EdgeInsets.only(top: 5.0),
-                  child: Image(
-                    width: Globals.deviceType == "phone" ? 34 : 32,
-                    height: Globals.deviceType == "phone" ? 34 : 32,
-                    image: AssetImage(
-                      "assets/images/drive_ico.png",
+            ? Expanded(
+                child: InkWell(
+                  onTap: () {
+                    print(
+                        'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                    Utility.launchUrlOnExternalBrowser(
+                        Globals.googleDriveFolderPath!);
+                  },
+                  child: Container(
+                    //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                    child: Image(
+                      width: Globals.deviceType == "phone" ? 35 : 32,
+                      height: Globals.deviceType == "phone" ? 35 : 32,
+                      image: AssetImage(
+                        "assets/images/drive_ico.png",
+                      ),
                     ),
                   ),
                 ),

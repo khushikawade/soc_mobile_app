@@ -1,26 +1,24 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/common_pdf_viewer_page.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'assessment_summary.dart';
 
@@ -46,11 +44,15 @@ class _OpticalCharacterRecognitionPageState
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
 
+  bool? createCustomRubic = false;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
   @override
   void initState() {
     Globals.gradeList.clear();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
+    Globals.scoringRubric = Globals.scoringList[0].name;
   }
 
   @override
@@ -163,19 +165,26 @@ class _OpticalCharacterRecognitionPageState
               Globals.studentInfo = [];
               // _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          pointPossible: scoringColor == 0
-                              ? '2'
-                              : scoringColor == 2
-                                  ? '3'
-                                  : scoringColor == 4
-                                      ? '4'
-                                      : '2',
-                        )),
-              );
+              print(
+                  "----> ${Globals.scoringList.last.name} B64-> ${Globals.scoringList.last.imgBase64}");
+              print(Globals.scoringList);
+              // _googleBloc.add(ImageToAwsBucked(
+              //     imgBase64: Globals.scoringList.last.imgBase64));
+              //  updateLocalDb();
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => CameraScreen(
+              //             pointPossible: scoringColor == 0
+              //                 ? '2'
+              //                 : scoringColor == 2
+              //                     ? '3'
+              //                     : scoringColor == 4
+              //                         ? '4'
+              //                         : '2',
+              //           )),
+              // );
+
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(builder: (context) => CreateAssessment()),
@@ -197,6 +206,7 @@ class _OpticalCharacterRecognitionPageState
                     .copyWith(color: Theme.of(context).backgroundColor))),
         GestureDetector(
           onTap: () {
+            //   updateLocalDb();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AssessmentSummary()),
@@ -292,15 +302,16 @@ class _OpticalCharacterRecognitionPageState
 
   Widget scoringRubric() {
     return Container(
-      height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.45
-          : MediaQuery.of(context).size.width * 0.30,
+      height: MediaQuery.of(context).size.height,
+      //  MediaQuery.of(context).orientation == Orientation.portrait
+      //     ? MediaQuery.of(context).size.height * 0.45
+      //     : MediaQuery.of(context).size.width * 0.30,
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
           padding: EdgeInsets.only(
               left: MediaQuery.of(context).size.width / 70,
               right: MediaQuery.of(context).size.width / 70),
-          physics: NeverScrollableScrollPhysics(),
+          physics: ScrollPhysics(),
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent:
                   MediaQuery.of(context).orientation == Orientation.portrait
@@ -316,6 +327,20 @@ class _OpticalCharacterRecognitionPageState
                 setState(() {
                   scoringColor = index;
                 });
+                if (Globals.scoringList[index].name == "Custom") {
+                  if (createCustomRubic == true) {
+                    Utility.showSnackBar(_scaffoldKey,
+                        "Create custom rubic section at a time", context, null);
+                  } else {
+                    createCustomRubic = true;
+                    showBottomSheet();
+                  }
+                } else {
+                  Globals.scoringRubric =
+                      " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
+                }
+
+                print("printing ----> ${Globals.scoringRubric}");
               },
               child: AnimatedContainer(
                 padding: EdgeInsets.only(bottom: 5),
@@ -336,7 +361,8 @@ class _OpticalCharacterRecognitionPageState
                   // width:Globals.scoringList.length -1 == index ? MediaQuery.of(context).size.width: null,
                   alignment: Alignment.center,
                   child: Utility.textWidget(
-                    text: Globals.scoringList[index],
+                    text:
+                        "${Globals.scoringList[index].name! + " " + Globals.scoringList[index].score!}",
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                         fontWeight: FontWeight.bold,
@@ -362,36 +388,32 @@ class _OpticalCharacterRecognitionPageState
     );
   }
 
-  void getGallaryImage() async {
-    ImagePicker _imagePicker = ImagePicker();
-    XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
-    final bytes = File(image!.path).readAsBytesSync();
-    String img64 = base64Encode(bytes);
-    setState(() {
-      myImagePath = File(image.path);
-      // isLoading2 = false;
-      pathOfImage = image.path.toString();
-    });
-
-    if (myImagePath != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SuccessScreen(
-                  img64: img64,
-                  imgPath: myImagePath!,
-                  pointPossible: scoringColor == 0
-                      ? '2'
-                      : scoringColor == 2
-                          ? '3'
-                          : scoringColor == 4
-                              ? '4'
-                              : '',
-                )),
-      );
-
-      //_bloc.add(FetchTextFromImage(base64: img64));
-    }
-    // reconizeText(pathOfImage);
+  showBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => BottomSheetWidget(
+              update: _update,
+            ));
   }
+
+  void _update(bool value) {
+    value ? setState(() {}) : print("");
+  }
+
+  // Future updateLocalDb() async {
+  //   //Save user profile to locally
+  //   LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+
+  //   await _localDb.clear();
+  //   Globals.scoringList.forEach((CustomRubicModal e) {
+  //     _localDb.addData(e);
+  //   });
+  // }
 }

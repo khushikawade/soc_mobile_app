@@ -2,11 +2,11 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -40,6 +40,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   List<String> userAddedSubjectList = [];
   final _debouncer = Debouncer(milliseconds: 10);
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+
+  String? subject;
+  String? learningStandard;
+  String? subLearningStandard;
+
   @override
   initState() {
     fatchList(classNo: widget.selectedClass!);
@@ -277,6 +282,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             Bouncing(
               child: InkWell(
                 onTap: () {
+                  subLearningStandard = list[index].descriptionC;
                   if (indexGlobal == 2) {
                     setState(() {
                       nycSubIndex = index;
@@ -387,6 +393,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         index < list.length + userAddedSubjectList.length)
                 ? Bouncing(
                     onPress: () {
+                      page == 1
+                          ? subject = list[index].subjectNameC
+                          : learningStandard = list[index].domainNameC;
+
                       searchController.clear();
                       FocusManager.instance.primaryFocus?.unfocus();
 
@@ -418,7 +428,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ResultsSummary(assessmentDetailPage: false,)),
+                              builder: (context) => ResultsSummary(
+                                    assessmentDetailPage: false,
+                                  )),
                         );
                       }
                     },
@@ -628,7 +640,25 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             AppTheme.kButtonColor.withOpacity(nycSubIndex == null ? 0.5 : 1.0),
         onPressed: () async {
           if (nycSubIndex == null) return;
-          print(Globals.studentInfo!);
+
+          List<StudentAssessmentInfo> list = Globals.studentInfo!;
+          Globals.studentInfo = [];
+          list.forEach(
+            (StudentAssessmentInfo element) {
+              Globals.studentInfo!.add(StudentAssessmentInfo(
+                  studentName: element.studentName,
+                  studentId: element.studentId,
+                  studentGrade: element.studentGrade,
+                  pointpossible: element.pointpossible,
+                  grade: widget.selectedClass,
+                  subject: subject,
+                  learningStandard:
+                      learningStandard!.isEmpty ? "NA" : learningStandard,
+                  subLearningStandard:
+                      subLearningStandard!.isEmpty ? "NA" : subLearningStandard,
+                  scoringRubric: Globals.scoringRubric));
+            },
+          );
           _googleDriveBloc
               .add(UpdateDocOnDrive(studentData: Globals.studentInfo!));
           Navigator.push(
