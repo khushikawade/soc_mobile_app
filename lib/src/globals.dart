@@ -119,11 +119,11 @@ class Globals {
   static String? assessmentName;
 
   static List<CustomRubicModal> scoringList = [
-    CustomRubicModal(name: "NYS", score: '0-2', img: ""),
-    CustomRubicModal(name: "Custom", score: '', img: ""),
-    CustomRubicModal(name: "NYS", score: '0-3', img: ""),
-    CustomRubicModal(name: "None", score: '', img: ""),
-    CustomRubicModal(name: "NYS", score: '0-4', img: ""),
+    CustomRubicModal(name: "NYS", score: '0-2', imgBase64: ""),
+    CustomRubicModal(name: "Custom", score: '', imgBase64: ""),
+    CustomRubicModal(name: "NYS", score: '0-3', imgBase64: ""),
+    CustomRubicModal(name: "None", score: '', imgBase64: ""),
+    CustomRubicModal(name: "NYS", score: '0-4', imgBase64: ""),
   ];
 
   static String? scoringRubric;
