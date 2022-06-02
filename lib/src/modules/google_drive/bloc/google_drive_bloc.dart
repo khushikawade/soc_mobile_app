@@ -61,6 +61,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         }
       } catch (e) {
+        print('Inside GetDriveFolderIdEvent : $e');
         throw (e);
       }
     }
@@ -88,7 +89,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           print("Excel sheet created successfully : ${event.name!}");
         }
       } catch (e) {
-        print("error");
+        print('Inside CreateExcelSheetToDrive : $e');
         print(e);
       }
     }
@@ -110,7 +111,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 learningStandard: "Learning Standard",
                 subLearningStandard: "Sub Learning Standard",
                 scoringRubric: "Scoring Rubric"));
-        print(assessmentData);
+        print('assessmentData : $assessmentData');
 
         File file = await GoogleDriveAccess.createSheet(
             data: assessmentData, name: Globals.assessmentName!);
@@ -126,7 +127,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           GoogleDriveAccess.deleteFile(file);
         }
       } catch (e) {
-        print("inside bloc catch");
+        print('Inside UpdateDocOnDrive : $e');
         print(e);
       }
     }
@@ -137,25 +138,30 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             LocalDatabase("HistoryAssessment");
 
         List<HistoryAssessment>? _localData = await _localDb.getData();
-        _localData.clear();
+        // _localData.clear();
         if (_localData.isNotEmpty) {
+          print('Returning Local History');
           yield GoogleDriveGetSuccess(obj: _localData);
         }
+
+        //To fetch user google profile
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
+
         List<HistoryAssessment> assessmentList = [];
+
         if (Globals.googleDriveFolderId != null) {
           List<HistoryAssessment> _list = await _fetchHistoryAssessment(
               _userprofilelocalData[0].authorizationToken,
               Globals.googleDriveFolderId);
-          //     if (_list.length > 0) {
-          // for (int i = 0; i < data.length; i++) {
+
           _list.forEach((element) {
             print(element.label['trashed']);
             if (element.label['trashed'] != true) {
               assessmentList.add(element);
             }
           });
+
           await _localDb.clear();
           assessmentList.forEach((HistoryAssessment e) {
             _localDb.addData(e);
@@ -171,9 +177,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               fetchHistory: true);
         }
       } catch (e) {
+        print('Inside GetHistoryAssessmentFromDrive : $e');
         print(e);
       }
     }
+
     if (event is GetAssessmentDetail) {
       try {
         List<StudentAssessmentInfo> _list = [];
@@ -196,11 +204,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               GoogleDriveAccess.deleteFile(File(file));
             }
             print("local assessment file is deleted");
-            // if (_list.length > 0) {
-            //   yield AssessmentDetailSuccess(obj: _list);
-            // } else {
-            //   yield GoogleNoAssessment();
-            // }
             _list.insert(
                 0,
                 StudentAssessmentInfo(
@@ -217,6 +220,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         }
       } catch (e) {
+        print('Inside GetAssessmentDetail : $e');
         throw (e);
       }
     }
@@ -246,6 +250,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
       return "";
     } catch (e) {
+      print('Inside _createFolderOnDrive : $e');
       throw (e);
     }
   }
@@ -280,6 +285,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
       return "";
     } catch (e) {
+      print('Inside _getGoogleDriveFolderList : $e');
       throw (e);
     }
   }
@@ -373,6 +379,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         throw ('something_went_wrong');
       }
     } catch (e) {
+      print('Inside _fetchHistoryAssessment : $e');
       throw (e);
     }
   }
@@ -458,8 +465,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
       return "";
     } catch (e) {
-      print("donload exception");
-      print(e);
+      print('Inside downloadFile : $e');
       throw (e);
     }
   }
@@ -490,10 +496,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         return true;
       } else {
         return false;
-        //  throw ('something_went_wrong');
+        // throw ('something_went_wrong');
       }
     } catch (e) {
-      print(e);
+      print('Inside _toRefreshAuthenticationToken : $e');
       throw (e);
     }
   }

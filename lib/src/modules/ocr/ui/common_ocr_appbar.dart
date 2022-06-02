@@ -323,7 +323,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
     print(_userInformation.length);
-    print("printing length");
+    print("printing length : ${_userInformation.length}");
     return _userInformation[0];
   }
 

@@ -7,7 +7,6 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
 import 'package:Soc/src/overrides.dart';
@@ -62,86 +61,84 @@ class _OpticalCharacterRecognitionPageState
             key: GlobalKey(),
             isBackButton: false,
           ),
-          body: ListView(
-            children: [
+          body:
+              // ListView(
+              //   children: [
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 15,
-                ),
-                // height:
-                //     MediaQuery.of(context).orientation == Orientation.portrait
-                //         ? MediaQuery.of(context).size.height
-                //         : MediaQuery.of(context).size.width * 0.8,
-                child: Column(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15,
+            ),
+            // height:
+            //     MediaQuery.of(context).orientation == Orientation.portrait
+            //         ? MediaQuery.of(context).size.height
+            //         : MediaQuery.of(context).size.width * 0.8,
+            child: ListView(
+              // mainAxisAlignment: MainAxisAlignment.start,
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Utility.textWidget(
+                    text: 'Points Possible',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold)),
+                SpacerWidget(_KVertcalSpace / 4),
+                smallButton(),
+                SpacerWidget(_KVertcalSpace / 2),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Utility.textWidget(
-                        text: 'Points Possible',
+                        text: 'Scoring Rubric',
                         context: context,
                         textTheme: Theme.of(context)
                             .textTheme
                             .headline6!
                             .copyWith(fontWeight: FontWeight.bold)),
-                    SpacerWidget(_KVertcalSpace / 4),
-                    smallButton(),
-                    SpacerWidget(_KVertcalSpace / 2),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Utility.textWidget(
-                            text: 'Scoring Rubric',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(fontWeight: FontWeight.bold)),
-                        SpacerWidget(5),
-                        IconButton(
-                          onPressed: () async {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        OcrPdfViewer(
-                                          url:
-                                              "https://solved-schools.s3.us-east-2.amazonaws.com/graded_doc/NYS+Rubric+3-8+ELA+MATH.pdf",
-                                          tittle: "information",
-                                          isbuttomsheet: true,
-                                          language: Globals.selectedLanguage,
-                                        )));
-                          },
-                          icon: Icon(
-                            info,
-                            color: Colors.grey.shade400,
-                          ),
-                        )
-                      ],
-                    ),
-                    SpacerWidget(_KVertcalSpace / 4),
-                    scoringRubric(),
-                    Container(
-                      height: 0,
-                      width: 0,
-                      child: BlocListener<HomeBloc, HomeState>(
-                          bloc: _homeBloc,
-                          listener: (context, state) async {
-                            if (state is BottomNavigationBarSuccess) {
-                              AppTheme.setDynamicTheme(
-                                  Globals.appSetting, context);
-                              Globals.appSetting =
-                                  AppSetting.fromJson(state.obj);
-                              setState(() {});
-                            }
-                          },
-                          child: EmptyContainer()),
-                    ),
+                    SpacerWidget(5),
+                    IconButton(
+                      onPressed: () async {
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => OcrPdfViewer(
+                                      url:
+                                          "https://solved-schools.s3.us-east-2.amazonaws.com/graded_doc/NYS+Rubric+3-8+ELA+MATH.pdf",
+                                      tittle: "information",
+                                      isbuttomsheet: true,
+                                      language: Globals.selectedLanguage,
+                                    )));
+                      },
+                      icon: Icon(
+                        info,
+                        color: Colors.grey.shade400,
+                      ),
+                    )
                   ],
                 ),
-              )
-            ],
+                SpacerWidget(_KVertcalSpace / 4),
+                Container(
+                    height: MediaQuery.of(context).size.height * 0.47,
+                    child: scoringRubric()),
+                Container(
+                  child: BlocListener<HomeBloc, HomeState>(
+                      bloc: _homeBloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
+                          Globals.appSetting = AppSetting.fromJson(state.obj);
+                          setState(() {});
+                        }
+                      },
+                      child: EmptyContainer()),
+                ),
+              ],
+            ),
           ),
+          // ],
+          // ),
           floatingActionButton: scanButton(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
@@ -302,7 +299,7 @@ class _OpticalCharacterRecognitionPageState
           padding: EdgeInsets.only(
               left: MediaQuery.of(context).size.width / 70,
               right: MediaQuery.of(context).size.width / 70),
-          physics: ScrollPhysics(),
+          // physics: ScrollPhysics(),
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent:
                   MediaQuery.of(context).orientation == Orientation.portrait
@@ -319,7 +316,7 @@ class _OpticalCharacterRecognitionPageState
                   scoringColor = index;
                 });
                 Globals.scoringList[index].name == "Custom"
-                    ? showBottomSheet()
+                    ? customRubricBottomSheet()
                     : Globals.scoringRubric =
                         " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
                 print("printing ----> ${Globals.scoringRubric}");
@@ -370,7 +367,7 @@ class _OpticalCharacterRecognitionPageState
     );
   }
 
-  showBottomSheet() {
+  customRubricBottomSheet() {
     showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
