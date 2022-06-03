@@ -1,9 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -34,6 +33,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         var folderObject;
         // Globals.authorizationToken = event.token;
+        print(event.token);
+        print(event.folderName);
+
         folderObject = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
         //  print('FolderId = ${folderObject['id']}');
@@ -252,6 +254,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
       final ResponseModel response = await _dbServices.postapi(
+          //   '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files',
           'https://www.googleapis.com/drive/v2/files',
           headers: headers,
           body: body,
@@ -278,12 +281,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       final ResponseModel response = await _dbServices.getapi(
           'https://www.googleapis.com/drive/v3/files?fields=*',
+          //  '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files?fields=*',
           headers: headers,
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
         var data = response.data['files'];
-
+        print(data);
         for (int i = 0; i < data.length; i++) {
           if (data[i]['name'] == folderName &&
               data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
@@ -492,7 +496,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200) {
         print("New access token received");
         String newToken = response.data['body']["access_token"];
-
+        print(newToken);
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
 
@@ -502,15 +506,21 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             profilePicture: _userprofilelocalData[0].profilePicture,
             refreshToken: _userprofilelocalData[0].refreshToken,
             authorizationToken: newToken);
-        await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
+        print("now updating the token on local db");
+        // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
+
+        await UserGoogleProfile.updateUserProfile(updatedObj);
+
         //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 
+        print("token is updated ");
         return true;
       } else {
         return false;
         //  throw ('something_went_wrong');
       }
     } catch (e) {
+      print(" errrrror  ");
       print(e);
       throw (e);
     }

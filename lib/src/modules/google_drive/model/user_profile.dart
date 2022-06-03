@@ -3,10 +3,10 @@ import '../../../services/local_database/local_db.dart';
 import '../../ocr/modal/user_info.dart';
 
 class UserGoogleProfile {
-  static updateUserProfileIntoDB(updatedObj) {
-    HiveDbServices _localdb = HiveDbServices();
-    _localdb.updateListData("user_profile", 0, updatedObj);
-  }
+  // static updateUserProfileIntoDB(updatedObj) async {
+  //   HiveDbServices _localdb = HiveDbServices();
+  //   await _localdb.updateListData("user_profile", 0, updatedObj);
+  // }
 
   static Future<List<UserInformation>> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
@@ -18,12 +18,19 @@ class UserGoogleProfile {
       print(_userInformation[0].userEmail);
       print(_userInformation[0].userName);
     }
-    _localDb.close();
+    await _localDb.close();
     return _userInformation;
   }
 
   static Future<void> clearUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    _localDb.clear();
+    await _localDb.clear();
+  }
+
+  static Future<void> updateUserProfile(_userInformation) async {
+    await clearUserProfile();
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    await _localDb.addData(_userInformation);
+    await _localDb.close();
   }
 }
