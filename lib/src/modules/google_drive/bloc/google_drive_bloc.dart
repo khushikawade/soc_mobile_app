@@ -407,9 +407,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200) {
         print("assessment list is received ");
         print(response.data);
-        List<HistoryAssessment> _list = response.data['body']['items']
-            .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
-            .toList();
+        List<HistoryAssessment> _list =
+            response.data['items'] //response.data['body']['items']
+                .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
+                .toList();
         return _list;
       } else {
         throw ('something_went_wrong');
@@ -478,8 +479,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       var data = response.data;
       //['body'];
 
-      String downloadLink = data['exportLinks']
-          ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+      String downloadLink = data.length > 0
+          ? data['exportLinks'][
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+          : '';
 
       return downloadLink;
     }
