@@ -94,9 +94,11 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                     children: [
                       WebView(
                         userAgent: 'random',
-                        zoomEnabled: widget.zoomEnabled == null
+                        zoomEnabled: 
+                        widget.zoomEnabled == null
                             ? true
                             : widget.zoomEnabled!,
+                            
                         initialCookies: [],
                         backgroundColor: Theme.of(context).backgroundColor,
                         onProgress: (progress) {
@@ -113,6 +115,7 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                                     mimeType: 'text/html')
                                 .toString()
                             : '${widget.url}',
+                          
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
@@ -127,7 +130,7 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                           // widget.callBackFunction(request.url);
                           print("Changed URL::::::");
                           print(request.url);
-                          if (request.url.toString().contains('displayName')) {
+                          if (request.url.toString().contains('success')){//(request.url.toString().contains('displayName')) {
                             Navigator.pop(context, request.url);
                           }
                           return NavigationDecision.navigate;

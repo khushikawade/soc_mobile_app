@@ -234,7 +234,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             : _uploadImgB64AndGetUrl(event.imgBase64);
         print(Globals.scoringList);
         print("printing imag url");
-        // updateLocalDb();
       } catch (e) {
         print("image upload error");
       }
