@@ -147,7 +147,10 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                     ),
                   ]),
               widget.textFieldTitleTwo != null
-                  ? Column(children: [
+                  ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -169,7 +172,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                     ])
                   : Container(),
               widget.isImageField!
-                  ? Column(children: [
+                  ? Column(mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,children: [
                       Container(
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),

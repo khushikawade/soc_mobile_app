@@ -424,7 +424,7 @@ class _OpticalCharacterRecognitionPageState
         context: context,
         builder: (context) => BottomSheetWidget(
               update: _update,title: 'Scoring Rubric',
-              isImageField: true, textFieldTitleOne: 'Score Name', textFieldTitleTwo: 'Custom Score',
+              isImageField: true, textFieldTitleOne: 'Score Name', textFieldTitleTwo: 'Custom Score',isSubjectScreen: false,
             ));
   }
 
