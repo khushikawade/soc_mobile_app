@@ -119,11 +119,31 @@ class Globals {
   static String? assessmentName;
 
   static List<CustomRubicModal> scoringList = [
-    CustomRubicModal(name: "NYS", score: '0-2', imgBase64: ""),
-    CustomRubicModal(name: "Custom", score: '', imgBase64: ""),
-    CustomRubicModal(name: "NYS", score: '0-3', imgBase64: ""),
-    CustomRubicModal(name: "None", score: '', imgBase64: ""),
-    CustomRubicModal(name: "NYS", score: '0-4', imgBase64: ""),
+    CustomRubicModal(
+        name: "NYC",
+        score: '0-2',
+        imgBase64: null,
+        customOrStandardRubic: "Standard"),
+    CustomRubicModal(
+        name: "Custom",
+        score: '',
+        imgBase64: null,
+        customOrStandardRubic: "Standard"),
+    CustomRubicModal(
+        name: "NYC",
+        score: '0-3',
+        imgBase64: null,
+        customOrStandardRubic: "Standard"),
+    CustomRubicModal(
+        name: "None",
+        score: '',
+        imgBase64: null,
+        customOrStandardRubic: "Standard"),
+    CustomRubicModal(
+        name: "NYC",
+        score: '0-4',
+        imgBase64: null,
+        customOrStandardRubic: "Standard"),
   ];
 
   static String? scoringRubric;

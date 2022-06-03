@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../widgets/textfield_widget.dart';
+import 'bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
   final String? selectedClass;
@@ -184,6 +186,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           }
                           if (state is SubjectDataSuccess) {
                             indexGlobal = 0;
+                            // state.obj!.forEach((element) { userAddedSubjectList.add(element.subjectNameC!);});
+
                             return gridButton(list: state.obj!, page: 1);
                           } else if (state is NycDataSuccess) {
                             indexGlobal = 1;
@@ -494,6 +498,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           subjectIndex = index;
                         });
                       }
+                      // customRubricBottomSheet();
                       showBottomSheet();
                     },
                     child: Container(
@@ -538,6 +543,46 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           }),
     );
   }
+
+  customRubricBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => BottomSheetWidget(
+              // update: _update,
+              title: 'Add Subject',
+              isImageField: false,
+              textFieldTitleOne: 'Subject Name',
+              isSubjectScreen: true,
+              sheetHeight:
+                  MediaQuery.of(context).orientation == Orientation.landscape
+                      ? MediaQuery.of(context).size.height * 0.82
+                      : MediaQuery.of(context).size.height * 0.40,
+              // onTap: () async {
+              //   await updateList(
+              //       subjectName: addController.text,
+              //       classNo: widget.selectedClass!);
+              //   _ocrBloc.add(FatchSubjectDetails(
+              //       type: 'subject', keyword: widget.selectedClass));
+
+              //   await fatchList(classNo: widget.selectedClass!);
+              //   Navigator.pop(context, false);
+              // },
+            ));
+  }
+
+  // void _update(bool value, controller) async{
+  //       ? setState(() {
+  //           //  createCustomRubic = value;
+  //         })
+  //       : print("");
+  // }
 
   // Widget textFormField(
   //     {required TextEditingController controller, required onSaved}) {
@@ -644,8 +689,21 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         onPressed: () async {
           if (nycSubIndex == null) return;
 
+          //Save user profile to locally
+          LocalDatabase<CustomRubicModal> _localDb =
+              LocalDatabase('custom_rubic');
+          List<CustomRubicModal>? _localData = await _localDb.getData();
+          String? rubicImgUrl;
+
+          for (int i = 0; i < _localData.length; i++) {
+            rubicImgUrl = _localData[i].customOrStandardRubic == "Custom" &&
+                    _localData[i].name == Globals.scoringRubric
+                ? _localData[i].imgUrl
+                : "NA";
+          }
           List<StudentAssessmentInfo> list = Globals.studentInfo!;
           Globals.studentInfo = [];
+
           list.forEach(
             (StudentAssessmentInfo element) {
               Globals.studentInfo!.add(StudentAssessmentInfo(
@@ -659,7 +717,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       learningStandard!.isEmpty ? "NA" : learningStandard,
                   subLearningStandard:
                       subLearningStandard!.isEmpty ? "NA" : subLearningStandard,
-                  scoringRubric: Globals.scoringRubric));
+                  scoringRubric: Globals.scoringRubric,
+                  customRubricImage: rubicImgUrl));
             },
           );
           _googleDriveBloc
@@ -786,6 +845,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     List<String>? _localData = await _localDb.getData();
     if (!_localData.contains(subjectName) && subjectName != '') {
       _localData.add(subjectName);
+      // userAddedSubjectList.add(subjectName)
     } else {
       Utility.showSnackBar(
           _scaffoldKey, "Subject $subjectName already exist", context, null);
@@ -861,7 +921,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: TextFieldWidget(
-                    controller: addController, onSaved: (String value) {}),
+                    msg: "some msg",
+                    controller: addController,
+                    onSaved: (String value) {}),
               ),
               SizedBox(
                 height: 40,

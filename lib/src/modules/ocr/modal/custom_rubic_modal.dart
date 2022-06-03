@@ -12,5 +12,12 @@ class CustomRubicModal {
   String? imgBase64;
   @HiveField(3)
   String? imgUrl;
-  CustomRubicModal({this.name, this.score, this.imgBase64, this.imgUrl});
+  @HiveField(4)
+  String? customOrStandardRubic;
+  CustomRubicModal(
+      {this.name,
+      this.score,
+      this.imgBase64,
+      this.imgUrl,
+      this.customOrStandardRubic});
 }

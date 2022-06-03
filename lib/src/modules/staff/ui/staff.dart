@@ -300,24 +300,13 @@ class _StaffPageState extends State<StaffPage> {
                     //       builder: (context) =>
                     //           const OpticalCharacterRecognition()),
                     // );
-                    // Globals.localUserInfo.clear(); // COMMENT
+                    //  Globals.localUserInfo.clear(); // COMMENT
                     List<UserInformation> _profileData =
                         await UserGoogleProfile.getUserProfile();
                     if (_profileData.isEmpty) {
                       await _launchURL('Google Authentication');
                     } else {
-                      // List<UserInformation> _userprofilelocalData =
-                      //     await UserGoogleProfile.getUserProfile();
-                      _ocrBloc.add(VerifyUserWithDatabase(
-                          email: _profileData[0].userEmail));
-
-                      //Creating a assessment folder in users google drive to maintain all the assessments together at one place
-                      _googleDriveBloc.add(GetDriveFolderIdEvent(
-                          //  filePath: file,
-                          token: _profileData[0].authorizationToken,
-                          folderName: "Solved Assessment",
-                          refreshtoken: _profileData[0].refreshToken));
-
+                      verifyUserAndGetDriveFolder();
                       pushNewScreen(
                         context,
                         screen: OpticalCharacterRecognition(),

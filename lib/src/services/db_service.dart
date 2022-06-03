@@ -57,11 +57,16 @@ class DbServices {
   //   }
   // }
 
-  postapi(api, {body, headers, bool? isGoogleApi}) async {
+  postapi(
+    api, {
+    body,
+    headers,
+    bool? isGoogleApi,
+  }) async {
     try {
       final response = await httpClient.post(
           isGoogleApi == true
-              ? Uri.parse('https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/googleAPIBridge?api=$api')
+              ? Uri.parse('$api')
               : Uri.parse('${Overrides.API_BASE_URL}$api'),
           headers: isGoogleApi == true && headers == null
               ? {

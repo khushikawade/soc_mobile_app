@@ -81,20 +81,40 @@ class _CameraScreenState extends State<CameraScreen>
               MediaQuery.of(context).orientation == Orientation.portrait
                   ? 50
                   : 60,
-          leading: IconButton(
-              onPressed: () async {
-                setState(() {
-                  flash = !flash;
-                  isflashOff = !isflashOff;
-                });
-                await controller!
-                    .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
-              },
-              icon: Icon(
-                isflashOff == true ? Icons.flash_off : Icons.flash_on,
-                color: Colors.white,
-                size: 30,
-              )),
+          leading: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Globals.studentInfo!.length == 0
+                  ? IconButton(
+                      onPressed: () {
+                        //To dispose the snackbar message before navigating back if exist
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        IconData(0xe80d,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        color: AppTheme.kButtonColor,
+                      ),
+                    )
+                  : Container(),
+              IconButton(
+                  onPressed: () async {
+                    setState(() {
+                      flash = !flash;
+                      isflashOff = !isflashOff;
+                    });
+                    await controller!
+                        .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
+                  },
+                  icon: Icon(
+                    isflashOff == true ? Icons.flash_off : Icons.flash_on,
+                    color: Colors.white,
+                    size: 30,
+                  )),
+            ],
+          ),
           actions: [
             Container(
                 padding: EdgeInsets.only(right: 5),

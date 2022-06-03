@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -44,8 +45,9 @@ class _OpticalCharacterRecognitionPageState
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
 
   // bool? createCustomRubic = false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
+
   @override
   void initState() {
     Globals.gradeList.clear();
@@ -158,6 +160,14 @@ class _OpticalCharacterRecognitionPageState
         FloatingActionButton.extended(
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
+              // if (createCustomRubic == true &&
+              //     Globals.scoringList.last.imgBase64 != null) {
+              //   print("heeleeelo");
+              //   _googleBloc.add(ImageToAwsBucked(
+              //       imgBase64: Globals.scoringList.last.imgBase64));
+              // } else {
+              updateLocalDb();
+              // }
               _bloc.add(SaveSubjectListDetails());
               // Globals.studentInfo = [];
               Globals.studentInfo!.clear();
@@ -165,28 +175,34 @@ class _OpticalCharacterRecognitionPageState
               //UNCOMMENT
               print(
                   "----> ${Globals.scoringList.last.name} B64-> ${Globals.scoringList.last.imgBase64}");
-              print(Globals.scoringList);
-              _googleBloc.add(ImageToAwsBucked(
-                  imgBase64: Globals.scoringList.last.imgBase64));
-              updateLocalDb();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          pointPossible: scoringColor == 0
-                              ? '2'
-                              : scoringColor == 2
-                                  ? '3'
-                                  : scoringColor == 4
-                                      ? '4'
-                                      : '2',
-                        )),
-              );
+              // print(Globals.scoringList);
+              // if (createCustomRubic == true &&
+              //     Globals.scoringList.last.imgBase64 != null) {
+              //   print("heeleeelo");
+              //   _googleBloc.add(ImageToAwsBucked(
+              //       imgBase64: Globals.scoringList.last.imgBase64));
+              // } else {
+              //   updateLocalDb();
+              // }
 
               // Navigator.push(
               //   context,
-              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              //   MaterialPageRoute(
+              //       builder: (context) => CameraScreen(
+              //             pointPossible: scoringColor == 0
+              //                 ? '2'
+              //                 : scoringColor == 2
+              //                     ? '3'
+              //                     : scoringColor == 4
+              //                         ? '4'
+              //                         : '2',
+              //           )),
               // );
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
+              );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
@@ -204,7 +220,15 @@ class _OpticalCharacterRecognitionPageState
                     .copyWith(color: Theme.of(context).backgroundColor))),
         GestureDetector(
           onTap: () {
+            updateLocalDb();
+            // if (createCustomRubic == true &&
+            //     Globals.scoringList.last.imgBase64 != null) {
+            //   print("heeleeelo");
+            //   _googleBloc.add(ImageToAwsBucked(
+            //       imgBase64: Globals.scoringList.last.imgBase64));
+            // } else {
             //   updateLocalDb();
+            // }
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AssessmentSummary()),
@@ -326,16 +350,15 @@ class _OpticalCharacterRecognitionPageState
                   scoringColor = index;
                 });
                 if (Globals.scoringList[index].name == "Custom") {
-                //   if (createCustomRubic == true) {
-                //     Utility.showSnackBar(_scaffoldKey,
-                //         "Create custom rubic section at a time", context, null);
-                //   } else {
-                //     createCustomRubic = true;
-                    customRubricBottomSheet();
-                //   }
+                  //   if (createCustomRubic == true) {
+                  //     Utility.showSnackBar(_scaffoldKey,
+                  //         "Create custom rubic section at a time", context, null);
+                  //   } else {
+                  //     createCustomRubic = true;
+                  customRubricBottomSheet();
+                  //   }
                 } else {
-                  Globals.scoringRubric =
-                      " ${Globals.scoringList[index].name} ${Globals.scoringList[index].score}";
+                  Globals.scoringRubric = Globals.scoringList[index].name;
                 }
 
                 print("printing ----> ${Globals.scoringRubric}");
@@ -397,12 +420,17 @@ class _OpticalCharacterRecognitionPageState
         elevation: 10,
         context: context,
         builder: (context) => BottomSheetWidget(
-              update: _update,
+              update: _update,title: 'Scoring Rubric',
+              isImageField: true, textFieldTitleOne: 'Score Name', textFieldTitleTwo: 'Custom Score',
             ));
   }
 
   void _update(bool value) {
-    value ? setState(() {}) : print("");
+    value
+        ? setState(() {
+            //  createCustomRubic = value;
+          })
+        : print("");
   }
 
   Future updateLocalDb() async {

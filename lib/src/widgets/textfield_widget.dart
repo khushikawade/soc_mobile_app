@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import '../styles/theme.dart';
 
 class TextFieldWidget extends StatefulWidget {
-  TextFieldWidget({Key? key, required this.controller, required this.onSaved})
+  TextFieldWidget(
+      {Key? key,
+      required this.controller,
+      required this.onSaved,
+      required this.msg})
       : super(key: key);
   final TextEditingController controller;
   final onSaved;
+  final String? msg;
 
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
@@ -18,6 +23,12 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      validator: (text) {
+        if (text == null || text.isEmpty) {
+          return widget.msg;
+        }
+        return null;
+      },
       autofocus: false,
       textAlign: TextAlign.start,
       style: Theme.of(context)
