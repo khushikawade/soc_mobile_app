@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
+import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -15,8 +16,10 @@ import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
+  final bool? isScanMore;
 
-  const CameraScreen({Key? key, this.pointPossible}) : super(key: key);
+  const CameraScreen({Key? key, this.pointPossible, this.isScanMore})
+      : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
@@ -81,20 +84,40 @@ class _CameraScreenState extends State<CameraScreen>
               MediaQuery.of(context).orientation == Orientation.portrait
                   ? 50
                   : 60,
-          leading: IconButton(
-              onPressed: () async {
-                setState(() {
-                  flash = !flash;
-                  isflashOff = !isflashOff;
-                });
-                await controller!
-                    .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
-              },
-              icon: Icon(
-                isflashOff == true ? Icons.flash_off : Icons.flash_on,
-                color: Colors.white,
-                size: 30,
-              )),
+          leading: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Globals.studentInfo!.length == 0
+                  ? IconButton(
+                      onPressed: () {
+                        //To dispose the snackbar message before navigating back if exist
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        IconData(0xe80d,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        color: AppTheme.kButtonColor,
+                      ),
+                    )
+                  : Container(),
+              IconButton(
+                  onPressed: () async {
+                    setState(() {
+                      flash = !flash;
+                      isflashOff = !isflashOff;
+                    });
+                    await controller!
+                        .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
+                  },
+                  icon: Icon(
+                    isflashOff == true ? Icons.flash_off : Icons.flash_on,
+                    color: Colors.white,
+                    size: 30,
+                  )),
+            ],
+          ),
           actions: [
             Container(
                 padding: EdgeInsets.only(right: 5),
@@ -109,11 +132,19 @@ class _CameraScreenState extends State<CameraScreen>
                   onPressed: () {
                     Globals.fileId = "";
                     Globals.studentInfo!.length > 0
-                        ? Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateAssessment()),
-                          )
+                        ? widget.isScanMore == true
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResultsSummary(
+                                          assessmentDetailPage: false,
+                                        )),
+                              )
+                            : Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreateAssessment()),
+                              )
                         : Utility.showSnackBar(
                             _scaffoldKey,
                             "No Assessment Found! Scan Assessment Before Moving Forword",

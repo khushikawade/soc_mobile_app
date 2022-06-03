@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
@@ -11,38 +10,56 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import '../../../widgets/textfield_widget.dart';
 
 class BottomSheetWidget extends StatefulWidget {
-  BottomSheetWidget({Key? key, required this.update}) : super(key: key);
-  final ValueChanged<bool> update;
+  BottomSheetWidget(
+      {Key? key,
+      this.update,
+      required this.title,
+      required this.isImageField,
+      required this.textFieldTitleOne,
+      this.textFieldTitleTwo,
+      this.sheetHeight,
+      this.isSubjectScreen,
+      this.onTap,
+      this.valueChanged})
+      : super(key: key);
+  final ValueChanged<bool>? update;
+  final bool? isImageField;
+  final String? title;
+  final String? textFieldTitleOne;
+  final String? textFieldTitleTwo;
+  final double? sheetHeight;
+  final bool? isSubjectScreen;
+  final VoidCallback? onTap;
+  final ValueChanged? valueChanged;
 
   @override
   State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
 }
 
 class _BottomSheetWidgetState extends State<BottomSheetWidget> {
-  final nameController = TextEditingController();
-  final customScoreController = TextEditingController();
+  final textFieldControllerOne = TextEditingController();
+  final textFieldController2 = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   File? imageFile;
-
   // final formKey = new GlobalKey<FormState>();
-
   final _formKey = GlobalKey<FormState>();
-
   final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       padding: MediaQuery.of(context).viewInsets / 1.5,
       controller: ModalScrollController.of(context),
       child: Container(
-        height: MediaQuery.of(context).orientation == Orientation.landscape
-            ? MediaQuery.of(context).size.height * 0.82
-            : MediaQuery.of(context).size.height *
-                0.60, //MediaQuery.of(context).size.height * 0.5,
+        height: widget.sheetHeight != null
+            ? widget.sheetHeight
+            : MediaQuery.of(context).orientation == Orientation.landscape
+                ? MediaQuery.of(context).size.height * 0.82
+                : MediaQuery.of(context).size.height *
+                    0.60, //MediaQuery.of(context).size.height * 0.5,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
@@ -78,7 +95,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                       // padding: EdgeInsets.symmetric(vertical: 10),
                       child: Utility.textWidget(
                           context: context,
-                          text: 'Scoring Rubic',
+                          text: widget.title!,
                           textTheme:
                               Theme.of(context).textTheme.headline6!.copyWith(
                                     color: Color(0xff000000) ==
@@ -103,150 +120,172 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               SizedBox(
                 height: 10,
               ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
-                child: Utility.textWidget(
-                    context: context,
-                    text: 'Score Name ',
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(color: Colors.black)),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
-                child: TextFieldWidget(
-                    msg: "Some msg",
-                    controller: nameController,
-                    onSaved: (String value) {}),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Utility.textWidget(
-                    context: context,
-                    text: 'Custom Score',
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(color: Colors.black)),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TextFieldWidget(
-                    msg: "Some msg",
-                    controller: customScoreController,
-                    onSaved: (String value) {}),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Utility.textWidget(
-                    context: context,
-                    text: 'Add Image',
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(color: Colors.black)),
-              ),
-              SpacerWidget(5),
-              // InkWell(
-              //   onTap: () {
-              //     showActionsheet(context);
-              //   },
-              //   child: Padding(
-              //     padding: EdgeInsets.symmetric(
-              //       horizontal: 20,
-              //     ),
-              //     child: textFormField(
-              //         msg: "Add Name Please",
-              //         controller: nameController,
-              //         onSaved: (String value) {}),
-              //   ),
-              // ),
-              SpacerWidget(10),
-              InkWell(
-                onTap: () {
-                  showActionsheet(context);
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        border:
-                            Border.all(width: 2, color: Colors.grey.shade200),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                    // color: Colors.grey.shade200,
-
-                    height: 115,
-                    width: MediaQuery.of(context).size.width,
-                    child: imageFile != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.file(
-                              imageFile!,
-                              fit: BoxFit.fitWidth,
-                            ),
-                          )
-                        : Container(
-                            child: Center(
-                              child: Icon(
-                                Icons.add_a_photo,
-                                color: AppTheme.kButtonColor.withOpacity(1.0),
-                              ),
-                            ),
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: Utility.textWidget(
+                          context: context,
+                          text: widget.textFieldTitleOne!,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(color: Colors.black)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: TextFieldWidget(
+                          msg: "Field is required",
+                          controller: textFieldControllerOne,
+                          onSaved: (String value) {}),
+                    ),
+                  ]),
+              widget.textFieldTitleTwo != null
+                  ? Column(children: [
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: Utility.textWidget(
+                            context: context,
+                            text: widget.textFieldTitleTwo!,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(color: Colors.black)),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: TextFieldWidget(
+                            msg: "Field is required",
+                            controller: textFieldController2,
+                            onSaved: (String value) {}),
+                      ),
+                    ])
+                  : Container(),
+              widget.isImageField!
+                  ? Column(children: [
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        child: Utility.textWidget(
+                            context: context,
+                            text: 'Add Image',
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(color: Colors.black)),
+                      ),
+                      SpacerWidget(5),
+                      // InkWell(
+                      //   onTap: () {
+                      //     showActionsheet(context);
+                      //   },
+                      //   child: Padding(
+                      //     padding: EdgeInsets.symmetric(
+                      //       horizontal: 20,
+                      //     ),
+                      //     child: textFormField(
+                      //         msg: "Add Name Please",
+                      //         controller: nameController,
+                      //         onSaved: (String value) {}),
+                      //   ),
+                      // ),
+                      SpacerWidget(10),
+                      InkWell(
+                        onTap: () {
+                          showActionsheet(context);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 40,
                           ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                border: Border.all(
+                                    width: 2, color: Colors.grey.shade200),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
+                            // color: Colors.grey.shade200,
 
-                    //  imageFile != null
-                    //     ? Image.file(
-                    //         imageFile!,
-                    //         fit: BoxFit.fitWidth,
-                    //       )
-                    //     : Container(
-                    //         child: Center(
-                    //           child: Icon(Icons.add_a_photo),
-                    //         ),
-                    //       ),
-                  ),
-                ),
-              ),
+                            height: 115,
+                            width: MediaQuery.of(context).size.width,
+                            child: imageFile != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.file(
+                                      imageFile!,
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                  )
+                                : Container(
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.add_a_photo,
+                                        color: AppTheme.kButtonColor
+                                            .withOpacity(1.0),
+                                      ),
+                                    ),
+                                  ),
+
+                            //  imageFile != null
+                            //     ? Image.file(
+                            //         imageFile!,
+                            //         fit: BoxFit.fitWidth,
+                            //       )
+                            //     : Container(
+                            //         child: Center(
+                            //           child: Icon(Icons.add_a_photo),
+                            //         ),
+                            //       ),
+                          ),
+                        ),
+                      ),
+                    ])
+                  : Container(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
                 child: FloatingActionButton.extended(
                     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        // TODO submit
-                        print("calling submit");
-                        if (imageFile != null) {
-                          List<int> imageBytes = imageFile!.readAsBytesSync();
-                          String imageB64 = base64Encode(imageBytes);
-
-                          Globals.scoringList.add(CustomRubicModal(
-                              name: nameController.text,
-                              score: customScoreController.text,
-                              imgBase64: imageB64,
-                              customOrStandardRubic: "Custom"));
-                          print("calling get img url");
-                          _googleBloc.add(ImageToAwsBucked(
-                              imgBase64: Globals.scoringList.last.imgBase64));
+                        if (widget.isSubjectScreen!) {
+                          widget.valueChanged!(textFieldControllerOne);
                         } else {
-                          print("save score and name on local db");
-                          Globals.scoringList.add(CustomRubicModal(
-                              name: nameController.text,
-                              score: customScoreController.text,
-                              customOrStandardRubic: "Custom"));
-                        }
+                          // TODO submit
 
-                        widget.update(true);
-                        Navigator.pop(
-                          context,
-                        );
+                          print("calling submit");
+                          if (imageFile != null) {
+                            List<int> imageBytes = imageFile!.readAsBytesSync();
+                            String imageB64 = base64Encode(imageBytes);
+
+                            Globals.scoringList.add(CustomRubicModal(
+                                name: textFieldControllerOne.text,
+                                score: textFieldController2.text,
+                                imgBase64: imageB64,
+                                customOrStandardRubic: "Custom"));
+                            print("calling get img url");
+                            _googleBloc.add(ImageToAwsBucked(
+                                imgBase64: Globals.scoringList.last.imgBase64));
+                          } else {
+                            print("save score and name on local db");
+                            Globals.scoringList.add(CustomRubicModal(
+                                name: textFieldControllerOne.text,
+                                score: textFieldController2.text,
+                                customOrStandardRubic: "Custom"));
+                          }
+
+                          widget.update!(true);
+                          Navigator.pop(
+                            context,
+                          );
+                        }
                       }
 
                       // if (nameController.text.isNotEmpty &&

@@ -61,7 +61,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           print('Authentication required');
           bool result =
               await _toRefreshAuthenticationToken(event.refreshtoken!);
-          if (!result) {
+          if (result) {
+            List<UserInformation> _userprofilelocalData =
+                await UserGoogleProfile.getUserProfile();
+            GetDriveFolderIdEvent(
+                //  filePath: file,
+                token: _userprofilelocalData[0].authorizationToken,
+                folderName: "Solved Assessment",
+                refreshtoken: _userprofilelocalData[0].refreshToken);
+          } else if (!result) {
             await _toRefreshAuthenticationToken(event.refreshtoken!);
           }
         }
@@ -143,7 +151,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             LocalDatabase("HistoryAssessment");
 
         List<HistoryAssessment>? _localData = await _localDb.getData();
-        _localData.clear();
+        // _localData.clear();
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
         }
@@ -498,9 +506,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           body: body,
           isGoogleApi: true);
       if (response.statusCode == 200) {
-        print("New access token received");
         String newToken = response.data['body']["access_token"];
-        print(newToken);
+        print("New access token received : $newToken");
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
 

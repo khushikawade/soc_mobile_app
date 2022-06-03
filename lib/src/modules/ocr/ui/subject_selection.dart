@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../widgets/textfield_widget.dart';
+import 'bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
   final String? selectedClass;
@@ -185,6 +186,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           }
                           if (state is SubjectDataSuccess) {
                             indexGlobal = 0;
+                            // state.obj!.forEach((element) { userAddedSubjectList.add(element.subjectNameC!);});
+
                             return gridButton(list: state.obj!, page: 1);
                           } else if (state is NycDataSuccess) {
                             indexGlobal = 1;
@@ -495,7 +498,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           subjectIndex = index;
                         });
                       }
-                      showBottomSheet();
+                      customRubricBottomSheet();
+                      // showBottomSheet();
                     },
                     child: Container(
                       child: AnimatedContainer(
@@ -540,41 +544,37 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  // Widget textFormField(
-  //     {required TextEditingController controller, required onSaved}) {
-  //   return TextFormField(
-  //     autofocus: true,
-  //     //
-  //     textAlign: TextAlign.start,
-  //     style: Theme.of(context)
-  //         .textTheme
-  //         .headline6!
-  //         .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-  //     controller: controller,
-  //     cursorColor: Theme.of(context).colorScheme.primaryVariant,
-  //     decoration: InputDecoration(
-  //       fillColor: Colors.transparent,
-  //       enabledBorder: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme.kButtonColor,
-  //         ),
-  //       ),
-  //       focusedBorder: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme
-  //               .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
-  //         ),
-  //       ),
-  //       contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-  //       border: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme.kButtonColor,
-  //         ),
-  //       ),
-  //     ),
-  //     onChanged: onSaved,
-  //   );
-  // }
+  customRubricBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => BottomSheetWidget(
+              title: 'Add Subject',
+              isImageField: false,
+              textFieldTitleOne: 'Subject Name',
+              isSubjectScreen: true,
+              sheetHeight:
+                  MediaQuery.of(context).orientation == Orientation.landscape
+                      ? MediaQuery.of(context).size.height * 0.82
+                      : MediaQuery.of(context).size.height * 0.40,
+              valueChanged: (controller) async {
+                await updateList(
+                    subjectName: controller.text,
+                    classNo: widget.selectedClass!);
+                _ocrBloc.add(FatchSubjectDetails(
+                    type: 'subject', keyword: widget.selectedClass));
+
+                await fatchList(classNo: widget.selectedClass!);
+                Navigator.pop(context, false);
+              },
+            ));
+  }
 
   Widget _buildSearchbar(
       {required TextEditingController controller, required onSaved}) {
@@ -801,6 +801,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     List<String>? _localData = await _localDb.getData();
     if (!_localData.contains(subjectName) && subjectName != '') {
       _localData.add(subjectName);
+      // userAddedSubjectList.add(subjectName)
     } else {
       Utility.showSnackBar(
           _scaffoldKey, "Subject $subjectName already exist", context, null);
