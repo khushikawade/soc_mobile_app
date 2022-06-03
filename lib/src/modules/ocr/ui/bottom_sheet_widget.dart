@@ -21,10 +21,11 @@ class BottomSheetWidget extends StatefulWidget {
       required this.textFieldTitleOne,
       this.textFieldTitleTwo,
       this.sheetHeight,
-      this.isSubjectScreen,
+      required this.isSubjectScreen,
       this.onTap,
       this.valueChanged})
       : super(key: key);
+
   final ValueChanged<bool>? update;
   final bool? isImageField;
   final String? title;
@@ -147,107 +148,113 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                     ),
                   ]),
               widget.textFieldTitleTwo != null
-                  ? Column(children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        child: Utility.textWidget(
-                            context: context,
-                            text: widget.textFieldTitleTwo!,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(color: Colors.black)),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: TextFieldWidget(
-                            msg: "Field is required",
-                            controller: textFieldController2,
-                            onSaved: (String value) {}),
-                      ),
-                    ])
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            child: Utility.textWidget(
+                                context: context,
+                                text: widget.textFieldTitleTwo!,
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(color: Colors.black)),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: TextFieldWidget(
+                                msg: "Field is required",
+                                controller: textFieldController2,
+                                onSaved: (String value) {}),
+                          ),
+                        ])
                   : Container(),
               widget.isImageField!
-                  ? Column(children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        child: Utility.textWidget(
-                            context: context,
-                            text: 'Add Image',
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(color: Colors.black)),
-                      ),
-                      SpacerWidget(5),
-                      // InkWell(
-                      //   onTap: () {
-                      //     showActionsheet(context);
-                      //   },
-                      //   child: Padding(
-                      //     padding: EdgeInsets.symmetric(
-                      //       horizontal: 20,
-                      //     ),
-                      //     child: textFormField(
-                      //         msg: "Add Name Please",
-                      //         controller: nameController,
-                      //         onSaved: (String value) {}),
-                      //   ),
-                      // ),
-                      SpacerWidget(10),
-                      InkWell(
-                        onTap: () {
-                          showActionsheet(context);
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 40,
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            child: Utility.textWidget(
+                                context: context,
+                                text: 'Add Image',
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(color: Colors.black)),
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                border: Border.all(
-                                    width: 2, color: Colors.grey.shade200),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            // color: Colors.grey.shade200,
+                          SpacerWidget(5),
+                          // InkWell(
+                          //   onTap: () {
+                          //     showActionsheet(context);
+                          //   },
+                          //   child: Padding(
+                          //     padding: EdgeInsets.symmetric(
+                          //       horizontal: 20,
+                          //     ),
+                          //     child: textFormField(
+                          //         msg: "Add Name Please",
+                          //         controller: nameController,
+                          //         onSaved: (String value) {}),
+                          //   ),
+                          // ),
+                          SpacerWidget(10),
+                          InkWell(
+                            onTap: () {
+                              showActionsheet(context);
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 40,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    border: Border.all(
+                                        width: 2, color: Colors.grey.shade200),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                // color: Colors.grey.shade200,
 
-                            height: 115,
-                            width: MediaQuery.of(context).size.width,
-                            child: imageFile != null
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.file(
-                                      imageFile!,
-                                      fit: BoxFit.fitWidth,
-                                    ),
-                                  )
-                                : Container(
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.add_a_photo,
-                                        color: AppTheme.kButtonColor
-                                            .withOpacity(1.0),
+                                height: 115,
+                                width: MediaQuery.of(context).size.width,
+                                child: imageFile != null
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.file(
+                                          imageFile!,
+                                          fit: BoxFit.fitWidth,
+                                        ),
+                                      )
+                                    : Container(
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.add_a_photo,
+                                            color: AppTheme.kButtonColor
+                                                .withOpacity(1.0),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
 
-                            //  imageFile != null
-                            //     ? Image.file(
-                            //         imageFile!,
-                            //         fit: BoxFit.fitWidth,
-                            //       )
-                            //     : Container(
-                            //         child: Center(
-                            //           child: Icon(Icons.add_a_photo),
-                            //         ),
-                            //       ),
+                                //  imageFile != null
+                                //     ? Image.file(
+                                //         imageFile!,
+                                //         fit: BoxFit.fitWidth,
+                                //       )
+                                //     : Container(
+                                //         child: Center(
+                                //           child: Icon(Icons.add_a_photo),
+                                //         ),
+                                //       ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ])
+                        ])
                   : Container(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),

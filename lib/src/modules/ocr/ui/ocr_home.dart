@@ -430,6 +430,7 @@ class _OpticalCharacterRecognitionPageState
               isImageField: true,
               textFieldTitleOne: 'Score Name',
               textFieldTitleTwo: 'Custom Score',
+              isSubjectScreen: false,
             ));
   }
 

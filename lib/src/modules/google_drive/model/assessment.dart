@@ -13,18 +13,27 @@ class HistoryAssessment {
   final label;
   @HiveField(4)
   String? webContentLink;
+  @HiveField(5)
+  String? createdDate;
+  @HiveField(6)
+  String? modifiedDate;
   HistoryAssessment(
       {this.title,
       this.description,
       this.fileid,
       this.label,
-      this.webContentLink});
+      this.webContentLink,
+      this.createdDate,
+      this.modifiedDate});
 
   factory HistoryAssessment.fromJson(Map<String, dynamic> json) =>
       HistoryAssessment(
-          title: json['title'] as String?,
-          description: json['description'] as String?,
-          fileid: json['id'] as String?,
-          label: json['labels'],
-          webContentLink: json['alternateLink'] as String?);
+        title: json['title'] as String?,
+        description: json['description'] as String?,
+        fileid: json['id'] as String?,
+        label: json['labels'],
+        webContentLink: json['alternateLink'] as String?,
+        createdDate: json['createdDate'] as String?,
+        modifiedDate: json['modifiedDate'] as String?,
+      );
 }

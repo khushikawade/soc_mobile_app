@@ -571,6 +571,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     type: 'subject', keyword: widget.selectedClass));
 
                 await fatchList(classNo: widget.selectedClass!);
+                controller.clear();
                 Navigator.pop(context, false);
               },
             ));
