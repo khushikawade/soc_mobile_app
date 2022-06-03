@@ -143,7 +143,7 @@ class _StaffPageState extends State<StaffPage> {
     //Save user profile to locally
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);
-    _localDb.close();
+    await _localDb.close();
   }
 
   // Future<List<UserInformation>> getUserProfile() async {
