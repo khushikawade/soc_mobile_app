@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
@@ -59,7 +58,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           print('Authentication required');
           bool result =
               await _toRefreshAuthenticationToken(event.refreshtoken!);
-          if (!result) {
+              if(result){
+                 List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
+               GetDriveFolderIdEvent(
+                          //  filePath: file,
+                          token: _userprofilelocalData[0].authorizationToken,
+                          folderName: "Solved Assessment",
+                          refreshtoken: _userprofilelocalData[0].refreshToken);
+                }
+         else if (!result) {
             await _toRefreshAuthenticationToken(event.refreshtoken!);
           }
         }
@@ -497,8 +505,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           body: body,
           isGoogleApi: true);
       if (response.statusCode == 200) {
-        print("New access token received");
         String newToken = response.data['body']["access_token"];
+        print("New access token received : $newToken");
 
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
@@ -509,7 +517,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             profilePicture: _userprofilelocalData[0].profilePicture,
             refreshToken: _userprofilelocalData[0].refreshToken,
             authorizationToken: newToken);
+        // UserGoogleProfile.clearUserProfile();
+
+        // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+        // await _localDb.addData(updatedObj);
         await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
+
         //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 
         return true;

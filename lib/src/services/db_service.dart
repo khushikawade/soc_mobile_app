@@ -61,7 +61,7 @@ class DbServices {
     try {
       final response = await httpClient.post(
           isGoogleApi == true
-              ? Uri.parse('$api')
+              ? Uri.parse('https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/googleAPIBridge?api=$api')
               : Uri.parse('${Overrides.API_BASE_URL}$api'),
           headers: isGoogleApi == true && headers == null
               ? {
