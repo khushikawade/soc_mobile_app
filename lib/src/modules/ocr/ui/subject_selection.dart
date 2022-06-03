@@ -584,42 +584,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   //       : print("");
   // }
 
-  // Widget textFormField(
-  //     {required TextEditingController controller, required onSaved}) {
-  //   return TextFormField(
-  //     autofocus: true,
-  //     //
-  //     textAlign: TextAlign.start,
-  //     style: Theme.of(context)
-  //         .textTheme
-  //         .headline6!
-  //         .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-  //     controller: controller,
-  //     cursorColor: Theme.of(context).colorScheme.primaryVariant,
-  //     decoration: InputDecoration(
-  //       fillColor: Colors.transparent,
-  //       enabledBorder: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme.kButtonColor,
-  //         ),
-  //       ),
-  //       focusedBorder: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme
-  //               .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
-  //         ),
-  //       ),
-  //       contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-  //       border: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme.kButtonColor,
-  //         ),
-  //       ),
-  //     ),
-  //     onChanged: onSaved,
-  //   );
-  // }
-
   Widget _buildSearchbar(
       {required TextEditingController controller, required onSaved}) {
     return SizedBox(

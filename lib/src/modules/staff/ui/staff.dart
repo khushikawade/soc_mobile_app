@@ -67,8 +67,8 @@ class _StaffPageState extends State<StaffPage> {
       _homeBloc.add(FetchStandardNavigationBar());
     }
     _scrollController.addListener(_scrollListener);
-    UserGoogleProfile.getUserProfile();
-    _getRubricScoreLocalDb();
+
+    _getLocalDb();
   }
 
   _scrollListener() async {
@@ -118,7 +118,9 @@ class _StaffPageState extends State<StaffPage> {
       value = value.split('?')[1] ?? '';
       //Save user profile
       await saveUserProfile(value);
-      await verifyUserAndGetDriveFolder();
+      List<UserInformation> _userprofilelocalData =
+          await UserGoogleProfile.getUserProfile();
+      verifyUserAndGetDriveFolder(_userprofilelocalData);
       // Push to the grading system
       pushNewScreen(
         context,
@@ -141,15 +143,45 @@ class _StaffPageState extends State<StaffPage> {
     //Save user profile to locally
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);
+    _localDb.close();
   }
 
-  verifyUserAndGetDriveFolder() async {
-    List<UserInformation> _userprofilelocalData =
-        await UserGoogleProfile.getUserProfile();
+  // Future<List<UserInformation>> getUserProfile() async {
+  //   LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+  //   List<UserInformation> _userInformation = await _localDb.getData();
+  //   return _userInformation;
+  // }
 
+  // saveUserProfile(profileData) async {
+  //   var profile = profileData.split('+');
+  //   Globals.localUserInfo.clear();
+
+  //   await Globals.localUserInfo.addData(UserInformation(
+  //       userName: profile[0].toString().split('=')[1],
+  //       userEmail: profile[1].toString().split('=')[1],
+  //       profilePicture: profile[2].toString().split('=')[1],
+  //       authorizationToken:
+  //           profile[3].toString().split('=')[1].replaceAll('#', '')));
+
+  //   final temp = await Globals.localUserInfo.getData();
+  //   Globals.userprofilelocalData = temp;
+
+  //   setState(() {});
+  //   _ocrBloc.add(
+  //       VerifyUserWithDatabase(email: profile[1].toString().split('=')[1]));
+  //   //Creating a assessment folder in users google drive to maintain all the assessments together at one place
+  //   _googleDriveBloc.add(GetDriveFolderIdEvent(
+  //       //  filePath: file,
+  //       token: profile[3].toString().split('=')[1].replaceAll('#', ''),
+  //       folderName: "Assessments"));
+  // }
+
+  verifyUserAndGetDriveFolder(
+      List<UserInformation> _userprofilelocalData) async {
+    // List<UserInformation> _userprofilelocalData =
+    //     await UserGoogleProfile.getUserProfile();
     _ocrBloc
         .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
-
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
@@ -294,19 +326,15 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: !isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) =>
-                    //           const OpticalCharacterRecognition()),
-                    // );
-                    //  Globals.localUserInfo.clear(); // COMMENT
+                    // Globals.localUserInfo.clear(); // COMMENT
                     List<UserInformation> _profileData =
                         await UserGoogleProfile.getUserProfile();
                     if (_profileData.isEmpty) {
                       await _launchURL('Google Authentication');
                     } else {
-                      verifyUserAndGetDriveFolder();
+                      // List<UserInformation> _userprofilelocalData =
+                      //     await UserGoogleProfile.getUserProfile();
+                      verifyUserAndGetDriveFolder(_profileData);
                       pushNewScreen(
                         context,
                         screen: OpticalCharacterRecognition(),
@@ -339,19 +367,20 @@ class _StaffPageState extends State<StaffPage> {
     );
   }
 
-  _getRubricScoreLocalDb() async {
+  _getLocalDb() async {
     LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
     List<CustomRubicModal> _localData = await _localDb.getData();
 
     if (_localData.isEmpty) {
-      print("_getRubricScoreLocalDb local db is empty");
+      print("local db is empty");
       Globals.scoringList.forEach((CustomRubicModal e) {
         _localDb.addData(e);
       });
     } else {
-      print("_getRubricScoreLocalDb local db is not empty : ");
+      print("local db is not empty");
       Globals.scoringList = [];
       Globals.scoringList.addAll(_localData);
+      // _localDb.close()
     }
   }
 }
