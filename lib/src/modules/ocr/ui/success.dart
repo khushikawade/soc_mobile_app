@@ -5,14 +5,14 @@ import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
+
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:flutter/gestures.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,11 +20,13 @@ class SuccessScreen extends StatefulWidget {
   final String img64;
   final File imgPath;
   final String? pointPossible;
+  final bool? isScanMore;
   SuccessScreen(
       {Key? key,
       required this.img64,
       required this.imgPath,
-      this.pointPossible})
+      this.pointPossible,
+      this.isScanMore})
       : super(key: key);
 
   @override
@@ -78,6 +80,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (_) => CameraScreen(
+                                      isScanMore: widget.isScanMore,
                                       pointPossible: widget.pointPossible,
                                     )));
                       },
@@ -119,6 +122,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                    isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
                                   )),
                         );
@@ -180,7 +184,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
-  Widget failureScreen({required String id, required String grade}) {
+  Widget failureScreen({
+    required String id,
+    required String grade,
+  }) {
     return ListView(
       // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -195,6 +202,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .withOpacity(0.5))),
         textFormField(
             controller: nameController,
+            isFailure: true,
+            errormsg: "some msg",
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
               studentName = nameController.text;
@@ -212,6 +221,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         textFormField(
             controller: idController,
             keyboardType: TextInputType.number,
+            isFailure: true,
+            errormsg: "some msg",
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
               studentId = idController.text;
@@ -254,6 +265,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .withOpacity(0.3))),
         textFormField(
             controller: nameController,
+            isFailure: false,
+            errormsg: "some msg",
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
               onChange = true;
@@ -270,6 +283,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         textFormField(
             controller: idController,
             keyboardType: TextInputType.number,
+            errormsg: "some msg",
+            isFailure: false,
             onSaved: (String value) {
               updateDetails(isUpdateData: true);
               onChange = true;
@@ -417,7 +432,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget textFormField(
       {required TextEditingController controller,
       required onSaved,
-      TextInputType? keyboardType}) {
+      TextInputType? keyboardType,
+      required bool? isFailure,
+      required String? errormsg}) {
     return TextFormField(
       // keyboardType: keyboardType ?? null,
       //textAlign: TextAlign.start,
@@ -428,17 +445,27 @@ class _SuccessScreenState extends State<SuccessScreen> {
       controller: controller,
       cursorColor: Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
+        errorText: controller.text.isEmpty ? errormsg : null,
         contentPadding: EdgeInsets.only(top: 10, bottom: 10),
         fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-          ),
+              // color: controller.text.isNotEmpty
+              //     ? Theme.of(context)
+              //         .colorScheme
+              //         .primaryVariant
+              //         .withOpacity(0.5)
+              //     : Colors.red
+              ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-              // color:AppTheme.kButtonColor,
+              // color: controller.text.isEmpty
+              //     ? Theme.of(context)
+              //         .colorScheme
+              //         .primaryVariant
+              //         .withOpacity(0.5)
+              //     : Colors.red
               ),
         ),
         border: UnderlineInputBorder(
@@ -459,6 +486,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => CameraScreen(
+                    isScanMore: widget.isScanMore,
                     pointPossible: widget.pointPossible,
                   )),
         );

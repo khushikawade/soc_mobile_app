@@ -18,7 +18,7 @@ class CameraScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
 
-  const CameraScreen({Key? key, this.pointPossible, this.isScanMore})
+  const CameraScreen({Key? key, this.pointPossible, required this.isScanMore})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -211,6 +211,7 @@ class _CameraScreenState extends State<CameraScreen>
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SuccessScreen(
+                                          isScanMore: widget.isScanMore,
                                           img64: img64,
                                           imgPath: imageFile,
                                           pointPossible: widget.pointPossible,

@@ -120,9 +120,10 @@ class _OpticalCharacterRecognitionPageState
                       },
                       icon: Icon(
                         info,
-                        color:Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xff111C20)
-                    : Color(0xffF7F8F9),//Colors.grey.shade400,
+                        color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9), //Colors.grey.shade400,
                       ),
                     )
                   ],
@@ -188,24 +189,25 @@ class _OpticalCharacterRecognitionPageState
               //   updateLocalDb();
               // }
 
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => CameraScreen(
-              //             pointPossible: scoringColor == 0
-              //                 ? '2'
-              //                 : scoringColor == 2
-              //                     ? '3'
-              //                     : scoringColor == 4
-              //                         ? '4'
-              //                         : '2',
-              //           )),
-              // );
-
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateAssessment()),
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          isScanMore: false,
+                          pointPossible: scoringColor == 0
+                              ? '2'
+                              : scoringColor == 2
+                                  ? '3'
+                                  : scoringColor == 4
+                                      ? '4'
+                                      : '2',
+                        )),
               );
+
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              // );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
@@ -423,8 +425,11 @@ class _OpticalCharacterRecognitionPageState
         elevation: 10,
         context: context,
         builder: (context) => BottomSheetWidget(
-              update: _update,title: 'Scoring Rubric',
-              isImageField: true, textFieldTitleOne: 'Score Name', textFieldTitleTwo: 'Custom Score',
+              update: _update,
+              title: 'Scoring Rubric',
+              isImageField: true,
+              textFieldTitleOne: 'Score Name',
+              textFieldTitleTwo: 'Custom Score',
             ));
   }
 

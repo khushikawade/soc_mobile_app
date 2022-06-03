@@ -263,16 +263,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
       final ResponseModel response = await _dbServices.postapi(
-          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files',
-          //   'https://www.googleapis.com/drive/v2/files',
+          // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files',
+          'https://www.googleapis.com/drive/v2/files',
           headers: headers,
           body: body,
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
         //  String id = response.data['id'];
-        print("Folder created successfully : ${response.data['body']['id']}");
-        return Globals.googleDriveFolderId = response.data['body']['id'];
+        //   print("Folder created successfully : ${response.data['body']['id']}");
+        return Globals.googleDriveFolderId = response.data
+            // ['body']
+            ['id'];
       }
       return "";
     } catch (e) {
@@ -289,13 +291,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       };
 
       final ResponseModel response = await _dbServices.getapi(
-          // 'https://www.googleapis.com/drive/v3/files?fields=*',
-          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files?fields=*',
+          'https://www.googleapis.com/drive/v3/files?fields=*',
+          //     '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files?fields=*',
           headers: headers,
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
-        var data = response.data['body']['files'];
+        var data = response.data
+            //   ['body']
+            ['files'];
         print(data);
         for (int i = 0; i < data.length; i++) {
           if (data[i]['name'] == folderName &&
@@ -332,7 +336,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     };
 
     final ResponseModel response = await _dbServices.postapi(
-        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files',
+        // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files',
+        'https://www.googleapis.com/drive/v3/files',
         body: body,
         headers: headers,
         isGoogleApi: true);
@@ -340,7 +345,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (response.statusCode == 200) {
       print("file created successfully : ${response.data['id']}");
 
-      String fileId = response.data['body']['id'];
+      String fileId = response.data
+          // ['body']
+          ['id'];
       Globals.fileId = fileId;
       bool result = await _updateSheetPermission(accessToken!, fileId);
       if (!result) {
@@ -369,7 +376,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     };
 
     final ResponseModel response = await _dbServices.patchapi(
-      '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
+      //'${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
+      "https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media",
       headers: headers,
       body: file.readAsBytesSync(),
     );
@@ -419,7 +427,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     final body = {"role": "reader", "type": "anyone"};
 
     final ResponseModel response = await _dbServices.postapi(
-        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$folderId/permissions',
+        'https://www.googleapis.com/drive/v3/files/$folderId/permissions',
+        // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$folderId/permissions',
         headers: headers,
         body: body,
         isGoogleApi: true);
@@ -437,14 +446,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'authorization': 'Bearer $token'
     };
     final ResponseModel response = await _dbServices.getapi(
-        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
       print(" get file link   ----------->");
       var data = response.data;
-      Globals.shareableLink = response.data['body']['webViewLink'];
+      Globals.shareableLink = response.data
+          //  ['body']
+          ['webViewLink'];
       return true;
     }
     return false;
@@ -456,14 +468,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'Content-Type': 'application/json; charset=UTF-8'
     };
     final ResponseModel response = await _dbServices.getapi(
-        //'https://www.googleapis.com/drive/v3/files/$fileId?fields=webContentLink',
-        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        'https://www.googleapis.com/drive/v3/files/$fileId?fields=webContentLink',
+        //  '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
       print("detail assessment link is received");
-      var data = response.data['body'];
+      var data = response.data;
+      //['body'];
 
       String downloadLink = data['exportLinks']
           ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
