@@ -105,6 +105,7 @@ class _OpticalCharacterRecognitionPageState
                             .copyWith(fontWeight: FontWeight.bold)),
                     SpacerWidget(5),
                     IconButton(
+                      padding: EdgeInsets.only(top: 2),
                       onPressed: () async {
                         await Navigator.push(
                             context,
@@ -119,7 +120,9 @@ class _OpticalCharacterRecognitionPageState
                       },
                       icon: Icon(
                         info,
-                        color: Colors.grey.shade400,
+                        color:Color(0xff000000) != Theme.of(context).backgroundColor
+                    ? Color(0xff111C20)
+                    : Color(0xffF7F8F9),//Colors.grey.shade400,
                       ),
                     )
                   ],

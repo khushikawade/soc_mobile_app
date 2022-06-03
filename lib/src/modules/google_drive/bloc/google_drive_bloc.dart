@@ -150,7 +150,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             LocalDatabase("HistoryAssessment");
 
         List<HistoryAssessment>? _localData = await _localDb.getData();
-        _localData.clear();
+        // _localData.clear();
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
         }

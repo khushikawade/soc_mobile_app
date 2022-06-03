@@ -28,7 +28,7 @@ class ResultsSummary extends StatefulWidget {
 class _ResultsSummaryState extends State<ResultsSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
-  int assessmentCount = 0;
+  int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
 
@@ -65,7 +65,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               key: GlobalKey(),
-              isBackButton: true,
+              isBackButton: widget.assessmentDetailPage,
               assessmentDetailPage: widget.assessmentDetailPage,
               actionIcon: IconButton(
                 onPressed: () {
@@ -147,7 +147,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
                         Text(
-                            "${assessmentCount > 1 ? assessmentCount - 1 : assessmentCount}",
+                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount! - 1 : ''}",
                             style: Theme.of(context).textTheme.headline3),
                       ],
                     ),
@@ -409,8 +409,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CameraScreen()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CameraScreen(
+                                isScanMore: true,
+                              )));
                 },
                 icon: Icon(
                     IconData(0xe875,

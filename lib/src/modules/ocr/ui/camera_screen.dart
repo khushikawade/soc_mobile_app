@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
+import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -15,8 +16,10 @@ import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
+  final bool? isScanMore;
 
-  const CameraScreen({Key? key, this.pointPossible}) : super(key: key);
+  const CameraScreen({Key? key, this.pointPossible, this.isScanMore})
+      : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
@@ -129,11 +132,19 @@ class _CameraScreenState extends State<CameraScreen>
                   onPressed: () {
                     Globals.fileId = "";
                     Globals.studentInfo!.length > 0
-                        ? Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateAssessment()),
-                          )
+                        ? widget.isScanMore == true
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResultsSummary(
+                                          assessmentDetailPage: false,
+                                        )),
+                              )
+                            : Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreateAssessment()),
+                              )
                         : Utility.showSnackBar(
                             _scaffoldKey,
                             "No Assessment Found! Scan Assessment Before Moving Forword",
