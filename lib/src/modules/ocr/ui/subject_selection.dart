@@ -498,8 +498,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           subjectIndex = index;
                         });
                       }
-                      // customRubricBottomSheet();
-                      showBottomSheet();
+                      customRubricBottomSheet();
+                      // showBottomSheet();
                     },
                     child: Container(
                       child: AnimatedContainer(
@@ -555,7 +555,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         elevation: 10,
         context: context,
         builder: (context) => BottomSheetWidget(
-              // update: _update,
               title: 'Add Subject',
               isImageField: false,
               textFieldTitleOne: 'Subject Name',
@@ -564,25 +563,18 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   MediaQuery.of(context).orientation == Orientation.landscape
                       ? MediaQuery.of(context).size.height * 0.82
                       : MediaQuery.of(context).size.height * 0.40,
-              // onTap: () async {
-              //   await updateList(
-              //       subjectName: addController.text,
-              //       classNo: widget.selectedClass!);
-              //   _ocrBloc.add(FatchSubjectDetails(
-              //       type: 'subject', keyword: widget.selectedClass));
+              valueChanged: (controller) async {
+                await updateList(
+                    subjectName: controller.text,
+                    classNo: widget.selectedClass!);
+                _ocrBloc.add(FatchSubjectDetails(
+                    type: 'subject', keyword: widget.selectedClass));
 
-              //   await fatchList(classNo: widget.selectedClass!);
-              //   Navigator.pop(context, false);
-              // },
+                await fatchList(classNo: widget.selectedClass!);
+                Navigator.pop(context, false);
+              },
             ));
   }
-
-  // void _update(bool value, controller) async{
-  //       ? setState(() {
-  //           //  createCustomRubic = value;
-  //         })
-  //       : print("");
-  // }
 
   Widget _buildSearchbar(
       {required TextEditingController controller, required onSaved}) {

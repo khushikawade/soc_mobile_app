@@ -22,7 +22,8 @@ class BottomSheetWidget extends StatefulWidget {
       this.textFieldTitleTwo,
       this.sheetHeight,
       this.isSubjectScreen,
-      this.onTap})
+      this.onTap,
+      this.valueChanged})
       : super(key: key);
   final ValueChanged<bool>? update;
   final bool? isImageField;
@@ -32,6 +33,7 @@ class BottomSheetWidget extends StatefulWidget {
   final double? sheetHeight;
   final bool? isSubjectScreen;
   final VoidCallback? onTap;
+  final ValueChanged? valueChanged;
 
   @override
   State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
@@ -251,74 +253,71 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
                 child: FloatingActionButton.extended(
                     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-                    onPressed: widget.onTap != null
-                        ? widget.onTap
-                        : () async {
-                            // if(widget.isSubjectScreen!){
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        if (widget.isSubjectScreen!) {
+                          widget.valueChanged!(textFieldControllerOne);
+                        } else {
+                          // TODO submit
 
-                            // }else{
+                          print("calling submit");
+                          if (imageFile != null) {
+                            List<int> imageBytes = imageFile!.readAsBytesSync();
+                            String imageB64 = base64Encode(imageBytes);
 
-                            // TODO submit if (_formKey.currentState!.validate()) {
+                            Globals.scoringList.add(CustomRubicModal(
+                                name: textFieldControllerOne.text,
+                                score: textFieldController2.text,
+                                imgBase64: imageB64,
+                                customOrStandardRubic: "Custom"));
+                            print("calling get img url");
+                            _googleBloc.add(ImageToAwsBucked(
+                                imgBase64: Globals.scoringList.last.imgBase64));
+                          } else {
+                            print("save score and name on local db");
+                            Globals.scoringList.add(CustomRubicModal(
+                                name: textFieldControllerOne.text,
+                                score: textFieldController2.text,
+                                customOrStandardRubic: "Custom"));
+                          }
 
-                            print("calling submit");
-                            if (imageFile != null) {
-                              List<int> imageBytes =
-                                  imageFile!.readAsBytesSync();
-                              String imageB64 = base64Encode(imageBytes);
+                          widget.update!(true);
+                          Navigator.pop(
+                            context,
+                          );
+                        }
+                      }
 
-                              Globals.scoringList.add(CustomRubicModal(
-                                  name: textFieldControllerOne.text,
-                                  score: textFieldController2.text,
-                                  imgBase64: imageB64,
-                                  customOrStandardRubic: "Custom"));
-                              print("calling get img url");
-                              _googleBloc.add(ImageToAwsBucked(
-                                  imgBase64:
-                                      Globals.scoringList.last.imgBase64));
-                            } else {
-                              print("save score and name on local db");
-                              Globals.scoringList.add(CustomRubicModal(
-                                  name: textFieldControllerOne.text,
-                                  score: textFieldController2.text,
-                                  customOrStandardRubic: "Custom"));
-                            }
+                      // if (nameController.text.isNotEmpty &&
+                      //     customScoreController.text.isNotEmpty) {
+                      //   List<int> imageBytes;
+                      //   if (imageFile != null) {
+                      //     imageBytes = imageFile!.readAsBytesSync();
+                      //     String imageB64 = base64Encode(imageBytes);
+                      //     print("image64 is recived --------->$imageB64");
+                      //     Globals.scoringList.add(CustomRubicModal(
+                      //         name: nameController.text,
+                      //         score: customScoreController.text,
+                      //         imgBase64: imageB64,
+                      //         customOrStandardRubic: "Custom"));
 
-                            widget.update!(true);
-                            Navigator.pop(
-                              context,
-                            );
-// }
+                      //     _googleBloc.add(ImageToAwsBucked(
+                      //         imgBase64: Globals.scoringList.last.imgBase64));
+                      //   } else {
+                      //     Globals.scoringList.add(CustomRubicModal(
+                      //         name: nameController.text,
+                      //         score: customScoreController.text,
+                      //         customOrStandardRubic: "Custom"));
+                      //   }
 
-                            // if (nameController.text.isNotEmpty &&
-                            //     customScoreController.text.isNotEmpty) {
-                            //   List<int> imageBytes;
-                            //   if (imageFile != null) {
-                            //     imageBytes = imageFile!.readAsBytesSync();
-                            //     String imageB64 = base64Encode(imageBytes);
-                            //     print("image64 is recived --------->$imageB64");
-                            //     Globals.scoringList.add(CustomRubicModal(
-                            //         name: nameController.text,
-                            //         score: customScoreController.text,
-                            //         imgBase64: imageB64,
-                            //         customOrStandardRubic: "Custom"));
-
-                            //     _googleBloc.add(ImageToAwsBucked(
-                            //         imgBase64: Globals.scoringList.last.imgBase64));
-                            //   } else {
-                            //     Globals.scoringList.add(CustomRubicModal(
-                            //         name: nameController.text,
-                            //         score: customScoreController.text,
-                            //         customOrStandardRubic: "Custom"));
-                            //   }
-
-                            //   widget.update(true);
-                            //   Navigator.pop(
-                            //     context,
-                            //   );
-                            // } else {
-                            //   print("error");
-                            // }
-                          },
+                      //   widget.update(true);
+                      //   Navigator.pop(
+                      //     context,
+                      //   );
+                      // } else {
+                      //   print("error");
+                      // }
+                    },
                     label: Row(
                       children: [
                         Utility.textWidget(
