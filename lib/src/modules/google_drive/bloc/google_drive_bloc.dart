@@ -219,18 +219,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             // } else {
             //   yield GoogleNoAssessment();
             // }
-            _list.insert(
-                0,
-                StudentAssessmentInfo(
-                    studentId: "Id",
-                    studentName: "Name",
-                    studentGrade: "Points Earned",
-                    pointpossible: "Point Possible",
-                    grade: "Grade",
-                    subject: "Subject",
-                    learningStandard: "Learning Standard",
-                    subLearningStandard: "Sub Learning Standard",
-                    scoringRubric: "Scoring Rubric"));
+            // if (!_list.contains('Id')) {
+              // _list.insert(
+              //     0,
+              //     StudentAssessmentInfo(
+              //         studentId: "Id",
+              //         studentName: "Name",
+              //         studentGrade: "Points Earned",
+              //         pointpossible: "Point Possible",
+              //         grade: "Grade",
+              //         subject: "Subject",
+              //         learningStandard: "Learning Standard",
+              //         subLearningStandard: "Sub Learning Standard",
+              //         scoringRubric: "Scoring Rubric"));
+            // }
             yield AssessmentDetailSuccess(obj: _list);
           } else {
             print("Assessment file URL not found1");

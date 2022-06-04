@@ -263,7 +263,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postapimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);
 

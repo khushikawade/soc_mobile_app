@@ -147,7 +147,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
                         Text(
-                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount! : ''}",
+                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount!-1 : ''}",
                             style: Theme.of(context).textTheme.headline3),
                       ],
                     ),
@@ -354,7 +354,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         scrollDirection: Axis.vertical,
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
-          return _buildList(index, _list, context);
+          return Column(
+            children: [
+              Container(child: ListTile(leading: Utility.textWidget(
+                text: 'Student Name',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!),trailing: Utility.textWidget(
+                text: 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!),)),
+              _buildList(index, _list, context),
+            ],
+          );
         },
       ),
     );

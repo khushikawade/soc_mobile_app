@@ -156,21 +156,17 @@ class DbServices {
     }
   }
 
-
-  postapimain(
-    api, {
-    body,
-    headers,
-    bool? isGoogleApi,
-  }) async {
+//Use it for all the previous aws APIs, Do not use it for google APIs
+//'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/'
+  postapimain(api, {body, headers}) async {
     try {
       final response = await httpClient.post(
-              Uri.parse('${Overrides.API_BASE_URL}$api'),
-          headers: 
-                  {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'authorization': 'Bearer ${Globals.token}'
-                  },
+          Uri.parse('${Overrides.API_BASE_URL}$api'),
+          headers: headers ??
+              {
+                'Content-Type': 'application/json',
+                'authorization': 'Bearer ${Globals.token}'
+              },
           body: json.encode(body));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -191,5 +187,4 @@ class DbServices {
       }
     }
   }
-
 }
