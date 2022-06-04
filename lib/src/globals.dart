@@ -1,5 +1,4 @@
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/material.dart';
@@ -58,22 +57,34 @@ class Globals {
   static String? themeType;
   static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
   static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
+  static List<NotificationList> notificationList = [];
+  static List<Item> socialList = [];
+  static PackageInfo? packageInfo;
+  static bool isNewTap = false;
+  static BuildContext? context;
+  static int? urlIndex;
+  static late WebViewController? webViewController1;
+  static String? homeUrl;
+  static PersistentTabController? controller;
+  static bool? disableDarkMode;
+
+  //OCR Feature Globals
   static List pointsList = [2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
 
-  static List subjectDetailsList = [
-    'NY-3.OA.1 Interpret Products of whole numbers',
-    'NY-3.OA.2  Interpret whole-number quotients of whole numbers.',
-    'NY-3.OA.3. Use multiplication and division within 100 to solve word problems…',
-    'NY-3.OA.4 Determine unknown whole number in multiplication or division…'
-  ];
-  static List nycDetailsList = [
-    'N&OBase Ten',
-    'Geometry',
-    'N&OFractions',
-    'Measurement'
-  ];
-  static List subjectList = ['Maths', 'Science', 'ELA', '+'];
+  // static List subjectDetailsList = [
+  //   'NY-3.OA.1 Interpret Products of whole numbers',
+  //   'NY-3.OA.2  Interpret whole-number quotients of whole numbers.',
+  //   'NY-3.OA.3. Use multiplication and division within 100 to solve word problems…',
+  //   'NY-3.OA.4 Determine unknown whole number in multiplication or division…'
+  // ];
+  // static List nycDetailsList = [
+  //   'N&OBase Ten',
+  //   'Geometry',
+  //   'N&OFractions',
+  //   'Measurement'
+  // ];
+  // static List subjectList = ['Maths', 'Science', 'ELA', '+'];
   static List classList = [
     'K',
     '1',
@@ -91,22 +102,12 @@ class Globals {
     '?',
     '+'
   ];
-  static List<NotificationList> notificationList = [];
-  static List<Item> socialList = [];
-  static PackageInfo? packageInfo;
-  static bool isNewTap = false;
-  static BuildContext? context;
-  static int? urlIndex;
-  static late WebViewController? webViewController1;
-  static String? homeUrl;
-  static PersistentTabController? controller;
-  static bool? disableDarkMode;
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe870];
   static List ocrResultIconsName = ["Share", "Drive", "History", "Download"];
-  static List finishedList = [
-    "Scan another assessment",
-    "View all assessment results"
-  ];
+  // static List finishedList = [
+  //   "Scan another assessment",
+  //   "View all assessment results"
+  // ];
   static List gradeList = [];
   static bool iscameraPopup = true;
   static String? googleDriveFolderId;
@@ -117,34 +118,6 @@ class Globals {
   static String? shareableLink;
   static String? pointpossible = '2';
   static String? assessmentName;
-
-  static List<CustomRubicModal> scoringList = [
-    CustomRubicModal(
-        name: "NYC",
-        score: '0-2',
-        imgBase64: null,
-        customOrStandardRubic: "Standard"),
-    CustomRubicModal(
-        name: "Custom",
-        score: '',
-        imgBase64: null,
-        customOrStandardRubic: "Standard"),
-    CustomRubicModal(
-        name: "NYC",
-        score: '0-3',
-        imgBase64: null,
-        customOrStandardRubic: "Standard"),
-    CustomRubicModal(
-        name: "None",
-        score: '',
-        imgBase64: null,
-        customOrStandardRubic: "Standard"),
-    CustomRubicModal(
-        name: "NYC",
-        score: '0-4',
-        imgBase64: null,
-        customOrStandardRubic: "Standard"),
-  ];
 
   static String? scoringRubric;
 

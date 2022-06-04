@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -14,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
+import '../../ocr/modal/custom_rubic_modal.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
 import '../model/user_profile.dart';
 part 'google_drive_event.dart';
@@ -151,6 +151,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             LocalDatabase("HistoryAssessment");
 
         List<HistoryAssessment>? _localData = await _localDb.getData();
+        _localData = await listSort(_localData);
         // _localData.clear();
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
@@ -170,6 +171,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               assessmentList.add(element);
             }
           });
+          assessmentList = await listSort(assessmentList);
           await _localDb.clear();
           assessmentList.forEach((HistoryAssessment e) {
             _localDb.addData(e);
@@ -238,17 +240,26 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is ImageToAwsBucked) {
       try {
         String imgUrl = await _uploadImgB64AndGetUrl(event.imgBase64);
-        //  int index = Globals.scoringList.length - 1;
-        print(Globals.scoringList);
+        //  int index = RubricScoreList.scoringList.length - 1;
+        print(RubricScoreList.scoringList);
         imgUrl != ""
-            ? Globals.scoringList.last.imgUrl = imgUrl
+            ? RubricScoreList.scoringList.last.imgUrl = imgUrl
             : _uploadImgB64AndGetUrl(event.imgBase64);
-        print(Globals.scoringList);
+        print(RubricScoreList.scoringList);
         print("printing imag url");
       } catch (e) {
         print("image upload error");
       }
     }
+  }
+
+  Future<List<HistoryAssessment>> listSort(List<HistoryAssessment> list) async {
+    list.forEach((element) {
+      if (element.modifiedDate != null) {
+        list.sort((a, b) => b.modifiedDate!.compareTo(a.modifiedDate!));
+      }
+    });
+    return list;
   }
 
   Future<String> _createFolderOnDrive(
@@ -585,7 +596,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //   LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
 
   //   await _localDb.clear();
-  //   Globals.scoringList.forEach((CustomRubicModal e) {
+  //   RubricScoreList.scoringList.forEach((CustomRubicModal e) {
   //     _localDb.addData(e);
   //   });
   //   print("rubic data is updated on local drive");

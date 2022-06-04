@@ -373,13 +373,13 @@ class _StaffPageState extends State<StaffPage> {
 
     if (_localData.isEmpty) {
       print("local db is empty");
-      Globals.scoringList.forEach((CustomRubicModal e) {
+      RubricScoreList.scoringList.forEach((CustomRubicModal e) {
         _localDb.addData(e);
       });
     } else {
       print("local db is not empty");
-      Globals.scoringList = [];
-      Globals.scoringList.addAll(_localData);
+      RubricScoreList.scoringList = [];
+      RubricScoreList.scoringList.addAll(_localData);
       // _localDb.close()
     }
   }

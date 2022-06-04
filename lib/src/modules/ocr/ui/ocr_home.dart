@@ -14,10 +14,12 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
+import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
+import '../../../widgets/common_image_widget.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
 import 'create_assessment.dart';
@@ -43,6 +45,7 @@ class _OpticalCharacterRecognitionPageState
   File? myImagePath;
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // bool? createCustomRubic = false;
   // final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -53,7 +56,7 @@ class _OpticalCharacterRecognitionPageState
     Globals.gradeList.clear();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
-    Globals.scoringRubric = Globals.scoringList[0].name;
+    Globals.scoringRubric = RubricScoreList.scoringList[0].name;
   }
 
   @override
@@ -62,6 +65,7 @@ class _OpticalCharacterRecognitionPageState
       children: [
         CommonBackGroundImgWidget(),
         Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
             key: GlobalKey(),
@@ -165,10 +169,10 @@ class _OpticalCharacterRecognitionPageState
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
               // if (createCustomRubic == true &&
-              //     Globals.scoringList.last.imgBase64 != null) {
+              //     RubricScoreList.scoringList.last.imgBase64 != null) {
               //   print("heeleeelo");
               //   _googleBloc.add(ImageToAwsBucked(
-              //       imgBase64: Globals.scoringList.last.imgBase64));
+              //       imgBase64: RubricScoreList.scoringList.last.imgBase64));
               // } else {
               updateLocalDb();
               // }
@@ -178,13 +182,13 @@ class _OpticalCharacterRecognitionPageState
               // _bloc.add(SaveSubjectListDetails());
               //UNCOMMENT
               print(
-                  "----> ${Globals.scoringList.last.name} B64-> ${Globals.scoringList.last.imgBase64}");
-              // print(Globals.scoringList);
+                  "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
+              // print(RubricScoreList.scoringList);
               // if (createCustomRubic == true &&
-              //     Globals.scoringList.last.imgBase64 != null) {
+              //     RubricScoreList.scoringList.last.imgBase64 != null) {
               //   print("heeleeelo");
               //   _googleBloc.add(ImageToAwsBucked(
-              //       imgBase64: Globals.scoringList.last.imgBase64));
+              //       imgBase64: RubricScoreList.scoringList.last.imgBase64));
               // } else {
               //   updateLocalDb();
               // }
@@ -227,10 +231,10 @@ class _OpticalCharacterRecognitionPageState
           onTap: () {
             updateLocalDb();
             // if (createCustomRubic == true &&
-            //     Globals.scoringList.last.imgBase64 != null) {
+            //     RubricScoreList.scoringList.last.imgBase64 != null) {
             //   print("heeleeelo");
             //   _googleBloc.add(ImageToAwsBucked(
-            //       imgBase64: Globals.scoringList.last.imgBase64));
+            //       imgBase64: RubricScoreList.scoringList.last.imgBase64));
             // } else {
             //   updateLocalDb();
             // }
@@ -347,14 +351,20 @@ class _OpticalCharacterRecognitionPageState
               childAspectRatio: 6 / 3.5,
               crossAxisSpacing: 12,
               mainAxisSpacing: 20),
-          itemCount: Globals.scoringList.length,
+          itemCount: RubricScoreList.scoringList.length,
           itemBuilder: (BuildContext ctx, index) {
             return InkWell(
+              onLongPress: () {
+                print(
+                    'Rubric image : ${RubricScoreList.scoringList[index].imgUrl}');
+                showCustomRubricImage(
+                    RubricScoreList.scoringList[index].imgUrl!);
+              },
               onTap: () {
                 setState(() {
                   scoringColor = index;
                 });
-                if (Globals.scoringList[index].name == "Custom") {
+                if (RubricScoreList.scoringList[index].name == "Custom") {
                   //   if (createCustomRubic == true) {
                   //     Utility.showSnackBar(_scaffoldKey,
                   //         "Create custom rubic section at a time", context, null);
@@ -363,7 +373,9 @@ class _OpticalCharacterRecognitionPageState
                   customRubricBottomSheet();
                   //   }
                 } else {
-                  Globals.scoringRubric = Globals.scoringList[index].name;
+                  //To take the rubric name to result screen and save the same in excel sheet
+                  Globals.scoringRubric =
+                      RubricScoreList.scoringList[index].name;
                 }
 
                 print("printing ----> ${Globals.scoringRubric}");
@@ -384,11 +396,11 @@ class _OpticalCharacterRecognitionPageState
                 ),
                 duration: Duration(microseconds: 100),
                 child: Container(
-                  // width:Globals.scoringList.length -1 == index ? MediaQuery.of(context).size.width: null,
+                  // width:RubricScoreList.scoringList.length -1 == index ? MediaQuery.of(context).size.width: null,
                   alignment: Alignment.center,
                   child: Utility.textWidget(
                     text:
-                        "${Globals.scoringList[index].name! + " " + Globals.scoringList[index].score!}",
+                        "${RubricScoreList.scoringList[index].name! + " " + RubricScoreList.scoringList[index].score!}",
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                         fontWeight: FontWeight.bold,
@@ -442,12 +454,23 @@ class _OpticalCharacterRecognitionPageState
         : print("");
   }
 
+  void showCustomRubricImage(imageURL) {
+    imageURL != null
+        ? showDialog(
+            context: context,
+            builder: (_) => ImagePopup(
+                // Implemented Dark mode image
+                imageURL: imageURL))
+        : Utility.showSnackBar(_scaffoldKey,
+            'Image not found for the selected scoring rubric', context, null);
+  }
+
   Future updateLocalDb() async {
     //Save user profile to locally
     LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
 
     await _localDb.clear();
-    Globals.scoringList.forEach((CustomRubicModal e) {
+    RubricScoreList.scoringList.forEach((CustomRubicModal e) {
       _localDb.addData(e);
     });
   }
