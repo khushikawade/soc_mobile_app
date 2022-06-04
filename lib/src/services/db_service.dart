@@ -75,7 +75,7 @@ class DbServices {
               : headers ??
                   {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'authorization': 'Bearer ${Globals.token}'
+                    // 'authorization': 'Bearer ${Globals.token}'
                   },
           body: json.encode(body));
       if (response.statusCode == 200) {
@@ -155,4 +155,41 @@ class DbServices {
       }
     }
   }
+
+
+  postapimain(
+    api, {
+    body,
+    headers,
+    bool? isGoogleApi,
+  }) async {
+    try {
+      final response = await httpClient.post(
+              Uri.parse('${Overrides.API_BASE_URL}$api'),
+          headers: 
+                  {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'authorization': 'Bearer ${Globals.token}'
+                  },
+          body: json.encode(body));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      } else {
+        if (response.body == 'Unauthorized') {
+          ResponseModel _res = await postapi(api, body: body, headers: headers);
+          return _res;
+        }
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      }
+    } catch (e) {
+      if (e.toString().contains('Failed host lookup')) {
+        throw ('NO_CONNECTION');
+      } else {
+        throw (e);
+      }
+    }
+  }
+
 }

@@ -147,7 +147,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
                         Text(
-                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount! - 1 : ''}",
+                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount! : ''}",
                             style: Theme.of(context).textTheme.headline3),
                       ],
                     ),
@@ -343,8 +343,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   Widget listView(List<StudentAssessmentInfo> _list) {
     return Container(
+      // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.72
+          ? MediaQuery.of(context).size.height * 0.65
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
         controller: _scrollController,

@@ -199,11 +199,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             _userprofilelocalData[0].authorizationToken, event.fileId);
 
         if (link != "") {
+          print("detail assessment link is received");
           String file = await downloadFile(
               link, "test3", (await getApplicationDocumentsDirectory()).path);
           print("assessment downloaded");
 
           if (file != "") {
+            print("Assessment file found");
             //  List<StudentAssessmentInfo>
             _list = await GoogleDriveAccess.excelToJson(file);
             print("assessment data is converted into json ");
@@ -230,7 +232,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                     subLearningStandard: "Sub Learning Standard",
                     scoringRubric: "Scoring Rubric"));
             yield AssessmentDetailSuccess(obj: _list);
+          } else {
+            print("Assessment file URL not found1");
+            //Return empty list
+            yield AssessmentDetailSuccess(obj: _list);
           }
+        } else {
+          print("Assessment file URL not found2");
+          //Return empty list
+          yield AssessmentDetailSuccess(obj: _list);
         }
       } catch (e) {
         throw (e);
@@ -480,20 +490,29 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'Content-Type': 'application/json; charset=UTF-8'
     };
     final ResponseModel response = await _dbServices.getapi(
-        'https://www.googleapis.com/drive/v3/files/$fileId?fields=webContentLink',
+        'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         //  '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
-      print("detail assessment link is received");
       var data = response.data;
-      //['body'];
-
-      String downloadLink = data.length > 0
+      print('File URL Received :${data['webViewLink']}');
+      String downloadLink = data['exportLinks'] != null
           ? data['exportLinks'][
               'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
           : '';
+      //  data['webViewLink']!=null? data['webViewLink']:data['webContentLink'].length > 0
+      //         ? data['webContentLink']['exportLinks'][
+      //             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+      //         : '';
+      //  ['webViewLink']??response.data['webContentLink'];
+      //['body'];
+
+      // String downloadLink = data.length > 0
+      //     ? data[0]['webContentLink']['exportLinks'][
+      //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+      //     : '';
 
       return downloadLink;
     }
@@ -511,12 +530,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       var request = await httpClient.getUrl(Uri.parse(myUrl));
       var response = await request.close();
       if (response.statusCode == 200) {
+        print('File download success');
         var bytes = await consolidateHttpClientResponseBytes(response);
         filePath = '$dir/$fileName';
         file = File(filePath);
         await file.writeAsBytes(bytes);
         return filePath;
       }
+      print('Unable to download the file');
       return "";
     } catch (e) {
       print("donload exception");

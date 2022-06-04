@@ -5,14 +5,12 @@ import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
-
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,6 +42,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   String studentId = '';
   final nameController = TextEditingController();
   final idController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   String? pointScored;
   @override
@@ -69,20 +68,23 @@ class _SuccessScreenState extends State<SuccessScreen> {
               actionIcon: failure == true
                   ? IconButton(
                       onPressed: () {
-                        if (nameController.text != '' &&
-                            idController.text != '') {
-                          _bloc.add(SaveStudentDetails(
-                              studentName: nameController.text,
-                              studentId: idController.text));
+                        if (_formKey.currentState!.validate()) {
+                          if (nameController.text.isNotEmpty &&
+                              nameController.text.length >= 3 &&
+                              idController.text.isNotEmpty) {
+                            _bloc.add(SaveStudentDetails(
+                                studentName: nameController.text,
+                                studentId: idController.text));
+                          }
+                          // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => CameraScreen(
+                                        isScanMore: widget.isScanMore,
+                                        pointPossible: widget.pointPossible,
+                                      )));
                         }
-                        // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => CameraScreen(
-                                      isScanMore: widget.isScanMore,
-                                      pointPossible: widget.pointPossible,
-                                    )));
                       },
                       icon: Icon(
                         IconData(0xe877,
@@ -114,23 +116,32 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       pointScored = state.grade;
 
                       nameController.text = state.studentName!;
+                      if (_formKey.currentState!.validate()) {
+                        if (nameController.text.isNotEmpty &&
+                            nameController.text.length >= 3 &&
+                            idController.text.isNotEmpty) {
+                          Timer(Duration(seconds: 5), () {
+                            updateDetails();
+                            // COMMENT below section for enableing the camera
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraScreen(
+                                        isScanMore: widget.isScanMore,
+                                        pointPossible: widget.pointPossible,
+                                      )),
+                            );
+                            //UNCOMMENT below section for enableing the camera
 
-                      Timer(Duration(seconds: 5), () {
-                        updateDetails();
-                        // COMMENT below section for enableing the camera
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CameraScreen(
-                                    isScanMore: widget.isScanMore,
-                                    pointPossible: widget.pointPossible,
-                                  )),
-                        );
-                        //UNCOMMENT below section for enableing the camera
-
-                        // Navigator.push(context,
-                        //     MaterialPageRoute(builder: (_) => CameraScreen()));
-                      });
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (_) => CameraScreen()));
+                          });
+                        }
+                      } else {
+                        setState(() {
+                          failure = true;
+                        });
+                      }
                     } else if (state is FetchTextFromImageFailure) {
                       widget.pointPossible == '2'
                           ? Globals.pointsEarnedList = [0, 1, 2]
@@ -188,64 +199,80 @@ class _SuccessScreenState extends State<SuccessScreen> {
     required String id,
     required String grade,
   }) {
-    return ListView(
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SpacerWidget(_KVertcalSpace * 0.25),
-        Utility.textWidget(
-            text: 'Student Name',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryVariant
-                    .withOpacity(0.5))),
-        textFormField(
-            controller: nameController,
-            isFailure: true,
-            errormsg: "some msg",
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              studentName = nameController.text;
-              onChange = true;
-            }),
-        SpacerWidget(_KVertcalSpace / 2),
-        Utility.textWidget(
-            text: 'Student ID',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryVariant
-                    .withOpacity(0.5))),
-        textFormField(
-            controller: idController,
-            keyboardType: TextInputType.number,
-            isFailure: true,
-            errormsg: "some msg",
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              studentId = idController.text;
-              onChange = true;
-            }),
-        SpacerWidget(_KVertcalSpace / 2),
-        Center(
-          child: Utility.textWidget(
-              text: 'Points Earned',
+    return Form(
+      key: _formKey,
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SpacerWidget(_KVertcalSpace * 0.25),
+          Utility.textWidget(
+              text: 'Student Name',
               context: context,
-              textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
                   color: Theme.of(context)
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.5))),
-        ),
-        SpacerWidget(_KVertcalSpace / 4),
-        Center(child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
-        SpacerWidget(_KVertcalSpace / 2),
-        Center(child: imagePreviewWidget()),
-        SpacerWidget(_KVertcalSpace / 0.9),
-        Center(child: textActionButton())
-      ],
+          textFormField(
+            controller: nameController,
+            isFailure: true,
+            errormsg: "Make sure to save the record with student name",
+            onSaved: (String value) {
+              updateDetails(isUpdateData: true);
+              studentName = nameController.text;
+              onChange = true;
+            },
+            validator: (value) {},
+          ),
+          SpacerWidget(_KVertcalSpace / 2),
+          Utility.textWidget(
+              text: 'Student ID',
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryVariant
+                      .withOpacity(0.5))),
+          textFormField(
+            controller: idController,
+            keyboardType: TextInputType.number,
+            isFailure: true,
+            // errormsg:
+            //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+            onSaved: (String value) {
+              updateDetails(isUpdateData: true);
+              studentId = idController.text;
+              onChange = true;
+            },
+            validator: (value) {
+              if (value!.length != 9) {
+                return 'Student Id must have 9 digit numbers';
+              } else if (!value.startsWith('2')) {
+                return 'Student Id must starts with \'2\'';
+              } else {
+                return null;
+              }
+            },
+          ),
+          SpacerWidget(_KVertcalSpace / 2),
+          Center(
+            child: Utility.textWidget(
+                text: 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+          ),
+          SpacerWidget(_KVertcalSpace / 4),
+          Center(child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
+          SpacerWidget(_KVertcalSpace / 2),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(_KVertcalSpace / 0.9),
+          Center(child: textActionButton())
+        ],
+      ),
     );
   }
 
@@ -264,13 +291,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .primaryVariant
                     .withOpacity(0.3))),
         textFormField(
-            controller: nameController,
-            isFailure: false,
-            errormsg: "some msg",
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              onChange = true;
-            }),
+          controller: nameController,
+          isFailure: false,
+          errormsg: "Make sure to save the record with student name",
+          onSaved: (String value) {
+            updateDetails(isUpdateData: true);
+            onChange = true;
+          },
+          validator: (value) {},
+        ),
         SpacerWidget(_KVertcalSpace / 2),
         Utility.textWidget(
             text: 'Student Id',
@@ -281,14 +310,27 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .primaryVariant
                     .withOpacity(0.5))),
         textFormField(
-            controller: idController,
-            keyboardType: TextInputType.number,
-            errormsg: "some msg",
-            isFailure: false,
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              onChange = true;
-            }),
+          controller: idController,
+          keyboardType: TextInputType.number,
+          // errormsg:
+          //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+          isFailure: false,
+          onSaved: (String value) {
+            updateDetails(isUpdateData: true);
+            onChange = true;
+          },
+          validator: (String value) {
+            if (value.isEmpty) {
+              return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
+            } else if (value.length != 9) {
+              return 'Student Id must have 9 digit numbers';
+            } else if (!value.startsWith('2')) {
+              return 'Student Id must starts with \'2\'';
+            } else {
+              return null;
+            }
+          },
+        ),
         SpacerWidget(_KVertcalSpace / 2),
         Center(
           child: Utility.textWidget(
@@ -432,51 +474,54 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget textFormField(
       {required TextEditingController controller,
       required onSaved,
+      required validator,
       TextInputType? keyboardType,
       required bool? isFailure,
-      required String? errormsg}) {
+       String? errormsg}) {
     return TextFormField(
-      // keyboardType: keyboardType ?? null,
-      //textAlign: TextAlign.start,
-      style: Theme.of(context)
-          .textTheme
-          .headline6!
-          .copyWith(fontWeight: FontWeight.bold),
-      controller: controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-        errorText: controller.text.isEmpty ? errormsg : null,
-        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-        fillColor: Colors.transparent,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              // color: controller.text.isNotEmpty
-              //     ? Theme.of(context)
-              //         .colorScheme
-              //         .primaryVariant
-              //         .withOpacity(0.5)
-              //     : Colors.red
-              ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              // color: controller.text.isEmpty
-              //     ? Theme.of(context)
-              //         .colorScheme
-              //         .primaryVariant
-              //         .withOpacity(0.5)
-              //     : Colors.red
-              ),
-        ),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+        autovalidateMode: AutovalidateMode.always,
+        // keyboardType: keyboardType ?? null,
+        //textAlign: TextAlign.start,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.bold),
+        controller: controller,
+        cursorColor: Theme.of(context).colorScheme.primaryVariant,
+        decoration: InputDecoration(
+          errorText: controller.text.isEmpty ? errormsg : null,
+          errorMaxLines: 2,
+          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+          fillColor: Colors.transparent,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                // color: controller.text.isNotEmpty
+                //     ? Theme.of(context)
+                //         .colorScheme
+                //         .primaryVariant
+                //         .withOpacity(0.5)
+                //     : Colors.red
+                ),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                // color: controller.text.isEmpty
+                //     ? Theme.of(context)
+                //         .colorScheme
+                //         .primaryVariant
+                //         .withOpacity(0.5)
+                //     : Colors.red
+                ),
+          ),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color:
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+            ),
           ),
         ),
-      ),
-      onChanged: onSaved,
-    );
+        onChanged: onSaved,
+        validator: validator);
   }
 
   Widget textActionButton() {
