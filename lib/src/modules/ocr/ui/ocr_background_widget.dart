@@ -12,8 +12,7 @@ class CommonBackGroundImgWidget extends StatelessWidget {
           : Color(0xff111C20),
       child: Align(
           alignment: Alignment.topRight,
-          child: 
-           Image(
+          child: Image(
               height: 250,
               color:
                   // Theme.of(context).colorScheme.primaryContainer,
@@ -21,9 +20,7 @@ class CommonBackGroundImgWidget extends StatelessWidget {
                       ? Colors.white
                       : Colors.black,
               fit: BoxFit.fitWidth,
-              image: AssetImage("assets/images/ocr_background.png")
-              )
-          ),
+              image: AssetImage("assets/images/ocr_background.png"))),
     );
   }
 }

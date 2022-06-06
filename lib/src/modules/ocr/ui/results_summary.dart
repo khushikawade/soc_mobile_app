@@ -14,6 +14,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:googleapis/calendar/v3.dart';
 import 'package:share/share.dart';
 
 class ResultsSummary extends StatefulWidget {
@@ -247,10 +248,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 !widget.assessmentDetailPage!
                     ? Container(
                         decoration: BoxDecoration(
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme.of(context).backgroundColor ==
+                                    Color(0xff000000)
+                                ? Color(0xff162429)
+                                : Color(0xffF7F8F9),
+                            // color: Theme.of(context).backgroundColor,
                             boxShadow: [
                               new BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.1),
+                                color: Color.fromRGBO(0, 0, 0, 0.2),
                                 blurRadius: 20.0,
                               ),
                             ],
@@ -291,7 +296,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   Widget resultTitle() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(5.0),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5.0),
           child: Container(
@@ -301,11 +306,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               color: Theme.of(context).backgroundColor == Color(0xff000000)
-                  ? Colors.black
-                  : Colors.white,
+                  ? Color(0xff162429)
+                  : Color(0xffF7F8F9),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey,
+                  color: Color.fromRGBO(0, 0, 0, 0.5), //Colors.grey,
+                  // Theme.of(context).backgroundColor == Color(0xff000000)
+                  //     ? Color(0xff162429)
+                  //     : Color(0xffE9ECEE),
                   offset: Offset(0.0, 1.0), //(x,y)
                   blurRadius: 6.0,
                 ),
@@ -423,12 +431,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     return Container(
       // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.65
+          ? MediaQuery.of(context).size.height * 0.5
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
         controller: _scrollController,
         shrinkWrap: true,
-        padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+        // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
@@ -439,42 +447,58 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Widget _buildList(int index, List<StudentAssessmentInfo> _list, context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).colorScheme.background,
-        ),
-        borderRadius: BorderRadius.circular(0.0),
-        color: (index % 2 == 0)
-            ? Theme.of(context).colorScheme.background
-            : Theme.of(context).colorScheme.secondary,
-      ),
-      child: ListTile(
-        visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-        // contentPadding:
-        //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
-        leading:
-            //  Text(_list[index].studentId!),
+    return _list[index].studentName == 'Name'
+        ? Container()
+        : Container(
+            height: 54,
+            padding: EdgeInsets.symmetric(
+              horizontal: 5,
+            ),
+            decoration: BoxDecoration(
 
-            Utility.textWidget(
-                text: _list[index].studentName ?? 'Unknown',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2!),
+                // border: Border.all(
 
-        trailing:
-            // Text(_list[index].pointpossible!),
-            Utility.textWidget(
-                text: _list[index].studentGrade == ''
-                    ? '2/2'
-                    : '${_list[index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
-                context: context,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontWeight: FontWeight.bold)),
-      ),
-    );
+                //   color: Theme.of(context).colorScheme.background,
+                // ),
+                borderRadius: BorderRadius.circular(0.0),
+                color: (index % 2 == 0)
+                    ? Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Color(0xff162429)
+                        : Color(
+                            0xffF7F8F9) //Theme.of(context).colorScheme.background
+                    : Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Color(0xff111C20)
+                        : Color(
+                            0xffE9ECEE) //Theme.of(context).colorScheme.secondary,
+                ),
+            child: ListTile(
+              visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+              // contentPadding:
+              //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
+              leading:
+                  // Text('Unknown'),
+
+                  Utility.textWidget(
+                      text: _list[index].studentName ?? 'Unknown',
+                      context: context,
+                      textTheme: Theme.of(context).textTheme.headline2!),
+
+              trailing:
+                  // Text(_list[index].pointpossible!),
+                  Utility.textWidget(
+                      text: //'2/2',
+                          _list[index].studentGrade == ''
+                              ? '2/2'
+                              : '${_list[index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(fontWeight: FontWeight.bold)),
+            ),
+          );
   }
 
   Widget _scanFloatingWidget() {
@@ -493,6 +517,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
                                 isScanMore: true,
+                                pointPossible: '2',
                               )));
                 },
                 icon: Icon(

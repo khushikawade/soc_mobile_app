@@ -31,7 +31,7 @@ class AppSetting {
   @HiveField(12)
   String? lastReferencedDate;
   @HiveField(13)
-  String? schoolNameC;
+  String? schoolNameC; //Account Id
   @HiveField(14)
   String? contactNameC;
   @HiveField(15)

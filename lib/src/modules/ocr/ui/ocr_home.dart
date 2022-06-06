@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -207,12 +208,18 @@ class _OpticalCharacterRecognitionPageState
               //                         : '2',
               //           )),
               // );
-
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => CameraScreen(
                           isScanMore: false,
+                          pointPossible: scoringColor == 0
+                              ? '2'
+                              : scoringColor == 2
+                                  ? '3'
+                                  : scoringColor == 4
+                                      ? '4'
+                                      : '2',
                         )),
               );
               //  getGallaryImage(); // COMMENT
@@ -241,10 +248,19 @@ class _OpticalCharacterRecognitionPageState
             // } else {
             //   updateLocalDb();
             // }
+            // UNCOMMENT
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AssessmentSummary()),
             );
+            //COMMENT
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //       builder: (context) => SubjectSelection(
+            //             selectedClass: '6',
+            //           )),
+            // );
           },
           child: Container(
               padding: EdgeInsets.only(top: 10),

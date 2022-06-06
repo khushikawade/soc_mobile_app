@@ -61,12 +61,25 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             type: event.type!, keyword: event.keyword!);
         List<SubjectDetailList> list = [];
         if (event.type == 'subject') {
-          for (int i = 0; i < data.length; i++) {
-            if (data[i]
+          List<SubjectDetailList> subjectList = [];
+          subjectList.addAll(data);
+          List<SubjectDetailList> list =
+              await fatchLocalSubject(event.keyword!);
+          subjectList.addAll(list);
+          bool check = false;
+          for (int i = 0; i < subjectList.length; i++) {
+            if (subjectList[i]
                 .subjectNameC!
                 .toUpperCase()
                 .contains(event.searchKeyword!.toUpperCase())) {
-              list.add(data[i]);
+              for (int j = 0; j < list.length; j++) {
+                if (list[j].subjectNameC == subjectList[i].subjectNameC!) {
+                  check = true;
+                }
+              }
+              if (!check) {
+                list.add(subjectList[i]);
+              }
             }
           }
           print(list.length);
@@ -139,9 +152,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<SubjectDetailList> data = await fatchSubjectDetails(
             type: event.type!, keyword: event.keyword!);
         if (event.type == 'subject') {
-          yield SubjectDataSuccess(
-            obj: data,
-          );
+          List<SubjectDetailList> subjectList = [];
+          subjectList.addAll(data);
+
+          List<SubjectDetailList> list =
+              await fatchLocalSubject(event.keyword!);
+          subjectList.addAll(list);
+          yield OcrLoading();
+          yield SubjectDataSuccess(obj: subjectList);
         } else if (event.type == 'nyc') {
           yield NycDataSuccess(
             obj: data,
@@ -217,6 +235,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } catch (e) {
       throw (e);
     }
+  }
+
+  Future<List<SubjectDetailList>> fatchLocalSubject(String classNo) async {
+    LocalDatabase<SubjectDetailList> _localDb =
+        LocalDatabase('Subject_list$classNo');
+    List<SubjectDetailList>? _localData = await _localDb.getData();
+    return _localData;
   }
 
   Future<List<SubjectDetailList>> fatchSubjectDetails(

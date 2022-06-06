@@ -18,7 +18,8 @@ class CameraScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
 
-  const CameraScreen({Key? key, this.pointPossible, required this.isScanMore})
+  const CameraScreen(
+      {Key? key, required this.pointPossible, required this.isScanMore})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
