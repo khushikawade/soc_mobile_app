@@ -45,11 +45,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (folderObject == '') {
             print(event.token);
             await _createFolderOnDrive(
-                token: event.token, folderName: "newwfolder");
+                token: event.token, folderName: event.folderName);
             print("Folder created successfully");
           } else {
             print("Folder Id received : ${folderObject['id']}");
             print("Folder path received : ${folderObject['webViewLink']}");
+            
             Globals.googleDriveFolderId = folderObject['id'];
             Globals.googleDriveFolderPath = folderObject['webViewLink'];
             // Globals.
@@ -68,7 +69,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             GetDriveFolderIdEvent(
                 //  filePath: file,
                 token: _userprofilelocalData[0].authorizationToken,
-                folderName: "Solved Assessment",
+                folderName: event.folderName,
                 refreshtoken: _userprofilelocalData[0].refreshToken);
           } else if (!result) {
             await _toRefreshAuthenticationToken(event.refreshtoken!);

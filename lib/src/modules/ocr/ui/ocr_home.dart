@@ -208,20 +208,25 @@ class _OpticalCharacterRecognitionPageState
               //                         : '2',
               //           )),
               // );
-              Navigator.push(
+               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          isScanMore: false,
-                          pointPossible: scoringColor == 0
-                              ? '2'
-                              : scoringColor == 2
-                                  ? '3'
-                                  : scoringColor == 4
-                                      ? '4'
-                                      : '2',
-                        )),
+                    builder: (context) => CreateAssessment()),
               );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => CameraScreen(
+              //             isScanMore: false,
+              //             pointPossible: scoringColor == 0
+              //                 ? '2'
+              //                 : scoringColor == 2
+              //                     ? '3'
+              //                     : scoringColor == 4
+              //                         ? '4'
+              //                         : '2',
+              //           )),
+              // );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
