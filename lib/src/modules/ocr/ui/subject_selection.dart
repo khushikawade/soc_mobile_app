@@ -53,10 +53,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   @override
   initState() {
-    // fatchList(classNo: widget.selectedClass!);
     _ocrBloc.add(
         FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
-    // fatchList(classNo: widget.selectedClass!);
+
     super.initState();
   }
 
@@ -71,8 +70,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             Scaffold(
               key: _scaffoldKey,
               bottomNavigationBar: progressIndicatorBar(),
-              floatingActionButton:
-                  textActionButton() ,
+              floatingActionButton: textActionButton(),
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
@@ -80,6 +78,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 isBackButton: true,
                 key: null,
                 isHomeButtonPopup: true,
+
                 customBackButton: IconButton(
                   icon: Icon(
                     IconData(0xe80d,
@@ -90,7 +89,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   onPressed: () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (pageIndex.value == 1) {
-                      // await fatchList(classNo: widget.selectedClass!);
                       _ocrBloc.add(FatchSubjectDetails(
                           type: 'subject', keyword: widget.selectedClass));
                     } else if (pageIndex.value == 2) {
@@ -108,9 +106,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         ? MediaQuery.of(context).size.height * 0.85
                         : MediaQuery.of(context).size.width * 0.80,
                 child: ListView(
-                  // crossAxisAlignment: CrossAxisAlignment.center,
                   padding: EdgeInsets.symmetric(horizontal: 20),
-
                   children: [
                     SpacerWidget(_KVertcalSpace * 0.50),
                     titleWidget(),
@@ -119,8 +115,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         controller: searchController,
                         onSaved: (String value) {
                           if (searchController.text.isEmpty) {
-                            // ignore: unnecessary_statements
-
                             _ocrBloc.add(FatchSubjectDetails(
                                 type: pageIndex.value == 0
                                     ? 'subject'
@@ -137,7 +131,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               pageIndex.value == 0
                                   ? searchList(
                                       classNo: widget.selectedClass!,
-                                      // ignore: unnecessary_statements
                                       searchKeyword: searchController.text)
                                   : null;
 
@@ -267,9 +260,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     onTap: () {
                       subLearningStandard = list[index].descriptionC;
                       if (pageIndex.value == 2) {
-                        // setState(() {
                         nycSubIndex1.value = index;
-                        // });
                       }
                     },
                     child: AnimatedContainer(
@@ -394,7 +385,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               _ocrBloc.add(FatchSubjectDetails(
                                   type: 'nyc', keyword: keyword));
                             }
-                                              
                           } else if (pageIndex.value == 1) {
                             nycIndex1.value = index;
 
@@ -428,10 +418,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           pageIndex.value == 1)
                                   ? AppTheme.kSelectedColor
                                   : Colors.grey,
-                              // Theme.of(context)
-                              //     .colorScheme
-                              //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
-
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8),
                               ),
@@ -444,8 +430,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   text: page == 0
                                       ? list[index].subjectNameC!
                                       : list[index].domainNameC!,
-                                  // : userAddedSubjectList[
-                                  //     index - list.length],
                                   textTheme: Theme.of(context)
                                       .textTheme
                                       .headline2!
@@ -510,7 +494,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         ? AppTheme.kSelectedColor
                                         : Colors.grey,
                                   ),
-                                  // color: scoringColor == index ? Colors.orange : null,
                                   borderRadius: BorderRadius.circular(8)),
                             ),
                           ),
@@ -529,7 +512,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         isDismissible: true,
         enableDrag: true,
         backgroundColor: Colors.transparent,
-        // animationCurve: Curves.easeOutQuart,
         elevation: 10,
         context: context,
         builder: (context) => BottomSheetWidget(
@@ -548,7 +530,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 _ocrBloc.add(FatchSubjectDetails(
                     type: 'subject', keyword: widget.selectedClass));
 
-                //await fatchList(classNo: widget.selectedClass!);
                 controller.clear();
                 Navigator.pop(context, false);
               },
@@ -562,13 +543,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       builder: (BuildContext context, dynamic value, Widget? child) {
         return pageIndex.value == 2
             ? FloatingActionButton.extended(
-                backgroundColor: AppTheme.kButtonColor.withOpacity(
-                    //nycSubIndex1.value == null ? 0.5 :
-                    1.0),
+                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
-                  //  if (nycSubIndex1.value == null) return;
-
-                  //Save user profile to locally
                   LocalDatabase<CustomRubicModal> _localDb =
                       LocalDatabase('custom_rubic');
                   List<CustomRubicModal>? _localData = await _localDb.getData();
@@ -640,7 +616,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       SubjectDetailList subjectDetailList = SubjectDetailList();
       subjectDetailList.subjectNameC = subjectName;
       _localData.add(subjectDetailList);
-      // userAddedSubjectList.add(subjectName)
     } else {
       Utility.showSnackBar(
           _scaffoldKey, "Subject $subjectName already exist", context, null);
@@ -650,8 +625,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     _localData.forEach((SubjectDetailList e) {
       _localDb.addData(e);
     });
-    // _ocrBloc.add(
-    //     FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
   }
 
   Future<void> searchList(
