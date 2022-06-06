@@ -210,7 +210,10 @@ class _OpticalCharacterRecognitionPageState
 
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateAssessment()),
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          isScanMore: false,
+                        )),
               );
               //  getGallaryImage(); // COMMENT
             },

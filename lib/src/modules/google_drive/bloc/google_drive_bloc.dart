@@ -609,7 +609,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return response.data['body']['Location'];
     } else {
       print(response.statusCode);
-
+      print("url is not recived");
       return "";
     }
   }

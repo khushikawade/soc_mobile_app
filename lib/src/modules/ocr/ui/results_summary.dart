@@ -147,7 +147,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
                         Text(
-                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount!-1 : ''}",
+                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount! - 1 : ''}",
                             style: Theme.of(context).textTheme.headline3),
                       ],
                     ),
@@ -162,7 +162,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           builder:
                               (BuildContext contxt, GoogleDriveState state) {
                             if (state is AssessmentDetailSuccess) {
-                              if (state.obj.length > 1) {
+                              if (state.obj.length > 0) {
                                 return listView(
                                   state.obj,
                                 );
@@ -356,13 +356,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         itemBuilder: (BuildContext context, int index) {
           return Column(
             children: [
-              Container(child: ListTile(leading: Utility.textWidget(
-                text: 'Student Name',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2!),trailing: Utility.textWidget(
-                text: 'Points Earned',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2!),)),
+              Container(
+                  child: ListTile(
+                leading: Utility.textWidget(
+                    text: 'Student Name',
+                    context: context,
+                    textTheme: Theme.of(context).textTheme.headline2!),
+                trailing: Utility.textWidget(
+                    text: 'Points Earned',
+                    context: context,
+                    textTheme: Theme.of(context).textTheme.headline2!),
+              )),
               _buildList(index, _list, context),
             ],
           );

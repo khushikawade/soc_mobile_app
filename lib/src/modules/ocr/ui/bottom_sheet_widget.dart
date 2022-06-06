@@ -279,7 +279,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 customOrStandardRubic: "Custom"));
                             print("calling get img url");
                             _googleBloc.add(ImageToAwsBucked(
-                                imgBase64: RubricScoreList.scoringList.last.imgBase64));
+                                imgBase64: RubricScoreList
+                                    .scoringList.last.imgBase64));
                           } else {
                             print("save score and name on local db");
                             RubricScoreList.scoringList.add(CustomRubicModal(
