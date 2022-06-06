@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services/local_database/local_db.dart';
+import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
 
 // ignore: must_be_immutable
@@ -51,6 +52,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
 class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   double lineProgress = 0.0;
   SharePopUp shareobj = new SharePopUp();
+  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +113,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     Globals.googleDriveFolderPath != null
                         ? Utility.launchUrlOnExternalBrowser(
                             Globals.googleDriveFolderPath!)
-                        : Utility.showSnackBar(
-                            widget.scaffoldKey,
-                            "Unable to navigate at the moment. Please try again later",
-                            context,
-                            null);
+                        : getGoogleFolderPath();
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(top: 8.0),
@@ -227,6 +225,22 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 }),
           ),
         ]);
+  }
+
+  getGoogleFolderPath() async {
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+    Utility.showSnackBar(
+        widget.scaffoldKey,
+        "Unable to navigate at the moment. Please try again later",
+        context,
+        null);
+
+    _googleDriveBloc.add(GetDriveFolderIdEvent(
+        //  filePath: file,
+        token: _profileData[0].authorizationToken,
+        folderName: "Solved Assessment",
+        refreshtoken: _profileData[0].refreshToken));
   }
 
   _onHomePressed() {
@@ -444,10 +458,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             ],
                           ),
                         ],
-                      )
-
-                     
-                      ),
+                      )),
                 ),
               ],
             ),

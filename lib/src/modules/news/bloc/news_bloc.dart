@@ -7,7 +7,7 @@ import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
@@ -106,7 +106,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         if (e.toString().contains('NO_CONNECTION')) {
           Utility.showSnackBar(event.scaffoldKey,
               'Make sure you have a proper Internet connection', event.context,null);
-        }
+        }else {Utility.showSnackBar(event.scaffoldKey,
+              'Something went wrong', event.context,null);}
         yield NewsErrorReceived(err: e);
       }
     }
@@ -124,6 +125,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           obj: _list,
         );
       } catch (e) {
+        
         yield NewsErrorReceived(err: e);
       }
     }
@@ -261,7 +263,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postapimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);
 

@@ -1,5 +1,4 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,6 +13,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import '../../../widgets/empty_container_widget.dart';
 import '../../custom/model/custom_setting.dart';
+import '../../home/ui/app_bar_widget.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class FamilyPage extends StatefulWidget {

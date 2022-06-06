@@ -67,7 +67,9 @@ class ImagePopupState extends State<ImagePopup>
                       loadingBuilder: (context, event) {
                         if (event == null) {
                           return const Center(
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
                           );
                         }
                         return Container();

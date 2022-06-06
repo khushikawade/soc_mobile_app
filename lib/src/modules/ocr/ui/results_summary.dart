@@ -147,7 +147,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
                         Text(
-                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount! - 1 : ''}",
+                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount!-1 : ''}",
                             style: Theme.of(context).textTheme.headline3),
                       ],
                     ),
@@ -343,8 +343,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   Widget listView(List<StudentAssessmentInfo> _list) {
     return Container(
+      // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.72
+          ? MediaQuery.of(context).size.height * 0.65
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
         controller: _scrollController,
@@ -353,7 +354,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         scrollDirection: Axis.vertical,
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
-          return _buildList(index, _list, context);
+          return Column(
+            children: [
+              Container(child: ListTile(leading: Utility.textWidget(
+                text: 'Student Name',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!),trailing: Utility.textWidget(
+                text: 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!),)),
+              _buildList(index, _list, context),
+            ],
+          );
         },
       ),
     );

@@ -272,17 +272,17 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                             List<int> imageBytes = imageFile!.readAsBytesSync();
                             String imageB64 = base64Encode(imageBytes);
 
-                            Globals.scoringList.add(CustomRubicModal(
+                            RubricScoreList.scoringList.add(CustomRubicModal(
                                 name: textFieldControllerOne.text,
                                 score: textFieldController2.text,
                                 imgBase64: imageB64,
                                 customOrStandardRubic: "Custom"));
                             print("calling get img url");
                             _googleBloc.add(ImageToAwsBucked(
-                                imgBase64: Globals.scoringList.last.imgBase64));
+                                imgBase64: RubricScoreList.scoringList.last.imgBase64));
                           } else {
                             print("save score and name on local db");
-                            Globals.scoringList.add(CustomRubicModal(
+                            RubricScoreList.scoringList.add(CustomRubicModal(
                                 name: textFieldControllerOne.text,
                                 score: textFieldController2.text,
                                 customOrStandardRubic: "Custom"));
@@ -302,16 +302,16 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                       //     imageBytes = imageFile!.readAsBytesSync();
                       //     String imageB64 = base64Encode(imageBytes);
                       //     print("image64 is recived --------->$imageB64");
-                      //     Globals.scoringList.add(CustomRubicModal(
+                      //     RubricScoreList.scoringList.add(CustomRubicModal(
                       //         name: nameController.text,
                       //         score: customScoreController.text,
                       //         imgBase64: imageB64,
                       //         customOrStandardRubic: "Custom"));
 
                       //     _googleBloc.add(ImageToAwsBucked(
-                      //         imgBase64: Globals.scoringList.last.imgBase64));
+                      //         imgBase64: RubricScoreList.scoringList.last.imgBase64));
                       //   } else {
-                      //     Globals.scoringList.add(CustomRubicModal(
+                      //     RubricScoreList.scoringList.add(CustomRubicModal(
                       //         name: nameController.text,
                       //         score: customScoreController.text,
                       //         customOrStandardRubic: "Custom"));

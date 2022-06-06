@@ -102,7 +102,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   Widget listView(List<HistoryAssessment> _list) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.75
+          ? MediaQuery.of(context).size.height * 0.792
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
         shrinkWrap: true,
@@ -170,6 +170,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 IconData(Globals.ocrResultIcons[0],
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
+                color: Color(0xff000000) != Theme.of(context).backgroundColor
+                    ? Color(0xff111C20)
+                    : Color(0xffF7F8F9),
               ),
             )),
       ),

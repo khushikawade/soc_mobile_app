@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -14,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
+import '../../ocr/modal/custom_rubic_modal.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
 import '../model/user_profile.dart';
 part 'google_drive_event.dart';
@@ -151,6 +151,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             LocalDatabase("HistoryAssessment");
 
         List<HistoryAssessment>? _localData = await _localDb.getData();
+        _localData = await listSort(_localData);
         // _localData.clear();
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
@@ -170,6 +171,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               assessmentList.add(element);
             }
           });
+          assessmentList = await listSort(assessmentList);
           await _localDb.clear();
           assessmentList.forEach((HistoryAssessment e) {
             _localDb.addData(e);
@@ -197,11 +199,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             _userprofilelocalData[0].authorizationToken, event.fileId);
 
         if (link != "") {
+          print("detail assessment link is received");
           String file = await downloadFile(
               link, "test3", (await getApplicationDocumentsDirectory()).path);
           print("assessment downloaded");
 
           if (file != "") {
+            print("Assessment file found");
             //  List<StudentAssessmentInfo>
             _list = await GoogleDriveAccess.excelToJson(file);
             print("assessment data is converted into json ");
@@ -215,20 +219,30 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             // } else {
             //   yield GoogleNoAssessment();
             // }
-            _list.insert(
-                0,
-                StudentAssessmentInfo(
-                    studentId: "Id",
-                    studentName: "Name",
-                    studentGrade: "Points Earned",
-                    pointpossible: "Point Possible",
-                    grade: "Grade",
-                    subject: "Subject",
-                    learningStandard: "Learning Standard",
-                    subLearningStandard: "Sub Learning Standard",
-                    scoringRubric: "Scoring Rubric"));
+            // if (!_list.contains('Id')) {
+              // _list.insert(
+              //     0,
+              //     StudentAssessmentInfo(
+              //         studentId: "Id",
+              //         studentName: "Name",
+              //         studentGrade: "Points Earned",
+              //         pointpossible: "Point Possible",
+              //         grade: "Grade",
+              //         subject: "Subject",
+              //         learningStandard: "Learning Standard",
+              //         subLearningStandard: "Sub Learning Standard",
+              //         scoringRubric: "Scoring Rubric"));
+            // }
+            yield AssessmentDetailSuccess(obj: _list);
+          } else {
+            print("Assessment file URL not found1");
+            //Return empty list
             yield AssessmentDetailSuccess(obj: _list);
           }
+        } else {
+          print("Assessment file URL not found2");
+          //Return empty list
+          yield AssessmentDetailSuccess(obj: _list);
         }
       } catch (e) {
         throw (e);
@@ -238,17 +252,26 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is ImageToAwsBucked) {
       try {
         String imgUrl = await _uploadImgB64AndGetUrl(event.imgBase64);
-        //  int index = Globals.scoringList.length - 1;
-        print(Globals.scoringList);
+        //  int index = RubricScoreList.scoringList.length - 1;
+        print(RubricScoreList.scoringList);
         imgUrl != ""
-            ? Globals.scoringList.last.imgUrl = imgUrl
+            ? RubricScoreList.scoringList.last.imgUrl = imgUrl
             : _uploadImgB64AndGetUrl(event.imgBase64);
-        print(Globals.scoringList);
+        print(RubricScoreList.scoringList);
         print("printing imag url");
       } catch (e) {
         print("image upload error");
       }
     }
+  }
+
+  Future<List<HistoryAssessment>> listSort(List<HistoryAssessment> list) async {
+    list.forEach((element) {
+      if (element.modifiedDate != null) {
+        list.sort((a, b) => b.modifiedDate!.compareTo(a.modifiedDate!));
+      }
+    });
+    return list;
   }
 
   Future<String> _createFolderOnDrive(
@@ -407,9 +430,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode == 200) {
         print("assessment list is received ");
         print(response.data);
-        List<HistoryAssessment> _list = response.data['body']['items']
-            .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
-            .toList();
+        List<HistoryAssessment> _list =
+            response.data['items'] //response.data['body']['items']
+                .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
+                .toList();
         return _list;
       } else {
         throw ('something_went_wrong');
@@ -468,18 +492,29 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'Content-Type': 'application/json; charset=UTF-8'
     };
     final ResponseModel response = await _dbServices.getapi(
-        'https://www.googleapis.com/drive/v3/files/$fileId?fields=webContentLink',
+        'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         //  '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
         isGoogleApi: true);
 
     if (response.statusCode == 200) {
-      print("detail assessment link is received");
       var data = response.data;
+      print('File URL Received :${data['webViewLink']}');
+      String downloadLink = data['exportLinks'] != null
+          ? data['exportLinks'][
+              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+          : '';
+      //  data['webViewLink']!=null? data['webViewLink']:data['webContentLink'].length > 0
+      //         ? data['webContentLink']['exportLinks'][
+      //             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+      //         : '';
+      //  ['webViewLink']??response.data['webContentLink'];
       //['body'];
 
-      String downloadLink = data['exportLinks']
-          ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+      // String downloadLink = data.length > 0
+      //     ? data[0]['webContentLink']['exportLinks'][
+      //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+      //     : '';
 
       return downloadLink;
     }
@@ -497,12 +532,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       var request = await httpClient.getUrl(Uri.parse(myUrl));
       var response = await request.close();
       if (response.statusCode == 200) {
+        print('File download success');
         var bytes = await consolidateHttpClientResponseBytes(response);
         filePath = '$dir/$fileName';
         file = File(filePath);
         await file.writeAsBytes(bytes);
         return filePath;
       }
+      print('Unable to download the file');
       return "";
     } catch (e) {
       print("donload exception");
@@ -582,7 +619,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //   LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
 
   //   await _localDb.clear();
-  //   Globals.scoringList.forEach((CustomRubicModal e) {
+  //   RubricScoreList.scoringList.forEach((CustomRubicModal e) {
   //     _localDb.addData(e);
   //   });
   //   print("rubic data is updated on local drive");
