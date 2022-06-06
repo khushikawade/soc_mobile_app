@@ -167,7 +167,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           builder:
                               (BuildContext contxt, GoogleDriveState state) {
                             if (state is AssessmentDetailSuccess) {
-                              if (state.obj.length > 1) {
+                              if (state.obj.length > 0) {
                                 return Column(
                                   children: [
                                     resultTitle(),
@@ -285,46 +285,48 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   Widget resultTitle() {
     return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5.0),
-            child: Container(
-              height: 60.0,
-              margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.0),
-                color: Theme.of(context).backgroundColor == Color(0xff000000)
-                            ? Colors.black
-                            : Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(0.0, 1.0), //(x,y)
-                    blurRadius: 6.0,
-                  ),
-                ],
-              ),child: Container(
-        child: ListTile(
-      leading: Utility.textWidget(
-          text: 'Student Name',
-          context: context,
-          textTheme: Theme.of(context)
-              .textTheme
-              .headline2!
-              .copyWith(fontWeight: FontWeight.bold)),
-      trailing: Utility.textWidget(
-          text: 'Points Earned',
-          context: context,
-          textTheme: Theme.of(context)
-              .textTheme
-              .headline2!
-              .copyWith(fontWeight: FontWeight.bold)),
-    )),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: Container(
+            height: 60.0,
+            margin: const EdgeInsets.only(
+                bottom: 6.0), //Same as `blurRadius` i guess
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.0),
+              color: Theme.of(context).backgroundColor == Color(0xff000000)
+                  ? Colors.black
+                  : Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 6.0,
+                ),
+              ],
             ),
+            child: Container(
+                child: ListTile(
+              leading: Utility.textWidget(
+                  text: 'Student Name',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.bold)),
+              trailing: Utility.textWidget(
+                  text: 'Points Earned',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.bold)),
+            )),
           ),
         ),
-      );
+      ),
+    );
     // return Container(
     //     child: ListTile(
     //   leading: Utility.textWidget(
