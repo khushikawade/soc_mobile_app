@@ -75,7 +75,7 @@ class DbServices {
               : headers ??
                   {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    // 'authorization': 'Bearer ${Globals.token}'
+                    'authorization': 'Bearer ${Globals.token}'
                   },
           body: json.encode(body));
       if (response.statusCode == 200) {
