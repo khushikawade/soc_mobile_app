@@ -308,7 +308,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
       ),
       onChanged: onSaved,
       validator: validator,
-      
     );
   }
 

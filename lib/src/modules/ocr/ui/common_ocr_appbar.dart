@@ -272,7 +272,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
                         message:
-                            "you are about to lose scanned assessment sheet",
+                            "you are about to lose all the scanned assessment sheets",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
