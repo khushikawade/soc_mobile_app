@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -44,11 +45,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (folderObject == '') {
             print(event.token);
             await _createFolderOnDrive(
-                token: event.token, folderName: "newwfolder");
+                token: event.token, folderName: event.folderName);
             print("Folder created successfully");
           } else {
             print("Folder Id received : ${folderObject['id']}");
             print("Folder path received : ${folderObject['webViewLink']}");
+            
             Globals.googleDriveFolderId = folderObject['id'];
             Globals.googleDriveFolderPath = folderObject['webViewLink'];
             // Globals.
@@ -67,7 +69,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             GetDriveFolderIdEvent(
                 //  filePath: file,
                 token: _userprofilelocalData[0].authorizationToken,
-                folderName: "Solved Assessment",
+                folderName: event.folderName,
                 refreshtoken: _userprofilelocalData[0].refreshToken);
           } else if (!result) {
             await _toRefreshAuthenticationToken(event.refreshtoken!);
@@ -83,6 +85,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         Globals.assessmentName = event.name;
+
         bool result = await createSheetOnDrive(
             name: event.name!,
             folderId: Globals.googleDriveFolderId,
@@ -237,6 +240,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //         subLearningStandard: "Sub Learning Standard",
             //         scoringRubric: "Scoring Rubric"));
             // }
+            print("printing length----------->${_list.length}");
             yield AssessmentDetailSuccess(obj: _list);
           } else {
             print("Assessment file URL not found1");
@@ -255,14 +259,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is ImageToAwsBucked) {
       try {
-        String imgUrl = await _uploadImgB64AndGetUrl(event.imgBase64);
+        String imgUrl =
+            await _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
         //  int index = RubricScoreList.scoringList.length - 1;
         print(RubricScoreList.scoringList);
         imgUrl != ""
             ? RubricScoreList.scoringList.last.imgUrl = imgUrl
-            : _uploadImgB64AndGetUrl(event.imgBase64);
+            : _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
         print(RubricScoreList.scoringList);
-        print("printing imag url");
+        print("printing imag url : $imgUrl");
       } catch (e) {
         print("image upload error");
       }
@@ -591,11 +596,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> _uploadImgB64AndGetUrl(String? imgBase64) async {
+  Future<String> _uploadImgB64AndGetUrl(
+      String? imgBase64, String? imgExtension) async {
     //  print(imgBase64);
     Map body = {
       "bucket": "graded/rubric-score",
-      "fileExtension": "png",
+      "fileExtension": imgExtension,
       "image": imgBase64
     };
     // Map<String, String> headers = {
@@ -613,7 +619,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return response.data['body']['Location'];
     } else {
       print(response.statusCode);
-
+      print("url is not recived");
       return "";
     }
   }

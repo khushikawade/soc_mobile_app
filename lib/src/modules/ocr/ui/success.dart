@@ -481,8 +481,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
       String? errormsg}) {
     return TextFormField(
         autovalidateMode: AutovalidateMode.always,
-        // keyboardType: keyboardType ?? null,
-        //textAlign: TextAlign.start,
+        keyboardType: keyboardType ?? null,
+        //        //textAlign: TextAlign.start,
         style: Theme.of(context)
             .textTheme
             .headline6!
