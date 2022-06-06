@@ -19,18 +19,19 @@ import '../../google_drive/model/user_profile.dart';
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
-  CustomOcrAppBarWidget(
-      {required Key? key,
-      required this.isBackButton,
-      this.isTitle,
-      this.isSuccessState,
-      this.isResultScreen,
-      this.isHomeButtonPopup,
-      this.assessmentDetailPage,
-      this.assessmentPage,
-      this.actionIcon,
-      this.scaffoldKey})
-      : preferredSize = Size.fromHeight(60.0),
+  CustomOcrAppBarWidget({
+    required Key? key,
+    required this.isBackButton,
+    this.isTitle,
+    this.isSuccessState,
+    this.isResultScreen,
+    this.isHomeButtonPopup,
+    this.assessmentDetailPage,
+    this.assessmentPage,
+    this.actionIcon,
+    this.scaffoldKey,
+    this.customBackButton,
+  })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isSuccessState;
   bool? isBackButton;
@@ -40,6 +41,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? assessmentDetailPage;
   bool? assessmentPage;
   Widget? actionIcon;
+  Widget? customBackButton;
+
   final scaffoldKey;
 
   @override
@@ -61,49 +64,51 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         elevation: 0,
         leadingWidth: widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
-        leading: widget.isSuccessState == false
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Utility.textWidget(
-                      text: 'Scan Failure',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline4!
-                          .copyWith(fontWeight: FontWeight.bold)),
-                  SizedBox(
-                    width: 5.0,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0xffCF6679),
-                    ),
-                    child: Icon(
-                        IconData(0xe838,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        size: 19,
-                        color: Colors.white),
-                  ),
-                ],
-              )
-            : widget.isBackButton == true
-                ? IconButton(
-                    onPressed: () {
-                      //To dispose the snackbar message before navigating back if exist
-                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(
-                      IconData(0xe80d,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      color: AppTheme.kButtonColor,
-                    ),
+        leading: widget.customBackButton != null
+            ? widget.customBackButton
+            : widget.isSuccessState == false
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Utility.textWidget(
+                          text: 'Scan Failure',
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        width: 5.0,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xffCF6679),
+                        ),
+                        child: Icon(
+                            IconData(0xe838,
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                            size: 19,
+                            color: Colors.white),
+                      ),
+                    ],
                   )
-                : null,
+                : widget.isBackButton == true
+                    ? IconButton(
+                        onPressed: () {
+                          //To dispose the snackbar message before navigating back if exist
+                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          IconData(0xe80d,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: AppTheme.kButtonColor,
+                        ),
+                      )
+                    : null,
         actions: [
           widget.assessmentPage == true
               ? GestureDetector(
