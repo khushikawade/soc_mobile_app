@@ -1,10 +1,14 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import '../../../services/local_database/local_db.dart';
 import '../modal/subject_details_modal.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -155,6 +159,33 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         bool result = await saveSubjectListDetails();
       } catch (e) {}
+    }
+
+    if (event is SaveAssessmentIntoDataBase) {
+      try {
+        print("calling save record to sales Force");
+
+        String id = await _saveAssessmetRecordToSalesForce(
+            assessmentName: event.assessmentName,
+            rubicScore: await rubricPickList(event.rubricScore),
+            subjectId: event.subjectId,
+            schoolId: event.schoolId,
+            standardId: event.standardId);
+
+        if (id != '') {
+          bool result = await _addStudentRecordOnSalesForce(
+              assessmentId: id, studentDetails: Globals.studentInfo!);
+
+          !result
+              ? _addStudentRecordOnSalesForce(
+                  assessmentId: id, studentDetails: Globals.studentInfo!)
+              : print("result Record is saved on DB");
+        } else {
+          throw ('something_went_wrong');
+        }
+      } catch (e) {
+        throw (e);
+      }
     }
   }
 
@@ -412,6 +443,108 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } else {
       return false;
     }
+  }
+
+  Future<String> _saveAssessmetRecordToSalesForce({
+    required String? assessmentName,
+    required String? rubicScore,
+    required String? subjectId,
+    required String? schoolId,
+    required String? standardId,
+  }) async {
+    String currentDate = _getCurrentDate(DateTime.now());
+
+    Map<String, String> headers = {
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
+      'Content-Type': 'application/json'
+    };
+
+    final body = {
+      "Date__c": currentDate,
+      "Name__c": assessmentName,
+      "Rubric__c": rubicScore,
+      "School__c": schoolId,
+      "School_year__c": currentDate.split("-")[0],
+      "Standard__c": standardId,
+      "Subject__c": subjectId
+    };
+    final ResponseModel response = await _dbServices.postapi(
+      "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
+      isGoogleApi: true,
+      headers: headers,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      String id = response.data['body']['Assessment_Id'];
+
+      print("record is saved now ");
+      return id;
+    } else {
+      print("not 200 ---> r${response.statusCode}");
+      return "";
+    }
+  }
+
+  _getCurrentDate(DateTime dateTime) {
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    return formatter.format(now);
+  }
+
+  rubricPickList(rubricScore) {
+    if (rubricScore == null) {
+      return null;
+    }
+    if (rubricScore == '0-2') {
+      return "0,1 or 2";
+    }
+    if (rubricScore == '0-3') {
+      return "0,1,2 or 3";
+    } else {
+      return "0,1,2 or 4";
+    }
+  }
+
+  Future<bool> _addStudentRecordOnSalesForce(
+      {required String assessmentId,
+      required List<StudentAssessmentInfo> studentDetails}) async {
+    List<Map> bodyContent = [];
+
+    studentDetails.removeAt(0);
+
+    for (int i = 0; i < studentDetails.length; i++) {
+      bodyContent.add(recordtoJson(
+          assessmentId,
+          _getCurrentDate(DateTime.now()),
+          studentDetails[i].studentGrade,
+          studentDetails[i].studentId,
+          "NA"));
+    }
+
+    final ResponseModel response = await _dbServices.postapi(
+      "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
+      isGoogleApi: true,
+      body: bodyContent,
+    );
+    if (response.statusCode == 200) {
+      // String id = response.data['body']['id'];
+      print("result record is saved successfully ");
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Map<String, String> recordtoJson(assessmentId, currentDate, pointsEarned,
+      studentOsisId, assessmentImageURl) {
+    Map<String, String> body = {
+      "Assessment_Id": assessmentId,
+      "Date__c": currentDate.toString(),
+      "Result__c": pointsEarned,
+      "Student__c": studentOsisId, //Scanned from the sheet
+      "Assessment_Image__c": assessmentImageURl
+    };
+    return body;
   }
 
   // Future authenticateEmail(body) async {
