@@ -50,8 +50,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<int> pageIndex = ValueNotifier<int>(0);
   final ValueNotifier<int> subjectIndex1 =
       ValueNotifier<int>(50000); //To bypass the default selection
-  final ValueNotifier<int> nycIndex1 = ValueNotifier<int>(0);
-  final ValueNotifier<int> nycSubIndex1 = ValueNotifier<int>(0);
+  final ValueNotifier<int> nycIndex1 = ValueNotifier<int>(5000);
+  final ValueNotifier<int> nycSubIndex1 = ValueNotifier<int>(5000);
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
 
   @override
@@ -270,6 +270,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       subLearningStandard = list[index].descriptionC;
                       if (pageIndex.value == 2) {
                         nycSubIndex1.value = index;
+                        if (nycSubIndex1.value != 50000) {
+                          isSubmitButton.value = true;
+                        }
                       }
                     },
                     child: AnimatedContainer(
@@ -709,7 +712,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: TextFieldWidget(
-                    msg: "some msg",
+                    msg: "Subject is already exist",
                     controller: addController,
                     onSaved: (String value) {}),
               ),
