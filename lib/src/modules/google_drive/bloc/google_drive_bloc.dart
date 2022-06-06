@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -83,6 +84,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         Globals.assessmentName = event.name;
+
         bool result = await createSheetOnDrive(
             name: event.name!,
             folderId: Globals.googleDriveFolderId,
@@ -237,6 +239,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //         subLearningStandard: "Sub Learning Standard",
             //         scoringRubric: "Scoring Rubric"));
             // }
+            print("printing length----------->${_list.length}");
             yield AssessmentDetailSuccess(obj: _list);
           } else {
             print("Assessment file URL not found1");
@@ -615,6 +618,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return response.data['body']['Location'];
     } else {
       print(response.statusCode);
+      print("url is not recived");
       return "";
     }
   }

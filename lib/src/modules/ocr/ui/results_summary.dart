@@ -140,6 +140,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.arrow_back_ios)),
                         Utility.textWidget(
                             text: 'Results Summary',
                             context: context,
@@ -148,7 +153,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
                         Text(
-                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount! : ''}",
+                            "${assessmentCount != null && assessmentCount! > 0 ? assessmentCount! : ''}",
                             style: Theme.of(context).textTheme.headline3),
                       ],
                     ),

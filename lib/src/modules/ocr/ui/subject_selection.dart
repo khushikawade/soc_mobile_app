@@ -45,6 +45,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   String? subject;
   String? learningStandard;
   String? subLearningStandard;
+  String? subjectId;
+  String? standardId;
 
   // new part of code
   final ValueNotifier<int> pageIndex = ValueNotifier<int>(0);
@@ -391,9 +393,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 return page == 1 || (page == 0 && index < list.length)
                     ? Bouncing(
                         onPress: () {
-                          page == 0
-                              ? subject = list[index].subjectNameC
-                              : learningStandard = list[index].domainNameC;
+                          if (page == 1) {
+                            subject = list[index].subjectNameC;
+                            subjectId = list[index].subjectC;
+                            standardId = list[index].id;
+                          } else {
+                            learningStandard = list[index].domainNameC;
+                          }
 
                           if ((subject != 'Math' &&
                               subject != 'Science' &&
@@ -577,14 +583,21 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           LocalDatabase('custom_rubic');
                       List<CustomRubicModal>? _localData =
                           await _localDb.getData();
-                      String? rubicImgUrl;
-
+                      String? rubricImgUrl;
+                      String? rubricScore;
                       for (int i = 0; i < _localData.length; i++) {
-                        rubicImgUrl =
-                            _localData[i].customOrStandardRubic == "Custom" &&
-                                    _localData[i].name == Globals.scoringRubric
-                                ? _localData[i].imgUrl
-                                : "NA";
+                        if (_localData[i].customOrStandardRubic == "Custom" &&
+                            _localData[i].name == Globals.scoringRubric) {
+                          rubricImgUrl = _localData[i].imgUrl;
+                          rubricScore = null;
+                        }
+                        if (_localData[i].name == Globals.scoringRubric &&
+                            _localData[i].customOrStandardRubic != "Custom") {
+                          rubricScore = _localData[i].score;
+                        } else {
+                          rubricImgUrl = 'NA';
+                          // rubricScore = 'NA';
+                        }
                       }
                       List<StudentAssessmentInfo> list = Globals.studentInfo!;
                       Globals.studentInfo = [];
@@ -605,11 +618,19 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   ? "NA"
                                   : subLearningStandard,
                               scoringRubric: Globals.scoringRubric,
-                              customRubricImage: rubicImgUrl));
+                              customRubricImage: rubricImgUrl));
                         },
                       );
                       _googleDriveBloc.add(
                           UpdateDocOnDrive(studentData: Globals.studentInfo!));
+
+                      _ocrBloc.add(SaveAssessmentIntoDataBase(
+                          assessmentName: Globals.assessmentName!,
+                          rubricScore: rubricScore!,
+                          subjectId: subjectId!,
+                          schoolId: Globals.appSetting.schoolNameC!,
+                          standardId: standardId!));
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
