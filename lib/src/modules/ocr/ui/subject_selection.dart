@@ -48,9 +48,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   // new part of code
   final ValueNotifier<int> pageIndex = ValueNotifier<int>(0);
-  final ValueNotifier<int> subjectIndex1 = ValueNotifier<int>(0);
+  final ValueNotifier<int> subjectIndex1 =
+      ValueNotifier<int>(50000); //To bypass the default selection
   final ValueNotifier<int> nycIndex1 = ValueNotifier<int>(0);
   final ValueNotifier<int> nycSubIndex1 = ValueNotifier<int>(0);
+  final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
 
   @override
   initState() {
@@ -71,12 +73,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             Scaffold(
               key: _scaffoldKey,
               bottomNavigationBar: progressIndicatorBar(),
-              floatingActionButton: (subject != 'Math' &&
-                      subject != 'Science' &&
-                      subject != 'ELA' &&
-                      subject != null)
-                  ? submitAssessmentButton()
-                  : null,
+              floatingActionButton: submitAssessmentButton(),
+              // (subject != 'Math' &&
+              //         subject != 'Science' &&
+              //         subject != 'ELA' &&
+              //         subject != null)
+              //     ? submitAssessmentButton()
+              //     : null,
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
@@ -326,37 +329,40 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       valueListenable: pageIndex,
       child: Container(),
       builder: (BuildContext context, dynamic value, Widget? child) {
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-          child: Container(
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              child: AnimatedContainer(
-                duration: Duration(seconds: 5),
-                curve: Curves.easeOutExpo,
-                child: LinearProgressIndicator(
-                  valueColor:
-                      new AlwaysStoppedAnimation<Color>(AppTheme.kButtonColor),
-                  backgroundColor:
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color.fromRGBO(0, 0, 0, 0.1)
-                          : Color.fromRGBO(255, 255, 255, 0.16),
-                  minHeight: 15.0,
-                  value: (subject != 'Math' &&
-                          subject != 'Science' &&
-                          subject != 'ELA' &&
-                          subject != null)
-                      ? 100
-                      : pageIndex.value == 0
-                          ? 0.33
-                          : pageIndex.value == 1
-                              ? 0.66
-                              : 1,
+        return ValueListenableBuilder(
+            valueListenable: isSubmitButton,
+            child: Container(),
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return Container(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                child: Container(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    child: AnimatedContainer(
+                      duration: Duration(seconds: 5),
+                      curve: Curves.easeOutExpo,
+                      child: LinearProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            AppTheme.kButtonColor),
+                        backgroundColor: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor
+                            ? Color.fromRGBO(0, 0, 0, 0.1)
+                            : Color.fromRGBO(255, 255, 255, 0.16),
+                        minHeight: 15.0,
+                        value: isSubmitButton.value
+                            ? 100
+                            : pageIndex.value == 0
+                                ? 0.33
+                                : pageIndex.value == 1
+                                    ? 0.66
+                                    : 1,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-        );
+              );
+            });
       },
     );
   }
@@ -386,13 +392,19 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               ? subject = list[index].subjectNameC
                               : learningStandard = list[index].domainNameC;
 
+                          if ((subject != 'Math' &&
+                              subject != 'Science' &&
+                              subject != 'ELA' &&
+                              subject != null)) {
+                            isSubmitButton.value = true;
+                          }
                           searchController.clear();
                           FocusManager.instance.primaryFocus?.unfocus();
 
                           if (pageIndex.value == 0) {
                             subjectIndex1.value = index;
 
-                            if (index < list.length) {
+                            if (index < list.length && !isSubmitButton.value) {
                               keyword = list[index].subjectNameC;
                               _ocrBloc.add(FatchSubjectDetails(
                                   type: 'nyc', keyword: keyword));
@@ -550,70 +562,72 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   Widget submitAssessmentButton() {
     return ValueListenableBuilder(
-      valueListenable: pageIndex,
+      valueListenable: isSubmitButton,
       child: Container(),
       builder: (BuildContext context, dynamic value, Widget? child) {
-        return pageIndex.value == 2
-            ? FloatingActionButton.extended(
-                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-                onPressed: () async {
-                  LocalDatabase<CustomRubicModal> _localDb =
-                      LocalDatabase('custom_rubic');
-                  List<CustomRubicModal>? _localData = await _localDb.getData();
-                  String? rubicImgUrl;
+        return //pageIndex.value == 2
+            isSubmitButton.value
+                ? FloatingActionButton.extended(
+                    backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                    onPressed: () async {
+                      LocalDatabase<CustomRubicModal> _localDb =
+                          LocalDatabase('custom_rubic');
+                      List<CustomRubicModal>? _localData =
+                          await _localDb.getData();
+                      String? rubicImgUrl;
 
-                  for (int i = 0; i < _localData.length; i++) {
-                    rubicImgUrl =
-                        _localData[i].customOrStandardRubic == "Custom" &&
-                                _localData[i].name == Globals.scoringRubric
-                            ? _localData[i].imgUrl
-                            : "NA";
-                  }
-                  List<StudentAssessmentInfo> list = Globals.studentInfo!;
-                  Globals.studentInfo = [];
+                      for (int i = 0; i < _localData.length; i++) {
+                        rubicImgUrl =
+                            _localData[i].customOrStandardRubic == "Custom" &&
+                                    _localData[i].name == Globals.scoringRubric
+                                ? _localData[i].imgUrl
+                                : "NA";
+                      }
+                      List<StudentAssessmentInfo> list = Globals.studentInfo!;
+                      Globals.studentInfo = [];
 
-                  list.forEach(
-                    (StudentAssessmentInfo element) {
-                      Globals.studentInfo!.add(StudentAssessmentInfo(
-                          studentName: element.studentName,
-                          studentId: element.studentId,
-                          studentGrade: element.studentGrade,
-                          pointpossible: element.pointpossible,
-                          grade: widget.selectedClass,
-                          subject: subject,
-                          learningStandard: learningStandard!.isEmpty
-                              ? "NA"
-                              : learningStandard,
-                          subLearningStandard: subLearningStandard!.isEmpty
-                              ? "NA"
-                              : subLearningStandard,
-                          scoringRubric: Globals.scoringRubric,
-                          customRubricImage: rubicImgUrl));
+                      list.forEach(
+                        (StudentAssessmentInfo element) {
+                          Globals.studentInfo!.add(StudentAssessmentInfo(
+                              studentName: element.studentName,
+                              studentId: element.studentId,
+                              studentGrade: element.studentGrade,
+                              pointpossible: element.pointpossible,
+                              grade: widget.selectedClass,
+                              subject: subject,
+                              learningStandard: learningStandard!.isEmpty
+                                  ? "NA"
+                                  : learningStandard,
+                              subLearningStandard: subLearningStandard!.isEmpty
+                                  ? "NA"
+                                  : subLearningStandard,
+                              scoringRubric: Globals.scoringRubric,
+                              customRubricImage: rubicImgUrl));
+                        },
+                      );
+                      _googleDriveBloc.add(
+                          UpdateDocOnDrive(studentData: Globals.studentInfo!));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ResultsSummary(
+                                  assessmentDetailPage: false,
+                                )),
+                      );
                     },
-                  );
-                  _googleDriveBloc
-                      .add(UpdateDocOnDrive(studentData: Globals.studentInfo!));
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ResultsSummary(
-                              assessmentDetailPage: false,
-                            )),
-                  );
-                },
-                label: Row(
-                  children: [
-                    Utility.textWidget(
-                        text: 'Submit',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(
-                                color: Theme.of(context).backgroundColor)),
-                  ],
-                ))
-            : Container();
+                    label: Row(
+                      children: [
+                        Utility.textWidget(
+                            text: 'Submit',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(
+                                    color: Theme.of(context).backgroundColor)),
+                      ],
+                    ))
+                : Container();
       },
     );
   }
