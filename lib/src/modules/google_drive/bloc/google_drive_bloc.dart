@@ -151,7 +151,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             LocalDatabase("HistoryAssessment");
 
         List<HistoryAssessment>? _localData = await _localDb.getData();
+        //Sort the list as per the modified date
         _localData = await listSort(_localData);
+
         // _localData.clear();
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
@@ -163,15 +165,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           List<HistoryAssessment> _list = await _fetchHistoryAssessment(
               _userprofilelocalData[0].authorizationToken,
               Globals.googleDriveFolderId);
-          //     if (_list.length > 0) {
-          // for (int i = 0; i < data.length; i++) {
+
           _list.forEach((element) {
             print(element.label['trashed']);
             if (element.label['trashed'] != true) {
               assessmentList.add(element);
             }
           });
+
+          //Sort the list as per the modified date
           assessmentList = await listSort(assessmentList);
+
           await _localDb.clear();
           assessmentList.forEach((HistoryAssessment e) {
             _localDb.addData(e);
@@ -313,11 +317,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
 
-      final ResponseModel response = await _dbServices.getapi(
+      final ResponseModel response = await _dbServices.getapiNew(
           'https://www.googleapis.com/drive/v3/files?fields=*',
           //     '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files?fields=*',
           headers: headers,
-          isGoogleApi: true);
+          isGoogleAPI: true);
 
       if (response.statusCode == 200) {
         var data = response.data
@@ -422,10 +426,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-      final ResponseModel response = await _dbServices.getapi(
+      final ResponseModel response = await _dbServices.getapiNew(
           "https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents",
           headers: headers,
-          isGoogleApi: true);
+          isGoogleAPI: true);
 
       if (response.statusCode == 200) {
         print("assessment list is received ");
@@ -469,11 +473,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'Content-Type': 'application/json',
       'authorization': 'Bearer $token'
     };
-    final ResponseModel response = await _dbServices.getapi(
+    final ResponseModel response = await _dbServices.getapiNew(
         'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
-        isGoogleApi: true);
+        isGoogleAPI: true);
 
     if (response.statusCode == 200) {
       print(" get file link   ----------->");
@@ -491,11 +495,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'authorization': 'Bearer $token',
       'Content-Type': 'application/json; charset=UTF-8'
     };
-    final ResponseModel response = await _dbServices.getapi(
+    final ResponseModel response = await _dbServices.getapiNew(
         'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         //  '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
-        isGoogleApi: true);
+        isGoogleAPI: true);
 
     if (response.statusCode == 200) {
       var data = response.data;

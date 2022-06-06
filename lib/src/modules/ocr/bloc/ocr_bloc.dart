@@ -160,11 +160,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<bool> saveSubjectListDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getapiNew(Uri.encodeFull(
               //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
               // ),
               'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
-          isGoogleApi: true);
+          isGoogleAPI: true,
+          headers: {"Content-type": "application/json; charset=utf-8"});
 
       if (response.statusCode == 200) {
         List<SubjectDetailList> _list = response.data['body']
