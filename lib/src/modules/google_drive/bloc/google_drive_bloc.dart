@@ -255,14 +255,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (event is ImageToAwsBucked) {
       try {
-        String imgUrl = await _uploadImgB64AndGetUrl(event.imgBase64);
+        String imgUrl =
+            await _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
         //  int index = RubricScoreList.scoringList.length - 1;
         print(RubricScoreList.scoringList);
         imgUrl != ""
             ? RubricScoreList.scoringList.last.imgUrl = imgUrl
-            : _uploadImgB64AndGetUrl(event.imgBase64);
+            : _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
         print(RubricScoreList.scoringList);
-        print("printing imag url");
+        print("printing imag url : $imgUrl");
       } catch (e) {
         print("image upload error");
       }
@@ -591,11 +592,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> _uploadImgB64AndGetUrl(String? imgBase64) async {
+  Future<String> _uploadImgB64AndGetUrl(
+      String? imgBase64, String? imgExtension) async {
     //  print(imgBase64);
     Map body = {
       "bucket": "graded/rubric-score",
-      "fileExtension": "png",
+      "fileExtension": imgExtension,
       "image": imgBase64
     };
     // Map<String, String> headers = {
@@ -613,7 +615,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return response.data['body']['Location'];
     } else {
       print(response.statusCode);
-
       return "";
     }
   }

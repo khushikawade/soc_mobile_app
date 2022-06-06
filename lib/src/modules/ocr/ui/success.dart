@@ -477,11 +477,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
       required validator,
       TextInputType? keyboardType,
       required bool? isFailure,
-       String? errormsg}) {
+      String? errormsg}) {
+         print(keyboardType);
     return TextFormField(
         autovalidateMode: AutovalidateMode.always,
-        // keyboardType: keyboardType ?? null,
-        //textAlign: TextAlign.start,
+        keyboardType: keyboardType ?? null,
+        //        //textAlign: TextAlign.start,
         style: Theme.of(context)
             .textTheme
             .headline6!

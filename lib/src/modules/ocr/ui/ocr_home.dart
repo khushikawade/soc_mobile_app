@@ -207,7 +207,6 @@ class _OpticalCharacterRecognitionPageState
               //                         : '2',
               //           )),
               // );
-
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => CreateAssessment()),

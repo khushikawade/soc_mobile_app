@@ -70,8 +70,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             Scaffold(
               key: _scaffoldKey,
               bottomNavigationBar: progressIndicatorBar(),
-              floatingActionButton:
-                  indexGlobal == 2 ? textActionButton() : null,
+              floatingActionButton: indexGlobal == 2 ||
+                      (subject != 'Math' &&
+                          subject != 'Science' &&
+                          subject != 'ELA' && subject !=null)
+                  ? submitAssessmentButton()
+                  : null,
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
@@ -362,11 +366,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       ? Color.fromRGBO(0, 0, 0, 0.1)
                       : Color.fromRGBO(255, 255, 255, 0.16),
               minHeight: 15.0,
-              value: indexGlobal == 0
-                  ? 0.33
-                  : indexGlobal == 1
-                      ? 0.66
-                      : 1,
+              value: (subject != 'Math' &&
+                      subject != 'Science' &&
+                      subject != 'ELA'&& subject !=null)
+                  ? 100
+                  : indexGlobal == 0
+                      ? 0.33
+                      : indexGlobal == 1
+                          ? 0.66
+                          : 1,
             ),
           ),
         ),
@@ -404,7 +412,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       page == 1
                           ? subject = list[index].subjectNameC
                           : learningStandard = list[index].domainNameC;
-
+                      print('Selected subject : $subject');
                       searchController.clear();
                       FocusManager.instance.primaryFocus?.unfocus();
 
@@ -640,54 +648,58 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget textActionButton() {
+  Widget submitAssessmentButton() {
     return FloatingActionButton.extended(
         backgroundColor:
             AppTheme.kButtonColor.withOpacity(nycSubIndex == null ? 0.5 : 1.0),
         onPressed: () async {
-          if (nycSubIndex == null) return;
+          if ((subject != 'Math' || subject != 'Science' || subject != 'ELA') ||
+              nycSubIndex != null) {
+            //Save user profile to locally
+            LocalDatabase<CustomRubicModal> _localDb =
+                LocalDatabase('custom_rubic');
+            List<CustomRubicModal>? _localData = await _localDb.getData();
+            String? rubicImgUrl;
 
-          //Save user profile to locally
-          LocalDatabase<CustomRubicModal> _localDb =
-              LocalDatabase('custom_rubic');
-          List<CustomRubicModal>? _localData = await _localDb.getData();
-          String? rubicImgUrl;
+            for (int i = 0; i < _localData.length; i++) {
+              rubicImgUrl = _localData[i].customOrStandardRubic == "Custom" &&
+                      _localData[i].name == Globals.scoringRubric
+                  ? _localData[i].imgUrl
+                  : "NA";
+            }
+            List<StudentAssessmentInfo> list = Globals.studentInfo!;
+            Globals.studentInfo = [];
 
-          for (int i = 0; i < _localData.length; i++) {
-            rubicImgUrl = _localData[i].customOrStandardRubic == "Custom" &&
-                    _localData[i].name == Globals.scoringRubric
-                ? _localData[i].imgUrl
-                : "NA";
+            list.forEach(
+              (StudentAssessmentInfo element) {
+                Globals.studentInfo!.add(StudentAssessmentInfo(
+                    studentName: element.studentName,
+                    studentId: element.studentId,
+                    studentGrade: element.studentGrade,
+                    pointpossible: element.pointpossible,
+                    grade: widget.selectedClass,
+                    subject: subject,
+                    learningStandard:
+                        learningStandard!.isEmpty ? "NA" : learningStandard,
+                    subLearningStandard: subLearningStandard!.isEmpty
+                        ? "NA"
+                        : subLearningStandard,
+                    scoringRubric: Globals.scoringRubric,
+                    customRubricImage: rubicImgUrl));
+              },
+            );
+            _googleDriveBloc
+                .add(UpdateDocOnDrive(studentData: Globals.studentInfo!));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ResultsSummary(
+                        assessmentDetailPage: false,
+                      )),
+            );
+          } else {
+            return;
           }
-          List<StudentAssessmentInfo> list = Globals.studentInfo!;
-          Globals.studentInfo = [];
-
-          list.forEach(
-            (StudentAssessmentInfo element) {
-              Globals.studentInfo!.add(StudentAssessmentInfo(
-                  studentName: element.studentName,
-                  studentId: element.studentId,
-                  studentGrade: element.studentGrade,
-                  pointpossible: element.pointpossible,
-                  grade: widget.selectedClass,
-                  subject: subject,
-                  learningStandard:
-                      learningStandard!.isEmpty ? "NA" : learningStandard,
-                  subLearningStandard:
-                      subLearningStandard!.isEmpty ? "NA" : subLearningStandard,
-                  scoringRubric: Globals.scoringRubric,
-                  customRubricImage: rubicImgUrl));
-            },
-          );
-          _googleDriveBloc
-              .add(UpdateDocOnDrive(studentData: Globals.studentInfo!));
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ResultsSummary(
-                      assessmentDetailPage: false,
-                    )),
-          );
         },
         label: Row(
           children: [
