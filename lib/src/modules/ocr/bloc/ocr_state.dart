@@ -59,11 +59,11 @@ class SubjectDataSuccess extends OcrState {
   SubjectDataSuccess({
     this.obj,
   });
-  SubjectDataSuccess copyWith({
-    obj,
-  }) {
-    return SubjectDataSuccess(obj: obj ?? this.obj);
-  }
+  // SubjectDataSuccess copyWith({
+  //   obj,
+  // }) {
+  //   return SubjectDataSuccess(obj: obj ?? this.obj);
+  // }
 
   @override
   List<Object> get props => [];
@@ -123,7 +123,9 @@ class FetchTextFromImageFailure extends OcrState {
   final String? grade;
 
   FetchTextFromImageFailure(
-      {required this.studentId, required this.grade, required this.studentName});
+      {required this.studentId,
+      required this.grade,
+      required this.studentName});
 
   FetchTextFromImageFailure copyWith(
       {final studentId, final grade, final studentName}) {
