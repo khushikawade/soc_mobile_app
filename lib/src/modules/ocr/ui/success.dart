@@ -116,28 +116,29 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       pointScored = state.grade;
 
                       nameController.text = state.studentName!;
-                      if (_formKey.currentState!.validate()) {
-                        if (nameController.text.isNotEmpty &&
-                            nameController.text.length >= 3 &&
-                            idController.text.isNotEmpty) {
-                          Timer(Duration(seconds: 5), () {
-                            updateDetails();
-                            // COMMENT below section for enableing the camera
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CameraScreen(
-                                        isScanMore: widget.isScanMore,
-                                        pointPossible: widget.pointPossible,
-                                      )),
-                            );
-                            //UNCOMMENT below section for enableing the camera
+                      // if (_formKey.currentState!.validate()) {
+                      if (nameController.text.isNotEmpty &&
+                          nameController.text.length >= 3 &&
+                          idController.text.isNotEmpty) {
+                        Timer(Duration(seconds: 5), () {
+                          updateDetails();
+                          // COMMENT below section for enableing the camera
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CameraScreen(
+                                      isScanMore: widget.isScanMore,
+                                      pointPossible: widget.pointPossible,
+                                    )),
+                          );
+                          //UNCOMMENT below section for enableing the camera
 
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (_) => CameraScreen()));
-                          });
-                        }
-                      } else {
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (_) => CameraScreen()));
+                        });
+                      }
+                      //}
+                      else {
                         setState(() {
                           failure = true;
                         });
@@ -174,9 +175,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         ),
                       );
                     } else if (state is FetchTextFromImageSuccess) {
-                      idController.text = state.studentId!;
-                      nameController.text = state.studentName!;
-                      Globals.gradeList.add(state.grade!);
+                      // idController.text = state.studentId!;
+                      // nameController.text = state.studentName!;
+                      // Globals.gradeList.add(state.grade!);
                       return successScreen(
                           id: state.studentId!, grade: state.grade!);
                     } else if (state is FetchTextFromImageFailure) {
@@ -477,7 +478,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       required validator,
       TextInputType? keyboardType,
       required bool? isFailure,
-       String? errormsg}) {
+      String? errormsg}) {
     return TextFormField(
         autovalidateMode: AutovalidateMode.always,
         // keyboardType: keyboardType ?? null,
@@ -521,7 +522,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
           ),
         ),
         onChanged: onSaved,
-        validator: validator);
+        //validator: validator
+        );
   }
 
   Widget textActionButton() {

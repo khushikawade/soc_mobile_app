@@ -194,25 +194,25 @@ class _OpticalCharacterRecognitionPageState
               //   updateLocalDb();
               // }
 
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => CameraScreen(
-              //             isScanMore: false,
-              //             pointPossible: scoringColor == 0
-              //                 ? '2'
-              //                 : scoringColor == 2
-              //                     ? '3'
-              //                     : scoringColor == 4
-              //                         ? '4'
-              //                         : '2',
-              //           )),
-              // );
-
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateAssessment()),
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          isScanMore: false,
+                          pointPossible: scoringColor == 0
+                              ? '2'
+                              : scoringColor == 2
+                                  ? '3'
+                                  : scoringColor == 4
+                                      ? '4'
+                                      : '2',
+                        )),
               );
+
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              // );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
