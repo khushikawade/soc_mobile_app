@@ -360,8 +360,7 @@ class _OpticalCharacterRecognitionPageState
               onLongPress: () {
                 print(
                     'Rubric image : ${RubricScoreList.scoringList[index].imgUrl}');
-                showCustomRubricImage(
-                    RubricScoreList.scoringList[index].imgUrl!);
+                showCustomRubricImage(RubricScoreList.scoringList[index]);
               },
               onTap: () {
                 setState(() {
@@ -457,13 +456,13 @@ class _OpticalCharacterRecognitionPageState
         : print("");
   }
 
-  void showCustomRubricImage(imageURL) {
-    imageURL != null
+  void showCustomRubricImage(CustomRubicModal customScoreObj) {
+    customScoreObj.imgUrl != null
         ? showDialog(
             context: context,
             builder: (_) => ImagePopup(
                 // Implemented Dark mode image
-                imageURL: imageURL))
+                imageURL: customScoreObj.imgUrl!))
         : Utility.showSnackBar(_scaffoldKey,
             'Image not found for the selected scoring rubric', context, null);
   }

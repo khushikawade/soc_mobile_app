@@ -147,15 +147,20 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
                         Text(
-                            "${assessmentCount != null && assessmentCount! > 1 ? assessmentCount! - 1 : ''}",
+                            "${assessmentCount != null && assessmentCount! > 0 ? assessmentCount! : ''}",
                             style: Theme.of(context).textTheme.headline3),
                       ],
                     ),
                   ),
                   SpacerWidget(_KVertcalSpace / 3),
                   !widget.assessmentDetailPage!
-                      ? listView(
-                          Globals.studentInfo!,
+                      ? Column(
+                          children: [
+                            resultTitle(),
+                            listView(
+                              Globals.studentInfo!,
+                            ),
+                          ],
                         )
                       : BlocConsumer(
                           bloc: _driveBloc,
@@ -163,8 +168,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               (BuildContext contxt, GoogleDriveState state) {
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
-                                return listView(
-                                  state.obj,
+                                return Column(
+                                  children: [
+                                    resultTitle(),
+                                    listView(
+                                      state.obj,
+                                    ),
+                                  ],
                                 );
                               } else {
                                 return Expanded(
@@ -273,6 +283,69 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     );
   }
 
+  Widget resultTitle() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: Container(
+            height: 60.0,
+            margin: const EdgeInsets.only(
+                bottom: 6.0), //Same as `blurRadius` i guess
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.0),
+              color: Theme.of(context).backgroundColor == Color(0xff000000)
+                  ? Colors.black
+                  : Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 1.0), //(x,y)
+                  blurRadius: 6.0,
+                ),
+              ],
+            ),
+            child: Container(
+                child: ListTile(
+              leading: Utility.textWidget(
+                  text: 'Student Name',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.bold)),
+              trailing: Utility.textWidget(
+                  text: 'Points Earned',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.bold)),
+            )),
+          ),
+        ),
+      ),
+    );
+    // return Container(
+    //     child: ListTile(
+    //   leading: Utility.textWidget(
+    //       text: 'Student Name',
+    //       context: context,
+    //       textTheme: Theme.of(context)
+    //           .textTheme
+    //           .headline2!
+    //           .copyWith(fontWeight: FontWeight.bold)),
+    //   trailing: Utility.textWidget(
+    //       text: 'Points Earned',
+    //       context: context,
+    //       textTheme: Theme.of(context)
+    //           .textTheme
+    //           .headline2!
+    //           .copyWith(fontWeight: FontWeight.bold)),
+    // ));
+  }
+
   Widget _iconButton(int index) {
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -354,22 +427,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         scrollDirection: Axis.vertical,
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: [
-              Container(
-                  child: ListTile(
-                leading: Utility.textWidget(
-                    text: 'Student Name',
-                    context: context,
-                    textTheme: Theme.of(context).textTheme.headline2!),
-                trailing: Utility.textWidget(
-                    text: 'Points Earned',
-                    context: context,
-                    textTheme: Theme.of(context).textTheme.headline2!),
-              )),
-              _buildList(index, _list, context),
-            ],
-          );
+          return _buildList(index, _list, context);
         },
       ),
     );

@@ -17,6 +17,7 @@ import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../../../widgets/textfield_widget.dart';
@@ -311,7 +312,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     padding: EdgeInsets.all(15),
                     alignment: Alignment.center,
                     child: Utility.textWidget(
-                        text: list[index].descriptionC!,
+                        text: HtmlUnescape().convert(list[index].descriptionC!),
                         textTheme: Theme.of(context).textTheme.headline2,
                         context: context),
                     decoration: BoxDecoration(
@@ -725,7 +726,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
                         message:
-                            "you are about to lose scanned assessment sheet",
+                            "you are about to lose all the scanned assessment sheets",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {

@@ -110,6 +110,7 @@ class _CameraScreenState extends State<CameraScreen>
                         fontSize: 18,
                       )),
                   onPressed: () {
+                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
                     Globals.fileId = "";
                     Globals.studentInfo!.length > 0
                         ? widget.isScanMore == true
