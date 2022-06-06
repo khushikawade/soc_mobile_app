@@ -512,6 +512,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
                                 isScanMore: true,
+                                pointPossible: '2',
                               )));
                 },
                 icon: Icon(
