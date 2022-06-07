@@ -12,6 +12,8 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SuccessScreen extends StatefulWidget {
@@ -40,9 +42,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool onChange = false;
   String studentName = '';
   String studentId = '';
+  final ValueNotifier<bool> isStudentNameFilled = ValueNotifier<bool>(false);
   final nameController = TextEditingController();
   final idController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool? valuechange;
 
   String? pointScored;
   @override
@@ -59,6 +64,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: Stack(children: [
         CommonBackGroundImgWidget(),
         Scaffold(
+            key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               isBackButton: false,
@@ -69,21 +75,29 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   ? IconButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          if (nameController.text.isNotEmpty &&
-                              nameController.text.length >= 3 &&
-                              idController.text.isNotEmpty) {
-                            _bloc.add(SaveStudentDetails(
-                                studentName: nameController.text,
-                                studentId: idController.text));
+                          if (!isSelected) {
+                            Utility.showSnackBar(
+                                _scaffoldKey,
+                                'Please select the earned point',
+                                context,
+                                null);
+                          } else {
+                            if (nameController.text.isNotEmpty &&
+                                nameController.text.length >= 3 &&
+                                idController.text.isNotEmpty) {
+                              _bloc.add(SaveStudentDetails(
+                                  studentName: nameController.text,
+                                  studentId: idController.text));
+                            }
+                            // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => CameraScreen(
+                                          isScanMore: widget.isScanMore,
+                                          pointPossible: widget.pointPossible,
+                                        )));
                           }
-                          // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => CameraScreen(
-                                        isScanMore: widget.isScanMore,
-                                        pointPossible: widget.pointPossible,
-                                      )));
                         }
                       },
                       icon: Icon(
@@ -116,29 +130,29 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       pointScored = state.grade;
 
                       nameController.text = state.studentName!;
-                      // if (_formKey.currentState!.validate()) {
-                      if (nameController.text.isNotEmpty &&
-                          nameController.text.length >= 3 &&
-                          idController.text.isNotEmpty) {
-                        Timer(Duration(seconds: 5), () {
-                          updateDetails();
-                          // COMMENT below section for enableing the camera
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CameraScreen(
-                                      isScanMore: widget.isScanMore,
-                                      pointPossible: widget.pointPossible,
-                                    )),
-                          );
-                          //UNCOMMENT below section for enableing the camera
+                      if (_formKey.currentState!.validate()) {
+                        if (nameController.text.isNotEmpty &&
+                            nameController.text.length >= 3 &&
+                            idController.text.isNotEmpty) {
+                          Timer(Duration(seconds: 5), () {
+                            updateDetails();
+                            // }
+                            // COMMENT below section for enableing the camera
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraScreen(
+                                        isScanMore: widget.isScanMore,
+                                        pointPossible: widget.pointPossible,
+                                      )),
+                            );
+                            //UNCOMMENT below section for enableing the camera
 
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (_) => CameraScreen()));
-                        });
-                      }
-                      //}
-                      else {
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (_) => CameraScreen()));
+                          });
+                        }
+                      } else {
                         setState(() {
                           failure = true;
                         });
@@ -214,17 +228,35 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.5))),
+
+          //                 ValueListenableBuilder(
+          // valueListenable: isStudentNameFilled,
+          // builder: (BuildContext context, dynamic value, Widget? child) {
+          //   print(isStudentNameFilled.value);
+          //   return
           textFormField(
-            controller: nameController,
-            isFailure: true,
-            errormsg: "Make sure to save the record with student name",
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              studentName = nameController.text;
-              onChange = true;
-            },
-            validator: (value) {},
-          ),
+              controller: nameController,
+              // keyboardType: TextInputType.,
+              isFailure: true,
+              // errormsg:
+              //     "If you would like to save the student in database, Please enter the student name",
+              onSaved: (String value) {
+                _formKey.currentState!.validate();
+                value != '' ? valuechange = true : valuechange = false;
+                updateDetails(isUpdateData: true);
+                studentName = nameController.text;
+                onChange = true;
+              },
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return 'If you would like to save the student details in database, Please enter the student name';
+                } else if (value.length < 3) {
+                  return 'Make sure the student name contains more than 3 character';
+                }
+              }),
+          //       ;},
+          //   child: Container(),
+          // ),
           SpacerWidget(_KVertcalSpace / 2),
           Utility.textWidget(
               text: 'Student ID',
@@ -294,7 +326,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         textFormField(
           controller: nameController,
           isFailure: false,
-          errormsg: "Make sure to save the record with student name",
+          // errormsg: "Make sure to save the record with student name",
           onSaved: (String value) {
             updateDetails(isUpdateData: true);
             onChange = true;
@@ -480,6 +512,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
       required bool? isFailure,
       String? errormsg}) {
     return TextFormField(
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
+        ],
         autovalidateMode: AutovalidateMode.always,
         keyboardType: keyboardType ?? null,
         //        //textAlign: TextAlign.start,
@@ -522,8 +557,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           ),
         ),
         onChanged: onSaved,
-        //validator: validator
-        );
+        validator: validator);
   }
 
   Widget textActionButton() {

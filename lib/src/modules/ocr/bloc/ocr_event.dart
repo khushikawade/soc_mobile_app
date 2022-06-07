@@ -64,19 +64,22 @@ class FetchTextFromImage extends OcrEvent {
   String toString() => 'GlobalSearchEvent { keyword: $base64}';
 }
 
-class SaveAssessmentIntoDataBase extends OcrEvent {
+class SaveAssessmentToDashboard extends OcrEvent {
   final String assessmentName;
   final String rubricScore;
   final String subjectId;
   final String schoolId;
-   final String standardId;
-  SaveAssessmentIntoDataBase(
+  final String standardId;
+  final scaffoldKey;
+  final context;
+  SaveAssessmentToDashboard(
       {required this.assessmentName,
       required this.rubricScore,
       required this.subjectId,
       required this.schoolId,
-      required this.standardId
-      });
+      required this.standardId,
+      required this.scaffoldKey,
+      required this.context});
 
   @override
   List<Object> get props => [];
