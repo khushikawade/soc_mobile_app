@@ -111,7 +111,7 @@ class AppSetting {
   @HiveField(52)
   String? authenticationURL;
   @HiveField(5)
-  bool? enableGraded;
+  String? enableGraded;
 
   AppSetting(
       {this.attributes,
@@ -247,9 +247,7 @@ class AppSetting {
                 : false as bool?,
         authenticationURL: json['Authentication_URL__c'] as String?,
         enableGraded:
-            json['Enable_GradEd__c'].toString().toLowerCase() == 'true'
-                ? true
-                : false as bool?,
+            json['Enable_GradEd__c']as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -362,7 +360,7 @@ class AppSetting {
       bool? isCustomApp,
       bool? disableDarkMode,
       String? authenticationURL,
-      bool? enable}) {
+      String? enableGraded}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,

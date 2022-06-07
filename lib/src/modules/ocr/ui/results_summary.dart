@@ -188,7 +188,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     resultTitle(),
                                     listView(
                                       state.obj,
-                                    ),
+                                    )
                                   ],
                                 );
                               } else {
@@ -451,7 +451,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
       height: widget.assessmentDetailPage!
           ? (MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.7
+              ? MediaQuery.of(context).size.height * 0.65
               : MediaQuery.of(context).size.height * 0.45)
           : (MediaQuery.of(context).orientation == Orientation.portrait
               ? MediaQuery.of(context).size.height * 0.5

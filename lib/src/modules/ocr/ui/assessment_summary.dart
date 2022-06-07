@@ -73,7 +73,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     builder: (BuildContext contxt, GoogleDriveState state) {
                       if (state is GoogleDriveGetSuccess) {
                         return state.obj.length > 0
-                            ? listView(state.obj)
+                            ? Expanded(child: listView(state.obj))
                             : Expanded(
                                 child: NoDataFoundErrorWidget(
                                     isResultNotFoundMsg: true,
@@ -114,7 +114,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
         shrinkWrap: true,
-        padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+        // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
         itemCount: _list.length,
         itemBuilder: (BuildContext context, int index) {
