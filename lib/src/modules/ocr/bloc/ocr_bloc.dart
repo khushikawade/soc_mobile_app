@@ -1,5 +1,4 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
@@ -7,9 +6,9 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import '../../../services/local_database/local_db.dart';
+import '../../../services/utility.dart';
 import '../modal/subject_details_modal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -33,7 +32,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
-        List data = await fatchAndProcessDetails(
+        List data = await procressAssessmentSheet(
             base64: event.base64, pointPossible: event.pointPossible);
         if (data[0] != '' && data[1] != '' && data[2] != '') {
           yield FetchTextFromImageSuccess(
@@ -122,7 +121,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is SaveStudentDetails) {
       try {
-        _saveStudentName(
+        saveStudentToSalesforce(
             studentName: event.studentName, studentId: event.studentId);
       } catch (e) {}
     }
@@ -178,11 +177,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } catch (e) {}
     }
 
-    if (event is SaveAssessmentIntoDataBase) {
+    if (event is SaveAssessmentToDashboard) {
       try {
         print("calling save record to sales Force");
 
-        String id = await _saveAssessmetRecordToSalesForce(
+        String id = await saveAssessmentToDashboard(
             assessmentName: event.assessmentName,
             rubicScore: await rubricPickList(event.rubricScore),
             subjectId: event.subjectId,
@@ -190,15 +189,24 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             standardId: event.standardId);
 
         if (id != '') {
-          bool result = await _addStudentRecordOnSalesForce(
+          bool result = await saveResultToDashboard(
               assessmentId: id, studentDetails: Globals.studentInfo!);
 
           !result
-              ? _addStudentRecordOnSalesForce(
+              ? saveResultToDashboard(
                   assessmentId: id, studentDetails: Globals.studentInfo!)
-              : print("result Record is saved on DB");
+              : Utility.showSnackBar(
+                  event.scaffoldKey,
+                  'Yay! Data has been successully saved to the dashboard',
+                  event.context,
+                  null); //print("result Record is saved on DB");
         } else {
-          throw ('something_went_wrong');
+          Utility.showSnackBar(
+              event.scaffoldKey,
+              'Unable to save the result. Please try again.',
+              event.context,
+              null);
+          throw ('something went wrong');
         }
       } catch (e) {
         throw (e);
@@ -313,16 +321,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  int covertStringtoInt(String data) {
-    try {
-      int result = int.parse(data);
-      return result;
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  Future fatchAndProcessDetails(
+  Future procressAssessmentSheet(
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
@@ -362,7 +361,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _saveStudentName(
+  Future<bool> saveStudentToSalesforce(
       {required String studentName, required studentId}) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
@@ -408,15 +407,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       var data = res["body"];
       if (data == false) {
         print("this is a new uer now create a user contaact inside database");
-        bool result = await _createContact(email: email.toString());
+        bool result = await createContactToSalesforce(email: email.toString());
         if (!result) {
-          await _createContact(email: email.toString());
+          await createContactToSalesforce(email: email.toString());
         }
       } else if (data['Assessment_App_User__c'] != 'true') {
         print("this is a older user now updating datils in database");
-        bool result = await _updateContact(recordId: data['Id']);
+        bool result = await updateContactToSalesforce(recordId: data['Id']);
         if (!result) {
-          await _updateContact(recordId: data['Id']);
+          await updateContactToSalesforce(recordId: data['Id']);
         }
       }
       return true;
@@ -426,7 +425,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _createContact({required String? email}) async {
+  Future<bool> createContactToSalesforce({required String? email}) async {
     print(email!.split("@")[0]);
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
@@ -452,7 +451,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _updateContact({required String? recordId}) async {
+  Future<bool> updateContactToSalesforce({required String? recordId}) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -473,14 +472,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<String> _saveAssessmetRecordToSalesForce({
+  Future<String> saveAssessmentToDashboard({
     required String? assessmentName,
     required String? rubicScore,
     required String? subjectId,
     required String? schoolId,
     required String? standardId,
   }) async {
-    String currentDate = _getCurrentDate(DateTime.now());
+    String currentDate = Utility.getCurrentDate(DateTime.now());
 
     Map<String, String> headers = {
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
@@ -490,11 +489,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     final body = {
       "Date__c": currentDate,
       "Name__c": assessmentName,
-      "Rubric__c": rubicScore,
+      "Rubric__c": rubicScore != '' ? rubicScore : null,
       "School__c": schoolId,
       "School_year__c": currentDate.split("-")[0],
-      "Standard__c": standardId,
-      "Subject__c": subjectId
+      "Standard__c": standardId != '' ? standardId : null,
+      "Subject__c": subjectId != '' ? subjectId : null
     };
     final ResponseModel response = await _dbServices.postapi(
       "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
@@ -505,18 +504,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (response.statusCode == 200) {
       String id = response.data['body']['Assessment_Id'];
 
-      print("record is saved now ");
+      print("Assessment has been saved successfully : $id");
       return id;
     } else {
       print("not 200 ---> r${response.statusCode}");
       return "";
     }
-  }
-
-  _getCurrentDate(DateTime dateTime) {
-    var now = new DateTime.now();
-    var formatter = new DateFormat('yyyy-MM-dd');
-    return formatter.format(now);
   }
 
   rubricPickList(rubricScore) {
@@ -533,7 +526,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _addStudentRecordOnSalesForce(
+  Future<bool> saveResultToDashboard(
       {required String assessmentId,
       required List<StudentAssessmentInfo> studentDetails}) async {
     List<Map> bodyContent = [];
@@ -543,10 +536,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     for (int i = 0; i < studentDetails.length; i++) {
       bodyContent.add(recordtoJson(
           assessmentId,
-          _getCurrentDate(DateTime.now()),
+          Utility.getCurrentDate(DateTime.now()),
           studentDetails[i].studentGrade,
           studentDetails[i].studentId,
-          "NA"));
+          studentDetails[i].assessmentImage,
+          studentDetails[i].studentName));
     }
 
     final ResponseModel response = await _dbServices.postapi(
@@ -556,7 +550,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     );
     if (response.statusCode == 200) {
       // String id = response.data['body']['id'];
-      print("result record is saved successfully ");
+      print("result(s) have been successfully saved to dashboard.");
       return true;
     } else {
       return false;
@@ -564,13 +558,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   }
 
   Map<String, String> recordtoJson(assessmentId, currentDate, pointsEarned,
-      studentOsisId, assessmentImageURl) {
+      studentOsisId, assessmentImageURl, sudentName) {
     Map<String, String> body = {
       "Assessment_Id": assessmentId,
       "Date__c": currentDate.toString(),
       "Result__c": pointsEarned,
       "Student__c": studentOsisId, //Scanned from the sheet
-      "Assessment_Image__c": assessmentImageURl
+      "Assessment_Image__c": assessmentImageURl,
+      "Student_Name__c": sudentName
     };
     return body;
   }

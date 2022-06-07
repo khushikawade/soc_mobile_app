@@ -348,6 +348,7 @@ class _OpticalCharacterRecognitionPageState
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
           padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).size.height * 0.1,
               left: MediaQuery.of(context).size.width / 70,
               right: MediaQuery.of(context).size.width / 70),
           // physics: ScrollPhysics(),

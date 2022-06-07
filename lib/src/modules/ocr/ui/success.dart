@@ -13,6 +13,8 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SuccessScreen extends StatefulWidget {
@@ -41,9 +43,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool onChange = false;
   String studentName = '';
   String studentId = '';
-  final nameController = TextEditingController();
-  final idController = TextEditingController();
+  final ValueNotifier<bool> isStudentNameFilled = ValueNotifier<bool>(false);
+  var nameController = TextEditingController();
+  var idController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool? valuechange;
 
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   String? pointScored;
@@ -61,57 +66,63 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: Stack(children: [
         CommonBackGroundImgWidget(),
         Scaffold(
+            key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               isBackButton: false,
               isSuccessState: !failure,
               //isFailureState: failure,
               isHomeButtonPopup: true,
-              actionIcon: failure == true
-                  ? IconButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          if (nameController.text.isNotEmpty &&
-                              nameController.text.length >= 3 &&
-                              idController.text.isNotEmpty) {
-                            _bloc.add(SaveStudentDetails(
-                                studentName: nameController.text,
-                                studentId: idController.text));
-
-                            String imgExtension = widget.imgPath.path.substring(
-                                widget.imgPath.path.lastIndexOf(".") + 1);
-                            _googleDriveBloc.add(AssessmentImgToAwsBucked(
-                                imgBase64: widget.img64,
-                                imgExtension: imgExtension,
-                                studentId: idController.text));
-                          }
-
-                          // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => CameraScreen(
-                                        isScanMore: widget.isScanMore,
-                                        pointPossible: widget.pointPossible,
-                                      )));
-                        }
-                      },
-                      icon: Icon(
-                        IconData(0xe877,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        size: 30,
-                        color: AppTheme.kButtonColor,
-                      ),
-                    )
-                  : null,
+              actionIcon:
+                  //  failure == true
+                  //     ?
+                  IconButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    if (!isSelected) {
+                      Utility.showSnackBar(_scaffoldKey,
+                          'Please select the earned point', context, null);
+                    } else {
+                      if (nameController.text.isNotEmpty &&
+                          nameController.text.length >= 3 &&
+                          idController.text.isNotEmpty) {
+                        _bloc.add(SaveStudentDetails(
+                            studentName: nameController.text,
+                            studentId: idController.text));
+                        String imgExtension = widget.imgPath.path.substring(
+                            widget.imgPath.path.lastIndexOf(".") + 1);
+                        _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                            imgBase64: widget.img64,
+                            imgExtension: imgExtension,
+                            studentId: idController.text));
+                      }
+                    }
+                    // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => CameraScreen(
+                                  isScanMore: widget.isScanMore,
+                                  pointPossible: widget.pointPossible,
+                                )));
+                  }
+                },
+                icon: Icon(
+                  IconData(0xe877,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: 30,
+                  color: AppTheme.kButtonColor,
+                ),
+              ),
+              // : null,
               key: null,
             ),
             body: Container(
               padding: EdgeInsets.only(left: 20, right: 20),
               child: BlocConsumer<OcrBloc, OcrState>(
                   bloc: _bloc, // provide the local bloc instance
-                  listener: (context, state) {
+                  listener: (context, state) async {
                     if (state is FetchTextFromImageSuccess) {
                       widget.pointPossible == '2'
                           ? Globals.pointsEarnedList = [0, 1, 2]
@@ -120,41 +131,42 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               : widget.pointPossible == '4'
                                   ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
                                   : Globals.pointsEarnedList.length = 2;
+                      nameController.text = state.studentName!;
                       onChange == false
                           ? idController.text = state.studentId!
                           : null;
                       pointScored = state.grade;
+                      //   reconizeText(pathOfImage);
+                      // });
 
-                      nameController.text = state.studentName!;
-                      // if (_formKey.currentState!.validate()) {
-                      if (nameController.text.isNotEmpty &&
-                          nameController.text.length >= 3 &&
-                          idController.text.isNotEmpty) {
-                        Timer(Duration(seconds: 5), () {
-                          updateDetails();
-                          // COMMENT below section for enableing the camera
-                          String imgExtension = widget.imgPath.path.substring(
-                              widget.imgPath.path.lastIndexOf(".") + 1);
-                          _googleDriveBloc.add(AssessmentImgToAwsBucked(
-                              imgBase64: widget.img64,
-                              imgExtension: imgExtension,
-                              studentId: idController.text));
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CameraScreen(
-                                      isScanMore: widget.isScanMore,
-                                      pointPossible: widget.pointPossible,
-                                    )),
-                          );
-                          //UNCOMMENT below section for enableing the camera
+                      if (_formKey.currentState!.validate()) {
+                        if (nameController.text.isNotEmpty &&
+                            idController.text.isNotEmpty) {
+                          Timer(Duration(seconds: 5), () {
+                            updateDetails();
+                            String imgExtension = widget.imgPath.path.substring(
+                                widget.imgPath.path.lastIndexOf(".") + 1);
+                            _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                                imgBase64: widget.img64,
+                                imgExtension: imgExtension,
+                                studentId: idController.text));
+                            // }
+                            // COMMENT below section for enableing the camera
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraScreen(
+                                        isScanMore: widget.isScanMore,
+                                        pointPossible: widget.pointPossible,
+                                      )),
+                            );
+                            //UNCOMMENT below section for enableing the camera
 
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (_) => CameraScreen()));
-                        });
-                      }
-                      //}
-                      else {
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (_) => CameraScreen()));
+                          });
+                        }
+                      } else {
                         setState(() {
                           failure = true;
                         });
@@ -230,17 +242,37 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.5))),
+
+          //                 ValueListenableBuilder(
+          // valueListenable: isStudentNameFilled,
+          // builder: (BuildContext context, dynamic value, Widget? child) {
+          //   print(isStudentNameFilled.value);
+          //   return
           textFormField(
-            controller: nameController,
-            isFailure: true,
-            errormsg: "Make sure to save the record with student name",
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              studentName = nameController.text;
-              onChange = true;
-            },
-            validator: (value) {},
-          ),
+              controller: nameController,
+              // keyboardType: TextInputType.,
+              isFailure: true,
+              // errormsg:
+              //     "If you would like to save the student in database, Please enter the student name",
+              onSaved: (String value) {
+                _formKey.currentState!.validate();
+                value != '' ? valuechange = true : valuechange = false;
+                updateDetails(isUpdateData: true);
+                studentName = nameController.text;
+                onChange = true;
+              },
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return 'If you would like to save the student details in database, Please enter the student name';
+                } else if (value.length < 3) {
+                  return 'Make sure the student name contains more than 3 character';
+                } else {
+                  return null;
+                }
+              }),
+          //       ;},
+          //   child: Container(),
+          // ),
           SpacerWidget(_KVertcalSpace / 2),
           Utility.textWidget(
               text: 'Student ID',
@@ -257,11 +289,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
             // errormsg:
             //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
             onSaved: (String value) {
+              _formKey.currentState!.validate();
               updateDetails(isUpdateData: true);
               studentId = idController.text;
               onChange = true;
             },
-            validator: (value) {
+            validator: (String? value) {
               if (value!.length != 9) {
                 return 'Student Id must have 9 digit numbers';
               } else if (!value.startsWith('2')) {
@@ -287,7 +320,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
           SpacerWidget(_KVertcalSpace / 2),
           Center(child: imagePreviewWidget()),
           SpacerWidget(_KVertcalSpace / 0.9),
-          Center(child: textActionButton())
+          Center(child: retryButton()),
+          SpacerWidget(_KVertcalSpace / 1.5),
         ],
       ),
     );
@@ -308,15 +342,25 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .primaryVariant
                     .withOpacity(0.3))),
         textFormField(
-          controller: nameController,
-          isFailure: false,
-          errormsg: "Make sure to save the record with student name",
-          onSaved: (String value) {
-            updateDetails(isUpdateData: true);
-            onChange = true;
-          },
-          validator: (value) {},
-        ),
+            controller: nameController,
+            isFailure: false,
+            // errormsg: "Make sure to save the record with student name",
+            onSaved: (String value) {
+              _formKey.currentState!.validate();
+              value != '' ? valuechange = true : valuechange = false;
+
+              updateDetails(isUpdateData: true);
+              onChange = true;
+            },
+            validator: (String? value) {
+              if (value!.isEmpty) {
+                return 'If you would like to save the student details in database, Please enter the student name';
+              } else if (value.length < 3) {
+                return 'Make sure the student name contains more than 3 character';
+              } else {
+                return null;
+              }
+            }),
         SpacerWidget(_KVertcalSpace / 2),
         Utility.textWidget(
             text: 'Student Id',
@@ -333,11 +377,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
           //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
           isFailure: false,
           onSaved: (String value) {
+            _formKey.currentState!.validate();
             updateDetails(isUpdateData: true);
             onChange = true;
           },
-          validator: (String value) {
-            if (value.isEmpty) {
+          validator: (String? value) {
+            if (value!.isEmpty) {
               return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
             } else if (value.length != 9) {
               return 'Student Id must have 9 digit numbers';
@@ -496,53 +541,55 @@ class _SuccessScreenState extends State<SuccessScreen> {
       required bool? isFailure,
       String? errormsg}) {
     return TextFormField(
-      autovalidateMode: AutovalidateMode.always,
-      keyboardType: keyboardType ?? null,
-      //        //textAlign: TextAlign.start,
-      style: Theme.of(context)
-          .textTheme
-          .headline6!
-          .copyWith(fontWeight: FontWeight.bold),
-      controller: controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-        errorText: controller.text.isEmpty ? errormsg : null,
-        errorMaxLines: 2,
-        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-        fillColor: Colors.transparent,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              // color: controller.text.isNotEmpty
-              //     ? Theme.of(context)
-              //         .colorScheme
-              //         .primaryVariant
-              //         .withOpacity(0.5)
-              //     : Colors.red
-              ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              // color: controller.text.isEmpty
-              //     ? Theme.of(context)
-              //         .colorScheme
-              //         .primaryVariant
-              //         .withOpacity(0.5)
-              //     : Colors.red
-              ),
-        ),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
+        ],
+        autovalidateMode: AutovalidateMode.always,
+        keyboardType: keyboardType ?? null,
+        //        //textAlign: TextAlign.start,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.bold),
+        controller: controller,
+        cursorColor: Theme.of(context).colorScheme.primaryVariant,
+        decoration: InputDecoration(
+          errorText: controller.text.isEmpty ? errormsg : null,
+          errorMaxLines: 2,
+          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+          fillColor: Colors.transparent,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                // color: controller.text.isNotEmpty
+                //     ? Theme.of(context)
+                //         .colorScheme
+                //         .primaryVariant
+                //         .withOpacity(0.5)
+                //     : Colors.red
+                ),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                // color: controller.text.isEmpty
+                //     ? Theme.of(context)
+                //         .colorScheme
+                //         .primaryVariant
+                //         .withOpacity(0.5)
+                //     : Colors.red
+                ),
+          ),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color:
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+            ),
           ),
         ),
-      ),
-      onChanged: onSaved,
-      //validator: validator
-    );
+        onChanged: onSaved,
+        validator: validator);
   }
 
-  Widget textActionButton() {
+  Widget retryButton() {
     return InkWell(
       onTap: () {
         Navigator.pushReplacement(

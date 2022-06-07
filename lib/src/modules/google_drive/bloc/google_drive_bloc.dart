@@ -446,7 +446,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return false;
   }
 
-  Future _fetchHistoryAssessment(String? token, String? folderId) async {
+  Future _fetchHistoryAssessment(
+    String? token,
+    String? folderId,
+  ) async {
     try {
       print(token);
       print(folderId);
@@ -468,7 +471,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 .toList();
         return _list;
       } else {
-        throw ('something_went_wrong');
+        print('Authentication required');
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
+        bool result = await _toRefreshAuthenticationToken(
+            _userprofilelocalData[0].refreshToken!);
+        if (result) {
+          GetHistoryAssessmentFromDrive();
+        }
       }
     } catch (e) {
       throw (e);
