@@ -314,7 +314,7 @@ class _CameraScreenState extends State<CameraScreen>
       // print('granted-----------------------------------');
     }
 
-    // 
+    //
     //print('Turn on location services before requesting permission.');
     return;
   }

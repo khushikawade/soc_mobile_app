@@ -608,31 +608,48 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           // rubricScore = 'NA';
                         }
                       }
-                      List<StudentAssessmentInfo> list = Globals.studentInfo!;
-                      Globals.studentInfo = [];
+                      //List<StudentAssessmentInfo> list = Globals.studentInfo!;
+                      // List<StudentAssessmentInfo> list2 = [];
+                      // Globals.studentInfo!.clear();
 
-                      list.forEach(
-                        (StudentAssessmentInfo element) {
-                          Globals.studentInfo!.add(StudentAssessmentInfo(
-                              studentName: element.studentName,
-                              studentId: element.studentId,
-                              studentGrade: element.studentGrade,
-                              pointpossible: element.pointpossible,
-                              grade: widget.selectedClass,
-                              subject: subject,
-                              learningStandard: learningStandard!.isEmpty
-                                  ? "NA"
-                                  : learningStandard,
-                              subLearningStandard: subLearningStandard!.isEmpty
-                                  ? "NA"
-                                  : subLearningStandard,
-                              scoringRubric: Globals.scoringRubric,
-                              customRubricImage: rubricImgUrl,
-                              assessmentImage: element.assessmentImage));
-                        },
-                      );
-                      _googleDriveBloc.add(
-                          UpdateDocOnDrive(studentData: Globals.studentInfo!));
+                      for (int i = 0; i < Globals.studentInfo!.length; i++) {
+                        Globals.studentInfo![i].subject = subject;
+                        Globals.studentInfo![i].learningStandard =
+                            learningStandard == null ? "NA" : learningStandard;
+                        Globals.studentInfo![i].learningStandard =
+                            subLearningStandard == null
+                                ? "NA"
+                                : subLearningStandard;
+                        Globals.studentInfo![i].scoringRubric =
+                            Globals.scoringRubric;
+                        Globals.studentInfo![i].customRubricImage =
+                            rubricImgUrl;
+                      }
+
+                      // list.forEach(
+                      //   (StudentAssessmentInfo element) {
+                      //     Globals.studentInfo!.add(StudentAssessmentInfo(
+                      //         studentName: element.studentName,
+                      //         studentId: element.studentId,
+                      //         studentGrade: element.studentGrade,
+                      //         pointpossible: element.pointpossible,
+                      //         grade: widget.selectedClass,
+                      //         subject: subject,
+                      //         learningStandard: learningStandard == null
+                      //             ? "NA"
+                      //             : learningStandard,
+                      //         subLearningStandard: subLearningStandard == null
+                      //             ? "NA"
+                      //             : subLearningStandard,
+                      //         scoringRubric: Globals.scoringRubric,
+                      //         customRubricImage: rubricImgUrl,
+                      //         assessmentImage: element.assessmentImage ?? ''));
+                      //   },
+                      // );
+                      _googleDriveBloc.add(UpdateDocOnDrive(
+                          studentData:
+                              //list2
+                              Globals.studentInfo!));
 
                       // _ocrBloc.add(SaveAssessmentIntoDataBase(
                       //     assessmentName: Globals.assessmentName!,

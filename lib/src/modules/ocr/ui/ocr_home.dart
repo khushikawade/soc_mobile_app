@@ -24,7 +24,6 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -194,6 +193,7 @@ class _OpticalCharacterRecognitionPageState
               // } else {
               //   updateLocalDb();
               // }
+
               Globals.pointpossible = scoringColor == 0
                   ? '2'
                   : scoringColor == 2
@@ -244,24 +244,8 @@ class _OpticalCharacterRecognitionPageState
 
               // Navigator.push(
               //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => CameraScreen(
-              //           isScanMore: false, pointPossible: Globals.pointpossible
-
-              //           //  scoringColor == 0
-              //           //     ? '2'
-              //           //     : scoringColor == 2
-              //           //         ? '3'
-              //           //         : scoringColor == 4
-              //           //             ? '4'
-              //           //             : '2',
-              //           )),
+              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
               // );
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateAssessment()),
-              );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(

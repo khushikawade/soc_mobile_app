@@ -324,8 +324,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-       // Uri.encodeFull('https://361d-111-118-246-106.in.ngrok.io'),
-         Uri.encodeFull('http://3.142.181.122:5050/ocr'),
+        // Uri.encodeFull('https://361d-111-118-246-106.in.ngrok.io'),
+        Uri.encodeFull('http://3.142.181.122:5050/ocr'),
         //'http://3.142.181.122:5050/ocr'), //https://1fb3-111-118-246-106.in.ngrok.io
         // Uri.encodeFull('https://1fb3-111-118-246-106.in.ngrok.io'),
         body: {
@@ -539,10 +539,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       bodyContent.add(recordtoJson(
           assessmentId,
           Utility.getCurrentDate(DateTime.now()),
-          studentDetails[i].studentGrade,
-          studentDetails[i].studentId,
-          studentDetails[i].assessmentImage,
-          studentDetails[i].studentName));
+          studentDetails[i].studentGrade ?? '',
+          studentDetails[i].studentId ?? '',
+          studentDetails[i].assessmentImage ?? '',
+          studentDetails[i].studentName ?? ''));
     }
 
     final ResponseModel response = await _dbServices.postapi(
