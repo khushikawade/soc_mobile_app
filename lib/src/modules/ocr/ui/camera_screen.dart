@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,6 +15,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
@@ -64,10 +66,12 @@ class _CameraScreenState extends State<CameraScreen>
         ? WidgetsBinding.instance!
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
+
     // Hide the status bar
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     Utility.setLocked();
     onNewCameraSelected(cameras[0]);
+    _checkPermission();
     super.initState();
   }
 
@@ -291,6 +295,40 @@ class _CameraScreenState extends State<CameraScreen>
       ),
     );
   }
+
+  Future<void> _checkPermission() async {
+    final status = await Permission.camera.request();
+    // final serviceStatus = Permission.camera.status;
+
+    if (status.isDenied) {
+      Navigator.pop(context);
+    } else if (status.isPermanentlyDenied) {
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => OpticalCharacterRecognition()),
+      // );
+      Navigator.pop(context);
+      // print(
+      //     'isPermanentlyDenied --------------------------------#################');
+    } else {
+      // print('granted-----------------------------------');
+    }
+
+    // 
+    //print('Turn on location services before requesting permission.');
+    return;
+  }
+
+  //   final status = await Permission.locationWhenInUse.request();
+  //   if (status == PermissionStatus.granted) {
+  //     print('Permission granted');
+  //   } else if (status == PermissionStatus.denied) {
+  //     print('Permission denied. Show a dialog and again ask for the permission');
+  //   } else if (status == PermissionStatus.permanentlyDenied) {
+  //     print('Take the user to the settings page.');
+  //     await openAppSettings();
+  //   }
+  // }
 
   void onNewCameraSelected(CameraDescription cameraDescription) async {
     final previousCameraController = controller;

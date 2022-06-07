@@ -6,7 +6,6 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:flutter/material.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../../services/utility.dart';
 import '../modal/subject_details_modal.dart';
@@ -325,7 +324,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        Uri.encodeFull('http://3.142.181.122:5050/ocr'),
+       // Uri.encodeFull('https://361d-111-118-246-106.in.ngrok.io'),
+         Uri.encodeFull('http://3.142.181.122:5050/ocr'),
         //'http://3.142.181.122:5050/ocr'), //https://1fb3-111-118-246-106.in.ngrok.io
         // Uri.encodeFull('https://1fb3-111-118-246-106.in.ngrok.io'),
         body: {
@@ -341,18 +341,20 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         var result = response.data;
 
         return [
-          result['StudentGrade'] != '2' ||
-                  result['StudentGrade'] != '1' ||
-                  result['StudentGrade'] != '0' ||
-                  result['StudentGrade'] != '3' ||
-                  result['StudentGrade'] != '4'
-              ? '2'
-              : result['StudentGrade'],
+          result['StudentGrade'] == '2' ||
+                  result['StudentGrade'] == '1' ||
+                  result['StudentGrade'] == '0' ||
+                  result['StudentGrade'] == '3' ||
+                  result['StudentGrade'] == '4'
+              ? result['StudentGrade']
+              : '',
           result['studentId'] == 'Something Went Wrong'
               ? ''
               : result['studentId'],
           result['studentName'],
         ];
+      } else {
+        return ['', '', ''];
       }
     } catch (e) {
       print(

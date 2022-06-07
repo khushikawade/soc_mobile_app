@@ -44,6 +44,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   String studentName = '';
   String studentId = '';
   final ValueNotifier<bool> isStudentNameFilled = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
   var nameController = TextEditingController();
   var idController = TextEditingController();
   final _formKey1 = GlobalKey<FormState>();
@@ -123,109 +124,151 @@ class _SuccessScreenState extends State<SuccessScreen> {
             body: Container(
               padding: EdgeInsets.only(left: 20, right: 20),
               child: BlocConsumer<OcrBloc, OcrState>(
-                  bloc: _bloc, // provide the local bloc instance
-                  builder: (context, state) {
-                    if (state is OcrLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: AppTheme.kButtonColor,
-                        ),
-                      );
-                    } else if (state is FetchTextFromImageSuccess) {
-                      // idController.text = state.studentId!;
-                      // nameController.text = state.studentName!;
-                      // Globals.gradeList.add(state.grade!);
-                      return successScreen(
-                          id: state.studentId!, grade: state.grade!);
-                    } else if (state is FetchTextFromImageFailure) {
-                      // idController.text = state.studentId!;
-                      // nameController.text =
-                      //     onChange == true ? state.studentName! : studentName;
-                      Globals.gradeList.add(state.grade!);
-                      return failureScreen(
-                          id: state.studentId!, grade: state.grade!);
-                    }
-                    return Container();
-                    // return widget here based on BlocA's state
-                  },
-                  listener: (context, state) async {
-                    await Future.delayed(Duration(milliseconds: 200));
-                    if (state is FetchTextFromImageSuccess) {
-                      widget.pointPossible == '2'
-                          ? Globals.pointsEarnedList = [0, 1, 2]
-                          : widget.pointPossible == '3'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                              : widget.pointPossible == '4'
-                                  ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                                  : Globals.pointsEarnedList.length = 2;
-                      nameController.text = state.studentName!;
-                      onChange == false
-                          ? idController.text = state.studentId!
-                          : null;
-                      pointScored = state.grade;
-                      //   reconizeText(pathOfImage);
-                      // });
+                bloc: _bloc, // provide the local bloc instance
+                builder: (context, state) {
+                  if (state is OcrLoading) {
+                    return loadingScreen();
 
-                      if (_formKey2.currentState!.validate()) {
-                        if (nameController.text.isNotEmpty &&
-                            idController.text.isNotEmpty) {
-                          Timer(Duration(seconds: 5), () {
-                            updateDetails();
-                            String imgExtension = widget.imgPath.path.substring(
-                                widget.imgPath.path.lastIndexOf(".") + 1);
-                            _googleDriveBloc.add(AssessmentImgToAwsBucked(
-                                imgBase64: widget.img64,
-                                imgExtension: imgExtension,
-                                studentId: idController.text));
-                            // }
-                            // COMMENT below section for enableing the camera
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CameraScreen(
-                                        isScanMore: widget.isScanMore,
-                                        pointPossible: widget.pointPossible,
-                                      )),
-                            );
-                            //UNCOMMENT below section for enableing the camera
+                    // Center(
+                    //   child: CircularProgressIndicator(
+                    //     color: AppTheme.kButtonColor,
+                    //   ),
+                    // );
+                  } else if (state is FetchTextFromImageSuccess) {
+                    // idController.text = state.studentId!;
+                    // nameController.text = state.studentName!;
+                    // Globals.gradeList.add(state.grade!);
+                    return successScreen(
+                        id: state.studentId!, grade: state.grade!);
+                  } else if (state is FetchTextFromImageFailure) {
+                    // idController.text = state.studentId!;
+                    // nameController.text =
+                    //     onChange == true ? state.studentName! : studentName;
+                    Globals.gradeList.add(state.grade!);
+                    return failureScreen(
+                        id: state.studentId!, grade: state.grade!);
+                  }
+                  return Container();
+                  // return widget here based on BlocA's state
+                },
+                listener: (context, state) async {
+                  await Future.delayed(Duration(milliseconds: 200));
+                  if (state is OcrLoading) {
+                    // isRetryButton.value = false;
+                    Timer(Duration(seconds: 5), () {
+                      isRetryButton.value = true;
+                    });
+                  }
+                  if (state is FetchTextFromImageSuccess) {
+                    widget.pointPossible == '2'
+                        ? Globals.pointsEarnedList = [0, 1, 2]
+                        : widget.pointPossible == '3'
+                            ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                            : widget.pointPossible == '4'
+                                ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                                : Globals.pointsEarnedList.length = 2;
+                    nameController.text = state.studentName!;
+                    onChange == false
+                        ? idController.text = state.studentId!
+                        : null;
+                    pointScored = state.grade;
+                    //   reconizeText(pathOfImage);
+                    // });
 
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (_) => CameraScreen()));
-                          });
-                        }
-                      } else {
-                        setState(() {
-                          failure = true;
+                    if (_formKey2.currentState!.validate()) {
+                      if (nameController.text.isNotEmpty &&
+                          idController.text.isNotEmpty) {
+                        Timer(Duration(seconds: 5), () {
+                          updateDetails();
+                          String imgExtension = widget.imgPath.path.substring(
+                              widget.imgPath.path.lastIndexOf(".") + 1);
+                          _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                              imgBase64: widget.img64,
+                              imgExtension: imgExtension,
+                              studentId: idController.text));
+                          // }
+                          // COMMENT below section for enableing the camera
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CameraScreen(
+                                      isScanMore: widget.isScanMore,
+                                      pointPossible: widget.pointPossible,
+                                    )),
+                          );
+                          //UNCOMMENT below section for enableing the camera
+
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (_) => CameraScreen()));
                         });
                       }
-                    } else if (state is FetchTextFromImageFailure) {
-                      widget.pointPossible == '2'
-                          ? Globals.pointsEarnedList = [0, 1, 2]
-                          : widget.pointPossible == '3'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                              : widget.pointPossible == '4'
-                                  ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                                  : Globals.pointsEarnedList.length = 2;
-                      onChange == false
-                          ? idController.text = state.studentId ?? ''
-                          : state.studentId == ''
-                              ? studentId
-                              : null;
-                      onChange == false
-                          ? nameController.text = state.studentName ?? ''
-                          : null;
-                      pointScored = state.grade;
-                      updateDetails();
+                    } else {
                       setState(() {
                         failure = true;
                       });
                     }
-                    // do stuff here based on BlocA's state
-                  },
-                  ),
+                  } else if (state is FetchTextFromImageFailure) {
+                    widget.pointPossible == '2'
+                        ? Globals.pointsEarnedList = [0, 1, 2]
+                        : widget.pointPossible == '3'
+                            ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                            : widget.pointPossible == '4'
+                                ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                                : Globals.pointsEarnedList.length = 2;
+                    onChange == false
+                        ? idController.text = state.studentId ?? ''
+                        : state.studentId == ''
+                            ? studentId
+                            : null;
+                    onChange == false
+                        ? nameController.text = state.studentName ?? ''
+                        : null;
+                    pointScored = state.grade;
+                    updateDetails();
+                    setState(() {
+                      failure = true;
+                    });
+                  }
+                  // do stuff here based on BlocA's state
+                },
+              ),
             ))
       ]),
     );
+  }
+
+  Widget loadingScreen() {
+    return ValueListenableBuilder(
+        valueListenable: isRetryButton,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              //crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: AppTheme.kButtonColor,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                isRetryButton.value == true
+                    ? retryButton(onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CameraScreen(
+                                    isScanMore: widget.isScanMore,
+                                    pointPossible: widget.pointPossible,
+                                  )),
+                        );
+                      })
+                    : Container()
+              ],
+            ),
+          );
+        });
   }
 
   Widget failureScreen({
@@ -324,7 +367,18 @@ class _SuccessScreenState extends State<SuccessScreen> {
           SpacerWidget(_KVertcalSpace / 2),
           Center(child: imagePreviewWidget()),
           SpacerWidget(_KVertcalSpace / 0.9),
-          Center(child: retryButton()),
+          Center(child: retryButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          isScanMore: widget.isScanMore,
+                          pointPossible: widget.pointPossible,
+                        )),
+              );
+            },
+          )),
           SpacerWidget(_KVertcalSpace / 1.5),
         ],
       ),
@@ -596,18 +650,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
         validator: validator);
   }
 
-  Widget retryButton() {
+  Widget retryButton({required final onPressed}) {
     return InkWell(
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CameraScreen(
-                    isScanMore: widget.isScanMore,
-                    pointPossible: widget.pointPossible,
-                  )),
-        );
-      },
+      onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
           color: AppTheme.kButtonColor,
