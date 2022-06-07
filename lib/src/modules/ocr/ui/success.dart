@@ -46,7 +46,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final ValueNotifier<bool> isStudentNameFilled = ValueNotifier<bool>(false);
   var nameController = TextEditingController();
   var idController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool? valuechange;
 
@@ -78,7 +79,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   //     ?
                   IconButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (_formKey1.currentState!.validate() ||
+                      _formKey2.currentState!.validate()) {
                     if (!isSelected) {
                       Utility.showSnackBar(_scaffoldKey,
                           'Please select the earned point', context, null);
@@ -139,7 +141,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       //   reconizeText(pathOfImage);
                       // });
 
-                      if (_formKey.currentState!.validate()) {
+                      if (_formKey2.currentState!.validate()) {
                         if (nameController.text.isNotEmpty &&
                             idController.text.isNotEmpty) {
                           Timer(Duration(seconds: 5), () {
@@ -229,7 +231,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
     required String grade,
   }) {
     return Form(
-      key: _formKey,
+      key: _formKey1,
       child: ListView(
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -255,7 +257,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               // errormsg:
               //     "If you would like to save the student in database, Please enter the student name",
               onSaved: (String value) {
-                _formKey.currentState!.validate();
+                _formKey1.currentState!.validate();
                 value != '' ? valuechange = true : valuechange = false;
                 updateDetails(isUpdateData: true);
                 studentName = nameController.text;
@@ -289,7 +291,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             // errormsg:
             //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
             onSaved: (String value) {
-              _formKey.currentState!.validate();
+              _formKey1.currentState!.validate();
               updateDetails(isUpdateData: true);
               studentId = idController.text;
               onChange = true;
@@ -328,113 +330,116 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Widget successScreen({required String id, required String grade}) {
-    return ListView(
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        //  SpacerWidget(_KVertcalSpace / 5),
-        SpacerWidget(_KVertcalSpace * 0.25),
-        Utility.textWidget(
-            text: 'Student Name',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryVariant
-                    .withOpacity(0.3))),
-        textFormField(
-            controller: nameController,
-            isFailure: false,
-            // errormsg: "Make sure to save the record with student name",
-            onSaved: (String value) {
-              _formKey.currentState!.validate();
-              value != '' ? valuechange = true : valuechange = false;
+    return Form(
+      key: _formKey2,
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //  SpacerWidget(_KVertcalSpace / 5),
+          SpacerWidget(_KVertcalSpace * 0.25),
+          Utility.textWidget(
+              text: 'Student Name',
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryVariant
+                      .withOpacity(0.3))),
+          textFormField(
+              controller: nameController,
+              isFailure: false,
+              // errormsg: "Make sure to save the record with student name",
+              onSaved: (String value) {
+                _formKey2.currentState!.validate();
+                value != '' ? valuechange = true : valuechange = false;
 
-              updateDetails(isUpdateData: true);
-              onChange = true;
-            },
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return 'If you would like to save the student details in database, Please enter the student name';
-              } else if (value.length < 3) {
-                return 'Make sure the student name contains more than 3 character';
-              } else {
-                return null;
-              }
-            }),
-        SpacerWidget(_KVertcalSpace / 2),
-        Utility.textWidget(
-            text: 'Student Id',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryVariant
-                    .withOpacity(0.5))),
-        textFormField(
-          controller: idController,
-          keyboardType: TextInputType.number,
-          // errormsg:
-          //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-          isFailure: false,
-          onSaved: (String value) {
-            _formKey.currentState!.validate();
-            updateDetails(isUpdateData: true);
-            onChange = true;
-          },
-          validator: (String? value) {
-            if (value!.isEmpty) {
-              return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
-            } else if (value.length != 9) {
-              return 'Student Id must have 9 digit numbers';
-            } else if (!value.startsWith('2')) {
-              return 'Student Id must starts with \'2\'';
-            } else {
-              return null;
-            }
-          },
-        ),
-        SpacerWidget(_KVertcalSpace / 2),
-        Center(
-          child: Utility.textWidget(
-              text: 'Points Earned',
+                updateDetails(isUpdateData: true);
+                onChange = true;
+              },
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return 'If you would like to save the student details in database, Please enter the student name';
+                } else if (value.length < 3) {
+                  return 'Make sure the student name contains more than 3 character';
+                } else {
+                  return null;
+                }
+              }),
+          SpacerWidget(_KVertcalSpace / 2),
+          Utility.textWidget(
+              text: 'Student Id',
               context: context,
               textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                   color: Theme.of(context)
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.5))),
-        ),
-        SpacerWidget(_KVertcalSpace / 4),
-        Center(child: pointsEarnedButton(int.parse(grade))),
-        SpacerWidget(_KVertcalSpace / 2),
-        Center(child: imagePreviewWidget()),
-        SpacerWidget(_KVertcalSpace / 1.28),
-        Center(
-          child: Container(
-              width: MediaQuery.of(context).size.width * 0.5,
-              // color: Colors.blue,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Utility.textWidget(
-                      text: 'All Good!',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(fontWeight: FontWeight.bold)),
-                  Icon(
-                    IconData(0xe878,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    size: 34,
-                    color: AppTheme.kButtonColor,
-                  ),
-                ],
-              )),
-        ),
-      ],
-      // ),
+          textFormField(
+            controller: idController,
+            keyboardType: TextInputType.number,
+            // errormsg:
+            //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+            isFailure: false,
+            onSaved: (String value) {
+              _formKey2.currentState!.validate();
+              updateDetails(isUpdateData: true);
+              onChange = true;
+            },
+            validator: (String? value) {
+              if (value!.isEmpty) {
+                return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
+              } else if (value.length != 9) {
+                return 'Student Id must have 9 digit numbers';
+              } else if (!value.startsWith('2')) {
+                return 'Student Id must starts with \'2\'';
+              } else {
+                return null;
+              }
+            },
+          ),
+          SpacerWidget(_KVertcalSpace / 2),
+          Center(
+            child: Utility.textWidget(
+                text: 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+          ),
+          SpacerWidget(_KVertcalSpace / 4),
+          Center(child: pointsEarnedButton(int.parse(grade))),
+          SpacerWidget(_KVertcalSpace / 2),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(_KVertcalSpace / 1.28),
+          Center(
+            child: Container(
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Utility.textWidget(
+                        text: 'All Good!',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold)),
+                    Icon(
+                      IconData(0xe878,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: 34,
+                      color: AppTheme.kButtonColor,
+                    ),
+                  ],
+                )),
+          ),
+        ],
+        // ),
+      ),
     );
   }
 
