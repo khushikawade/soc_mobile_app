@@ -110,6 +110,8 @@ class AppSetting {
   bool? disableDarkMode;
   @HiveField(52)
   String? authenticationURL;
+  @HiveField(5)
+  bool? enableGraded;
 
   AppSetting(
       {this.attributes,
@@ -164,7 +166,8 @@ class AppSetting {
       this.isTestSchool,
       this.isCustomApp,
       this.disableDarkMode,
-      this.authenticationURL});
+      this.authenticationURL,
+      this.enableGraded});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
         attributes: json['attributes'] == null
@@ -243,6 +246,10 @@ class AppSetting {
                 ? true
                 : false as bool?,
         authenticationURL: json['Authentication_URL__c'] as String?,
+        enableGraded:
+            json['Enable_GradEd__c'].toString().toLowerCase() == 'true'
+                ? true
+                : false as bool?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -298,7 +305,8 @@ class AppSetting {
         'Test_School__c': isTestSchool,
         'Needs_Custom_App__c': isCustomApp,
         'Disable_Dark_Mode__c': disableDarkMode,
-        'Authentication_URL__c': authenticationURL
+        'Authentication_URL__c': authenticationURL,
+        'Enable_GradEd': enableGraded
       };
 
   AppSetting copyWith(
@@ -353,7 +361,8 @@ class AppSetting {
       bool? isTestSchool,
       bool? isCustomApp,
       bool? disableDarkMode,
-      String? authenticationURL}) {
+      String? authenticationURL,
+      bool? enable}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -410,6 +419,7 @@ class AppSetting {
         isTestSchool: isTestSchool ?? this.isTestSchool,
         isCustomApp: isCustomApp ?? this.isCustomApp,
         disableDarkMode: disableDarkMode ?? this.disableDarkMode,
-        authenticationURL: authenticationURL ?? this.authenticationURL);
+        authenticationURL: authenticationURL ?? this.authenticationURL,
+        enableGraded: enableGraded ?? this.enableGraded);
   }
 }

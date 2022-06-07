@@ -267,7 +267,7 @@ class _StaffPageState extends State<StaffPage> {
               );
             },
             child: Container()),
-        cameraButton()
+        Globals.appSetting.enableGraded==true? cameraButton():Container()
       ]),
       onRefresh: refreshPage);
 
