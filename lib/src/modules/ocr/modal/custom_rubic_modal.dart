@@ -24,7 +24,7 @@ class CustomRubicModal {
 class RubricScoreList {
   static List<CustomRubicModal> scoringList = [
     CustomRubicModal(
-        name: "NYC",
+        name: "NYS",
         score: '0-2',
         imgBase64: null,
         customOrStandardRubic: "Standard"),
@@ -34,7 +34,7 @@ class RubricScoreList {
         imgBase64: null,
         customOrStandardRubic: "Standard"),
     CustomRubicModal(
-        name: "NYC",
+        name: "NYS",
         score: '0-3',
         imgBase64: null,
         customOrStandardRubic: "Standard"),
@@ -44,7 +44,7 @@ class RubricScoreList {
         imgBase64: null,
         customOrStandardRubic: "Standard"),
     CustomRubicModal(
-        name: "NYC",
+        name: "NYS",
         score: '0-4',
         imgBase64: null,
         customOrStandardRubic: "Standard"),

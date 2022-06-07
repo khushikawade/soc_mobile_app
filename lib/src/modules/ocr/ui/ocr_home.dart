@@ -22,6 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -191,26 +192,35 @@ class _OpticalCharacterRecognitionPageState
               // } else {
               //   updateLocalDb();
               // }
+              Globals.pointpossible = scoringColor == 0
+                  ? '2'
+                  : scoringColor == 2
+                      ? '3'
+                      : scoringColor == 4
+                          ? '4'
+                          : '2';
               Globals.fileId = "";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          isScanMore: false,
-                          pointPossible: scoringColor == 0
-                              ? '2'
-                              : scoringColor == 2
-                                  ? '3'
-                                  : scoringColor == 4
-                                      ? '4'
-                                      : '2',
-                        )),
-              );
 
               // Navigator.push(
               //   context,
-              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              //   MaterialPageRoute(
+              //       builder: (context) => CameraScreen(
+              //           isScanMore: false, pointPossible: Globals.pointpossible
+
+              //           //  scoringColor == 0
+              //           //     ? '2'
+              //           //     : scoringColor == 2
+              //           //         ? '3'
+              //           //         : scoringColor == 4
+              //           //             ? '4'
+              //           //             : '2',
+              //           )),
               // );
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
+              );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(

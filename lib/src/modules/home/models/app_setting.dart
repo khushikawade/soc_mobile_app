@@ -246,8 +246,7 @@ class AppSetting {
                 ? true
                 : false as bool?,
         authenticationURL: json['Authentication_URL__c'] as String?,
-        enableGraded:
-            json['Enable_GradEd__c']as String?,
+        enableGraded: json['Enable_GradEd__c'] as String?,
       );
 
   Map<String, dynamic> toJson() => {

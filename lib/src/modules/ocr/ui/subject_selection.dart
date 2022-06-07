@@ -394,24 +394,33 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     ? Bouncing(
                         onPress: () {
                           if (page == 1) {
-                            subject = list[index].subjectNameC;
-                            subjectId = list[index].subjectC;
-                            standardId = list[index].id;
+                            // subject = list[index].subjectNameC;
+                            // subjectId = list[index].subjectC;
+                            // standardId = list[index].id;
                           } else {
                             learningStandard = list[index].domainNameC;
                           }
 
-                          if ((subject != 'Math' &&
-                              subject != 'Science' &&
-                              subject != 'ELA' &&
-                              subject != null)) {
-                            isSubmitButton.value = true;
-                          }
+                          // if ((subject != 'Math' &&
+                          //     subject != 'Science' &&
+                          //     subject != 'ELA' &&
+                          //     subject != null)) {
+                          //   isSubmitButton.value = true;
+                          // }
                           searchController.clear();
                           FocusManager.instance.primaryFocus?.unfocus();
 
                           if (pageIndex.value == 0) {
+                            subject = list[index].subjectNameC;
+                            subjectId = list[index].subjectC;
+                            standardId = list[index].id;
                             subjectIndex1.value = index;
+                            if ((subject != 'Math' &&
+                                subject != 'Science' &&
+                                subject != 'ELA' &&
+                                subject != null)) {
+                              isSubmitButton.value = true;
+                            }
 
                             if (index < list.length && !isSubmitButton.value) {
                               keyword = list[index].subjectNameC;
