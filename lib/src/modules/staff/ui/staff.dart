@@ -186,7 +186,7 @@ class _StaffPageState extends State<StaffPage> {
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
         token: _userprofilelocalData[0].authorizationToken,
-        folderName: "Solved Assessment",
+        folderName: "SOLVED GRADED+",
         refreshtoken: _userprofilelocalData[0].refreshToken));
   }
 
@@ -267,7 +267,7 @@ class _StaffPageState extends State<StaffPage> {
               );
             },
             child: Container()),
-            // cameraButton()
+        // cameraButton()
         Globals.appSetting.enableGraded == 'true' ? cameraButton() : Container()
       ]),
       onRefresh: refreshPage);

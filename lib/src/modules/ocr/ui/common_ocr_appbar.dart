@@ -244,7 +244,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         //  filePath: file,
         token: _profileData[0].authorizationToken,
-        folderName: "Solved Assessment",
+        folderName: "SOLVED GRADED+",
         refreshtoken: _profileData[0].refreshToken));
   }
 
@@ -271,8 +271,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             ? MediaQuery.of(context).size.width / 2
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
-                        message:
-                            "Confirm exit",
+                        message: "Confirm exit",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
@@ -284,20 +283,18 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         }),
                   ),
                 ),
-
-              content: TranslationWidget(
-                        message:
-                            "Do you want to exit? You will lose all the scanned assesment sheets.",
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) {
-                          return Text(translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(color: Colors.black));
-                        }),
-              
+                content: TranslationWidget(
+                    message:
+                        "Do you want to exit? You will lose all the scanned assesment sheets.",
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return Text(translatedMessage.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.black));
+                    }),
                 actions: <Widget>[
                   Container(
                     height: 1,
