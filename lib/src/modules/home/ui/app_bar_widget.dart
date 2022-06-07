@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -19,7 +18,6 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
 import 'package:speech_bubble/speech_bubble.dart';
-import '../../ocr/ui/ocr_home.dart';
 
 // ignore: must_be_immutable
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
@@ -90,21 +88,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                           isbuttomsheet: true,
                         )));
             break;
-          case IconsMenu.Permissions:
-            OpenAppsSettings.openAppsSettings(
-                settingsCode: SettingsCode.APP_SETTINGS);
-            break;
-          case IconsMenu.Camera:
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) =>    SuccessScreen()));
-                    // OpticalCharacterRecognition
-            break;
-          // case IconsMenu.Google:
-          //   Navigator.push(context,
-          //       MaterialPageRoute(builder: (context) => GoogleDriveTest()));
-          //   break;
         }
         // Utility.setLocked();
       },

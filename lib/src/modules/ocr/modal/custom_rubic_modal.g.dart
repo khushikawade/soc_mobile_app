@@ -1,44 +1,44 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_info.dart';
+part of 'custom_rubic_modal.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserInformationAdapter extends TypeAdapter<UserInformation> {
+class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
   @override
-  final int typeId = 15;
+  final int typeId = 20;
 
   @override
-  UserInformation read(BinaryReader reader) {
+  CustomRubicModal read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UserInformation(
-      userName: fields[0] as String?,
-      userEmail: fields[1] as String?,
-      profilePicture: fields[2] as String?,
-      authorizationToken: fields[3] as String?,
-      refreshToken: fields[4] as String?,
+    return CustomRubicModal(
+      name: fields[0] as String?,
+      score: fields[1] as String?,
+      imgBase64: fields[2] as String?,
+      imgUrl: fields[3] as String?,
+      customOrStandardRubic: fields[4] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, UserInformation obj) {
+  void write(BinaryWriter writer, CustomRubicModal obj) {
     writer
       ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.userName)
+      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.userEmail)
+      ..write(obj.score)
       ..writeByte(2)
-      ..write(obj.profilePicture)
+      ..write(obj.imgBase64)
       ..writeByte(3)
-      ..write(obj.authorizationToken)
+      ..write(obj.imgUrl)
       ..writeByte(4)
-      ..write(obj.refreshToken);
+      ..write(obj.customOrStandardRubic);
   }
 
   @override
@@ -47,7 +47,7 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserInformationAdapter &&
+      other is CustomRubicModalAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -24,16 +24,16 @@ class Utility {
     return displaySize(context).height;
   }
 
-  static String convetTimestampToDate(dynamic timestamp) {
-    try {
-      DateTime date =
-          DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
-      String dateFormat = DateFormat("MM/dd/yy").format(date);
-      return dateFormat;
-    } catch (e) {
-      return '';
-    }
-  }
+  // static String convetTimestampToDate(dynamic timestamp) {
+  //   try {
+  //     DateTime date =
+  //         DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
+  //     String dateFormat = DateFormat("MM/dd/yy").format(date);
+  //     return dateFormat;
+  //   } catch (e) {
+  //     return '';
+  //   }
+  // }
 
   static Future<String> errorImageUrl(String imageUrl) async {
     final response = await http.get(Uri.parse(imageUrl));
@@ -48,15 +48,15 @@ class Utility {
     return displaySize(context).width;
   }
 
-  static String formatDate(String format, String dateTime) {
-    try {
-      String timeFormat =
-          DateFormat("$format").format(DateTime.parse(dateTime));
-      return timeFormat;
-    } catch (e) {
-      return '';
-    }
-  }
+  // static String formatDate(String format, String dateTime) {
+  //   try {
+  //     String timeFormat =
+  //         DateFormat("$format").format(DateTime.parse(dateTime));
+  //     return timeFormat;
+  //   } catch (e) {
+  //     return '';
+  //   }
+  // }
 
   static DateTime? convertTimestampToDate(dynamic timestamp) {
     try {
@@ -80,26 +80,26 @@ class Utility {
     }
   }
 
-  static selectDate(context, callback) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext builder) {
-          return Container(
-              height: MediaQuery.of(context).copyWith().size.height / 3,
-              child: CupertinoDatePicker(
-                initialDateTime: DateTime.now(),
-                onDateTimeChanged: (DateTime newdate) {
-                  callback(newdate);
-                },
-                use24hFormat: true,
-                maximumDate: new DateTime.now(),
-                minimumYear: 1980,
-                maximumYear: new DateTime.now().year,
-                minuteInterval: 1,
-                mode: CupertinoDatePickerMode.date,
-              ));
-        });
-  }
+  // static selectDate(context, callback) {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext builder) {
+  //         return Container(
+  //             height: MediaQuery.of(context).copyWith().size.height / 3,
+  //             child: CupertinoDatePicker(
+  //               initialDateTime: DateTime.now(),
+  //               onDateTimeChanged: (DateTime newdate) {
+  //                 callback(newdate);
+  //               },
+  //               use24hFormat: true,
+  //               maximumDate: new DateTime.now(),
+  //               minimumYear: 1980,
+  //               maximumYear: new DateTime.now().year,
+  //               minuteInterval: 1,
+  //               mode: CupertinoDatePickerMode.date,
+  //             ));
+  //       });
+  // }
 
   static bool compareArrays(List array1, List array2) {
     if (array1.length == array2.length) {
@@ -396,6 +396,12 @@ class Utility {
     } catch (e) {
       return false;
     }
+  }
+
+  static String getCurrentDate(DateTime dateTime) {
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    return formatter.format(now);
   }
 
   // static Future<String> sslErrorHandler(String url) async {

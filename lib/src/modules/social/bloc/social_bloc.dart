@@ -6,7 +6,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -157,7 +157,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         if (e.toString().contains('NO_CONNECTION')) {
           Utility.showSnackBar(event.scaffoldKey,
               'Make sure you have a proper Internet connection', event.context,null);
-        }
+        }else {Utility.showSnackBar(event.scaffoldKey,
+              'Something went wrong', event.context,null);}
         yield SocialErrorReceived(err: e);
       }
     }
@@ -217,7 +218,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future addSocailAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postapimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
           body: body);
 

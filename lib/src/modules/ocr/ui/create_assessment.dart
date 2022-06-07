@@ -19,16 +19,25 @@ class CreateAssessment extends StatefulWidget {
 class _CreateAssessmentState extends State<CreateAssessment>
     with SingleTickerProviderStateMixin {
   static const double _KVertcalSpace = 60.0;
-  final assessmentController = TextEditingController(text: 'Version_0.01');
-  final classController = TextEditingController(text: '11th');
+  final assessmentController = TextEditingController();
+  final classController = TextEditingController();
   int selectedClassIndex = 0;
   double? _scale;
+  final _formKey = GlobalKey<FormState>();
   // AnimationController? _controller;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+  final ScrollController listScrollController = ScrollController();
+
   //int scoringColor = 0;
   @override
   void initState() {
+    listScrollController.addListener(_scrollListener);
+    Globals.fileId = '';
     super.initState();
+  }
+
+  _scrollListener() {
+    FocusScope.of(context).requestFocus(FocusNode());
   }
 
   @override
@@ -41,11 +50,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
         children: [
           CommonBackGroundImgWidget(),
           Scaffold(
+            resizeToAvoidBottomInset: false,
+
             floatingActionButton: textActionButton(),
             // floatingActionButtonLocation:
             //   FloatingActionButtonLocation.centerFloat,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              key: GlobalKey(),
               isBackButton: false,
               isHomeButtonPopup: true,
             ),
@@ -74,63 +86,92 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //   sharedpopBodytext: '',
             //   sharedpopUpheaderText: '',
             // ),
-            body: ListView(children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                height:
-                    MediaQuery.of(context).orientation == Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.9
-                        : MediaQuery.of(context).size.width,
-                child: ListView(
-                  // mainAxisAlignment: MainAxisAlignment.start,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SpacerWidget(_KVertcalSpace * 0.50),
-                    highlightText(
-                      text: 'Create Assessment',
-                      theme: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    SpacerWidget(_KVertcalSpace / 1.8),
-                    highlightText(
-                        text: 'Assessment Name',
-                        theme: Theme.of(context).textTheme.headline2!.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primaryVariant
-                                .withOpacity(0.3))),
-                    textFormField(
-                        controller: assessmentController,
-                        onSaved: (String value) {}),
-                    SpacerWidget(_KVertcalSpace / 2),
-                    highlightText(
-                        text: 'Class Name',
-                        theme: Theme.of(context).textTheme.headline2!.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primaryVariant
-                                .withOpacity(0.3))),
-                    textFormField(
+            body: Form(
+              key: _formKey,
+              child: ListView(controller: listScrollController, children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  height:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? MediaQuery.of(context).size.height * 0.9
+                          : MediaQuery.of(context).size.width,
+                  child: ListView(
+                    shrinkWrap: true,
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SpacerWidget(_KVertcalSpace * 0.50),
+                      highlightText(
+                        text: 'Create Assessment',
+                        theme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SpacerWidget(_KVertcalSpace / 1.8),
+                      highlightText(
+                          text: 'Assessment Name',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      textFormField(
+                          controller: assessmentController,
+                          hintText: 'Assessment Name',
+                          validator: (String? value) {
+                            if (value!.isEmpty) {
+                              return 'Assessment name is required';
+                            } else if (value.length < 2) {
+                              return 'Assessment name should contain atlease 2 characters';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (String value) {}),
+                      SpacerWidget(_KVertcalSpace / 2),
+                      highlightText(
+                          text: 'Class Name',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      textFormField(
                         controller: classController,
-                        onSaved: (String value) {}),
+                        hintText: '1st',
+                        onSaved: (String value) {},
+                        validator: (String? value) {
+                          if (value!.isEmpty) {
+                            return 'Class name is required';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
 
-                    SpacerWidget(_KVertcalSpace / 0.90),
-                    scoringButton(),
-                    SpacerWidget(_KVertcalSpace / 20),
-                    // textActionButton()
-                    // smallButton(),
-                    // SpacerWidget(_KVertcalSpace / 2),
+                      SpacerWidget(_KVertcalSpace / 0.90),
+                      scoringButton(),
+                      SpacerWidget(_KVertcalSpace / 20),
+                      // textActionButton()
+                      // smallButton(),
+                      // SpacerWidget(_KVertcalSpace / 2),
 
-                    // SpacerWidget(_KVertcalSpace / 4),
-                    // scoringButton(),
-                    // // SpacerWidget(_KVertcalSpace / 8),
-                    // cameraButton(),
-                  ],
+                      // SpacerWidget(_KVertcalSpace / 4),
+                      // scoringButton(),
+                      // // SpacerWidget(_KVertcalSpace / 8),
+                      // cameraButton(),
+                    ],
+                  ),
                 ),
-              ),
-            ]),
+              ]),
+            ),
             // bottomNavigationBar: null,
           ),
         ],
@@ -231,9 +272,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   Widget textFormField(
-      {required TextEditingController controller, required onSaved}) {
+      {required TextEditingController controller,
+      required onSaved,
+      required hintText,
+      required validator}) {
     return TextFormField(
       //
+      autovalidateMode: AutovalidateMode.always,
       textAlign: TextAlign.start,
       style: Theme.of(context)
           .textTheme
@@ -242,6 +287,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
       controller: controller,
       cursorColor: Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
+        hintText: hintText,
+        errorMaxLines: 2,
+        hintStyle: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.bold, color: Colors.grey),
         fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
@@ -264,6 +315,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
         ),
       ),
       onChanged: onSaved,
+      validator: validator,
     );
   }
 
@@ -271,21 +323,25 @@ class _CreateAssessmentState extends State<CreateAssessment>
     return FloatingActionButton.extended(
         backgroundColor: AppTheme.kButtonColor,
         onPressed: () async {
-          Globals.assessmentName =
-              "${assessmentController.text}_${classController.text}";
-          print(Globals.assessmentName);
-          _googleDriveBloc.add(CreateExcelSheetToDrive(
-              name: "${assessmentController.text}_${classController.text}"));
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    // SuccessScreen()
-                    SubjectSelection(
-                      selectedClass: selectedClassIndex.toString(),
-                    )
-                    ),
-          );
+          if (_formKey.currentState!.validate()) {
+            Globals.assessmentName =
+                "${assessmentController.text}_${classController.text}";
+            print(Globals.assessmentName);
+            Globals.fileId == ''
+                ? _googleDriveBloc.add(CreateExcelSheetToDrive(
+                    name:
+                        "${assessmentController.text}_${classController.text}"))
+                : print("file is already exists on drive ");
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      // SuccessScreen()
+                      SubjectSelection(
+                        selectedClass: selectedClassIndex.toString(),
+                      )),
+            );
+          }
         },
         label: Row(
           children: [
@@ -305,11 +361,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
         ));
   }
 
-  void _tapDown(TapDownDetails details) {
-    //  _controller!.forward();
-  }
+  // void _tapDown(TapDownDetails details) {
+  //   //  _controller!.forward();
+  // }
 
-  void _tapUp(TapUpDetails details) {
-    //  _controller!.reverse();
-  }
+  // void _tapUp(TapUpDetails details) {
+  //   //  _controller!.reverse();
+  // }
 }

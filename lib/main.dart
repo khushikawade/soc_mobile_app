@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
@@ -25,6 +26,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
+import 'src/modules/google_drive/model/assessment.dart';
 import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
@@ -49,7 +51,10 @@ void main() async {
       ..registerAdapter(CalendarEventListAdapter())
       ..registerAdapter(CustomSettingAdapter())
       ..registerAdapter(UserInformationAdapter())
-      ..registerAdapter(SubjectDetailListAdapter());
+      ..registerAdapter(SubjectDetailListAdapter())
+      ..registerAdapter(HistoryAssessmentAdapter())
+      ..registerAdapter(CustomRubicModalAdapter());
+    ;
   }
   clearTheme();
   await disableDarkMode();

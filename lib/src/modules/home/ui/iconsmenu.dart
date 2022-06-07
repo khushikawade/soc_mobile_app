@@ -1,5 +1,5 @@
 class IconsMenu {
-  static const items = <IconMenu>[Information, Setting, Permissions, Camera];
+  static const items = <IconMenu>[Information, Setting, Permissions];
 
   static const Information = IconMenu(
     text: 'Information',
@@ -11,10 +11,6 @@ class IconsMenu {
 
   static const Permissions = IconMenu(
     text: 'Permission',
-  );
-
-  static const Camera = IconMenu(
-    text: 'Camera',
   );
 }
 

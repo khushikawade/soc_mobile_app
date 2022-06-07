@@ -48,3 +48,27 @@ class GetAssessmentDetail extends GoogleDriveEvent {
   @override
   List<Object> get props => [];
 }
+
+class ImageToAwsBucked extends GoogleDriveEvent {
+  final String? imgBase64;
+  final String? imgExtension;
+
+  ImageToAwsBucked({required this.imgBase64, required this.imgExtension});
+
+  @override
+  List<Object> get props => [];
+}
+
+class AssessmentImgToAwsBucked extends GoogleDriveEvent {
+  final String? imgBase64;
+  final String? imgExtension;
+  final String? studentId;
+
+  AssessmentImgToAwsBucked(
+      {required this.imgBase64,
+      required this.imgExtension,
+      required this.studentId});
+
+  @override
+  List<Object> get props => [];
+}

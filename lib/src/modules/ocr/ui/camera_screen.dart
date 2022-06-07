@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
+import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -14,6 +18,12 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
+  final String? pointPossible;
+  final bool? isScanMore;
+
+  const CameraScreen(
+      {Key? key, required this.pointPossible, required this.isScanMore})
+      : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
@@ -45,6 +55,11 @@ class _CameraScreenState extends State<CameraScreen>
   bool isflashOff = true;
   bool flash = false;
   FlashMode? _currentFlashMode;
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+
   @override
   void initState() {
     Globals.iscameraPopup
@@ -70,6 +85,7 @@ class _CameraScreenState extends State<CameraScreen>
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           toolbarHeight:
               MediaQuery.of(context).orientation == Orientation.portrait
@@ -92,22 +108,118 @@ class _CameraScreenState extends State<CameraScreen>
           actions: [
             Container(
                 padding: EdgeInsets.only(right: 5),
-                child: IconButton(
+                child: TextButton(
+                  style: ButtonStyle(alignment: Alignment.center),
+                  child: Text("DONE",
+                      style: TextStyle(
+                        color: AppTheme.kButtonColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      )),
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CreateAssessment()),
-                    );
+                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+                    if (Globals.studentInfo!.length > 0) {
+                      if (widget.isScanMore == true) {
+                        List<StudentAssessmentInfo> list = Globals.studentInfo!;
+                        Globals.studentInfo = [];
+
+                        String subject = list.first.subject!;
+                        String selectedClass = list.first.grade!;
+                        String learningStandard = list.first.learningStandard!;
+                        String subLearningStandard =
+                            list.first.subLearningStandard!;
+                        String scoringRubric = list.first.scoringRubric!;
+                        String customRubricImage =
+                            list.first.customRubricImage!;
+
+                        list.forEach(
+                          (StudentAssessmentInfo element) {
+                            Globals.studentInfo!.add(StudentAssessmentInfo(
+                                studentName: element.studentName,
+                                studentId: element.studentId,
+                                studentGrade: element.studentGrade,
+                                pointpossible: element.pointpossible,
+                                grade: selectedClass,
+                                subject: subject,
+                                learningStandard: learningStandard,
+                                subLearningStandard: subLearningStandard,
+                                scoringRubric: scoringRubric,
+                                customRubricImage: customRubricImage,
+                                assessmentImage: element.assessmentImage));
+                          },
+                        );
+
+                        _driveBloc.add(UpdateDocOnDrive(
+                            studentData: Globals.studentInfo!));
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ResultsSummary(
+                                    assessmentDetailPage: false,
+                                  )),
+                        );
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateAssessment()),
+                        );
+                      }
+                    } else {
+                      Utility.showSnackBar(
+                          _scaffoldKey,
+                          "No Assessment Found! Scan Assessment Before Moving Forword",
+                          context,
+                          null);
+                    }
+
+                    // Globals.fileId = "";
+                    // Globals.studentInfo!.length > 0
+                    //     ? widget.isScanMore == true
+                    //         ? Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) => ResultsSummary(
+                    //                       assessmentDetailPage: false,
+                    //                     )),
+                    //           )
+                    //         : Navigator.pushReplacement(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) => CreateAssessment()),
+                    //           )
+                    //     : Utility.showSnackBar(
+                    //         _scaffoldKey,
+                    //         "No Assessment Found! Scan Assessment Before Moving Forword",
+                    //         context,
+                    //         null);
                   },
-                  icon: Icon(
-                    IconData(0xe877,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kButtonColor,
-                    size: 30,
-                  ),
+                  // icon: Icon(
+                  //   IconData(0xe877,
+                  //       fontFamily: Overrides.kFontFam,
+                  //       fontPackage: Overrides.kFontPkg),
+                  //   color: AppTheme.kButtonColor,
+                  //   size: 30,
+                  // ),
                 )),
+            Globals.studentInfo!.length == 0
+                ? IconButton(
+                    onPressed: () {
+                      //To dispose the snackbar message before navigating back if exist
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      // IconData(0xe80d,
+                      //     fontFamily: Overrides.kFontFam,
+                      //     fontPackage: Overrides.kFontPkg),
+                      color: AppTheme.kButtonColor,
+                    ),
+                  )
+                : Container(),
           ],
           backgroundColor: Colors.black,
           automaticallyImplyLeading: false,
@@ -160,8 +272,10 @@ class _CameraScreenState extends State<CameraScreen>
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SuccessScreen(
+                                          isScanMore: widget.isScanMore,
                                           img64: img64,
                                           imgPath: imageFile,
+                                          pointPossible: widget.pointPossible,
                                         )),
                               );
                             },
@@ -184,10 +298,8 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Instantiating the camera controller
     final CameraController cameraController = CameraController(
-      cameraDescription,
-      ResolutionPreset.high,
-      imageFormatGroup: ImageFormatGroup.jpeg,
-    );
+        cameraDescription, ResolutionPreset.high,
+        imageFormatGroup: ImageFormatGroup.jpeg, enableAudio: false);
 
     // Dispose the previous controller
     await previousCameraController?.dispose();

@@ -10,6 +10,7 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share/share.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 
 class AssessmentSummary extends StatefulWidget {
@@ -21,7 +22,7 @@ class AssessmentSummary extends StatefulWidget {
 class _AssessmentSummaryState extends State<AssessmentSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     _driveBloc.add(GetHistoryAssessmentFromDrive());
@@ -34,10 +35,14 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       children: [
         CommonBackGroundImgWidget(),
         Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            key: GlobalKey(),
             isBackButton: true,
             assessmentDetailPage: true,
+            assessmentPage: true,
+            scaffoldKey: _scaffoldKey,
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +102,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   Widget listView(List<HistoryAssessment> _list) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.75
+          ? MediaQuery.of(context).size.height * 0.792
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
         shrinkWrap: true,
@@ -126,15 +131,19 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).colorScheme.background,
-            // width: 0.65,
-          ),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-        ),
+            // border: Border.all(
+            //   // color: Theme.of(context).colorScheme.background,
+            //   // width: 0.65,
+            // ),
+            borderRadius: BorderRadius.circular(0.0),
+            color: (index % 2 == 0)
+                ? Theme.of(context).colorScheme.background == Color(0xff000000)
+                    ? Color(0xff162429)
+                    : Color(
+                        0xffF7F8F9) //Theme.of(context).colorScheme.background
+                : Theme.of(context).colorScheme.background == Color(0xff000000)
+                    ? Color(0xff111C20)
+                    : Color(0xffE9ECEE)),
         child: ListTile(
             // onTap: () {
             //   _navigate(obj, index);
@@ -154,7 +163,22 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             //       return Text(translatedMessage.toString(),
             //           style: Theme.of(context).textTheme.bodyText1!);
             //     }),
-            trailing: Icon(Icons.arrow_forward_ios)),
+            trailing: InkWell(
+              onTap: () {
+                list[index].webContentLink != null &&
+                        list[index].webContentLink != ''
+                    ? Share.share(list[index].webContentLink!)
+                    : print("no web link $index");
+              },
+              child: Icon(
+                IconData(Globals.ocrResultIcons[0],
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: Color(0xff000000) != Theme.of(context).backgroundColor
+                    ? Color(0xff111C20)
+                    : Color(0xffF7F8F9),
+              ),
+            )),
       ),
     );
   }

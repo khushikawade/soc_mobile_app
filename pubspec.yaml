@@ -84,6 +84,8 @@ dependencies:
   camera: ^0.9.4+16 
   mime_type: ^1.0.0
   excel:
+  flutter_typeahead: ^3.1.0
+
   
 
   

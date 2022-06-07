@@ -1,12 +1,15 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:flutter/material.dart';
 import '../../../services/local_database/local_db.dart';
+import '../../../services/utility.dart';
 import '../modal/subject_details_modal.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -27,16 +30,26 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   ) async* {
     if (event is FetchTextFromImage) {
       try {
-        yield FetchTextFromImageFailure(schoolId: '', grade: '');
+        //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
-        List data = await fatchAndProcessDetails(base64: event.base64);
-        if (data[0] != '' && data[1] != '') {
-          yield FetchTextFromImageSuccess(schoolId: data[0], grade: data[1]);
+        List data = await procressAssessmentSheet(
+            base64: event.base64, pointPossible: event.pointPossible);
+        if (data[0] != '' && data[1] != '' && data[2] != '') {
+          yield FetchTextFromImageSuccess(
+              studentId: data[1],
+              grade: data[0].toString().length == 1 ? data[0] : '2',
+              studentName: data[2]);
         } else {
-          yield FetchTextFromImageFailure(schoolId: data[0], grade: data[1]);
+          yield FetchTextFromImageFailure(
+              studentId: data[1],
+              grade: data[0].toString().length == 1 && data[0].toString() != 'S'
+                  ? data[0]
+                  : '2',
+              studentName: data[2]);
         }
       } catch (e) {
-        yield FetchTextFromImageFailure(schoolId: '', grade: '');
+        // yield FetchTextFromImageFailure(
+        //     studentId: '', grade: '', studentName: '');
         print(e);
       }
     }
@@ -46,12 +59,25 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             type: event.type!, keyword: event.keyword!);
         List<SubjectDetailList> list = [];
         if (event.type == 'subject') {
-          for (int i = 0; i < data.length; i++) {
-            if (data[i]
+          List<SubjectDetailList> subjectList = [];
+          subjectList.addAll(data);
+          List<SubjectDetailList> list =
+              await fatchLocalSubject(event.keyword!);
+          subjectList.addAll(list);
+          bool check = false;
+          for (int i = 0; i < subjectList.length; i++) {
+            if (subjectList[i]
                 .subjectNameC!
                 .toUpperCase()
                 .contains(event.searchKeyword!.toUpperCase())) {
-              list.add(data[i]);
+              for (int j = 0; j < list.length; j++) {
+                if (list[j].subjectNameC == subjectList[i].subjectNameC!) {
+                  check = true;
+                }
+              }
+              if (!check) {
+                list.add(subjectList[i]);
+              }
             }
           }
           print(list.length);
@@ -85,6 +111,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             obj: list,
           );
         }
+      } catch (e) {
+        List<SubjectDetailList> list = [];
+        yield SearchSubjectDetailsSuccess(
+          obj: list,
+        );
+      }
+    }
+
+    if (event is SaveStudentDetails) {
+      try {
+        saveStudentToSalesforce(
+            studentName: event.studentName, studentId: event.studentId);
       } catch (e) {}
     }
 
@@ -112,9 +150,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<SubjectDetailList> data = await fatchSubjectDetails(
             type: event.type!, keyword: event.keyword!);
         if (event.type == 'subject') {
-          yield SubjectDataSuccess(
-            obj: data,
-          );
+          List<SubjectDetailList> subjectList = [];
+          subjectList.addAll(data);
+
+          List<SubjectDetailList> list =
+              await fatchLocalSubject(event.keyword!);
+          subjectList.addAll(list);
+          yield OcrLoading();
+          yield SubjectDataSuccess(obj: subjectList);
         } else if (event.type == 'nyc') {
           yield NycDataSuccess(
             obj: data,
@@ -133,20 +176,58 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         bool result = await saveSubjectListDetails();
       } catch (e) {}
     }
+
+    if (event is SaveAssessmentToDashboard) {
+      try {
+        print("calling save record to sales Force");
+
+        String id = await saveAssessmentToDashboard(
+            assessmentName: event.assessmentName,
+            rubicScore: await rubricPickList(event.rubricScore),
+            subjectId: event.subjectId,
+            schoolId: event.schoolId,
+            standardId: event.standardId);
+
+        if (id != '') {
+          bool result = await saveResultToDashboard(
+              assessmentId: id, studentDetails: Globals.studentInfo!);
+
+          !result
+              ? saveResultToDashboard(
+                  assessmentId: id, studentDetails: Globals.studentInfo!)
+              : Utility.showSnackBar(
+                  event.scaffoldKey,
+                  'Yay! Data has been successully saved to the dashboard',
+                  event.context,
+                  null); //print("result Record is saved on DB");
+        } else {
+          Utility.showSnackBar(
+              event.scaffoldKey,
+              'Unable to save the result. Please try again.',
+              event.context,
+              null);
+          throw ('something went wrong');
+        }
+      } catch (e) {
+        throw (e);
+      }
+    }
   }
 
   Future<bool> saveSubjectListDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
-          Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getapiNew(Uri.encodeFull(
+              //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
+              // ),
               'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
-          isGoogleApi: true);
+          isGoogleAPI: true,
+          headers: {"Content-type": "application/json; charset=utf-8"});
 
       if (response.statusCode == 200) {
         List<SubjectDetailList> _list = response.data['body']
             .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
             .toList();
-        print('Subject List fetched : ${_list.length}');
+        //print(_list);
         LocalDatabase<SubjectDetailList> _localDb =
             LocalDatabase(Strings.ocrSubjectObjectName);
         await _localDb.clear();
@@ -161,6 +242,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } catch (e) {
       throw (e);
     }
+  }
+
+  Future<List<SubjectDetailList>> fatchLocalSubject(String classNo) async {
+    LocalDatabase<SubjectDetailList> _localDb =
+        LocalDatabase('Subject_list$classNo');
+    List<SubjectDetailList>? _localData = await _localDb.getData();
+    return _localData;
   }
 
   Future<List<SubjectDetailList>> fatchSubjectDetails(
@@ -233,100 +321,73 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  int covertStringtoInt(String data) {
-    try {
-      int result = int.parse(data);
-      return result;
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  Future fatchAndProcessDetails({required String base64}) async {
+  Future procressAssessmentSheet(
+      {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
         Uri.encodeFull('http://3.142.181.122:5050/ocr'),
-        body: {'data': '$base64'},
+        //'http://3.142.181.122:5050/ocr'), //https://1fb3-111-118-246-106.in.ngrok.io
+        // Uri.encodeFull('https://1fb3-111-118-246-106.in.ngrok.io'),
+        body: {
+          'data': '$base64',
+          'account_id': Globals.appSetting.schoolNameC,
+          'point_possible': pointPossible
+        },
         isGoogleApi: true,
       );
 
       if (response.statusCode == 200) {
         // ***********  Process The respoance and collecting OSS ID  ***********
-        List schoolIdNew = [];
-        if (response.data['text']['responses'][0] != null) {
-          List text = response.data['text']['responses'][0]['textAnnotations'];
-          for (var i = 0; i < text.length; i++) {
-            if (text[i]['description'].toString().length == 9 &&
-                text[i]['description'][0] == '2') {
-              bool result = Utility.checkForInt(text[i]['description']);
-              if (result) {
-                schoolIdNew.add(text[i]['description']);
-              }
-            }
-          }
-          if (schoolIdNew.isEmpty) {
-            for (var i = 0; i < text.length - 1; i++) {
-              int sum = 0;
-              String id = '';
-              for (int j = i; j < text.length - (i + 1); j++) {
-                sum = sum + text[j]['description'].toString().length;
-                id = '$id${text[j]['description']}';
-                if (sum == 9 && text[i]['description'].toString()[0] == '2') {
-                  bool result = Utility.checkForInt(id);
-                  if (result) {
-                    schoolIdNew.add(id);
-                  }
-                } else if (sum > 9) {
-                  break;
-                }
-              }
-            }
-          }
-        }
-        // ***********  Process The respoance and collecting Point Scored  ***********
-        List schoolgrade = [];
-        if (response.data['text']['responses'][0] != null &&
-            response.data['coordinate'] != null) {
-          List coordinate = response.data['coordinate'];
-          List text = response.data['text']['responses'][0]['textAnnotations'];
-          for (var i = 0; i < text.length; i++) {
-            for (var j = 0; j < coordinate.length; j++) {
-              int circleX =
-                  Utility.covertStringtoInt(coordinate[j].split(',')[0]);
-              int circleY =
-                  Utility.covertStringtoInt(coordinate[j].split(',')[1]);
-              int radiusR =
-                  Utility.covertStringtoInt(coordinate[j].split(',')[1]);
+        var result = response.data;
 
-              int textx = Utility.covertStringtoInt(
-                  text[i]['boundingPoly']['vertices'][0]['x'].toString());
-              int texty = Utility.covertStringtoInt(
-                  text[i]['boundingPoly']['vertices'][0]['y'].toString());
-
-              if (text[i]['description'].toString().length == 1 &&
-                  textx < circleX + radiusR &&
-                  textx > circleX - radiusR &&
-                  texty < circleY + radiusR &&
-                  texty > circleY - radiusR &&
-                  (text[i]['description'] == '0' ||
-                      text[i]['description'] == '1' ||
-                      text[i]['description'] == '2')) {
-                schoolgrade.add(text[i]['description']);
-              }
-            }
-          }
-        }
-
-        print('School grades : ${schoolgrade.length}');
         return [
-          schoolIdNew.isNotEmpty ? schoolIdNew[0] : '',
-          schoolgrade.isNotEmpty ? schoolgrade[0] : ''
+          result['StudentGrade'] != '2' ||
+                  result['StudentGrade'] != '1' ||
+                  result['StudentGrade'] != '0' ||
+                  result['StudentGrade'] != '3' ||
+                  result['StudentGrade'] != '4'
+              ? '2'
+              : result['StudentGrade'],
+          result['studentId'] == 'Something Went Wrong'
+              ? ''
+              : result['studentId'],
+          result['studentName'],
         ];
       }
     } catch (e) {
       print(
           '------------------------------------error-----------------------------------');
       print(e);
+    }
+  }
+
+  Future<bool> saveStudentToSalesforce(
+      {required String studentName, required studentId}) async {
+    Map<String, String> headers = {
+      'Content-Type': 'application/json;charset=UTF-8',
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+    };
+    final body = {
+      "DBN__c": "05M194",
+      "First_Name__c": studentName.split(" ")[0],
+      "last_Name__c": studentName.split(" ")[0].length >= 1
+          ? studentName.split(" ")[1]
+          : '',
+      "School__c": Globals.appSetting.schoolNameC,
+      "Student_ID__c": studentId
+    };
+
+    final ResponseModel response = await _dbServices.postapi(
+        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Student__c",
+        isGoogleApi: true,
+        body: body,
+        headers: headers);
+    if (response.statusCode == 200) {
+      print("created");
+
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -346,15 +407,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       var data = res["body"];
       if (data == false) {
         print("this is a new uer now create a user contaact inside database");
-        bool result = await _createContact(email: email.toString());
+        bool result = await createContactToSalesforce(email: email.toString());
         if (!result) {
-          await _createContact(email: email.toString());
+          await createContactToSalesforce(email: email.toString());
         }
       } else if (data['Assessment_App_User__c'] != 'true') {
         print("this is a older user now updating datils in database");
-        bool result = await _updateContact(recordId: data['Id']);
+        bool result = await updateContactToSalesforce(recordId: data['Id']);
         if (!result) {
-          await _updateContact(recordId: data['Id']);
+          await updateContactToSalesforce(recordId: data['Id']);
         }
       }
       return true;
@@ -364,8 +425,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _createContact({required String? email}) async {
-     print(email!.split("@")[0]);
+  Future<bool> createContactToSalesforce({required String? email}) async {
+    print(email!.split("@")[0]);
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -390,7 +451,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _updateContact({required String? recordId}) async {
+  Future<bool> updateContactToSalesforce({required String? recordId}) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -409,6 +470,102 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } else {
       return false;
     }
+  }
+
+  Future<String> saveAssessmentToDashboard({
+    required String? assessmentName,
+    required String? rubicScore,
+    required String? subjectId,
+    required String? schoolId,
+    required String? standardId,
+  }) async {
+    String currentDate = Utility.getCurrentDate(DateTime.now());
+
+    Map<String, String> headers = {
+      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
+      'Content-Type': 'application/json'
+    };
+
+    final body = {
+      "Date__c": currentDate,
+      "Name__c": assessmentName,
+      "Rubric__c": rubicScore != '' ? rubicScore : null,
+      "School__c": schoolId,
+      "School_year__c": currentDate.split("-")[0],
+      "Standard__c": standardId != '' ? standardId : null,
+      "Subject__c": subjectId != '' ? subjectId : null
+    };
+    final ResponseModel response = await _dbServices.postapi(
+      "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
+      isGoogleApi: true,
+      headers: headers,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      String id = response.data['body']['Assessment_Id'];
+
+      print("Assessment has been saved successfully : $id");
+      return id;
+    } else {
+      print("not 200 ---> r${response.statusCode}");
+      return "";
+    }
+  }
+
+  rubricPickList(rubricScore) {
+    if (rubricScore == null) {
+      return null;
+    }
+    if (rubricScore == '0-2') {
+      return "0,1 or 2";
+    }
+    if (rubricScore == '0-3') {
+      return "0,1,2 or 3";
+    } else {
+      return "0,1,2 or 4";
+    }
+  }
+
+  Future<bool> saveResultToDashboard(
+      {required String assessmentId,
+      required List<StudentAssessmentInfo> studentDetails}) async {
+    List<Map> bodyContent = [];
+
+    studentDetails.removeAt(0);
+
+    for (int i = 0; i < studentDetails.length; i++) {
+      bodyContent.add(recordtoJson(
+          assessmentId,
+          Utility.getCurrentDate(DateTime.now()),
+          studentDetails[i].studentGrade,
+          studentDetails[i].studentId,
+          "NA"));
+    }
+
+    final ResponseModel response = await _dbServices.postapi(
+      "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
+      isGoogleApi: true,
+      body: bodyContent,
+    );
+    if (response.statusCode == 200) {
+      // String id = response.data['body']['id'];
+      print("result(s) have been successfully saved to dashboard.");
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Map<String, String> recordtoJson(assessmentId, currentDate, pointsEarned,
+      studentOsisId, assessmentImageURl) {
+    Map<String, String> body = {
+      "Assessment_Id": assessmentId,
+      "Date__c": currentDate.toString(),
+      "Result__c": pointsEarned,
+      "Student__c": studentOsisId, //Scanned from the sheet
+      "Assessment_Image__c": assessmentImageURl
+    };
+    return body;
   }
 
   // Future authenticateEmail(body) async {

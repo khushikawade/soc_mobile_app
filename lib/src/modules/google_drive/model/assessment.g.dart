@@ -1,44 +1,44 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_info.dart';
+part of 'assessment.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UserInformationAdapter extends TypeAdapter<UserInformation> {
+class HistoryAssessmentAdapter extends TypeAdapter<HistoryAssessment> {
   @override
-  final int typeId = 15;
+  final int typeId = 16;
 
   @override
-  UserInformation read(BinaryReader reader) {
+  HistoryAssessment read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UserInformation(
-      userName: fields[0] as String?,
-      userEmail: fields[1] as String?,
-      profilePicture: fields[2] as String?,
-      authorizationToken: fields[3] as String?,
-      refreshToken: fields[4] as String?,
+    return HistoryAssessment(
+      title: fields[0] as String?,
+      description: fields[1] as String?,
+      fileid: fields[2] as String?,
+      label: fields[3] as dynamic,
+      webContentLink: fields[4] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, UserInformation obj) {
+  void write(BinaryWriter writer, HistoryAssessment obj) {
     writer
       ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.userName)
+      ..write(obj.title)
       ..writeByte(1)
-      ..write(obj.userEmail)
+      ..write(obj.description)
       ..writeByte(2)
-      ..write(obj.profilePicture)
+      ..write(obj.fileid)
       ..writeByte(3)
-      ..write(obj.authorizationToken)
+      ..write(obj.label)
       ..writeByte(4)
-      ..write(obj.refreshToken);
+      ..write(obj.webContentLink);
   }
 
   @override
@@ -47,7 +47,7 @@ class UserInformationAdapter extends TypeAdapter<UserInformation> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserInformationAdapter &&
+      other is HistoryAssessmentAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

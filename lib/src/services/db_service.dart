@@ -6,10 +6,42 @@ import '../overrides.dart';
 import 'db_service_response.model.dart';
 
 class DbServices {
-  getapi(api, {headers, bool? isGoogleApi}) async {
+  getapi(
+    api, {
+    headers,
+  }) async {
     try {
       final response = await httpClient.get(
-          isGoogleApi == true
+          // baseURLExist == true
+          //     ? Uri.parse('$api')
+          //     :
+          Uri.parse('${Overrides.API_BASE_URL}$api'),
+          headers: headers);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      } else {
+        if (response.body == 'Unauthorized') {
+          ResponseModel _res = await getapi(api, headers: headers);
+          return _res;
+        }
+        return ResponseModel(statusCode: response.statusCode, data: null);
+      }
+    } catch (e) {
+      if (e.toString().contains('Failed host lookup')) {
+        throw ('NO_CONNECTION');
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+//User this for OCR/Google inetgration
+  getapiNew(api, {headers, required bool? isGoogleAPI}) async {
+    try {
+      final response = await httpClient.get(
+          isGoogleAPI == true
               ? Uri.parse('$api')
               : Uri.parse('${Overrides.API_BASE_URL}$api'),
           headers: headers);
@@ -57,7 +89,12 @@ class DbServices {
   //   }
   // }
 
-  postapi(api, {body, headers, bool? isGoogleApi}) async {
+  postapi(
+    api, {
+    body,
+    headers,
+    bool? isGoogleApi,
+  }) async {
     try {
       final response = await httpClient.post(
           isGoogleApi == true
@@ -137,6 +174,38 @@ class DbServices {
         if (response.body == 'Unauthorized') {
           ResponseModel _res =
               await patchapi(api, body: body, headers: headers);
+          return _res;
+        }
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      }
+    } catch (e) {
+      if (e.toString().contains('Failed host lookup')) {
+        throw ('NO_CONNECTION');
+      } else {
+        throw (e);
+      }
+    }
+  }
+
+//Use it for all the previous aws APIs, Do not use it for google APIs
+//'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/'
+  postapimain(api, {body, headers}) async {
+    try {
+      final response = await httpClient.post(
+          Uri.parse('${Overrides.API_BASE_URL}$api'),
+          headers: headers ??
+              {
+                'Content-Type': 'application/json',
+                'authorization': 'Bearer ${Globals.token}'
+              },
+          body: json.encode(body));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return ResponseModel(statusCode: response.statusCode, data: data);
+      } else {
+        if (response.body == 'Unauthorized') {
+          ResponseModel _res = await postapi(api, body: body, headers: headers);
           return _res;
         }
         final data = json.decode(response.body);

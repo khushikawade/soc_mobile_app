@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -13,12 +13,21 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SuccessScreen extends StatefulWidget {
-  final String? img64;
-  final File? imgPath;
-  SuccessScreen({Key? key, required this.img64, required this.imgPath})
+  final String img64;
+  final File imgPath;
+  final String? pointPossible;
+  final bool? isScanMore;
+  SuccessScreen(
+      {Key? key,
+      required this.img64,
+      required this.imgPath,
+      this.pointPossible,
+      this.isScanMore})
       : super(key: key);
 
   @override
@@ -26,20 +35,28 @@ class SuccessScreen extends StatefulWidget {
 }
 
 class _SuccessScreenState extends State<SuccessScreen> {
-  final nameController = TextEditingController(text: 'Ben Carney');
-  final idController = TextEditingController();
   static const double _KVertcalSpace = 60.0;
   OcrBloc _bloc = OcrBloc();
   bool failure = false;
   int? indexColor;
   bool isSelected = true;
   bool onChange = false;
+  String studentName = '';
+  String studentId = '';
+  final ValueNotifier<bool> isStudentNameFilled = ValueNotifier<bool>(false);
+  var nameController = TextEditingController();
+  var idController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool? valuechange;
 
+  GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   String? pointScored;
   @override
   void initState() {
     super.initState();
-    _bloc.add(FetchTextFromImage(base64: widget.img64!));
+    _bloc.add(FetchTextFromImage(
+        base64: widget.img64, pointPossible: widget.pointPossible ?? '2'));
   }
 
   @override
@@ -49,39 +66,126 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: Stack(children: [
         CommonBackGroundImgWidget(),
         Scaffold(
+            key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               isBackButton: false,
-              isFailureState: failure,
+              isSuccessState: !failure,
+              //isFailureState: failure,
               isHomeButtonPopup: true,
+              actionIcon:
+                  //  failure == true
+                  //     ?
+                  IconButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    if (!isSelected) {
+                      Utility.showSnackBar(_scaffoldKey,
+                          'Please select the earned point', context, null);
+                    } else {
+                      if (nameController.text.isNotEmpty &&
+                          nameController.text.length >= 3 &&
+                          idController.text.isNotEmpty) {
+                        _bloc.add(SaveStudentDetails(
+                            studentName: nameController.text,
+                            studentId: idController.text));
+                        String imgExtension = widget.imgPath.path.substring(
+                            widget.imgPath.path.lastIndexOf(".") + 1);
+                        _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                            imgBase64: widget.img64,
+                            imgExtension: imgExtension,
+                            studentId: idController.text));
+                      }
+                    }
+                    // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => CameraScreen(
+                                  isScanMore: widget.isScanMore,
+                                  pointPossible: widget.pointPossible,
+                                )));
+                  }
+                },
+                icon: Icon(
+                  IconData(0xe877,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: 30,
+                  color: AppTheme.kButtonColor,
+                ),
+              ),
+              // : null,
+              key: null,
             ),
             body: Container(
               padding: EdgeInsets.only(left: 20, right: 20),
               child: BlocConsumer<OcrBloc, OcrState>(
                   bloc: _bloc, // provide the local bloc instance
-                  listener: (context, state) {
+                  listener: (context, state) async {
                     if (state is FetchTextFromImageSuccess) {
+                      widget.pointPossible == '2'
+                          ? Globals.pointsEarnedList = [0, 1, 2]
+                          : widget.pointPossible == '3'
+                              ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                              : widget.pointPossible == '4'
+                                  ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                                  : Globals.pointsEarnedList.length = 2;
+                      nameController.text = state.studentName!;
                       onChange == false
-                          ? idController.text = state.schoolId!
+                          ? idController.text = state.studentId!
                           : null;
                       pointScored = state.grade;
+                      //   reconizeText(pathOfImage);
+                      // });
 
-                      Timer(Duration(seconds: 5), () {
-                        updateDetails();
-                        // COMMENT below section for enableing the camera
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateAssessment()),
-                        );
-                        //UNCOMMENT below section for enableing the camera
+                      if (_formKey.currentState!.validate()) {
+                        if (nameController.text.isNotEmpty &&
+                            idController.text.isNotEmpty) {
+                          Timer(Duration(seconds: 5), () {
+                            updateDetails();
+                            String imgExtension = widget.imgPath.path.substring(
+                                widget.imgPath.path.lastIndexOf(".") + 1);
+                            _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                                imgBase64: widget.img64,
+                                imgExtension: imgExtension,
+                                studentId: idController.text));
+                            // }
+                            // COMMENT below section for enableing the camera
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraScreen(
+                                        isScanMore: widget.isScanMore,
+                                        pointPossible: widget.pointPossible,
+                                      )),
+                            );
+                            //UNCOMMENT below section for enableing the camera
 
-                        // Navigator.push(context,
-                        //     MaterialPageRoute(builder: (_) => CameraScreen()));
-                      });
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (_) => CameraScreen()));
+                          });
+                        }
+                      } else {
+                        setState(() {
+                          failure = true;
+                        });
+                      }
                     } else if (state is FetchTextFromImageFailure) {
+                      widget.pointPossible == '2'
+                          ? Globals.pointsEarnedList = [0, 1, 2]
+                          : widget.pointPossible == '3'
+                              ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                              : widget.pointPossible == '4'
+                                  ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                                  : Globals.pointsEarnedList.length = 2;
                       onChange == false
-                          ? idController.text = state.schoolId ?? ''
+                          ? idController.text = state.studentId ?? ''
+                          : state.studentId == ''
+                              ? studentId
+                              : null;
+                      onChange == false
+                          ? nameController.text = state.studentName ?? ''
                           : null;
                       pointScored = state.grade;
                       updateDetails();
@@ -99,15 +203,18 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         ),
                       );
                     } else if (state is FetchTextFromImageSuccess) {
-                      idController.text = state.schoolId!;
-                      Globals.gradeList.add(state.grade!);
+                      // idController.text = state.studentId!;
+                      // nameController.text = state.studentName!;
+                      // Globals.gradeList.add(state.grade!);
                       return successScreen(
-                          id: state.schoolId!, grade: state.grade!);
+                          id: state.studentId!, grade: state.grade!);
                     } else if (state is FetchTextFromImageFailure) {
-                      idController.text = state.schoolId!;
+                      // idController.text = state.studentId!;
+                      // nameController.text =
+                      //     onChange == true ? state.studentName! : studentName;
                       Globals.gradeList.add(state.grade!);
                       return failureScreen(
-                          id: state.schoolId!, grade: state.grade!);
+                          id: state.studentId!, grade: state.grade!);
                     }
                     return Container();
                     // return widget here based on BlocA's state
@@ -117,60 +224,106 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
-  Widget failureScreen({required String id, required String grade}) {
-    return ListView(
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SpacerWidget(_KVertcalSpace * 0.25),
-        Utility.textWidget(
-            text: 'Student Name',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryVariant
-                    .withOpacity(0.5))),
-        textFormField(
-            controller: nameController,
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              nameController.text = nameController.text;
-              onChange = true;
-            }),
-        SpacerWidget(_KVertcalSpace / 2),
-        Utility.textWidget(
-            text: 'Student ID',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primaryVariant
-                    .withOpacity(0.5))),
-        textFormField(
-            controller: idController,
-            keyboardType: TextInputType.number,
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              onChange = true;
-            }),
-        SpacerWidget(_KVertcalSpace / 2),
-        Center(
-          child: Utility.textWidget(
-              text: 'Points Earned',
+  Widget failureScreen({
+    required String id,
+    required String grade,
+  }) {
+    return Form(
+      key: _formKey,
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SpacerWidget(_KVertcalSpace * 0.25),
+          Utility.textWidget(
+              text: 'Student Name',
               context: context,
-              textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
                   color: Theme.of(context)
                       .colorScheme
                       .primaryVariant
                       .withOpacity(0.5))),
-        ),
-        SpacerWidget(_KVertcalSpace / 4),
-        Center(child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
-        SpacerWidget(_KVertcalSpace / 2),
-        Center(child: imagePreviewWidget()),
-        SpacerWidget(_KVertcalSpace / 0.9),
-        Center(child: textActionButton())
-      ],
+
+          //                 ValueListenableBuilder(
+          // valueListenable: isStudentNameFilled,
+          // builder: (BuildContext context, dynamic value, Widget? child) {
+          //   print(isStudentNameFilled.value);
+          //   return
+          textFormField(
+              controller: nameController,
+              // keyboardType: TextInputType.,
+              isFailure: true,
+              // errormsg:
+              //     "If you would like to save the student in database, Please enter the student name",
+              onSaved: (String value) {
+                _formKey.currentState!.validate();
+                value != '' ? valuechange = true : valuechange = false;
+                updateDetails(isUpdateData: true);
+                studentName = nameController.text;
+                onChange = true;
+              },
+              validator: (String? value) {
+                if (value!.isEmpty) {
+                  return 'If you would like to save the student details in database, Please enter the student name';
+                } else if (value.length < 3) {
+                  return 'Make sure the student name contains more than 3 character';
+                } else {
+                  return null;
+                }
+              }),
+          //       ;},
+          //   child: Container(),
+          // ),
+          SpacerWidget(_KVertcalSpace / 2),
+          Utility.textWidget(
+              text: 'Student ID',
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryVariant
+                      .withOpacity(0.5))),
+          textFormField(
+            controller: idController,
+            keyboardType: TextInputType.number,
+            isFailure: true,
+            // errormsg:
+            //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+            onSaved: (String value) {
+              _formKey.currentState!.validate();
+              updateDetails(isUpdateData: true);
+              studentId = idController.text;
+              onChange = true;
+            },
+            validator: (String? value) {
+              if (value!.length != 9) {
+                return 'Student Id must have 9 digit numbers';
+              } else if (!value.startsWith('2')) {
+                return 'Student Id must starts with \'2\'';
+              } else {
+                return null;
+              }
+            },
+          ),
+          SpacerWidget(_KVertcalSpace / 2),
+          Center(
+            child: Utility.textWidget(
+                text: 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+          ),
+          SpacerWidget(_KVertcalSpace / 4),
+          Center(child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
+          SpacerWidget(_KVertcalSpace / 2),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(_KVertcalSpace / 0.9),
+          Center(child: retryButton()),
+          SpacerWidget(_KVertcalSpace / 1.5),
+        ],
+      ),
     );
   }
 
@@ -190,9 +343,23 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .withOpacity(0.3))),
         textFormField(
             controller: nameController,
+            isFailure: false,
+            // errormsg: "Make sure to save the record with student name",
             onSaved: (String value) {
+              _formKey.currentState!.validate();
+              value != '' ? valuechange = true : valuechange = false;
+
               updateDetails(isUpdateData: true);
               onChange = true;
+            },
+            validator: (String? value) {
+              if (value!.isEmpty) {
+                return 'If you would like to save the student details in database, Please enter the student name';
+              } else if (value.length < 3) {
+                return 'Make sure the student name contains more than 3 character';
+              } else {
+                return null;
+              }
             }),
         SpacerWidget(_KVertcalSpace / 2),
         Utility.textWidget(
@@ -204,12 +371,28 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     .primaryVariant
                     .withOpacity(0.5))),
         textFormField(
-            controller: idController,
-            keyboardType: TextInputType.number,
-            onSaved: (String value) {
-              updateDetails(isUpdateData: true);
-              onChange = true;
-            }),
+          controller: idController,
+          keyboardType: TextInputType.number,
+          // errormsg:
+          //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+          isFailure: false,
+          onSaved: (String value) {
+            _formKey.currentState!.validate();
+            updateDetails(isUpdateData: true);
+            onChange = true;
+          },
+          validator: (String? value) {
+            if (value!.isEmpty) {
+              return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
+            } else if (value.length != 9) {
+              return 'Student Id must have 9 digit numbers';
+            } else if (!value.startsWith('2')) {
+              return 'Student Id must starts with \'2\'';
+            } else {
+              return null;
+            }
+          },
+        ),
         SpacerWidget(_KVertcalSpace / 2),
         Center(
           child: Utility.textWidget(
@@ -262,7 +445,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6.52),
         child: Image.file(
-          widget.imgPath!,
+          widget.imgPath,
           fit: BoxFit.fill,
         ),
       ),
@@ -271,16 +454,29 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   Widget pointsEarnedButton(int grade) {
     return Container(
-      alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width * 0.75,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: Globals.pointsEarnedList
-            .map<Widget>((element) =>
-                pointsButton(Globals.pointsEarnedList.indexOf(element), grade))
-            .toList(),
-      ),
-    );
+        alignment: Alignment.center,
+        height: MediaQuery.of(context).size.height * 0.1,
+        width: MediaQuery.of(context).size.width,
+        child: Globals.pointsEarnedList.length > 4
+            ? ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(child: pointsButton(index, grade));
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(
+                    width: 12,
+                  );
+                },
+                itemCount: Globals.pointsEarnedList.length)
+            : Row(
+                // scrollDirection: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: Globals.pointsEarnedList
+                    .map<Widget>((element) => pointsButton(
+                        Globals.pointsEarnedList.indexOf(element), grade))
+                    .toList(),
+              ));
   }
 
   Widget pointsButton(index, int grade) {
@@ -293,11 +489,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
           setState(() {
             isSelected = false;
             indexColor = index;
+            // nameController.text = studentName;
+            // idController.text = studentId;
+            //.text = studentId;
           });
         },
         child: AnimatedContainer(
           duration: Duration(microseconds: 100),
-          padding: EdgeInsets.only(bottom: 5),
+          padding: EdgeInsets.only(
+            bottom: 5,
+          ),
           decoration: BoxDecoration(
             color: index == indexColor ? AppTheme.kSelectedColor : Colors.grey,
             borderRadius: BorderRadius.all(
@@ -318,7 +519,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               child: TranslationWidget(
-                message: '$index',
+                message: Globals.pointsEarnedList[index].toString(),
                 toLanguage: Globals.selectedLanguage,
                 fromLanguage: "en",
                 builder: (translatedMessage) => Text(
@@ -335,47 +536,69 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget textFormField(
       {required TextEditingController controller,
       required onSaved,
-      TextInputType? keyboardType}) {
+      required validator,
+      TextInputType? keyboardType,
+      required bool? isFailure,
+      String? errormsg}) {
     return TextFormField(
-      keyboardType: keyboardType ?? null,
-      textAlign: TextAlign.start,
-      style: Theme.of(context)
-          .textTheme
-          .headline6!
-          .copyWith(fontWeight: FontWeight.bold),
-      controller: controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-        fillColor: Colors.transparent,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
+        ],
+        autovalidateMode: AutovalidateMode.always,
+        keyboardType: keyboardType ?? null,
+        //        //textAlign: TextAlign.start,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(fontWeight: FontWeight.bold),
+        controller: controller,
+        cursorColor: Theme.of(context).colorScheme.primaryVariant,
+        decoration: InputDecoration(
+          errorText: controller.text.isEmpty ? errormsg : null,
+          errorMaxLines: 2,
+          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+          fillColor: Colors.transparent,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                // color: controller.text.isNotEmpty
+                //     ? Theme.of(context)
+                //         .colorScheme
+                //         .primaryVariant
+                //         .withOpacity(0.5)
+                //     : Colors.red
+                ),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+                // color: controller.text.isEmpty
+                //     ? Theme.of(context)
+                //         .colorScheme
+                //         .primaryVariant
+                //         .withOpacity(0.5)
+                //     : Colors.red
+                ),
+          ),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color:
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+            ),
           ),
         ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              // color:AppTheme.kButtonColor,
-              ),
-        ),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-          ),
-        ),
-      ),
-      onChanged: onSaved,
-    );
+        onChanged: onSaved,
+        validator: validator);
   }
 
-  Widget textActionButton() {
+  Widget retryButton() {
     return InkWell(
       onTap: () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CameraScreen()),
+          MaterialPageRoute(
+              builder: (context) => CameraScreen(
+                    isScanMore: widget.isScanMore,
+                    pointPossible: widget.pointPossible,
+                  )),
         );
       },
       child: Container(
@@ -407,6 +630,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       studentAssessmentInfo.studentId = idController.text;
       studentAssessmentInfo.studentGrade = pointScored;
       studentAssessmentInfo.pointpossible = Globals.pointpossible;
+      //studentAssessmentInfo.assessmentName = Globals.assessmentName;
       Globals.studentInfo!.add(studentAssessmentInfo);
     } else {
       if (Globals.studentInfo == null) {
@@ -416,6 +640,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade = pointScored;
         studentAssessmentInfo.pointpossible = Globals.pointpossible;
+        // studentAssessmentInfo.assessmentName = Globals.assessmentName;
         Globals.studentInfo!.add(studentAssessmentInfo);
       } else {
         List id = [];
@@ -428,7 +653,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentId = idController.text;
           studentAssessmentInfo.studentGrade = pointScored;
           studentAssessmentInfo.pointpossible = Globals.pointpossible;
-
+          // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           Globals.studentInfo!.add(studentAssessmentInfo);
         }
       }

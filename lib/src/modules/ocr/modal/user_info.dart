@@ -11,7 +11,7 @@ class UserInformation {
     @HiveField(3)
   String? authorizationToken;
     @HiveField(4)
-  String? refreshAuthorizationToken;
+  String? refreshToken;
   
 
   UserInformation({
@@ -19,6 +19,6 @@ class UserInformation {
     this.userEmail,
     this.profilePicture,
     this.authorizationToken,
-    this.refreshAuthorizationToken
+    this.refreshToken
   });
 }
