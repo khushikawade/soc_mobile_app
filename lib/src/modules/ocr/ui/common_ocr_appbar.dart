@@ -272,7 +272,22 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
                         message:
-                            "you are about to lose all the scanned assessment sheets",
+                            "Confirm exit",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(color: AppTheme.kButtonColor));
+                        }),
+                  ),
+                ),
+
+              content: TranslationWidget(
+                        message:
+                            "Do you want to exit? You will lose all the scanned assesment sheets.",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
@@ -282,8 +297,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   .headline2!
                                   .copyWith(color: Colors.black));
                         }),
-                  ),
-                ),
+              
                 actions: <Widget>[
                   Container(
                     height: 1,
@@ -323,7 +337,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                       .textTheme
                                       .headline5!
                                       .copyWith(
-                                        color: AppTheme.kButtonColor,
+                                        color: Colors.red,
                                       ));
                             }),
                         onPressed: () {
