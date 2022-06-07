@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -56,6 +57,9 @@ class _CameraScreenState extends State<CameraScreen>
   FlashMode? _currentFlashMode;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+
   @override
   void initState() {
     Globals.iscameraPopup
@@ -116,26 +120,83 @@ class _CameraScreenState extends State<CameraScreen>
                       )),
                   onPressed: () {
                     ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                    Globals.fileId = "";
-                    Globals.studentInfo!.length > 0
-                        ? widget.isScanMore == true
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ResultsSummary(
-                                          assessmentDetailPage: false,
-                                        )),
-                              )
-                            : Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CreateAssessment()),
-                              )
-                        : Utility.showSnackBar(
-                            _scaffoldKey,
-                            "No Assessment Found! Scan Assessment Before Moving Forword",
-                            context,
-                            null);
+
+                    if (Globals.studentInfo!.length > 0) {
+                      if (widget.isScanMore == true) {
+                        List<StudentAssessmentInfo> list = Globals.studentInfo!;
+                        Globals.studentInfo = [];
+
+                        String subject = list.first.subject!;
+                        String selectedClass = list.first.grade!;
+                        String learningStandard = list.first.learningStandard!;
+                        String subLearningStandard =
+                            list.first.subLearningStandard!;
+                        String scoringRubric = list.first.scoringRubric!;
+                        String customRubricImage =
+                            list.first.customRubricImage!;
+
+                        list.forEach(
+                          (StudentAssessmentInfo element) {
+                            Globals.studentInfo!.add(StudentAssessmentInfo(
+                                studentName: element.studentName,
+                                studentId: element.studentId,
+                                studentGrade: element.studentGrade,
+                                pointpossible: element.pointpossible,
+                                grade: selectedClass,
+                                subject: subject,
+                                learningStandard: learningStandard,
+                                subLearningStandard: subLearningStandard,
+                                scoringRubric: scoringRubric,
+                                customRubricImage: customRubricImage,
+                                assessmentImage: element.assessmentImage));
+                          },
+                        );
+
+                        _driveBloc.add(UpdateDocOnDrive(
+                            studentData: Globals.studentInfo!));
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ResultsSummary(
+                                    assessmentDetailPage: false,
+                                  )),
+                        );
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateAssessment()),
+                        );
+                      }
+                    } else {
+                      Utility.showSnackBar(
+                          _scaffoldKey,
+                          "No Assessment Found! Scan Assessment Before Moving Forword",
+                          context,
+                          null);
+                    }
+
+                    // Globals.fileId = "";
+                    // Globals.studentInfo!.length > 0
+                    //     ? widget.isScanMore == true
+                    //         ? Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) => ResultsSummary(
+                    //                       assessmentDetailPage: false,
+                    //                     )),
+                    //           )
+                    //         : Navigator.pushReplacement(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) => CreateAssessment()),
+                    //           )
+                    //     : Utility.showSnackBar(
+                    //         _scaffoldKey,
+                    //         "No Assessment Found! Scan Assessment Before Moving Forword",
+                    //         context,
+                    //         null);
                   },
                   // icon: Icon(
                   //   IconData(0xe877,
@@ -208,6 +269,7 @@ class _CameraScreenState extends State<CameraScreen>
                               await imageFile.copy(
                                 '${directory.path}/$currentUnix.$fileFormat',
                               );
+                              print(widget.pointPossible);
                               await controller!.setFlashMode(FlashMode.off);
                               Navigator.pushReplacement(
                                 context,

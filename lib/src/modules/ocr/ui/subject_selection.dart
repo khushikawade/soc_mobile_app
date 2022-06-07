@@ -618,18 +618,19 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   ? "NA"
                                   : subLearningStandard,
                               scoringRubric: Globals.scoringRubric,
-                              customRubricImage: rubricImgUrl));
+                              customRubricImage: rubricImgUrl,
+                              assessmentImage: element.assessmentImage));
                         },
                       );
                       _googleDriveBloc.add(
                           UpdateDocOnDrive(studentData: Globals.studentInfo!));
 
-                      _ocrBloc.add(SaveAssessmentIntoDataBase(
-                          assessmentName: Globals.assessmentName!,
-                          rubricScore: rubricScore!,
-                          subjectId: subjectId!,
-                          schoolId: Globals.appSetting.schoolNameC!,
-                          standardId: standardId!));
+                      // _ocrBloc.add(SaveAssessmentIntoDataBase(
+                      //     assessmentName: Globals.assessmentName!,
+                      //     rubricScore: rubricScore!,
+                      //     subjectId: subjectId!,
+                      //     schoolId: Globals.appSetting.schoolNameC!,
+                      //     standardId: standardId!));
 
                       Navigator.push(
                         context,

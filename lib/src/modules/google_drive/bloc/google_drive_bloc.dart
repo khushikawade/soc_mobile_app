@@ -50,7 +50,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           } else {
             print("Folder Id received : ${folderObject['id']}");
             print("Folder path received : ${folderObject['webViewLink']}");
-            
+
             Globals.googleDriveFolderId = folderObject['id'];
             Globals.googleDriveFolderPath = folderObject['webViewLink'];
             // Globals.
@@ -126,7 +126,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 learningStandard: "Learning Standard",
                 subLearningStandard: "Sub Learning Standard",
                 scoringRubric: "Scoring Rubric",
-                customRubricImage: "Custom Rubric Image"));
+                customRubricImage: "Custom Rubric Image",
+                assessmentImage: "Assessment Image"));
         print(assessmentData);
 
         File file = await GoogleDriveAccess.createSheet(
@@ -152,12 +153,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         LocalDatabase<HistoryAssessment> _localDb =
             LocalDatabase("HistoryAssessment");
-
+        // await _localDb.clear();
         List<HistoryAssessment>? _localData = await _localDb.getData();
         //Sort the list as per the modified date
         _localData = await listSort(_localData);
 
-        // _localData.clear();
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
         }
@@ -267,6 +267,29 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             ? RubricScoreList.scoringList.last.imgUrl = imgUrl
             : _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
         print(RubricScoreList.scoringList);
+        print("printing imag url : $imgUrl");
+      } catch (e) {
+        print("image upload error");
+      }
+    }
+    if (event is AssessmentImgToAwsBucked) {
+      try {
+        print("calling img to awsBucked");
+        String imgUrl =
+            await _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
+        //  int index = RubricScoreList.scoringList.length - 1;
+
+        if (imgUrl != "") {
+          for (int i = 0; i < Globals.studentInfo!.length; i++) {
+            if (Globals.studentInfo![i].studentId! == event.studentId) {
+              print("updateing img url");
+              Globals.studentInfo![i].assessmentImage = imgUrl;
+            }
+          }
+        } else {
+          print("img is empty");
+        }
+
         print("printing imag url : $imgUrl");
       } catch (e) {
         print("image upload error");
@@ -423,7 +446,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return false;
   }
 
-  Future _fetchHistoryAssessment(String? token, String? folderId) async {
+  Future _fetchHistoryAssessment(
+    String? token,
+    String? folderId,
+  ) async {
     try {
       print(token);
       print(folderId);
@@ -445,7 +471,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 .toList();
         return _list;
       } else {
-        throw ('something_went_wrong');
+        print('Authentication required');
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
+        bool result = await _toRefreshAuthenticationToken(
+            _userprofilelocalData[0].refreshToken!);
+        if (result) {
+          GetHistoryAssessmentFromDrive();
+        }
       }
     } catch (e) {
       throw (e);

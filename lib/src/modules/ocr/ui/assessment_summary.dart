@@ -23,6 +23,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
+
   @override
   void initState() {
     _driveBloc.add(GetHistoryAssessmentFromDrive());
@@ -31,71 +34,76 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CommonBackGroundImgWidget(),
-        Scaffold(
-          key: _scaffoldKey,
-          backgroundColor: Colors.transparent,
-          appBar: CustomOcrAppBarWidget(
-            key: GlobalKey(),
-            isBackButton: true,
-            assessmentDetailPage: true,
-            assessmentPage: true,
-            scaffoldKey: _scaffoldKey,
-          ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              SpacerWidget(_KVertcalSpace * 0.50),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Utility.textWidget(
-                  text: 'Assessment Summary',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(fontWeight: FontWeight.bold),
+    return RefreshIndicator(
+      color: AppTheme.kButtonColor,
+      key: refreshKey,
+      onRefresh: refreshPage,
+      child: Stack(
+        children: [
+          CommonBackGroundImgWidget(),
+          Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: Colors.transparent,
+            appBar: CustomOcrAppBarWidget(
+              key: GlobalKey(),
+              isBackButton: true,
+              assessmentDetailPage: true,
+              assessmentPage: true,
+              scaffoldKey: _scaffoldKey,
+            ),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SpacerWidget(_KVertcalSpace * 0.50),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Utility.textWidget(
+                    text: 'Assessment Summary',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              SpacerWidget(_KVertcalSpace / 3),
-              BlocBuilder(
-                  bloc: _driveBloc,
-                  builder: (BuildContext contxt, GoogleDriveState state) {
-                    if (state is GoogleDriveGetSuccess) {
-                      return state.obj.length > 0
-                          ? listView(state.obj)
-                          : Expanded(
-                              child: NoDataFoundErrorWidget(
-                                  isResultNotFoundMsg: true,
-                                  isNews: false,
-                                  isEvents: false),
-                            );
-                    }
-                    //  else if (state is GoogleNoAssessment) {
-                    //   return Container(
-                    //     height: MediaQuery.of(context).size.height * 0.7,
-                    //     child: Center(
-                    //         child: Text(
-                    //       "No assessment available",
-                    //       style: Theme.of(context).textTheme.bodyText1!,
-                    //     )),
-                    //   );
-                    // }
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      child: Center(
-                          child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                      )),
-                    );
-                  })
-            ],
+                SpacerWidget(_KVertcalSpace / 3),
+                BlocBuilder(
+                    bloc: _driveBloc,
+                    builder: (BuildContext contxt, GoogleDriveState state) {
+                      if (state is GoogleDriveGetSuccess) {
+                        return state.obj.length > 0
+                            ? listView(state.obj)
+                            : Expanded(
+                                child: NoDataFoundErrorWidget(
+                                    isResultNotFoundMsg: true,
+                                    isNews: false,
+                                    isEvents: false),
+                              );
+                      }
+                      //  else if (state is GoogleNoAssessment) {
+                      //   return Container(
+                      //     height: MediaQuery.of(context).size.height * 0.7,
+                      //     child: Center(
+                      //         child: Text(
+                      //       "No assessment available",
+                      //       style: Theme.of(context).textTheme.bodyText1!,
+                      //     )),
+                      //   );
+                      // }
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        )),
+                      );
+                    })
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -131,15 +139,19 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).colorScheme.background,
-            // width: 0.65,
-          ),
-          borderRadius: BorderRadius.circular(0.0),
-          color: (index % 2 == 0)
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.secondary,
-        ),
+            // border: Border.all(
+            //   // color: Theme.of(context).colorScheme.background,
+            //   // width: 0.65,
+            // ),
+            borderRadius: BorderRadius.circular(0.0),
+            color: (index % 2 == 0)
+                ? Theme.of(context).colorScheme.background == Color(0xff000000)
+                    ? Color(0xff162429)
+                    : Color(
+                        0xffF7F8F9) //Theme.of(context).colorScheme.background
+                : Theme.of(context).colorScheme.background == Color(0xff000000)
+                    ? Color(0xff111C20)
+                    : Color(0xffE9ECEE)),
         child: ListTile(
             // onTap: () {
             //   _navigate(obj, index);
@@ -177,5 +189,11 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             )),
       ),
     );
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+    _driveBloc.add(GetHistoryAssessmentFromDrive());
   }
 }

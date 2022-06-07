@@ -17,11 +17,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:googleapis/calendar/v3.dart';
 import 'package:share/share.dart';
 
+import '../bloc/ocr_bloc.dart';
+
 class ResultsSummary extends StatefulWidget {
-  ResultsSummary({Key? key, required this.assessmentDetailPage, this.fileId})
+  ResultsSummary(
+      {Key? key,
+      required this.assessmentDetailPage,
+      this.fileId,
+      this.subjectId,
+      this.standardId,
+      this.rubricScore})
       : super(key: key);
   final bool? assessmentDetailPage;
   final String? fileId;
+  final String? subjectId;
+  final String? standardId;
+  final String? rubricScore;
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
 }
@@ -29,9 +40,11 @@ class ResultsSummary extends StatefulWidget {
 class _ResultsSummaryState extends State<ResultsSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+  OcrBloc _ocrBloc = OcrBloc();
   int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -63,6 +76,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         children: [
           CommonBackGroundImgWidget(),
           Scaffold(
+            key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               key: GlobalKey(),
@@ -414,6 +428,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         MaterialPageRoute(
                             builder: (context) => AssessmentSummary()),
                       );
+                    } else if (index == 3) {
+                      _ocrBloc.add(SaveAssessmentToDashboard(
+                          assessmentName: Globals.assessmentName!,
+                          rubricScore: widget.rubricScore ?? '',
+                          subjectId: widget.subjectId ?? '',
+                          schoolId:
+                              Globals.appSetting.schoolNameC!, //Account Id
+                          standardId: widget.standardId ?? '',
+                          scaffoldKey: _scaffoldKey,
+                          context: context));
                     } else {}
                   },
                 ),
@@ -425,9 +449,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   Widget listView(List<StudentAssessmentInfo> _list) {
     return Container(
       // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
-      height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.5
-          : MediaQuery.of(context).size.height * 0.45,
+      height: widget.assessmentDetailPage!
+          ? (MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.height * 0.7
+              : MediaQuery.of(context).size.height * 0.45)
+          : (MediaQuery.of(context).orientation == Orientation.portrait
+              ? MediaQuery.of(context).size.height * 0.5
+              : MediaQuery.of(context).size.height * 0.45),
       child: ListView.builder(
         controller: _scrollController,
         shrinkWrap: true,
@@ -476,7 +504,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   // Text('Unknown'),
 
                   Utility.textWidget(
-                      text: _list[index].studentName ?? 'Unknown',
+                      text: _list[index].studentName == '' ||
+                              _list[index].studentName == null
+                          ? 'Unknown'
+                          : _list[index].studentName!,
                       context: context,
                       textTheme: Theme.of(context).textTheme.headline2!),
 
@@ -512,9 +543,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
                                 isScanMore: true,
-                                pointPossible:
-                                    Globals.studentInfo![0].pointpossible ??
-                                        '2',
+                                pointPossible: Globals.pointpossible ?? '2',
                               )));
                 },
                 icon: Icon(

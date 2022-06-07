@@ -26,12 +26,18 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final _formKey = GlobalKey<FormState>();
   // AnimationController? _controller;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+  final ScrollController listScrollController = ScrollController();
 
   //int scoringColor = 0;
   @override
   void initState() {
+    listScrollController.addListener(_scrollListener);
     Globals.fileId = '';
     super.initState();
+  }
+
+  _scrollListener() {
+    FocusScope.of(context).requestFocus(FocusNode());
   }
 
   @override
@@ -82,7 +88,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             // ),
             body: Form(
               key: _formKey,
-              child: ListView(children: [
+              child: ListView(controller: listScrollController, children: [
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   height:
@@ -90,6 +96,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           ? MediaQuery.of(context).size.height * 0.9
                           : MediaQuery.of(context).size.width,
                   child: ListView(
+                    shrinkWrap: true,
                     // mainAxisAlignment: MainAxisAlignment.start,
                     // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -354,11 +361,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
         ));
   }
 
-  void _tapDown(TapDownDetails details) {
-    //  _controller!.forward();
-  }
+  // void _tapDown(TapDownDetails details) {
+  //   //  _controller!.forward();
+  // }
 
-  void _tapUp(TapUpDetails details) {
-    //  _controller!.reverse();
-  }
+  // void _tapUp(TapUpDetails details) {
+  //   //  _controller!.reverse();
+  // }
 }
