@@ -476,7 +476,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   // Text('Unknown'),
 
                   Utility.textWidget(
-                      text: _list[index].studentName ?? 'Unknown',
+                      text: _list[index].studentName == '' ||
+                              _list[index].studentName == null
+                          ? 'Unknown'
+                          : _list[index].studentName!,
                       context: context,
                       textTheme: Theme.of(context).textTheme.headline2!),
 

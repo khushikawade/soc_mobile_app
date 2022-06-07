@@ -153,12 +153,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         LocalDatabase<HistoryAssessment> _localDb =
             LocalDatabase("HistoryAssessment");
-
+        // await _localDb.clear();
         List<HistoryAssessment>? _localData = await _localDb.getData();
         //Sort the list as per the modified date
         _localData = await listSort(_localData);
 
-        // _localData.clear();
         if (_localData.isNotEmpty) {
           yield GoogleDriveGetSuccess(obj: _localData);
         }
