@@ -11,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../../../services/local_database/local_db.dart';
 import '../modal/subject_details_modal.dart';
-import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -343,7 +342,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         var result = response.data;
 
         return [
-          result['StudentGrade'] == 'Something Went Wrong'
+          result['StudentGrade'] != '2' ||
+                  result['StudentGrade'] != '1' ||
+                  result['StudentGrade'] != '0' ||
+                  result['StudentGrade'] != '3' ||
+                  result['StudentGrade'] != '4'
               ? '2'
               : result['StudentGrade'],
           result['studentId'] == 'Something Went Wrong'

@@ -126,35 +126,35 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       pointScored = state.grade;
 
                       nameController.text = state.studentName!;
-                      if (_formKey.currentState!.validate()) {
-                        if (nameController.text.isNotEmpty &&
-                            nameController.text.length >= 3 &&
-                            idController.text.isNotEmpty) {
-                          Timer(Duration(seconds: 5), () {
-                            updateDetails();
-                            // COMMENT below section for enableing the camera
-                            String imgExtension = widget.imgPath.path.substring(
-                                widget.imgPath.path.lastIndexOf(".") + 1);
-                            _googleDriveBloc.add(AssessmentImgToAwsBucked(
-                                imgBase64: widget.img64,
-                                imgExtension: imgExtension,
-                                studentId: idController.text));
+                      // if (_formKey.currentState!.validate()) {
+                      if (nameController.text.isNotEmpty &&
+                          nameController.text.length >= 3 &&
+                          idController.text.isNotEmpty) {
+                        Timer(Duration(seconds: 5), () {
+                          updateDetails();
+                          // COMMENT below section for enableing the camera
+                          String imgExtension = widget.imgPath.path.substring(
+                              widget.imgPath.path.lastIndexOf(".") + 1);
+                          _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                              imgBase64: widget.img64,
+                              imgExtension: imgExtension,
+                              studentId: idController.text));
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CameraScreen(
+                                      isScanMore: widget.isScanMore,
+                                      pointPossible: widget.pointPossible,
+                                    )),
+                          );
+                          //UNCOMMENT below section for enableing the camera
 
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CameraScreen(
-                                        isScanMore: widget.isScanMore,
-                                        pointPossible: widget.pointPossible,
-                                      )),
-                            );
-                            //UNCOMMENT below section for enableing the camera
-
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (_) => CameraScreen()));
-                          });
-                        }
-                      } else {
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (_) => CameraScreen()));
+                        });
+                      }
+                      //}
+                      else {
                         setState(() {
                           failure = true;
                         });
@@ -191,9 +191,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         ),
                       );
                     } else if (state is FetchTextFromImageSuccess) {
-                      idController.text = state.studentId!;
-                      nameController.text = state.studentName!;
-                      Globals.gradeList.add(state.grade!);
+                      // idController.text = state.studentId!;
+                      // nameController.text = state.studentName!;
+                      // Globals.gradeList.add(state.grade!);
                       return successScreen(
                           id: state.studentId!, grade: state.grade!);
                     } else if (state is FetchTextFromImageFailure) {
@@ -495,51 +495,51 @@ class _SuccessScreenState extends State<SuccessScreen> {
       TextInputType? keyboardType,
       required bool? isFailure,
       String? errormsg}) {
-    print(keyboardType);
     return TextFormField(
-        autovalidateMode: AutovalidateMode.always,
-        keyboardType: keyboardType ?? null,
-        //        //textAlign: TextAlign.start,
-        style: Theme.of(context)
-            .textTheme
-            .headline6!
-            .copyWith(fontWeight: FontWeight.bold),
-        controller: controller,
-        cursorColor: Theme.of(context).colorScheme.primaryVariant,
-        decoration: InputDecoration(
-          errorText: controller.text.isEmpty ? errormsg : null,
-          errorMaxLines: 2,
-          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-          fillColor: Colors.transparent,
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                // color: controller.text.isNotEmpty
-                //     ? Theme.of(context)
-                //         .colorScheme
-                //         .primaryVariant
-                //         .withOpacity(0.5)
-                //     : Colors.red
-                ),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                // color: controller.text.isEmpty
-                //     ? Theme.of(context)
-                //         .colorScheme
-                //         .primaryVariant
-                //         .withOpacity(0.5)
-                //     : Colors.red
-                ),
-          ),
-          border: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-            ),
+      autovalidateMode: AutovalidateMode.always,
+      keyboardType: keyboardType ?? null,
+      //        //textAlign: TextAlign.start,
+      style: Theme.of(context)
+          .textTheme
+          .headline6!
+          .copyWith(fontWeight: FontWeight.bold),
+      controller: controller,
+      cursorColor: Theme.of(context).colorScheme.primaryVariant,
+      decoration: InputDecoration(
+        errorText: controller.text.isEmpty ? errormsg : null,
+        errorMaxLines: 2,
+        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+        fillColor: Colors.transparent,
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+              // color: controller.text.isNotEmpty
+              //     ? Theme.of(context)
+              //         .colorScheme
+              //         .primaryVariant
+              //         .withOpacity(0.5)
+              //     : Colors.red
+              ),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+              // color: controller.text.isEmpty
+              //     ? Theme.of(context)
+              //         .colorScheme
+              //         .primaryVariant
+              //         .withOpacity(0.5)
+              //     : Colors.red
+              ),
+        ),
+        border: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color:
+                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
           ),
         ),
-        onChanged: onSaved,
-        validator: validator);
+      ),
+      onChanged: onSaved,
+      //validator: validator
+    );
   }
 
   Widget textActionButton() {

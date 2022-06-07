@@ -3,13 +3,13 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../../styles/theme.dart';
+
 class SearchBar extends StatelessWidget {
   final TextEditingController controller;
   final onSaved;
-  const SearchBar({
-    Key? key,
-    required this.controller,required this.onSaved
-  }) : super(key: key);
+  const SearchBar({Key? key, required this.controller, required this.onSaved})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,8 @@ class SearchBar extends StatelessWidget {
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    borderSide: BorderSide(color: Colors.green, width: 2),
+                    borderSide:
+                        BorderSide(color: AppTheme.kSelectedColor, width: 2),
                   ),
                   border: InputBorder.none,
                   enabledBorder: OutlineInputBorder(
