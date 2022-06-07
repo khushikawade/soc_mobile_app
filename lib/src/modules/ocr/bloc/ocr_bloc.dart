@@ -539,7 +539,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           Utility.getCurrentDate(DateTime.now()),
           studentDetails[i].studentGrade,
           studentDetails[i].studentId,
-          "NA"));
+          studentDetails[i].assessmentImage,
+          studentDetails[i].studentName));
     }
 
     final ResponseModel response = await _dbServices.postapi(
@@ -557,13 +558,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   }
 
   Map<String, String> recordtoJson(assessmentId, currentDate, pointsEarned,
-      studentOsisId, assessmentImageURl) {
+      studentOsisId, assessmentImageURl, sudentName) {
     Map<String, String> body = {
       "Assessment_Id": assessmentId,
       "Date__c": currentDate.toString(),
       "Result__c": pointsEarned,
       "Student__c": studentOsisId, //Scanned from the sheet
-      "Assessment_Image__c": assessmentImageURl
+      "Assessment_Image__c": assessmentImageURl,
+      "Student_Name__c": sudentName
     };
     return body;
   }
