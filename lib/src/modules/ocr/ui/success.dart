@@ -43,6 +43,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final nameController = TextEditingController();
   final idController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
 
   String? pointScored;
   @override
@@ -102,7 +103,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
               child: BlocConsumer<OcrBloc, OcrState>(
                   bloc: _bloc, // provide the local bloc instance
                   listener: (context, state) {
-                    if (state is FetchTextFromImageSuccess) {
+                    if (state is OcrLoading) {
+                      // isRetryButton.value = false;
+                      Timer(Duration(seconds: 5), () {
+                        isRetryButton.value = true;
+                      });
+                    } else if (state is FetchTextFromImageSuccess) {
                       widget.pointPossible == '2'
                           ? Globals.pointsEarnedList = [0, 1, 2]
                           : widget.pointPossible == '3'
@@ -131,10 +137,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                       pointPossible: widget.pointPossible,
                                     )),
                           );
-                          //UNCOMMENT below section for enableing the camera
-
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (_) => CameraScreen()));
                         });
                       }
                       //}
@@ -169,11 +171,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   },
                   builder: (context, state) {
                     if (state is OcrLoading) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          color: AppTheme.kButtonColor,
-                        ),
-                      );
+                      return loadingScreen();
+                      // Center(
+                      //   child: CircularProgressIndicator(
+                      //     color: AppTheme.kButtonColor,
+                      //   ),
+                      // );
                     } else if (state is FetchTextFromImageSuccess) {
                       // idController.text = state.studentId!;
                       // nameController.text = state.studentName!;
@@ -194,6 +197,40 @@ class _SuccessScreenState extends State<SuccessScreen> {
             ))
       ]),
     );
+  }
+
+  Widget loadingScreen() {
+    return ValueListenableBuilder(
+        valueListenable: isRetryButton,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              //crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: AppTheme.kButtonColor,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                isRetryButton.value == true
+                    ? textActionButton(onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CameraScreen(
+                                    isScanMore: widget.isScanMore,
+                                    pointPossible: widget.pointPossible,
+                                  )),
+                        );
+                      })
+                    : Container()
+              ],
+            ),
+          );
+        });
   }
 
   Widget failureScreen({
@@ -271,7 +308,18 @@ class _SuccessScreenState extends State<SuccessScreen> {
           SpacerWidget(_KVertcalSpace / 2),
           Center(child: imagePreviewWidget()),
           SpacerWidget(_KVertcalSpace / 0.9),
-          Center(child: textActionButton())
+          Center(child: textActionButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          isScanMore: widget.isScanMore,
+                          pointPossible: widget.pointPossible,
+                        )),
+              );
+            },
+          ))
         ],
       ),
     );
@@ -480,64 +528,55 @@ class _SuccessScreenState extends State<SuccessScreen> {
       required bool? isFailure,
       String? errormsg}) {
     return TextFormField(
-        autovalidateMode: AutovalidateMode.always,
-        keyboardType: keyboardType ?? null,
-        //        //textAlign: TextAlign.start,
-        style: Theme.of(context)
-            .textTheme
-            .headline6!
-            .copyWith(fontWeight: FontWeight.bold),
-        controller: controller,
-        cursorColor: Theme.of(context).colorScheme.primaryVariant,
-        decoration: InputDecoration(
-          errorText: controller.text.isEmpty ? errormsg : null,
-          errorMaxLines: 2,
-          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-          fillColor: Colors.transparent,
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                // color: controller.text.isNotEmpty
-                //     ? Theme.of(context)
-                //         .colorScheme
-                //         .primaryVariant
-                //         .withOpacity(0.5)
-                //     : Colors.red
-                ),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                // color: controller.text.isEmpty
-                //     ? Theme.of(context)
-                //         .colorScheme
-                //         .primaryVariant
-                //         .withOpacity(0.5)
-                //     : Colors.red
-                ),
-          ),
-          border: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-            ),
+      autovalidateMode: AutovalidateMode.always,
+      keyboardType: keyboardType ?? null,
+      //        //textAlign: TextAlign.start,
+      style: Theme.of(context)
+          .textTheme
+          .headline6!
+          .copyWith(fontWeight: FontWeight.bold),
+      controller: controller,
+      cursorColor: Theme.of(context).colorScheme.primaryVariant,
+      decoration: InputDecoration(
+        errorText: controller.text.isEmpty ? errormsg : null,
+        errorMaxLines: 2,
+        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+        fillColor: Colors.transparent,
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+              // color: controller.text.isNotEmpty
+              //     ? Theme.of(context)
+              //         .colorScheme
+              //         .primaryVariant
+              //         .withOpacity(0.5)
+              //     : Colors.red
+              ),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+              // color: controller.text.isEmpty
+              //     ? Theme.of(context)
+              //         .colorScheme
+              //         .primaryVariant
+              //         .withOpacity(0.5)
+              //     : Colors.red
+              ),
+        ),
+        border: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color:
+                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
           ),
         ),
-        onChanged: onSaved,
-        //validator: validator
-        );
+      ),
+      onChanged: onSaved,
+      //validator: validator
+    );
   }
 
-  Widget textActionButton() {
+  Widget textActionButton({required final onPressed}) {
     return InkWell(
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CameraScreen(
-                    isScanMore: widget.isScanMore,
-                    pointPossible: widget.pointPossible,
-                  )),
-        );
-      },
+      onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
           color: AppTheme.kButtonColor,

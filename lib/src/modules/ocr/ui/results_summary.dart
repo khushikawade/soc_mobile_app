@@ -140,7 +140,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                       
                         Utility.textWidget(
                             text: 'Results Summary',
                             context: context,
@@ -513,7 +512,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
                                 isScanMore: true,
-                                pointPossible: '2',
+                                pointPossible:
+                                    Globals.studentInfo![0].pointpossible ??
+                                        '2',
                               )));
                 },
                 icon: Icon(

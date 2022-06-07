@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
@@ -19,6 +20,7 @@ import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_image_widget.dart';
 import 'assessment_summary.dart';
@@ -175,9 +177,9 @@ class _OpticalCharacterRecognitionPageState
               //   _googleBloc.add(ImageToAwsBucked(
               //       imgBase64: RubricScoreList.scoringList.last.imgBase64));
               // } else {
-              updateLocalDb();
-              // }
-              _bloc.add(SaveSubjectListDetails());
+              // updateLocalDb();
+              // // }
+              // _bloc.add(SaveSubjectListDetails());
               // Globals.studentInfo = [];
               Globals.studentInfo!.clear();
               // _bloc.add(SaveSubjectListDetails());
@@ -193,21 +195,29 @@ class _OpticalCharacterRecognitionPageState
               // } else {
               //   updateLocalDb();
               // }
+              final status = await Permission.camera.request();
+              // bool result = await _checkPermission();
+              if (!status.isPermanentlyDenied) {
+                updateLocalDb();
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          isScanMore: false,
-                          pointPossible: scoringColor == 0
-                              ? '2'
-                              : scoringColor == 2
-                                  ? '3'
-                                  : scoringColor == 4
-                                      ? '4'
-                                      : '2',
-                        )),
-              );
+                _bloc.add(SaveSubjectListDetails());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CameraScreen(
+                            isScanMore: false,
+                            pointPossible: scoringColor == 0
+                                ? '2'
+                                : scoringColor == 2
+                                    ? '3'
+                                    : scoringColor == 4
+                                        ? '4'
+                                        : '2',
+                          )),
+                );
+              } else {
+                _onCameraPermissionDenied();
+              }
 
               // Navigator.push(
               //   context,
@@ -266,6 +276,20 @@ class _OpticalCharacterRecognitionPageState
       ],
     );
   }
+
+  // Future<bool> _checkPermission() async {
+  //   final status = await Permission.camera.request();
+  //   // final serviceStatus = Permission.camera.status;
+
+  //   if (status.isPermanentlyDenied) {
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+
+  //   // print('Turn on location services before requesting permission.');
+  //   // return;
+  // }
 
   Widget smallButton() {
     return Container(
@@ -482,5 +506,94 @@ class _OpticalCharacterRecognitionPageState
     RubricScoreList.scoringList.forEach((CustomRubicModal e) {
       _localDb.addData(e);
     });
+  }
+
+  _onCameraPermissionDenied() {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Center(
+                  child: Container(
+                    padding: Globals.deviceType == 'phone'
+                        ? null
+                        : const EdgeInsets.only(top: 10.0),
+                    height: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                    width: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                    child: TranslationWidget(
+                        message:
+                            "For access camera you need to enable camera permission from settings",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(color: Colors.black));
+                        }),
+                  ),
+                ),
+                actions: <Widget>[
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  // TextButton(
+                  //   child: TranslationWidget(
+                  //       message: "No",
+                  //       fromLanguage: "en",
+                  //       toLanguage: Globals.selectedLanguage,
+                  //       builder: (translatedMessage) {
+                  //         return Text(translatedMessage.toString(),
+                  //             style: Theme.of(context)
+                  //                 .textTheme
+                  //                 .headline5!
+                  //                 .copyWith(
+                  //                   color: AppTheme.kButtonColor,
+                  //                 ));
+                  //       }),
+                  //   onPressed: () {
+                  //     //Globals.iscameraPopup = false;
+                  //     Navigator.pop(context, false);
+                  //   },
+                  // ),
+                  Center(
+                    child: TextButton(
+                      child: TranslationWidget(
+                          message: "OK",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(
+                                      color: AppTheme.kButtonColor,
+                                    ));
+                          }),
+                      onPressed: () {
+                        //Globals.iscameraPopup = false;
+                        Navigator.pop(context, false);
+                      },
+                    ),
+                  )
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              );
+            }));
   }
 }
