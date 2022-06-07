@@ -48,8 +48,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               studentName: data[2]);
         }
       } catch (e) {
-        // yield FetchTextFromImageFailure(
-        //     studentId: '', grade: '', studentName: '');
+        yield FetchTextFromImageFailure(
+            studentId: '', grade: '', studentName: '');
         print(e);
       }
     }

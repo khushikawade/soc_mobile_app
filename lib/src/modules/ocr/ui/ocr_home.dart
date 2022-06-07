@@ -191,19 +191,27 @@ class _OpticalCharacterRecognitionPageState
               // } else {
               //   updateLocalDb();
               // }
+              Globals.pointpossible = scoringColor == 0
+                  ? '2'
+                  : scoringColor == 2
+                      ? '3'
+                      : scoringColor == 4
+                          ? '4'
+                          : '2';
               Globals.fileId = "";
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => CameraScreen(
-                          isScanMore: false,
-                          pointPossible: scoringColor == 0
-                              ? '2'
-                              : scoringColor == 2
-                                  ? '3'
-                                  : scoringColor == 4
-                                      ? '4'
-                                      : '2',
+                        isScanMore: false, pointPossible: Globals.pointpossible
+
+                        //  scoringColor == 0
+                        //     ? '2'
+                        //     : scoringColor == 2
+                        //         ? '3'
+                        //         : scoringColor == 4
+                        //             ? '4'
+                        //             : '2',
                         )),
               );
 

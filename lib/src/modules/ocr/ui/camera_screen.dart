@@ -7,8 +7,6 @@ import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
-import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -267,6 +265,7 @@ class _CameraScreenState extends State<CameraScreen>
                               await imageFile.copy(
                                 '${directory.path}/$currentUnix.$fileFormat',
                               );
+                              print(widget.pointPossible);
                               await controller!.setFlashMode(FlashMode.off);
                               Navigator.pushReplacement(
                                 context,
