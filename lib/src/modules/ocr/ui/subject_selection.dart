@@ -615,7 +615,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   ? "NA"
                                   : subLearningStandard,
                               scoringRubric: Globals.scoringRubric,
-                              customRubricImage: rubricImgUrl));
+                              customRubricImage: rubricImgUrl,
+                              assessmentImage: element.assessmentImage));
                         },
                       );
                       _googleDriveBloc.add(

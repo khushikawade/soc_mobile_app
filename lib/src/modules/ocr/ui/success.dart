@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
@@ -44,6 +45,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final idController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   String? pointScored;
   @override
   void initState() {
@@ -75,7 +77,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             _bloc.add(SaveStudentDetails(
                                 studentName: nameController.text,
                                 studentId: idController.text));
+
+                            String imgExtension = widget.imgPath.path.substring(
+                                widget.imgPath.path.lastIndexOf(".") + 1);
+                            _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                                imgBase64: widget.img64,
+                                imgExtension: imgExtension,
+                                studentId: idController.text));
                           }
+
                           // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
                           Navigator.push(
                               context,
@@ -123,6 +133,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           Timer(Duration(seconds: 5), () {
                             updateDetails();
                             // COMMENT below section for enableing the camera
+                            String imgExtension = widget.imgPath.path.substring(
+                                widget.imgPath.path.lastIndexOf(".") + 1);
+                            _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                                imgBase64: widget.img64,
+                                imgExtension: imgExtension,
+                                studentId: idController.text));
+
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -478,7 +495,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       TextInputType? keyboardType,
       required bool? isFailure,
       String? errormsg}) {
-         print(keyboardType);
+    print(keyboardType);
     return TextFormField(
         autovalidateMode: AutovalidateMode.always,
         keyboardType: keyboardType ?? null,

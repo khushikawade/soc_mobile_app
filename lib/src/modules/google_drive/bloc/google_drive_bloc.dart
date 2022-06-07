@@ -45,7 +45,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (folderObject == '') {
             print(event.token);
             await _createFolderOnDrive(
-                token: event.token, folderName: "newwfolder");
+                token: event.token, folderName: event.folderName);
             print("Folder created successfully");
           } else {
             print("Folder Id received : ${folderObject['id']}");
@@ -125,7 +125,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 learningStandard: "Learning Standard",
                 subLearningStandard: "Sub Learning Standard",
                 scoringRubric: "Scoring Rubric",
-                customRubricImage: "Custom Rubric Image"));
+                customRubricImage: "Custom Rubric Image",
+                assessmentImage: "Assessment Image"));
         print(assessmentData);
 
         File file = await GoogleDriveAccess.createSheet(
@@ -266,6 +267,29 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             ? RubricScoreList.scoringList.last.imgUrl = imgUrl
             : _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
         print(RubricScoreList.scoringList);
+        print("printing imag url : $imgUrl");
+      } catch (e) {
+        print("image upload error");
+      }
+    }
+    if (event is AssessmentImgToAwsBucked) {
+      try {
+        print("calling img to awsBucked");
+        String imgUrl =
+            await _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
+        //  int index = RubricScoreList.scoringList.length - 1;
+
+        if (imgUrl != "") {
+          for (int i = 0; i < Globals.studentInfo!.length; i++) {
+            if (Globals.studentInfo![i].studentId! == event.studentId) {
+              print("updateing img url");
+              Globals.studentInfo![i].assessmentImage = imgUrl;
+            }
+          }
+        } else {
+          print("img is empty");
+        }
+
         print("printing imag url : $imgUrl");
       } catch (e) {
         print("image upload error");

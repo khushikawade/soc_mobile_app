@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
@@ -9,7 +9,7 @@ import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -20,10 +20,8 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
-import '../../../widgets/common_image_widget.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
