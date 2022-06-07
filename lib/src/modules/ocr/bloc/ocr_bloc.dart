@@ -489,11 +489,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     final body = {
       "Date__c": currentDate,
       "Name__c": assessmentName,
-      "Rubric__c": rubicScore,
+      "Rubric__c": rubicScore != '' ? rubicScore : null,
       "School__c": schoolId,
       "School_year__c": currentDate.split("-")[0],
-      "Standard__c": standardId,
-      "Subject__c": subjectId
+      "Standard__c": standardId != '' ? standardId : null,
+      "Subject__c": subjectId != '' ? subjectId : null
     };
     final ResponseModel response = await _dbServices.postapi(
       "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
@@ -504,7 +504,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (response.statusCode == 200) {
       String id = response.data['body']['Assessment_Id'];
 
-      print("record is saved now ");
+      print("Assessment has been saved successfully : $id");
       return id;
     } else {
       print("not 200 ---> r${response.statusCode}");
@@ -549,7 +549,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     );
     if (response.statusCode == 200) {
       // String id = response.data['body']['id'];
-      print("result record is saved successfully ");
+      print("result(s) have been successfully saved to dashboard.");
       return true;
     } else {
       return false;

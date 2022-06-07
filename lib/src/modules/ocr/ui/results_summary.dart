@@ -431,11 +431,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     } else if (index == 3) {
                       _ocrBloc.add(SaveAssessmentToDashboard(
                           assessmentName: Globals.assessmentName!,
-                          rubricScore: widget.rubricScore!,
-                          subjectId: widget.subjectId!,
+                          rubricScore: widget.rubricScore??'',
+                          subjectId: widget.subjectId??'',
                           schoolId:
                               Globals.appSetting.schoolNameC!, //Account Id
-                          standardId: widget.standardId!,
+                          standardId: widget.standardId??'',
                           scaffoldKey: _scaffoldKey,
                           context: context));
                     } else {}
