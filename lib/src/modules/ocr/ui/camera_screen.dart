@@ -20,9 +20,10 @@ import 'package:permission_handler/permission_handler.dart';
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
+  final scaffoldKey;
 
   const CameraScreen(
-      {Key? key, required this.pointPossible, required this.isScanMore})
+      {Key? key, required this.pointPossible, required this.isScanMore,this.scaffoldKey})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -71,7 +72,7 @@ class _CameraScreenState extends State<CameraScreen>
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     Utility.setLocked();
     onNewCameraSelected(cameras[0]);
-    _checkPermission();
+   // _checkPermission();
     super.initState();
   }
 
@@ -296,28 +297,34 @@ class _CameraScreenState extends State<CameraScreen>
     );
   }
 
-  Future<void> _checkPermission() async {
-    final status = await Permission.camera.request();
-    // final serviceStatus = Permission.camera.status;
+  // Future<void> _checkPermission() async {
+  //   final status = await Permission.camera.request();
+  //   // final serviceStatus = Permission.camera.status;
 
-    if (status.isDenied) {
-      Navigator.pop(context);
-    } else if (status.isPermanentlyDenied) {
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => OpticalCharacterRecognition()),
-      // );
-      Navigator.pop(context);
-      // print(
-      //     'isPermanentlyDenied --------------------------------#################');
-    } else {
-      // print('granted-----------------------------------');
-    }
+  //   if (status.isDenied) {
+  //     Navigator.pop(context);
+  //   } else if (status.isPermanentlyDenied) {
+  //     // Navigator.pushReplacement(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => OpticalCharacterRecognition()),
+  //     // );
+  //     Utility.showSnackBar(widget.scaffoldKey, 'For access camera you need to enable camera permission from settings', context, null);
+  //      Navigator.pushReplacement(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) => OpticalCharacterRecognition()),
+  //                       );
+  //    // Navigator.pop(context);
+  //     // print(
+  //     //     'isPermanentlyDenied --------------------------------#################');
+  //   } else {
+  //     // print('granted-----------------------------------');
+  //   }
 
-    //
-    //print('Turn on location services before requesting permission.');
-    return;
-  }
+  //   //
+  //   //print('Turn on location services before requesting permission.');
+    
+  // }
 
   //   final status = await Permission.locationWhenInUse.request();
   //   if (status == PermissionStatus.granted) {
