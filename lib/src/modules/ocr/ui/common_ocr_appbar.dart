@@ -1,7 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -19,19 +19,20 @@ import '../../google_drive/model/user_profile.dart';
 // ignore: must_be_immutable
 class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
-  CustomOcrAppBarWidget({
-    required Key? key,
-    required this.isBackButton,
-    this.isTitle,
-    this.isSuccessState,
-    this.isResultScreen,
-    this.isHomeButtonPopup,
-    this.assessmentDetailPage,
-    this.assessmentPage,
-    this.actionIcon,
-    this.scaffoldKey,
-    this.customBackButton,
-  })  : preferredSize = Size.fromHeight(60.0),
+  CustomOcrAppBarWidget(
+      {required Key? key,
+      required this.isBackButton,
+      this.isTitle,
+      this.isSuccessState,
+      this.isResultScreen,
+      this.isHomeButtonPopup,
+      this.assessmentDetailPage,
+      this.assessmentPage,
+      this.actionIcon,
+      this.scaffoldKey,
+      this.customBackButton,
+      this.isbackOnSuccess})
+      : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isSuccessState;
   bool? isBackButton;
@@ -42,6 +43,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? assessmentPage;
   Widget? actionIcon;
   Widget? customBackButton;
+  bool? isbackOnSuccess;
 
   final scaffoldKey;
 
@@ -165,7 +167,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   : Container(),
           widget.assessmentDetailPage == true
               ? Container()
-              : widget.isSuccessState == false || widget.isResultScreen == true
+              : widget.isSuccessState == false || widget.isResultScreen == true ||  widget.isbackOnSuccess ==true
                   ? widget.actionIcon!
                   // Container(
                   //     padding: widget.isSuccessState != false

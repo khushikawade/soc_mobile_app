@@ -5,9 +5,10 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
-import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -20,9 +21,10 @@ import 'package:permission_handler/permission_handler.dart';
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
+  final scaffoldKey;
 
   const CameraScreen(
-      {Key? key, required this.pointPossible, required this.isScanMore})
+      {Key? key, required this.pointPossible, required this.isScanMore,this.scaffoldKey})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -71,7 +73,7 @@ class _CameraScreenState extends State<CameraScreen>
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     Utility.setLocked();
     onNewCameraSelected(cameras[0]);
-    _checkPermission();
+   // _checkPermission();
     super.initState();
   }
 
@@ -93,20 +95,40 @@ class _CameraScreenState extends State<CameraScreen>
               MediaQuery.of(context).orientation == Orientation.portrait
                   ? 50
                   : 60,
-          leading: IconButton(
-              onPressed: () async {
-                setState(() {
-                  flash = !flash;
-                  isflashOff = !isflashOff;
-                });
-                await controller!
-                    .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
-              },
-              icon: Icon(
-                isflashOff == true ? Icons.flash_off : Icons.flash_on,
-                color: Colors.white,
-                size: 30,
-              )),
+          leadingWidth: 200,
+          leading: Row(
+            children: [
+              Globals.studentInfo!.length > 0
+                  ? IconButton(
+                      onPressed: () {
+                        //To dispose the snackbar message before navigating back if exist
+                        //    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        Navigator.pop(context, true);
+                      },
+                      icon: Icon(
+                        IconData(0xe80d,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        color: AppTheme.kButtonColor,
+                      ),
+                    )
+                  : Container(),
+              IconButton(
+                  onPressed: () async {
+                    setState(() {
+                      flash = !flash;
+                      isflashOff = !isflashOff;
+                    });
+                    await controller!
+                        .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
+                  },
+                  icon: Icon(
+                    isflashOff == true ? Icons.flash_off : Icons.flash_on,
+                    color: Colors.white,
+                    size: 30,
+                  )),
+            ],
+          ),
           actions: [
             Container(
                 padding: EdgeInsets.only(right: 5),
@@ -271,7 +293,7 @@ class _CameraScreenState extends State<CameraScreen>
                               );
                               print(widget.pointPossible);
                               await controller!.setFlashMode(FlashMode.off);
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SuccessScreen(
@@ -296,28 +318,34 @@ class _CameraScreenState extends State<CameraScreen>
     );
   }
 
-  Future<void> _checkPermission() async {
-    final status = await Permission.camera.request();
-    // final serviceStatus = Permission.camera.status;
+  // Future<void> _checkPermission() async {
+  //   final status = await Permission.camera.request();
+  //   // final serviceStatus = Permission.camera.status;
 
-    if (status.isDenied) {
-      Navigator.pop(context);
-    } else if (status.isPermanentlyDenied) {
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => OpticalCharacterRecognition()),
-      // );
-      Navigator.pop(context);
-      // print(
-      //     'isPermanentlyDenied --------------------------------#################');
-    } else {
-      // print('granted-----------------------------------');
-    }
+  //   if (status.isDenied) {
+  //     Navigator.pop(context);
+  //   } else if (status.isPermanentlyDenied) {
+  //     // Navigator.pushReplacement(
+  //     //   context,
+  //     //   MaterialPageRoute(builder: (context) => OpticalCharacterRecognition()),
+  //     // );
+  //     Utility.showSnackBar(widget.scaffoldKey, 'For access camera you need to enable camera permission from settings', context, null);
+  //      Navigator.pushReplacement(
+  //                         context,
+  //                         MaterialPageRoute(
+  //                             builder: (context) => OpticalCharacterRecognition()),
+  //                       );
+  //    // Navigator.pop(context);
+  //     // print(
+  //     //     'isPermanentlyDenied --------------------------------#################');
+  //   } else {
+  //     // print('granted-----------------------------------');
+  //   }
 
-    //
-    //print('Turn on location services before requesting permission.');
-    return;
-  }
+  //   //
+  //   //print('Turn on location services before requesting permission.');
+    
+  // }
 
   //   final status = await Permission.locationWhenInUse.request();
   //   if (status == PermissionStatus.granted) {
