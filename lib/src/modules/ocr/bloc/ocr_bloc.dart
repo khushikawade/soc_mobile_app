@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
+import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -179,6 +180,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is SaveAssessmentToDashboard) {
       try {
         print("calling save record to sales Force");
+        yield OcrLoading();
 
         String id = await saveAssessmentToDashboard(
             assessmentName: event.assessmentName,
@@ -191,14 +193,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           bool result = await saveResultToDashboard(
               assessmentId: id, studentDetails: Globals.studentInfo!);
 
-          !result
-              ? saveResultToDashboard(
-                  assessmentId: id, studentDetails: Globals.studentInfo!)
-              : Utility.showSnackBar(
-                  event.scaffoldKey,
-                  'Yay! Data has been successully saved to the dashboard',
-                  event.context,
-                  null); //print("result Record is saved on DB");
+          if (!result) {
+            saveResultToDashboard(
+                assessmentId: id, studentDetails: Globals.studentInfo!);
+          } else {
+            //print("result Record is saved on DB");
+
+            yield AssessmentSavedSuccessfully();
+          }
         } else {
           Utility.showSnackBar(
               event.scaffoldKey,

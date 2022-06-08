@@ -125,32 +125,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               padding: EdgeInsets.only(left: 20, right: 20),
               child: BlocConsumer<OcrBloc, OcrState>(
                 bloc: _bloc, // provide the local bloc instance
-                builder: (context, state) {
-                  if (state is OcrLoading) {
-                    return loadingScreen();
 
-                    // Center(
-                    //   child: CircularProgressIndicator(
-                    //     color: AppTheme.kButtonColor,
-                    //   ),
-                    // );
-                  } else if (state is FetchTextFromImageSuccess) {
-                    // idController.text = state.studentId!;
-                    // nameController.text = state.studentName!;
-                    // Globals.gradeList.add(state.grade!);
-                    return successScreen(
-                        id: state.studentId!, grade: state.grade!);
-                  } else if (state is FetchTextFromImageFailure) {
-                    // idController.text = state.studentId!;
-                    // nameController.text =
-                    //     onChange == true ? state.studentName! : studentName;
-                    Globals.gradeList.add(state.grade!);
-                    return failureScreen(
-                        id: state.studentId!, grade: state.grade!);
-                  }
-                  return Container();
-                  // return widget here based on BlocA's state
-                },
                 listener: (context, state) async {
                   await Future.delayed(Duration(milliseconds: 200));
                   if (state is OcrLoading) {
@@ -230,6 +205,32 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     });
                   }
                   // do stuff here based on BlocA's state
+                },
+                builder: (context, state) {
+                  if (state is OcrLoading) {
+                    return loadingScreen();
+
+                    // Center(
+                    //   child: CircularProgressIndicator(
+                    //     color: AppTheme.kButtonColor,
+                    //   ),
+                    // );
+                  } else if (state is FetchTextFromImageSuccess) {
+                    // idController.text = state.studentId!;
+                    // nameController.text = state.studentName!;
+                    // Globals.gradeList.add(state.grade!);
+                    return successScreen(
+                        id: state.studentId!, grade: state.grade!);
+                  } else if (state is FetchTextFromImageFailure) {
+                    // idController.text = state.studentId!;
+                    // nameController.text =
+                    //     onChange == true ? state.studentName! : studentName;
+                    Globals.gradeList.add(state.grade!);
+                    return failureScreen(
+                        id: state.studentId!, grade: state.grade!);
+                  }
+                  return Container();
+                  // return widget here based on BlocA's state
                 },
               ),
             ))
@@ -316,6 +317,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 } else {
                   return null;
                 }
+                // return null;
               }),
           //       ;},
           //   child: Container(),
