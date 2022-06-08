@@ -72,8 +72,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     bloc: _driveBloc,
                     builder: (BuildContext contxt, GoogleDriveState state) {
                       if (state is GoogleDriveGetSuccess) {
-                        return state.obj.length > 0
-                            ? Expanded(child: listView(state.obj))
+                        return state.obj!.length > 0
+                            ? Expanded(child: listView(state.obj!))
                             : Expanded(
                                 child: NoDataFoundErrorWidget(
                                     isResultNotFoundMsg: true,
@@ -145,16 +145,13 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             // ),
             borderRadius: BorderRadius.circular(0.0),
             color: (index % 2 == 0)
-                    ? Theme.of(context).colorScheme.background ==
-                            Color(0xff000000)
-                        ? Color(0xff162429)
-                        : Color(
-                            0xffF7F8F9) //Theme.of(context).colorScheme.background
-                    : Theme.of(context).colorScheme.background ==
-                            Color(0xff000000)
-                        ? Color(0xff111C20)
-                        : Color(
-                            0xffE9ECEE)),
+                ? Theme.of(context).colorScheme.background == Color(0xff000000)
+                    ? Color(0xff162429)
+                    : Color(
+                        0xffF7F8F9) //Theme.of(context).colorScheme.background
+                : Theme.of(context).colorScheme.background == Color(0xff000000)
+                    ? Color(0xff111C20)
+                    : Color(0xffE9ECEE)),
         child: ListTile(
             // onTap: () {
             //   _navigate(obj, index);

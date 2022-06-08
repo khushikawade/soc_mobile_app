@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
