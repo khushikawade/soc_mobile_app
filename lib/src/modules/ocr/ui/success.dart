@@ -80,6 +80,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   //     ?
                   IconButton(
                 onPressed: () {
+                  updateDetails();
                   if (_formKey1.currentState!.validate() ||
                       _formKey2.currentState!.validate()) {
                     if (!isSelected) {
@@ -224,7 +225,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         ? nameController.text = state.studentName ?? ''
                         : null;
                     pointScored = state.grade;
-                    updateDetails();
+                    // updateDetails();
                     setState(() {
                       failure = true;
                     });
@@ -304,7 +305,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               onSaved: (String value) {
                 _formKey1.currentState!.validate();
                 value != '' ? valuechange = true : valuechange = false;
-                updateDetails(isUpdateData: true);
+                // updateDetails(isUpdateData: true);
                 studentName = nameController.text;
                 onChange = true;
               },
@@ -337,7 +338,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
             onSaved: (String value) {
               _formKey1.currentState!.validate();
-              updateDetails(isUpdateData: true);
+              // updateDetails(isUpdateData: true);
               studentId = idController.text;
               onChange = true;
             },
@@ -409,7 +410,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 _formKey2.currentState!.validate();
                 value != '' ? valuechange = true : valuechange = false;
 
-                updateDetails(isUpdateData: true);
+                //updateDetails(isUpdateData: true);
                 onChange = true;
               },
               validator: (String? value) {
@@ -438,7 +439,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             isFailure: false,
             onSaved: (String value) {
               _formKey2.currentState!.validate();
-              updateDetails(isUpdateData: true);
+              //  updateDetails(isUpdateData: true);
               onChange = true;
             },
             validator: (String? value) {
@@ -546,7 +547,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
     return InkWell(
         onTap: () {
           pointScored = index.toString();
-          updateDetails(isUpdateData: true);
+          // updateDetails(isUpdateData: true);
           setState(() {
             isSelected = false;
             indexColor = index;
