@@ -246,7 +246,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 ? 'Subject'
                 : pageIndex.value == 1
                     ? 'Learning Standard'
-                    : 'Learning Sub Standard',
+                    : 'NY Next Generation Learning Standard',
             context: context);
       },
       child: Container(),
