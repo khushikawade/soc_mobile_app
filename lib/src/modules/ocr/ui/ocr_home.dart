@@ -202,9 +202,13 @@ class _OpticalCharacterRecognitionPageState
                           ? '4'
                           : '2';
               Globals.fileId = "";
-              final status = await Permission.camera.request();
-              // bool result = await _checkPermission();
-              if (!status.isPermanentlyDenied) {
+            // final status = await Permission.camera.status;
+            //   // bool result = await _checkPermission();
+            //   if (status != PermissionStatus.denied ) {
+                
+            //   } else {
+            //     _onCameraPermissionDenied();
+            //   }
                 updateLocalDb();
 
                 _bloc.add(SaveSubjectListDetails());
@@ -212,6 +216,7 @@ class _OpticalCharacterRecognitionPageState
                   context,
                   MaterialPageRoute(
                       builder: (context) => CameraScreen(
+                        scaffoldKey: _scaffoldKey,
                             isScanMore: false,
                             pointPossible: scoringColor == 0
                                 ? '2'
@@ -222,10 +227,6 @@ class _OpticalCharacterRecognitionPageState
                                         : '2',
                           )),
                 );
-              } else {
-                _onCameraPermissionDenied();
-              }
-
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(
