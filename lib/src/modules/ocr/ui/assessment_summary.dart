@@ -126,15 +126,15 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   Widget _buildList(List<HistoryAssessment> list, int index) {
     return InkWell(
       onTap: () {
-        print(list[index].fileid);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ResultsSummary(
-                    fileId: list[index].fileid,
-                    assessmentDetailPage: true,
-                  )),
-        );
+        // print(list[index].fileid);
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => ResultsSummary(
+        //             fileId: list[index].fileid,
+        //             assessmentDetailPage: true,
+        //           )),
+        // );
       },
       child: Container(
         decoration: BoxDecoration(

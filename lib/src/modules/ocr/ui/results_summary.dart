@@ -415,9 +415,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                padding: index == 3 && dashoardState.value == 'Loading'
-                    ? EdgeInsets.only(bottom: 10)
-                    : EdgeInsets.only(top: 10),
+                padding:
+                    // index == 3 && dashoardState.value == 'Loading'
+                    //     ? EdgeInsets.only(bottom: 10)
+                    //     :
+                    EdgeInsets.only(top: 10),
                 child: Utility.textWidget(
                     text: Globals.ocrResultIconsName[index],
                     context: context,
@@ -457,9 +459,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //     null);
                           },
                           child: Container(
-                              padding: EdgeInsets.only(bottom: 12),
-                              height: MediaQuery.of(context).size.height * 0.03,
-                              width: MediaQuery.of(context).size.width * 0.03,
+                              padding: EdgeInsets.only(bottom: 14, top: 8),
+                              height:
+                                  MediaQuery.of(context).size.height * 0.058,
+                              width: MediaQuery.of(context).size.width * 0.058,
                               alignment: Alignment.center,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
@@ -470,6 +473,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         )
                       : Expanded(
                           child: IconButton(
+                            padding: EdgeInsets.all(0),
                             icon: Icon(
                               IconData(
                                   index == 3 && dashoardState.value == 'Success'
@@ -477,17 +481,19 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       : Globals.ocrResultIcons[index],
                                   fontFamily: Overrides.kFontFam,
                                   fontPackage: Overrides.kFontPkg),
-                              size:index == 3? 38:32,
-                              color: 
-                              // index == 2
-                              //     ? 
-                                  Theme.of(context).backgroundColor ==
+                              size: index == 3 && dashoardState.value == ''
+                                  ? 38
+                                  : 32,
+                              color: index == 2 ||
+                                      (index == 3 && dashoardState.value == '')
+                                  ? Theme.of(context).backgroundColor ==
                                           Color(0xff000000)
                                       ? Colors.white
                                       : Colors.black
-                                  // : index == 3
-                                  //     ? Colors.green
-                                  //     : AppTheme.kButtonColor,
+                                  : index == 3 &&
+                                          dashoardState.value == 'Success'
+                                      ? Colors.green
+                                      : AppTheme.kButtonColor,
                             ),
                             onPressed: () {
                               if (index == 0) {
