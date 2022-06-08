@@ -14,7 +14,6 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SuccessScreen extends StatefulWidget {
@@ -43,7 +42,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool onChange = false;
   String studentName = '';
   String studentId = '';
-  final ValueNotifier<bool> isStudentNameFilled = ValueNotifier<bool>(false);
+  final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
   var nameController = TextEditingController();
   var idController = TextEditingController();
@@ -51,6 +50,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final _formKey2 = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool? valuechange;
+  // final ValueNotifier<String> stu = ValueNotifier<String>('');
 
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   String? pointScored;
@@ -80,9 +80,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   //     ?
                   IconButton(
                 onPressed: () {
-                  updateDetails();
-                  if (_formKey1.currentState!.validate() ||
-                      _formKey2.currentState!.validate()) {
+                  if (_formKey1.currentState!.validate()) {
                     if (!isSelected) {
                       Utility.showSnackBar(_scaffoldKey,
                           'Please select the earned point', context, null);
@@ -126,32 +124,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               padding: EdgeInsets.only(left: 20, right: 20),
               child: BlocConsumer<OcrBloc, OcrState>(
                 bloc: _bloc, // provide the local bloc instance
-                builder: (context, state) {
-                  if (state is OcrLoading) {
-                    return loadingScreen();
 
-                    // Center(
-                    //   child: CircularProgressIndicator(
-                    //     color: AppTheme.kButtonColor,
-                    //   ),
-                    // );
-                  } else if (state is FetchTextFromImageSuccess) {
-                    // idController.text = state.studentId!;
-                    // nameController.text = state.studentName!;
-                    // Globals.gradeList.add(state.grade!);
-                    return successScreen(
-                        id: state.studentId!, grade: state.grade!);
-                  } else if (state is FetchTextFromImageFailure) {
-                    // idController.text = state.studentId!;
-                    // nameController.text =
-                    //     onChange == true ? state.studentName! : studentName;
-                    Globals.gradeList.add(state.grade!);
-                    return failureScreen(
-                        id: state.studentId!, grade: state.grade!);
-                  }
-                  return Container();
-                  // return widget here based on BlocA's state
-                },
                 listener: (context, state) async {
                   await Future.delayed(Duration(milliseconds: 200));
                   if (state is OcrLoading) {
@@ -232,6 +205,32 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   }
                   // do stuff here based on BlocA's state
                 },
+                builder: (context, state) {
+                  if (state is OcrLoading) {
+                    return loadingScreen();
+
+                    // Center(
+                    //   child: CircularProgressIndicator(
+                    //     color: AppTheme.kButtonColor,
+                    //   ),
+                    // );
+                  } else if (state is FetchTextFromImageSuccess) {
+                    // idController.text = state.studentId!;
+                    // nameController.text = state.studentName!;
+                    // Globals.gradeList.add(state.grade!);
+                    return successScreen(
+                        id: state.studentId!, grade: state.grade!);
+                  } else if (state is FetchTextFromImageFailure) {
+                    // idController.text = state.studentId!;
+                    // nameController.text =
+                    //     onChange == true ? state.studentName! : studentName;
+                    Globals.gradeList.add(state.grade!);
+                    return failureScreen(
+                        id: state.studentId!, grade: state.grade!);
+                  }
+                  return Container();
+                  // return widget here based on BlocA's state
+                },
               ),
             ))
       ]),
@@ -303,20 +302,39 @@ class _SuccessScreenState extends State<SuccessScreen> {
               // errormsg:
               //     "If you would like to save the student in database, Please enter the student name",
               onSaved: (String value) {
-                _formKey1.currentState!.validate();
-                value != '' ? valuechange = true : valuechange = false;
-                // updateDetails(isUpdateData: true);
+                isStudentNameFilled.value = value;
+                // _formKey1.currentState!.validate();
+                // value != '' ? valuechange = true : valuechange = false;
+                updateDetails(isUpdateData: true);
                 studentName = nameController.text;
                 onChange = true;
               },
               validator: (String? value) {
-                if (value!.isEmpty) {
-                  return 'If you would like to save the student details in database, Please enter the student name';
-                } else if (value.length < 3) {
-                  return 'Make sure the student name contains more than 3 character';
-                } else {
-                  return null;
-                }
+                // isStudentNameFilled.value= value!;//nameController.text;
+                // if (value!.isEmpty) {
+                //   return 'If you would like to save the student details in database, Please enter the student name';
+                // } else if (value.length < 3) {
+                //   return 'Make sure the student name contains more than 3 character';
+                // } else {
+                //   return null;
+                // }
+                // return null;
+              }),
+          ValueListenableBuilder(
+              valueListenable: isStudentNameFilled,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    isStudentNameFilled.value == ""
+                        ? 'If you would like to save the student details in database, Please enter the student name'
+                        : nameController.text.length < 3
+                            ? 'Make sure the student name contains more than 3 character'
+                            : '',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                );
               }),
           //       ;},
           //   child: Container(),

@@ -17,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:googleapis/calendar/v3.dart';
 import 'package:share/share.dart';
 
+import '../../../widgets/empty_container_widget.dart';
 import '../bloc/ocr_bloc.dart';
 
 class ResultsSummary extends StatefulWidget {
@@ -44,7 +45,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+  final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
 
   @override
   void initState() {
@@ -76,7 +78,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         children: [
           CommonBackGroundImgWidget(),
           Scaffold(
-            key: _scaffoldKey,
+            key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               key: GlobalKey(),
@@ -84,6 +86,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               assessmentDetailPage: widget.assessmentDetailPage,
               actionIcon: IconButton(
                 onPressed: () {
+                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
                   onFinishedPopup();
                 },
                 icon: Icon(
@@ -243,7 +246,26 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               }
                             }
                           },
-                        )
+                        ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<OcrBloc, OcrState>(
+                        bloc: _ocrBloc,
+                        listener: (context, state) async {
+                          if (state is OcrLoading) {
+                            dashoardState.value = 'Loading';
+                          } else if (state is AssessmentSavedSuccessfully) {
+                            dashoardState.value = 'Success';
+                            // Utility.showSnackBar(
+                            //     scaffoldKey,
+                            //     'Yay! Data has been successully saved to the dashboard',
+                            //     context,
+                            //     null);
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
                 ],
               ),
             ),
@@ -369,81 +391,119 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Widget _iconButton(int index) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-          padding: EdgeInsets.only(top: 10),
-          child: Utility.textWidget(
-              text: Globals.ocrResultIconsName[index],
-              context: context,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .subtitle2!
-                  .copyWith(fontWeight: FontWeight.bold)),
-        ),
-        index == 1
-            ? Expanded(
-                child: InkWell(
-                  onTap: () {
-                    print(
-                        'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                    Utility.launchUrlOnExternalBrowser(
-                        Globals.googleDriveFolderPath!);
-                  },
-                  child: Container(
-                    //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                    child: Image(
-                      width: Globals.deviceType == "phone" ? 35 : 32,
-                      height: Globals.deviceType == "phone" ? 35 : 32,
-                      image: AssetImage(
-                        "assets/images/drive_ico.png",
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            : Expanded(
-                child: IconButton(
-                  icon: Icon(
-                    IconData(Globals.ocrResultIcons[index],
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    size: 32,
-                    color: index == 2
-                        ? Theme.of(context).backgroundColor == Color(0xff000000)
-                            ? Colors.white
-                            : Colors.black
-                        : index == 3
-                            ? Colors.green
-                            : AppTheme.kButtonColor,
-                  ),
-                  onPressed: () {
-                    if (index == 0) {
-                      Share.share(Globals.shareableLink!);
-                    } else if (index == 2) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AssessmentSummary()),
-                      );
-                    } else if (index == 3) {
-                      _ocrBloc.add(SaveAssessmentToDashboard(
-                          assessmentName: Globals.assessmentName!,
-                          rubricScore: widget.rubricScore ?? '',
-                          subjectId: widget.subjectId ?? '',
-                          schoolId:
-                              Globals.appSetting.schoolNameC!, //Account Id
-                          standardId: widget.standardId ?? '',
-                          scaffoldKey: _scaffoldKey,
-                          context: context));
-                    } else {}
-                  },
-                ),
+    return ValueListenableBuilder(
+        valueListenable: dashoardState,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                padding: EdgeInsets.only(top: 10),
+                child: Utility.textWidget(
+                    text: Globals.ocrResultIconsName[index],
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(fontWeight: FontWeight.bold)),
               ),
-      ],
-    );
+              index == 1
+                  ? Expanded(
+                      child: InkWell(
+                        onTap: () {
+                          print(
+                              'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                          Utility.launchUrlOnExternalBrowser(
+                              Globals.googleDriveFolderPath!);
+                        },
+                        child: Container(
+                          //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                          child: Image(
+                            width: Globals.deviceType == "phone" ? 35 : 32,
+                            height: Globals.deviceType == "phone" ? 35 : 32,
+                            image: AssetImage(
+                              "assets/images/drive_ico.png",
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : index == 3 && dashoardState.value == 'Loading'
+                      ? GestureDetector(
+                          onTap: () {
+                            // Utility.showSnackBar(
+                            //     scaffoldKey,
+                            //     'Please wait! Saving is in progress',
+                            //     context,
+                            //     null);
+                          },
+                          child: Container(
+                              height: MediaQuery.of(context).size.height * 0.03,
+                              width: MediaQuery.of(context).size.width * 0.06,
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              )),
+                        )
+                      : Expanded(
+                          child: IconButton(
+                            icon: Icon(
+                              IconData(
+                                  index == 3 && dashoardState.value == 'Success'
+                                      ? 0xe877
+                                      : Globals.ocrResultIcons[index],
+                                  fontFamily: Overrides.kFontFam,
+                                  fontPackage: Overrides.kFontPkg),
+                              size: 32,
+                              color: index == 2
+                                  ? Theme.of(context).backgroundColor ==
+                                          Color(0xff000000)
+                                      ? Colors.white
+                                      : Colors.black
+                                  : index == 3
+                                      ? Colors.green
+                                      : AppTheme.kButtonColor,
+                            ),
+                            onPressed: () {
+                              if (index == 0) {
+                                Share.share(Globals.shareableLink!);
+                              } else if (index == 2) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AssessmentSummary()),
+                                );
+                              } else if (index == 3 &&
+                                  dashoardState.value == '') {
+                                _ocrBloc.add(SaveAssessmentToDashboard(
+                                    assessmentName: Globals.assessmentName!,
+                                    rubricScore: widget.rubricScore ?? '',
+                                    subjectId: widget.subjectId ?? '',
+                                    schoolId: Globals
+                                        .appSetting.schoolNameC!, //Account Id
+                                    standardId: widget.standardId ?? '',
+                                    scaffoldKey: scaffoldKey,
+                                    context: context));
+                              }
+                              // else if (index == 3 &&
+                              //     dashoardState.value == 'Success') {
+                              //   Utility.showSnackBar(
+                              //       scaffoldKey,
+                              //       'Data has already been saved to the dashboard',
+                              //       context,
+                              //       null);
+                              // }
+                            },
+                          ),
+                        ),
+            ],
+          );
+        });
   }
 
   Widget listView(List<StudentAssessmentInfo> _list) {

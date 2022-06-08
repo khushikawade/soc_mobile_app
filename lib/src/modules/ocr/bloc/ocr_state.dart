@@ -138,3 +138,15 @@ class FetchTextFromImageFailure extends OcrState {
   @override
   List<Object> get props => [];
 }
+
+
+class AssessmentSavedSuccessfully extends OcrState {
+  final obj;
+  AssessmentSavedSuccessfully({this.obj});
+  AssessmentSavedSuccessfully copyWith({final obj}) {
+    return AssessmentSavedSuccessfully(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [obj];
+}

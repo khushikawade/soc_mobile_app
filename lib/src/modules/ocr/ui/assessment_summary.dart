@@ -23,7 +23,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   @override

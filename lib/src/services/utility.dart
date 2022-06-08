@@ -111,6 +111,7 @@ class Utility {
 
   static void showSnackBar(_scaffoldKey, msg, context, height) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Container(
         alignment: Alignment.centerLeft,
