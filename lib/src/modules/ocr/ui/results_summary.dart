@@ -84,19 +84,34 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               key: GlobalKey(),
               isBackButton: widget.assessmentDetailPage,
               assessmentDetailPage: widget.assessmentDetailPage,
-              actionIcon: IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                  onFinishedPopup();
-                },
-                icon: Icon(
-                  IconData(0xe877,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: 30,
-                  color: AppTheme.kButtonColor,
-                ),
-              ),
+              actionIcon: Container(
+                  padding: EdgeInsets.only(right: 5),
+                  child: TextButton(
+                      style: ButtonStyle(alignment: Alignment.center),
+                      child: Text("DONE",
+                          style: TextStyle(
+                            color: AppTheme.kButtonColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          )),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        onFinishedPopup();
+                      })),
+
+              // IconButton(
+              //   onPressed: () {
+              //     ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              //     onFinishedPopup();
+              //   },
+              //   icon: Icon(
+              //     IconData(0xe877,
+              //         fontFamily: Overrides.kFontFam,
+              //         fontPackage: Overrides.kFontPkg),
+              //     size: 30,
+              //     color: AppTheme.kButtonColor,
+              //   ),
+              // ),
               //isBackButton: false,
               isResultScreen: true,
             ),
@@ -400,7 +415,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                padding: EdgeInsets.only(top: 10),
+                padding: index == 3 && dashoardState.value == 'Loading'
+                    ? EdgeInsets.only(bottom: 10)
+                    : EdgeInsets.only(top: 10),
                 child: Utility.textWidget(
                     text: Globals.ocrResultIconsName[index],
                     context: context,
@@ -440,10 +457,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //     null);
                           },
                           child: Container(
+                              padding: EdgeInsets.only(bottom: 12),
                               height: MediaQuery.of(context).size.height * 0.03,
-                              width: MediaQuery.of(context).size.width * 0.06,
+                              width: MediaQuery.of(context).size.width * 0.03,
                               alignment: Alignment.center,
                               child: CircularProgressIndicator(
+                                strokeWidth: 2,
                                 color: Theme.of(context)
                                     .colorScheme
                                     .primaryVariant,
@@ -458,15 +477,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       : Globals.ocrResultIcons[index],
                                   fontFamily: Overrides.kFontFam,
                                   fontPackage: Overrides.kFontPkg),
-                              size: 32,
-                              color: index == 2
-                                  ? Theme.of(context).backgroundColor ==
+                              size:index == 3? 38:32,
+                              color: 
+                              // index == 2
+                              //     ? 
+                                  Theme.of(context).backgroundColor ==
                                           Color(0xff000000)
                                       ? Colors.white
                                       : Colors.black
-                                  : index == 3
-                                      ? Colors.green
-                                      : AppTheme.kButtonColor,
+                                  // : index == 3
+                                  //     ? Colors.green
+                                  //     : AppTheme.kButtonColor,
                             ),
                             onPressed: () {
                               if (index == 0) {
@@ -492,11 +513,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               }
                               // else if (index == 3 &&
                               //     dashoardState.value == 'Success') {
-                              //   Utility.showSnackBar(
-                              //       scaffoldKey,
-                              //       'Data has already been saved to the dashboard',
-                              //       context,
-                              //       null);
+                              // Utility.showSnackBar(
+                              //     scaffoldKey,
+                              //     'Data has already been saved to the dashboard',
+                              //     context,
+                              //     null);
                               // }
                             },
                           ),

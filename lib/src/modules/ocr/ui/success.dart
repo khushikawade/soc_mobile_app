@@ -82,8 +82,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 onPressed: () {
                   if (_formKey1.currentState!.validate()) {
                     if (!isSelected) {
-                      Utility.showSnackBar(_scaffoldKey,
-                          'Please select the earned point', context, null);
+                      // Utility.showSnackBar(_scaffoldKey,
+                      //     'Please select the earned point', context, null);
                     } else {
                       if (nameController.text.isNotEmpty &&
                           nameController.text.length >= 3 &&
