@@ -50,6 +50,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final _formKey2 = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool? valuechange;
+
+  bool? isBackFromCamera = false;
   // final ValueNotifier<String> stu = ValueNotifier<String>('');
 
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
@@ -75,39 +77,39 @@ class _SuccessScreenState extends State<SuccessScreen> {
               isSuccessState: !failure,
               //isFailureState: failure,
               isHomeButtonPopup: true,
+              isbackOnSuccess: isBackFromCamera,
               actionIcon:
                   //  failure == true
                   //     ?
                   IconButton(
                 onPressed: () {
-                  if (_formKey1.currentState!.validate()) {
-                    if (!isSelected) {
-                      Utility.showSnackBar(_scaffoldKey,
-                          'Please select the earned point', context, null);
-                    } else {
-                      updateDetails();
-                      if (nameController.text.isNotEmpty &&
-                          nameController.text.length >= 3 &&
-                          idController.text.isNotEmpty) {
-                        _bloc.add(SaveStudentDetails(
-                            studentName: nameController.text,
-                            studentId: idController.text));
-                        String imgExtension = widget.imgPath.path.substring(
-                            widget.imgPath.path.lastIndexOf(".") + 1);
-                        _googleDriveBloc.add(AssessmentImgToAwsBucked(
-                            imgBase64: widget.img64,
-                            imgExtension: imgExtension,
-                            studentId: idController.text));
+                  if (isBackFromCamera == true) {
+                    updateDetails(isUpdateData: true);
+                    _navigatetoCameraSection();
+                  } else {
+                    if (_formKey1.currentState!.validate()) {
+                      if (!isSelected) {
+                        Utility.showSnackBar(_scaffoldKey,
+                            'Please select the earned point', context, null);
+                      } else {
+                        updateDetails();
+                        if (nameController.text.isNotEmpty &&
+                            nameController.text.length >= 3 &&
+                            idController.text.isNotEmpty) {
+                          _bloc.add(SaveStudentDetails(
+                              studentName: nameController.text,
+                              studentId: idController.text));
+                          String imgExtension = widget.imgPath.path.substring(
+                              widget.imgPath.path.lastIndexOf(".") + 1);
+                          _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                              imgBase64: widget.img64,
+                              imgExtension: imgExtension,
+                              studentId: idController.text));
+                        }
                       }
+                      // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                      _navigatetoCameraSection();
                     }
-                    // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => CameraScreen(
-                                  isScanMore: widget.isScanMore,
-                                  pointPossible: widget.pointPossible,
-                                )));
                   }
                 },
                 icon: Icon(
@@ -153,7 +155,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     if (_formKey2.currentState!.validate()) {
                       if (nameController.text.isNotEmpty &&
                           idController.text.isNotEmpty) {
-                        Timer(Duration(seconds: 5), () {
+                        Timer(Duration(seconds: 5), () async {
                           updateDetails();
                           String imgExtension = widget.imgPath.path.substring(
                               widget.imgPath.path.lastIndexOf(".") + 1);
@@ -163,7 +165,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               studentId: idController.text));
                           // }
                           // COMMENT below section for enableing the camera
-                          Navigator.pushReplacement(
+                          bool result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CameraScreen(
@@ -171,6 +173,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                       pointPossible: widget.pointPossible,
                                     )),
                           );
+                          if (result) {
+                            setState(() {
+                              isBackFromCamera = result;
+                            });
+                          }
+
                           //UNCOMMENT below section for enableing the camera
 
                           // Navigator.push(context,
@@ -730,5 +738,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
         }
       }
     }
+  }
+
+  void _navigatetoCameraSection() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => CameraScreen(
+                  isScanMore: widget.isScanMore,
+                  pointPossible: widget.pointPossible,
+                )));
   }
 }
