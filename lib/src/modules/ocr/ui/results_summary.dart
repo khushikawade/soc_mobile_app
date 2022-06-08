@@ -45,7 +45,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
   final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
 
   @override
@@ -78,7 +78,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         children: [
           CommonBackGroundImgWidget(),
           Scaffold(
-            key: _scaffoldKey,
+            key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               key: GlobalKey(),
@@ -257,11 +257,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             dashoardState.value = 'Loading';
                           } else if (state is AssessmentSavedSuccessfully) {
                             dashoardState.value = 'Success';
-                            Utility.showSnackBar(
-                                _scaffoldKey,
-                                'Yay! Data has been successully saved to the dashboard',
-                                context,
-                                null);
+                            // Utility.showSnackBar(
+                            //     scaffoldKey,
+                            //     'Yay! Data has been successully saved to the dashboard',
+                            //     context,
+                            //     null);
                           }
                         },
                         child: EmptyContainer()),
@@ -433,11 +433,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   : index == 3 && dashoardState.value == 'Loading'
                       ? GestureDetector(
                           onTap: () {
-                            Utility.showSnackBar(
-                                _scaffoldKey,
-                                'Please wait! Saving is in progress',
-                                context,
-                                null);
+                            // Utility.showSnackBar(
+                            //     scaffoldKey,
+                            //     'Please wait! Saving is in progress',
+                            //     context,
+                            //     null);
                           },
                           child: Container(
                               height: MediaQuery.of(context).size.height * 0.03,
@@ -487,16 +487,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     schoolId: Globals
                                         .appSetting.schoolNameC!, //Account Id
                                     standardId: widget.standardId ?? '',
-                                    scaffoldKey: _scaffoldKey,
+                                    scaffoldKey: scaffoldKey,
                                     context: context));
-                              } else if (index == 3 &&
-                                  dashoardState.value == 'Success') {
-                              return  Utility.showSnackBar(
-                                    _scaffoldKey,
-                                    'Data has already been saved to the dashboard',
-                                    context,
-                                    null);
                               }
+                              // else if (index == 3 &&
+                              //     dashoardState.value == 'Success') {
+                              //   Utility.showSnackBar(
+                              //       scaffoldKey,
+                              //       'Data has already been saved to the dashboard',
+                              //       context,
+                              //       null);
+                              // }
                             },
                           ),
                         ),
