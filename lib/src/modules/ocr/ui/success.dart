@@ -85,6 +85,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       Utility.showSnackBar(_scaffoldKey,
                           'Please select the earned point', context, null);
                     } else {
+                      updateDetails();
                       if (nameController.text.isNotEmpty &&
                           nameController.text.length >= 3 &&
                           idController.text.isNotEmpty) {
@@ -305,7 +306,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 isStudentNameFilled.value = value;
                 // _formKey1.currentState!.validate();
                 // value != '' ? valuechange = true : valuechange = false;
-                updateDetails(isUpdateData: true);
+                //  updateDetails(isUpdateData: true);
                 studentName = nameController.text;
                 onChange = true;
               },
