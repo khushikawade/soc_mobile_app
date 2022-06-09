@@ -4,7 +4,7 @@ import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GoogleDriveAccess {
-  static Future createSheet(
+  static Future generateExcelSheetLocally(
       {required List<StudentAssessmentInfo> data, required String name}) async {
     try {
       var excel = Excel.createExcel();

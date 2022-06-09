@@ -1,7 +1,7 @@
 class StudentAssessmentInfo {
   String? studentName;
   String? studentId;
-  String? studentGrade;
+  String? studentGrade; //pointsEarned
   String? pointpossible;
   String? grade;
   String? subject;

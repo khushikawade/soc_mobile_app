@@ -2,7 +2,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
@@ -52,15 +51,16 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<int> pageIndex = ValueNotifier<int>(0);
   final ValueNotifier<int> subjectIndex1 =
       ValueNotifier<int>(50000); //To bypass the default selection
-  final ValueNotifier<int> nycIndex1 = ValueNotifier<int>(5000);
-  final ValueNotifier<int> nycSubIndex1 = ValueNotifier<int>(5000);
+  final ValueNotifier<int> nycIndex1 =
+      ValueNotifier<int>(5000); //To bypass the default selection
+  final ValueNotifier<int> nycSubIndex1 =
+      ValueNotifier<int>(5000); //To bypass the default selection
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
 
   @override
   initState() {
     _ocrBloc.add(
         FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
-
     super.initState();
   }
 
@@ -76,12 +76,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               key: _scaffoldKey,
               bottomNavigationBar: progressIndicatorBar(),
               floatingActionButton: submitAssessmentButton(),
-              // (subject != 'Math' &&
-              //         subject != 'Science' &&
-              //         subject != 'ELA' &&
-              //         subject != null)
-              //     ? submitAssessmentButton()
-              //     : null,
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
@@ -393,20 +387,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 return page == 1 || (page == 0 && index < list.length)
                     ? Bouncing(
                         onPress: () {
-                          if (page == 1) {
-                            // subject = list[index].subjectNameC;
-                            // subjectId = list[index].subjectC;
-                            // standardId = list[index].id;
-                          } else {
+                          if (page != 1) {
                             learningStandard = list[index].domainNameC;
                           }
 
-                          // if ((subject != 'Math' &&
-                          //     subject != 'Science' &&
-                          //     subject != 'ELA' &&
-                          //     subject != null)) {
-                          //   isSubmitButton.value = true;
-                          // }
                           searchController.clear();
                           FocusManager.instance.primaryFocus?.unfocus();
 
@@ -429,14 +413,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             }
                           } else if (pageIndex.value == 1) {
                             nycIndex1.value = index;
+                            nycSubIndex1.value = index;
 
                             if (index < list.length) {
                               keywordSub = list[index].domainNameC;
                               _ocrBloc.add(FatchSubjectDetails(
                                   type: 'nycSub', keyword: keywordSub));
                             }
-                          } else if (pageIndex.value == 1) {
-                            nycSubIndex1.value = index;
                           }
                           if (index >= list.length &&
                               index !=
@@ -593,16 +576,16 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       List<CustomRubicModal>? _localData =
                           await _localDb.getData();
                       String? rubricImgUrl;
-                      String? rubricScore;
+                      // String? rubricScore;
                       for (int i = 0; i < _localData.length; i++) {
                         if (_localData[i].customOrStandardRubic == "Custom" &&
                             _localData[i].name == Globals.scoringRubric) {
                           rubricImgUrl = _localData[i].imgUrl;
-                          rubricScore = null;
+                          // rubricScore = null;
                         }
                         if (_localData[i].name == Globals.scoringRubric &&
                             _localData[i].customOrStandardRubic != "Custom") {
-                          rubricScore = _localData[i].score;
+                          // rubricScore = _localData[i].score;
                         } else {
                           rubricImgUrl = 'NA';
                           // rubricScore = 'NA';
@@ -612,20 +595,34 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       // List<StudentAssessmentInfo> list2 = [];
                       // Globals.studentInfo!.clear();
 
-                      for (int i = 0; i < Globals.studentInfo!.length; i++) {
-                        Globals.studentInfo![i].subject = subject;
-                        Globals.studentInfo![i].learningStandard =
+                      //Adding blank fields to the list : Static data
+                      Globals.studentInfo!.forEach((element) {
+                        element.subject = subject;
+                        element.learningStandard =
                             learningStandard == null ? "NA" : learningStandard;
-                        Globals.studentInfo![i].subLearningStandard =
+                        element.subLearningStandard =
                             subLearningStandard == null
                                 ? "NA"
                                 : subLearningStandard;
-                        Globals.studentInfo![i].scoringRubric =
-                            Globals.scoringRubric;
-                        Globals.studentInfo![i].customRubricImage =
-                            rubricImgUrl ?? "NA";
-                        Globals.studentInfo![i].grade = widget.selectedClass;
-                      }
+                        element.scoringRubric = Globals.scoringRubric;
+                        element.customRubricImage = rubricImgUrl ?? "NA";
+                        element.grade = widget.selectedClass;
+                      });
+
+                      // for (int i = 0; i < Globals.studentInfo!.length; i++) {
+                      //   Globals.studentInfo![i].subject = subject;
+                      //   Globals.studentInfo![i].learningStandard =
+                      //       learningStandard == null ? "NA" : learningStandard;
+                      //   Globals.studentInfo![i].subLearningStandard =
+                      //       subLearningStandard == null
+                      //           ? "NA"
+                      //           : subLearningStandard;
+                      //   Globals.studentInfo![i].scoringRubric =
+                      //       Globals.scoringRubric;
+                      //   Globals.studentInfo![i].customRubricImage =
+                      //       rubricImgUrl ?? "NA";
+                      //   Globals.studentInfo![i].grade = widget.selectedClass;
+                      // }
 
                       // list.forEach(
                       //   (StudentAssessmentInfo element) {
@@ -651,13 +648,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           studentData:
                               //list2
                               Globals.studentInfo!));
-
-                      // _ocrBloc.add(SaveAssessmentIntoDataBase(
-                      //     assessmentName: Globals.assessmentName!,
-                      //     rubricScore: rubricScore!,
-                      //     subjectId: subjectId!,
-                      //     schoolId: Globals.appSetting.schoolNameC!,
-                      //     standardId: standardId!));
 
                       Navigator.push(
                         context,

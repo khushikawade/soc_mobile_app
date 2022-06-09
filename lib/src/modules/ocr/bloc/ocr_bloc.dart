@@ -21,8 +21,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   final DbServices _dbServices = DbServices();
   // final HiveDbServices _localDbService = HiveDbServices();
   OcrState get initialState => OcrInitial();
-  String grade = '';
-  String selectedSubject = '';
 
   @override
   Stream<OcrState> mapEventToState(
@@ -255,68 +253,80 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<List<SubjectDetailList>> fatchSubjectDetails(
       {required String type, required String keyword}) async {
     try {
+      String grade = '';
+      String selectedSubject = '';
+      //Local list managing
       LocalDatabase<SubjectDetailList> _localDb =
           LocalDatabase(Strings.ocrSubjectObjectName);
       List<SubjectDetailList>? _localData = await _localDb.getData();
-      print('Subject Local data : ${_localData.length}');
-      List<SubjectDetailList> detailsList = [];
+
+      print('Subject Local data length: ${_localData.length}');
+      //Common detail list to save all deatails of subject for specific grade. Include : Subject, Learning standard and sub learning standard
+      List<SubjectDetailList> subjectDetailList = [];
+
+      //Return subject details
       if (type == 'subject') {
         grade = keyword;
-        List id = [];
+        //Using a seperate list to check only 'Subject' whether already exist or not.
+        List subjectList = [];
+
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].gradeC == keyword) {
-            if (detailsList.isNotEmpty &&
-                !id.contains(_localData[i].subjectNameC)) {
-              detailsList.add(_localData[i]);
-              id.add(_localData[i].subjectNameC);
-            } else if (detailsList.isEmpty) {
-              detailsList.add(_localData[i]);
-              id.add(_localData[i].subjectNameC);
+            if (subjectDetailList.isNotEmpty &&
+                !subjectList.contains(_localData[i].subjectNameC)) {
+              subjectDetailList.add(_localData[i]);
+              subjectList.add(_localData[i].subjectNameC);
+            } else if (subjectDetailList.isEmpty) {
+              subjectDetailList.add(_localData[i]);
+              subjectList.add(_localData[i].subjectNameC);
             }
           }
         }
-        return detailsList;
-      } else if (type == 'nyc') {
-        List id = [];
+        return subjectDetailList;
+      }
+      //Return Learning standard details
+      else if (type == 'nyc') {
+        //Using a seperate list to check only 'Learning Standard' whether already exist or not.
+        List learningStdList = [];
+
         selectedSubject = keyword;
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].subjectNameC == keyword &&
               _localData[i].gradeC == grade) {
-            if (detailsList.isNotEmpty &&
-                !id.contains(_localData[i].domainNameC)) {
-              detailsList.add(_localData[i]);
-              id.add(_localData[i].domainNameC);
-            } else if (detailsList.isEmpty) {
-              detailsList.add(_localData[i]);
-              id.add(_localData[i].domainNameC);
+            if (subjectDetailList.isNotEmpty &&
+                !learningStdList.contains(_localData[i].domainNameC)) {
+              subjectDetailList.add(_localData[i]);
+              learningStdList.add(_localData[i].domainNameC);
+            } else if (subjectDetailList.isEmpty) {
+              subjectDetailList.add(_localData[i]);
+              learningStdList.add(_localData[i].domainNameC);
             }
           }
         }
-        return detailsList;
-      } else if (type == 'nycSub') {
-        List id = [];
+        return subjectDetailList;
+      } //Return Sub Learning standard details
+      else if (type == 'nycSub') {
+        //Using a seperate list to check only 'Sub Learning Standard' whether already exist or not.
+        List subLearningStdList = [];
 
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].subjectNameC == selectedSubject &&
               _localData[i].gradeC == grade &&
               _localData[i].domainNameC == keyword) {
-            if (detailsList.isNotEmpty &&
-                !id.contains(_localData[i].standardAndDescriptionC)) {
-              detailsList.add(_localData[i]);
-              id.add(_localData[i].standardAndDescriptionC);
-            } else if (detailsList.isEmpty) {
-              detailsList.add(_localData[i]);
-              id.add(_localData[i].standardAndDescriptionC);
+            if (subjectDetailList.isNotEmpty &&
+                !subLearningStdList
+                    .contains(_localData[i].standardAndDescriptionC)) {
+              subjectDetailList.add(_localData[i]);
+              subLearningStdList.add(_localData[i].standardAndDescriptionC);
+            } else if (subjectDetailList.isEmpty) {
+              subjectDetailList.add(_localData[i]);
+              subLearningStdList.add(_localData[i].standardAndDescriptionC);
             }
           }
-          // if (_localData[i].subjectNameC == keyword &&
-          //     _localData[i].gradeC == grade) {
-          //   nycList.add(_localData[i]);
-          // }
         }
-        return detailsList;
+        return subjectDetailList;
       }
-      return detailsList;
+      return subjectDetailList;
     } catch (e) {
       throw (e);
     }

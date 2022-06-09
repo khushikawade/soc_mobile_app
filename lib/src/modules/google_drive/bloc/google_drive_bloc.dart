@@ -112,6 +112,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
+        // if (assessmentData!.length > 0) {
+        //   assessmentData.removeAt(0);
+        // }
+
         assessmentData!.insert(
             0,
             StudentAssessmentInfo(
@@ -126,16 +130,27 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 scoringRubric: "Scoring Rubric",
                 customRubricImage: "Custom Rubric Image",
                 assessmentImage: "Assessment Image"));
-        print(assessmentData);
 
-        File file = await GoogleDriveAccess.createSheet(
+        print(assessmentData);
+//Generating excel file locally with all the result data
+        File file = await GoogleDriveAccess.generateExcelSheetLocally(
             data: assessmentData, name: Globals.assessmentName!);
 
+//Update the created excel file to drive with all the result data
         bool uploadresult = await uploadSheetOnDrive(
-            file, Globals.googleExcelSheetId, _userprofilelocalData[0].authorizationToken);
+            file,
+            Globals.googleExcelSheetId,
+            _userprofilelocalData[0].authorizationToken,
+            _userprofilelocalData[0].refreshToken);
+
         if (!uploadresult) {
-          await uploadSheetOnDrive(file, Globals.googleExcelSheetId,
-              _userprofilelocalData[0].authorizationToken);
+          await _toRefreshAuthenticationToken(
+              _userprofilelocalData[0].refreshToken!);
+          await uploadSheetOnDrive(
+              file,
+              Globals.googleExcelSheetId,
+              _userprofilelocalData[0].authorizationToken,
+              _userprofilelocalData[0].refreshToken);
         }
         bool deleted = await GoogleDriveAccess.deleteFile(file);
         if (!deleted) {
@@ -421,7 +436,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return false;
   }
 
-  Future uploadSheetOnDrive(File? file, String? id, String? accessToken) async {
+  Future uploadSheetOnDrive(
+      File? file, String? id, String? accessToken, String? refreshToken) async {
     // String accessToken = await Prefs.getToken();
     String? mimeType = mime(basename(file!.path).toLowerCase());
     print(mimeType);

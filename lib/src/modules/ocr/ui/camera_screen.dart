@@ -24,7 +24,10 @@ class CameraScreen extends StatefulWidget {
   final scaffoldKey;
 
   const CameraScreen(
-      {Key? key, required this.pointPossible, required this.isScanMore,this.scaffoldKey})
+      {Key? key,
+      required this.pointPossible,
+      required this.isScanMore,
+      this.scaffoldKey})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -73,7 +76,7 @@ class _CameraScreenState extends State<CameraScreen>
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     Utility.setLocked();
     onNewCameraSelected(cameras[0]);
-   // _checkPermission();
+    // _checkPermission();
     super.initState();
   }
 
@@ -145,34 +148,51 @@ class _CameraScreenState extends State<CameraScreen>
 
                     if (Globals.studentInfo!.length > 0) {
                       if (widget.isScanMore == true) {
-                        List<StudentAssessmentInfo> list = Globals.studentInfo!;
-                        Globals.studentInfo = [];
+                        // List<StudentAssessmentInfo> list = Globals.studentInfo!;
+                        // Globals.studentInfo = [];
 
-                        String subject = list.first.subject!;
-                        String selectedClass = list.first.grade!;
-                        String learningStandard = list.first.learningStandard!;
-                        String subLearningStandard =
-                            list.first.subLearningStandard!;
-                        String scoringRubric = list.first.scoringRubric!;
-                        String customRubricImage =
-                            list.first.customRubricImage!;
+                        Globals.studentInfo!.forEach((element) {
+                          element.subject = Globals.studentInfo![0].subject;
+                          element.learningStandard =
+                              Globals.studentInfo![0].learningStandard == null
+                                  ? "NA"
+                                  : Globals.studentInfo![0].learningStandard;
+                          element.subLearningStandard =
+                              Globals.studentInfo![0].subLearningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals.studentInfo![0].subLearningStandard;
+                          element.scoringRubric = Globals.scoringRubric;
+                          element.customRubricImage =
+                              Globals.studentInfo![0].customRubricImage ?? "NA";
+                          element.grade = Globals
+                              .studentInfo![0].grade; //widget.selectedClass;
+                        });
+                        // String subject = list.first.subject!;
+                        // String selectedClass = list.first.grade!;
+                        // String learningStandard = list.first.learningStandard!;
+                        // String subLearningStandard =
+                        //     list.first.subLearningStandard!;
+                        // String scoringRubric = list.first.scoringRubric!;
+                        // String customRubricImage =
+                        //     list.first.customRubricImage!;
 
-                        list.forEach(
-                          (StudentAssessmentInfo element) {
-                            Globals.studentInfo!.add(StudentAssessmentInfo(
-                                studentName: element.studentName,
-                                studentId: element.studentId,
-                                studentGrade: element.studentGrade,
-                                pointpossible: element.pointpossible,
-                                grade: selectedClass,
-                                subject: subject,
-                                learningStandard: learningStandard,
-                                subLearningStandard: subLearningStandard,
-                                scoringRubric: scoringRubric,
-                                customRubricImage: customRubricImage,
-                                assessmentImage: element.assessmentImage));
-                          },
-                        );
+                        // list.forEach(
+                        //   (StudentAssessmentInfo element) {
+                        //     Globals.studentInfo!.add(StudentAssessmentInfo(
+                        //         studentName: element.studentName,
+                        //         studentId: element.studentId,
+                        //         studentGrade: element.studentGrade,
+                        //         pointpossible: element.pointpossible,
+                        //         grade: selectedClass,
+                        //         subject: subject,
+                        //         learningStandard: learningStandard,
+                        //         subLearningStandard: subLearningStandard,
+                        //         scoringRubric: scoringRubric,
+                        //         customRubricImage: customRubricImage,
+                        //         assessmentImage: element.assessmentImage));
+                        //   },
+                        // );
 
                         _driveBloc.add(UpdateDocOnDrive(
                             studentData: Globals.studentInfo!));
@@ -344,7 +364,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   //   //
   //   //print('Turn on location services before requesting permission.');
-    
+
   // }
 
   //   final status = await Permission.locationWhenInUse.request();
