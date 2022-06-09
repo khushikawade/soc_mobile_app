@@ -202,31 +202,31 @@ class _OpticalCharacterRecognitionPageState
                           ? '4'
                           : '2';
               Globals.fileId = "";
-            // final status = await Permission.camera.status;
-            //   // bool result = await _checkPermission();
-            //   if (status != PermissionStatus.denied ) {
-                
-            //   } else {
-            //     _onCameraPermissionDenied();
-            //   }
-                updateLocalDb();
+              // final status = await Permission.camera.status;
+              //   // bool result = await _checkPermission();
+              //   if (status != PermissionStatus.denied ) {
 
-                _bloc.add(SaveSubjectListDetails());
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CameraScreen(
-                        scaffoldKey: _scaffoldKey,
-                            isScanMore: false,
-                            pointPossible: scoringColor == 0
-                                ? '2'
-                                : scoringColor == 2
-                                    ? '3'
-                                    : scoringColor == 4
-                                        ? '4'
-                                        : '2',
-                          )),
-                );
+              //   } else {
+              //     _onCameraPermissionDenied();
+              //   }
+              updateLocalDb();
+
+              _bloc.add(SaveSubjectListDetails());
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          scaffoldKey: _scaffoldKey,
+                          isScanMore: false,
+                          pointPossible: scoringColor == 0
+                              ? '2'
+                              : scoringColor == 2
+                                  ? '3'
+                                  : scoringColor == 4
+                                      ? '4'
+                                      : '2',
+                        )),
+              );
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(
