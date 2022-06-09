@@ -286,11 +286,53 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       child: Container(
                         padding: EdgeInsets.all(15),
                         alignment: Alignment.center,
-                        child: Utility.textWidget(
-                            text: HtmlUnescape()
-                                .convert(list[index].standardAndDescriptionC!),
-                            textTheme: Theme.of(context).textTheme.headline2,
-                            context: context),
+                        child: RichText(
+                          text: list[index].standardAndDescriptionC != null &&
+                                  list[index]
+                                          .standardAndDescriptionC!
+                                          .split(' - ')
+                                          .length >
+                                      1
+                              ? TextSpan(
+                                  // Note: Styles for TextSpans must be explicitly defined.
+                                  // Child text spans will inherit styles from parent
+                                  style: Theme.of(context).textTheme.headline2,
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: list[index]
+                                            .standardAndDescriptionC!
+                                            .split(' - ')[0],
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline2!
+                                            .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            )),
+                                    TextSpan(text: '  '),
+                                    TextSpan(
+                                      text: list[index]
+                                          .standardAndDescriptionC!
+                                          .split(' - ')[1],
+                                      style:
+                                          Theme.of(context).textTheme.headline2,
+                                    ),
+                                  ],
+                                )
+                              : TextSpan(
+                                  style: Theme.of(context).textTheme.headline2,
+                                  children: [
+                                      TextSpan(
+                                          text: list[index]
+                                                  .standardAndDescriptionC ??
+                                              '')
+                                    ]),
+                        ),
+
+                        //  Utility.textWidget(
+                        //     text: HtmlUnescape()
+                        //         .convert(list[index].standardAndDescriptionC!),
+                        //     textTheme: Theme.of(context).textTheme.headline2,
+                        //     context: context),
                         decoration: BoxDecoration(
                             color: Color(0xff000000) !=
                                     Theme.of(context).backgroundColor

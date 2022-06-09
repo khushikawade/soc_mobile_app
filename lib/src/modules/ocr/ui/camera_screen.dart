@@ -1,14 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
-
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -16,11 +12,11 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
+
   final scaffoldKey;
 
   const CameraScreen(
@@ -60,6 +56,7 @@ class _CameraScreenState extends State<CameraScreen>
   bool isflashOff = true;
   bool flash = false;
   FlashMode? _currentFlashMode;
+  int? scanMoreAssesmentList;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -74,6 +71,10 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Hide the status bar
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    // widget.isScanMore == true
+    //     ? scanMoreAssesmentList = Globals.studentInfo!.length
+    //     : null;
+
     Utility.setLocked();
     onNewCameraSelected(cameras[0]);
     // _checkPermission();
@@ -193,7 +194,7 @@ class _CameraScreenState extends State<CameraScreen>
                         //         assessmentImage: element.assessmentImage));
                         //   },
                         // );
-                        if(Globals.studentInfo![0].studentId=='Id'){
+                        if (Globals.studentInfo![0].studentId == 'Id') {
                           Globals.studentInfo!.removeAt(0);
                         }
                         _driveBloc.add(UpdateDocOnDrive(
@@ -204,6 +205,9 @@ class _CameraScreenState extends State<CameraScreen>
                           MaterialPageRoute(
                               builder: (context) => ResultsSummary(
                                     assessmentDetailPage: false,
+                                    isScanMore: true,
+                                    assessmentListLenght:
+                                        Globals.scanMoreStudentInfoLength,
                                   )),
                         );
                       } else {

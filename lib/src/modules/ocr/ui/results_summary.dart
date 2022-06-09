@@ -25,13 +25,17 @@ class ResultsSummary extends StatefulWidget {
       this.fileId,
       this.subjectId,
       this.standardId,
-      this.rubricScore})
+      this.rubricScore,
+      this.isScanMore,
+      this.assessmentListLenght})
       : super(key: key);
   final bool? assessmentDetailPage;
   final String? fileId;
   final String? subjectId;
   final String? standardId;
   final String? rubricScore;
+  final bool? isScanMore;
+  final int? assessmentListLenght;
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
 }
@@ -45,6 +49,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
+  int? assessmentListLenght;
 
   @override
   void initState() {
@@ -52,6 +57,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
     } else {
       assessmentCount = Globals.studentInfo!.length;
+    }
+    if (Globals.studentInfo!.length == widget.assessmentListLenght) {
+      dashoardState.value = 'Success';
     }
     _scrollController.addListener(_scrollListener);
     super.initState();
@@ -96,60 +104,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         onFinishedPopup();
                       })),
-
-              // IconButton(
-              //   onPressed: () {
-              //     ScaffoldMessenger.of(context).removeCurrentSnackBar();
-              //     onFinishedPopup();
-              //   },
-              //   icon: Icon(
-              //     IconData(0xe877,
-              //         fontFamily: Overrides.kFontFam,
-              //         fontPackage: Overrides.kFontPkg),
-              //     size: 30,
-              //     color: AppTheme.kButtonColor,
-              //   ),
-              // ),
-              //isBackButton: false,
               isResultScreen: true,
             ),
 
-            // AppBar(
-            //   backgroundColor: Colors.transparent,
-            //   elevation: 0,
-            //   automaticallyImplyLeading: false,
-            //   actions: [
-            //     Container(
-            //         child: IconButton(
-            //       onPressed: () {},
-            //       icon: Icon(
-            //         IconData(0xe874,
-            //             fontFamily: Overrides.kFontFam,
-            //             fontPackage: Overrides.kFontPkg),
-            //         color: AppTheme.kButtonColor,
-            //         size: 30,
-            //       ),
-            //     )),
-            //     Container(
-            //         padding: EdgeInsets.only(right: 5),
-            //         child: IconButton(
-            //           onPressed: () {
-            //             Navigator.push(
-            //               context,
-            //               MaterialPageRoute(
-            //                   builder: (context) => FinishedScreen()),
-            //             );
-            //           },
-            //           icon: Icon(
-            //             IconData(0xe877,
-            //                 fontFamily: Overrides.kFontFam,
-            //                 fontPackage: Overrides.kFontPkg),
-            //             color: AppTheme.kButtonColor,
-            //             size: 30,
-            //           ),
-            //         )),
-            //   ],
-            // ),
             body: Container(
               //     padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -157,14 +114,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.50),
-                  // IconButton(
-                  //     onPressed: () {
-                  //       Navigator.pop(context);
-                  //     },
-                  //     icon: Icon(
-                  //       Icons.arrow_back,
-                  //       color: Colors.red,
-                  //     )),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
@@ -505,15 +454,31 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 );
                               } else if (index == 3 &&
                                   dashoardState.value == '') {
-                                _ocrBloc.add(SaveAssessmentToDashboard(
-                                    assessmentName: Globals.assessmentName!,
-                                    rubricScore: widget.rubricScore ?? '',
-                                    subjectId: widget.subjectId ?? '',
-                                    schoolId: Globals
-                                        .appSetting.schoolNameC!, //Account Id
-                                    standardId: widget.standardId ?? '',
-                                    scaffoldKey: scaffoldKey,
-                                    context: context));
+                                if (widget.isScanMore == true &&
+                                    widget.assessmentListLenght! <
+                                        Globals.studentInfo!.length) {
+                                  _ocrBloc.add(SaveAssessmentToDashboard(
+                                      previouslyAddedListLength:
+                                          widget.assessmentListLenght,
+                                      assessmentName: Globals.assessmentName!,
+                                      rubricScore: widget.rubricScore ?? '',
+                                      subjectId: widget.subjectId ?? '',
+                                      schoolId: Globals
+                                          .appSetting.schoolNameC!, //Account Id
+                                      standardId: widget.standardId ?? '',
+                                      scaffoldKey: scaffoldKey,
+                                      context: context));
+                                } else {
+                                  _ocrBloc.add(SaveAssessmentToDashboard(
+                                      assessmentName: Globals.assessmentName!,
+                                      rubricScore: widget.rubricScore ?? '',
+                                      subjectId: widget.subjectId ?? '',
+                                      schoolId: Globals
+                                          .appSetting.schoolNameC!, //Account Id
+                                      standardId: widget.standardId ?? '',
+                                      scaffoldKey: scaffoldKey,
+                                      context: context));
+                                }
                               }
                               // else if (index == 3 &&
                               //     dashoardState.value == 'Success') {
@@ -563,23 +528,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               horizontal: 5,
             ),
             decoration: BoxDecoration(
-
-                // border: Border.all(
-
-                //   color: Theme.of(context).colorScheme.background,
-                // ),
                 borderRadius: BorderRadius.circular(0.0),
                 color: (index % 2 == 0)
                     ? Theme.of(context).colorScheme.background ==
                             Color(0xff000000)
-                        ? Color(0xff162429)
-                        : Color(
-                            0xffF7F8F9) //Theme.of(context).colorScheme.background
+                        ? AppTheme.klistTilePrimaryDark
+                        : AppTheme
+                            .klistTilePrimaryLight //Theme.of(context).colorScheme.background
                     : Theme.of(context).colorScheme.background ==
                             Color(0xff000000)
-                        ? Color(0xff111C20)
-                        : Color(
-                            0xffE9ECEE) //Theme.of(context).colorScheme.secondary,
+                        ? AppTheme.klistTileSecoandryDark
+                        : AppTheme
+                            .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
                 ),
             child: ListTile(
               visualDensity: VisualDensity(horizontal: 0, vertical: 0),
@@ -601,8 +561,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   Utility.textWidget(
                       text: //'2/2',
                           _list[index].studentGrade == ''
-                              ? '2/2'
-                              : '${_list[index].studentGrade}/2', // '${Globals.gradeList[index]} /2',
+                              ? '-/${_list[index].pointpossible ?? '2'}'
+                              : '${_list[index].studentGrade}/${_list[index].pointpossible ?? '2'}', // '${Globals.gradeList[index]} /2',
                       context: context,
                       textTheme: Theme.of(context)
                           .textTheme
@@ -623,11 +583,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
                 onPressed: () {
+                  Globals.scanMoreStudentInfoLength =
+                      Globals.studentInfo!.length;
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
                                 isScanMore: true,
+                                // lastStudentInfoLenght: Globals.studentInfo!.length,
                                 pointPossible: Globals.pointpossible ?? '2',
                               )));
                 },

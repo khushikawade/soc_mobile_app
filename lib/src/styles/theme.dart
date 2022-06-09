@@ -16,6 +16,10 @@ class AppTheme {
   static const Color kButtonColor = Color(0xff03DAC6); //#03DAC6
   static const Color kbackgroudColorlight = Color(0xffF7F8F9);
   static const Color kbackgroudColordark = Color(0xff111C20);
+  static const Color klistTilePrimaryDark = Color(0xff162429);
+  static const Color klistTileSecoandryDark = Color(0xff111C20);
+  static const Color klistTilePrimaryLight = Color(0xffF7F8F9);
+  static const Color klistTileSecoandryLight = Color(0xffE9ECEE);
 
   //Colors
 

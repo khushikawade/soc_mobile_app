@@ -70,6 +70,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
   final String subjectId;
   final String schoolId;
   final String standardId;
+  final int? previouslyAddedListLength;
   final scaffoldKey;
   final context;
   SaveAssessmentToDashboard(
@@ -79,7 +80,8 @@ class SaveAssessmentToDashboard extends OcrEvent {
       required this.schoolId,
       required this.standardId,
       required this.scaffoldKey,
-      required this.context});
+      required this.context,
+      this.previouslyAddedListLength});
 
   @override
   List<Object> get props => [];
