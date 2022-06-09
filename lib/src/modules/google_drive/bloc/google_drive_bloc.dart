@@ -61,19 +61,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           print('Authentication required');
-          bool result =
-              await _toRefreshAuthenticationToken(event.refreshtoken!);
-          if (result) {
-            List<UserInformation> _userprofilelocalData =
-                await UserGoogleProfile.getUserProfile();
-            GetDriveFolderIdEvent(
-                //  filePath: file,
-                token: _userprofilelocalData[0].authorizationToken,
-                folderName: event.folderName,
-                refreshtoken: _userprofilelocalData[0].refreshToken);
-          } else if (!result) {
-            await _toRefreshAuthenticationToken(event.refreshtoken!);
-          }
+          await _toRefreshAuthenticationToken(event.refreshtoken!);
+          List<UserInformation> _userprofilelocalData =
+              await UserGoogleProfile.getUserProfile();
+
+          GetDriveFolderIdEvent(
+              //  filePath: file,
+              token: _userprofilelocalData[0].authorizationToken,
+              folderName: event.folderName,
+              refreshtoken: _userprofilelocalData[0].refreshToken);
         }
       } catch (e) {
         throw (e);
@@ -87,11 +83,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         Globals.assessmentName = event.name;
 
         bool result = await createSheetOnDrive(
-            name: event.name!,
-            folderId: Globals.googleDriveFolderId,
-            accessToken: _userprofilelocalData[0].authorizationToken
-            //  image: file
-            );
+          name: event.name!,
+          folderId: Globals.googleDriveFolderId,
+          accessToken: _userprofilelocalData[0].authorizationToken,
+          refreshToken: _userprofilelocalData[0].refreshToken,
+
+          //  image: file
+        );
         if (!result) {
           print(
               "Failed to create. Trying to create the excel sheet again : ${event.name!}");
@@ -134,9 +132,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             data: assessmentData, name: Globals.assessmentName!);
 
         bool uploadresult = await uploadSheetOnDrive(
-            file, Globals.fileId, _userprofilelocalData[0].authorizationToken);
+            file, Globals.googleExcelSheetId, _userprofilelocalData[0].authorizationToken);
         if (!uploadresult) {
-          await uploadSheetOnDrive(file, Globals.fileId,
+          await uploadSheetOnDrive(file, Globals.googleExcelSheetId,
               _userprofilelocalData[0].authorizationToken);
         }
         bool deleted = await GoogleDriveAccess.deleteFile(file);
@@ -378,7 +376,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       {String? name,
       //  File? image,
       String? folderId,
-      String? accessToken}) async {
+      String? accessToken,
+      String? refreshToken}) async {
     Map body = {
       'name': name,
       'description': 'Newly created file',
@@ -403,7 +402,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String fileId = response.data
           // ['body']
           ['id'];
-      Globals.fileId = fileId;
+      Globals.googleExcelSheetId = fileId;
       bool result = await _updateSheetPermission(accessToken!, fileId);
       if (!result) {
         await _updateSheetPermission(accessToken, fileId);
@@ -414,6 +413,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         await _getShareableLink(accessToken, fileId);
       }
       return true;
+    } else {
+      //To regernerate fresh access token
+      await _toRefreshAuthenticationToken(refreshToken!);
+      CreateExcelSheetToDrive();
     }
     return false;
   }
@@ -519,10 +522,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (response.statusCode == 200) {
       print(" get file link   ----------->");
-      var data = response.data;
-      Globals.shareableLink = response.data
-          //  ['body']
-          ['webViewLink'];
+      // var data = response.data;
+      Globals.shareableLink = response.data['webViewLink'];
+      //  ['body']
+
       return true;
     }
     return false;
@@ -546,18 +549,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           ? data['exportLinks'][
               'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
           : '';
-      //  data['webViewLink']!=null? data['webViewLink']:data['webContentLink'].length > 0
-      //         ? data['webContentLink']['exportLinks'][
-      //             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-      //         : '';
-      //  ['webViewLink']??response.data['webContentLink'];
-      //['body'];
-
-      // String downloadLink = data.length > 0
-      //     ? data[0]['webContentLink']['exportLinks'][
-      //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-      //     : '';
-
       return downloadLink;
     }
     return "";

@@ -232,7 +232,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     // idController.text = state.studentId!;
                     // nameController.text =
                     //     onChange == true ? state.studentName! : studentName;
-                    Globals.gradeList.add(state.grade!);
+                    // Globals.gradeList.add(state.grade!);
                     return failureScreen(
                         id: state.studentId!, grade: state.grade!);
                   }

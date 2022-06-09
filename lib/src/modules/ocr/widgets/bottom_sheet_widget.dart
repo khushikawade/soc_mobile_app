@@ -249,6 +249,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                           score: textFieldController2.text,
                                           imgBase64: imageB64,
                                           customOrStandardRubic: "Custom"));
+
                                   print("calling get img url");
                                   _googleBloc.add(ImageToAwsBucked(
                                       imgBase64: RubricScoreList

@@ -1,16 +1,13 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
-import 'package:Soc/src/modules/ocr/ui/bottom_sheet_widget.dart';
+import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_pdf_viewer.dart';
-
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -20,10 +17,10 @@ import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -39,22 +36,21 @@ class _OpticalCharacterRecognitionPageState
   final assessmentController = TextEditingController();
   final classController = TextEditingController();
   // OcrBloc _bloc = OcrBloc();
-  int indexColor = 1;
-  int scoringColor = 0;
+  // int indexColor = 1;
+  // int scoringColor = 0;
   final HomeBloc _homeBloc = new HomeBloc();
   final OcrBloc _bloc = new OcrBloc();
   File? myImagePath;
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // bool? createCustomRubic = false;
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
-  // final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
+  final ValueNotifier<int> pointPossibleSelectedColor = ValueNotifier<int>(1);
+  final ValueNotifier<int> rubricScoreSelectedColor = ValueNotifier<int>(0);
+  final ValueNotifier<bool> updateRubricList = ValueNotifier<bool>(false);
 
   @override
   void initState() {
-    Globals.gradeList.clear();
+    // Globals.gradeList.clear();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
     Globals.scoringRubric = RubricScoreList.scoringList[0].name;
@@ -72,20 +68,11 @@ class _OpticalCharacterRecognitionPageState
             key: GlobalKey(),
             isBackButton: false,
           ),
-          body:
-              // ListView(
-              //   children: [
-              Container(
+          body: Container(
             padding: EdgeInsets.symmetric(
               horizontal: 15,
             ),
-            // height:
-            //     MediaQuery.of(context).orientation == Orientation.portrait
-            //         ? MediaQuery.of(context).size.height
-            //         : MediaQuery.of(context).size.width * 0.8,
             child: ListView(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Utility.textWidget(
                     text: 'Points Possible',
@@ -95,7 +82,7 @@ class _OpticalCharacterRecognitionPageState
                         .headline6!
                         .copyWith(fontWeight: FontWeight.bold)),
                 SpacerWidget(_KVertcalSpace / 4),
-                smallButton(),
+                pointPossibleButton(),
                 SpacerWidget(_KVertcalSpace / 2),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -116,8 +103,7 @@ class _OpticalCharacterRecognitionPageState
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) => OcrPdfViewer(
-                                      url:
-                                          "https://solved-schools.s3.us-east-2.amazonaws.com/graded_doc/NYS+Rubric+3-8+ELA+MATH.pdf",
+                                      url: Overrides.rubric_Score_PDF_URL,
                                       tittle: "information",
                                       isbuttomsheet: true,
                                       language: Globals.selectedLanguage,
@@ -169,39 +155,19 @@ class _OpticalCharacterRecognitionPageState
         FloatingActionButton.extended(
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
-              // if (createCustomRubic == true &&
-              //     RubricScoreList.scoringList.last.imgBase64 != null) {
-              //   print("heeleeelo");
-              //   _googleBloc.add(ImageToAwsBucked(
-              //       imgBase64: RubricScoreList.scoringList.last.imgBase64));
-              // } else {
-              // updateLocalDb();
-              // // }
-              // _bloc.add(SaveSubjectListDetails());
-              // Globals.studentInfo = [];
               Globals.studentInfo!.clear();
-              // _bloc.add(SaveSubjectListDetails());
-              //UNCOMMENT
+
               print(
                   "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
-              // print(RubricScoreList.scoringList);
-              // if (createCustomRubic == true &&
-              //     RubricScoreList.scoringList.last.imgBase64 != null) {
-              //   print("heeleeelo");
-              //   _googleBloc.add(ImageToAwsBucked(
-              //       imgBase64: RubricScoreList.scoringList.last.imgBase64));
-              // } else {
-              //   updateLocalDb();
-              // }
 
-              Globals.pointpossible = scoringColor == 0
+              Globals.pointpossible = rubricScoreSelectedColor.value == 0
                   ? '2'
-                  : scoringColor == 2
+                  : rubricScoreSelectedColor.value == 2
                       ? '3'
-                      : scoringColor == 4
+                      : rubricScoreSelectedColor.value == 4
                           ? '4'
                           : '2';
-              Globals.fileId = "";
+              Globals.googleExcelSheetId = "";
               // final status = await Permission.camera.status;
               //   // bool result = await _checkPermission();
               //   if (status != PermissionStatus.denied ) {
@@ -212,41 +178,26 @@ class _OpticalCharacterRecognitionPageState
               updateLocalDb();
 
               _bloc.add(SaveSubjectListDetails());
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          scaffoldKey: _scaffoldKey,
-                          isScanMore: false,
-                          pointPossible: scoringColor == 0
-                              ? '2'
-                              : scoringColor == 2
-                                  ? '3'
-                                  : scoringColor == 4
-                                      ? '4'
-                                      : '2',
-                        )),
-              );
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(
               //       builder: (context) => CameraScreen(
-              //           isScanMore: false, pointPossible: Globals.pointpossible
-
-              //           //  scoringColor == 0
-              //           //     ? '2'
-              //           //     : scoringColor == 2
-              //           //         ? '3'
-              //           //         : scoringColor == 4
-              //           //             ? '4'
-              //           //             : '2',
+              //             scaffoldKey: _scaffoldKey,
+              //             isScanMore: false,
+              //             pointPossible: rubricScoreSelectedColor.value == 0
+              //                 ? '2'
+              //                 : rubricScoreSelectedColor.value == 2
+              //                     ? '3'
+              //                     : rubricScoreSelectedColor.value == 4
+              //                         ? '4'
+              //                         : '2',
               //           )),
               // );
 
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
+              );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
@@ -301,21 +252,7 @@ class _OpticalCharacterRecognitionPageState
     );
   }
 
-  // Future<bool> _checkPermission() async {
-  //   final status = await Permission.camera.request();
-  //   // final serviceStatus = Permission.camera.status;
-
-  //   if (status.isPermanentlyDenied) {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-
-  //   // print('Turn on location services before requesting permission.');
-  //   // return;
-  // }
-
-  Widget smallButton() {
+  Widget pointPossibleButton() {
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
@@ -334,154 +271,164 @@ class _OpticalCharacterRecognitionPageState
   }
 
   Widget pointsButton(int index) {
-    return InkWell(
-        onTap: () {
-          //Globals.pointpossible = "${index + 1}";
-          setState(() {
-            indexColor = index + 1;
-            if (index == 0) {
-              scoringColor = 0;
-            } else if (index == 1) {
-              scoringColor = 2;
-            } else if (index == 2) {
-              scoringColor = 4;
-            }
-          });
-        },
-        child: AnimatedContainer(
-          padding: EdgeInsets.only(bottom: 5),
-          decoration: BoxDecoration(
-            color:
-                indexColor == index + 1 ? AppTheme.kSelectedColor : Colors.grey,
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
-          ),
-          duration: Duration(microseconds: 100),
-          child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-              decoration: BoxDecoration(
-                color: Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20),
-                border: Border.all(
-                  color: indexColor == index + 1
-                      ? AppTheme.kSelectedColor
-                      : Colors.grey,
-                ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
-                ),
-              ),
-              child: TranslationWidget(
-                message: Globals.pointsList[index].toString(),
-                toLanguage: Globals.selectedLanguage,
-                fromLanguage: "en",
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.headline6!.copyWith(
-                        color: indexColor == index + 1
-                            ? AppTheme.kSelectedColor
-                            : Theme.of(context).colorScheme.primaryVariant,
-                      ),
-                ),
-              )),
-        ));
-  }
-
-  Widget scoringRubric() {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      //  MediaQuery.of(context).orientation == Orientation.portrait
-      //     ? MediaQuery.of(context).size.height * 0.45
-      //     : MediaQuery.of(context).size.width * 0.30,
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.height * 0.1,
-              left: MediaQuery.of(context).size.width / 70,
-              right: MediaQuery.of(context).size.width / 70),
-          // physics: ScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent:
-                  MediaQuery.of(context).orientation == Orientation.portrait
-                      ? MediaQuery.of(context).size.width * 0.5
-                      : MediaQuery.of(context).size.height * 0.5,
-              childAspectRatio: 6 / 3.5,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 20),
-          itemCount: RubricScoreList.scoringList.length,
-          itemBuilder: (BuildContext ctx, index) {
-            return InkWell(
-              onLongPress: () {
-                print(
-                    'Rubric image : ${RubricScoreList.scoringList[index].imgUrl}');
-                showCustomRubricImage(RubricScoreList.scoringList[index]);
-              },
+    return ValueListenableBuilder(
+        valueListenable: pointPossibleSelectedColor,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return InkWell(
               onTap: () {
-                setState(() {
-                  scoringColor = index;
-                });
-                if (RubricScoreList.scoringList[index].name == "Custom") {
-                  //   if (createCustomRubic == true) {
-                  //     Utility.showSnackBar(_scaffoldKey,
-                  //         "Create custom rubic section at a time", context, null);
-                  //   } else {
-                  //     createCustomRubic = true;
-                  customRubricBottomSheet();
-                  //   }
-                } else {
-                  //To take the rubric name to result screen and save the same in excel sheet
-                  Globals.scoringRubric =
-                      RubricScoreList.scoringList[index].name;
+                pointPossibleSelectedColor.value = index + 1;
+                if (index == 0) {
+                  rubricScoreSelectedColor.value = 0;
+                } else if (index == 1) {
+                  rubricScoreSelectedColor.value = 2;
+                } else if (index == 2) {
+                  rubricScoreSelectedColor.value = 4;
                 }
-
-                print("printing ----> ${Globals.scoringRubric}");
               },
               child: AnimatedContainer(
                 padding: EdgeInsets.only(bottom: 5),
                 decoration: BoxDecoration(
-                  color: scoringColor == index
+                  color: pointPossibleSelectedColor.value == index + 1
                       ? AppTheme.kSelectedColor
                       : Colors.grey,
-                  // Theme.of(context)
-                  //     .colorScheme
-                  //     .background.withOpacity(0.2), // indexColor == index + 1 ? AppTheme.kSelectedColor : null,
-
                   borderRadius: BorderRadius.all(
                     Radius.circular(8),
                   ),
                 ),
                 duration: Duration(microseconds: 100),
                 child: Container(
-                  // width:RubricScoreList.scoringList.length -1 == index ? MediaQuery.of(context).size.width: null,
-                  alignment: Alignment.center,
-                  child: Utility.textWidget(
-                    text:
-                        "${RubricScoreList.scoringList[index].name! + " " + RubricScoreList.scoringList[index].score!}",
-                    context: context,
-                    textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: scoringColor == index
-                            ? AppTheme.kSelectedColor
-                            : Theme.of(context).colorScheme.primaryVariant),
-                  ),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: scoringColor == index
-                            ? AppTheme.kSelectedColor
-                            : Colors.grey,
-                      ),
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+                    decoration: BoxDecoration(
                       color:
                           Color(0xff000000) != Theme.of(context).backgroundColor
                               ? Color(0xffF7F8F9)
                               : Color(0xff111C20),
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            );
-          }),
-    );
+                      border: Border.all(
+                        color: pointPossibleSelectedColor.value == index + 1
+                            ? AppTheme.kSelectedColor
+                            : Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8),
+                      ),
+                    ),
+                    child: TranslationWidget(
+                      message: Globals.pointsList[index].toString(),
+                      toLanguage: Globals.selectedLanguage,
+                      fromLanguage: "en",
+                      builder: (translatedMessage) => Text(
+                        translatedMessage.toString(),
+                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                              color:
+                                  pointPossibleSelectedColor.value == index + 1
+                                      ? AppTheme.kSelectedColor
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                            ),
+                      ),
+                    )),
+              ));
+        });
+  }
+
+  Widget scoringRubric() {
+    return ValueListenableBuilder(
+        valueListenable: updateRubricList,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return ValueListenableBuilder(
+              valueListenable: rubricScoreSelectedColor,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: GridView.builder(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.1,
+                          left: MediaQuery.of(context).size.width / 70,
+                          right: MediaQuery.of(context).size.width / 70),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent:
+                              MediaQuery.of(context).orientation ==
+                                      Orientation.portrait
+                                  ? MediaQuery.of(context).size.width * 0.5
+                                  : MediaQuery.of(context).size.height * 0.5,
+                          childAspectRatio: 6 / 3.5,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 20),
+                      itemCount: RubricScoreList.scoringList.length,
+                      itemBuilder: (BuildContext ctx, index) {
+                        return InkWell(
+                          onLongPress: () {
+                            print(
+                                'Rubric image : ${RubricScoreList.scoringList[index].imgUrl}');
+                            showCustomRubricImage(
+                                RubricScoreList.scoringList[index]);
+                          },
+                          onTap: () {
+                            rubricScoreSelectedColor.value = index;
+
+                            if (RubricScoreList.scoringList[index].name ==
+                                "Custom") {
+                              customRubricBottomSheet();
+                            } else {
+                              Globals.scoringRubric =
+                                  RubricScoreList.scoringList[index].name;
+                            }
+
+                            print("printing ----> ${Globals.scoringRubric}");
+                          },
+                          child: AnimatedContainer(
+                            padding: EdgeInsets.only(bottom: 5),
+                            decoration: BoxDecoration(
+                              color: rubricScoreSelectedColor.value == index
+                                  ? AppTheme.kSelectedColor
+                                  : Colors.grey,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                            ),
+                            duration: Duration(microseconds: 100),
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Utility.textWidget(
+                                text:
+                                    "${RubricScoreList.scoringList[index].name! + " " + RubricScoreList.scoringList[index].score!}",
+                                context: context,
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: rubricScoreSelectedColor.value ==
+                                                index
+                                            ? AppTheme.kSelectedColor
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant),
+                              ),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color:
+                                        rubricScoreSelectedColor.value == index
+                                            ? AppTheme.kSelectedColor
+                                            : Colors.grey,
+                                  ),
+                                  color: Color(0xff000000) !=
+                                          Theme.of(context).backgroundColor
+                                      ? Color(0xffF7F8F9)
+                                      : Color(0xff111C20),
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                          ),
+                        );
+                      }),
+                );
+              });
+        });
   }
 
   customRubricBottomSheet() {
@@ -495,21 +442,20 @@ class _OpticalCharacterRecognitionPageState
         elevation: 10,
         context: context,
         builder: (context) => BottomSheetWidget(
-              update: _update,
-              title: 'Scoring Rubric',
-              isImageField: true,
-              textFieldTitleOne: 'Score Name',
-              textFieldTitleTwo: 'Custom Score',
-              isSubjectScreen: false,
-            ));
+            update: _update,
+            title: 'Scoring Rubric',
+            isImageField: true,
+            textFieldTitleOne: 'Score Name',
+            textFieldTitleTwo: 'Custom Score',
+            isSubjectScreen: false,
+            valueChanged: (controller) async {}));
   }
 
+//To update the rubric score list
   void _update(bool value) {
-    value
-        ? setState(() {
-            //  createCustomRubic = value;
-          })
-        : print("");
+    if (value) {
+      updateRubricList.value = !updateRubricList.value;
+    }
   }
 
   void showCustomRubricImage(CustomRubicModal customScoreObj) {
@@ -610,7 +556,6 @@ class _OpticalCharacterRecognitionPageState
                                     ));
                           }),
                       onPressed: () {
-                        //Globals.iscameraPopup = false;
                         Navigator.pop(context, false);
                       },
                     ),

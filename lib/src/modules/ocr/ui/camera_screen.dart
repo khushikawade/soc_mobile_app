@@ -199,7 +199,7 @@ class _CameraScreenState extends State<CameraScreen>
                           null);
                     }
 
-                    // Globals.fileId = "";
+                    // Globals.googleExcelSheetId = "";
                     // Globals.studentInfo!.length > 0
                     //     ? widget.isScanMore == true
                     //         ? Navigator.push(

@@ -21,37 +21,32 @@ class _CreateAssessmentState extends State<CreateAssessment>
   static const double _KVertcalSpace = 60.0;
   final assessmentController = TextEditingController();
   final classController = TextEditingController();
-  int selectedClassIndex = 0;
-  double? _scale;
+  // int selectedGrade.value = 0;
   final _formKey = GlobalKey<FormState>();
-  // AnimationController? _controller;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  final ScrollController listScrollController = ScrollController();
+  // final ScrollController listScrollController = ScrollController();
+  final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
 
-  //int scoringColor = 0;
   @override
   void initState() {
-    listScrollController.addListener(_scrollListener);
-    Globals.fileId = '';
+    // listScrollController.addListener(_scrollListener);
+    Globals.googleExcelSheetId = '';
     super.initState();
   }
 
-  _scrollListener() {
-    FocusScope.of(context).requestFocus(FocusNode());
-  }
+  // _scrollListener() {
+  //   FocusScope.of(context).requestFocus(FocusNode());
+  // }
 
   @override
   Widget build(BuildContext context) {
-    // _scale = 1 - _controller!.value;
-
     return WillPopScope(
       onWillPop: () async => false,
       child: Stack(
         children: [
           CommonBackGroundImgWidget(),
           Scaffold(
-            resizeToAvoidBottomInset: false,
-
+            resizeToAvoidBottomInset: true,
             floatingActionButton: textActionButton(),
             // floatingActionButtonLocation:
             //   FloatingActionButtonLocation.centerFloat,
@@ -88,17 +83,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
             // ),
             body: Form(
               key: _formKey,
-              child: ListView(controller: listScrollController, children: [
+              child: ListView(children: [
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   height:
                       MediaQuery.of(context).orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.height * 0.9
+                          ? MediaQuery.of(context).size.height * 0.7
                           : MediaQuery.of(context).size.width,
                   child: ListView(
+                    // controller: listScrollController,
                     shrinkWrap: true,
-                    // mainAxisAlignment: MainAxisAlignment.start,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SpacerWidget(_KVertcalSpace * 0.50),
                       highlightText(
@@ -155,24 +149,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           }
                         },
                       ),
-
                       SpacerWidget(_KVertcalSpace / 0.90),
                       scoringButton(),
-                      SpacerWidget(_KVertcalSpace / 20),
-                      // textActionButton()
-                      // smallButton(),
-                      // SpacerWidget(_KVertcalSpace / 2),
-
-                      // SpacerWidget(_KVertcalSpace / 4),
-                      // scoringButton(),
-                      // // SpacerWidget(_KVertcalSpace / 8),
-                      // cameraButton(),
+                      // SpacerWidget(_KVertcalSpace / 20),
                     ],
                   ),
                 ),
               ]),
             ),
-            // bottomNavigationBar: null,
           ),
         ],
       ),
@@ -192,68 +176,71 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   Widget scoringButton() {
-    return Container(
-      height: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MediaQuery.of(context).size.height * 0.35
-          : MediaQuery.of(context).size.width * 0.35,
-      child: GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 50,
-              childAspectRatio: 5 / 6,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 10),
-          itemCount: Globals.classList.length,
-          itemBuilder: (BuildContext ctx, index) {
-            return Bouncing(
-              onPress: () {
-                setState(() {
-                  selectedClassIndex = index;
-                });
-              },
-              child: Transform.scale(
-                scale: 1, //_scale!,
-                child: AnimatedContainer(
-                  duration: Duration(microseconds: 10),
-                  padding: EdgeInsets.only(bottom: 5),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: selectedClassIndex == index
-                        ? AppTheme.kSelectedColor
-                        : Colors.grey,
-                  ),
-                  child: new Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xff000000) !=
-                                Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: selectedClassIndex == index
+    return ValueListenableBuilder(
+        valueListenable: selectedGrade,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return Container(
+            height: MediaQuery.of(context).orientation == Orientation.portrait
+                ? MediaQuery.of(context).size.height * 0.4
+                : MediaQuery.of(context).size.width * 0.35,
+            child: GridView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 50,
+                    childAspectRatio: 5 / 6,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 10),
+                itemCount: Globals.classList.length,
+                itemBuilder: (BuildContext ctx, index) {
+                  return Bouncing(
+                    onPress: () {
+                      selectedGrade.value = index;
+                    },
+                    child: Transform.scale(
+                      scale: 1, //_scale!,
+                      child: AnimatedContainer(
+                        duration: Duration(microseconds: 10),
+                        padding: EdgeInsets.only(bottom: 5),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: selectedGrade.value == index
                               ? AppTheme.kSelectedColor
                               : Colors.grey,
-                        )),
-                    child: Center(
-                      child: textwidget(
-                        text: Globals.classList[index],
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline1!
-                            .copyWith(
-                                color: selectedClassIndex == index
+                        ),
+                        child: new Container(
+                          decoration: BoxDecoration(
+                              color: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xffF7F8F9)
+                                  : Color(0xff111C20),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: selectedGrade.value == index
                                     ? AppTheme.kSelectedColor
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant),
+                                    : Colors.grey,
+                              )),
+                          child: Center(
+                            child: textwidget(
+                              text: Globals.classList[index],
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(
+                                      color: selectedGrade.value == index
+                                          ? AppTheme.kSelectedColor
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-            );
-          }),
-    );
+                  );
+                }),
+          );
+        });
   }
 
   Widget highlightText({required String text, required theme}) {
@@ -327,7 +314,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
             Globals.assessmentName =
                 "${assessmentController.text}_${classController.text}";
             print(Globals.assessmentName);
-            Globals.fileId == ''
+
+            //Create excel sheet if not created already for current assessment
+            Globals.googleExcelSheetId == ''
                 ? _googleDriveBloc.add(CreateExcelSheetToDrive(
                     name:
                         "${assessmentController.text}_${classController.text}"))
@@ -335,10 +324,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      // SuccessScreen()
-                      SubjectSelection(
-                        selectedClass: selectedClassIndex.toString(),
+                  builder: (context) => SubjectSelection(
+                        selectedClass: selectedGrade.value.toString(),
                       )),
             );
           }
@@ -360,12 +347,4 @@ class _CreateAssessmentState extends State<CreateAssessment>
           ],
         ));
   }
-
-  // void _tapDown(TapDownDetails details) {
-  //   //  _controller!.forward();
-  // }
-
-  // void _tapUp(TapUpDetails details) {
-  //   //  _controller!.reverse();
-  // }
 }

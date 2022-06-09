@@ -20,7 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../../widgets/textfield_widget.dart';
-import 'bottom_sheet_widget.dart';
+import '../widgets/bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
   final String? selectedClass;
