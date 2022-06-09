@@ -164,7 +164,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               studentId: idController.text));
                           // }
                           // COMMENT below section for enableing the camera
-                          bool result = await Navigator.push(
+                          var result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CameraScreen(
@@ -172,7 +172,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                       pointPossible: widget.pointPossible,
                                     )),
                           );
-                          if (result) {
+                          if (result==true) {
                             setState(() {
                               isBackFromCamera = result;
                             });
