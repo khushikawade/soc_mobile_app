@@ -94,8 +94,8 @@ class GoogleDriveAccess {
           for (var key in keys) {
             tk = key.value;
             temp[tk] = (row[j].runtimeType == String)
-                ? "\u201C" + row[j].value + "\u201D"
-                : row[j].value;
+                ? "\u201C" + row[j]!=null?row[j].value:'' + "\u201D"
+                : row[j]!=null?row[j].value:'';
             j++;
           }
           json.add(temp);

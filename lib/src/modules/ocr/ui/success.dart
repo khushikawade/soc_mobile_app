@@ -89,10 +89,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   } else {
                     if (_formKey1.currentState!.validate()) {
                       if (!isSelected) {
-                        Utility.showSnackBar(_scaffoldKey,
-                            'Please select the earned point', context, null);
+                        // Utility.showSnackBar(_scaffoldKey,
+                        //     'Please select the earned point', context, null);
                       } else {
-                        updateDetails();
                         if (nameController.text.isNotEmpty &&
                             nameController.text.length >= 3 &&
                             idController.text.isNotEmpty) {
@@ -106,9 +105,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               imgExtension: imgExtension,
                               studentId: idController.text));
                         }
+                        // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                        _navigatetoCameraSection();
                       }
-                      // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
-                      _navigatetoCameraSection();
                     }
                   }
                 },
@@ -165,7 +164,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               studentId: idController.text));
                           // }
                           // COMMENT below section for enableing the camera
-                          bool result = await Navigator.push(
+                          var result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CameraScreen(
@@ -173,7 +172,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                       pointPossible: widget.pointPossible,
                                     )),
                           );
-                          if (result) {
+                          if (result==true) {
                             setState(() {
                               isBackFromCamera = result;
                             });

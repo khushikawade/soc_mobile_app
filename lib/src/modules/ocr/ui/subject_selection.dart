@@ -218,7 +218,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               }
             } else if (pageIndex.value == 2) {
               for (int i = 0; i < state.obj!.length; i++) {
-                if (state.obj![i].descriptionC!
+                if (state.obj![i].standardAndDescriptionC!
                     .toUpperCase()
                     .contains(searchController.text.toUpperCase())) {
                   list.add(state.obj![i]);
@@ -246,7 +246,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 ? 'Subject'
                 : pageIndex.value == 1
                     ? 'Learning Standard'
-                    : 'Learning Sub Standard',
+                    : 'NY Next Generation Learning Standard',
             context: context);
       },
       child: Container(),
@@ -269,7 +269,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 Bouncing(
                   child: InkWell(
                     onTap: () {
-                      subLearningStandard = list[index].descriptionC;
+                      subLearningStandard = list[index].standardAndDescriptionC;
                       if (pageIndex.value == 2) {
                         nycSubIndex1.value = index;
                         if (nycSubIndex1.value != 50000) {
@@ -294,7 +294,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         alignment: Alignment.center,
                         child: Utility.textWidget(
                             text: HtmlUnescape()
-                                .convert(list[index].descriptionC!),
+                                .convert(list[index].standardAndDescriptionC!),
                             textTheme: Theme.of(context).textTheme.headline2,
                             context: context),
                         decoration: BoxDecoration(

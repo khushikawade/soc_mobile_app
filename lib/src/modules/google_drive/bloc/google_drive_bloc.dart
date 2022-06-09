@@ -124,7 +124,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 grade: "Grade",
                 subject: "Subject",
                 learningStandard: "Learning Standard",
-                subLearningStandard: "Sub Learning Standard",
+                subLearningStandard: "NY Next Generation Learning Standard",
                 scoringRubric: "Scoring Rubric",
                 customRubricImage: "Custom Rubric Image",
                 assessmentImage: "Assessment Image"));

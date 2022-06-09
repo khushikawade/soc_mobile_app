@@ -98,21 +98,21 @@ class _CameraScreenState extends State<CameraScreen>
           leadingWidth: 200,
           leading: Row(
             children: [
-              Globals.studentInfo!.length > 0
-                  ? IconButton(
-                      onPressed: () {
-                        //To dispose the snackbar message before navigating back if exist
-                        //    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                        Navigator.pop(context, true);
-                      },
-                      icon: Icon(
-                        IconData(0xe80d,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        color: AppTheme.kButtonColor,
-                      ),
-                    )
-                  : Container(),
+              // Globals.studentInfo!.length > 0
+              //     ? IconButton(
+              //         onPressed: () {
+              //           //To dispose the snackbar message before navigating back if exist
+              //           //    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              //           Navigator.pop(context, true);
+              //         },
+              //         icon: Icon(
+              //           IconData(0xe80d,
+              //               fontFamily: Overrides.kFontFam,
+              //               fontPackage: Overrides.kFontPkg),
+              //           color: AppTheme.kButtonColor,
+              //         ),
+              //       )
+              //     : Container(),
               IconButton(
                   onPressed: () async {
                     setState(() {

@@ -102,7 +102,7 @@ class Globals {
     '?',
     '+'
   ];
-  static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe870];
+  static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe87a];
   static List ocrResultIconsName = ["Share", "Drive", "History", "Dashboard"];
   // static List finishedList = [
   //   "Scan another assessment",
