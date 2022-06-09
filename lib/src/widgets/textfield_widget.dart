@@ -17,9 +17,6 @@ class TextFieldWidget extends StatefulWidget {
 }
 
 class _TextFieldWidgetState extends State<TextFieldWidget> {
-  // Widget textFormField(
-  //     {required TextEditingController controller, required onSaved}) {
-
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -31,10 +28,9 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       },
       autofocus: false,
       textAlign: TextAlign.start,
-      style: Theme.of(context)
-          .textTheme
-          .subtitle1!
-          .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
+      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
       controller: widget.controller,
       cursorColor: Color(0xff000000) != Theme.of(context).backgroundColor
           ? Color(0xffFFFFFF)

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:Soc/src/modules/google_drive/model/sheet.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
