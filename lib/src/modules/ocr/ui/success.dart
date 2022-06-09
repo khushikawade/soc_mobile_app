@@ -92,6 +92,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         // Utility.showSnackBar(_scaffoldKey,
                         //     'Please select the earned point', context, null);
                       } else {
+                        updateDetails();
                         if (nameController.text.isNotEmpty &&
                             nameController.text.length >= 3 &&
                             idController.text.isNotEmpty) {
@@ -172,7 +173,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                       pointPossible: widget.pointPossible,
                                     )),
                           );
-                          if (result==true) {
+                          if (result == true) {
                             setState(() {
                               isBackFromCamera = result;
                             });
@@ -377,6 +378,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 return null;
               }
             },
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              FilteringTextInputFormatter.allow(
+                  RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
+            ],
           ),
           SpacerWidget(_KVertcalSpace / 2),
           Center(
@@ -479,6 +485,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 return null;
               }
             },
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              FilteringTextInputFormatter.allow(
+                  RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
+            ],
           ),
           SpacerWidget(_KVertcalSpace / 2),
           Center(
@@ -627,11 +638,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
       required validator,
       TextInputType? keyboardType,
       required bool? isFailure,
-      String? errormsg}) {
+      String? errormsg,
+      List<TextInputFormatter>? inputFormatters}) {
     return TextFormField(
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
-        ],
+        inputFormatters: inputFormatters == null ? null : inputFormatters,
         autovalidateMode: AutovalidateMode.always,
         keyboardType: keyboardType ?? null,
         //        //textAlign: TextAlign.start,

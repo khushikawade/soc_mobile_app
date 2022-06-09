@@ -85,6 +85,7 @@ dependencies:
   mime_type: ^1.0.0
   excel:
   flutter_typeahead: ^3.1.0
+  wakelock: ^0.6.1+2
 
   
 

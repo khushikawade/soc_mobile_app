@@ -74,6 +74,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 child: IconButton(
                   color: AppTheme.kButtonColor,
                   onPressed: () {
+                    widget.update!(false);
                     Navigator.pop(context);
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
