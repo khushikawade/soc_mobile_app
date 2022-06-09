@@ -215,7 +215,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               schoolId: event.schoolId,
               standardId: event.standardId);
 
-          Globals.lastDeshboardId = dashboardId!;
+          Globals.lastDeshboardId = dashboardId;
 
           if (dashboardId != '') {
             bool result = await saveResultToDashboard(
