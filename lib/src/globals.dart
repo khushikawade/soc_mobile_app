@@ -118,6 +118,9 @@ class Globals {
   static String? shareableLink;
   static String? pointpossible = '2';
   static String? assessmentName;
+  static int? scanMoreStudentInfoLength;
+  static String lastDeshboardId = '';
+  
 
   static String? scoringRubric;
 

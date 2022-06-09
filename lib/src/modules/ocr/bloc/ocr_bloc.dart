@@ -2,7 +2,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
-import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -21,6 +20,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   final DbServices _dbServices = DbServices();
   // final HiveDbServices _localDbService = HiveDbServices();
   OcrState get initialState => OcrInitial();
+  String grade = '';
+  String selectedSubject = '';
+  // String? DeshboardId;
 
   @override
   Stream<OcrState> mapEventToState(
@@ -98,7 +100,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         } else if (event.type == 'nycSub') {
           for (int i = 0; i < data.length; i++) {
             if (data[i]
-                .descriptionC!
+                .standardAndDescriptionC!
                 .toUpperCase()
                 .contains(event.searchKeyword!.toUpperCase())) {
               list.add(data[i]);
@@ -180,32 +182,63 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         print("calling save record to sales Force");
         yield OcrLoading();
 
-        String id = await saveAssessmentToDashboard(
-            assessmentName: event.assessmentName,
-            rubicScore: await rubricPickList(event.rubricScore),
-            subjectId: event.subjectId,
-            schoolId: event.schoolId,
-            standardId: event.standardId);
+        if (event.previouslyAddedListLength != null &&
+            event.previouslyAddedListLength! < Globals.studentInfo!.length) {
+          List<StudentAssessmentInfo> _list = Globals.studentInfo!;
+          _list.removeRange(0, event.previouslyAddedListLength!);
 
-        if (id != '') {
-          bool result = await saveResultToDashboard(
-              assessmentId: id, studentDetails: Globals.studentInfo!);
+          if (Globals.lastDeshboardId != '') {
+            bool result = await saveResultToDashboard(
+                assessmentId: Globals.lastDeshboardId, studentDetails: _list);
 
-          if (!result) {
-            saveResultToDashboard(
-                assessmentId: id, studentDetails: Globals.studentInfo!);
+            if (!result) {
+              saveResultToDashboard(
+                  assessmentId: Globals.lastDeshboardId, studentDetails: _list);
+            } else {
+              //print("result Record is saved on DB");
+
+              yield AssessmentSavedSuccessfully();
+            }
           } else {
-            //print("result Record is saved on DB");
-
-            yield AssessmentSavedSuccessfully();
+            Utility.showSnackBar(
+                event.scaffoldKey,
+                'Unable to save the result. Please try again.',
+                event.context,
+                null);
+            throw ('something went wrong');
           }
         } else {
-          Utility.showSnackBar(
-              event.scaffoldKey,
-              'Unable to save the result. Please try again.',
-              event.context,
-              null);
-          throw ('something went wrong');
+          String dashboardId = await saveAssessmentToDashboard(
+              assessmentName: event.assessmentName,
+              rubicScore: await rubricPickList(event.rubricScore),
+              subjectId: event.subjectId,
+              schoolId: event.schoolId,
+              standardId: event.standardId);
+
+          Globals.lastDeshboardId = dashboardId!;
+
+          if (dashboardId != '') {
+            bool result = await saveResultToDashboard(
+                assessmentId: dashboardId,
+                studentDetails: Globals.studentInfo!);
+
+            if (!result) {
+              saveResultToDashboard(
+                  assessmentId: dashboardId,
+                  studentDetails: Globals.studentInfo!);
+            } else {
+              //print("result Record is saved on DB");
+
+              yield AssessmentSavedSuccessfully();
+            }
+          } else {
+            Utility.showSnackBar(
+                event.scaffoldKey,
+                'Unable to save the result. Please try again.',
+                event.context,
+                null);
+            throw ('something went wrong');
+          }
         }
       } catch (e) {
         throw (e);
@@ -253,8 +286,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<List<SubjectDetailList>> fatchSubjectDetails(
       {required String type, required String keyword}) async {
     try {
-      String grade = '';
-      String selectedSubject = '';
+      // String grade = '';
+      // String selectedSubject = '';
       //Local list managing
       LocalDatabase<SubjectDetailList> _localDb =
           LocalDatabase(Strings.ocrSubjectObjectName);
