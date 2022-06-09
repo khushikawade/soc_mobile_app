@@ -12,11 +12,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-<<<<<<< HEAD
-import 'package:flutter/material.dart';
 import 'package:wakelock/wakelock.dart';
-=======
->>>>>>> origin/OCR_dev_main
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
@@ -61,11 +57,8 @@ class _CameraScreenState extends State<CameraScreen>
   bool _isCameraInitialized = false;
   bool isflashOff = true;
   bool flash = false;
-<<<<<<< HEAD
-=======
   FlashMode? _currentFlashMode;
   int? scanMoreAssesmentList;
->>>>>>> origin/OCR_dev_main
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
