@@ -29,10 +29,10 @@ class StudentAssessmentInfo {
           studentId: json['Id'] as String?,
           studentGrade: json['Points Earned'] as String?,
           pointpossible: json['Point Possible'] as String?,
-          grade: json['Grade'] as String,
-          subject: json['Subject'] as String,
-          learningStandard: json['Learning Standard'] as String,
-          subLearningStandard: json['Sub Learning Standard'] as String,
-          scoringRubric: json['Scoring Rubric'] as String,
-          customRubricImage: json['Custom Rubric Image'] as String);
+          grade: json['Grade'] as String?,
+          subject: json['Subject'] as String?,
+          learningStandard: json['Learning Standard'] as String?,
+          subLearningStandard: json['Sub Learning Standard'] as String?,
+          scoringRubric: json['Scoring Rubric'] as String?,
+          customRubricImage: json['Custom Rubric Image'] as String?);
 }
