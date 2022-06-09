@@ -703,14 +703,19 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   void updateDetails({bool? isUpdateData}) {
     if (isUpdateData == true && Globals.studentInfo != null) {
-      Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
-      StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
-      studentAssessmentInfo.studentName = nameController.text;
-      studentAssessmentInfo.studentId = idController.text;
-      studentAssessmentInfo.studentGrade = pointScored;
-      studentAssessmentInfo.pointpossible = Globals.pointpossible;
-      //studentAssessmentInfo.assessmentName = Globals.assessmentName;
-      Globals.studentInfo!.add(studentAssessmentInfo);
+      Globals.studentInfo!.last.studentName = nameController.text;
+      Globals.studentInfo!.last.studentId = idController.text;
+      Globals.studentInfo!.last.studentGrade = pointScored;
+      Globals.studentInfo!.last.pointpossible = Globals.pointpossible;
+
+      // Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
+      // StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
+      // studentAssessmentInfo.studentName = nameController.text;
+      // studentAssessmentInfo.studentId = idController.text;
+      // studentAssessmentInfo.studentGrade = pointScored;
+      // studentAssessmentInfo.pointpossible = Globals.pointpossible;
+      // //studentAssessmentInfo.assessmentName = Globals.assessmentName;
+      // Globals.studentInfo!.add(studentAssessmentInfo);
     } else {
       if (Globals.studentInfo == null) {
         final StudentAssessmentInfo studentAssessmentInfo =

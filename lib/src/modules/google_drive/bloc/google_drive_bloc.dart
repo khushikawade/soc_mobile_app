@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -564,6 +565,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   Future<String> downloadFile(String url, String fileName, String dir) async {
     try {
+      // Dio dio = Dio();
+      // var imageDownloadPath = '$dir/$fileName';
+      // await dio.download(url, imageDownloadPath,
+      //     onReceiveProgress: (rec, total) {
+      //   print("Rec: $rec , Total: $total");
+      //   print(((rec / total) * 100).toStringAsFixed(0) + "%");
+      // });
+      // return imageDownloadPath;
+
       HttpClient httpClient = new HttpClient();
       File file;
       String filePath = '';

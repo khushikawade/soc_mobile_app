@@ -616,14 +616,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         Globals.studentInfo![i].subject = subject;
                         Globals.studentInfo![i].learningStandard =
                             learningStandard == null ? "NA" : learningStandard;
-                        Globals.studentInfo![i].learningStandard =
+                        Globals.studentInfo![i].subLearningStandard =
                             subLearningStandard == null
                                 ? "NA"
                                 : subLearningStandard;
                         Globals.studentInfo![i].scoringRubric =
                             Globals.scoringRubric;
                         Globals.studentInfo![i].customRubricImage =
-                            rubricImgUrl;
+                            rubricImgUrl ?? "NA";
+                        Globals.studentInfo![i].grade = widget.selectedClass;
                       }
 
                       // list.forEach(
