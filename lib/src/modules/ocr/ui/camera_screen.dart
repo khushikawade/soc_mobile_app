@@ -193,7 +193,9 @@ class _CameraScreenState extends State<CameraScreen>
                         //         assessmentImage: element.assessmentImage));
                         //   },
                         // );
-
+                        if(Globals.studentInfo![0].studentId=='Id'){
+                          Globals.studentInfo!.removeAt(0);
+                        }
                         _driveBloc.add(UpdateDocOnDrive(
                             studentData: Globals.studentInfo!));
 

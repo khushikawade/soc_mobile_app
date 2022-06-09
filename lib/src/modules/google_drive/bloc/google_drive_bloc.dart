@@ -112,11 +112,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
-        // if (assessmentData!.length > 0) {
-        //   assessmentData.removeAt(0);
-        // }
+        if (assessmentData!.length > 0 && assessmentData[0].studentId == 'Id') {
+          assessmentData.removeAt(0);
+        }
 
-        assessmentData!.insert(
+        assessmentData.insert(
             0,
             StudentAssessmentInfo(
                 studentId: "Id",

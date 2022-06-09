@@ -14,9 +14,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:googleapis/calendar/v3.dart';
 import 'package:share/share.dart';
-
 import '../../../widgets/empty_container_widget.dart';
 import '../bloc/ocr_bloc.dart';
 

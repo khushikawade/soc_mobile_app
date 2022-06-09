@@ -178,26 +178,26 @@ class _OpticalCharacterRecognitionPageState
               updateLocalDb();
 
               _bloc.add(SaveSubjectListDetails());
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => CameraScreen(
-              //             scaffoldKey: _scaffoldKey,
-              //             isScanMore: false,
-              //             pointPossible: rubricScoreSelectedColor.value == 0
-              //                 ? '2'
-              //                 : rubricScoreSelectedColor.value == 2
-              //                     ? '3'
-              //                     : rubricScoreSelectedColor.value == 4
-              //                         ? '4'
-              //                         : '2',
-              //           )),
-              // );
-
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateAssessment()),
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          scaffoldKey: _scaffoldKey,
+                          isScanMore: false,
+                          pointPossible: rubricScoreSelectedColor.value == 0
+                              ? '2'
+                              : rubricScoreSelectedColor.value == 2
+                                  ? '3'
+                                  : rubricScoreSelectedColor.value == 4
+                                      ? '4'
+                                      : '2',
+                        )),
               );
+
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              // );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
