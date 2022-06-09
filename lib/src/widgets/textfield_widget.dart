@@ -26,15 +26,18 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         }
         return null;
       },
+
       autofocus: false,
       textAlign: TextAlign.start,
       style: Theme.of(context).textTheme.subtitle1!.copyWith(
             fontWeight: FontWeight.bold,
           ),
       controller: widget.controller,
-      cursorColor: Color(0xff000000) != Theme.of(context).backgroundColor
-          ? Color(0xffFFFFFF)
-          : Color(0xff000000), //Theme.of(context).colorScheme.primaryVariant,
+      cursorColor: //Theme.of(context).colorScheme.primaryVariant,
+          Color(0xff000000) == Theme.of(context).backgroundColor
+              ? Color(0xffFFFFFF)
+              : Color(
+                  0xff000000), //Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
         fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(

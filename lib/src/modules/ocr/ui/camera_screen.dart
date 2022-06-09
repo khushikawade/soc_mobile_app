@@ -12,6 +12,11 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+<<<<<<< HEAD
+import 'package:flutter/material.dart';
+import 'package:wakelock/wakelock.dart';
+=======
+>>>>>>> origin/OCR_dev_main
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
@@ -35,6 +40,7 @@ class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("inside applifecycle");
     final CameraController? cameraController = controller;
 
     // App state changed before we got the chance to initialize.
@@ -55,8 +61,11 @@ class _CameraScreenState extends State<CameraScreen>
   bool _isCameraInitialized = false;
   bool isflashOff = true;
   bool flash = false;
+<<<<<<< HEAD
+=======
   FlashMode? _currentFlashMode;
   int? scanMoreAssesmentList;
+>>>>>>> origin/OCR_dev_main
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -64,6 +73,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   void initState() {
+    Wakelock.enable();
     Globals.iscameraPopup
         ? WidgetsBinding.instance!
             .addPostFrameCallback((_) => _showStartDialog())
@@ -83,7 +93,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   void dispose() {
-    Utility.setFree();
+    Wakelock.disable();
     controller?.dispose();
     super.dispose();
   }
@@ -280,7 +290,7 @@ class _CameraScreenState extends State<CameraScreen>
                 Positioned(
                   bottom: 0.0,
                   child: Container(
-                    color: Colors.black,
+                    color: Colors.transparent,
                     height: MediaQuery.of(context).orientation ==
                             Orientation.portrait
                         ? MediaQuery.of(context).size.height * 0.15

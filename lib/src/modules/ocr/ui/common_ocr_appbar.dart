@@ -167,7 +167,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   : Container(),
           widget.assessmentDetailPage == true
               ? Container()
-              : widget.isSuccessState == false || widget.isResultScreen == true ||  widget.isbackOnSuccess ==true
+              : widget.isSuccessState == false ||
+                      widget.isResultScreen == true ||
+                      widget.isbackOnSuccess == true
                   ? widget.actionIcon!
                   // Container(
                   //     padding: widget.isSuccessState != false
@@ -401,8 +403,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       margin: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width / 1.9),
                       decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
                           borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: AppTheme.kSelectedColor,
+                          ),
                           boxShadow: [
                             BoxShadow(
                                 color: Colors.black.withOpacity(.1),
@@ -413,8 +421,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           CircleAvatar(
-                            backgroundColor:
-                                AppTheme.kButtonColor.withOpacity(0.4),
+                            backgroundColor: AppTheme.kButtonColor,
                             radius: 28.0,
                             child: ClipOval(
                                 child: CachedNetworkImage(
@@ -436,9 +443,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             style: Theme.of(context)
                                 .textTheme
                                 .headline3!
-                                .copyWith(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
+                                .copyWith(fontWeight: FontWeight.bold),
                           ),
                           SpacerWidget(
                             3.0,

@@ -17,6 +17,7 @@ import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
@@ -44,6 +45,11 @@ class _OpticalCharacterRecognitionPageState
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  int? lastIndex;
+  // bool? createCustomRubic = false;
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
   final ValueNotifier<int> pointPossibleSelectedColor = ValueNotifier<int>(1);
   final ValueNotifier<int> rubricScoreSelectedColor = ValueNotifier<int>(0);
   final ValueNotifier<bool> updateRubricList = ValueNotifier<bool>(false);
@@ -278,6 +284,14 @@ class _OpticalCharacterRecognitionPageState
           return InkWell(
               onTap: () {
                 pointPossibleSelectedColor.value = index + 1;
+                // if (RubricScoreList.scoringList[index].name == "Custom") {
+                //    if(rubricScoreSelectedColor.value){
+                //   customRubricBottomSheet();
+                //   //   }
+                // } else {
+                // lastIndex = index;
+                //To take the rubric name to result screen and save the same in excel sheet
+                Globals.scoringRubric = RubricScoreList.scoringList[index].name;
                 if (index == 0) {
                   rubricScoreSelectedColor.value = 0;
                 } else if (index == 1) {
@@ -285,6 +299,7 @@ class _OpticalCharacterRecognitionPageState
                 } else if (index == 2) {
                   rubricScoreSelectedColor.value = 4;
                 }
+                // }
               },
               child: AnimatedContainer(
                 padding: EdgeInsets.only(bottom: 5),
@@ -375,6 +390,7 @@ class _OpticalCharacterRecognitionPageState
                                 "Custom") {
                               customRubricBottomSheet();
                             } else {
+                              lastIndex = index;
                               Globals.scoringRubric =
                                   RubricScoreList.scoringList[index].name;
                             }
@@ -453,6 +469,18 @@ class _OpticalCharacterRecognitionPageState
 
 //To update the rubric score list
   void _update(bool value) {
+    if (!value) {
+      if (lastIndex == null) {
+        lastIndex = 0;
+      }
+      Globals.scoringRubric = RubricScoreList.scoringList[lastIndex!].name;
+      rubricScoreSelectedColor.value = lastIndex!;
+    } else {
+      updateRubricList.value = !updateRubricList.value;
+      rubricScoreSelectedColor.value = RubricScoreList.scoringList.length - 1;
+      Globals.scoringRubric = RubricScoreList.scoringList.last.name;
+    }
+
     if (value) {
       updateRubricList.value = !updateRubricList.value;
     }
