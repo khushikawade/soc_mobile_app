@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
@@ -58,7 +58,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Utility.textWidget(
-                    text: 'Assessment Summary',
+                    text: 'Assessment History',
                     context: context,
                     textTheme: Theme.of(context)
                         .textTheme

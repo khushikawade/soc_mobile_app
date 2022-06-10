@@ -3,7 +3,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
@@ -111,49 +111,60 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         ? MediaQuery.of(context).size.height * 0.85
                         : MediaQuery.of(context).size.width * 0.80,
                 child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
                   children: [
                     SpacerWidget(_KVertcalSpace * 0.50),
                     titleWidget(),
                     SpacerWidget(_KVertcalSpace / 3.5),
-                    SearchBar(
-                        controller: searchController,
-                        onSaved: (String value) {
-                          if (searchController.text.isEmpty) {
-                            _ocrBloc.add(FatchSubjectDetails(
-                                type: pageIndex.value == 0
-                                    ? 'subject'
-                                    : pageIndex.value == 1
-                                        ? 'nyc'
-                                        : 'nycSub',
-                                keyword: pageIndex.value == 0
-                                    ? widget.selectedClass
-                                    : pageIndex.value == 1
-                                        ? keyword
-                                        : keywordSub));
-                          } else {
-                            _debouncer.run(() async {
-                              pageIndex.value == 0
-                                  ? searchList(
-                                      classNo: widget.selectedClass!,
-                                      searchKeyword: searchController.text)
-                                  : null;
+                    ValueListenableBuilder(
+                        valueListenable: pageIndex,
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          return pageIndex.value == 0
+                              ? Container()
+                              : SearchBar(
+                                  controller: searchController,
+                                  onSaved: (String value) {
+                                    if (searchController.text.isEmpty) {
+                                      _ocrBloc.add(FatchSubjectDetails(
+                                          type: pageIndex.value == 0
+                                              ? 'subject'
+                                              : pageIndex.value == 1
+                                                  ? 'nyc'
+                                                  : 'nycSub',
+                                          keyword: pageIndex.value == 0
+                                              ? widget.selectedClass
+                                              : pageIndex.value == 1
+                                                  ? keyword
+                                                  : keywordSub));
+                                    } else {
+                                      _debouncer.run(() async {
+                                        pageIndex.value == 0
+                                            ? searchList(
+                                                classNo: widget.selectedClass!,
+                                                searchKeyword:
+                                                    searchController.text)
+                                            : null;
 
-                              _ocrBloc.add(SearchSubjectDetails(
-                                  searchKeyword: searchController.text,
-                                  type: pageIndex.value == 0
-                                      ? 'subject'
-                                      : pageIndex.value == 1
-                                          ? 'nyc'
-                                          : 'nycSub',
-                                  keyword: pageIndex.value == 0
-                                      ? widget.selectedClass
-                                      : pageIndex.value == 1
-                                          ? keyword
-                                          : keywordSub));
-                              setState(() {});
-                            });
-                          }
+                                        _ocrBloc.add(SearchSubjectDetails(
+                                            searchKeyword:
+                                                searchController.text,
+                                            type: pageIndex.value == 0
+                                                ? 'subject'
+                                                : pageIndex.value == 1
+                                                    ? 'nyc'
+                                                    : 'nycSub',
+                                            keyword: pageIndex.value == 0
+                                                ? widget.selectedClass
+                                                : pageIndex.value == 1
+                                                    ? keyword
+                                                    : keywordSub));
+                                        setState(() {});
+                                      });
+                                    }
+                                  });
                         }),
                     SpacerWidget(_KVertcalSpace / 4),
                     blocBuilderWidget(),
@@ -252,6 +263,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       valueListenable: nycSubIndex1,
       builder: (BuildContext context, dynamic value, Widget? child) {
         return Container(
+          padding: EdgeInsets.only(bottom: 50),
           height: MediaQuery.of(context).orientation == Orientation.portrait
               ? MediaQuery.of(context).size.height * 0.65
               : MediaQuery.of(context).size.width * 0.50,
@@ -368,7 +380,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   Widget progressIndicatorBar() {
     return ValueListenableBuilder(
       valueListenable: pageIndex,
-      child: Container(),
+      child: Container(
+        height: 0,
+      ),
       builder: (BuildContext context, dynamic value, Widget? child) {
         return ValueListenableBuilder(
             valueListenable: isSubmitButton,
@@ -414,6 +428,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       child: Container(),
       builder: (BuildContext context, dynamic value, Widget? child) {
         return Container(
+          padding: EdgeInsets.only(bottom: 50),
           height: MediaQuery.of(context).orientation == Orientation.portrait
               ? MediaQuery.of(context).size.height * 0.62
               : MediaQuery.of(context).size.width * 0.30,

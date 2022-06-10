@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/ocr/ui/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
