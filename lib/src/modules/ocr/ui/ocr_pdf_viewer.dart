@@ -31,7 +31,7 @@ class _OcrPdfViewerState extends State<OcrPdfViewer> {
 
   String? pdfPath;
   PDFDocument? document;
-
+ final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   changePDF() async {
     document = await PDFDocument.fromURL(
       widget.url!,
@@ -80,7 +80,7 @@ class _OcrPdfViewerState extends State<OcrPdfViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
         // backgroundColor: Colors.white,
-        appBar: CustomOcrAppBarWidget(key: GlobalKey(), isBackButton: true),
+        appBar: CustomOcrAppBarWidget(key: GlobalKey(), isBackButton: true,isbackOnSuccess: isBackFromCamera),
         body: widget.url != null && widget.url != ""
             ? document == null
                 ? Center(

@@ -50,6 +50,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
   int? assessmentListLenght;
+   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -87,6 +88,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+                   isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: widget.assessmentDetailPage,
               assessmentDetailPage: widget.assessmentDetailPage,

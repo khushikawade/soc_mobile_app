@@ -5,7 +5,6 @@ import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
@@ -376,7 +375,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         var data = response.data
             //   ['body']
             ['files'];
-        print(data);
+        // print(data);
         return data[0];
         // for (int i = 0; i < data.length; i++) {
         //   if (data[i]['name'] == folderName &&

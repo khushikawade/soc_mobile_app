@@ -56,7 +56,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<int> nycSubIndex1 =
       ValueNotifier<int>(5000); //To bypass the default selection
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
-
+  final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   @override
   initState() {
     _ocrBloc.add(
@@ -79,6 +79,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
+                isbackOnSuccess: isBackFromCamera,
                 //key: null,
                 isBackButton: true,
                 key: null,

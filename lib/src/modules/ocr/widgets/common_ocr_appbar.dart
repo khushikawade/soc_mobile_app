@@ -10,6 +10,7 @@ import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../services/local_database/local_db.dart';
@@ -31,7 +32,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.actionIcon,
       this.scaffoldKey,
       this.customBackButton,
-      this.isbackOnSuccess})
+      required this.isbackOnSuccess})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isSuccessState;
@@ -43,7 +44,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? assessmentPage;
   Widget? actionIcon;
   Widget? customBackButton;
-  bool? isbackOnSuccess;
+  ValueListenable<bool>? isbackOnSuccess;
 
   final scaffoldKey;
 
@@ -73,7 +74,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Utility.textWidget(
-                          text: 'Scan Failure',
+                          text: 'Manual Entry',
                           context: context,
                           textTheme: Theme.of(context)
                               .textTheme
@@ -146,6 +147,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                           if (widget.isHomeButtonPopup == true) {
                             _onHomePressed();
                           } else {
+                            Utility.setFree();
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                     builder: (context) => HomePage()),
@@ -168,8 +170,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           widget.assessmentDetailPage == true
               ? Container()
               : widget.isSuccessState == false ||
-                      widget.isResultScreen == true ||
-                      widget.isbackOnSuccess == true
+                      widget.isResultScreen == true 
+                      // ||
+                      // widget.isbackOnSuccess == true
                   ? widget.actionIcon!
                   // Container(
                   //     padding: widget.isSuccessState != false
@@ -195,7 +198,12 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   //       ),
                   //     ),
                   //   )
-                  : Container(),
+                  : ValueListenableBuilder(
+                      valueListenable: widget.isbackOnSuccess!,
+                      builder:
+                          (BuildContext context, dynamic value, Widget? child) {
+                        return value == true ? widget.actionIcon! : Container();
+                      }),
           Container(
             margin: EdgeInsets.all(10),
             padding: widget.isSuccessState != false

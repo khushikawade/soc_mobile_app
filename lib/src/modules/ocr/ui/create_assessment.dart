@@ -26,6 +26,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   // final ScrollController listScrollController = ScrollController();
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
+  final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //   FloatingActionButtonLocation.centerFloat,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: false,
               isHomeButtonPopup: true,
@@ -85,6 +87,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
               key: _formKey,
               child: ListView(children: [
                 Container(
+                  // color: Colors.red,
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   height:
                       MediaQuery.of(context).orientation == Orientation.portrait
@@ -182,7 +185,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
             height: MediaQuery.of(context).orientation == Orientation.portrait
-                ? MediaQuery.of(context).size.height * 0.4
+                ? MediaQuery.of(context).size.height * 0.45
                 : MediaQuery.of(context).size.width * 0.35,
             child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),

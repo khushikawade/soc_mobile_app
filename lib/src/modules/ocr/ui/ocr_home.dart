@@ -21,7 +21,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -53,9 +52,10 @@ class _OpticalCharacterRecognitionPageState
   final ValueNotifier<int> pointPossibleSelectedColor = ValueNotifier<int>(1);
   final ValueNotifier<int> rubricScoreSelectedColor = ValueNotifier<int>(0);
   final ValueNotifier<bool> updateRubricList = ValueNotifier<bool>(false);
-
+ final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   @override
   void initState() {
+    Utility.setLocked();
     // Globals.gradeList.clear();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
@@ -71,6 +71,7 @@ class _OpticalCharacterRecognitionPageState
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+                 isbackOnSuccess: isBackFromCamera,
             key: GlobalKey(),
             isBackButton: false,
           ),
