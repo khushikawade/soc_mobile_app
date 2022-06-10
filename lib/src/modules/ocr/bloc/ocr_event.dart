@@ -86,3 +86,14 @@ class SaveAssessmentToDashboard extends OcrEvent {
   @override
   List<Object> get props => [];
 }
+
+class FetchStudentDetails extends OcrEvent {
+  final String ossId;
+  
+  FetchStudentDetails({required this.ossId});
+
+  @override
+  List<Object> get props => [ossId];
+
+  //String toString() => 'GlobalSearchEvent { keyword: $base64}';
+}

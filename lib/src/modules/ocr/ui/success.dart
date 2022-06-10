@@ -6,7 +6,7 @@ import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
+import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -223,12 +223,26 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     //   ),
                     // );
                   } else if (state is FetchTextFromImageSuccess) {
+                    nameController.text = state.studentName!;
+                    onChange == false
+                        ? idController.text = state.studentId!
+                        : null;
+                    pointScored = state.grade;
                     // idController.text = state.studentId!;
                     // nameController.text = state.studentName!;
                     // Globals.gradeList.add(state.grade!);
                     return successScreen(
                         id: state.studentId!, grade: state.grade!);
                   } else if (state is FetchTextFromImageFailure) {
+                    onChange == false
+                        ? idController.text = state.studentId ?? ''
+                        : state.studentId == ''
+                            ? studentId
+                            : null;
+                    onChange == false
+                        ? nameController.text = state.studentName ?? ''
+                        : null;
+                    pointScored = state.grade;
                     // idController.text = state.studentId!;
                     // nameController.text =
                     //     onChange == true ? state.studentName! : studentName;
