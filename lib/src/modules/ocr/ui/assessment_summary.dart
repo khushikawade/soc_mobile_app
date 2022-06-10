@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
+// import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
+// import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 
 class AssessmentSummary extends StatefulWidget {
   AssessmentSummary({Key? key}) : super(key: key);
