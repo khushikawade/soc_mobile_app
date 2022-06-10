@@ -152,54 +152,31 @@ class _CameraScreenState extends State<CameraScreen>
 
                     if (Globals.studentInfo!.length > 0) {
                       if (widget.isScanMore == true) {
-                        // List<StudentAssessmentInfo> list = Globals.studentInfo!;
-                        // Globals.studentInfo = [];
-
-                        Globals.studentInfo!.forEach((element) {
-                          element.subject = Globals.studentInfo![0].subject;
-                          element.learningStandard =
-                              Globals.studentInfo![0].learningStandard == null
-                                  ? "NA"
-                                  : Globals.studentInfo![0].learningStandard;
-                          element.subLearningStandard =
-                              Globals.studentInfo![0].subLearningStandard ==
-                                      null
-                                  ? "NA"
-                                  : Globals.studentInfo![0].subLearningStandard;
-                          element.scoringRubric = Globals.scoringRubric;
-                          element.customRubricImage =
-                              Globals.studentInfo![0].customRubricImage ?? "NA";
-                          element.grade = Globals
-                              .studentInfo![0].grade; //widget.selectedClass;
-                        });
-                        // String subject = list.first.subject!;
-                        // String selectedClass = list.first.grade!;
-                        // String learningStandard = list.first.learningStandard!;
-                        // String subLearningStandard =
-                        //     list.first.subLearningStandard!;
-                        // String scoringRubric = list.first.scoringRubric!;
-                        // String customRubricImage =
-                        //     list.first.customRubricImage!;
-
-                        // list.forEach(
-                        //   (StudentAssessmentInfo element) {
-                        //     Globals.studentInfo!.add(StudentAssessmentInfo(
-                        //         studentName: element.studentName,
-                        //         studentId: element.studentId,
-                        //         studentGrade: element.studentGrade,
-                        //         pointpossible: element.pointpossible,
-                        //         grade: selectedClass,
-                        //         subject: subject,
-                        //         learningStandard: learningStandard,
-                        //         subLearningStandard: subLearningStandard,
-                        //         scoringRubric: scoringRubric,
-                        //         customRubricImage: customRubricImage,
-                        //         assessmentImage: element.assessmentImage));
-                        //   },
-                        // );
+                        //To remove the titles if exist in the list
                         if (Globals.studentInfo![0].studentId == 'Id') {
                           Globals.studentInfo!.removeAt(0);
                         }
+
+                        //To copy the static content in the sheet
+                        Globals.studentInfo!.forEach((element) {
+                          element.subject = Globals.studentInfo!.last.subject;
+                          element.learningStandard =
+                              Globals.studentInfo!.last.learningStandard == null
+                                  ? "NA"
+                                  : Globals.studentInfo!.last.learningStandard;
+                          element.subLearningStandard = Globals
+                                      .studentInfo!.last.subLearningStandard ==
+                                  null
+                              ? "NA"
+                              : Globals.studentInfo!.last.subLearningStandard;
+                          element.scoringRubric = Globals.scoringRubric;
+                          element.customRubricImage =
+                              Globals.studentInfo!.last.customRubricImage ??
+                                  "NA";
+                          element.grade = Globals
+                              .studentInfo!.last.grade; //widget.selectedClass;
+                        });
+
                         _driveBloc.add(UpdateDocOnDrive(
                             studentData: Globals.studentInfo!));
 
@@ -227,35 +204,7 @@ class _CameraScreenState extends State<CameraScreen>
                           context,
                           null);
                     }
-
-                    // Globals.googleExcelSheetId = "";
-                    // Globals.studentInfo!.length > 0
-                    //     ? widget.isScanMore == true
-                    //         ? Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) => ResultsSummary(
-                    //                       assessmentDetailPage: false,
-                    //                     )),
-                    //           )
-                    //         : Navigator.pushReplacement(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) => CreateAssessment()),
-                    //           )
-                    //     : Utility.showSnackBar(
-                    //         _scaffoldKey,
-                    //         "No Assessment Found! Scan Assessment Before Moving Forword",
-                    //         context,
-                    //         null);
                   },
-                  // icon: Icon(
-                  //   IconData(0xe877,
-                  //       fontFamily: Overrides.kFontFam,
-                  //       fontPackage: Overrides.kFontPkg),
-                  //   color: AppTheme.kButtonColor,
-                  //   size: 30,
-                  // ),
                 )),
             Globals.studentInfo!.length == 0
                 ? IconButton(
@@ -266,9 +215,6 @@ class _CameraScreenState extends State<CameraScreen>
                     },
                     icon: Icon(
                       Icons.close,
-                      // IconData(0xe80d,
-                      //     fontFamily: Overrides.kFontFam,
-                      //     fontPackage: Overrides.kFontPkg),
                       color: AppTheme.kButtonColor,
                     ),
                   )
@@ -346,46 +292,6 @@ class _CameraScreenState extends State<CameraScreen>
       ),
     );
   }
-
-  // Future<void> _checkPermission() async {
-  //   final status = await Permission.camera.request();
-  //   // final serviceStatus = Permission.camera.status;
-
-  //   if (status.isDenied) {
-  //     Navigator.pop(context);
-  //   } else if (status.isPermanentlyDenied) {
-  //     // Navigator.pushReplacement(
-  //     //   context,
-  //     //   MaterialPageRoute(builder: (context) => OpticalCharacterRecognition()),
-  //     // );
-  //     Utility.showSnackBar(widget.scaffoldKey, 'For access camera you need to enable camera permission from settings', context, null);
-  //      Navigator.pushReplacement(
-  //                         context,
-  //                         MaterialPageRoute(
-  //                             builder: (context) => OpticalCharacterRecognition()),
-  //                       );
-  //    // Navigator.pop(context);
-  //     // print(
-  //     //     'isPermanentlyDenied --------------------------------#################');
-  //   } else {
-  //     // print('granted-----------------------------------');
-  //   }
-
-  //   //
-  //   //print('Turn on location services before requesting permission.');
-
-  // }
-
-  //   final status = await Permission.locationWhenInUse.request();
-  //   if (status == PermissionStatus.granted) {
-  //     print('Permission granted');
-  //   } else if (status == PermissionStatus.denied) {
-  //     print('Permission denied. Show a dialog and again ask for the permission');
-  //   } else if (status == PermissionStatus.permanentlyDenied) {
-  //     print('Take the user to the settings page.');
-  //     await openAppSettings();
-  //   }
-  // }
 
   void onNewCameraSelected(CameraDescription cameraDescription) async {
     final previousCameraController = controller;
