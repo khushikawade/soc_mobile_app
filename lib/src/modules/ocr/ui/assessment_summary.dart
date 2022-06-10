@@ -80,23 +80,13 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                     isEvents: false),
                               );
                       }
-                      //  else if (state is GoogleNoAssessment) {
-                      //   return Container(
-                      //     height: MediaQuery.of(context).size.height * 0.7,
-                      //     child: Center(
-                      //         child: Text(
-                      //       "No assessment available",
-                      //       style: Theme.of(context).textTheme.bodyText1!,
-                      //     )),
-                      //   );
-                      // }
                       return Container(
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        )),
-                      );
+                          // height: MediaQuery.of(context).size.height * 0.7,
+                          // child: Center(
+                          //     child: CircularProgressIndicator(
+                          //   color: Theme.of(context).colorScheme.primaryVariant,
+                          // )),
+                          );
                     })
               ],
             ),
@@ -152,24 +142,11 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     ? Color(0xff111C20)
                     : Color(0xffE9ECEE)),
         child: ListTile(
-            // onTap: () {
-            //   _navigate(obj, index);
-            // },
             visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-            // contentPadding:
-            //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
             leading: Utility.textWidget(
                 text: list[index].title!.split('.')[0],
                 context: context,
                 textTheme: Theme.of(context).textTheme.headline2),
-            // title: TranslationWidget(
-            //     message: "No title",
-            //     fromLanguage: "en",
-            //     toLanguage: Globals.selectedLanguage,
-            //     builder: (translatedMessage) {
-            //       return Text(translatedMessage.toString(),
-            //           style: Theme.of(context).textTheme.bodyText1!);
-            //     }),
             trailing: InkWell(
               onTap: () {
                 list[index].webContentLink != null &&

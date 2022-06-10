@@ -88,24 +88,25 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     _navigatetoCameraSection();
                   } else {
                     if (_formKey1.currentState!.validate()) {
-                      if (!isSelected) {
-                        // Utility.showSnackBar(_scaffoldKey,
-                        //     'Please select the earned point', context, null);
-                      } else {
-                        updateDetails();
-                        if (nameController.text.isNotEmpty &&
-                            nameController.text.length >= 3 &&
-                            idController.text.isNotEmpty) {
-                          _bloc.add(SaveStudentDetails(
-                              studentName: nameController.text,
-                              studentId: idController.text));
-                          String imgExtension = widget.imgPath.path.substring(
-                              widget.imgPath.path.lastIndexOf(".") + 1);
-                          _googleDriveBloc.add(AssessmentImgToAwsBucked(
-                              imgBase64: widget.img64,
-                              imgExtension: imgExtension,
-                              studentId: idController.text));
-                        }
+                      // if (!isSelected) {
+                      // Utility.showSnackBar(_scaffoldKey,
+                      //     'Please select the earned point', context, null);
+                      // } else {
+                      updateDetails();
+                      if (nameController.text.isNotEmpty &&
+                          nameController.text.length >= 3 &&
+                          idController.text.isNotEmpty) {
+                        _bloc.add(SaveStudentDetails(
+                            studentName: nameController.text,
+                            studentId: idController.text));
+                        String imgExtension = widget.imgPath.path.substring(
+                            widget.imgPath.path.lastIndexOf(".") + 1);
+
+                        _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                            imgBase64: widget.img64,
+                            imgExtension: imgExtension,
+                            studentId: idController.text));
+                        // }
                         // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
                         _navigatetoCameraSection();
                       }

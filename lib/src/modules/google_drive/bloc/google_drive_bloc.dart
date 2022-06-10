@@ -43,10 +43,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         if (folderObject != 401) {
           if (folderObject == '') {
-            print(event.token);
+            print(
+                'Folder doesn\'t exist already. Creating new folder on drive');
             await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
             print("Folder created successfully");
+          } else if (folderObject.length == 0) {
+            print('No folder found');
           } else {
             print("Folder Id received : ${folderObject['id']}");
             print("Folder path received : ${folderObject['webViewLink']}");
@@ -293,6 +296,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //  int index = RubricScoreList.scoringList.length - 1;
 
         if (imgUrl != "") {
+          print('Image bucket URL received : $imgUrl');
           for (int i = 0; i < Globals.studentInfo!.length; i++) {
             if (Globals.studentInfo![i].studentId! == event.studentId) {
               print("updateing img url");
@@ -300,10 +304,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           }
         } else {
-          print("img is empty");
+          print("imgage is empty");
         }
 
-        print("printing imag url : $imgUrl");
+        // print("printing imag url : $imgUrl");
       } catch (e) {
         print("image upload error");
       }
@@ -357,9 +361,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-
+      print('https://www.googleapis.com/drive/v3/files?fields=*&q=' +
+          Uri.encodeFull(
+              'trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED%20GRADED%2B\''));
       final ResponseModel response = await _dbServices.getapiNew(
-          'https://www.googleapis.com/drive/v3/files?fields=*',
+          'https://www.googleapis.com/drive/v3/files?fields=*&q=trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\'',
+          // Uri.encodeFull(
+          //     '\'SOLVED GRADED%2B\''),
           //     '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files?fields=*',
           headers: headers,
           isGoogleAPI: true);
@@ -369,14 +377,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //   ['body']
             ['files'];
         print(data);
-        for (int i = 0; i < data.length; i++) {
-          if (data[i]['name'] == folderName &&
-              data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
-              data[i]["trashed"] == false) {
-            // print("folder is already exits : ${data[i]['id']}");
-            return data[i];
-          }
-        }
+        return data[0];
+        // for (int i = 0; i < data.length; i++) {
+        //   if (data[i]['name'] == folderName &&
+        //       data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
+        //       data[i]["trashed"] == false) {
+        //     // print("folder is already exits : ${data[i]['id']}");
+        // return data[i];
+        //   }
+        // }
       } else if (response.statusCode == 401) {
         print("Invalid credentials");
         return response.statusCode;
@@ -672,15 +681,4 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return "";
     }
   }
-
-  // Future updateLocalDb() async {
-  //   //Save user profile to locally
-  //   LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
-
-  //   await _localDb.clear();
-  //   RubricScoreList.scoringList.forEach((CustomRubicModal e) {
-  //     _localDb.addData(e);
-  //   });
-  //   print("rubic data is updated on local drive");
-  // }
 }

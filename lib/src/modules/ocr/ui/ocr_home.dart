@@ -184,26 +184,26 @@ class _OpticalCharacterRecognitionPageState
               updateLocalDb();
 
               _bloc.add(SaveSubjectListDetails());
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          scaffoldKey: _scaffoldKey,
-                          isScanMore: false,
-                          pointPossible: rubricScoreSelectedColor.value == 0
-                              ? '2'
-                              : rubricScoreSelectedColor.value == 2
-                                  ? '3'
-                                  : rubricScoreSelectedColor.value == 4
-                                      ? '4'
-                                      : '2',
-                        )),
-              );
-
               // Navigator.push(
               //   context,
-              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              //   MaterialPageRoute(
+              //       builder: (context) => CameraScreen(
+              //             scaffoldKey: _scaffoldKey,
+              //             isScanMore: false,
+              //             pointPossible: rubricScoreSelectedColor.value == 0
+              //                 ? '2'
+              //                 : rubricScoreSelectedColor.value == 2
+              //                     ? '3'
+              //                     : rubricScoreSelectedColor.value == 4
+              //                         ? '4'
+              //                         : '2',
+              //           )),
               // );
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
+              );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
@@ -507,91 +507,72 @@ class _OpticalCharacterRecognitionPageState
     });
   }
 
-  _onCameraPermissionDenied() {
-    return showDialog(
-        context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return AlertDialog(
-                backgroundColor: Colors.white,
-                title: Center(
-                  child: Container(
-                    padding: Globals.deviceType == 'phone'
-                        ? null
-                        : const EdgeInsets.only(top: 10.0),
-                    height: Globals.deviceType == 'phone'
-                        ? null
-                        : orientation == Orientation.portrait
-                            ? MediaQuery.of(context).size.height / 15
-                            : MediaQuery.of(context).size.width / 15,
-                    width: Globals.deviceType == 'phone'
-                        ? null
-                        : orientation == Orientation.portrait
-                            ? MediaQuery.of(context).size.width / 2
-                            : MediaQuery.of(context).size.height / 2,
-                    child: TranslationWidget(
-                        message:
-                            "For access camera you need to enable camera permission from settings",
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) {
-                          return Text(translatedMessage.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2!
-                                  .copyWith(color: Colors.black));
-                        }),
-                  ),
-                ),
-                actions: <Widget>[
-                  Container(
-                    height: 1,
-                    width: MediaQuery.of(context).size.height,
-                    color: Colors.grey.withOpacity(0.2),
-                  ),
-                  // TextButton(
-                  //   child: TranslationWidget(
-                  //       message: "No",
-                  //       fromLanguage: "en",
-                  //       toLanguage: Globals.selectedLanguage,
-                  //       builder: (translatedMessage) {
-                  //         return Text(translatedMessage.toString(),
-                  //             style: Theme.of(context)
-                  //                 .textTheme
-                  //                 .headline5!
-                  //                 .copyWith(
-                  //                   color: AppTheme.kButtonColor,
-                  //                 ));
-                  //       }),
-                  //   onPressed: () {
-                  //     //Globals.iscameraPopup = false;
-                  //     Navigator.pop(context, false);
-                  //   },
-                  // ),
-                  Center(
-                    child: TextButton(
-                      child: TranslationWidget(
-                          message: "OK",
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) {
-                            return Text(translatedMessage.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(
-                                      color: AppTheme.kButtonColor,
-                                    ));
-                          }),
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                      },
-                    ),
-                  )
-                ],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              );
-            }));
-  }
+  // _onCameraPermissionDenied() {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) =>
+  //           OrientationBuilder(builder: (context, orientation) {
+  //             return AlertDialog(
+  //               backgroundColor: Colors.white,
+  //               title: Center(
+  //                 child: Container(
+  //                   padding: Globals.deviceType == 'phone'
+  //                       ? null
+  //                       : const EdgeInsets.only(top: 10.0),
+  //                   height: Globals.deviceType == 'phone'
+  //                       ? null
+  //                       : orientation == Orientation.portrait
+  //                           ? MediaQuery.of(context).size.height / 15
+  //                           : MediaQuery.of(context).size.width / 15,
+  //                   width: Globals.deviceType == 'phone'
+  //                       ? null
+  //                       : orientation == Orientation.portrait
+  //                           ? MediaQuery.of(context).size.width / 2
+  //                           : MediaQuery.of(context).size.height / 2,
+  //                   child: TranslationWidget(
+  //                       message:
+  //                           "For access camera you need to enable camera permission from settings",
+  //                       fromLanguage: "en",
+  //                       toLanguage: Globals.selectedLanguage,
+  //                       builder: (translatedMessage) {
+  //                         return Text(translatedMessage.toString(),
+  //                             style: Theme.of(context)
+  //                                 .textTheme
+  //                                 .headline2!
+  //                                 .copyWith(color: Colors.black));
+  //                       }),
+  //                 ),
+  //               ),
+  //               actions: <Widget>[
+  //                 Container(
+  //                   height: 1,
+  //                   width: MediaQuery.of(context).size.height,
+  //                   color: Colors.grey.withOpacity(0.2),
+  //                 ),
+  //                 Center(
+  //                   child: TextButton(
+  //                     child: TranslationWidget(
+  //                         message: "OK",
+  //                         fromLanguage: "en",
+  //                         toLanguage: Globals.selectedLanguage,
+  //                         builder: (translatedMessage) {
+  //                           return Text(translatedMessage.toString(),
+  //                               style: Theme.of(context)
+  //                                   .textTheme
+  //                                   .headline5!
+  //                                   .copyWith(
+  //                                     color: AppTheme.kButtonColor,
+  //                                   ));
+  //                         }),
+  //                     onPressed: () {
+  //                       Navigator.pop(context, false);
+  //                     },
+  //                   ),
+  //                 )
+  //               ],
+  //               shape: RoundedRectangleBorder(
+  //                   borderRadius: BorderRadius.circular(12)),
+  //             );
+  //           }));
+  // }
 }
