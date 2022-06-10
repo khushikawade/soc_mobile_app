@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -78,7 +79,6 @@ class _CameraScreenState extends State<CameraScreen>
     //     ? scanMoreAssesmentList = Globals.studentInfo!.length
     //     : null;
 
-    Utility.setLocked();
     onNewCameraSelected(cameras[0]);
     // _checkPermission();
     super.initState();
@@ -105,21 +105,21 @@ class _CameraScreenState extends State<CameraScreen>
           leadingWidth: 200,
           leading: Row(
             children: [
-              // Globals.studentInfo!.length > 0
-              //     ? IconButton(
-              //         onPressed: () {
-              //           //To dispose the snackbar message before navigating back if exist
-              //           //    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-              //           Navigator.pop(context, true);
-              //         },
-              //         icon: Icon(
-              //           IconData(0xe80d,
-              //               fontFamily: Overrides.kFontFam,
-              //               fontPackage: Overrides.kFontPkg),
-              //           color: AppTheme.kButtonColor,
-              //         ),
-              //       )
-              //     : Container(),
+              Globals.studentInfo!.length > 0
+                  ? IconButton(
+                      onPressed: () {
+                        //To dispose the snackbar message before navigating back if exist
+                        //    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        Navigator.pop(context, true);
+                      },
+                      icon: Icon(
+                        IconData(0xe80d,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        color: AppTheme.kButtonColor,
+                      ),
+                    )
+                  : Container(),
               IconButton(
                   onPressed: () async {
                     setState(() {
@@ -159,22 +159,22 @@ class _CameraScreenState extends State<CameraScreen>
 
                         //To copy the static content in the sheet
                         Globals.studentInfo!.forEach((element) {
-                          element.subject = Globals.studentInfo!.last.subject;
+                          element.subject = Globals.studentInfo!.first.subject;
                           element.learningStandard =
-                              Globals.studentInfo!.last.learningStandard == null
+                              Globals.studentInfo!.first.learningStandard == null
                                   ? "NA"
-                                  : Globals.studentInfo!.last.learningStandard;
+                                  : Globals.studentInfo!.first.learningStandard;
                           element.subLearningStandard = Globals
-                                      .studentInfo!.last.subLearningStandard ==
+                                      .studentInfo!.first.subLearningStandard ==
                                   null
                               ? "NA"
-                              : Globals.studentInfo!.last.subLearningStandard;
+                              : Globals.studentInfo!.first.subLearningStandard;
                           element.scoringRubric = Globals.scoringRubric;
                           element.customRubricImage =
-                              Globals.studentInfo!.last.customRubricImage ??
+                              Globals.studentInfo!.first.customRubricImage ??
                                   "NA";
                           element.grade = Globals
-                              .studentInfo!.last.grade; //widget.selectedClass;
+                              .studentInfo!.first.grade; //widget.selectedClass;
                         });
 
                         _driveBloc.add(UpdateDocOnDrive(
@@ -224,70 +224,78 @@ class _CameraScreenState extends State<CameraScreen>
           automaticallyImplyLeading: false,
         ),
         body: _isCameraInitialized
-            ? Stack(children: [
-                controller!.buildPreview(),
-                Positioned(
-                  bottom: 0.0,
-                  child: Container(
-                    color: Colors.transparent,
-                    height: MediaQuery.of(context).orientation ==
-                            Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.15
-                        : MediaQuery.of(context).size.height * 0.25,
-                    width: MediaQuery.of(context).size.width,
-                    child: Center(
+            ? LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                return GestureDetector(
+                  onTapDown: (details) => onViewFinderTap(details, constraints),
+                  child: Stack(children: [
+                    Center(child: controller!.buildPreview()),
+                    Positioned(
+                      bottom: 0.0,
                       child: Container(
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.transparent,
-                              border:
-                                  Border.all(color: Colors.white, width: 5)),
-                          padding: EdgeInsets.all(3),
-                          child: InkWell(
-                            onTap: () async {
-                              HapticFeedback.vibrate();
-                              XFile? rawImage = await takePicture();
-                              File imageFile = File(rawImage!.path);
-                              final bytes =
-                                  File(rawImage.path).readAsBytesSync();
-                              String img64 = base64Encode(bytes);
+                        color: Colors.transparent,
+                        height: MediaQuery.of(context).orientation ==
+                                Orientation.portrait
+                            ? MediaQuery.of(context).size.height * 0.15
+                            : MediaQuery.of(context).size.height * 0.25,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Container(
+                              height: 60,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.transparent,
+                                  border: Border.all(
+                                      color: Colors.white, width: 5)),
+                              padding: EdgeInsets.all(3),
+                              child: InkWell(
+                                onTap: () async {
+                                  HapticFeedback.vibrate();
+                                  XFile? rawImage = await takePicture();
+                                  File imageFile = File(rawImage!.path);
+                                  final bytes =
+                                      File(rawImage.path).readAsBytesSync();
+                                  String img64 = base64Encode(bytes);
 
-                              //  File imageFile = File(rawImage!.path);
+                                  //  File imageFile = File(rawImage!.path);
 
-                              int currentUnix =
-                                  DateTime.now().millisecondsSinceEpoch;
-                              final directory =
-                                  await getApplicationDocumentsDirectory();
-                              String fileFormat =
-                                  imageFile.path.split('.').last;
+                                  int currentUnix =
+                                      DateTime.now().millisecondsSinceEpoch;
+                                  final directory =
+                                      await getApplicationDocumentsDirectory();
+                                  String fileFormat =
+                                      imageFile.path.split('.').last;
 
-                              await imageFile.copy(
-                                '${directory.path}/$currentUnix.$fileFormat',
-                              );
-                              print(widget.pointPossible);
-                              await controller!.setFlashMode(FlashMode.off);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => SuccessScreen(
-                                          isScanMore: widget.isScanMore,
-                                          img64: img64,
-                                          imgPath: imageFile,
-                                          pointPossible: widget.pointPossible,
-                                        )),
-                              );
-                            },
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle, color: Colors.white),
-                            ),
-                          )),
-                    ),
-                  ),
-                )
-              ])
+                                  await imageFile.copy(
+                                    '${directory.path}/$currentUnix.$fileFormat',
+                                  );
+                                  print(widget.pointPossible);
+                                  await controller!.setFlashMode(FlashMode.off);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SuccessScreen(
+                                              isScanMore: widget.isScanMore,
+                                              img64: img64,
+                                              imgPath: imageFile,
+                                              pointPossible:
+                                                  widget.pointPossible,
+                                            )),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white),
+                                ),
+                              )),
+                        ),
+                      ),
+                    )
+                  ]),
+                );
+              })
             : Container(),
       ),
     );
@@ -298,8 +306,11 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Instantiating the camera controller
     final CameraController cameraController = CameraController(
-        cameraDescription, ResolutionPreset.high,
-        imageFormatGroup: ImageFormatGroup.jpeg, enableAudio: false);
+      cameraDescription,
+      ResolutionPreset.high,
+      imageFormatGroup: ImageFormatGroup.jpeg,
+      enableAudio: false,
+    );
 
     // Dispose the previous controller
     await previousCameraController?.dispose();
@@ -399,5 +410,19 @@ class _CameraScreenState extends State<CameraScreen>
         );
       },
     );
+  }
+
+  void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
+    if (controller == null) {
+      return;
+    }
+
+    final offset = Offset(
+      details.localPosition.dx / constraints.maxWidth,
+      details.localPosition.dy / constraints.maxHeight,
+    );
+
+    controller!.setExposurePoint(offset);
+    controller!.setFocusPoint(offset);
   }
 }

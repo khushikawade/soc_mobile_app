@@ -51,7 +51,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool? valuechange;
 
-  bool? isBackFromCamera = false;
+  final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   // final ValueNotifier<String> stu = ValueNotifier<String>('');
 
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
@@ -83,7 +83,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   //     ?
                   IconButton(
                 onPressed: () {
-                  if (isBackFromCamera == true) {
+                  if (isBackFromCamera.value == true) {
                     updateDetails(isUpdateData: true);
                     _navigatetoCameraSection();
                   } else {
@@ -175,9 +175,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     )),
                           );
                           if (result == true) {
-                            setState(() {
-                              isBackFromCamera = result;
-                            });
+                            isBackFromCamera.value = result;
                           }
 
                           //UNCOMMENT below section for enableing the camera

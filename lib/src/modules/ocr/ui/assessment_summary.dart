@@ -26,7 +26,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-
+ final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   @override
   void initState() {
     _driveBloc.add(GetHistoryAssessmentFromDrive());
@@ -46,6 +46,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: true,
               assessmentDetailPage: true,
