@@ -718,13 +718,26 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     label: Row(
                       children: [
                         Utility.textWidget(
-                            text: 'Submit',
+                            text: 'Save to drive',
                             context: context,
                             textTheme: Theme.of(context)
                                 .textTheme
                                 .headline2!
                                 .copyWith(
                                     color: Theme.of(context).backgroundColor)),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Container(
+                          //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                          child: Image(
+                            width: Globals.deviceType == "phone" ? 25 : 30,
+                            height: Globals.deviceType == "phone" ? 25 : 30,
+                            image: AssetImage(
+                              "assets/images/drive_ico.png",
+                            ),
+                          ),
+                        ),
                       ],
                     ))
                 : Container();

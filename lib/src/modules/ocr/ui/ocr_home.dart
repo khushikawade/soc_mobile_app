@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -184,26 +185,26 @@ class _OpticalCharacterRecognitionPageState
               updateLocalDb();
 
               _bloc.add(SaveSubjectListDetails());
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          scaffoldKey: _scaffoldKey,
-                          isScanMore: false,
-                          pointPossible: rubricScoreSelectedColor.value == 0
-                              ? '2'
-                              : rubricScoreSelectedColor.value == 2
-                                  ? '3'
-                                  : rubricScoreSelectedColor.value == 4
-                                      ? '4'
-                                      : '2',
-                        )),
-              );
-
               // Navigator.push(
               //   context,
-              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              //   MaterialPageRoute(
+              //       builder: (context) => CameraScreen(
+              //             scaffoldKey: _scaffoldKey,
+              //             isScanMore: false,
+              //             pointPossible: rubricScoreSelectedColor.value == 0
+              //                 ? '2'
+              //                 : rubricScoreSelectedColor.value == 2
+              //                     ? '3'
+              //                     : rubricScoreSelectedColor.value == 4
+              //                         ? '4'
+              //                         : '2',
+              //           )),
               // );
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateAssessment()),
+              );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(
