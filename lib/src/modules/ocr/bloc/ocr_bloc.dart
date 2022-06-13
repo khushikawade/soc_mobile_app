@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -50,6 +51,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } catch (e) {
         yield FetchTextFromImageFailure(
             studentId: '', grade: '', studentName: '');
+        print(e);
+      }
+    }
+    if (event is FetchStudentDetails) {
+      try {
+        //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
+        //yield OcrLoading();
+        StudentDetails data = await fetchStudentDetails(event.ossId);
+        yield SuccessStudentDetails(studentName: "${data.firstNameC}' '${data.lastNameC}");
+        print(data);
+      } catch (e) {
         print(e);
       }
     }
@@ -123,7 +135,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         saveStudentToSalesforce(
             studentName: event.studentName, studentId: event.studentId);
-      } catch (e) {}
+      } catch (e) {
+        print(e);
+      }
     }
 
     if (event is VerifyUserWithDatabase) {
@@ -633,4 +647,22 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   //     throw (e);
   //   }
   // }
+
+  Future fetchStudentDetails(ossId) async {
+    try {
+      final ResponseModel response = await _dbServices.getapiNew(
+          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Student__c/studentOsis/$ossId",
+          isGoogleAPI: true);
+
+      if (response.statusCode == 200) {
+        StudentDetails res = StudentDetails.fromJson(response.data['body']);
+        print(res);
+        return res;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
 }

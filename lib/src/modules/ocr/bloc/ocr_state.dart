@@ -150,3 +150,14 @@ class AssessmentSavedSuccessfully extends OcrState {
   @override
   List<Object> get props => [obj];
 }
+
+class SuccessStudentDetails extends OcrState {
+  final String? studentName;
+  SuccessStudentDetails({this.studentName});
+  SuccessStudentDetails copyWith({final obj}) {
+    return SuccessStudentDetails(studentName: obj ?? this.studentName);
+  }
+
+  @override
+  List<Object> get props => [];
+}

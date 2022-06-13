@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
+import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -460,6 +460,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 );
                               } else if (index == 3 &&
                                   dashoardState.value == '') {
+                                     Globals.scanMoreStudentInfoLength =
+                                    Globals.studentInfo!.length-1;
                                 if (widget.isScanMore == true &&
                                     widget.assessmentListLenght! <
                                         Globals.studentInfo!.length) {
@@ -589,8 +591,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
                 onPressed: () {
-                  Globals.scanMoreStudentInfoLength =
-                      Globals.studentInfo!.length;
+                  // Globals.scanMoreStudentInfoLength =
+                  //     Globals.studentInfo!.length;
                   Navigator.push(
                       context,
                       MaterialPageRoute(
