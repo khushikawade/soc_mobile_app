@@ -649,9 +649,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           // rubricScore = 'NA';
                         }
                       }
-                      //List<StudentAssessmentInfo> list = Globals.studentInfo!;
-                      // List<StudentAssessmentInfo> list2 = [];
-                      // Globals.studentInfo!.clear();
 
                       //Adding blank fields to the list : Static data
                       Globals.studentInfo!.forEach((element) {
@@ -667,41 +664,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         element.grade = widget.selectedClass;
                       });
 
-                      // for (int i = 0; i < Globals.studentInfo!.length; i++) {
-                      //   Globals.studentInfo![i].subject = subject;
-                      //   Globals.studentInfo![i].learningStandard =
-                      //       learningStandard == null ? "NA" : learningStandard;
-                      //   Globals.studentInfo![i].subLearningStandard =
-                      //       subLearningStandard == null
-                      //           ? "NA"
-                      //           : subLearningStandard;
-                      //   Globals.studentInfo![i].scoringRubric =
-                      //       Globals.scoringRubric;
-                      //   Globals.studentInfo![i].customRubricImage =
-                      //       rubricImgUrl ?? "NA";
-                      //   Globals.studentInfo![i].grade = widget.selectedClass;
-                      // }
-
-                      // list.forEach(
-                      //   (StudentAssessmentInfo element) {
-                      //     Globals.studentInfo!.add(StudentAssessmentInfo(
-                      //         studentName: element.studentName,
-                      //         studentId: element.studentId,
-                      //         studentGrade: element.studentGrade,
-                      //         pointpossible: element.pointpossible,
-                      //         grade: widget.selectedClass,
-                      //         subject: subject,
-                      //         learningStandard: learningStandard == null
-                      //             ? "NA"
-                      //             : learningStandard,
-                      //         subLearningStandard: subLearningStandard == null
-                      //             ? "NA"
-                      //             : subLearningStandard,
-                      //         scoringRubric: Globals.scoringRubric,
-                      //         customRubricImage: rubricImgUrl,
-                      //         assessmentImage: element.assessmentImage ?? ''));
-                      //   },
-                      // );
                       _googleDriveBloc.add(UpdateDocOnDrive(
                           studentData:
                               //list2
@@ -731,8 +693,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         Container(
                           //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
                           child: Image(
-                            width: Globals.deviceType == "phone" ? 25 : 30,
-                            height: Globals.deviceType == "phone" ? 25 : 30,
+                            width: Globals.deviceType == "phone" ? 23 : 28,
+                            height: Globals.deviceType == "phone" ? 23 : 28,
                             image: AssetImage(
                               "assets/images/drive_ico.png",
                             ),
