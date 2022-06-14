@@ -62,286 +62,319 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 : MediaQuery.of(context).size.height *
                     0.60, //MediaQuery.of(context).size.height * 0.5,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Color(0xffF7F8F9)
+              : Color(0xff111C20),
           borderRadius: BorderRadius.circular(15),
         ),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            // mainAxisSize: MainAxisSize.min,
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    },
-                    icon: Icon(
-                      Icons.clear,
-                      size: Globals.deviceType == "phone" ? 28 : 36,
-                    ),
-                  ),
-                  Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        border: Border.symmetric(horizontal: BorderSide.none),
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(15),
-                            topLeft: Radius.circular(15))),
-                    child: Container(
-                      alignment: Alignment.center,
-                      // padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Utility.textWidget(
-                          context: context,
-                          text: widget.title!,
-                          textTheme:
-                              Theme.of(context).textTheme.headline6!.copyWith(
-                                    color: Color(0xff000000) ==
-                                            Theme.of(context).backgroundColor
-                                        ? Color(0xffFFFFFF)
-                                        : Color(0xff000000),
-                                    fontSize: Globals.deviceType == "phone"
-                                        ? AppTheme.kBottomSheetTitleSize
-                                        : AppTheme.kBottomSheetTitleSize * 1.3,
-                                  )
-                          // textTheme: Theme.of(context)
-                          //     .textTheme
-                          //     .headline3!
-                          //     .copyWith(
-                          //         color: Colors.black,
-                          //         fontWeight: FontWeight.bold)
-                          ),
-                    ),
-                  ),
-                ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              icon: Icon(
+                Icons.clear,
+                size: Globals.deviceType == "phone" ? 28 : 36,
               ),
-              SizedBox(
-                height: 10,
+            ),
+            Container(
+              height: 60,
+              decoration: BoxDecoration(
+                  border: Border.symmetric(horizontal: BorderSide.none),
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(15),
+                      topLeft: Radius.circular(15))),
+              child: Container(
+                alignment: Alignment.center,
+                // padding: EdgeInsets.symmetric(vertical: 10),
+                child: Utility.textWidget(
+                    context: context,
+                    text: widget.title!,
+                    textTheme: Theme.of(context).textTheme.headline6!.copyWith(
+                          color: Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffFFFFFF)
+                              : Color(0xff000000),
+                          fontSize: Globals.deviceType == "phone"
+                              ? AppTheme.kBottomSheetTitleSize
+                              : AppTheme.kBottomSheetTitleSize * 1.3,
+                        )
+                    // textTheme: Theme.of(context)
+                    //     .textTheme
+                    //     .headline3!
+                    //     .copyWith(
+                    //         color: Colors.black,
+                    //         fontWeight: FontWeight.bold)
+                    ),
               ),
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            Form(
+              key: _formKey,
+              child: Expanded(
+                child: ListView(
+                  shrinkWrap: true,
+                  // mainAxisSize: MainAxisSize.min,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
-                      child: Utility.textWidget(
-                          context: context,
-                          text: widget.textFieldTitleOne!,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(color: Colors.black)),
+                    SizedBox(
+                      height: 10,
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
-                      child: TextFieldWidget(
-                          msg: "Field is required",
-                          controller: textFieldControllerOne,
-                          onSaved: (String value) {}),
-                    ),
-                  ]),
-              widget.textFieldTitleTwo != null
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
+                              horizontal: 20,
+                            ),
                             child: Utility.textWidget(
                                 context: context,
-                                text: widget.textFieldTitleTwo!,
+                                text: widget.textFieldTitleOne!,
                                 textTheme: Theme.of(context)
                                     .textTheme
                                     .subtitle1!
-                                    .copyWith(color: Colors.black)),
+                                    .copyWith(
+                                      color: Color(0xff000000) ==
+                                              Theme.of(context).backgroundColor
+                                          ? Color(0xffFFFFFF)
+                                          : Color(0xff000000),
+                                    )),
                           ),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                            ),
                             child: TextFieldWidget(
                                 msg: "Field is required",
-                                controller: textFieldController2,
+                                controller: textFieldControllerOne,
                                 onSaved: (String value) {}),
                           ),
-                        ])
-                  : Container(),
-              widget.isImageField!
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            child: Utility.textWidget(
-                                context: context,
-                                text: 'Add Image',
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(color: Colors.black)),
-                          ),
-                          SpacerWidget(5),
-                          // InkWell(
-                          //   onTap: () {
-                          //     showActionsheet(context);
-                          //   },
-                          //   child: Padding(
-                          //     padding: EdgeInsets.symmetric(
-                          //       horizontal: 20,
-                          //     ),
-                          //     child: textFormField(
-                          //         msg: "Add Name Please",
-                          //         controller: nameController,
-                          //         onSaved: (String value) {}),
-                          //   ),
-                          // ),
-                          SpacerWidget(10),
-                          InkWell(
-                            onTap: () {
-                              showActionsheet(context);
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 40,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    border: Border.all(
-                                        width: 2, color: Colors.grey.shade200),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                // color: Colors.grey.shade200,
+                        ]),
+                    widget.textFieldTitleTwo != null
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  child: Utility.textWidget(
+                                      context: context,
+                                      text: widget.textFieldTitleTwo!,
+                                      textTheme: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .copyWith(
+                                            color: Color(0xff000000) ==
+                                                    Theme.of(context)
+                                                        .backgroundColor
+                                                ? Color(0xffFFFFFF)
+                                                : Color(0xff000000),
+                                          )),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  child: TextFieldWidget(
+                                      msg: "Field is required",
+                                      controller: textFieldController2,
+                                      onSaved: (String value) {}),
+                                ),
+                              ])
+                        : Container(),
+                    widget.isImageField!
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  child: Utility.textWidget(
+                                      context: context,
+                                      text: 'Add Image',
+                                      textTheme: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .copyWith(
+                                            color: Color(0xff000000) ==
+                                                    Theme.of(context)
+                                                        .backgroundColor
+                                                ? Color(0xffFFFFFF)
+                                                : Color(0xff000000),
+                                          )),
+                                ),
+                                SpacerWidget(5),
+                                // InkWell(
+                                //   onTap: () {
+                                //     showActionsheet(context);
+                                //   },
+                                //   child: Padding(
+                                //     padding: EdgeInsets.symmetric(
+                                //       horizontal: 20,
+                                //     ),
+                                //     child: textFormField(
+                                //         msg: "Add Name Please",
+                                //         controller: nameController,
+                                //         onSaved: (String value) {}),
+                                //   ),
+                                // ),
+                                SpacerWidget(10),
+                                InkWell(
+                                  onTap: () {
+                                    showActionsheet(context);
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 40,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey.shade200,
+                                          border: Border.all(
+                                              width: 2,
+                                              color: Colors.grey.shade200),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                      // color: Colors.grey.shade200,
 
-                                height: 115,
-                                width: MediaQuery.of(context).size.width,
-                                child: imageFile != null
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.file(
-                                          imageFile!,
-                                          fit: BoxFit.fitWidth,
-                                        ),
-                                      )
-                                    : Container(
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.add_a_photo,
-                                            color: AppTheme.kButtonColor
-                                                .withOpacity(1.0),
-                                          ),
-                                        ),
-                                      ),
+                                      height: 115,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: imageFile != null
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image.file(
+                                                imageFile!,
+                                                fit: BoxFit.fitWidth,
+                                              ),
+                                            )
+                                          : Container(
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.add_a_photo,
+                                                  color: AppTheme.kButtonColor
+                                                      .withOpacity(1.0),
+                                                ),
+                                              ),
+                                            ),
 
-                                //  imageFile != null
-                                //     ? Image.file(
-                                //         imageFile!,
-                                //         fit: BoxFit.fitWidth,
-                                //       )
-                                //     : Container(
-                                //         child: Center(
-                                //           child: Icon(Icons.add_a_photo),
-                                //         ),
-                                //       ),
-                              ),
-                            ),
-                          ),
-                        ])
-                  : Container(),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-                child: FloatingActionButton.extended(
-                    backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        if (widget.isSubjectScreen!) {
-                          widget.valueChanged!(textFieldControllerOne);
-                        } else {
-                          // TODO submit
+                                      //  imageFile != null
+                                      //     ? Image.file(
+                                      //         imageFile!,
+                                      //         fit: BoxFit.fitWidth,
+                                      //       )
+                                      //     : Container(
+                                      //         child: Center(
+                                      //           child: Icon(Icons.add_a_photo),
+                                      //         ),
+                                      //       ),
+                                    ),
+                                  ),
+                                ),
+                              ])
+                        : Container(),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                      child: FloatingActionButton.extended(
+                          backgroundColor:
+                              AppTheme.kButtonColor.withOpacity(1.0),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              if (widget.isSubjectScreen!) {
+                                widget.valueChanged!(textFieldControllerOne);
+                              } else {
+                                // TODO submit
 
-                          print("calling submit");
-                          if (imageFile != null) {
-                            String imgExtension = imageFile!.path.substring(imageFile!.path.lastIndexOf(".")+1);
-                            print('Image Extension : $imgExtension');
-                            List<int> imageBytes = imageFile!.readAsBytesSync();
-                            String imageB64 = base64Encode(imageBytes);
+                                print("calling submit");
+                                if (imageFile != null) {
+                                  String imgExtension = imageFile!.path
+                                      .substring(
+                                          imageFile!.path.lastIndexOf(".") + 1);
+                                  print('Image Extension : $imgExtension');
+                                  List<int> imageBytes =
+                                      imageFile!.readAsBytesSync();
+                                  String imageB64 = base64Encode(imageBytes);
 
-                            RubricScoreList.scoringList.add(CustomRubicModal(
-                                name: textFieldControllerOne.text,
-                                score: textFieldController2.text,
-                                imgBase64: imageB64,
-                                customOrStandardRubic: "Custom"));
-                            print("calling get img url");
-                            _googleBloc.add(ImageToAwsBucked(
-                                imgBase64: RubricScoreList.scoringList.last.imgBase64, imgExtension: imgExtension));
-                          } else {
-                            print("save score and name on local db");
-                            RubricScoreList.scoringList.add(CustomRubicModal(
-                                name: textFieldControllerOne.text,
-                                score: textFieldController2.text,
-                                customOrStandardRubic: "Custom"));
-                          }
+                                  RubricScoreList.scoringList.add(
+                                      CustomRubicModal(
+                                          name: textFieldControllerOne.text,
+                                          score: textFieldController2.text,
+                                          imgBase64: imageB64,
+                                          customOrStandardRubic: "Custom"));
+                                  print("calling get img url");
+                                  _googleBloc.add(ImageToAwsBucked(
+                                      imgBase64: RubricScoreList
+                                          .scoringList.last.imgBase64,
+                                      imgExtension: imgExtension));
+                                } else {
+                                  print("save score and name on local db");
+                                  RubricScoreList.scoringList.add(
+                                      CustomRubicModal(
+                                          name: textFieldControllerOne.text,
+                                          score: textFieldController2.text,
+                                          customOrStandardRubic: "Custom"));
+                                }
 
-                          widget.update!(true);
-                          Navigator.pop(
-                            context,
-                          );
-                        }
-                      }
+                                widget.update!(true);
+                                Navigator.pop(
+                                  context,
+                                );
+                              }
+                            }
 
-                      // if (nameController.text.isNotEmpty &&
-                      //     customScoreController.text.isNotEmpty) {
-                      //   List<int> imageBytes;
-                      //   if (imageFile != null) {
-                      //     imageBytes = imageFile!.readAsBytesSync();
-                      //     String imageB64 = base64Encode(imageBytes);
-                      //     print("image64 is recived --------->$imageB64");
-                      //     RubricScoreList.scoringList.add(CustomRubicModal(
-                      //         name: nameController.text,
-                      //         score: customScoreController.text,
-                      //         imgBase64: imageB64,
-                      //         customOrStandardRubic: "Custom"));
+                            // if (nameController.text.isNotEmpty &&
+                            //     customScoreController.text.isNotEmpty) {
+                            //   List<int> imageBytes;
+                            //   if (imageFile != null) {
+                            //     imageBytes = imageFile!.readAsBytesSync();
+                            //     String imageB64 = base64Encode(imageBytes);
+                            //     print("image64 is recived --------->$imageB64");
+                            //     RubricScoreList.scoringList.add(CustomRubicModal(
+                            //         name: nameController.text,
+                            //         score: customScoreController.text,
+                            //         imgBase64: imageB64,
+                            //         customOrStandardRubic: "Custom"));
 
-                      //     _googleBloc.add(ImageToAwsBucked(
-                      //         imgBase64: RubricScoreList.scoringList.last.imgBase64));
-                      //   } else {
-                      //     RubricScoreList.scoringList.add(CustomRubicModal(
-                      //         name: nameController.text,
-                      //         score: customScoreController.text,
-                      //         customOrStandardRubic: "Custom"));
-                      //   }
+                            //     _googleBloc.add(ImageToAwsBucked(
+                            //         imgBase64: RubricScoreList.scoringList.last.imgBase64));
+                            //   } else {
+                            //     RubricScoreList.scoringList.add(CustomRubicModal(
+                            //         name: nameController.text,
+                            //         score: customScoreController.text,
+                            //         customOrStandardRubic: "Custom"));
+                            //   }
 
-                      //   widget.update(true);
-                      //   Navigator.pop(
-                      //     context,
-                      //   );
-                      // } else {
-                      //   print("error");
-                      // }
-                    },
-                    label: Row(
-                      children: [
-                        Utility.textWidget(
-                            text: 'Submit',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(
-                                    color: Theme.of(context).backgroundColor)),
-                      ],
-                    )),
+                            //   widget.update(true);
+                            //   Navigator.pop(
+                            //     context,
+                            //   );
+                            // } else {
+                            //   print("error");
+                            // }
+                          },
+                          label: Row(
+                            children: [
+                              Utility.textWidget(
+                                  text: 'Submit',
+                                  context: context,
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .backgroundColor)),
+                            ],
+                          )),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

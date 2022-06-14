@@ -742,9 +742,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   showBottomSheet() {
     showMaterialModalBottomSheet(
-      backgroundColor: Color(0xff000000) != Theme.of(context).backgroundColor
-          ? Color(0xffF7F8F9)
-          : Color(0xff111C20),
+      backgroundColor: Colors.transparent,
+      // Color(0xff000000) != Theme.of(context).backgroundColor
+      //     ? Color(0xffF7F8F9)
+      //     : Color(0xff111C20),
       animationCurve: Curves.easeOutQuart,
       elevation: 10,
       context: context,

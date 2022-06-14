@@ -72,6 +72,7 @@ class _OpticalCharacterRecognitionPageState
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
                  isbackOnSuccess: isBackFromCamera,
+                
             key: GlobalKey(),
             isBackButton: false,
           ),

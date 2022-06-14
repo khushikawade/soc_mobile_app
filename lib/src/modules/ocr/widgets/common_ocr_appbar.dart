@@ -65,53 +65,80 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leadingWidth: widget.isSuccessState == false ? 200 : null,
+        leadingWidth: 200, //widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
-        leading: widget.customBackButton != null
-            ? widget.customBackButton
-            : widget.isSuccessState == false
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Utility.textWidget(
-                          text: 'Manual Entry',
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(fontWeight: FontWeight.bold)),
-                      SizedBox(
-                        width: 5.0,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xffCF6679),
-                        ),
-                        child: Icon(
-                            IconData(0xe838,
-                                fontFamily: Overrides.kFontFam,
-                                fontPackage: Overrides.kFontPkg),
-                            size: 19,
-                            color: Colors.white),
-                      ),
-                    ],
-                  )
-                : widget.isBackButton == true
-                    ? IconButton(
-                        onPressed: () {
-                          //To dispose the snackbar message before navigating back if exist
-                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          IconData(0xe80d,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          color: AppTheme.kButtonColor,
-                        ),
-                      )
-                    : null,
+        leading: Container(
+          child: Row(
+            children: [
+              widget.customBackButton != null
+                  ? widget.customBackButton!
+                  : widget.isSuccessState == false
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Utility.textWidget(
+                                text: 'Manual Entry',
+                                context: context,
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .headline4!
+                                    .copyWith(fontWeight: FontWeight.bold)),
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xffCF6679),
+                              ),
+                              child: Icon(
+                                  IconData(0xe838,
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg),
+                                  size: 19,
+                                  color: Colors.white),
+                            ),
+                          ],
+                        )
+                      : widget.isBackButton == true
+                          ? IconButton(
+                              onPressed: () {
+                                //To dispose the snackbar message before navigating back if exist
+                                ScaffoldMessenger.of(context)
+                                    .removeCurrentSnackBar();
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(
+                                IconData(0xe80d,
+                                    fontFamily: Overrides.kFontFam,
+                                    fontPackage: Overrides.kFontPkg),
+                                color: AppTheme.kButtonColor,
+                              ),
+                            )
+                          : Container(
+                              height: 0,
+                              width: 0,
+                            ),
+              Expanded(
+                child: Container(
+                  // color: widget.isBackButton!=null? Colors.green:Colors.yellow,
+                  padding:widget.isBackButton==true? EdgeInsets.only(left: 0):EdgeInsets.only(left: 18),
+                  alignment: Alignment.centerLeft,
+                  child: Image(
+                    alignment: Alignment.centerLeft,
+                    width: widget.isBackButton==true? 200:100,//200,//Globals.deviceType == "phone" ?(widget.isBackButton==null? 200: 300) : 32,
+                    // height: Globals.deviceType == "phone" ? 100 : 32,
+                    image: AssetImage(
+                      Color(0xff000000) == Theme.of(context).backgroundColor
+                          ? "assets/images/graded+_light.png"
+                          : "assets/images/graded+_dark.png",
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
         actions: [
           widget.assessmentPage == true
               ? GestureDetector(
@@ -169,10 +196,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   : Container(),
           widget.assessmentDetailPage == true
               ? Container()
-              : widget.isSuccessState == false ||
-                      widget.isResultScreen == true 
-                      // ||
-                      // widget.isbackOnSuccess == true
+              : widget.isSuccessState == false || widget.isResultScreen == true
+                  // ||
+                  // widget.isbackOnSuccess == true
                   ? widget.actionIcon!
                   // Container(
                   //     padding: widget.isSuccessState != false

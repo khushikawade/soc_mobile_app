@@ -376,7 +376,7 @@ class Utility {
             : Theme.of(context)
                 .textTheme
                 .headline6!
-                .copyWith(fontWeight: FontWeight.bold),
+                .copyWith(fontWeight: FontWeight.bold,),
       ),
     );
   }
