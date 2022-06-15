@@ -302,6 +302,35 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: ListView(
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SpacerWidget(15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Utility.textWidget(
+                  text: 'Manual Entry',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontWeight: FontWeight.bold)),
+              SizedBox(
+                width: 5.0,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xffCF6679),
+                ),
+                child: Icon(
+                    IconData(0xe838,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    size: 19,
+                    color: Colors.white),
+              ),
+            ],
+          ),
+
           SpacerWidget(_KVertcalSpace * 0.25),
           Utility.textWidget(
               text: 'Student Name',
@@ -319,6 +348,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           //   return
           textFormField(
               controller: nameController,
+              hintText: 'Student Name',
               // keyboardType: TextInputType.,
               isFailure: true,
               // errormsg:
@@ -372,6 +402,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .withOpacity(0.5))),
           textFormField(
             controller: idController,
+            hintText: 'Student Id',
             keyboardType: TextInputType.number,
             isFailure: true,
             // errormsg:
@@ -449,6 +480,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .withOpacity(0.3))),
           textFormField(
               controller: nameController,
+              hintText: 'Student Name',
               isFailure: false,
               // errormsg: "Make sure to save the record with student name",
               onSaved: (String value) {
@@ -479,6 +511,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           textFormField(
             controller: idController,
             keyboardType: TextInputType.number,
+            hintText: 'Student Id',
             // errormsg:
             //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
             isFailure: false,
@@ -652,6 +685,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       TextInputType? keyboardType,
       required bool? isFailure,
       String? errormsg,
+      String? hintText,
       List<TextInputFormatter>? inputFormatters}) {
     return TextFormField(
         inputFormatters: inputFormatters == null ? null : inputFormatters,
@@ -665,6 +699,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
         controller: controller,
         cursorColor: Theme.of(context).colorScheme.primaryVariant,
         decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle: Theme.of(context)
+              .textTheme
+              .headline6!
+              .copyWith(fontWeight: FontWeight.bold, color: Colors.grey),
           errorText: controller.text.isEmpty ? errormsg : null,
           errorMaxLines: 2,
           contentPadding: EdgeInsets.only(top: 10, bottom: 10),

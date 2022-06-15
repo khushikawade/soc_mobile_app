@@ -1,7 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -12,7 +11,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import '../../../services/local_database/local_db.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
@@ -73,74 +71,68 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
             children: [
               widget.customBackButton != null
                   ? widget.customBackButton!
-                  : widget.isSuccessState == false
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Utility.textWidget(
-                                text: 'Manual Entry',
-                                context: context,
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .headline4!
-                                    .copyWith(fontWeight: FontWeight.bold)),
-                            SizedBox(
-                              width: 5.0,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xffCF6679),
-                              ),
-                              child: Icon(
-                                  IconData(0xe838,
-                                      fontFamily: Overrides.kFontFam,
-                                      fontPackage: Overrides.kFontPkg),
-                                  size: 19,
-                                  color: Colors.white),
-                            ),
-                          ],
+                  :
+
+                  // widget.isSuccessState == false
+                  //     ? Column(
+                  //       children: [
+                  //         commonGradedLogo(),
+                  //         SpacerWidget(
+                  //                 10.0,
+                  //               ),
+                  //         Row(
+                  //             mainAxisAlignment: MainAxisAlignment.end,
+                  //             children: [
+                  //               Utility.textWidget(
+                  //                   text: 'Manual Entry',
+                  //                   context: context,
+                  //                   textTheme: Theme.of(context)
+                  //                       .textTheme
+                  //                       .headline4!
+                  //                       .copyWith(fontWeight: FontWeight.bold)),
+                  //               SizedBox(
+                  //                 width: 5.0,
+                  //               ),
+                  //               Container(
+                  //                 decoration: BoxDecoration(
+                  //                   shape: BoxShape.circle,
+                  //                   color: Color(0xffCF6679),
+                  //                 ),
+                  //                 child: Icon(
+                  //                     IconData(0xe838,
+                  //                         fontFamily: Overrides.kFontFam,
+                  //                         fontPackage: Overrides.kFontPkg),
+                  //                     size: 19,
+                  //                     color: Colors.white),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //       ],
+                  //     )
+                  //     :
+
+                  widget.isBackButton == true
+                      ? IconButton(
+                          onPressed: () {
+                            //To dispose the snackbar message before navigating back if exist
+                            ScaffoldMessenger.of(context)
+                                .removeCurrentSnackBar();
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(
+                            IconData(0xe80d,
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                            color: AppTheme.kButtonColor,
+                          ),
                         )
-                      : widget.isBackButton == true
-                          ? IconButton(
-                              onPressed: () {
-                                //To dispose the snackbar message before navigating back if exist
-                                ScaffoldMessenger.of(context)
-                                    .removeCurrentSnackBar();
-                                Navigator.pop(context);
-                              },
-                              icon: Icon(
-                                IconData(0xe80d,
-                                    fontFamily: Overrides.kFontFam,
-                                    fontPackage: Overrides.kFontPkg),
-                                color: AppTheme.kButtonColor,
-                              ),
-                            )
-                          : Container(
-                              height: 0,
-                              width: 0,
-                            ),
-              Expanded(
-                child: Container(
-                  // color: Colors.red,//widget.isBackButton!=null? Colors.green:Colors.yellow,
-                  padding: widget.isBackButton == true
-                      ? EdgeInsets.only(left: 0)
-                      : EdgeInsets.only(left: 18),
-                  alignment: Alignment.centerLeft,
-                  child: Image(
-                    alignment: Alignment.centerLeft,
-                    width: widget.isBackButton == true
-                        ? 200
-                        : 100, //200,//Globals.deviceType == "phone" ?(widget.isBackButton==null? 200: 300) : 32,
-                    // height: Globals.deviceType == "phone" ? 100 : 32,
-                    image: AssetImage(
-                      Color(0xff000000) == Theme.of(context).backgroundColor
-                          ? "assets/images/graded+_light.png"
-                          : "assets/images/graded+_dark.png",
-                    ),
-                  ),
-                ),
-              ),
+                      : Container(
+                          height: 0,
+                          width: 0,
+                        ),
+              //  widget.isSuccessState != false ?
+              commonGradedLogo()
+              //  :Container()
             ],
           ),
         ),
@@ -289,6 +281,30 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
         refreshtoken: _profileData[0].refreshToken));
+  }
+
+  Widget commonGradedLogo() {
+    return Expanded(
+      child: Container(
+        // color: Colors.red,//widget.isBackButton!=null? Colors.green:Colors.yellow,
+        padding: widget.isBackButton == true
+            ? EdgeInsets.only(left: 0)
+            : EdgeInsets.only(left: 18),
+        alignment: Alignment.centerLeft,
+        child: Image(
+          alignment: Alignment.centerLeft,
+          width: widget.isBackButton == true
+              ? 200
+              : 100, //200,//Globals.deviceType == "phone" ?(widget.isBackButton==null? 200: 300) : 32,
+          // height: Globals.deviceType == "phone" ? 100 : 32,
+          image: AssetImage(
+            Color(0xff000000) == Theme.of(context).backgroundColor
+                ? "assets/images/graded+_light.png"
+                : "assets/images/graded+_dark.png",
+          ),
+        ),
+      ),
+    );
   }
 
   _onHomePressed() {

@@ -35,16 +35,13 @@ class _OpticalCharacterRecognitionPageState
   static const double _KVertcalSpace = 60.0;
   final assessmentController = TextEditingController();
   final classController = TextEditingController();
-  // OcrBloc _bloc = OcrBloc();
-  // int indexColor = 1;
-  // int scoringColor = 0;
+
   final HomeBloc _homeBloc = new HomeBloc();
   final OcrBloc _bloc = new OcrBloc();
   File? myImagePath;
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   int? lastIndex;
   // bool? createCustomRubic = false;
   // final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -81,7 +78,9 @@ class _OpticalCharacterRecognitionPageState
               horizontal: 15,
             ),
             child: ListView(
+              
               children: [
+                SpacerWidget(_KVertcalSpace / 4),
                 Utility.textWidget(
                     text: 'Points Possible',
                     context: context,
@@ -186,26 +185,26 @@ class _OpticalCharacterRecognitionPageState
               updateLocalDb();
 
               _bloc.add(SaveSubjectListDetails());
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //       builder: (context) => CameraScreen(
-              //             scaffoldKey: _scaffoldKey,
-              //             isScanMore: false,
-              //             pointPossible: rubricScoreSelectedColor.value == 0
-              //                 ? '2'
-              //                 : rubricScoreSelectedColor.value == 2
-              //                     ? '3'
-              //                     : rubricScoreSelectedColor.value == 4
-              //                         ? '4'
-              //                         : '2',
-              //           )),
-              // );
-
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CreateAssessment()),
+                MaterialPageRoute(
+                    builder: (context) => CameraScreen(
+                          scaffoldKey: _scaffoldKey,
+                          isScanMore: false,
+                          pointPossible: rubricScoreSelectedColor.value == 0
+                              ? '2'
+                              : rubricScoreSelectedColor.value == 2
+                                  ? '3'
+                                  : rubricScoreSelectedColor.value == 4
+                                      ? '4'
+                                      : '2',
+                        )),
               );
+
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+              // );
               //  getGallaryImage(); // COMMENT
             },
             icon: Icon(

@@ -56,8 +56,9 @@ class _StaffPageState extends State<StaffPage> {
   dynamic userData;
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   OcrBloc _ocrBloc = new OcrBloc();
-  ScrollController _scrollController = new ScrollController();
+  // ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
+  // final GlobalKey<NestedScrollViewState> globalKey = GlobalKey();
 
   @override
   void initState() {
@@ -66,21 +67,35 @@ class _StaffPageState extends State<StaffPage> {
     if (widget.isFromOcr) {
       _homeBloc.add(FetchStandardNavigationBar());
     }
-    _scrollController.addListener(_scrollListener);
+    // _scrollController.addListener(_scrollListener);
+    //  globalKey.currentState!.innerController.addListener(_scrollListener);
 
     _getLocalDb();
   }
 
-  _scrollListener() async {
-    bool isTop = _scrollController.position.pixels < 150;
-    if (isTop) {
-      if (isScrolling.value == false) return;
-      isScrolling.value = false;
+  //   ScrollController get innerController {
+  //   return globalKey.currentState!.innerController;
+  // }
+
+  bool onNotification(ScrollNotification t) {
+    if (t.metrics.pixels < 150) {
+      if (isScrolling.value == false) isScrolling.value = true;
     } else {
-      if (isScrolling.value == true) return;
-      isScrolling.value = true;
+      if (isScrolling.value == true) isScrolling.value = false;
     }
+    return true;
   }
+  // _scrollListener() async {
+  //   bool isTop = _scrollController.position.pixels < 150;
+  //   // bool isTop = globalKey.currentState!.innerController.position.pixels < 150;
+  //   if (isTop) {
+  //     if (isScrolling.value == false) return;
+  //     isScrolling.value = false;
+  //   } else {
+  //     if (isScrolling.value == true) return;
+  //     isScrolling.value = true;
+  //   }
+  // }
 
   //To authenticate the user via google
   _launchURL(String? title) async {
@@ -204,7 +219,7 @@ class _StaffPageState extends State<StaffPage> {
                                     data: state.obj!,
                                     sectionName: "staff")
                                 : CommonListWidget(
-                                    scrollController: _scrollController,
+                                    // scrollController: _scrollController,
                                     bottomPadding: 80,
                                     key: ValueKey(key),
                                     scaffoldKey: _scaffoldKey,
@@ -246,32 +261,35 @@ class _StaffPageState extends State<StaffPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget(
-        marginLeft: 30,
-        refresh: (v) {
-          setState(() {});
-        },
-      ),
-      body: Globals.appSetting.staffBannerImageC != null &&
-              Globals.appSetting.staffBannerImageC != ''
-          ? NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  BannerImageWidget(
-                    imageUrl: Globals.appSetting.staffBannerImageC!,
-                    bgColor: Globals.appSetting.studentBannerColorC != null
-                        ? Utility.getColorFromHex(
-                            Globals.appSetting.studentBannerColorC!)
-                        : null,
-                  )
-                ];
-              },
-              body: _body('body1'),
-            )
-          : _body('body2'),
-    );
+        key: _scaffoldKey,
+        appBar: AppBarWidget(
+          marginLeft: 30,
+          refresh: (v) {
+            setState(() {});
+          },
+        ),
+        body: NotificationListener<ScrollNotification>(
+          onNotification: onNotification,
+          child: Globals.appSetting.staffBannerImageC != null &&
+                  Globals.appSetting.staffBannerImageC != ''
+              ? NestedScrollView(
+                  //  key: globalKey,
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return <Widget>[
+                      BannerImageWidget(
+                        imageUrl: Globals.appSetting.staffBannerImageC!,
+                        bgColor: Globals.appSetting.studentBannerColorC != null
+                            ? Utility.getColorFromHex(
+                                Globals.appSetting.studentBannerColorC!)
+                            : null,
+                      )
+                    ];
+                  },
+                  body: _body('body1'),
+                )
+              : _body('body2'),
+        ));
   }
 
   Future refreshPage() async {
@@ -288,15 +306,15 @@ class _StaffPageState extends State<StaffPage> {
         builder: (BuildContext context, bool value, Widget? child) {
           return AnimatedPositioned(
             bottom: 40.0,
-            right: isScrolling.value
+            right: !isScrolling.value
                 ? 8
                 : (Utility.displayWidth(context) / 2) - 80,
             duration: const Duration(milliseconds: 650),
             curve: Curves.decelerate,
             child: Container(
-              width: isScrolling.value ? null : 150,
+              width: !isScrolling.value ? null : 150,
               child: FloatingActionButton.extended(
-                  isExtended: !isScrolling.value,
+                  isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     // Globals.localUserInfo.clear(); // COMMENT
