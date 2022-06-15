@@ -97,6 +97,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           ? AdaptiveThemeMode.light
           : AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
+        navigatorKey: Globals.navigatorKey,
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
         title: 'Solved',

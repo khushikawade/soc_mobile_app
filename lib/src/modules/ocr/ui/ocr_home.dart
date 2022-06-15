@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -17,10 +20,11 @@ import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
+
 import '../../../services/local_database/local_db.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -35,25 +39,22 @@ class _OpticalCharacterRecognitionPageState
   static const double _KVertcalSpace = 60.0;
   final assessmentController = TextEditingController();
   final classController = TextEditingController();
-
   final HomeBloc _homeBloc = new HomeBloc();
   final OcrBloc _bloc = new OcrBloc();
   File? myImagePath;
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   int? lastIndex;
-  // bool? createCustomRubic = false;
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
-  // final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
   final ValueNotifier<int> pointPossibleSelectedColor = ValueNotifier<int>(1);
   final ValueNotifier<int> rubricScoreSelectedColor = ValueNotifier<int>(0);
   final ValueNotifier<bool> updateRubricList = ValueNotifier<bool>(false);
- final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     Utility.setLocked();
-    // Globals.gradeList.clear();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
     Globals.scoringRubric = RubricScoreList.scoringList[0].name;
@@ -68,8 +69,7 @@ class _OpticalCharacterRecognitionPageState
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
-                 isbackOnSuccess: isBackFromCamera,
-                
+            isbackOnSuccess: isBackFromCamera,
             key: GlobalKey(),
             isBackButton: false,
           ),
@@ -78,7 +78,6 @@ class _OpticalCharacterRecognitionPageState
               horizontal: 15,
             ),
             child: ListView(
-              
               children: [
                 SpacerWidget(_KVertcalSpace / 4),
                 Utility.textWidget(
@@ -159,91 +158,93 @@ class _OpticalCharacterRecognitionPageState
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        FloatingActionButton.extended(
-            backgroundColor: AppTheme.kButtonColor,
-            onPressed: () async {
-              Globals.studentInfo!.clear();
+        Builder(builder: (context) {
+          return OfflineBuilder(
+            connectivityBuilder: (BuildContext context,
+                ConnectivityResult connectivity, Widget child) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              return FloatingActionButton.extended(
+                  backgroundColor: AppTheme.kButtonColor,
+                  onPressed: () async {
+                    if (!connected) {
+                      Utility.noInternetSnackBar();
+                    } else {
+                      Globals.studentInfo!.clear();
+                      if (Globals.googleDriveFolderId!.isEmpty) {
+                        List<UserInformation> _profileData =
+                            await UserGoogleProfile.getUserProfile();
+                        _googleDriveBloc.add(GetDriveFolderIdEvent(
+                            //  filePath: file,
+                            token: _profileData[0].authorizationToken,
+                            folderName: "SOLVED GRADED+",
+                            refreshtoken: _profileData[0].refreshToken));
+                      }
 
-              print(
-                  "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
+                      print(
+                          "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
 
-              Globals.pointpossible = rubricScoreSelectedColor.value == 0
-                  ? '2'
-                  : rubricScoreSelectedColor.value == 2
-                      ? '3'
-                      : rubricScoreSelectedColor.value == 4
-                          ? '4'
-                          : '2';
-              Globals.googleExcelSheetId = "";
-              // final status = await Permission.camera.status;
-              //   // bool result = await _checkPermission();
-              //   if (status != PermissionStatus.denied ) {
-
-              //   } else {
-              //     _onCameraPermissionDenied();
-              //   }
-              updateLocalDb();
-
-              _bloc.add(SaveSubjectListDetails());
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          scaffoldKey: _scaffoldKey,
-                          isScanMore: false,
-                          pointPossible: rubricScoreSelectedColor.value == 0
+                      Globals.pointpossible =
+                          rubricScoreSelectedColor.value == 0
                               ? '2'
                               : rubricScoreSelectedColor.value == 2
                                   ? '3'
                                   : rubricScoreSelectedColor.value == 4
                                       ? '4'
-                                      : '2',
-                        )),
-              );
+                                      : '2';
+                      Globals.googleExcelSheetId = "";
+                      updateLocalDb();
 
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => CreateAssessment()),
-              // );
-              //  getGallaryImage(); // COMMENT
+                      _bloc.add(SaveSubjectListDetails());
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CameraScreen(
+                                  scaffoldKey: _scaffoldKey,
+                                  isScanMore: false,
+                                  pointPossible: rubricScoreSelectedColor
+                                              .value ==
+                                          0
+                                      ? '2'
+                                      : rubricScoreSelectedColor.value == 2
+                                          ? '3'
+                                          : rubricScoreSelectedColor.value == 4
+                                              ? '4'
+                                              : '2',
+                                )),
+                      );
+
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+                      // );
+                      //  getGallaryImage(); // COMMENT
+                    }
+                  },
+                  icon: Icon(
+                      IconData(0xe875,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: Theme.of(context).backgroundColor,
+                      size: 16),
+                  label: Utility.textWidget(
+                      text: 'Start Scanning',
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Theme.of(context).backgroundColor)));
             },
-            icon: Icon(
-                IconData(0xe875,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: Theme.of(context).backgroundColor,
-                size: 16),
-            label: Utility.textWidget(
-                text: 'Start Scanning',
-                context: context,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(color: Theme.of(context).backgroundColor))),
+            child: Container(),
+          );
+        }),
         GestureDetector(
           onTap: () {
             updateLocalDb();
-            // if (createCustomRubic == true &&
-            //     RubricScoreList.scoringList.last.imgBase64 != null) {
-            //   print("heeleeelo");
-            //   _googleBloc.add(ImageToAwsBucked(
-            //       imgBase64: RubricScoreList.scoringList.last.imgBase64));
-            // } else {
-            //   updateLocalDb();
-            // }
-            // UNCOMMENT
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AssessmentSummary()),
             );
-            //COMMENT
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //       builder: (context) => SubjectSelection(
-            //             selectedClass: '6',
-            //           )),
-            // );
           },
           child: Container(
               padding: EdgeInsets.only(top: 10),
@@ -254,7 +255,7 @@ class _OpticalCharacterRecognitionPageState
                   textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                         decoration: TextDecoration.underline,
                       ))),
-        ),
+        )
       ],
     );
   }
@@ -285,12 +286,6 @@ class _OpticalCharacterRecognitionPageState
           return InkWell(
               onTap: () {
                 pointPossibleSelectedColor.value = index + 1;
-                // if (RubricScoreList.scoringList[index].name == "Custom") {
-                //    if(rubricScoreSelectedColor.value){
-                //   customRubricBottomSheet();
-                //   //   }
-                // } else {
-                // lastIndex = index;
                 //To take the rubric name to result screen and save the same in excel sheet
                 Globals.scoringRubric = RubricScoreList.scoringList[index].name;
                 if (index == 0) {
@@ -507,73 +502,4 @@ class _OpticalCharacterRecognitionPageState
       _localDb.addData(e);
     });
   }
-
-  // _onCameraPermissionDenied() {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) =>
-  //           OrientationBuilder(builder: (context, orientation) {
-  //             return AlertDialog(
-  //               backgroundColor: Colors.white,
-  //               title: Center(
-  //                 child: Container(
-  //                   padding: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : const EdgeInsets.only(top: 10.0),
-  //                   height: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : orientation == Orientation.portrait
-  //                           ? MediaQuery.of(context).size.height / 15
-  //                           : MediaQuery.of(context).size.width / 15,
-  //                   width: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : orientation == Orientation.portrait
-  //                           ? MediaQuery.of(context).size.width / 2
-  //                           : MediaQuery.of(context).size.height / 2,
-  //                   child: TranslationWidget(
-  //                       message:
-  //                           "For access camera you need to enable camera permission from settings",
-  //                       fromLanguage: "en",
-  //                       toLanguage: Globals.selectedLanguage,
-  //                       builder: (translatedMessage) {
-  //                         return Text(translatedMessage.toString(),
-  //                             style: Theme.of(context)
-  //                                 .textTheme
-  //                                 .headline2!
-  //                                 .copyWith(color: Colors.black));
-  //                       }),
-  //                 ),
-  //               ),
-  //               actions: <Widget>[
-  //                 Container(
-  //                   height: 1,
-  //                   width: MediaQuery.of(context).size.height,
-  //                   color: Colors.grey.withOpacity(0.2),
-  //                 ),
-  //                 Center(
-  //                   child: TextButton(
-  //                     child: TranslationWidget(
-  //                         message: "OK",
-  //                         fromLanguage: "en",
-  //                         toLanguage: Globals.selectedLanguage,
-  //                         builder: (translatedMessage) {
-  //                           return Text(translatedMessage.toString(),
-  //                               style: Theme.of(context)
-  //                                   .textTheme
-  //                                   .headline5!
-  //                                   .copyWith(
-  //                                     color: AppTheme.kButtonColor,
-  //                                   ));
-  //                         }),
-  //                     onPressed: () {
-  //                       Navigator.pop(context, false);
-  //                     },
-  //                   ),
-  //                 )
-  //               ],
-  //               shape: RoundedRectangleBorder(
-  //                   borderRadius: BorderRadius.circular(12)),
-  //             );
-  //           }));
-  // }
 }

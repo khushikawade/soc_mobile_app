@@ -10,6 +10,7 @@ class StudentAssessmentInfo {
   String? scoringRubric;
   String? customRubricImage;
   String? assessmentImage;
+  String? className;
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,
@@ -21,7 +22,8 @@ class StudentAssessmentInfo {
       this.subLearningStandard,
       this.scoringRubric,
       this.customRubricImage,
-      this.assessmentImage});
+      this.assessmentImage,
+      this.className});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(
@@ -34,5 +36,6 @@ class StudentAssessmentInfo {
           learningStandard: json['Learning Standard'] as String?,
           subLearningStandard: json['Sub Learning Standard'] as String?,
           scoringRubric: json['Scoring Rubric'] as String?,
-          customRubricImage: json['Custom Rubric Image'] as String?);
+          customRubricImage: json['Custom Rubric Image'] as String?,
+          className: json['Class Name'] as String?);
 }

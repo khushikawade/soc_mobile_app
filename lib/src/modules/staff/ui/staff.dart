@@ -43,8 +43,6 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
-//   LocalDatabase<UserInfo> Globals.localUserInfo = LocalDatabase('user_profile');
-//   List<UserInfo> Globals.userprofilelocalData = [];
   FocusNode myFocusNode = new FocusNode();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -58,7 +56,6 @@ class _StaffPageState extends State<StaffPage> {
   OcrBloc _ocrBloc = new OcrBloc();
   // ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(true);
-  // final GlobalKey<NestedScrollViewState> globalKey = GlobalKey();
 
   @override
   void initState() {

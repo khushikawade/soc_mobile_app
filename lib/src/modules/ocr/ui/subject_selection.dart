@@ -16,7 +16,7 @@ import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:html_unescape/html_unescape.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../../widgets/textfield_widget.dart';
 import '../widgets/bottom_sheet_widget.dart';
@@ -276,7 +276,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 Bouncing(
                   child: InkWell(
                     onTap: () {
-                      subLearningStandard = list[index].standardAndDescriptionC;
+                      subLearningStandard =
+                          list[index].standardAndDescriptionC!.split(' - ')[0];
                       if (pageIndex.value == 2) {
                         nycSubIndex1.value = index;
                         if (nycSubIndex1.value != 50000) {
@@ -626,82 +627,92 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       builder: (BuildContext context, dynamic value, Widget? child) {
         return //pageIndex.value == 2
             isSubmitButton.value
-                ? FloatingActionButton.extended(
-                    backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-                    onPressed: () async {
-                      LocalDatabase<CustomRubicModal> _localDb =
-                          LocalDatabase('custom_rubic');
-                      List<CustomRubicModal>? _localData =
-                          await _localDb.getData();
-                      String? rubricImgUrl;
-                      // String? rubricScore;
-                      for (int i = 0; i < _localData.length; i++) {
-                        if (_localData[i].customOrStandardRubic == "Custom" &&
-                            _localData[i].name == Globals.scoringRubric) {
-                          rubricImgUrl = _localData[i].imgUrl;
-                          // rubricScore = null;
-                        }
-                        if (_localData[i].name == Globals.scoringRubric &&
-                            _localData[i].customOrStandardRubic != "Custom") {
-                          // rubricScore = _localData[i].score;
-                        } else {
-                          rubricImgUrl = 'NA';
-                          // rubricScore = 'NA';
-                        }
-                      }
+                ? OfflineBuilder(
+                    connectivityBuilder: (BuildContext context,
+                        ConnectivityResult connectivity, Widget child) {
+                      final bool connected =
+                          connectivity != ConnectivityResult.none;
+                      return FloatingActionButton.extended(
+                          backgroundColor:
+                              AppTheme.kButtonColor.withOpacity(1.0),
+                          onPressed: () async {
+                            if (!connected) {
+                              Utility.noInternetSnackBar();
+                            } else {
+                              LocalDatabase<CustomRubicModal> _localDb =
+                                  LocalDatabase('custom_rubic');
+                              List<CustomRubicModal>? _localData =
+                                  await _localDb.getData();
+                              String? rubricImgUrl;
+                              // String? rubricScore;
+                              for (int i = 0; i < _localData.length; i++) {
+                                if (_localData[i].customOrStandardRubic ==
+                                        "Custom" &&
+                                    _localData[i].name ==
+                                        Globals.scoringRubric) {
+                                  rubricImgUrl = _localData[i].imgUrl;
+                                  // rubricScore = null;
+                                }
+                                if (_localData[i].name ==
+                                        Globals.scoringRubric &&
+                                    _localData[i].customOrStandardRubic !=
+                                        "Custom") {
+                                  // rubricScore = _localData[i].score;
+                                } else {
+                                  rubricImgUrl = 'NA';
+                                  // rubricScore = 'NA';
+                                }
+                              }
 
-                      //Adding blank fields to the list : Static data
-                      Globals.studentInfo!.forEach((element) {
-                        element.subject = subject;
-                        element.learningStandard =
-                            learningStandard == null ? "NA" : learningStandard;
-                        element.subLearningStandard =
-                            subLearningStandard == null
-                                ? "NA"
-                                : subLearningStandard;
-                        element.scoringRubric = Globals.scoringRubric;
-                        element.customRubricImage = rubricImgUrl ?? "NA";
-                        element.grade = widget.selectedClass;
-                      });
+                              //Adding blank fields to the list : Static data
+                              Globals.studentInfo!.forEach((element) {
+                                element.subject = subject;
+                                element.learningStandard =
+                                    learningStandard == null
+                                        ? "NA"
+                                        : learningStandard;
+                                element.subLearningStandard =
+                                    subLearningStandard == null
+                                        ? "NA"
+                                        : subLearningStandard;
+                                element.scoringRubric = Globals.scoringRubric;
+                                element.className =
+                                    Globals.assessmentName!.split("_")[1];
+                                element.customRubricImage =
+                                    rubricImgUrl ?? "NA";
+                                element.grade = widget.selectedClass;
+                              });
 
-                      _googleDriveBloc.add(UpdateDocOnDrive(
-                          studentData:
-                              //list2
-                              Globals.studentInfo!));
+                              _googleDriveBloc.add(UpdateDocOnDrive(
+                                  studentData:
+                                      //list2
+                                      Globals.studentInfo!));
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ResultsSummary(
-                                  assessmentDetailPage: false,
-                                )),
-                      );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResultsSummary(
+                                          assessmentDetailPage: false,
+                                        )),
+                              );
+                            }
+                          },
+                          label: Row(
+                            children: [
+                              Utility.textWidget(
+                                  text: 'Submit',
+                                  context: context,
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .backgroundColor)),
+                            ],
+                          ));
                     },
-                    label: Row(
-                      children: [
-                        Utility.textWidget(
-                            text: 'Save to drive',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(
-                                    color: Theme.of(context).backgroundColor)),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Container(
-                          //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                          child: Image(
-                            width: Globals.deviceType == "phone" ? 23 : 28,
-                            height: Globals.deviceType == "phone" ? 23 : 28,
-                            image: AssetImage(
-                              "assets/images/drive_ico.png",
-                            ),
-                          ),
-                        ),
-                      ],
-                    ))
+                    child: Container(),
+                  )
                 : Container();
       },
     );

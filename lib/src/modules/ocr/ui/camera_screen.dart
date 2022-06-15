@@ -161,7 +161,8 @@ class _CameraScreenState extends State<CameraScreen>
                         Globals.studentInfo!.forEach((element) {
                           element.subject = Globals.studentInfo!.first.subject;
                           element.learningStandard =
-                              Globals.studentInfo!.first.learningStandard == null
+                              Globals.studentInfo!.first.learningStandard ==
+                                      null
                                   ? "NA"
                                   : Globals.studentInfo!.first.learningStandard;
                           element.subLearningStandard = Globals
@@ -173,8 +174,9 @@ class _CameraScreenState extends State<CameraScreen>
                           element.customRubricImage =
                               Globals.studentInfo!.first.customRubricImage ??
                                   "NA";
-                          element.grade = Globals
-                              .studentInfo!.first.grade; //widget.selectedClass;
+                          element.grade = Globals.studentInfo!.first.grade;
+                          element.className = Globals.assessmentName!
+                              .split("_")[1]; //widget.selectedClass;
                         });
 
                         _driveBloc.add(UpdateDocOnDrive(

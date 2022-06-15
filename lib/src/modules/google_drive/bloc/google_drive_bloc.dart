@@ -5,7 +5,9 @@ import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
@@ -16,6 +18,7 @@ import 'package:path/path.dart';
 import '../../ocr/modal/custom_rubic_modal.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
 import '../model/user_profile.dart';
+
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
 
@@ -31,6 +34,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   ) async* {
     if (event is GetDriveFolderIdEvent) {
       try {
+        Globals.googleDriveFolderId = '';
         var folderObject;
         // Globals.authorizationToken = event.token;
         print(event.token);
@@ -73,7 +77,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               folderName: event.folderName,
               refreshtoken: _userprofilelocalData[0].refreshToken);
         }
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
         throw (e);
       }
     }
@@ -103,9 +113,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           print("Excel sheet created successfully : ${event.name!}");
         }
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
-        print("error");
-        print(e);
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        throw (e);
       }
     }
 
@@ -114,6 +129,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
+        if (Globals.googleExcelSheetId!.isEmpty) {
+          await createSheetOnDrive(
+              name: Globals.assessmentName,
+              folderId: Globals.googleDriveFolderId,
+              accessToken: _userprofilelocalData[0].authorizationToken,
+              refreshToken: _userprofilelocalData[0].refreshToken);
+        }
         if (assessmentData!.length > 0 && assessmentData[0].studentId == 'Id') {
           assessmentData.removeAt(0);
         }
@@ -121,17 +143,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         assessmentData.insert(
             0,
             StudentAssessmentInfo(
-                studentId: "Id",
-                studentName: "Name",
-                studentGrade: "Points Earned",
-                pointpossible: "Point Possible",
-                grade: "Grade",
-                subject: "Subject",
-                learningStandard: "Learning Standard",
-                subLearningStandard: "NY Next Generation Learning Standard",
-                scoringRubric: "Scoring Rubric",
-                customRubricImage: "Custom Rubric Image",
-                assessmentImage: "Assessment Image"));
+              studentId: "Id",
+              studentName: "Name",
+              studentGrade: "Points Earned",
+              pointpossible: "Point Possible",
+              grade: "Grade",
+              className: "Class Name",
+              subject: "Subject",
+              learningStandard: "Learning Standard",
+              subLearningStandard: "NY Next Generation Learning Standard",
+              scoringRubric: "Scoring Rubric",
+              customRubricImage: "Custom Rubric Image",
+              assessmentImage: "Assessment Image",
+            ));
 
         print(assessmentData);
 //Generating excel file locally with all the result data
@@ -158,9 +182,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (!deleted) {
           GoogleDriveAccess.deleteFile(file);
         }
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
-        print("inside bloc catch");
-        print(e);
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        throw (e);
       }
     }
 
@@ -193,8 +222,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
           //Sort the list as per the modified date
           assessmentList = await listSort(assessmentList);
-
-          await _localDb.clear();
+          assessmentList.length > 0 ? await _localDb.clear() : print("");
           assessmentList.forEach((HistoryAssessment e) {
             _localDb.addData(e);
           });
@@ -208,8 +236,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               folderName: "Assessments",
               fetchHistory: true);
         }
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
-        print(e);
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        throw (e);
       }
     }
     if (event is GetAssessmentDetail) {
@@ -267,20 +301,31 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           //Return empty list
           yield AssessmentDetailSuccess(obj: _list);
         }
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
         throw (e);
       }
     }
 
     if (event is ImageToAwsBucked) {
       try {
-        String imgUrl =
-            await _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
+        String imgUrl = await _uploadImgB64AndGetUrl(
+            imgBase64: event.imgBase64,
+            imgExtension: event.imgExtension,
+            section: 'rubric-score');
         //  int index = RubricScoreList.scoringList.length - 1;
         print(RubricScoreList.scoringList);
         imgUrl != ""
             ? RubricScoreList.scoringList.last.imgUrl = imgUrl
-            : _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
+            : _uploadImgB64AndGetUrl(
+                imgBase64: event.imgBase64,
+                imgExtension: event.imgExtension,
+                section: 'rubric-score');
         print(RubricScoreList.scoringList);
         print("printing imag url : $imgUrl");
       } catch (e) {
@@ -290,8 +335,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is AssessmentImgToAwsBucked) {
       try {
         print("calling img to awsBucked");
-        String imgUrl =
-            await _uploadImgB64AndGetUrl(event.imgBase64, event.imgExtension);
+        String imgUrl = await _uploadImgB64AndGetUrl(
+            imgBase64: event.imgBase64,
+            imgExtension: event.imgExtension,
+            section: "assessment-sheet");
         //  int index = RubricScoreList.scoringList.length - 1;
 
         if (imgUrl != "") {
@@ -307,8 +354,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
 
         // print("printing imag url : $imgUrl");
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
-        print("image upload error");
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        throw (e);
       }
     }
   }
@@ -507,7 +560,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           GetHistoryAssessmentFromDrive();
         }
       }
+    } on SocketException catch (e) {
+      e.message == 'Connection failed'
+          ? Utility.noInternetSnackBar()
+          : print(e);
+      rethrow;
     } catch (e) {
+      e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
       throw (e);
     }
   }
@@ -654,10 +713,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }
 
   Future<String> _uploadImgB64AndGetUrl(
-      String? imgBase64, String? imgExtension) async {
+      {required String? imgBase64,
+      required String? imgExtension,
+      required String? section}) async {
     //  print(imgBase64);
     Map body = {
-      "bucket": "graded/rubric-score",
+      "bucket": "graded/$section",
       "fileExtension": imgExtension,
       "image": imgBase64
     };

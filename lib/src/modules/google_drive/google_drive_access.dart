@@ -30,6 +30,9 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
             .value = data[row].grade;
         sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
+            .value = data[row].className;
+        sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row))
             .value = data[row].subject;
         sheet

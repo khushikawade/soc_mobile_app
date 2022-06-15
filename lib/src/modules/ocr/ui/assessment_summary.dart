@@ -57,7 +57,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                SpacerWidget(_KVertcalSpace * 0.50),
+                SpacerWidget(_KVertcalSpace / 4),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Utility.textWidget(
@@ -146,10 +146,21 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     : Color(0xffE9ECEE)),
         child: ListTile(
             visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-            leading: Utility.textWidget(
+            subtitle: Utility.textWidget(
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: Colors.grey.shade500),
+                text: list[index].modifiedDate != null
+                    ? Utility.convertTimestampToDateFormat(
+                        DateTime.parse(list[index].modifiedDate!), "MM/dd/yy")
+                    : ""),
+            title: Utility.textWidget(
                 text: list[index].title!.split('.')[0],
                 context: context,
                 textTheme: Theme.of(context).textTheme.headline2),
+            // subtitle:
             trailing: InkWell(
               onTap: () {
                 list[index].webContentLink != null &&

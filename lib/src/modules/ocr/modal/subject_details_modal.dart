@@ -14,9 +14,9 @@ class SubjectDetailList {
     this.ownerId,
     this.name,
     this.domainCodeC,
-    this.subjectC,
+    this.subjectC, //subject id
     this.titleC,
-    this.id,
+    this.id, //standard id
     this.gradeC,
     this.domainNameC,
     this.subDomainC,

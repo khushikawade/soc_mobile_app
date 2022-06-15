@@ -372,11 +372,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 // }
                 // return null;
               }),
+
           ValueListenableBuilder(
               valueListenable: isStudentNameFilled,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
+                  padding: isStudentNameFilled.value.isNotEmpty ||
+                          nameController.text.length < 3
+                      ? EdgeInsets.only(top: 8)
+                      : null,
                   alignment: Alignment.centerLeft,
                   child: Text(
                     isStudentNameFilled.value == ""
@@ -401,33 +406,33 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       .primaryVariant
                       .withOpacity(0.5))),
           textFormField(
-            controller: idController,
-            hintText: 'Student Id',
-            keyboardType: TextInputType.number,
-            isFailure: true,
-            // errormsg:
-            //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-            onSaved: (String value) {
-              _formKey1.currentState!.validate();
-              // updateDetails(isUpdateData: true);
-              studentId = idController.text;
-              onChange = true;
-            },
-            validator: (String? value) {
-              if (value!.length != 9) {
-                return 'Student Id must have 9 digit numbers';
-              } else if (!value.startsWith('2')) {
-                return 'Student Id must starts with \'2\'';
-              } else {
-                return null;
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              FilteringTextInputFormatter.allow(
-                  RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
-            ],
-          ),
+              controller: idController,
+              keyboardType: TextInputType.number,
+              hintText: 'Student Id',
+              isFailure: true,
+              // errormsg:
+              //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+              onSaved: (String value) {
+                _formKey1.currentState!.validate();
+                // updateDetails(isUpdateData: true);
+                studentId = idController.text;
+                onChange = true;
+              },
+              validator: (String? value) {
+                if (value!.length != 9) {
+                  return 'Student Id must have 9 digit numbers';
+                } else if (!value.startsWith('2')) {
+                  return 'Student Id must starts with \'2\'';
+                } else {
+                  return null;
+                }
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                FilteringTextInputFormatter.allow(
+                    RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
+              ],
+              maxNineDigit: true),
           SpacerWidget(_KVertcalSpace / 2),
           Center(
             child: Utility.textWidget(
@@ -678,65 +683,75 @@ class _SuccessScreenState extends State<SuccessScreen> {
         ));
   }
 
-  Widget textFormField(
-      {required TextEditingController controller,
-      required onSaved,
-      required validator,
-      TextInputType? keyboardType,
-      required bool? isFailure,
-      String? errormsg,
-      String? hintText,
-      List<TextInputFormatter>? inputFormatters}) {
-    return TextFormField(
-        inputFormatters: inputFormatters == null ? null : inputFormatters,
-        autovalidateMode: AutovalidateMode.always,
-        keyboardType: keyboardType ?? null,
-        //        //textAlign: TextAlign.start,
-        style: Theme.of(context)
-            .textTheme
-            .headline6!
-            .copyWith(fontWeight: FontWeight.bold),
-        controller: controller,
-        cursorColor: Theme.of(context).colorScheme.primaryVariant,
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: Theme.of(context)
-              .textTheme
-              .headline6!
-              .copyWith(fontWeight: FontWeight.bold, color: Colors.grey),
-          errorText: controller.text.isEmpty ? errormsg : null,
-          errorMaxLines: 2,
-          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-          fillColor: Colors.transparent,
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                // color: controller.text.isNotEmpty
-                //     ? Theme.of(context)
-                //         .colorScheme
-                //         .primaryVariant
-                //         .withOpacity(0.5)
-                //     : Colors.red
+  Widget textFormField({
+    required TextEditingController controller,
+    required onSaved,
+    required validator,
+    TextInputType? keyboardType,
+    required bool? isFailure,
+    String? errormsg,
+    List<TextInputFormatter>? inputFormatters,
+    bool? maxNineDigit,
+    String? hintText,
+  }) {
+    return ValueListenableBuilder(
+        valueListenable: isStudentNameFilled,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return TextFormField(
+              maxLength: maxNineDigit == null ? null : 9,
+              inputFormatters: inputFormatters == null ? null : inputFormatters,
+              autovalidateMode: AutovalidateMode.always,
+              keyboardType: keyboardType ?? null,
+              //        //textAlign: TextAlign.start,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(fontWeight: FontWeight.bold),
+              controller: controller,
+              cursorColor: Theme.of(context).colorScheme.primaryVariant,
+              decoration: InputDecoration(
+                // errorText: controller.text.isEmpty ? errormsg : null,
+                hintText: hintText,
+                hintStyle: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontWeight: FontWeight.bold, color: Colors.grey),
+                errorText: controller.text.isEmpty ? errormsg : null,
+                errorMaxLines: 2,
+                contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                fillColor: Colors.transparent,
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: controller.text.isNotEmpty ||
+                              isStudentNameFilled.value.isNotEmpty
+                          ? Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.5)
+                          : Colors.red),
                 ),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-                // color: controller.text.isEmpty
-                //     ? Theme.of(context)
-                //         .colorScheme
-                //         .primaryVariant
-                //         .withOpacity(0.5)
-                //     : Colors.red
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                      color: controller.text.isNotEmpty
+                          ? Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.5)
+                          : Colors.red),
                 ),
-          ),
-          border: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color:
-                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-            ),
-          ),
-        ),
-        onChanged: onSaved,
-        validator: validator);
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5),
+                  ),
+                ),
+              ),
+              onChanged: onSaved,
+              validator: validator);
+        });
   }
 
   Widget retryButton({required final onPressed}) {

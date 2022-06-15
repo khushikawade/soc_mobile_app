@@ -373,10 +373,9 @@ class Utility {
         translatedMessage.toString(),
         style: textTheme != null
             ? textTheme
-            : Theme.of(context)
-                .textTheme
-                .headline6!
-                .copyWith(fontWeight: FontWeight.bold,),
+            : Theme.of(context).textTheme.headline6!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
       ),
     );
   }
@@ -422,4 +421,26 @@ class Utility {
   //   }
   // }
 
+  static void noInternetSnackBar() {
+    //Use to show snackbar at any current screen
+    BuildContext? context = Globals.navigatorKey.currentContext;
+
+    ScaffoldMessenger.of(context!).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("No Internet"),
+    ));
+  }
+
+  static Future<bool> checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
 }

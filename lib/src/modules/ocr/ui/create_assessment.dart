@@ -3,11 +3,13 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class CreateAssessment extends StatefulWidget {
   const CreateAssessment({Key? key}) : super(key: key);
@@ -310,44 +312,54 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   Widget textActionButton() {
-    return FloatingActionButton.extended(
-        backgroundColor: AppTheme.kButtonColor,
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            Globals.assessmentName =
-                "${assessmentController.text}_${classController.text}";
-            print(Globals.assessmentName);
+    return OfflineBuilder(
+      connectivityBuilder: (BuildContext context,
+          ConnectivityResult connectivity, Widget child) {
+        final bool connected = connectivity != ConnectivityResult.none;
+        return FloatingActionButton.extended(
+            backgroundColor: AppTheme.kButtonColor,
+            onPressed: () async {
+              if (!connected) {
+                Utility.noInternetSnackBar();
+              } else {
+                if (_formKey.currentState!.validate()) {
+                  Globals.assessmentName =
+                      "${assessmentController.text}_${classController.text}";
 
-            //Create excel sheet if not created already for current assessment
-            Globals.googleExcelSheetId == ''
-                ? _googleDriveBloc.add(CreateExcelSheetToDrive(
-                    name:
-                        "${assessmentController.text}_${classController.text}"))
-                : print("file is already exists on drive ");
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SubjectSelection(
-                        selectedClass: selectedGrade.value.toString(),
-                      )),
-            );
-          }
-        },
-        label: Row(
-          children: [
-            textwidget(
-                text: 'Next',
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(color: Theme.of(context).backgroundColor)),
-            SpacerWidget(5),
-            RotatedBox(
-              quarterTurns: 90,
-              child: Icon(Icons.arrow_back,
-                  color: Theme.of(context).backgroundColor, size: 20),
-            )
-          ],
-        ));
+                  //Create excel sheet if not created already for current assessment
+                  Globals.googleExcelSheetId!.isEmpty
+                      ? _googleDriveBloc.add(CreateExcelSheetToDrive(
+                          name:
+                              "${assessmentController.text}_${classController.text}"))
+                      : print("file is already exists on drive ");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SubjectSelection(
+                              selectedClass: selectedGrade.value.toString(),
+                            )),
+                  );
+                }
+              }
+            },
+            label: Row(
+              children: [
+                textwidget(
+                    text: 'Next',
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: Theme.of(context).backgroundColor)),
+                SpacerWidget(5),
+                RotatedBox(
+                  quarterTurns: 90,
+                  child: Icon(Icons.arrow_back,
+                      color: Theme.of(context).backgroundColor, size: 20),
+                )
+              ],
+            ));
+      },
+      child: Container(),
+    );
   }
 }

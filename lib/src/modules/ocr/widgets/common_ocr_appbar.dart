@@ -504,36 +504,39 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             3.0,
                           ),
                           Text(userInformation.userEmail!,
+                          textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2!
-                                  .copyWith(color: Colors.grey.shade500)),
-                          SpacerWidget(3.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text("Sign Out",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(
-                                          color: Colors.grey.shade500,
-                                          fontWeight: FontWeight.bold)),
-                              IconButton(
-                                onPressed: () {
-                                  UserGoogleProfile.clearUserProfile();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) => HomePage()),
-                                      (_) => false);
-                                },
-                                icon: Icon(
-                                  Icons.logout,
-                                  size: 26,
-                                  color: AppTheme.kButtonColor,
+                                  .copyWith(color: Colors.grey.shade500,  )),
+                          SpacerWidget(8.0),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Sign Out",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1!
+                                        .copyWith(
+                                            color: Colors.grey.shade500,
+                                            fontWeight: FontWeight.bold, fontSize: 20)),
+                                IconButton(
+                                  onPressed: () {
+                                    UserGoogleProfile.clearUserProfile();
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) => HomePage()),
+                                        (_) => false);
+                                  },
+                                  icon: Icon(
+                                    Icons.logout,
+                                    size: 26,
+                                    color: AppTheme.kButtonColor,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       )),

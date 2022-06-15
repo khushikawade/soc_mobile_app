@@ -307,6 +307,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                           customOrStandardRubic: "Custom"));
                                   print("calling get img url");
                                   _googleBloc.add(ImageToAwsBucked(
+                                    
                                       imgBase64: RubricScoreList
                                           .scoringList.last.imgBase64,
                                       imgExtension: imgExtension));

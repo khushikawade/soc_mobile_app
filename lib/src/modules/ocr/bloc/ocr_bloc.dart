@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
@@ -59,7 +61,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
         //yield OcrLoading();
         StudentDetails data = await fetchStudentDetails(event.ossId);
-        yield SuccessStudentDetails(studentName: "${data.firstNameC}' '${data.lastNameC}");
+        yield SuccessStudentDetails(
+            studentName: "${data.firstNameC}' '${data.lastNameC}");
         print(data);
       } catch (e) {
         print(e);
@@ -135,8 +138,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         saveStudentToSalesforce(
             studentName: event.studentName, studentId: event.studentId);
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
-        print(e);
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        throw (e);
       }
     }
 
@@ -149,11 +158,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         if (!result) {
           await verifyUserWithDatabase(email: event.email.toString());
         }
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
-        print(e);
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
         throw (e);
-
-        // yield OcrErrorReceived(err: e);
       }
     }
 
@@ -188,7 +200,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is SaveSubjectListDetails) {
       try {
         bool result = await saveSubjectListDetails();
-      } catch (e) {}
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
+      } catch (e) {
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        throw (e);
+      }
     }
 
     if (event is SaveAssessmentToDashboard) {
@@ -254,7 +274,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             throw ('something went wrong');
           }
         }
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.noInternetSnackBar()
+            : print(e);
+        rethrow;
       } catch (e) {
+        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
         throw (e);
       }
     }
@@ -494,11 +520,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     };
     final body = {
       "AccountId": "0014W00002uusl7QAA", //Static for graded+ account
-      "RecordTypeId" : "0124W0000003GVyQAM", //Static to save in a 'Teacher' catagory list
+      "RecordTypeId":
+          "0124W0000003GVyQAM", //Static to save in a 'Teacher' catagory list
       "Assessment_App_User__c": "true",
-      "LastName": email,//.split("@")[0],
+      "LastName": email, //.split("@")[0],
       "Email": email,
-      "GRADED_user_type__c": "Free" //Currently free but will be dynamic later on
+      "GRADED_user_type__c":
+          "Free" //Currently free but will be dynamic later on
     };
 
     final ResponseModel response = await _dbServices.postapi(

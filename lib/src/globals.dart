@@ -121,11 +121,11 @@ class Globals {
   static int? scanMoreStudentInfoLength;
   static String lastDeshboardId = '';
   // static final nameController = TextEditingController();
-  static  final ValueNotifier<String> updateStudentName = ValueNotifier<String>('');
-
+  static final ValueNotifier<String> updateStudentName =
+      ValueNotifier<String>('');
   static String? scoringRubric;
-
   // static late List<CustomRubicModal>? customRubicDetail = [];
   // static LocalDatabase<UserInformation> localUserInfo = LocalDatabase('user_profile');
   // static List<UserInformation> userprofilelocalData = [];
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }
