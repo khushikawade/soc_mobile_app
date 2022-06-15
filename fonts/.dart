@@ -12,10 +12,6 @@
 ///       - asset: fonts/CustomFlutterIcons.ttf
 ///
 /// 
-/// * Material Design Icons, Copyright (C) Google, Inc
-///         Author:    Google
-///         License:   Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
-///         Homepage:  https://design.google.com/icons/
 ///
 import 'package:flutter/widgets.dart';
 
@@ -68,6 +64,8 @@ class CustomFlutterIcons {
   static const IconData blue_2 = IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData v1 = IconData(0xe829, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData call = IconData(0xe82a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData home = IconData(0xe837, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData microphone = IconData(0xe838, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData after_school = IconData(0xe844, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData athletics = IconData(0xe845, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData clubs = IconData(0xe846, fontFamily: _kFontFam, fontPackage: _kFontPkg);
