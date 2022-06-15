@@ -169,23 +169,16 @@ class _CustomPagesState extends State<CustomPages> {
               isNews: false,
               isEvents: false,
               connected: true);
-    } else if (obj.sectionTemplate == "Embed iFrame") {
+    } else if (obj.sectionTemplate == "Embedded iFrame") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
-          ? Expanded(
-              child: InAppUrlLauncer(
-                isiFrame: true,
-                title: obj.sectionTitleC!,
-                url: obj.appUrlC,
-                isbuttomsheet: true,
-                language: Globals.selectedLanguage,
-              ),
-
-              // child: HomeInAppUrlLauncher(
-              //   isiFrame: true,
-              //   url: obj.rtfHTMLC.toString(),
-              //   language: Globals.selectedLanguage,
-              // ),
-            )
+          ? InAppUrlLauncer(  //Removed expanded
+            isiFrame: true,
+            hideAppbar: true,
+            title: obj.sectionTitleC!,
+            url: obj.rtfHTMLC,
+            isbuttomsheet: true,
+            language: Globals.selectedLanguage,
+          )
           : NoDataFoundErrorWidget(
               isResultNotFoundMsg: false,
               isNews: false,

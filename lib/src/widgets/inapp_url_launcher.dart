@@ -13,7 +13,7 @@ class InAppUrlLauncer extends StatefulWidget {
   final bool? isiFrame;
   final String title;
   final String url;
-  // final bool? hideAppbar; //To hide the appbar
+  final bool? hideAppbar; //To hide the appbar
   // final bool? hideShare; //To hide share icon only from appbar
   final bool isbuttomsheet;
   final String? language;
@@ -28,7 +28,7 @@ class InAppUrlLauncer extends StatefulWidget {
     required this.url,
     required this.isbuttomsheet,
     required this.language,
-    // this.hideAppbar,
+    this.hideAppbar,
     // this.hideShare,
     // this.zoomEnabled,
     this.isiFrame,
@@ -58,8 +58,8 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         ? _webViewWidget()
         : Scaffold(
             appBar:
-                // widget.hideAppbar != true
-                //     ?
+                widget.hideAppbar != true
+                    ?
                 CustomAppBarWidget(
               isSearch: false,
               isShare: true, //widget.hideShare != true ? true : false,
@@ -67,8 +67,8 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
               sharedpopBodytext: widget.url.toString(),
               sharedpopUpheaderText: "Please checkout this link",
               language: Globals.selectedLanguage,
-            ),
-            // : null,
+            )
+            : null,
             body: _webViewWidget());
   }
 

@@ -68,6 +68,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         leadingWidth: 200, //widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
         leading: Container(
+          margin: EdgeInsets.only(top: 7),
           child: Row(
             children: [
               widget.customBackButton != null
@@ -121,12 +122,16 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             ),
               Expanded(
                 child: Container(
-                  // color: widget.isBackButton!=null? Colors.green:Colors.yellow,
-                  padding:widget.isBackButton==true? EdgeInsets.only(left: 0):EdgeInsets.only(left: 18),
+                  // color: Colors.red,//widget.isBackButton!=null? Colors.green:Colors.yellow,
+                  padding: widget.isBackButton == true
+                      ? EdgeInsets.only(left: 0)
+                      : EdgeInsets.only(left: 18),
                   alignment: Alignment.centerLeft,
                   child: Image(
                     alignment: Alignment.centerLeft,
-                    width: widget.isBackButton==true? 200:100,//200,//Globals.deviceType == "phone" ?(widget.isBackButton==null? 200: 300) : 32,
+                    width: widget.isBackButton == true
+                        ? 200
+                        : 100, //200,//Globals.deviceType == "phone" ?(widget.isBackButton==null? 200: 300) : 32,
                     // height: Globals.deviceType == "phone" ? 100 : 32,
                     image: AssetImage(
                       Color(0xff000000) == Theme.of(context).backgroundColor

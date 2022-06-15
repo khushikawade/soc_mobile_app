@@ -493,10 +493,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
     };
     final body = {
-      "AccountId": "0017h00000k3TgjAAE",
+      "AccountId": "0014W00002uusl7QAA", //Static for graded+ account
+      "RecordTypeId" : "0124W0000003GVyQAM", //Static to save in a 'Teacher' catagory list
       "Assessment_App_User__c": "true",
-      "LastName": email.split("@")[0],
-      "Email": email
+      "LastName": email,//.split("@")[0],
+      "Email": email,
+      "GRADED_user_type__c": "Free" //Currently free but will be dynamic later on
     };
 
     final ResponseModel response = await _dbServices.postapi(
