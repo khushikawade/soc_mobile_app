@@ -57,7 +57,7 @@ class _StaffPageState extends State<StaffPage> {
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   OcrBloc _ocrBloc = new OcrBloc();
   // ScrollController _scrollController = new ScrollController();
-  final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(true);
   // final GlobalKey<NestedScrollViewState> globalKey = GlobalKey();
 
   @override
