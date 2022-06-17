@@ -72,6 +72,7 @@ class Globals {
   //OCR Feature Globals
   static List pointsList = [2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
+  static int lastindex = 0;
 
   // static List subjectDetailsList = [
   //   'NY-3.OA.1 Interpret Products of whole numbers',

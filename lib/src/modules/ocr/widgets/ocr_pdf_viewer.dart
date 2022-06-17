@@ -27,7 +27,7 @@ class OcrPdfViewer extends StatefulWidget {
 }
 
 class _OcrPdfViewerState extends State<OcrPdfViewer> {
-  bool isLoading = true;
+  // bool isLoading = true;
 
   String? pdfPath;
   PDFDocument? document;
@@ -37,7 +37,7 @@ class _OcrPdfViewerState extends State<OcrPdfViewer> {
       widget.url!,
     );
     if (document != null) {
-      setState(() => isLoading = false);
+      // setState(() => isLoading = false);
     }
   }
 

@@ -49,7 +49,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               studentId: data[1],
               grade: data[0].toString().length == 1 && data[0].toString() != 'S'
                   ? data[0]
-                  : '2',
+                  : '',
               studentName: data[2]);
         }
       } catch (e) {
@@ -61,10 +61,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is FetchStudentDetails) {
       try {
         //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
-        //yield OcrLoading();
+        yield OcrLoading();
         StudentDetails data = await fetchStudentDetails(event.ossId);
         yield SuccessStudentDetails(
-            studentName: "${data.firstNameC}' '${data.lastNameC}");
+            studentName: "${data.firstNameC} ${data.lastNameC}");
         print(data);
       } catch (e) {
         print(e);
@@ -73,7 +73,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is SearchSubjectDetails) {
       try {
         List<SubjectDetailList> data = await fatchSubjectDetails(
-            type: event.type!, keyword: event.keyword!);
+            type: event.type!,
+            keyword: event.keyword!,
+            isSearchPage: event.isSearchPage ?? false,
+            gradeNo: event.grade,
+            subjectSelected: event.subjectSelected);
         List<SubjectDetailList> list = [];
         if (event.type == 'subject') {
           List<SubjectDetailList> subjectList = [];
@@ -111,6 +115,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             }
           }
           print(list.length);
+          yield OcrLoading();
           yield SearchSubjectDetailsSuccess(
             obj: list,
           );
@@ -124,6 +129,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             }
           }
           print(list.length);
+          yield OcrLoading();
           yield SearchSubjectDetailsSuccess(
             obj: list,
           );
@@ -176,7 +182,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // yield OcrLoading();
 
         List<SubjectDetailList> data = await fatchSubjectDetails(
-            type: event.type!, keyword: event.keyword!);
+            type: event.type!,
+            keyword: event.keyword!,
+            isSearchPage: event.isSearchPage ?? false,
+            gradeNo: event.grade,
+            subjectSelected: event.subjectSelected);
         if (event.type == 'subject') {
           List<SubjectDetailList> subjectList = [];
           subjectList.addAll(data);
@@ -225,12 +235,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           _list.removeRange(0, event.previouslyAddedListLength!);
 
           if (Globals.lastDeshboardId != '') {
-            await _sendEmailToTeam(
-                assessmentId: Globals.lastDeshboardId,
-                name: _profileData[0].userName!.replaceAll("%", " "),
-                studentResultDetails: event.resultList,
-                schoolId: event.schoolId,
-                email: _profileData[0].userEmail!);
+            await _sendEmailToAdmin(
+              assessmentId: Globals.lastDeshboardId,
+              name: _profileData[0].userName!.replaceAll("%", " "),
+              studentResultDetails: event.resultList,
+              schoolId: event.schoolId,
+              email: _profileData[0].userEmail!,
+              assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+            );
             bool result = await saveResultToDashboard(
                 assessmentId: Globals.lastDeshboardId, studentDetails: _list);
 
@@ -282,12 +294,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           Globals.lastDeshboardId = dashboardId;
 
           if (dashboardId != '') {
-            await _sendEmailToTeam(
-                assessmentId: dashboardId,
-                name: _profileData[0].userName!.replaceAll("%", " "),
-                studentResultDetails: event.resultList,
-                schoolId: event.schoolId,
-                email: _profileData[0].userEmail!);
+            await _sendEmailToAdmin(
+              assessmentId: dashboardId,
+              name: _profileData[0].userName!.replaceAll("%", " "),
+              studentResultDetails: event.resultList,
+              schoolId: event.schoolId,
+              email: _profileData[0].userEmail!,
+              assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+            );
 
             bool result = await saveResultToDashboard(
                 assessmentId: dashboardId, studentDetails: event.resultList);
@@ -359,7 +373,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   }
 
   Future<List<SubjectDetailList>> fatchSubjectDetails(
-      {required String type, required String keyword}) async {
+      {required String type,
+      required String keyword,
+      bool? isSearchPage,
+      String? gradeNo,
+      String? subjectSelected}) async {
     try {
       // String grade = '';
       // String selectedSubject = '';
@@ -395,12 +413,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //Return Learning standard details
       else if (type == 'nyc') {
         //Using a seperate list to check only 'Learning Standard' whether already exist or not.
+
         List learningStdList = [];
 
         selectedSubject = keyword;
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].subjectNameC == keyword &&
-              _localData[i].gradeC == grade) {
+              _localData[i].gradeC ==
+                  (isSearchPage == true ? gradeNo : grade)) {
             if (subjectDetailList.isNotEmpty &&
                 !learningStdList.contains(_localData[i].domainNameC)) {
               subjectDetailList.add(_localData[i]);
@@ -415,24 +435,49 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } //Return Sub Learning standard details
       else if (type == 'nycSub') {
         //Using a seperate list to check only 'Sub Learning Standard' whether already exist or not.
-        List subLearningStdList = [];
-
-        for (int i = 0; i < _localData.length; i++) {
-          if (_localData[i].subjectNameC == selectedSubject &&
-              _localData[i].gradeC == grade &&
-              _localData[i].domainNameC == keyword) {
-            if (subjectDetailList.isNotEmpty &&
-                !subLearningStdList
-                    .contains(_localData[i].standardAndDescriptionC)) {
-              subjectDetailList.add(_localData[i]);
-              subLearningStdList.add(_localData[i].standardAndDescriptionC);
-            } else if (subjectDetailList.isEmpty) {
-              subjectDetailList.add(_localData[i]);
-              subLearningStdList.add(_localData[i].standardAndDescriptionC);
+        if (isSearchPage == true) {
+          List<SubjectDetailList> list = [];
+          List subLearningStdList = [];
+          for (int i = 0; i < _localData.length; i++) {
+            if (
+                //_localData[i].subjectNameC == selectedSubject &&
+                _localData[i].gradeC == gradeNo &&
+                    _localData[i].subjectNameC == keyword) {
+              if (list.isNotEmpty &&
+                  !subLearningStdList
+                      .contains(_localData[i].standardAndDescriptionC)) {
+                list.add(_localData[i]);
+                subLearningStdList.add(_localData[i].standardAndDescriptionC);
+              } else if (list.isEmpty) {
+                list.add(_localData[i]);
+                subLearningStdList.add(_localData[i].standardAndDescriptionC);
+              }
             }
           }
+          return list;
+        } else {
+          List subLearningStdList = [];
+
+          for (int i = 0; i < _localData.length; i++) {
+            if (_localData[i].subjectNameC ==
+                    (selectedSubject == ''
+                        ? subjectSelected
+                        : selectedSubject) &&
+                (_localData[i].gradeC == (grade == '' ? gradeNo : grade)) &&
+                _localData[i].domainNameC == keyword) {
+              if (subjectDetailList.isNotEmpty &&
+                  !subLearningStdList
+                      .contains(_localData[i].standardAndDescriptionC)) {
+                subjectDetailList.add(_localData[i]);
+                subLearningStdList.add(_localData[i].standardAndDescriptionC);
+              } else if (subjectDetailList.isEmpty) {
+                subjectDetailList.add(_localData[i]);
+                subLearningStdList.add(_localData[i].standardAndDescriptionC);
+              }
+            }
+          }
+          return subjectDetailList;
         }
-        return subjectDetailList;
       }
       return subjectDetailList;
     } catch (e) {
@@ -696,11 +741,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     return body;
   }
 
-  _sendEmailToTeam(
+  _sendEmailToAdmin(
       {required String schoolId,
       required String name,
       required String email,
       required String assessmentId,
+      required String assessmentSheetPublicURL,
       required List<StudentAssessmentInfo> studentResultDetails}) async {
     List<Map> bodyContent = [];
 
@@ -718,8 +764,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
       "to": "techadmin@solvedconsulting.com, appdevelopersdp7@gmail.com",
       "subject": "Data saved to the dashboard",
+      // "html":
       "text":
-          "School Id : $schoolId \nTeacher Name : $name \nTeacher Email : $email \nAssessment Id : $assessmentId \nResult detail : \n $bodyContent "
+          '''School Id : $schoolId \nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n').replaceAll('}', ', \n')}'''
     };
 
     final ResponseModel response = await _dbServices.postapi(

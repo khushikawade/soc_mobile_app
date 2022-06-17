@@ -8,7 +8,14 @@ import '../../../styles/theme.dart';
 class SearchBar extends StatelessWidget {
   final TextEditingController controller;
   final onSaved;
-  const SearchBar({Key? key, required this.controller, required this.onSaved})
+  final onTap;
+  final bool? isSearchPage;
+  const SearchBar(
+      {Key? key,
+      required this.controller,
+      required this.onSaved,
+      this.onTap,
+      this.isSearchPage})
       : super(key: key);
 
   @override
@@ -49,25 +56,43 @@ class SearchBar extends StatelessWidget {
                       Color(0xff000000) != Theme.of(context).backgroundColor
                           ? Color.fromRGBO(0, 0, 0, 0.1)
                           : Color.fromRGBO(255, 255, 255, 0.16),
-                  prefixIcon: Icon(
-                    const IconData(0xe805,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: Color(0xffAAAAAA),
-                    size: Globals.deviceType == "phone" ? 18 : 16,
-                  ),
-                  suffixIcon: controller.text.isEmpty
-                      ? null
-                      : InkWell(
-                          onTap: () {},
-                          child: Icon(
-                            Icons.clear,
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                            size: Globals.deviceType == "phone" ? 20 : 28,
-                          ),
+                  prefixIcon:
+                  //  isSearchPage == true
+                  //     ? IconButton(
+                  //         onPressed: () {
+                  //           Navigator.pop(context);
+                  //         },
+                  //         icon: Icon(
+                  //           const IconData(0xe83b,
+                  //               fontFamily: Overrides.kFontFam,
+                  //               fontPackage: Overrides.kFontPkg),
+                  //           color: Color(0xffAAAAAA),
+                  //           size: Globals.deviceType == "phone" ? 18 : 16,
+                  //         ),
+                  //       )
+                  //     :
+                       Icon(
+                          const IconData(0xe805,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: Color(0xffAAAAAA),
+                          size: Globals.deviceType == "phone" ? 18 : 16,
                         ),
+                  // suffixIcon: controller.text.isEmpty
+                  //     ? null
+                  //     : InkWell(
+                  //         onTap: () {
+                  //           controller.clear();
+                  //         },
+                  //         child: Icon(
+                  //           Icons.clear,
+                  //           color: Theme.of(context).colorScheme.primaryVariant,
+                  //           size: Globals.deviceType == "phone" ? 20 : 28,
+                  //         ),
+                  //       ),
                 ),
                 onChanged: onSaved,
+                onTap: onTap,
               );
             }),
       ),

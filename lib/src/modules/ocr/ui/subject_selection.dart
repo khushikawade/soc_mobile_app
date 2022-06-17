@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
+import 'package:Soc/src/modules/ocr/ui/search_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
@@ -23,7 +24,18 @@ import '../widgets/bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
   final String? selectedClass;
-  SubjectSelection({Key? key, required this.selectedClass}) : super(key: key);
+  final bool? isSearchPage;
+  final String? domainNameC;
+  final String? searchClass;
+  final String? selectedSubject;
+  SubjectSelection(
+      {Key? key,
+      required this.selectedClass,
+      this.isSearchPage,
+      this.domainNameC,
+      this.searchClass,
+      this.selectedSubject})
+      : super(key: key);
 
   @override
   State<SubjectSelection> createState() => _SubjectSelectionState();
@@ -59,8 +71,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   @override
   initState() {
-    _ocrBloc.add(
-        FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
+    if (widget.isSearchPage == true) {
+      _ocrBloc.add(FatchSubjectDetails(
+          type: 'nycSub',
+          keyword: widget.domainNameC,
+          grade: widget.searchClass,
+          subjectSelected: widget.selectedSubject));
+    } else {
+      _ocrBloc.add(
+          FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
+    }
+
     super.initState();
   }
 
@@ -95,11 +116,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   onPressed: () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (pageIndex.value == 1) {
+                      isSubmitButton.value = false;
                       _ocrBloc.add(FatchSubjectDetails(
                           type: 'subject', keyword: widget.selectedClass));
                     } else if (pageIndex.value == 2) {
-                      _ocrBloc.add(
-                          FatchSubjectDetails(type: 'nyc', keyword: keyword));
+                      isSubmitButton.value = false;
+                      if (widget.isSearchPage == true) {
+                        Navigator.pop(context);
+                      } else {
+                        _ocrBloc.add(
+                            FatchSubjectDetails(type: 'nyc', keyword: keyword));
+                      }
                     } else {
                       Navigator.pop(context);
                     }
@@ -125,10 +152,41 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             Widget? child) {
                           return pageIndex.value == 0
                               ? Container()
+
+                              //  pageIndex.value == 1 ? GestureDetector(
+                              //   onTap: (){
+                              //     Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //               builder: (context) =>
+                              //                   SearchScreenPage(
+                              //                     keyword: keyword,
+                              //                     grade: widget.selectedClass,
+                              //                   )),
+                              //         );
+                              //   },
+                              //   child:SearchBar(controller:searchController , onSaved: (value){},)
+                              // )
                               : SearchBar(
+                                  onTap: () {
+                                    if (pageIndex.value == 1) {
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SearchScreenPage(
+                                                  keyword: keyword,
+                                                  grade: widget.selectedClass,
+                                                )),
+                                      );
+                                    }
+                                  },
                                   controller: searchController,
                                   onSaved: (String value) {
-                                    if (searchController.text.isEmpty) {
+                                    if (searchController.text.isEmpty &&
+                                        pageIndex.value != 1) {
                                       _ocrBloc.add(FatchSubjectDetails(
                                           type: pageIndex.value == 0
                                               ? 'subject'
@@ -139,8 +197,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                               ? widget.selectedClass
                                               : pageIndex.value == 1
                                                   ? keyword
-                                                  : keywordSub));
-                                    } else {
+                                                  : keywordSub ??
+                                                      widget.domainNameC,
+                                          grade: widget.searchClass,
+                                          subjectSelected:
+                                              widget.selectedSubject));
+                                    } else if (pageIndex.value != 1) {
                                       _debouncer.run(() async {
                                         pageIndex.value == 0
                                             ? searchList(
@@ -161,9 +223,25 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                 ? widget.selectedClass
                                                 : pageIndex.value == 1
                                                     ? keyword
-                                                    : keywordSub));
+                                                    : keywordSub ??
+                                                        widget.domainNameC,
+                                            grade: widget.searchClass,
+                                            subjectSelected:
+                                                widget.selectedSubject));
                                         setState(() {});
                                       });
+                                    }
+
+                                    if (pageIndex.value == 1) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SearchScreenPage(
+                                                  keyword: keyword,
+                                                  grade: widget.selectedClass,
+                                                )),
+                                      );
                                     }
                                   });
                         }),
@@ -716,7 +794,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           label: Row(
                             children: [
                               Utility.textWidget(
-                                  text: 'Submit',
+                                  text: 'Save to drive',
                                   context: context,
                                   textTheme: Theme.of(context)
                                       .textTheme
@@ -724,6 +802,21 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       .copyWith(
                                           color: Theme.of(context)
                                               .backgroundColor)),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Container(
+                                //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                                child: Image(
+                                  width:
+                                      Globals.deviceType == "phone" ? 23 : 28,
+                                  height:
+                                      Globals.deviceType == "phone" ? 23 : 28,
+                                  image: AssetImage(
+                                    "assets/images/drive_ico.png",
+                                  ),
+                                ),
+                              ),
                             ],
                           ));
                     },

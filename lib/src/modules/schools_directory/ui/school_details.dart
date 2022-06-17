@@ -342,20 +342,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                     },
                     child: EmptyContainer()),
               ),
-              Container(
-                child: BlocListener<HomeBloc, HomeState>(
-                  bloc: homebloc,
-                  listener: (context, state) async {
-                    if (state is BottomNavigationBarSuccess) {
-                      AppTheme.setDynamicTheme(Globals.appSetting, context);
-
-                      Globals.appSetting = AppSetting.fromJson(state.obj);
-                      setState(() {});
-                    }
-                  },
-                  child: EmptyContainer(),
-                ),
-              ),
             ],
           ),
           onRefresh: refreshPage,

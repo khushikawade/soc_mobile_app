@@ -315,6 +315,7 @@ class _StaffPageState extends State<StaffPage> {
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     // Globals.localUserInfo.clear(); // COMMENT
+                    Globals.lastindex = Globals.controller!.index;
                     List<UserInformation> _profileData =
                         await UserGoogleProfile.getUserProfile();
                     if (_profileData.isEmpty) {

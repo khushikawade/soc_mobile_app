@@ -264,12 +264,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             event.fileId,
             _userprofilelocalData[0].refreshToken);
 
-        if (fildObject != '' && fildObject != null) {
+        if (fildObject != '' &&
+            fildObject != null &&
+            fildObject['exportLinks'] != null) {
           print("detail assessment link is received");
           String file = await downloadFile(
               fildObject['exportLinks'][
                   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-              "test3",
+              event.fileId!,
               (await getApplicationDocumentsDirectory()).path);
           print("assessment downloaded");
 

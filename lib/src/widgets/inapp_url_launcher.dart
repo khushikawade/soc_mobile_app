@@ -57,18 +57,16 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
     return widget.isCustomMainPageWebView == true
         ? _webViewWidget()
         : Scaffold(
-            appBar:
-                widget.hideAppbar != true
-                    ?
-                CustomAppBarWidget(
-              isSearch: false,
-              isShare: true, //widget.hideShare != true ? true : false,
-              appBarTitle: widget.title,
-              sharedpopBodytext: widget.url.toString(),
-              sharedpopUpheaderText: "Please checkout this link",
-              language: Globals.selectedLanguage,
-            )
-            : null,
+            appBar: widget.hideAppbar != true
+                ? CustomAppBarWidget(
+                    isSearch: false,
+                    isShare: true, //widget.hideShare != true ? true : false,
+                    appBarTitle: widget.title,
+                    sharedpopBodytext: widget.url.toString(),
+                    sharedpopUpheaderText: "Please checkout this link",
+                    language: Globals.selectedLanguage,
+                  )
+                : null,
             body: _webViewWidget());
   }
 

@@ -21,7 +21,15 @@ class VerifyUserWithDatabase extends OcrEvent {
 class FatchSubjectDetails extends OcrEvent {
   final String? type;
   final String? keyword;
-  FatchSubjectDetails({required this.type, required this.keyword});
+  final String? grade;
+  final bool? isSearchPage;
+  final String? subjectSelected;
+  FatchSubjectDetails(
+      {required this.type,
+      required this.keyword,
+      this.isSearchPage,
+      this.grade,
+      this.subjectSelected});
 
   @override
   List<Object> get props => [type!, keyword!];
@@ -40,8 +48,16 @@ class SearchSubjectDetails extends OcrEvent {
   final String? type;
   final String? keyword;
   final String? searchKeyword;
+  final String? grade;
+  final bool? isSearchPage;
+  final String? subjectSelected;
   SearchSubjectDetails(
-      {required this.type, required this.keyword, required this.searchKeyword});
+      {required this.type,
+      required this.keyword,
+      required this.searchKeyword,
+      this.isSearchPage,
+      this.grade,
+      this.subjectSelected});
 
   @override
   List<Object> get props => [type!];
@@ -75,6 +91,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
   final context;
   final List<StudentAssessmentInfo> resultList;
   final bool isHistoryAssessmentSection;
+  final String? assessmentSheetPublicURL;
   SaveAssessmentToDashboard(
       {required this.assessmentName,
       required this.rubricScore,
@@ -85,7 +102,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
       required this.context,
       this.previouslyAddedListLength,
       required this.resultList,
-      required this.isHistoryAssessmentSection});
+      required this.isHistoryAssessmentSection, required this.assessmentSheetPublicURL});
 
   @override
   List<Object> get props => [];
@@ -93,7 +110,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
 
 class FetchStudentDetails extends OcrEvent {
   final String ossId;
-  
+
   FetchStudentDetails({required this.ossId});
 
   @override

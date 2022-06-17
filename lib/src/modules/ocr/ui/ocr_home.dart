@@ -130,18 +130,18 @@ class _OpticalCharacterRecognitionPageState
                 Container(
                     height: MediaQuery.of(context).size.height * 0.47,
                     child: scoringRubric()),
-                Container(
-                  child: BlocListener<HomeBloc, HomeState>(
-                      bloc: _homeBloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-                          Globals.appSetting = AppSetting.fromJson(state.obj);
-                          setState(() {});
-                        }
-                      },
-                      child: EmptyContainer()),
-                ),
+                // Container(
+                //   child: BlocListener<HomeBloc, HomeState>(
+                //       bloc: _homeBloc,
+                //       listener: (context, state) async {
+                //         if (state is BottomNavigationBarSuccess) {
+                //           AppTheme.setDynamicTheme(Globals.appSetting, context);
+                //           Globals.appSetting = AppSetting.fromJson(state.obj);
+                //           setState(() {});
+                //         }
+                //       },
+                //       child: EmptyContainer()),
+                // ),
               ],
             ),
           ),

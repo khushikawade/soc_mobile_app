@@ -31,8 +31,15 @@ class HomePage extends StatefulWidget {
   final String? title;
   final homeObj;
   final String? language;
+  final bool? isFromOcrSection;
   final Widget Function(String translation)? builder;
-  HomePage({Key? key, this.title, this.homeObj, this.language, this.builder})
+  HomePage(
+      {Key? key,
+      this.title,
+      this.homeObj,
+      this.language,
+      this.builder,
+      this.isFromOcrSection})
       : super(key: key);
 
   @override
@@ -129,7 +136,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     Globals.controller = PersistentTabController(
         initialIndex: Globals.isNewTap == true
             ? Globals.newsIndex ?? 0
-            : Globals.homeIndex ?? 0);
+            : (widget.isFromOcrSection == true
+                ? Globals.lastindex
+                : Globals.homeIndex ?? 0));
     // initialIndex:
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);

@@ -21,6 +21,7 @@ class SuccessScreen extends StatefulWidget {
   final File imgPath;
   final String? pointPossible;
   final bool? isScanMore;
+
   SuccessScreen(
       {Key? key,
       required this.img64,
@@ -36,14 +37,19 @@ class SuccessScreen extends StatefulWidget {
 class _SuccessScreenState extends State<SuccessScreen> {
   static const double _KVertcalSpace = 60.0;
   OcrBloc _bloc = OcrBloc();
+  OcrBloc _bloc2 = OcrBloc();
   bool failure = false;
-  int? indexColor;
+  bool rubricNotDetected = false;
+
+  //int? indexColor;
   bool isSelected = true;
   bool onChange = false;
   String studentName = '';
   String studentId = '';
+  final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isNameUpdated = ValueNotifier<bool>(false);
   var nameController = TextEditingController();
   var idController = TextEditingController();
   final _formKey1 = GlobalKey<FormState>();
@@ -190,6 +196,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       });
                     }
                   } else if (state is FetchTextFromImageFailure) {
+                    setState(() {
+                      failure = true;
+                    });
                     widget.pointPossible == '2'
                         ? Globals.pointsEarnedList = [0, 1, 2]
                         : widget.pointPossible == '3'
@@ -197,6 +206,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             : widget.pointPossible == '4'
                                 ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
                                 : Globals.pointsEarnedList.length = 2;
+                    if (state.grade == '') {
+                      Utility.showSnackBar(_scaffoldKey,
+                          'Could not detect the right score', context, null);
+                    }
                     onChange == false
                         ? idController.text = state.studentId ?? ''
                         : state.studentId == ''
@@ -206,10 +219,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         ? nameController.text = state.studentName ?? ''
                         : null;
                     pointScored = state.grade;
+
                     // updateDetails();
-                    setState(() {
-                      failure = true;
-                    });
+
                   }
                   // do stuff here based on BlocA's state
                 },
@@ -247,6 +259,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     // nameController.text =
                     //     onChange == true ? state.studentName! : studentName;
                     // Globals.gradeList.add(state.grade!);
+                    rubricNotDetected = true;
                     return failureScreen(
                         id: state.studentId!, grade: state.grade!);
                   }
@@ -302,6 +315,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: ListView(
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          BlocListener<OcrBloc, OcrState>(
+            bloc: _bloc2,
+            child: Container(),
+            listener: (context, state) async {
+              if (state is SuccessStudentDetails) {
+                nameController.text = state.studentName;
+                isNameUpdated.value = !isNameUpdated.value;
+              }
+            },
+          ),
           SpacerWidget(15),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -630,57 +653,73 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Widget pointsButton(index, int grade) {
-    isSelected ? indexColor = grade : null;
+    isSelected ? indexColor.value = grade : null;
 
-    return InkWell(
-        onTap: () {
-          pointScored = index.toString();
-          // updateDetails(isUpdateData: true);
-          setState(() {
-            isSelected = false;
-            indexColor = index;
-            // nameController.text = studentName;
-            // idController.text = studentId;
-            //.text = studentId;
-          });
-        },
-        child: AnimatedContainer(
-          duration: Duration(microseconds: 100),
-          padding: EdgeInsets.only(
-            bottom: 5,
-          ),
-          decoration: BoxDecoration(
-            color: index == indexColor ? AppTheme.kSelectedColor : Colors.grey,
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
-          ),
-          child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              decoration: BoxDecoration(
-                color: Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xffF7F8F9)
-                    : Color(0xff111C20),
-                border: Border.all(
-                  color: index == indexColor
-                      ? AppTheme.kSelectedColor
-                      : Colors.grey,
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(8)),
+    return ValueListenableBuilder(
+      valueListenable: indexColor,
+      builder: (BuildContext context, dynamic value, Widget? child) {
+        return InkWell(
+            onTap: () {
+              pointScored = index.toString();
+
+              // updateDetails(isUpdateData: true);
+
+              isSelected = false;
+              rubricNotDetected = false;
+              indexColor.value = index;
+
+              // nameController.text = studentName;
+              // idController.text = studentId;
+              //.text = studentId;
+            },
+            child: AnimatedContainer(
+              duration: Duration(microseconds: 100),
+              padding: EdgeInsets.only(
+                bottom: 5,
               ),
-              child: TranslationWidget(
-                message: Globals.pointsEarnedList[index].toString(),
-                toLanguage: Globals.selectedLanguage,
-                fromLanguage: "en",
-                builder: (translatedMessage) => Text(
-                  translatedMessage.toString(),
-                  style: Theme.of(context).textTheme.headline1!.copyWith(
-                      color: indexColor == index
-                          ? AppTheme.kSelectedColor
-                          : Colors.grey),
+              decoration: BoxDecoration(
+                color:  index == indexColor.value
+                        ?  rubricNotDetected == true && isSelected == true
+                    ? Colors.red
+                    :AppTheme.kSelectedColor
+                        : Colors.grey,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(8),
                 ),
-              )),
-        ));
+              ),
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  decoration: BoxDecoration(
+                    color:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xffF7F8F9)
+                            : Color(0xff111C20),
+                    border: Border.all(
+                      color:  index == indexColor.value
+                              ?rubricNotDetected == true && isSelected == true
+                          ? Colors.red
+                          : AppTheme.kSelectedColor
+                              : Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  child: TranslationWidget(
+                    message: Globals.pointsEarnedList[index].toString(),
+                    toLanguage: Globals.selectedLanguage,
+                    fromLanguage: "en",
+                    builder: (translatedMessage) => Text(
+                      translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                          color:  indexColor.value == index
+                                  ? rubricNotDetected == true && isSelected == true
+                              ? Colors.red
+                              :AppTheme.kSelectedColor
+                                  : Colors.grey),
+                    ),
+                  )),
+            ));
+      },
+    );
   }
 
   Widget textFormField({
@@ -695,62 +734,69 @@ class _SuccessScreenState extends State<SuccessScreen> {
     String? hintText,
   }) {
     return ValueListenableBuilder(
-        valueListenable: isStudentNameFilled,
+        valueListenable: isNameUpdated,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
-          return TextFormField(
-              maxLength: maxNineDigit == null ? null : 9,
-              inputFormatters: inputFormatters == null ? null : inputFormatters,
-              autovalidateMode: AutovalidateMode.always,
-              keyboardType: keyboardType ?? null,
-              //        //textAlign: TextAlign.start,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.bold),
-              controller: controller,
-              cursorColor: Theme.of(context).colorScheme.primaryVariant,
-              decoration: InputDecoration(
-                // errorText: controller.text.isEmpty ? errormsg : null,
-                hintText: hintText,
-                hintStyle: Theme.of(context)
-                    .textTheme
-                    .headline6!
-                    .copyWith(fontWeight: FontWeight.bold, color: Colors.grey),
-                errorText: controller.text.isEmpty ? errormsg : null,
-                errorMaxLines: 2,
-                contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-                fillColor: Colors.transparent,
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                      color: controller.text.isNotEmpty ||
-                              isStudentNameFilled.value.isNotEmpty
-                          ? Theme.of(context)
+          return ValueListenableBuilder(
+              valueListenable: isStudentNameFilled,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return TextFormField(
+                    maxLength: maxNineDigit == null ? null : 9,
+                    inputFormatters:
+                        inputFormatters == null ? null : inputFormatters,
+                    autovalidateMode: AutovalidateMode.always,
+                    keyboardType: keyboardType ?? null,
+                    //        //textAlign: TextAlign.start,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold),
+                    controller: controller,
+                    cursorColor: Theme.of(context).colorScheme.primaryVariant,
+                    decoration: InputDecoration(
+                      // errorText: controller.text.isEmpty ? errormsg : null,
+                      hintText: hintText,
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(
+                              fontWeight: FontWeight.bold, color: Colors.grey),
+                      errorText: controller.text.isEmpty ? errormsg : null,
+                      errorMaxLines: 2,
+                      contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                      fillColor: Colors.transparent,
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: controller.text.isNotEmpty ||
+                                    isStudentNameFilled.value.isNotEmpty
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant
+                                    .withOpacity(0.5)
+                                : Colors.red),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: controller.text.isNotEmpty
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant
+                                    .withOpacity(0.5)
+                                : Colors.red),
+                      ),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context)
                               .colorScheme
                               .primaryVariant
-                              .withOpacity(0.5)
-                          : Colors.red),
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                      color: controller.text.isNotEmpty
-                          ? Theme.of(context)
-                              .colorScheme
-                              .primaryVariant
-                              .withOpacity(0.5)
-                          : Colors.red),
-                ),
-                border: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.5),
-                  ),
-                ),
-              ),
-              onChanged: onSaved,
-              validator: validator);
+                              .withOpacity(0.5),
+                        ),
+                      ),
+                    ),
+                    onChanged: onSaved,
+                    validator: validator);
+              });
         });
   }
 

@@ -154,15 +154,13 @@ class _CustomPagesState extends State<CustomPages> {
         obj.sectionTemplate == "HTML/RTF" ||
         obj.sectionTemplate == "RTF/HTML") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
-          ? Expanded(
-              child: AboutusPage(
-                htmlText: obj.rtfHTMLC.toString(),
-                isbuttomsheet: true,
-                ishtml: true,
-                isAppBar: false,
-                language: Globals.selectedLanguage,
-                appbarTitle: '',
-              ),
+          ? AboutusPage(
+              htmlText: obj.rtfHTMLC.toString(),
+              isbuttomsheet: true,
+              ishtml: true,
+              isAppBar: false,
+              language: Globals.selectedLanguage,
+              appbarTitle: '',
             )
           : NoDataFoundErrorWidget(
               isResultNotFoundMsg: false,
@@ -171,14 +169,15 @@ class _CustomPagesState extends State<CustomPages> {
               connected: true);
     } else if (obj.sectionTemplate == "Embedded iFrame") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
-          ? InAppUrlLauncer(  //Removed expanded
-            isiFrame: true,
-            hideAppbar: true,
-            title: obj.sectionTitleC!,
-            url: obj.rtfHTMLC,
-            isbuttomsheet: true,
-            language: Globals.selectedLanguage,
-          )
+          ? InAppUrlLauncer(
+              hideAppbar: true,
+              isiFrame: true,
+              title: obj.sectionTitleC!,
+              url: obj.rtfHTMLC,
+              // obj.appUrlC,
+              isbuttomsheet: false,
+              language: Globals.selectedLanguage,
+            )
           : NoDataFoundErrorWidget(
               isResultNotFoundMsg: false,
               isNews: false,

@@ -49,12 +49,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
-  int? assessmentCount;
+  // int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
   int? assessmentListLenght;
+  ValueNotifier<int> assessmentCount = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isSuccessStateRecived = ValueNotifier<bool>(false);
   String? isAssessmentAlreadySaved = '';
@@ -73,7 +74,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     } else {
       iconsList = Globals.ocrResultIcons;
       iconsName = Globals.ocrResultIconsName;
-      assessmentCount = Globals.studentInfo!.length;
+      assessmentCount.value = Globals.studentInfo!.length;
     }
     if (Globals.studentInfo!.length == Globals.scanMoreStudentInfoLength) {
       dashoardState.value = 'Success';
@@ -121,7 +122,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => HomePage()),
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      isFromOcrSection: true,
+                                    )),
                             (_) => false);
                         // onFinishedPopup();
                       })),
@@ -147,9 +151,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .textTheme
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
-                        Text(
-                            "${assessmentCount != null && assessmentCount! > 0 ? assessmentCount! : ''}",
-                            style: Theme.of(context).textTheme.headline3),
+                        ValueListenableBuilder(
+                            valueListenable: assessmentCount,
+                            builder: (BuildContext context, int value,
+                                Widget? child) {
+                              return Text(
+                                  "${assessmentCount.value > 0 ? assessmentCount.value : ''}",
+                                  style: Theme.of(context).textTheme.headline3);
+                            }),
                       ],
                     ),
                   ),
@@ -241,9 +250,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 webContentLink = state.webContentLink;
                                 isSuccessStateRecived.value = true;
                                 historyRecordList = state.obj;
-                                setState(() {
-                                  assessmentCount = state.obj.length;
-                                });
+
+                                assessmentCount.value = state.obj.length;
                               }
                             }
                           },
@@ -529,11 +537,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   dashoardState.value == '') {
                                 Globals.scanMoreStudentInfoLength =
                                     Globals.studentInfo!.length - 1;
-
                                 if (widget.isScanMore == true &&
                                     widget.assessmentListLenght! <
                                         Globals.studentInfo!.length) {
                                   _ocrBloc.add(SaveAssessmentToDashboard(
+                                      assessmentSheetPublicURL:
+                                          widget.shareLink,
                                       resultList: Globals.studentInfo!,
                                       previouslyAddedListLength:
                                           widget.assessmentListLenght,
@@ -549,6 +558,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           widget.assessmentDetailPage!));
                                 } else {
                                   _ocrBloc.add(SaveAssessmentToDashboard(
+                                      assessmentSheetPublicURL:
+                                          widget.shareLink,
                                       resultList: !widget.assessmentDetailPage!
                                           ? Globals.studentInfo!
                                           : historyRecordList,

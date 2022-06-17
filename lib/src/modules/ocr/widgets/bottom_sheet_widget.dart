@@ -119,40 +119,27 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                   // mainAxisSize: MainAxisSize.min,
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 10,
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: Utility.textWidget(
+                          context: context,
+                          text: widget.textFieldTitleOne!,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(color: Colors.black)),
                     ),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                            ),
-                            child: Utility.textWidget(
-                                context: context,
-                                text: widget.textFieldTitleOne!,
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(
-                                      color: Color(0xff000000) ==
-                                              Theme.of(context).backgroundColor
-                                          ? Color(0xffFFFFFF)
-                                          : Color(0xff000000),
-                                    )),
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                            ),
-                            child: TextFieldWidget(
-                                msg: "Field is required",
-                                controller: textFieldControllerOne,
-                                onSaved: (String value) {}),
-                          ),
-                        ]),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: TextFieldWidget(
+                          msg: "Field is required",
+                          controller: textFieldControllerOne,
+                          onSaved: (String value) {}),
+                    ),
                     widget.textFieldTitleTwo != null
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.start,
