@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -213,15 +215,22 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is SaveAssessmentToDashboard) {
       try {
-        print("calling save record to sales Force");
+        print("calling save record to Salesforce");
         yield OcrLoading();
-
+        List<UserInformation> _profileData =
+            await UserGoogleProfile.getUserProfile();
         if (event.previouslyAddedListLength != null &&
             event.previouslyAddedListLength! < Globals.studentInfo!.length) {
           List<StudentAssessmentInfo> _list = Globals.studentInfo!;
           _list.removeRange(0, event.previouslyAddedListLength!);
 
           if (Globals.lastDeshboardId != '') {
+            await _sendEmailToTeam(
+                assessmentId: Globals.lastDeshboardId,
+                name: _profileData[0].userName!.replaceAll("%", " "),
+                studentResultDetails: event.resultList,
+                schoolId: event.schoolId,
+                email: _profileData[0].userEmail!);
             bool result = await saveResultToDashboard(
                 assessmentId: Globals.lastDeshboardId, studentDetails: _list);
 
@@ -242,24 +251,50 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             throw ('something went wrong');
           }
         } else {
+          String subjectId;
+          String standardId;
+          var standardObject;
+          if (event.isHistoryAssessmentSection == true) {
+            standardObject = await _getstandardIdAndsubjectId(
+                grade: event.resultList.first.grade ?? '',
+                subLearningCode:
+                    event.resultList.first.subLearningStandard ?? '',
+                subjectName: event.resultList.first.subject ?? '');
+
+            standardId = standardObject != null && standardObject != ''
+                ? standardObject['Id']
+                : '';
+            subjectId = standardObject != null && standardObject != ''
+                ? standardObject['Subject__c']
+                : '';
+          } else {
+            standardId = event.standardId;
+            subjectId = event.subjectId;
+          }
+
           String dashboardId = await saveAssessmentToDashboard(
               assessmentName: event.assessmentName,
               rubicScore: await rubricPickList(event.rubricScore),
-              subjectId: event.subjectId,
+              subjectId: subjectId,
               schoolId: event.schoolId,
-              standardId: event.standardId);
+              standardId: standardId);
 
           Globals.lastDeshboardId = dashboardId;
 
           if (dashboardId != '') {
-            bool result = await saveResultToDashboard(
+            await _sendEmailToTeam(
                 assessmentId: dashboardId,
-                studentDetails: Globals.studentInfo!);
+                name: _profileData[0].userName!.replaceAll("%", " "),
+                studentResultDetails: event.resultList,
+                schoolId: event.schoolId,
+                email: _profileData[0].userEmail!);
+
+            bool result = await saveResultToDashboard(
+                assessmentId: dashboardId, studentDetails: event.resultList);
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: dashboardId,
-                  studentDetails: Globals.studentInfo!);
+                  assessmentId: dashboardId, studentDetails: event.resultList);
             } else {
               //print("result Record is saved on DB");
 
@@ -622,7 +657,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       required List<StudentAssessmentInfo> studentDetails}) async {
     List<Map> bodyContent = [];
 
-    studentDetails.removeAt(0);
+    // studentDetails.removeAt(0);
 
     for (int i = 0; i < studentDetails.length; i++) {
       bodyContent.add(recordtoJson(
@@ -659,6 +694,58 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       "Student_Name__c": sudentName
     };
     return body;
+  }
+
+  _sendEmailToTeam(
+      {required String schoolId,
+      required String name,
+      required String email,
+      required String assessmentId,
+      required List<StudentAssessmentInfo> studentResultDetails}) async {
+    List<Map> bodyContent = [];
+
+    // studentDetails.removeAt(0);
+    for (int i = 0; i < studentResultDetails.length; i++) {
+      bodyContent.add(recordtoJson(
+          assessmentId,
+          Utility.getCurrentDate(DateTime.now()),
+          studentResultDetails[i].studentGrade ?? '',
+          studentResultDetails[i].studentId ?? '',
+          studentResultDetails[i].assessmentImage ?? '',
+          studentResultDetails[i].studentName ?? ''));
+    }
+    final body = {
+      "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
+      "to": "techadmin@solvedconsulting.com, appdevelopersdp7@gmail.com",
+      "subject": "Data saved to the dashboard",
+      "text":
+          "School Id : $schoolId \nTeacher Name : $name \nTeacher Email : $email \nAssessment Id : $assessmentId \nResult detail : \n $bodyContent "
+    };
+
+    final ResponseModel response = await _dbServices.postapi(
+      "${OcrOverrides.OCR_API_BASE_URL}sendsmtpEmail",
+      isGoogleApi: true,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      print("email send successfully");
+    } else {
+      print("email sending fail");
+    }
+  }
+
+  _getstandardIdAndsubjectId(
+      {required String grade,
+      required String subjectName,
+      required String subLearningCode}) async {
+    final ResponseModel response = await _dbServices.getapiNew(
+        "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
+        isGoogleAPI: true);
+    if (response.statusCode == 200) {
+      return response.data['body'].length > 0 ? response.data['body'][0] : '';
+    } else {
+      print("standard api not done");
+    }
   }
 
   // Future authenticateEmail(body) async {

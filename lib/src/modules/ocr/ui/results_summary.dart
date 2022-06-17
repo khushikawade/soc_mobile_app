@@ -9,8 +9,8 @@ import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,16 +19,18 @@ import '../../../widgets/empty_container_widget.dart';
 import '../bloc/ocr_bloc.dart';
 
 class ResultsSummary extends StatefulWidget {
-  ResultsSummary(
-      {Key? key,
-      required this.assessmentDetailPage,
-      this.fileId,
-      this.subjectId,
-      this.standardId,
-      this.rubricScore,
-      this.isScanMore,
-      this.assessmentListLenght})
-      : super(key: key);
+  ResultsSummary({
+    Key? key,
+    required this.assessmentDetailPage,
+    this.fileId,
+    this.subjectId,
+    this.standardId,
+    this.rubricScore,
+    this.isScanMore,
+    this.assessmentListLenght,
+    required this.shareLink,
+    required this.asssessmentName,
+  }) : super(key: key);
   final bool? assessmentDetailPage;
   final String? fileId;
   final String? subjectId;
@@ -36,6 +38,9 @@ class ResultsSummary extends StatefulWidget {
   final String? rubricScore;
   final bool? isScanMore;
   final int? assessmentListLenght;
+  final String? shareLink;
+  final asssessmentName;
+
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
 }
@@ -51,15 +56,26 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
   int? assessmentListLenght;
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isSuccessStateRecived = ValueNotifier<bool>(false);
+  String? isAssessmentAlreadySaved = '';
 
+  String? webContentLink;
+  String? sheetrubricScore;
+  List<StudentAssessmentInfo> historyRecordList = [];
+  List iconsList = [];
+  List iconsName = [];
   @override
   void initState() {
     if (widget.assessmentDetailPage!) {
+      iconsList = [0xe876, 0xe871, 0xe87a];
+      iconsName = ["Share", "Drive", "Dashboard"];
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
     } else {
+      iconsList = Globals.ocrResultIcons;
+      iconsName = Globals.ocrResultIconsName;
       assessmentCount = Globals.studentInfo!.length;
     }
-    if (Globals.studentInfo!.length == widget.assessmentListLenght) {
+    if (Globals.studentInfo!.length == Globals.scanMoreStudentInfoLength) {
       dashoardState.value = 'Success';
     }
     _scrollController.addListener(_scrollListener);
@@ -153,6 +169,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               (BuildContext contxt, GoogleDriveState state) {
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
+                                isAssessmentAlreadySaved = state.obj[0] !=
+                                            null &&
+                                        state.obj[0] != ''
+                                    ? state.obj[0].isSavedOnDashBoard != null &&
+                                            state.obj[0].isSavedOnDashBoard !=
+                                                ''
+                                        ? state.obj[0].isSavedOnDashBoard
+                                        : ''.toString()
+                                    : '';
                                 return Column(
                                   children: [
                                     resultTitle(),
@@ -206,7 +231,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           listener:
                               (BuildContext contxt, GoogleDriveState state) {
                             if (state is AssessmentDetailSuccess) {
-                              if (state.obj.length > 1) {
+                              if (state.obj.length > 0) {
+                                if (state.obj.first.isSavedOnDashBoard ==
+                                    "YES") {
+                                  dashoardState.value = "Success";
+                                }
+                                sheetrubricScore =
+                                    state.obj.first.scoringRubric;
+                                webContentLink = state.webContentLink;
+                                isSuccessStateRecived.value = true;
+                                historyRecordList = state.obj;
                                 setState(() {
                                   assessmentCount = state.obj.length;
                                 });
@@ -224,6 +258,44 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             dashoardState.value = 'Loading';
                           } else if (state is AssessmentSavedSuccessfully) {
                             dashoardState.value = 'Success';
+                            if (Globals.studentInfo!.length > 0 &&
+                                Globals.studentInfo![0].studentId == 'Id') {
+                              Globals.studentInfo!.removeAt(0);
+                            }
+
+                            //To copy the static content in the sheet
+                            Globals.studentInfo!.forEach((element) {
+                              element.subject =
+                                  Globals.studentInfo!.first.subject;
+                              element.learningStandard = Globals.studentInfo!
+                                          .first.learningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals.studentInfo!.first.learningStandard;
+                              element.subLearningStandard = Globals.studentInfo!
+                                          .first.subLearningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals
+                                      .studentInfo!.first.subLearningStandard;
+                              element.scoringRubric = Globals.scoringRubric;
+                              element.customRubricImage = Globals
+                                      .studentInfo!.first.customRubricImage ??
+                                  "NA";
+                              element.grade = Globals.studentInfo!.first.grade;
+                              element.className = Globals.assessmentName!
+                                  .split("_")[1]; //widget.selectedClass;
+                              element.questionImgUrl =
+                                  Globals.studentInfo!.first.questionImgUrl;
+                              element.isSavedOnDashBoard = "YES";
+                            });
+
+                            _driveBloc.add(UpdateDocOnDrive(
+                                fileId: widget.fileId,
+                                studentData: Globals.studentInfo!));
+
+                            _showSaveDataPopUp();
+
                             // Utility.showSnackBar(
                             //     scaffoldKey,
                             //     'Yay! Data has been successully saved to the dashboard',
@@ -244,43 +316,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     : Container(),
                 SpacerWidget(10),
                 !widget.assessmentDetailPage!
-                    ? Container(
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).backgroundColor ==
-                                    Color(0xff000000)
-                                ? Color(0xff162429)
-                                : Color(0xffF7F8F9),
-                            // color: Theme.of(context).backgroundColor,
-                            boxShadow: [
-                              new BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.2),
-                                blurRadius: 20.0,
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(4)),
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        height: MediaQuery.of(context).orientation ==
-                                Orientation.portrait
-                            ? MediaQuery.of(context).size.height * 0.086
-                            : MediaQuery.of(context).size.width * 0.086,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        //  color: Colors.blue,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: Globals.ocrResultIcons
-                              .map<Widget>((element) => _iconButton(
-                                  Globals.ocrResultIcons.indexOf(element)))
-                              .toList(),
-
-                          // [
-                          //   Icon(Icons.star_border),
-                          //   Icon(Icons.star_border),
-                          //   Icon(Icons.star_border),
-                          //   Icon(Icons.star_border),
-                          // ],
-                        ))
-                    : Container(),
+                    ? _bottomButtons(context, iconsList, iconsName,
+                        webContentLink: Globals.googleDriveFolderPath!)
+                    : ValueListenableBuilder(
+                        valueListenable: isSuccessStateRecived,
+                        builder:
+                            (BuildContext context, bool value, Widget? child) {
+                          return isSuccessStateRecived.value == true
+                              ? _bottomButtons(context, iconsList, iconsName,
+                                  webContentLink: webContentLink!)
+                              : Container();
+                        }),
               ],
             ),
             // floatingActionButtonLocation:
@@ -357,7 +403,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     // ));
   }
 
-  Widget _iconButton(int index) {
+  Widget _iconButton(int index, List iconName,
+      {required String webContentLink}) {
     return ValueListenableBuilder(
         valueListenable: dashoardState,
         child: Container(),
@@ -373,7 +420,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     //     :
                     EdgeInsets.only(top: 10),
                 child: Utility.textWidget(
-                    text: Globals.ocrResultIconsName[index],
+                    text: iconName[index],
                     context: context,
                     textTheme: Theme.of(context)
                         .textTheme
@@ -384,10 +431,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ? Expanded(
                       child: InkWell(
                         onTap: () {
-                          print(
-                              'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                          Utility.launchUrlOnExternalBrowser(
-                              Globals.googleDriveFolderPath!);
+                          Utility.launchUrlOnExternalBrowser(webContentLink);
                         },
                         child: Container(
                           //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
@@ -401,7 +445,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         ),
                       ),
                     )
-                  : index == 3 && dashoardState.value == 'Loading'
+                  : (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+                          dashoardState.value == 'Loading'
                       ? GestureDetector(
                           onTap: () {
                             // Utility.showSnackBar(
@@ -428,63 +473,97 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             padding: EdgeInsets.all(0),
                             icon: Icon(
                               IconData(
-                                  index == 3 && dashoardState.value == 'Success'
+                                  (widget.assessmentDetailPage!
+                                              ? index == 2
+                                              : index == 3) &&
+                                          dashoardState.value == 'Success'
                                       ? 0xe877
-                                      : Globals.ocrResultIcons[index],
+                                      : iconsList[index],
                                   fontFamily: Overrides.kFontFam,
                                   fontPackage: Overrides.kFontPkg),
-                              size: index == 3 && dashoardState.value == ''
+                              size: (widget.assessmentDetailPage!
+                                          ? index == 2
+                                          : index == 3) &&
+                                      dashoardState.value == ''
                                   ? 38
                                   : 32,
-                              color: index == 2 ||
-                                      (index == 3 && dashoardState.value == '')
-                                  ? Theme.of(context).backgroundColor ==
-                                          Color(0xff000000)
-                                      ? Colors.white
-                                      : Colors.black
-                                  : index == 3 &&
-                                          dashoardState.value == 'Success'
-                                      ? Colors.green
-                                      : AppTheme.kButtonColor,
+                              color: (widget.assessmentDetailPage! &&
+                                          index == 2 &&
+                                          isAssessmentAlreadySaved == 'YES') ||
+                                      (widget.assessmentDetailPage! &&
+                                          index == 2 &&
+                                          dashoardState.value == 'Success')
+                                  ? Colors.green
+                                  : index == 2 ||
+                                          (index == 3 &&
+                                              dashoardState.value == '')
+                                      ? Theme.of(context).backgroundColor ==
+                                              Color(0xff000000)
+                                          ? Colors.white
+                                          : Colors.black
+                                      : (widget.assessmentDetailPage!
+                                                  ? index == 2
+                                                  : index == 3) &&
+                                              dashoardState.value == 'Success'
+                                          ? Colors.green
+                                          : AppTheme.kButtonColor,
                             ),
                             onPressed: () {
                               if (index == 0) {
-                                Share.share(Globals.shareableLink!);
-                              } else if (index == 2) {
+                                widget.shareLink != null &&
+                                        widget.shareLink!.isNotEmpty
+                                    ? Share.share(widget.shareLink!)
+                                    : print("no link ");
+                              } else if ((widget.assessmentDetailPage!
+                                  ? index == 1
+                                  : index == 2)) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           AssessmentSummary()),
                                 );
-                              } else if (index == 3 &&
+                              } else if ((widget.assessmentDetailPage!
+                                      ? index == 2
+                                      : index == 3) &&
                                   dashoardState.value == '') {
-                                     Globals.scanMoreStudentInfoLength =
-                                    Globals.studentInfo!.length-1;
+                                Globals.scanMoreStudentInfoLength =
+                                    Globals.studentInfo!.length - 1;
+
                                 if (widget.isScanMore == true &&
                                     widget.assessmentListLenght! <
                                         Globals.studentInfo!.length) {
                                   _ocrBloc.add(SaveAssessmentToDashboard(
+                                      resultList: Globals.studentInfo!,
                                       previouslyAddedListLength:
                                           widget.assessmentListLenght,
-                                      assessmentName: Globals.assessmentName!,
+                                      assessmentName: widget.asssessmentName,
                                       rubricScore: widget.rubricScore ?? '',
                                       subjectId: widget.subjectId ?? '',
                                       schoolId: Globals
                                           .appSetting.schoolNameC!, //Account Id
                                       standardId: widget.standardId ?? '',
                                       scaffoldKey: scaffoldKey,
-                                      context: context));
+                                      context: context,
+                                      isHistoryAssessmentSection:
+                                          widget.assessmentDetailPage!));
                                 } else {
                                   _ocrBloc.add(SaveAssessmentToDashboard(
-                                      assessmentName: Globals.assessmentName!,
-                                      rubricScore: widget.rubricScore ?? '',
+                                      resultList: !widget.assessmentDetailPage!
+                                          ? Globals.studentInfo!
+                                          : historyRecordList,
+                                      assessmentName: widget.asssessmentName,
+                                      rubricScore: !widget.assessmentDetailPage!
+                                          ? widget.rubricScore ?? ''
+                                          : sheetrubricScore ?? '',
                                       subjectId: widget.subjectId ?? '',
                                       schoolId: Globals
                                           .appSetting.schoolNameC!, //Account Id
                                       standardId: widget.standardId ?? '',
                                       scaffoldKey: scaffoldKey,
-                                      context: context));
+                                      context: context,
+                                      isHistoryAssessmentSection:
+                                          widget.assessmentDetailPage!));
                                 }
                               }
                               // else if (index == 3 &&
@@ -616,6 +695,125 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         .copyWith(color: Theme.of(context).backgroundColor))),
           );
         });
+  }
+
+  Widget _bottomButtons(context, List iconsList, List iconName,
+      {required String webContentLink}) {
+    return Container(
+        decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor == Color(0xff000000)
+                ? Color(0xff162429)
+                : Color(0xffF7F8F9),
+            // color: Theme.of(context).backgroundColor,
+            boxShadow: [
+              new BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.2),
+                blurRadius: 20.0,
+              ),
+            ],
+            borderRadius: BorderRadius.circular(4)),
+        margin: widget.assessmentDetailPage!
+            ? EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.07)
+            : null,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height * 0.086
+            : MediaQuery.of(context).size.width * 0.086,
+        width: widget.assessmentDetailPage!
+            ? MediaQuery.of(context).size.width * 0.7
+            : MediaQuery.of(context).size.width * 0.9,
+        //  color: Colors.blue,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: iconsList
+              .map<Widget>((element) => _iconButton(
+                  iconsList.indexOf(element), iconName,
+                  webContentLink: webContentLink))
+              .toList(),
+        ));
+  }
+
+  _showSaveDataPopUp() {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Center(
+                  child: Container(
+                    padding: Globals.deviceType == 'phone'
+                        ? null
+                        : const EdgeInsets.only(top: 10.0),
+                    height: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                    width: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                    child: TranslationWidget(
+                        message: "Data Saved",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(color: AppTheme.kButtonColor));
+                        }),
+                  ),
+                ),
+                content: TranslationWidget(
+                    message:
+                        'Yay! Data has been successully saved to the dashboard',
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return Text(translatedMessage.toString(),
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.black));
+                    }),
+                actions: <Widget>[
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Center(
+                    child: TextButton(
+                      child: TranslationWidget(
+                          message: "OK ",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(
+                                      color: AppTheme.kButtonColor,
+                                    ));
+                          }),
+                      onPressed: () {
+                        //Globals.iscameraPopup = false;
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              );
+            }));
   }
 
   // onFinishedPopup() {

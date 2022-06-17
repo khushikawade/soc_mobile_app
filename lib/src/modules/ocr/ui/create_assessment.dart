@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -8,7 +11,11 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_offline/flutter_offline.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class CreateAssessment extends StatefulWidget {
@@ -29,6 +36,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
   // final ScrollController listScrollController = ScrollController();
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isimageFilePicked = ValueNotifier<bool>(false);
+  File? imageFile;
+  final ImagePicker _picker = ImagePicker();
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -49,6 +60,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
         children: [
           CommonBackGroundImgWidget(),
           Scaffold(
+            key: scaffoldKey,
             resizeToAvoidBottomInset: true,
             floatingActionButton: textActionButton(),
             // floatingActionButtonLocation:
@@ -93,7 +105,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   height:
                       MediaQuery.of(context).orientation == Orientation.portrait
-                          ? MediaQuery.of(context).size.height * 0.7
+                          ? MediaQuery.of(context).size.height
                           : MediaQuery.of(context).size.width,
                   child: ListView(
                     // controller: listScrollController,
@@ -154,8 +166,98 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           }
                         },
                       ),
+                      SpacerWidget(_KVertcalSpace / 2),
+                      highlightText(
+                          text: 'Scan Question',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      SpacerWidget(_KVertcalSpace / 4),
+                      GestureDetector(
+                        onTap: () {
+                          _cameraImage(context);
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                border: Border.all(
+                                    width: 2, color: AppTheme.kButtonColor),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
+                            height: 150,
+                            width: MediaQuery.of(context).size.width,
+                            child:
+                                // imageFile != null
+                                //     ?
+                                ValueListenableBuilder(
+                                    valueListenable: isimageFilePicked,
+                                    child: Container(),
+                                    builder: (BuildContext context,
+                                        dynamic value, Widget? child) {
+                                      return isimageFilePicked.value == true
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image.file(
+                                                imageFile!,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            )
+                                          : Container(
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.add_a_photo,
+                                                  color: AppTheme.kButtonColor
+                                                      .withOpacity(1.0),
+                                                ),
+                                              ),
+                                            );
+                                    })
+                            // : Container(
+                            //     child: Center(
+                            //       child: Icon(
+                            //         Icons.add_a_photo,
+                            //         color: AppTheme.kButtonColor
+                            //             .withOpacity(1.0),
+                            //       ),
+                            //     ),
+                            //   ),
+                            ),
+                      ),
                       SpacerWidget(_KVertcalSpace / 0.90),
                       scoringButton(),
+
+                      //To scroll the screen in case of keyboard appears
+                      Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom))
+
+                      // BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                      //     bloc: _googleDriveBloc,
+                      //     listener: (context, state) async {
+                      //       if (state is GoogleDriveLoading) {
+                      //         Utility.showSnackBar(
+                      //             scaffoldKey,
+                      //             'Please wait while assessment is creating',
+                      //             context,
+                      //             null);
+                      //       } else if (state is ExcelSheetCreated) {
+                      //         Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => SubjectSelection(
+                      //                     selectedClass:
+                      //                         selectedGrade.value.toString(),
+                      //                   )),
+                      //         );
+                      //       }
+                      //     },
+                      //     child: Container()),
                       // SpacerWidget(_KVertcalSpace / 20),
                     ],
                   ),
@@ -319,19 +421,35 @@ class _CreateAssessmentState extends State<CreateAssessment>
         return FloatingActionButton.extended(
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
+              FocusScope.of(context).requestFocus(FocusNode());
               if (!connected) {
                 Utility.noInternetSnackBar();
               } else {
                 if (_formKey.currentState!.validate()) {
+                  if (imageFile != null && imageFile!.path.isNotEmpty) {
+                    String imgExtension = imageFile!.path
+                        .substring(imageFile!.path.lastIndexOf(".") + 1);
+                    List<int> imageBytes = imageFile!.readAsBytesSync();
+                    String imageB64 = base64Encode(imageBytes);
+                    _googleDriveBloc.add(QuestionImgToAwsBucked(
+                        imgBase64: imageB64, imgExtension: imgExtension));
+                  }
                   Globals.assessmentName =
                       "${assessmentController.text}_${classController.text}";
-
                   //Create excel sheet if not created already for current assessment
                   Globals.googleExcelSheetId!.isEmpty
                       ? _googleDriveBloc.add(CreateExcelSheetToDrive(
                           name:
                               "${assessmentController.text}_${classController.text}"))
-                      : print("file is already exists on drive ");
+                      : print(Globals.googleExcelSheetId!);
+                  // : Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //               builder: (context) => SubjectSelection(
+                  //                     selectedClass:
+                  //                         selectedGrade.value.toString(),
+                  //                   )),
+                  //         );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -361,5 +479,15 @@ class _CreateAssessmentState extends State<CreateAssessment>
       },
       child: Container(),
     );
+  }
+
+  Future<void> _cameraImage(BuildContext context) async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      imageFile = File(photo.path);
+      isimageFilePicked.value = true;
+    } else {
+      isimageFilePicked.value = false;
+    }
   }
 }

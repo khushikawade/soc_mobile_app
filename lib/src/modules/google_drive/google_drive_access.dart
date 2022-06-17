@@ -29,27 +29,37 @@ class GoogleDriveAccess {
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
             .value = data[row].grade;
-        sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
-            .value = data[row].className;
+
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row))
-            .value = data[row].subject;
+            .value = data[row].className;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
-            .value = data[row].learningStandard;
+            .value = data[row].className;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
-            .value = data[row].subLearningStandard;
+            .value = data[row].subject;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
-            .value = data[row].scoringRubric;
+            .value = data[row].learningStandard;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 9, rowIndex: row))
-            .value = data[row].customRubricImage;
+            .value = data[row].subLearningStandard;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 10, rowIndex: row))
+            .value = data[row].scoringRubric;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 11, rowIndex: row))
+            .value = data[row].customRubricImage;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 12, rowIndex: row))
             .value = data[row].assessmentImage;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
+            .value = data[row].questionImgUrl;
+        sheet
+            .cell(CellIndex.indexByColumnRow(columnIndex: 14, rowIndex: row))
+            .value = data[row].isSavedOnDashBoard;
 
         // if (data[row].subject == "Math" || data[row].subject == "ELA") {
         //         sheet

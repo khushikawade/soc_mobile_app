@@ -20,7 +20,8 @@ class Overrides {
   static String? API_BASE_URL =
       'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/';
 
-  static String? rubric_Score_PDF_URL = 'https://solved-schools.s3.us-east-2.amazonaws.com/graded_doc/NYS+Rubric+3-8+ELA+MATH.pdf';
+  static String? rubric_Score_PDF_URL =
+      'https://solved-schools.s3.us-east-2.amazonaws.com/graded_doc/NYS+Rubric+3-8+ELA+MATH.pdf';
   //Production     'https://solvedconsultingdev.my.salesforce.com/services/data/v52.0/';
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';

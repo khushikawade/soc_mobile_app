@@ -11,6 +11,8 @@ class StudentAssessmentInfo {
   String? customRubricImage;
   String? assessmentImage;
   String? className;
+  String? questionImgUrl;
+  String? isSavedOnDashBoard;
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,
@@ -23,7 +25,9 @@ class StudentAssessmentInfo {
       this.scoringRubric,
       this.customRubricImage,
       this.assessmentImage,
-      this.className});
+      this.className,
+      this.questionImgUrl,
+      this.isSavedOnDashBoard});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(
@@ -34,8 +38,12 @@ class StudentAssessmentInfo {
           grade: json['Grade'] as String?,
           subject: json['Subject'] as String?,
           learningStandard: json['Learning Standard'] as String?,
-          subLearningStandard: json['Sub Learning Standard'] as String?,
+          subLearningStandard:
+              json['NY Next Generation Learning Standard'] as String?,
           scoringRubric: json['Scoring Rubric'] as String?,
           customRubricImage: json['Custom Rubric Image'] as String?,
-          className: json['Class Name'] as String?);
+          className: json['Class Name'] as String?,
+          assessmentImage: json['Assessment Image'] as String?,
+          questionImgUrl: json['Assessment Question Img'] as String?,
+          isSavedOnDashBoard: json['Saved on Dashboard']);
 }

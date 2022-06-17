@@ -29,7 +29,8 @@ class CreateExcelSheetToDrive extends GoogleDriveEvent {
 
 class UpdateDocOnDrive extends GoogleDriveEvent {
   final List<StudentAssessmentInfo>? studentData;
-  UpdateDocOnDrive({this.studentData});
+  final String? fileId;
+  UpdateDocOnDrive({this.studentData, this.fileId});
   @override
   List<Object> get props => [];
 }
@@ -68,6 +69,19 @@ class AssessmentImgToAwsBucked extends GoogleDriveEvent {
       {required this.imgBase64,
       required this.imgExtension,
       required this.studentId});
+
+  @override
+  List<Object> get props => [];
+}
+
+class QuestionImgToAwsBucked extends GoogleDriveEvent {
+  final String? imgBase64;
+  final String? imgExtension;
+
+  QuestionImgToAwsBucked({
+    required this.imgBase64,
+    required this.imgExtension,
+  });
 
   @override
   List<Object> get props => [];

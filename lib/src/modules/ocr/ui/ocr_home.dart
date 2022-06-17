@@ -57,7 +57,8 @@ class _OpticalCharacterRecognitionPageState
     Utility.setLocked();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
-    Globals.scoringRubric = RubricScoreList.scoringList[0].name;
+    Globals.scoringRubric =
+        "${RubricScoreList.scoringList[0].name} ${RubricScoreList.scoringList[0].score}";
   }
 
   @override
@@ -195,7 +196,7 @@ class _OpticalCharacterRecognitionPageState
                       updateLocalDb();
 
                       _bloc.add(SaveSubjectListDetails());
-
+                      // print(Globals.scoringRubric);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -287,7 +288,8 @@ class _OpticalCharacterRecognitionPageState
               onTap: () {
                 pointPossibleSelectedColor.value = index + 1;
                 //To take the rubric name to result screen and save the same in excel sheet
-                Globals.scoringRubric = RubricScoreList.scoringList[index].name;
+                Globals.scoringRubric =
+                    "${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}";
                 if (index == 0) {
                   rubricScoreSelectedColor.value = 0;
                 } else if (index == 1) {

@@ -487,6 +487,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ResultsSummary(
+                                        subjectId: subjectId ?? '',
+                                        standardId: standardId ?? '',
+                                        asssessmentName: Globals.assessmentName,
+                                        shareLink: Globals.shareableLink!,
                                         assessmentDetailPage: false,
                                       )),
                             );
@@ -649,7 +653,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 if (_localData[i].customOrStandardRubic ==
                                         "Custom" &&
                                     _localData[i].name ==
-                                        Globals.scoringRubric) {
+                                        Globals.scoringRubric!.split(" ")[0]) {
                                   rubricImgUrl = _localData[i].imgUrl;
                                   // rubricScore = null;
                                 }
@@ -681,6 +685,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 element.customRubricImage =
                                     rubricImgUrl ?? "NA";
                                 element.grade = widget.selectedClass;
+                                element.questionImgUrl =
+                                    Globals.questionImgUrl != null &&
+                                            Globals.questionImgUrl!.isNotEmpty
+                                        ? Globals.questionImgUrl
+                                        : "NA";
+                                element.isSavedOnDashBoard = "NO";
                               });
 
                               _googleDriveBloc.add(UpdateDocOnDrive(
@@ -692,6 +702,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ResultsSummary(
+                                          subjectId: subjectId ?? '',
+                                          standardId: standardId ?? '',
+                                          asssessmentName:
+                                              Globals.assessmentName,
+                                          shareLink:
+                                              Globals.shareableLink ?? '',
                                           assessmentDetailPage: false,
                                         )),
                               );

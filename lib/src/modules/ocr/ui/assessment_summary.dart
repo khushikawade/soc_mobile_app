@@ -82,14 +82,16 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                     isNews: false,
                                     isEvents: false),
                               );
+                      } else if (state is GoogleDriveLoading) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          )),
+                        );
                       }
-                      return Container(
-                          // height: MediaQuery.of(context).size.height * 0.7,
-                          // child: Center(
-                          //     child: CircularProgressIndicator(
-                          //   color: Theme.of(context).colorScheme.primaryVariant,
-                          // )),
-                          );
+                      return Container();
                     })
               ],
             ),
@@ -124,6 +126,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
           context,
           MaterialPageRoute(
               builder: (context) => ResultsSummary(
+                    asssessmentName: list[index].title!,
+                    shareLink: list[index].webContentLink,
                     fileId: list[index].fileid,
                     assessmentDetailPage: true,
                   )),

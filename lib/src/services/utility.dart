@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -427,7 +425,7 @@ class Utility {
 
     ScaffoldMessenger.of(context!).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("No Internet"),
+      content: Text("No Internet Connection"),
     ));
   }
 

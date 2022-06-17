@@ -504,11 +504,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             3.0,
                           ),
                           Text(userInformation.userEmail!,
-                          textAlign: TextAlign.center,
+                              textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2!
-                                  .copyWith(color: Colors.grey.shade500,  )),
+                                  .copyWith(
+                                    color: Colors.grey.shade500,
+                                  )),
                           SpacerWidget(8.0),
                           Expanded(
                             child: Row(
@@ -520,9 +522,11 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                         .subtitle1!
                                         .copyWith(
                                             color: Colors.grey.shade500,
-                                            fontWeight: FontWeight.bold, fontSize: 20)),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20)),
                                 IconButton(
                                   onPressed: () {
+                                    // Globals.homeIndex=
                                     UserGoogleProfile.clearUserProfile();
                                     Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(

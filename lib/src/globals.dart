@@ -67,6 +67,7 @@ class Globals {
   static String? homeUrl;
   static PersistentTabController? controller;
   static bool? disableDarkMode;
+  static int? staffIndex;
 
   //OCR Feature Globals
   static List pointsList = [2, 3, 4];
@@ -128,4 +129,5 @@ class Globals {
   // static LocalDatabase<UserInformation> localUserInfo = LocalDatabase('user_profile');
   // static List<UserInformation> userprofilelocalData = [];
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static String? questionImgUrl;
 }

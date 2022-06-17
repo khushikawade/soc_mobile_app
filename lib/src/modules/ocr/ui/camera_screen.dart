@@ -177,6 +177,8 @@ class _CameraScreenState extends State<CameraScreen>
                           element.grade = Globals.studentInfo!.first.grade;
                           element.className = Globals.assessmentName!
                               .split("_")[1]; //widget.selectedClass;
+                          element.questionImgUrl =
+                              Globals.studentInfo!.first.questionImgUrl;
                         });
 
                         _driveBloc.add(UpdateDocOnDrive(
@@ -186,6 +188,8 @@ class _CameraScreenState extends State<CameraScreen>
                           context,
                           MaterialPageRoute(
                               builder: (context) => ResultsSummary(
+                                    asssessmentName: Globals.assessmentName,
+                                    shareLink: Globals.shareableLink!,
                                     assessmentDetailPage: false,
                                     isScanMore: true,
                                     assessmentListLenght:
@@ -202,7 +206,7 @@ class _CameraScreenState extends State<CameraScreen>
                     } else {
                       Utility.showSnackBar(
                           _scaffoldKey,
-                          "No Assessment Found! Scan Assessment Before Moving Forword",
+                          "Assessment not found! Please scan a student assessment to proceed further",
                           context,
                           null);
                     }
