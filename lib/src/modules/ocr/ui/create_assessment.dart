@@ -269,6 +269,17 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                   ),
                             ),
                             SpacerWidget(_KVertcalSpace / 2),
+                            highlightText(
+                                text: 'Select Grade',
+                                theme: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant
+                                            .withOpacity(0.3))),
+                            SpacerWidget(_KVertcalSpace / 5),
                             scoringButton(),
 
                             //To scroll the screen in case of keyboard appears
