@@ -152,8 +152,8 @@ class AssessmentSavedSuccessfully extends OcrState {
 }
 
 class SuccessStudentDetails extends OcrState {
-  final String? studentName;
-  SuccessStudentDetails({this.studentName});
+  final String studentName;
+  SuccessStudentDetails({required this.studentName});
   SuccessStudentDetails copyWith({final obj}) {
     return SuccessStudentDetails(studentName: obj ?? this.studentName);
   }
