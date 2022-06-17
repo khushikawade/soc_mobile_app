@@ -39,17 +39,17 @@ class _SuccessScreenState extends State<SuccessScreen> {
   OcrBloc _bloc = OcrBloc();
   OcrBloc _bloc2 = OcrBloc();
   bool failure = false;
-  final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
-  bool rubricNotDetected = false;
+  // bool rubricNotDetected = false;
 
   //int? indexColor;
   bool isSelected = true;
   bool onChange = false;
   String studentName = '';
   String studentId = '';
-  // final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
+  final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> rubricNotDetected = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isNameUpdated = ValueNotifier<bool>(false);
   var nameController = TextEditingController();
   var idController = TextEditingController();
@@ -266,7 +266,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     // nameController.text =
                     //     onChange == true ? state.studentName! : studentName;
                     // Globals.gradeList.add(state.grade!);
-                    rubricNotDetected = true;
+                    rubricNotDetected.value = true;
                     return failureScreen(
                         id: state.studentId!, grade: state.grade!);
                   }
@@ -661,72 +661,82 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   Widget pointsButton(index, int grade) {
     isSelected ? indexColor.value = grade : null;
-
     return ValueListenableBuilder(
-      valueListenable: indexColor,
-      builder: (BuildContext context, dynamic value, Widget? child) {
-        return InkWell(
-            onTap: () {
-              pointScored.value = index.toString();
+        valueListenable: rubricNotDetected,
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return ValueListenableBuilder(
+            valueListenable: indexColor,
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return InkWell(
+                  onTap: () {
+                    pointScored.value = index.toString();
 
-              // updateDetails(isUpdateData: true);
+                    // updateDetails(isUpdateData: true);
 
-              isSelected = false;
-              rubricNotDetected = false;
-              indexColor.value = index;
+                    isSelected = false;
+                    rubricNotDetected.value = false;
+                    indexColor.value = index;
 
-              // nameController.text = studentName;
-              // idController.text = studentId;
-              //.text = studentId;
-            },
-            child: AnimatedContainer(
-              duration: Duration(microseconds: 100),
-              padding: EdgeInsets.only(
-                bottom: 5,
-              ),
-              decoration: BoxDecoration(
-                color: index == indexColor.value
-                    ? rubricNotDetected == true && isSelected == true
-                        ? Colors.red
-                        : AppTheme.kSelectedColor
-                    : Colors.grey,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
-                ),
-              ),
-              child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  decoration: BoxDecoration(
-                    color:
-                        Color(0xff000000) != Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                    border: Border.all(
+                    // nameController.text = studentName;
+                    // idController.text = studentId;
+                    //.text = studentId;
+                  },
+                  child: AnimatedContainer(
+                    duration: Duration(microseconds: 100),
+                    padding: EdgeInsets.only(
+                      bottom: 5,
+                    ),
+                    decoration: BoxDecoration(
                       color: index == indexColor.value
-                          ? rubricNotDetected == true && isSelected == true
+                          ? rubricNotDetected.value == true &&
+                                  isSelected == true
                               ? Colors.red
                               : AppTheme.kSelectedColor
                           : Colors.grey,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8),
+                      ),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: TranslationWidget(
-                    message: Globals.pointsEarnedList[index].toString(),
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          color: indexColor.value == index
-                              ? rubricNotDetected == true && isSelected == true
-                                  ? Colors.red
-                                  : AppTheme.kSelectedColor
-                              : Colors.grey),
-                    ),
-                  )),
-            ));
-      },
-    );
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                        decoration: BoxDecoration(
+                          color: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                          border: Border.all(
+                            color: index == indexColor.value
+                                ? rubricNotDetected.value == true &&
+                                        isSelected == true
+                                    ? Colors.red
+                                    : AppTheme.kSelectedColor
+                                : Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: TranslationWidget(
+                          message: Globals.pointsEarnedList[index].toString(),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    color: indexColor.value == index
+                                        ? rubricNotDetected.value == true &&
+                                                isSelected == true
+                                            ? Colors.red
+                                            : AppTheme.kSelectedColor
+                                        : Colors.grey),
+                          ),
+                        )),
+                  ));
+            },
+          );
+        });
   }
 
   Widget textFormField({

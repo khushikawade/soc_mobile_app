@@ -7,7 +7,6 @@ import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/foundation.dart';
-
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
@@ -587,7 +586,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
         return _list;
-      } else {
+      } else if (response.statusCode == 401) {
         print('Authentication required');
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
@@ -596,6 +595,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (result) {
           GetHistoryAssessmentFromDrive();
         }
+      } else {
+        List<HistoryAssessment> _list = [];
+        return _list;
       }
     } on SocketException catch (e) {
       e.message == 'Connection failed'

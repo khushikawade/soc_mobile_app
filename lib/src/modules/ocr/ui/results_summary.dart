@@ -16,7 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
 import '../../../widgets/empty_container_widget.dart';
+import '../../google_drive/model/user_profile.dart';
 import '../bloc/ocr_bloc.dart';
+import '../modal/user_info.dart';
 
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({
@@ -438,7 +440,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ? Expanded(
                       child: InkWell(
                         onTap: () {
-                          Utility.launchUrlOnExternalBrowser(webContentLink);
+                          Globals.googleDriveFolderPath != null
+                              ? Utility.launchUrlOnExternalBrowser(
+                                  Globals.googleDriveFolderPath!)
+                              : getGoogleFolderPath();
+
+                          // Utility.launchUrlOnExternalBrowser(webContentLink);
                         },
                         child: Container(
                           //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
@@ -826,6 +833,21 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             }));
   }
 
+  getGoogleFolderPath() async {
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+    Utility.showSnackBar(
+        scaffoldKey,
+        "Unable to navigate at the moment. Please try again later",
+        context,
+        null);
+
+    _driveBloc.add(GetDriveFolderIdEvent(
+        //  filePath: file,
+        token: _profileData[0].authorizationToken,
+        folderName: "SOLVED GRADED+",
+        refreshtoken: _profileData[0].refreshToken));
+  }
   // onFinishedPopup() {
   //   return showDialog(
   //       context: context,

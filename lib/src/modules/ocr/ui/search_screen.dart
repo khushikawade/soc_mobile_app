@@ -13,6 +13,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,20 +46,21 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   String? subLearningStandard;
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
 
   @override
   void initState() {
     super.initState();
-    _ocrBloc.add(FatchSubjectDetails(
+    _ocrBloc.add(FetchRecentSearch(
         type: 'nycSub',
-        keyword: widget.keyword,
-        isSearchPage: true,
-        grade: widget.grade));
-    _ocrBloc2.add(FatchSubjectDetails(
+        subjectName: widget.keyword,
+        // isSearchPage: true,
+        className: widget.grade));
+    _ocrBloc2.add(FetchRecentSearch(
         type: 'nyc',
-        keyword: widget.keyword,
-        isSearchPage: true,
-        grade: widget.grade));
+        subjectName: widget.keyword,
+        // isSearchPage: true,
+        className: widget.grade));
   }
 
   @override
@@ -128,6 +130,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
           body: Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: ListView(
+              shrinkWrap: true,
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
@@ -137,16 +140,16 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                     controller: searchController,
                     onSaved: (value) {
                       if (searchController.text.isEmpty) {
-                        _ocrBloc.add(FatchSubjectDetails(
+                        _ocrBloc.add(FetchRecentSearch(
                             type: 'nycSub',
-                            keyword: widget.keyword,
-                            isSearchPage: true,
-                            grade: widget.grade));
-                        _ocrBloc2.add(FatchSubjectDetails(
+                            subjectName: widget.keyword,
+                            // isSearchPage: true,
+                            className: widget.grade));
+                        _ocrBloc2.add(FetchRecentSearch(
                             type: 'nyc',
-                            keyword: widget.keyword,
-                            isSearchPage: true,
-                            grade: widget.grade));
+                            subjectName: widget.keyword,
+                            // isSearchPage: true,
+                            className: widget.grade));
                       } else {
                         _debouncer.run(() async {
                           _ocrBloc.add(SearchSubjectDetails(
@@ -172,10 +175,11 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                 BlocListener<OcrBloc, OcrState>(
                   bloc: _ocrBloc,
                   listener: (context, state) {
-                    if (state is NycSubDataSuccess) {
+                    if (state is RecentListSuccess) {
                       searchList.clear();
                       searchList.addAll(state.obj!);
                       listLength.value = searchList.length;
+                      isRecentList.value = true;
                     } else if (state is SearchSubjectDetailsSuccess) {
                       List<SubjectDetailList> list = [];
 
@@ -189,6 +193,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       searchList.clear();
                       searchList.addAll(list);
                       listLength.value = searchList.length;
+                      isRecentList.value = false;
                     }
                     // do stuff here based on BlocA's state
                   },
@@ -197,10 +202,11 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                 BlocListener<OcrBloc, OcrState>(
                   bloc: _ocrBloc2,
                   listener: (context, state) {
-                    if (state is NycDataSuccess) {
-                      searchList.insertAll(0, state.obj);
-                      standerdLearningLength = state.obj.length;
+                    if (state is RecentListSuccess) {
+                      searchList.insertAll(0, state.obj!);
+                      standerdLearningLength = state.obj!.length;
                       listLength.value = searchList.length;
+                      isRecentList.value = true;
                     } else if (state is SearchSubjectDetailsSuccess) {
                       List<SubjectDetailList> list = [];
 
@@ -214,6 +220,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       searchList.insertAll(0, list);
                       standerdLearningLength = list.length;
                       listLength.value = searchList.length;
+                      isRecentList.value = false;
                     }
                     // do stuff here based on BlocA's state
                   },
@@ -239,176 +246,255 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
 
   Widget buttonListWidget({required List<SubjectDetailList> list}) {
     return ValueListenableBuilder(
-      valueListenable: nycSubIndex1,
-      builder: (BuildContext context, dynamic value, Widget? child) {
-        return Container(
-          //  padding: EdgeInsets.only(bottom: 50),
-          height: MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.8
-              : MediaQuery.of(context).size.width * 0.8,
-          width: MediaQuery.of(context).size.width * 0.9,
-          child: ListView.separated(
-            itemCount: list.length,
-            itemBuilder: (BuildContext ctx, index) {
-              return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    index == 0 && standerdLearningLength != 0
-                        ? Container(
-                            padding: EdgeInsets.only(bottom: 10),
-                            child: Utility.textWidget(
-                                text: 'Learning Standard',
-                                context: context,
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .headline1!
-                                    .copyWith(fontWeight: FontWeight.bold)))
-                        : (index == standerdLearningLength && list.length != 0
-                            ? Container(
-                                padding: EdgeInsets.only(bottom: 10),
-                                child: Utility.textWidget(
-                                    text:
-                                        'NY Next Generation Learning Standard',
-                                    context: context,
-                                    textTheme: Theme.of(context)
-                                        .textTheme
-                                        .headline1!
-                                        .copyWith(fontWeight: FontWeight.bold)))
-                            : Container()),
-                    Bouncing(
-                      child: InkWell(
-                        onTap: () {
-                          //subLearningStandard = list[index].standardAndDescriptionC;
-                          //if (pageIndex.value == 2) {
-                          nycSubIndex1.value = index;
-                          if (index < standerdLearningLength) {
-                            isSubmitButton.value = false;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SubjectSelection(
-                                        selectedClass: widget.grade,
-                                        isSearchPage: true,
-                                        domainNameC: learningStandard =
-                                            list[index].domainNameC,
-                                        searchClass: widget.grade,
-                                        selectedSubject: widget.keyword,
-                                      )),
-                            );
-                          } else {
-                            learningStandard = list[index].domainNameC;
-                            subLearningStandard = list[index].descriptionC;
-                            isSubmitButton.value = true;
-                          }
-                          // if (nycSubIndex1.value != 50000) {
-                          //   isSubmitButton.value = true;
-                          // }
-                          // }
-                        },
-                        child: AnimatedContainer(
-                          padding: EdgeInsets.only(bottom: 5),
-                          decoration: BoxDecoration(
-                            color: (nycSubIndex1.value == index)
-                                ? AppTheme.kSelectedColor
-                                : Colors.grey,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8),
+        valueListenable: isRecentList,
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return ValueListenableBuilder(
+            valueListenable: nycSubIndex1,
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return list.length == 0
+                  ? Container(
+                      height: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? MediaQuery.of(context).size.height * 0.8
+                          : MediaQuery.of(context).size.width * 0.8,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              padding: EdgeInsets.only(bottom: 10),
+                              child: Utility.textWidget(
+                                  text: 'Recent Search',
+                                  context: context,
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .headline2!
+                                      .copyWith(fontWeight: FontWeight.bold))),
+                          Expanded(
+                            child: NoDataFoundErrorWidget(
+                              connected: true,
+                              isNews: false,
+                              isEvents: false,
+                              isResultNotFoundMsg: false,
+                              isOcrSearch: true,
                             ),
-                          ),
-                          duration: Duration(microseconds: 100),
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            alignment: Alignment.centerLeft,
-
-                            child: index < standerdLearningLength
-                                ? Utility.textWidget(
-                                    text: list[index].domainNameC!,
-                                    context: context,
-                                    textTheme:
-                                        Theme.of(context).textTheme.headline2)
-                                : RichText(
-                                    text: list[index].standardAndDescriptionC !=
-                                                null &&
-                                            list[index]
-                                                    .standardAndDescriptionC!
-                                                    .split(' - ')
-                                                    .length >
-                                                1
-                                        ? TextSpan(
-                                            // Note: Styles for TextSpans must be explicitly defined.
-                                            // Child text spans will inherit styles from parent
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline2,
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text: list[index]
-                                                      .standardAndDescriptionC!
-                                                      .split(' - ')[0],
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline2!
-                                                      .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      )),
-                                              TextSpan(text: '  '),
-                                              TextSpan(
-                                                text: list[index]
-                                                    .standardAndDescriptionC!
-                                                    .split(' - ')[1],
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline2,
-                                              ),
-                                            ],
-                                          )
-                                        : TextSpan(
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline2,
-                                            children: [
-                                                TextSpan(
-                                                    text: list[index]
-                                                            .standardAndDescriptionC ??
-                                                        '')
-                                              ]),
-                                  ),
-
-                            //  Utility.textWidget(
-                            //     text: HtmlUnescape()
-                            //         .convert(list[index].standardAndDescriptionC!),
-                            //     textTheme: Theme.of(context).textTheme.headline2,
-                            //     context: context),
-                            decoration: BoxDecoration(
-                                color: Color(0xff000000) !=
-                                        Theme.of(context).backgroundColor
-                                    ? Color(0xffF7F8F9)
-                                    : Color(0xff111C20),
-                                border: Border.all(
-                                  color: (nycSubIndex1.value == index)
-                                      ? AppTheme.kSelectedColor
-                                      : Colors.grey,
-                                ),
-                                borderRadius: BorderRadius.circular(8)),
-                          ),
-                        ),
-                      ),
-                    ),
-                    index == list.length - 1
-                        ? SizedBox(
-                            height: 20,
                           )
-                        : Container()
-                  ]);
+                        ],
+                      ))
+                  : Container(
+                      //  padding: EdgeInsets.only(bottom: 50),
+                      height: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? MediaQuery.of(context).size.height * 0.8
+                          : MediaQuery.of(context).size.width * 0.8,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: ListView.separated(
+                        itemCount: list.length,
+                        itemBuilder: (BuildContext ctx, index) {
+                          return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                index == 0 && isRecentList.value == true
+                                    ? Container(
+                                        padding: EdgeInsets.only(bottom: 10),
+                                        child: Utility.textWidget(
+                                            text: 'Recent Search',
+                                            context: context,
+                                            textTheme: Theme.of(context)
+                                                .textTheme
+                                                .headline2!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold)))
+                                    : Container(),
+                                index == 0 && standerdLearningLength != 0
+                                    ? Container(
+                                        padding: EdgeInsets.only(bottom: 10),
+                                        child: Utility.textWidget(
+                                            text: 'Learning Standard',
+                                            context: context,
+                                            textTheme: Theme.of(context)
+                                                .textTheme
+                                                .headline1!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold)))
+                                    : (index == standerdLearningLength &&
+                                            list.length != 0
+                                        ? Container(
+                                            padding:
+                                                EdgeInsets.only(bottom: 10),
+                                            child: Utility.textWidget(
+                                                text:
+                                                    'NY Next Generation Learning Standard',
+                                                context: context,
+                                                textTheme: Theme.of(context)
+                                                    .textTheme
+                                                    .headline1!
+                                                    .copyWith(
+                                                        fontWeight:
+                                                            FontWeight.bold)))
+                                        : Container()),
+                                Bouncing(
+                                  child: InkWell(
+                                    onTap: () {
+                                      //subLearningStandard = list[index].standardAndDescriptionC;
+                                      //if (pageIndex.value == 2) {
+                                      nycSubIndex1.value = index;
+                                      if (index < standerdLearningLength) {
+                                        isSubmitButton.value = false;
+                                        addToRecentList(
+                                            type: 'nyc',
+                                            obj: list[index],
+                                            className: widget.grade!,
+                                            subjectName: widget.keyword!);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SubjectSelection(
+                                                    selectedClass: widget.grade,
+                                                    isSearchPage: true,
+                                                    domainNameC:
+                                                        learningStandard =
+                                                            list[index]
+                                                                .domainNameC,
+                                                    searchClass: widget.grade,
+                                                    selectedSubject:
+                                                        widget.keyword,
+                                                  )),
+                                        );
+                                      } else {
+                                        learningStandard =
+                                            list[index].domainNameC;
+                                        subLearningStandard =
+                                            list[index].descriptionC;
+                                        addToRecentList(
+                                            type: 'nycSub',
+                                            obj: list[index],
+                                            className: widget.grade!,
+                                            subjectName: widget.keyword!);
+                                        isSubmitButton.value = true;
+                                      }
+                                      // if (nycSubIndex1.value != 50000) {
+                                      //   isSubmitButton.value = true;
+                                      // }
+                                      // }
+                                    },
+                                    child: AnimatedContainer(
+                                      padding: EdgeInsets.only(bottom: 5),
+                                      decoration: BoxDecoration(
+                                        color: (nycSubIndex1.value == index)
+                                            ? AppTheme.kSelectedColor
+                                            : Colors.grey,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(8),
+                                        ),
+                                      ),
+                                      duration: Duration(microseconds: 100),
+                                      child: Container(
+                                        padding: EdgeInsets.all(15),
+                                        alignment: Alignment.centerLeft,
+
+                                        child: index < standerdLearningLength
+                                            ? Utility.textWidget(
+                                                text: list[index].domainNameC!,
+                                                context: context,
+                                                textTheme: Theme.of(context)
+                                                    .textTheme
+                                                    .headline2)
+                                            : RichText(
+                                                text: list[index]
+                                                                .standardAndDescriptionC !=
+                                                            null &&
+                                                        list[index]
+                                                                .standardAndDescriptionC!
+                                                                .split(' - ')
+                                                                .length >
+                                                            1
+                                                    ? TextSpan(
+                                                        // Note: Styles for TextSpans must be explicitly defined.
+                                                        // Child text spans will inherit styles from parent
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline2,
+                                                        children: <TextSpan>[
+                                                          TextSpan(
+                                                              text: list[index]
+                                                                  .standardAndDescriptionC!
+                                                                  .split(
+                                                                      ' - ')[0],
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline2!
+                                                                  .copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  )),
+                                                          TextSpan(text: '  '),
+                                                          TextSpan(
+                                                            text: list[index]
+                                                                .standardAndDescriptionC!
+                                                                .split(
+                                                                    ' - ')[1],
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline2,
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : TextSpan(
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline2,
+                                                        children: [
+                                                            TextSpan(
+                                                                text: list[index]
+                                                                        .standardAndDescriptionC ??
+                                                                    '')
+                                                          ]),
+                                              ),
+
+                                        //  Utility.textWidget(
+                                        //     text: HtmlUnescape()
+                                        //         .convert(list[index].standardAndDescriptionC!),
+                                        //     textTheme: Theme.of(context).textTheme.headline2,
+                                        //     context: context),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff000000) !=
+                                                    Theme.of(context)
+                                                        .backgroundColor
+                                                ? Color(0xffF7F8F9)
+                                                : Color(0xff111C20),
+                                            border: Border.all(
+                                              color:
+                                                  (nycSubIndex1.value == index)
+                                                      ? AppTheme.kSelectedColor
+                                                      : Colors.grey,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                index == list.length - 1
+                                    ? SizedBox(
+                                        height: 20,
+                                      )
+                                    : Container()
+                              ]);
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return SpacerWidget(_KVertcalSpace / 3.75);
+                        },
+                      ),
+                    );
             },
-            separatorBuilder: (BuildContext context, int index) {
-              return SpacerWidget(_KVertcalSpace / 3.75);
-            },
-          ),
-        );
-      },
-    );
+          );
+        });
   }
 
   Widget submitAssessmentButton() {
@@ -502,5 +588,46 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                 : Container();
       },
     );
+  }
+
+  addToRecentList(
+      {required String type,
+      required SubjectDetailList obj,
+      required String className,
+      required String subjectName}) async {
+    LocalDatabase<SubjectDetailList> _localDb =
+        LocalDatabase("${className}${subjectName}${type}RecentList");
+
+    List<SubjectDetailList>? _localData = await _localDb.getData();
+
+    if (type == 'nyc') {
+      bool result = true;
+      for (int i = 0; i < _localData.length; i++) {
+        if (obj.domainNameC == _localData[i].domainNameC) {
+          result = false;
+          break;
+        }
+      }
+      if (result == true) {
+        _localData.add(obj);
+      }
+    } else if (type == 'nycSub') {
+      bool result = true;
+      for (int i = 0; i < _localData.length; i++) {
+        if (obj.standardAndDescriptionC ==
+            _localData[i].standardAndDescriptionC) {
+          result = false;
+          break;
+        }
+      }
+      if (result == true) {
+        _localData.add(obj);
+      }
+    }
+
+    await _localDb.clear();
+    _localData.forEach((SubjectDetailList e) {
+      _localDb.addData(e);
+    });
   }
 }
