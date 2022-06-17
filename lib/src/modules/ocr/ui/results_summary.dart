@@ -40,7 +40,6 @@ class ResultsSummary extends StatefulWidget {
   final int? assessmentListLenght;
   final String? shareLink;
   final asssessmentName;
-
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
 }

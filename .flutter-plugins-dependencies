@@ -3,372 +3,656 @@
     "plugins": {
         "ios": [{
                 "name": "add_2_calendar",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.3/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.3/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "advance_pdf_viewer",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/advance_pdf_viewer-2.0.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/advance_pdf_viewer-2.0.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "auto_orientation",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/auto_orientation-2.2.1/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/auto_orientation-2.2.1/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "camera",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/camera-0.9.6/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/camera-0.9.6/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "connectivity",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity-3.0.6/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/connectivity-3.0.6/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "device_info",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/device_info-2.0.3/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/device_info-2.0.3/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "flutter_downloader",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.7.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.7.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "flutter_keyboard_visibility",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_keyboard_visibility-5.2.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/flutter_keyboard_visibility-5.2.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "google_maps_flutter",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-2.1.1/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-2.1.1/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "image_picker",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.8.4+5/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/image_picker-0.8.4+5/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "onesignal_flutter",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/onesignal_flutter-3.2.8/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/onesignal_flutter-3.2.8/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "open_apps_settings",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/open_apps_settings-0.0.4/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/open_apps_settings-0.0.4/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "package_info_plus",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/package_info_plus-1.4.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/package_info_plus-1.4.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "path_provider_ios",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_ios-2.0.7/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/path_provider_ios-2.0.7/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "permission_handler",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-8.3.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/permission_handler-8.3.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "share",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/share-2.0.4/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/share-2.0.4/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "shared_preferences_ios",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_ios-2.0.9/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/shared_preferences_ios-2.0.9/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "speech_bubble",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/speech_bubble-0.0.9/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/speech_bubble-0.0.9/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "sqflite",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-2.0.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/sqflite-2.0.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "url_launcher_ios",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_ios-6.0.14/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/url_launcher_ios-6.0.14/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "video_player",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/video_player-2.2.16/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/video_player-2.2.16/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "wakelock",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/wakelock-0.6.1+2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/wakelock-0.6.1+2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "webview_flutter_wkwebview",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.7.1/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.7.1/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "wifi_info_flutter",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/wifi_info_flutter-2.0.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/wifi_info_flutter-2.0.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             }
         ],
         "android": [{
                 "name": "add_2_calendar",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.3/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.3/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "advance_pdf_viewer",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/advance_pdf_viewer-2.0.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/advance_pdf_viewer-2.0.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "auto_orientation",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/auto_orientation-2.2.1/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/auto_orientation-2.2.1/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "camera",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/camera-0.9.6/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/camera-0.9.6/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": [
                     "flutter_plugin_android_lifecycle"
                 ]
             },
             {
                 "name": "connectivity",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity-3.0.6/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/connectivity-3.0.6/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "device_info",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/device_info-2.0.3/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/device_info-2.0.3/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "flutter_downloader",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.7.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.7.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "flutter_keyboard_visibility",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_keyboard_visibility-5.2.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/flutter_keyboard_visibility-5.2.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "flutter_plugin_android_lifecycle",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.5/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.5/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "google_maps_flutter",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-2.1.1/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-2.1.1/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": [
                     "flutter_plugin_android_lifecycle"
                 ]
             },
             {
                 "name": "image_picker",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.8.4+5/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/image_picker-0.8.4+5/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": [
                     "flutter_plugin_android_lifecycle"
                 ]
             },
             {
                 "name": "onesignal_flutter",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/onesignal_flutter-3.2.8/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/onesignal_flutter-3.2.8/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "open_apps_settings",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/open_apps_settings-0.0.4/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/open_apps_settings-0.0.4/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "package_info_plus",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/package_info_plus-1.4.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/package_info_plus-1.4.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "path_provider_android",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.11/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.11/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "permission_handler",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-8.3.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/permission_handler-8.3.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "share",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/share-2.0.4/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/share-2.0.4/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "shared_preferences_android",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_android-2.0.10/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/shared_preferences_android-2.0.10/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "speech_bubble",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/speech_bubble-0.0.9/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/speech_bubble-0.0.9/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "sqflite",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-2.0.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/sqflite-2.0.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "url_launcher_android",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_android-6.0.14/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/url_launcher_android-6.0.14/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "video_player",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/video_player-2.2.16/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/video_player-2.2.16/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "wakelock",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/wakelock-0.6.1+2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/wakelock-0.6.1+2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "webview_flutter_android",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_android-2.8.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/webview_flutter_android-2.8.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "wifi_info_flutter",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/wifi_info_flutter-2.0.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/wifi_info_flutter-2.0.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             }
         ],
         "macos": [{
                 "name": "connectivity_macos",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_macos-0.2.1+2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/connectivity_macos-0.2.1+2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "package_info_plus_macos",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/package_info_plus_macos-1.3.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/package_info_plus_macos-1.3.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "path_provider_macos",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.5/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.5/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "shared_preferences_macos",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-2.0.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-2.0.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "sqflite",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-2.0.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/sqflite-2.0.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "url_launcher_macos",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-2.0.3/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-2.0.3/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "wakelock_macos",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/wakelock_macos-0.4.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/wakelock_macos-0.4.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             }
         ],
         "linux": [{
                 "name": "path_provider_linux",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.5/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.5/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "shared_preferences_linux",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-2.0.4/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/shared_preferences_linux-2.0.4/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": [
                     "path_provider_linux"
                 ]
             },
             {
                 "name": "url_launcher_linux",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_linux-2.0.3/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/url_launcher_linux-2.0.3/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             }
         ],
         "windows": [{
                 "name": "path_provider_windows",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.5/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.5/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "shared_preferences_windows",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.0.4/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.0.4/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": [
                     "path_provider_windows"
                 ]
             },
             {
                 "name": "url_launcher_windows",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_windows-2.0.2/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/url_launcher_windows-2.0.2/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             }
         ],
         "web": [{
                 "name": "camera_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/camera_web-0.2.1+3/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/camera_web-0.2.1+3/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "connectivity_for_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_for_web-0.4.0+1/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/connectivity_for_web-0.4.0+1/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "flutter_keyboard_visibility_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_keyboard_visibility_web-2.0.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/flutter_keyboard_visibility_web-2.0.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "image_picker_for_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_for_web-2.1.5/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/image_picker_for_web-2.1.5/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "package_info_plus_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/package_info_plus_web-1.0.4/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/package_info_plus_web-1.0.4/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "shared_preferences_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.3/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.3/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "url_launcher_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-2.0.6/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-2.0.6/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "video_player_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/video_player_web-2.0.6/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/video_player_web-2.0.6/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             },
             {
                 "name": "wakelock_web",
+<<<<<<< HEAD
+                "path": "/Users/apple/Documents/development/flutter/.pub-cache/hosted/pub.dartlang.org/wakelock_web-0.4.0/",
+=======
                 "path": "/Users/mv0077/.pub-cache/hosted/pub.dartlang.org/wakelock_web-0.4.0/",
+>>>>>>> origin/OCR_dev_main
                 "dependencies": []
             }
         ]
@@ -640,6 +924,11 @@
             "dependencies": []
         }
     ],
+<<<<<<< HEAD
+    "date_created": "2022-06-17 10:27:04.611627",
+    "version": "2.10.5"
+=======
     "date_created": "2022-06-17 15:17:53.905495",
     "version": "2.5.4-0.0.pre.1"
+>>>>>>> origin/OCR_dev_main
 }
