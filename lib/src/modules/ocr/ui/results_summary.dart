@@ -663,8 +663,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   // Text(_list[index].pointpossible!),
                   Utility.textWidget(
                       text: //'2/2',
-                          _list[index].studentGrade == ''
-                              ? '-/${_list[index].pointpossible ?? '2'}'
+                          _list[index].studentGrade == '' ||
+                                  _list[index].studentGrade == null
+                              ? '2/${_list[index].pointpossible ?? '2'}'
                               : '${_list[index].studentGrade}/${_list[index].pointpossible ?? '2'}', // '${Globals.gradeList[index]} /2',
                       context: context,
                       textTheme: Theme.of(context)

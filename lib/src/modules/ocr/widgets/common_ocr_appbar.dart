@@ -63,11 +63,12 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leadingWidth: 200, //widget.isSuccessState == false ? 200 : null,
+        leadingWidth: 300, //widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
         leading: Container(
           margin: EdgeInsets.only(top: 7),
           child: Row(
+            // mainAxisAlignment: MainAxisAlignment.start,
             children: [
               widget.customBackButton != null
                   ? widget.customBackButton!
@@ -174,7 +175,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             Utility.setFree();
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
-                                    builder: (context) => HomePage(isFromOcrSection: true,)),
+                                    builder: (context) => HomePage(
+                                          isFromOcrSection: true,
+                                        )),
                                 (_) => false);
                           }
 
@@ -286,16 +289,18 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   Widget commonGradedLogo() {
     return Expanded(
       child: Container(
-        // color: Colors.red,//widget.isBackButton!=null? Colors.green:Colors.yellow,
+        // color: widget.isBackButton == true
+        //       ?Colors.red:Colors.green,//widget.isBackButton!=null? Colors.green:Colors.yellow,
         padding: widget.isBackButton == true
             ? EdgeInsets.only(left: 0)
             : EdgeInsets.only(left: 18),
         alignment: Alignment.centerLeft,
         child: Image(
           alignment: Alignment.centerLeft,
-          width: widget.isBackButton == true
-              ? 200
-              : 100, //200,//Globals.deviceType == "phone" ?(widget.isBackButton==null? 200: 300) : 32,
+          width: MediaQuery.of(context).size.width * 0.22,
+          // widget.isBackButton == true
+          //     ? MediaQuery.of(context).size.width*0.2 //200
+          //     : MediaQuery.of(context).size.width*0.2, //200,//Globals.deviceType == "phone" ?(widget.isBackButton==null? 200: 300) : 32,
           // height: Globals.deviceType == "phone" ? 100 : 32,
           image: AssetImage(
             Color(0xff000000) == Theme.of(context).backgroundColor
@@ -400,7 +405,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                           //Globals.iscameraPopup = false;
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                  builder: (context) => HomePage(isFromOcrSection: true,)),
+                                  builder: (context) => HomePage(
+                                        isFromOcrSection: true,
+                                      )),
                               (_) => false);
                         },
                       ),
@@ -530,7 +537,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     UserGoogleProfile.clearUserProfile();
                                     Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(
-                                            builder: (context) => HomePage(isFromOcrSection: true,)),
+                                            builder: (context) => HomePage(
+                                                  isFromOcrSection: true,
+                                                )),
                                         (_) => false);
                                   },
                                   icon: Icon(

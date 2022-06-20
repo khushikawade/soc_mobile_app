@@ -131,13 +131,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
-        if (Globals.googleExcelSheetId!.isEmpty) {
-          await createSheetOnDrive(
-              name: Globals.assessmentName,
-              folderId: Globals.googleDriveFolderId,
-              accessToken: _userprofilelocalData[0].authorizationToken,
-              refreshToken: _userprofilelocalData[0].refreshToken);
-        }
+        checkForGoogleExcelId(); //To check for excel sheet id
         if (assessmentData!.length > 0 && assessmentData[0].studentId == 'Id') {
           assessmentData.removeAt(0);
         }
@@ -401,6 +395,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
+void checkForGoogleExcelId()async{
+   if (Globals.googleExcelSheetId!.isEmpty) {
+         await Future.delayed(Duration(milliseconds: 200));
+        if(Globals.googleExcelSheetId!.isEmpty){ checkForGoogleExcelId();}
+          // await createSheetOnDrive(
+          //     name: Globals.assessmentName,
+          //     folderId: Globals.googleDriveFolderId,
+          //     accessToken: _userprofilelocalData[0].authorizationToken,
+          //     refreshToken: _userprofilelocalData[0].refreshToken);
+        }
+}
   Future<List<HistoryAssessment>> listSort(List<HistoryAssessment> list) async {
     list.forEach((element) {
       if (element.modifiedDate != null) {
@@ -525,7 +530,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         await _getShareableLink(accessToken, fileId, refreshToken);
       }
       return true;
-    } else {
+    } else if(response.statusCode == 401){
       //To regernerate fresh access token
       await _toRefreshAuthenticationToken(refreshToken!);
       CreateExcelSheetToDrive(name: name);

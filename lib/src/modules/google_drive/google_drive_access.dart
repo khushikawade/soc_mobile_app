@@ -10,7 +10,10 @@ class GoogleDriveAccess {
       var excel = Excel.createExcel();
       final sheet = excel[excel.getDefaultSheet()!];
       print(data);
+      CellStyle cellStyle = CellStyle();
+      
       for (int row = 0; row < data.length; row++) {
+       if(row==0){ cellStyle.isBold=true;} //Default is false
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
             .value = data[row].studentId;
@@ -49,7 +52,7 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(columnIndex: 10, rowIndex: row))
             .value = data[row].scoringRubric;
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 11, rowIndex: row))
+            .cell(CellIndex.indexByColumnRow(columnIndex: 11, rowIndex: row)) //.isFormula
             .value = data[row].customRubricImage;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 12, rowIndex: row))
