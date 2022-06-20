@@ -423,7 +423,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             onPressed: () async {
               FocusScope.of(context).requestFocus(FocusNode());
               if (!connected) {
-                Utility.noInternetSnackBar();
+                Utility.noInternetSnackBar("No Internet Connection");
               } else {
                 if (_formKey.currentState!.validate()) {
                   if (imageFile != null && imageFile!.path.isNotEmpty) {
@@ -437,11 +437,15 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   Globals.assessmentName =
                       "${assessmentController.text}_${classController.text}";
                   //Create excel sheet if not created already for current assessment
-                  Globals.googleExcelSheetId!.isEmpty
-                      ? _googleDriveBloc.add(CreateExcelSheetToDrive(
-                          name:
-                              "${assessmentController.text}_${classController.text}"))
-                      : print(Globals.googleExcelSheetId!);
+                  Globals.googleExcelSheetId = '';
+                  if (Globals.googleExcelSheetId!.isEmpty) {
+                    _googleDriveBloc.add(CreateExcelSheetToDrive(
+                        name:
+                            "${assessmentController.text}_${classController.text}"));
+                  } else {
+                    _navigateToSubjectSection();
+                  }
+
                   // : Navigator.push(
                   //           context,
                   //           MaterialPageRoute(
@@ -450,18 +454,29 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   //                         selectedGrade.value.toString(),
                   //                   )),
                   //         );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SubjectSelection(
-                              selectedClass: selectedGrade.value.toString(),
-                            )),
-                  );
+
                 }
               }
             },
             label: Row(
               children: [
+                BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                    bloc: _googleDriveBloc,
+                    child: Container(),
+                    listener: (context, state) {
+                      if (state is GoogleDriveLoading) {
+                        Utility.loadingDialog(context);
+                      }
+                      if (state is ExcelSheetCreated) {
+                        Navigator.of(context).pop();
+                        _navigateToSubjectSection();
+                      }
+                      if (state is ErrorState) {
+                        Navigator.of(context).pop();
+                        Utility.noInternetSnackBar(
+                            "Technical issue try again after some time");
+                      }
+                    }),
                 textwidget(
                     text: 'Next',
                     textTheme: Theme.of(context)
@@ -489,5 +504,15 @@ class _CreateAssessmentState extends State<CreateAssessment>
     } else {
       isimageFilePicked.value = false;
     }
+  }
+
+  void _navigateToSubjectSection() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SubjectSelection(
+                selectedClass: selectedGrade.value.toString(),
+              )),
+    );
   }
 }

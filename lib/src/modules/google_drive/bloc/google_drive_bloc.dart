@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -39,27 +40,37 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // Globals.authorizationToken = event.token;
         print(event.token);
         print(event.folderName);
-
+        if (event.isFromOcrHome!) {
+          yield GoogleDriveLoading();
+        }
         folderObject = await _getGoogleDriveFolderList(
             token: event.token, folderName: event.folderName);
         //  print('FolderId = ${folderObject['id']}');
 
         if (folderObject != 401) {
-          if (folderObject == '') {
+          if (folderObject.length == 0) {
             print(
                 'Folder doesn\'t exist already. Creating new folder on drive');
             await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
             print("Folder created successfully");
+            if (event.isFromOcrHome! &&
+                Globals.googleDriveFolderId!.isNotEmpty) {
+              yield GoogleSuccess(assessmentSection: event.assessmentSection);
+            }
           } else if (folderObject.length == 0) {
             print('No folder found');
           } else {
-            print("Folder Id received : ${folderObject['id']}");
-            print("Folder path received : ${folderObject['webViewLink']}");
+            // print("Folder Id received : ${folderObject['id']}");
+            // print("Folder path received : ${folderObject['webViewLink']}");
 
             Globals.googleDriveFolderId = folderObject['id'];
             Globals.googleDriveFolderPath = folderObject['webViewLink'];
             // Globals.
+            if (event.isFromOcrHome! &&
+                Globals.googleDriveFolderId!.isNotEmpty) {
+              yield GoogleSuccess(assessmentSection: event.assessmentSection);
+            }
             if (event.fetchHistory == true) {
               //Fetch history assessment
               GetHistoryAssessmentFromDrive();
@@ -72,6 +83,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               await UserGoogleProfile.getUserProfile();
 
           GetDriveFolderIdEvent(
+              isFromOcrHome: true,
               //  filePath: file,
               token: _userprofilelocalData[0].authorizationToken,
               folderName: event.folderName,
@@ -83,11 +95,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
+
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        if (e == 'NO_CONNECTION') {
+          Utility.noInternetSnackBar("No Internet Connection");
+        } else {
+          yield ErrorState();
+        }
         throw (e);
       }
     }
@@ -118,17 +135,22 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        if (e == 'NO_CONNECTION') {
+          Utility.noInternetSnackBar("No Internet Connection");
+        } else {
+          yield ErrorState();
+        }
         throw (e);
       }
     }
 
     if (event is UpdateDocOnDrive) {
       try {
+        yield GoogleDriveLoading();
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
@@ -182,6 +204,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               Globals.googleExcelSheetId,
               _userprofilelocalData[0].authorizationToken,
               _userprofilelocalData[0].refreshToken);
+        } else {
+          yield GoogleSuccess();
         }
         bool deleted = await GoogleDriveAccess.deleteFile(file);
         if (!deleted) {
@@ -189,11 +213,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -238,6 +264,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           //   }
         } else {
           GetDriveFolderIdEvent(
+              isFromOcrHome: false,
               //  filePath: file,
               token: _userprofilelocalData[0].authorizationToken,
               folderName: "SOLVED GRADED+",
@@ -245,11 +272,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -324,11 +353,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -377,11 +408,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // print("printing imag url : $imgUrl");
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -396,8 +429,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             ? print("question image url upload done")
             : print("error uploading question img");
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
+      }
+    }
+    if (event is GetShareLink) {
+      List<UserInformation> _userprofilelocalData =
+          await UserGoogleProfile.getUserProfile();
+
+      String link = await  _getShareableLink(
+          fileId: event.fileId!,
+          refreshToken: _userprofilelocalData[0].refreshToken,
+          token: _userprofilelocalData[0].authorizationToken!);
+
+      if (link != '') {
+        yield ShareLinkRecived(shareLink: link);
       }
     }
   }
@@ -423,18 +471,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
       final ResponseModel response = await _dbServices.postapi(
-          // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files',
-          'https://www.googleapis.com/drive/v2/files',
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files',
+          //'https://www.googleapis.com/drive/v2/files',
           headers: headers,
           body: body,
           isGoogleApi: true);
 
       if (response.statusCode == 200) {
         //  String id = response.data['id'];
-        //   print("Folder created successfully : ${response.data['body']['id']}");
-        return Globals.googleDriveFolderId = response.data
-            // ['body']
-            ['id'];
+        print("Folder created successfully : ${response.data['body']['id']}");
+        return Globals.googleDriveFolderId = response.data['body']['id'];
       }
       return "";
     } catch (e) {
@@ -451,7 +497,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       };
       print('https://www.googleapis.com/drive/v3/files?fields=*&q=' +
           Uri.encodeFull(
-              'trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED%20GRADED%2B\''));
+              'trashed = false and mimeType = \'applicatison/vnd.google-apps.folder\' and name = \'SOLVED%20GRADED%2B\''));
       final ResponseModel response = await _dbServices.getapiNew(
           'https://www.googleapis.com/drive/v3/files?fields=*&q=trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\'',
           // Uri.encodeFull(
@@ -480,6 +526,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
       return "";
     } catch (e) {
+      print("inside catch");
       throw (e);
     }
   }
@@ -502,8 +549,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     };
 
     final ResponseModel response = await _dbServices.postapi(
-        // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files',
-        'https://www.googleapis.com/drive/v3/files',
+        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files',
+        //  'https://www.googleapis.com/drive/v3/files',
         body: body,
         headers: headers,
         isGoogleApi: true);
@@ -511,9 +558,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (response.statusCode == 200) {
       print("file created successfully : ${response.data['id']}");
 
-      String fileId = response.data
-          // ['body']
-          ['id'];
+      String fileId = response.data['body']['id'];
       Globals.googleExcelSheetId = fileId;
       bool result =
           await _updateSheetPermission(accessToken!, fileId, refreshToken);
@@ -521,10 +566,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         await _updateSheetPermission(accessToken, fileId, refreshToken);
       }
 
-      bool link = await _getShareableLink(accessToken, fileId, refreshToken);
-      if (!link) {
-        await _getShareableLink(accessToken, fileId, refreshToken);
-      }
+      // bool link = await _getShareableLink(accessToken, fileId, refreshToken);
+      // if (!link) {
+      //   await _getShareableLink(accessToken, fileId, refreshToken);
+      // }
       return true;
     } else {
       //To regernerate fresh access token
@@ -599,11 +644,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
     } on SocketException catch (e) {
       e.message == 'Connection failed'
-          ? Utility.noInternetSnackBar()
+          ? Utility.noInternetSnackBar("No Internet Connection")
           : print(e);
       rethrow;
     } catch (e) {
-      e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+      e == 'NO_CONNECTION'
+          ? Utility.noInternetSnackBar("No Internet Connection")
+          : print(e);
       throw (e);
     }
   }
@@ -617,8 +664,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     final body = {"role": "reader", "type": "anyone"};
 
     final ResponseModel response = await _dbServices.postapi(
-        'https://www.googleapis.com/drive/v3/files/$fileId/permissions',
-        // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$folderId/permissions',
+        // 'https://www.googleapis.com/drive/v3/files/$fileId/permissions',
+        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId/permissions',
         headers: headers,
         body: body,
         isGoogleApi: true);
@@ -634,30 +681,33 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return false;
   }
 
-  _getShareableLink(String token, String fileId, String? refreshToken) async {
+  _getShareableLink(
+      {required String token,
+      required String fileId,
+      required String? refreshToken}) async {
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer $token'
     };
     final ResponseModel response = await _dbServices.getapiNew(
-        'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
-        // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        // 'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
         isGoogleAPI: true);
 
     if (response.statusCode == 200) {
-      print(" get file link   ----------->${Globals.shareableLink}");
+      print(" get file link   ----------->${ response.data['body']['webViewLink']}");
       // var data = response.data;
-      Globals.shareableLink = response.data['webViewLink'];
-      //  ['body']
+      return response.data['body']['webViewLink'];
 
-      return true;
+    
     }
     if (response.statusCode == 401) {
       await _toRefreshAuthenticationToken(refreshToken!);
-      _getShareableLink(token, fileId, refreshToken);
+      _getShareableLink(
+          token: token, fileId: fileId, refreshToken: refreshToken);
     }
-    return false;
+    return "";
   }
 
   Future _getAssessmentDetail(

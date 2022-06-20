@@ -678,11 +678,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 bottom: 5,
               ),
               decoration: BoxDecoration(
-                color:  index == indexColor.value
-                        ?  rubricNotDetected == true && isSelected == true
-                    ? Colors.red
-                    :AppTheme.kSelectedColor
-                        : Colors.grey,
+                color: index == indexColor.value
+                    ? rubricNotDetected == true && isSelected == true
+                        ? Colors.red
+                        : AppTheme.kSelectedColor
+                    : Colors.grey,
                 borderRadius: BorderRadius.all(
                   Radius.circular(8),
                 ),
@@ -695,11 +695,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             ? Color(0xffF7F8F9)
                             : Color(0xff111C20),
                     border: Border.all(
-                      color:  index == indexColor.value
-                              ?rubricNotDetected == true && isSelected == true
-                          ? Colors.red
-                          : AppTheme.kSelectedColor
-                              : Colors.grey,
+                      color: index == indexColor.value
+                          ? rubricNotDetected == true && isSelected == true
+                              ? Colors.red
+                              : AppTheme.kSelectedColor
+                          : Colors.grey,
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
@@ -710,11 +710,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     builder: (translatedMessage) => Text(
                       translatedMessage.toString(),
                       style: Theme.of(context).textTheme.headline1!.copyWith(
-                          color:  indexColor.value == index
-                                  ? rubricNotDetected == true && isSelected == true
-                              ? Colors.red
-                              :AppTheme.kSelectedColor
-                                  : Colors.grey),
+                          color: indexColor.value == index
+                              ? rubricNotDetected == true && isSelected == true
+                                  ? Colors.red
+                                  : AppTheme.kSelectedColor
+                              : Colors.grey),
                     ),
                   )),
             ));

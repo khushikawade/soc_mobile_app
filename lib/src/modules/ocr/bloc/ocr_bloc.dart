@@ -148,11 +148,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             studentName: event.studentName, studentId: event.studentId);
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -168,11 +170,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -214,11 +218,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         bool result = await saveSubjectListDetails();
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -325,11 +331,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.noInternetSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }

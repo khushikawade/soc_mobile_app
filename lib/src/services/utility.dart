@@ -419,13 +419,13 @@ class Utility {
   //   }
   // }
 
-  static void noInternetSnackBar() {
+  static void noInternetSnackBar(String text) {
     //Use to show snackbar at any current screen
     BuildContext? context = Globals.navigatorKey.currentContext;
 
     ScaffoldMessenger.of(context!).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("No Internet Connection"),
+      content: Text(text),
     ));
   }
 
@@ -440,5 +440,34 @@ class Utility {
     } on SocketException catch (_) {
       return false;
     }
+  }
+
+  static void loadingDialog(BuildContext context) async {
+    // show the loading dialog
+    showDialog(
+        // The user CANNOT close this dialog  by pressing outsite it
+        barrierDismissible: false,
+        context: context,
+        builder: (_) {
+          return Dialog(
+            // The background color
+            backgroundColor: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  // The loading indicator
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  // Some text
+                  Text('Loading...')
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

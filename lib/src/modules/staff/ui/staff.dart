@@ -166,6 +166,7 @@ class _StaffPageState extends State<StaffPage> {
 
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     _googleDriveBloc.add(GetDriveFolderIdEvent(
+        isFromOcrHome: false,
         //  filePath: file,
         token: _userprofilelocalData[0].authorizationToken,
         folderName: "SOLVED GRADED+",

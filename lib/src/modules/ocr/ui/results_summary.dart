@@ -38,7 +38,7 @@ class ResultsSummary extends StatefulWidget {
   final String? rubricScore;
   final bool? isScanMore;
   final int? assessmentListLenght;
-  final String? shareLink;
+  String? shareLink;
   final asssessmentName;
 
   @override
@@ -72,6 +72,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       iconsName = ["Share", "Drive", "Dashboard"];
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
     } else {
+      _driveBloc.add(GetShareLink(fileId: widget.fileId));
       iconsList = Globals.ocrResultIcons;
       iconsName = Globals.ocrResultIconsName;
       assessmentCount.value = Globals.studentInfo!.length;
@@ -144,6 +145,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(Icons.arrow_back)),
                         Utility.textWidget(
                             text: 'Results Summary',
                             context: context,
@@ -479,43 +485,74 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       : Expanded(
                           child: IconButton(
                             padding: EdgeInsets.all(0),
-                            icon: Icon(
-                              IconData(
-                                  (widget.assessmentDetailPage!
-                                              ? index == 2
-                                              : index == 3) &&
-                                          dashoardState.value == 'Success'
-                                      ? 0xe877
-                                      : iconsList[index],
-                                  fontFamily: Overrides.kFontFam,
-                                  fontPackage: Overrides.kFontPkg),
-                              size: (widget.assessmentDetailPage!
-                                          ? index == 2
-                                          : index == 3) &&
-                                      dashoardState.value == ''
-                                  ? 38
-                                  : 32,
-                              color: (widget.assessmentDetailPage! &&
-                                          index == 2 &&
-                                          isAssessmentAlreadySaved == 'YES') ||
-                                      (widget.assessmentDetailPage! &&
-                                          index == 2 &&
-                                          dashoardState.value == 'Success')
-                                  ? Colors.green
-                                  : index == 2 ||
-                                          (index == 3 &&
-                                              dashoardState.value == '')
-                                      ? Theme.of(context).backgroundColor ==
-                                              Color(0xff000000)
-                                          ? Colors.white
-                                          : Colors.black
-                                      : (widget.assessmentDetailPage!
-                                                  ? index == 2
-                                                  : index == 3) &&
-                                              dashoardState.value == 'Success'
-                                          ? Colors.green
-                                          : AppTheme.kButtonColor,
-                            ),
+                            icon: index == 0 && !widget.assessmentDetailPage!
+                                ? BlocBuilder(
+                                    bloc: _driveBloc,
+                                    builder: (context, state) {
+                                      if (state is ShareLinkRecived) {
+                                        widget.shareLink = state.shareLink;
+                                        return Icon(
+                                          IconData(iconsList[index],
+                                              fontFamily: Overrides.kFontFam,
+                                              fontPackage: Overrides.kFontPkg),
+                                          size: (widget.assessmentDetailPage!
+                                                      ? index == 2
+                                                      : index == 3) &&
+                                                  dashoardState.value == ''
+                                              ? 38
+                                              : 32,
+                                          color: AppTheme.kButtonColor,
+                                        );
+                                      }
+
+                                      return Center(
+                                          child: CircularProgressIndicator(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant,
+                                      ));
+                                    })
+                                : Icon(
+                                    IconData(
+                                        (widget.assessmentDetailPage!
+                                                    ? index == 2
+                                                    : index == 3) &&
+                                                dashoardState.value == 'Success'
+                                            ? 0xe877
+                                            : iconsList[index],
+                                        fontFamily: Overrides.kFontFam,
+                                        fontPackage: Overrides.kFontPkg),
+                                    size: (widget.assessmentDetailPage!
+                                                ? index == 2
+                                                : index == 3) &&
+                                            dashoardState.value == ''
+                                        ? 38
+                                        : 32,
+                                    color: (widget.assessmentDetailPage! &&
+                                                index == 2 &&
+                                                isAssessmentAlreadySaved ==
+                                                    'YES') ||
+                                            (widget.assessmentDetailPage! &&
+                                                index == 2 &&
+                                                dashoardState.value ==
+                                                    'Success')
+                                        ? Colors.green
+                                        : index == 2 ||
+                                                (index == 3 &&
+                                                    dashoardState.value == '')
+                                            ? Theme.of(context)
+                                                        .backgroundColor ==
+                                                    Color(0xff000000)
+                                                ? Colors.white
+                                                : Colors.black
+                                            : (widget.assessmentDetailPage!
+                                                        ? index == 2
+                                                        : index == 3) &&
+                                                    dashoardState.value ==
+                                                        'Success'
+                                                ? Colors.green
+                                                : AppTheme.kButtonColor,
+                                  ),
                             onPressed: () {
                               if (index == 0) {
                                 widget.shareLink != null &&

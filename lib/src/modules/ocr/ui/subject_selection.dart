@@ -719,7 +719,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               AppTheme.kButtonColor.withOpacity(1.0),
                           onPressed: () async {
                             if (!connected) {
-                              Utility.noInternetSnackBar();
+                              Utility.noInternetSnackBar(
+                                  "No Internet Connection");
                             } else {
                               LocalDatabase<CustomRubicModal> _localDb =
                                   LocalDatabase('custom_rubic');
@@ -775,24 +776,41 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   studentData:
                                       //list2
                                       Globals.studentInfo!));
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ResultsSummary(
-                                          subjectId: subjectId ?? '',
-                                          standardId: standardId ?? '',
-                                          asssessmentName:
-                                              Globals.assessmentName,
-                                          shareLink:
-                                              Globals.shareableLink ?? '',
-                                          assessmentDetailPage: false,
-                                        )),
-                              );
                             }
                           },
                           label: Row(
                             children: [
+                              BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                                  bloc: _googleDriveBloc,
+                                  child: Container(),
+                                  listener: (context, state) {
+                                    if (state is GoogleDriveLoading) {
+                                      Utility.loadingDialog(context);
+                                    }
+                                    if (state is GoogleSuccess) {
+                                      Navigator.of(context).pop();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ResultsSummary(
+                                                  fileId: Globals
+                                                      .googleExcelSheetId,
+                                                  subjectId: subjectId ?? '',
+                                                  standardId: standardId ?? '',
+                                                  asssessmentName:
+                                                      Globals.assessmentName,
+                                                  shareLink: '',
+                                                  assessmentDetailPage: false,
+                                                )),
+                                      );
+                                    }
+                                    if (state is ErrorState) {
+                                      Navigator.of(context).pop();
+                                      Utility.noInternetSnackBar(
+                                          "Technical issue try again after some time");
+                                    }
+                                  }),
                               Utility.textWidget(
                                   text: 'Save to drive',
                                   context: context,

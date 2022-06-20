@@ -50,22 +50,54 @@ class AssessmentDetailSuccess extends GoogleDriveState {
 
 class ExcelSheetCreated extends GoogleDriveState {
   final obj;
-  ExcelSheetCreated({required this.obj, });
-  ExcelSheetCreated copyWith({final obj, }) {
+  ExcelSheetCreated({
+    required this.obj,
+  });
+  ExcelSheetCreated copyWith({
+    final obj,
+  }) {
     return ExcelSheetCreated(
-        obj: obj ?? this.obj,);
+      obj: obj ?? this.obj,
+    );
   }
+
   @override
   List<Object> get props => [];
 }
 
 class GoogleFolderCreated extends GoogleDriveState {
   final obj;
-  GoogleFolderCreated({ this.obj, });
-  GoogleFolderCreated copyWith({final obj, }) {
+  GoogleFolderCreated({
+    this.obj,
+  });
+  GoogleFolderCreated copyWith({
+    final obj,
+  }) {
     return GoogleFolderCreated(
-        obj: obj ?? this.obj,);
+      obj: obj ?? this.obj,
+    );
   }
+
+  @override
+  List<Object> get props => [];
+}
+
+// ignore: must_be_immutable
+class GoogleSuccess extends GoogleDriveState {
+  bool? assessmentSection;
+  GoogleSuccess({this.assessmentSection});
+  @override
+  List<Object> get props => [];
+}
+
+class ErrorState extends GoogleDriveState {
+  @override
+  List<Object> get props => [];
+}
+
+class ShareLinkRecived extends GoogleDriveState {
+  String? shareLink;
+  ShareLinkRecived({required this.shareLink});
   @override
   List<Object> get props => [];
 }

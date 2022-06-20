@@ -174,7 +174,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             Utility.setFree();
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
-                                    builder: (context) => HomePage(isFromOcrSection: true,)),
+                                    builder: (context) => HomePage(
+                                          isFromOcrSection: true,
+                                        )),
                                 (_) => false);
                           }
 
@@ -277,6 +279,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         null);
 
     _googleDriveBloc.add(GetDriveFolderIdEvent(
+        isFromOcrHome: false,
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
@@ -400,7 +403,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                           //Globals.iscameraPopup = false;
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                  builder: (context) => HomePage(isFromOcrSection: true,)),
+                                  builder: (context) => HomePage(
+                                        isFromOcrSection: true,
+                                      )),
                               (_) => false);
                         },
                       ),
@@ -530,7 +535,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     UserGoogleProfile.clearUserProfile();
                                     Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(
-                                            builder: (context) => HomePage(isFromOcrSection: true,)),
+                                            builder: (context) => HomePage(
+                                                  isFromOcrSection: true,
+                                                )),
                                         (_) => false);
                                   },
                                   icon: Icon(

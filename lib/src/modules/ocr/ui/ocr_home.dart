@@ -168,52 +168,14 @@ class _OpticalCharacterRecognitionPageState
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (!connected) {
-                      Utility.noInternetSnackBar();
+                      Utility.noInternetSnackBar("No Internet Connection");
                     } else {
                       Globals.studentInfo!.clear();
                       if (Globals.googleDriveFolderId!.isEmpty) {
-                        List<UserInformation> _profileData =
-                            await UserGoogleProfile.getUserProfile();
-                        _googleDriveBloc.add(GetDriveFolderIdEvent(
-                            //  filePath: file,
-                            token: _profileData[0].authorizationToken,
-                            folderName: "SOLVED GRADED+",
-                            refreshtoken: _profileData[0].refreshToken));
+                        _triggerDriveFolderEvent(false);
+                      } else {
+                        _beforenavigateOnCameraSection();
                       }
-
-                      print(
-                          "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
-
-                      Globals.pointpossible =
-                          rubricScoreSelectedColor.value == 0
-                              ? '2'
-                              : rubricScoreSelectedColor.value == 2
-                                  ? '3'
-                                  : rubricScoreSelectedColor.value == 4
-                                      ? '4'
-                                      : '2';
-                      Globals.googleExcelSheetId = "";
-                      updateLocalDb();
-
-                      _bloc.add(SaveSubjectListDetails());
-                      // print(Globals.scoringRubric);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CameraScreen(
-                                  scaffoldKey: _scaffoldKey,
-                                  isScanMore: false,
-                                  pointPossible: rubricScoreSelectedColor
-                                              .value ==
-                                          0
-                                      ? '2'
-                                      : rubricScoreSelectedColor.value == 2
-                                          ? '3'
-                                          : rubricScoreSelectedColor.value == 4
-                                              ? '4'
-                                              : '2',
-                                )),
-                      );
 
                       // Navigator.push(
                       //   context,
@@ -239,13 +201,35 @@ class _OpticalCharacterRecognitionPageState
             child: Container(),
           );
         }),
+        BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: _googleDriveBloc,
+            child: Container(),
+            listener: (context, state) {
+              if (state is GoogleDriveLoading) {
+                Utility.loadingDialog(context);
+              }
+              if (state is GoogleSuccess) {
+                if (state.assessmentSection == true) {
+                  Navigator.of(context).pop();
+                  _beforenavigateOnAssessmentSection();
+                } else {
+                  Navigator.of(context).pop();
+                  _beforenavigateOnCameraSection();
+                }
+              }
+              if (state is ErrorState) {
+                Navigator.of(context).pop();
+                Utility.noInternetSnackBar(
+                    "Technical issue try again after some time");
+              }
+            }),
         GestureDetector(
-          onTap: () {
-            updateLocalDb();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AssessmentSummary()),
-            );
+          onTap: () async {
+            if (Globals.googleDriveFolderId!.isEmpty) {
+              _triggerDriveFolderEvent(true);
+            } else {
+              _beforenavigateOnAssessmentSection();
+            }
           },
           child: Container(
               padding: EdgeInsets.only(top: 10),
@@ -503,5 +487,58 @@ class _OpticalCharacterRecognitionPageState
     RubricScoreList.scoringList.forEach((CustomRubicModal e) {
       _localDb.addData(e);
     });
+  }
+
+  void _triggerDriveFolderEvent(bool isTriggerdbyAssessmentSection) async {
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+    _googleDriveBloc.add(GetDriveFolderIdEvent(
+        assessmentSection: isTriggerdbyAssessmentSection ? true : null,
+        isFromOcrHome: true,
+        //  filePath: file,
+        token: _profileData[0].authorizationToken,
+        folderName: "SOLVED GRADED+",
+        refreshtoken: _profileData[0].refreshToken));
+  }
+
+  void _beforenavigateOnCameraSection() {
+    print(
+        "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
+
+    Globals.pointpossible = rubricScoreSelectedColor.value == 0
+        ? '2'
+        : rubricScoreSelectedColor.value == 2
+            ? '3'
+            : rubricScoreSelectedColor.value == 4
+                ? '4'
+                : '2';
+    Globals.googleExcelSheetId = "";
+    updateLocalDb();
+
+    _bloc.add(SaveSubjectListDetails());
+    // print(Globals.scoringRubric);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+                scaffoldKey: _scaffoldKey,
+                isScanMore: false,
+                pointPossible: rubricScoreSelectedColor.value == 0
+                    ? '2'
+                    : rubricScoreSelectedColor.value == 2
+                        ? '3'
+                        : rubricScoreSelectedColor.value == 4
+                            ? '4'
+                            : '2',
+              )),
+    );
+  }
+
+  void _beforenavigateOnAssessmentSection() {
+    updateLocalDb();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AssessmentSummary()),
+    );
   }
 }

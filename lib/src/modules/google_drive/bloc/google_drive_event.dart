@@ -9,12 +9,16 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? folderName;
   final bool? fetchHistory;
   final String? refreshtoken;
+  final bool? isFromOcrHome;
+  final bool? assessmentSection;
   //final File? filePath;
   GetDriveFolderIdEvent(
       {required this.token,
       required this.folderName, //required this.filePath
       this.fetchHistory,
-      this.refreshtoken});
+      this.refreshtoken,
+      required this.isFromOcrHome,
+      this.assessmentSection});
 
   @override
   List<Object> get props => [token!, folderName!];
@@ -83,6 +87,13 @@ class QuestionImgToAwsBucked extends GoogleDriveEvent {
     required this.imgExtension,
   });
 
+  @override
+  List<Object> get props => [];
+}
+
+class GetShareLink extends GoogleDriveEvent {
+  final String? fileId;
+  GetShareLink({required this.fileId});
   @override
   List<Object> get props => [];
 }
