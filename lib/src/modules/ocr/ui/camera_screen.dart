@@ -12,6 +12,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -137,6 +138,35 @@ class _CameraScreenState extends State<CameraScreen>
             ],
           ),
           actions: [
+            BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                bloc: _driveBloc,
+                child: Container(),
+                listener: (context, state) {
+                  if (state is GoogleDriveLoading) {
+                    Utility.loadingDialog(context);
+                  }
+                  if (state is GoogleSuccess) {
+                    Navigator.of(context).pop();
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ResultsSummary(
+                                asssessmentName: Globals.assessmentName,
+                                shareLink: Globals.shareableLink ?? '',
+                                assessmentDetailPage: false,
+                                isScanMore: true,
+                                assessmentListLenght:
+                                    Globals.scanMoreStudentInfoLength,
+                              )),
+                    );
+                  }
+                  if (state is ErrorState) {
+                    Navigator.of(context).pop();
+                    Utility.noInternetSnackBar(
+                        "Technical issue try again after some time");
+                  }
+                }),
             Container(
                 padding: EdgeInsets.only(right: 5),
                 child: TextButton(
@@ -183,19 +213,6 @@ class _CameraScreenState extends State<CameraScreen>
 
                         _driveBloc.add(UpdateDocOnDrive(
                             studentData: Globals.studentInfo!));
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ResultsSummary(
-                                    asssessmentName: Globals.assessmentName,
-                                    shareLink: Globals.shareableLink!,
-                                    assessmentDetailPage: false,
-                                    isScanMore: true,
-                                    assessmentListLenght:
-                                        Globals.scanMoreStudentInfoLength,
-                                  )),
-                        );
                       } else {
                         Navigator.pushReplacement(
                           context,

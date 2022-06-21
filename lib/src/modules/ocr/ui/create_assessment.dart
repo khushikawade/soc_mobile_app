@@ -464,9 +464,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     bloc: _googleDriveBloc,
                     child: Container(),
                     listener: (context, state) {
-                      if (state is GoogleDriveLoading) {
-                        Utility.loadingDialog(context);
-                      }
+                      // if (state is GoogleDriveLoading) {
+                      //   Utility.loadingDialog(context);
+                      // }
                       if (state is ExcelSheetCreated) {
                         Navigator.of(context).pop();
                         _navigateToSubjectSection();
@@ -476,6 +476,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         Utility.noInternetSnackBar(
                             "Technical issue try again after some time");
                       }
+                      Utility.loadingDialog(context);
                     }),
                 textwidget(
                     text: 'Next',

@@ -35,7 +35,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   ) async* {
     if (event is GetDriveFolderIdEvent) {
       try {
-        Globals.googleDriveFolderId = '';
         var folderObject;
         // Globals.authorizationToken = event.token;
         print(event.token);
@@ -117,7 +116,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             await UserGoogleProfile.getUserProfile();
         Globals.assessmentName = event.name;
 
-        bool result = await createSheetOnDrive(
+        String fileId = await createSheetOnDrive(
           name: event.name!,
           folderId: Globals.googleDriveFolderId,
           accessToken: _userprofilelocalData[0].authorizationToken,
@@ -125,13 +124,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
           //  image: file
         );
-        if (!result) {
+        if (fileId.isEmpty) {
           print(
               "Failed to create. Trying to create the excel sheet again : ${event.name!}");
           CreateExcelSheetToDrive(name: event.name);
         } else {
           print("Excel sheet created successfully : ${event.name!}");
-          yield ExcelSheetCreated(obj: result);
+          yield ExcelSheetCreated(obj: fileId);
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
@@ -439,7 +438,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       List<UserInformation> _userprofilelocalData =
           await UserGoogleProfile.getUserProfile();
 
-      String link = await  _getShareableLink(
+      String link = await _getShareableLink(
           fileId: event.fileId!,
           refreshToken: _userprofilelocalData[0].refreshToken,
           token: _userprofilelocalData[0].authorizationToken!);
@@ -511,6 +510,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //   ['body']
             ['files'];
         // print(data);
+        print("folder id recived ----->");
         return data[0];
         // for (int i = 0; i < data.length; i++) {
         //   if (data[i]['name'] == folderName &&
@@ -531,7 +531,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future createSheetOnDrive(
+  Future<String> createSheetOnDrive(
       {String? name,
       //  File? image,
       String? folderId,
@@ -570,13 +570,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       // if (!link) {
       //   await _getShareableLink(accessToken, fileId, refreshToken);
       // }
-      return true;
+      return fileId.isNotEmpty ? fileId : "";
     } else {
       //To regernerate fresh access token
       await _toRefreshAuthenticationToken(refreshToken!);
       CreateExcelSheetToDrive(name: name);
     }
-    return false;
+    return "";
   }
 
   Future uploadSheetOnDrive(
@@ -593,8 +593,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     };
 
     final ResponseModel response = await _dbServices.patchapi(
-      //'${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
-      "https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media",
+      '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
+      //  "https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media",
       headers: headers,
       body: file.readAsBytesSync(),
     );
@@ -620,7 +620,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
       final ResponseModel response = await _dbServices.getapiNew(
-          "https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents",
+          "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents",
           headers: headers,
           isGoogleAPI: true);
 
@@ -628,7 +628,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print("assessment list is received ");
         print(response.data);
         List<HistoryAssessment> _list =
-            response.data['items'] //response.data['body']['items']
+            response.data['body']['items'] //response.data['body']['items']
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
         return _list;
@@ -672,6 +672,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     if (response.statusCode == 200) {
       print("File permission has been updated");
+
       return true;
     }
     if (response.statusCode == 401) {
@@ -696,11 +697,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         isGoogleAPI: true);
 
     if (response.statusCode == 200) {
-      print(" get file link   ----------->${ response.data['body']['webViewLink']}");
+      print(
+          " get file link   ----------->${response.data['body']['webViewLink']}");
       // var data = response.data;
       return response.data['body']['webViewLink'];
-
-    
     }
     if (response.statusCode == 401) {
       await _toRefreshAuthenticationToken(refreshToken!);
@@ -717,13 +717,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'Content-Type': 'application/json; charset=UTF-8'
     };
     final ResponseModel response = await _dbServices.getapiNew(
-        'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
-        //  '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        //   'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
         headers: headers,
         isGoogleAPI: true);
 
     if (response.statusCode == 200) {
-      return response.data;
+      return response.data['body'];
       // print('File URL Received :${data['webViewLink']}');
       // String downloadLink = data['exportLinks'] != null
       //     ? data['exportLinks'][

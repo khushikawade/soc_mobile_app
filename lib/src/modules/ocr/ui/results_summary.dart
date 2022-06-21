@@ -72,7 +72,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       iconsName = ["Share", "Drive", "Dashboard"];
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
     } else {
-      _driveBloc.add(GetShareLink(fileId: widget.fileId));
+      if (widget.isScanMore != true) {
+        _driveBloc.add(GetShareLink(fileId: widget.fileId));
+      }
+
       iconsList = Globals.ocrResultIcons;
       iconsName = Globals.ocrResultIconsName;
       assessmentCount.value = Globals.studentInfo!.length;
@@ -145,11 +148,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: Icon(Icons.arrow_back)),
                         Utility.textWidget(
                             text: 'Results Summary',
                             context: context,
@@ -485,12 +483,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       : Expanded(
                           child: IconButton(
                             padding: EdgeInsets.all(0),
-                            icon: index == 0 && !widget.assessmentDetailPage!
+                            icon: index == 0 &&
+                                    !widget.assessmentDetailPage! &&
+                                    widget.isScanMore == null
                                 ? BlocBuilder(
                                     bloc: _driveBloc,
                                     builder: (context, state) {
                                       if (state is ShareLinkRecived) {
                                         widget.shareLink = state.shareLink;
+
                                         return Icon(
                                           IconData(iconsList[index],
                                               fontFamily: Overrides.kFontFam,

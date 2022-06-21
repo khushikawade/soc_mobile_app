@@ -165,6 +165,7 @@ class _StaffPageState extends State<StaffPage> {
         .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
 
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
+    Globals.googleDriveFolderId = '';
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         isFromOcrHome: false,
         //  filePath: file,
