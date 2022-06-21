@@ -437,7 +437,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   Globals.assessmentName =
                       "${assessmentController.text}_${classController.text}";
                   //Create excel sheet if not created already for current assessment
-                  Globals.googleExcelSheetId = '';
+
                   if (Globals.googleExcelSheetId!.isEmpty) {
                     _googleDriveBloc.add(CreateExcelSheetToDrive(
                         name:
@@ -476,7 +476,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         Utility.noInternetSnackBar(
                             "Technical issue try again after some time");
                       }
-                     
                     }),
                 textwidget(
                     text: 'Next',
