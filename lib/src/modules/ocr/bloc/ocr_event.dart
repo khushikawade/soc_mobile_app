@@ -157,3 +157,18 @@ class GetDashBoardStatus extends OcrEvent {
   @override
   String toString() => 'GlobalSearchEvent { keyword: $fileId}';
 }
+
+class FetchRecentSearch extends OcrEvent {
+  final String? type;
+  final String? className;
+  final String? subjectName;
+  // final String? type;
+
+  FetchRecentSearch(
+      {required this.type, required this.className, required this.subjectName});
+
+  @override
+  List<Object> get props => [];
+
+  //String toString() => 'GlobalSearchEvent { keyword: $base64}';
+}

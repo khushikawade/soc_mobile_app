@@ -58,6 +58,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         print(e);
       }
     }
+    if (event is FetchRecentSearch) {
+      try {
+        List<SubjectDetailList> recentDetails = await fetchRecentList(
+            type: event.type,
+            className: event.className,
+            subjectName: event.subjectName);
+        yield RecentListSuccess(obj: recentDetails);
+      } catch (e) {}
+    }
+
     if (event is FetchStudentDetails) {
       try {
         //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
@@ -905,6 +915,22 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     } catch (e) {
       throw ('something_went_wrong');
+    }
+  }
+
+  Future fetchRecentList({
+    required String? type,
+    required String? className,
+    required String? subjectName,
+  }) async {
+    try {
+      LocalDatabase<SubjectDetailList> _localDb =
+          LocalDatabase("$className$subjectName${type}RecentList");
+
+      List<SubjectDetailList>? _localData = await _localDb.getData();
+      return _localData;
+    } catch (e) {
+      throw (e);
     }
   }
 }

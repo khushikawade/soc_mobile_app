@@ -3,12 +3,10 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -17,18 +15,17 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-
 import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -183,8 +180,27 @@ class _OpticalCharacterRecognitionPageState
 
                       // Navigator.push(
                       //   context,
-                      //   MaterialPageRoute(builder: (context) => CreateAssessment()),
+                      //   MaterialPageRoute(
+                      //       builder: (context) => CameraScreen(
+                      //             scaffoldKey: _scaffoldKey,
+                      //             isScanMore: false,
+                      //             pointPossible: rubricScoreSelectedColor
+                      //                         .value ==
+                      //                     0
+                      //                 ? '2'
+                      //                 : rubricScoreSelectedColor.value == 2
+                      //                     ? '3'
+                      //                     : rubricScoreSelectedColor.value == 4
+                      //                         ? '4'
+                      //                         : '2',
+                      //           )),
                       // );
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CreateAssessment()),
+                      );
                       //  getGallaryImage(); // COMMENT
                     }
                   },
@@ -208,7 +224,7 @@ class _OpticalCharacterRecognitionPageState
         BlocListener<GoogleDriveBloc, GoogleDriveState>(
             bloc: _googleDriveBloc,
             child: Container(),
-            listener: (context, state) async{
+            listener: (context, state) async {
               if (state is GoogleDriveLoading) {
                 Utility.loadingDialog(context);
               }
@@ -223,8 +239,7 @@ class _OpticalCharacterRecognitionPageState
               }
               if (state is ErrorState) {
                 Navigator.of(context).pop();
-                Utility.noInternetSnackBar(
-                    state.errorMsg!);
+                Utility.noInternetSnackBar(state.errorMsg!);
                 await _launchURL('Google Authentication');
               }
             }),
@@ -591,7 +606,7 @@ class _OpticalCharacterRecognitionPageState
       //     await UserGoogleProfile.getUserProfile();
       // verifyUserAndGetDriveFolder(_userprofilelocalData);
       // Push to the grading system
-    //  Navigator.pop(context);
+      //  Navigator.pop(context);
     }
   }
 }
