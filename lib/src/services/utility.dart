@@ -431,7 +431,8 @@ class Utility {
 
   static Future<bool> checkUserConnection() async {
     try {
-      final result = await InternetAddress.lookup('google.com');
+      final result = await InternetAddress.lookup(
+          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         return true;
       } else {

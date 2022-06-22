@@ -460,6 +460,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       });
 
                       _googleDriveBloc.add(UpdateDocOnDrive(
+                          isLoading: true,
                           studentData:
                               //list2
                               Globals.studentInfo!));

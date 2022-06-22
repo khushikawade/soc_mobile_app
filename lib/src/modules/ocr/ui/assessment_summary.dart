@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
@@ -27,6 +28,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+  OcrBloc _ocrBloc = OcrBloc();
+
   @override
   void initState() {
     _driveBloc.add(GetHistoryAssessmentFromDrive());
@@ -92,7 +95,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         );
                       }
                       return Container();
-                    })
+                    }),
               ],
             ),
           ),
@@ -119,69 +122,100 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   }
 
   Widget _buildList(List<HistoryAssessment> list, int index) {
-    return InkWell(
-      onTap: () {
-        print(list[index].fileid);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ResultsSummary(
-                    asssessmentName: list[index].title!,
-                    shareLink: list[index].webContentLink,
-                    fileId: list[index].fileid,
-                    assessmentDetailPage: true,
-                  )),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-            // border: Border.all(
-            //   // color: Theme.of(context).colorScheme.background,
-            //   // width: 0.65,
-            // ),
-            borderRadius: BorderRadius.circular(0.0),
-            color: (index % 2 == 0)
-                ? Theme.of(context).colorScheme.background == Color(0xff000000)
-                    ? Color(0xff162429)
-                    : Color(
-                        0xffF7F8F9) //Theme.of(context).colorScheme.background
-                : Theme.of(context).colorScheme.background == Color(0xff000000)
-                    ? Color(0xff111C20)
-                    : Color(0xffE9ECEE)),
-        child: ListTile(
-            visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-            subtitle: Utility.textWidget(
-                context: context,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .subtitle2!
-                    .copyWith(color: Colors.grey.shade500),
-                text: list[index].modifiedDate != null
-                    ? Utility.convertTimestampToDateFormat(
-                        DateTime.parse(list[index].modifiedDate!), "MM/dd/yy")
-                    : ""),
-            title: Utility.textWidget(
-                text: list[index].title!.split('.')[0],
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2),
-            // subtitle:
-            trailing: InkWell(
-              onTap: () {
-                list[index].webContentLink != null &&
-                        list[index].webContentLink != ''
-                    ? Share.share(list[index].webContentLink!)
-                    : print("no web link $index");
-              },
-              child: Icon(
-                IconData(Globals.ocrResultIcons[0],
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: Color(0xff000000) != Theme.of(context).backgroundColor
-                    ? Color(0xff111C20)
-                    : Color(0xffF7F8F9),
-              ),
-            )),
-      ),
+    return Column(
+      children: [
+        // BlocListener(
+        //     bloc: _ocrBloc,
+        //     listener: (context, state) async {
+        //       if (state is OcrLoading) {
+        //         Utility.loadingDialog(context);
+        //       }
+        //       if (state is AssessmentDashboardStatus) {
+        //         Navigator.of(context).pop();
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //               builder: (context) => ResultsSummary(
+        //                     asssessmentName: list[index].title!,
+        //                     shareLink: list[index].webContentLink,
+        //                     fileId: list[index].fileid,
+        //                     assessmentDetailPage: true,
+        //                   )),
+        //         );
+        //       }
+        //     },
+        //     child: Container()),
+        InkWell(
+          onTap: () {
+            print(list[index].fileid);
+            //   _ocrBloc.add(GetDashBoardStatus(fileId: list[index].fileid!));
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ResultsSummary(
+                        asssessmentName: list[index].title!,
+                        shareLink: list[index].webContentLink,
+                        fileId: list[index].fileid,
+                        assessmentDetailPage: true,
+                      )),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+                // border: Border.all(
+                //   // color: Theme.of(context).colorScheme.background,
+                //   // width: 0.65,
+                // ),
+                borderRadius: BorderRadius.circular(0.0),
+                color: (index % 2 == 0)
+                    ? Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Color(0xff162429)
+                        : Color(
+                            0xffF7F8F9) //Theme.of(context).colorScheme.background
+                    : Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Color(0xff111C20)
+                        : Color(0xffE9ECEE)),
+            child: ListTile(
+                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+                subtitle: Utility.textWidget(
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(color: Colors.grey.shade500),
+                    text: list[index].modifiedDate != null
+                        ? Utility.convertTimestampToDateFormat(
+                            DateTime.parse(list[index].modifiedDate!),
+                            "MM/dd/yy")
+                        : ""),
+                title: Utility.textWidget(
+                    text: list[index].title!.split('.')[0],
+                    context: context,
+                    textTheme: Theme.of(context).textTheme.headline2),
+                // subtitle:
+                trailing: InkWell(
+                  onTap: () {
+                    list[index].webContentLink != null &&
+                            list[index].webContentLink != ''
+                        ? Share.share(list[index].webContentLink!)
+                        : print("no web link $index");
+                  },
+                  child: Icon(
+                    IconData(Globals.ocrResultIcons[0],
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9),
+                  ),
+                )),
+          ),
+        ),
+      ],
     );
   }
 

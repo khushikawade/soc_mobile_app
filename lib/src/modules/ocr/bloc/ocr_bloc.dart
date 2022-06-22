@@ -289,19 +289,22 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             standardId = event.standardId;
             subjectId = event.subjectId;
           }
-
-          String dashboardId = await saveAssessmentToDashboard(
+          if (event.isHistoryAssessmentSection == true) {
+            String dashboardId = await saveAssessmentToDashboard(
+              fileId: event.fileId,
               assessmentName: event.assessmentName,
               rubicScore: await rubricPickList(event.rubricScore),
               subjectId: subjectId,
               schoolId: event.schoolId,
-              standardId: standardId);
+              standardId: standardId,
+            );
 
-          Globals.lastDeshboardId = dashboardId;
+            Globals.lastDeshboardId = dashboardId;
+          }
 
-          if (dashboardId != '') {
+          if (Globals.lastDeshboardId.isNotEmpty) {
             await _sendEmailToAdmin(
-              assessmentId: dashboardId,
+              assessmentId: Globals.lastDeshboardId,
               name: _profileData[0].userName!.replaceAll("%", " "),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
@@ -310,11 +313,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             );
 
             bool result = await saveResultToDashboard(
-                assessmentId: dashboardId, studentDetails: event.resultList);
+                assessmentId: Globals.lastDeshboardId,
+                studentDetails: event.resultList);
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: dashboardId, studentDetails: event.resultList);
+                  assessmentId: Globals.lastDeshboardId,
+                  studentDetails: event.resultList);
             } else {
               //print("result Record is saved on DB");
 
@@ -339,6 +344,30 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             ? Utility.noInternetSnackBar("No Internet Connection")
             : print(e);
         throw (e);
+      }
+    }
+    if (event is SaveAndGetAssessmentID) {
+      yield OcrLoading();
+      String dashboardId = await saveAssessmentToDashboard(
+          fileId: event.fileId,
+          assessmentName: event.assessmentName,
+          rubicScore: await rubricPickList(event.rubricScore),
+          subjectId: event.subjectId,
+          schoolId: event.schoolId,
+          standardId: event.standardId);
+
+      if (dashboardId.isNotEmpty) {
+        Globals.lastDeshboardId = dashboardId;
+        yield AssessmentIdSuccess(obj: dashboardId);
+      }
+    }
+    if (event is GetDashBoardStatus) {
+      try {
+        yield OcrLoading2();
+        bool status = await _getTheDashBoardStatus(fileId: event.fileId);
+        yield AssessmentDashboardStatus(obj: status);
+      } catch (e) {
+        yield AssessmentDashboardStatus(obj: false);
       }
     }
   }
@@ -657,6 +686,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     required String? subjectId,
     required String? schoolId,
     required String? standardId,
+    required String? fileId,
   }) async {
     String currentDate = Utility.getCurrentDate(DateTime.now());
 
@@ -672,7 +702,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       "School__c": schoolId,
       "School_year__c": currentDate.split("-")[0],
       "Standard__c": standardId != '' ? standardId : null,
-      "Subject__c": subjectId != '' ? subjectId : null
+      "Subject__c": subjectId != '' ? subjectId : null,
+      "Google_File_Id": fileId ?? ''
     };
     final ResponseModel response = await _dbServices.postapi(
       "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
@@ -835,6 +866,45 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     } catch (e) {
       throw (e);
+    }
+  }
+
+  Future<bool> _getTheDashBoardStatus({required String fileId}) async {
+    try {
+      final ResponseModel response = await _dbServices.getapiNew(
+          'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
+          isGoogleAPI: true);
+      if (response.statusCode == 200) {
+        if (response.data['body'].length > 0) {
+          String assessmentId = response.data['body'][0]['Assessment_Id'];
+
+          if (assessmentId.isNotEmpty) {
+            bool result =
+                await _getAssessmentRecord(assessmentId: assessmentId);
+            return result;
+          }
+        }
+      }
+      return false;
+    } catch (e) {
+      throw ('something_went_wrong');
+    }
+  }
+
+  _getAssessmentRecord({required String assessmentId}) async {
+    try {
+      final ResponseModel response = await _dbServices.getapiNew(
+          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Result__c/\"Assessment_Id\"='$assessmentId'",
+          isGoogleAPI: true);
+      if (response.statusCode == 200) {
+        var data = response.data["body"];
+        if (data.length > 0) {
+          return true;
+        }
+        return false;
+      }
+    } catch (e) {
+      throw ('something_went_wrong');
     }
   }
 }
