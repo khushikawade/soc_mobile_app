@@ -10,12 +10,14 @@ class SearchBar extends StatelessWidget {
   final onSaved;
   final onTap;
   final bool? isSearchPage;
+  final bool? isSubLearningPage;
   const SearchBar(
       {Key? key,
       required this.controller,
       required this.onSaved,
       this.onTap,
-      this.isSearchPage})
+      this.isSearchPage,
+      this.isSubLearningPage})
       : super(key: key);
 
   @override
@@ -27,7 +29,11 @@ class SearchBar extends StatelessWidget {
         //  padding: EdgeInsets.symmetric(
         //      vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
         child: TranslationWidget(
-            message: 'Search',
+            message: isSearchPage == true
+                ? 'Search Learning Standard and NY Next Generation Learning Standard '
+                : isSubLearningPage == true
+                    ? 'Search NY Next Generation Learning Standard'
+                    : 'Search',
             fromLanguage: "en",
             toLanguage: Globals.selectedLanguage,
             builder: (translatedMessage) {
@@ -57,27 +63,27 @@ class SearchBar extends StatelessWidget {
                           ? Color.fromRGBO(0, 0, 0, 0.1)
                           : Color.fromRGBO(255, 255, 255, 0.16),
                   prefixIcon:
-                  //  isSearchPage == true
-                  //     ? IconButton(
-                  //         onPressed: () {
-                  //           Navigator.pop(context);
-                  //         },
-                  //         icon: Icon(
-                  //           const IconData(0xe83b,
-                  //               fontFamily: Overrides.kFontFam,
-                  //               fontPackage: Overrides.kFontPkg),
-                  //           color: Color(0xffAAAAAA),
-                  //           size: Globals.deviceType == "phone" ? 18 : 16,
-                  //         ),
-                  //       )
-                  //     :
-                       Icon(
-                          const IconData(0xe805,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          color: Color(0xffAAAAAA),
-                          size: Globals.deviceType == "phone" ? 18 : 16,
-                        ),
+                      //  isSearchPage == true
+                      //     ? IconButton(
+                      //         onPressed: () {
+                      //           Navigator.pop(context);
+                      //         },
+                      //         icon: Icon(
+                      //           const IconData(0xe83b,
+                      //               fontFamily: Overrides.kFontFam,
+                      //               fontPackage: Overrides.kFontPkg),
+                      //           color: Color(0xffAAAAAA),
+                      //           size: Globals.deviceType == "phone" ? 18 : 16,
+                      //         ),
+                      //       )
+                      //     :
+                      Icon(
+                    const IconData(0xe805,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: Color(0xffAAAAAA),
+                    size: Globals.deviceType == "phone" ? 18 : 16,
+                  ),
                   // suffixIcon: controller.text.isEmpty
                   //     ? null
                   //     : InkWell(

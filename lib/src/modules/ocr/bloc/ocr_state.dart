@@ -119,6 +119,22 @@ class NycSubDataSuccess extends OcrState {
   List<Object> get props => [];
 }
 
+
+class RecentListSuccess extends OcrState {
+  final List<SubjectDetailList>? obj;
+  RecentListSuccess({
+    this.obj,
+  });
+  RecentListSuccess copyWith({
+    obj,
+  }) {
+    return RecentListSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
 class FetchTextFromImageFailure extends OcrState {
   final String? studentId;
   final String? studentName;

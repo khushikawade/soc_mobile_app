@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 // ignore: must_be_immutable
 class NoDataFoundErrorWidget extends StatelessWidget {
   bool? isCalendarPageOrientationLandscape;
+  bool? isOcrSearch;
   bool? isSearchpage;
   bool isResultNotFoundMsg;
   bool? isNews;
@@ -23,7 +24,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
       this.isCalendarPageOrientationLandscape,
       required this.isEvents,
       this.isSearchpage,
-      this.marginTop})
+      this.marginTop,this.isOcrSearch})
       : super(key: key);
 
   Widget build(BuildContext context) {
@@ -69,7 +70,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
                               ? "No Event Found"
                               : isResultNotFoundMsg
                                   ? "No result found"
-                                  : "No data found",
+                                  : isOcrSearch == true ? "No recent search" :"No data found",
                       toLanguage: Globals.selectedLanguage,
                       fromLanguage: "en",
                       builder: (translatedMessage) => Text(

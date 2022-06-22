@@ -39,7 +39,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   OcrBloc _bloc = OcrBloc();
   OcrBloc _bloc2 = OcrBloc();
   bool failure = false;
-  bool rubricNotDetected = false;
+  // bool rubricNotDetected = false;
 
   //int? indexColor;
   bool isSelected = true;
@@ -49,6 +49,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> rubricNotDetected = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isNameUpdated = ValueNotifier<bool>(false);
   var nameController = TextEditingController();
   var idController = TextEditingController();
@@ -61,7 +62,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   // final ValueNotifier<String> stu = ValueNotifier<String>('');
 
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
-  String? pointScored;
+  final ValueNotifier<String> pointScored = ValueNotifier<String>('2');
   @override
   void initState() {
     super.initState();
@@ -98,10 +99,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       // Utility.showSnackBar(_scaffoldKey,
                       //     'Please select the earned point', context, null);
                       // } else {
+                      print(pointScored.value);
+
                       updateDetails();
-                      if (nameController.text.isNotEmpty &&
-                          nameController.text.length >= 3 &&
-                          idController.text.isNotEmpty) {
+
+                      // if (nameController.text.isNotEmpty &&
+                      //     nameController.text.length >= 3 &&
+                      //     idController.text.isNotEmpty)
+                      if (idController.text.isNotEmpty) {
                         _bloc.add(SaveStudentDetails(
                             studentName: nameController.text,
                             studentId: idController.text));
@@ -114,6 +119,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             studentId: idController.text));
                         // }
                         // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                        print(Globals.studentInfo!);
                         _navigatetoCameraSection();
                       }
                     }
@@ -151,11 +157,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             : widget.pointPossible == '4'
                                 ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
                                 : Globals.pointsEarnedList.length = 2;
-                    nameController.text = state.studentName!;
+                    nameController.text =
+                        isStudentNameFilled.value = state.studentName!;
                     onChange == false
                         ? idController.text = state.studentId!
                         : null;
-                    pointScored = state.grade;
+                    pointScored.value = state.grade!;
                     //   reconizeText(pathOfImage);
                     // });
 
@@ -216,10 +223,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             ? studentId
                             : null;
                     onChange == false
-                        ? nameController.text = state.studentName ?? ''
+                        ? nameController.text =
+                            isStudentNameFilled.value = state.studentName ?? ''
                         : null;
-                    pointScored = state.grade;
-
+                    pointScored.value = state.grade!;
                     // updateDetails();
 
                   }
@@ -239,7 +246,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     onChange == false
                         ? idController.text = state.studentId!
                         : null;
-                    pointScored = state.grade;
+                    pointScored.value = state.grade!;
                     // idController.text = state.studentId!;
                     // nameController.text = state.studentName!;
                     // Globals.gradeList.add(state.grade!);
@@ -254,12 +261,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     onChange == false
                         ? nameController.text = state.studentName ?? ''
                         : null;
-                    pointScored = state.grade;
+                    pointScored.value = state.grade!;
                     // idController.text = state.studentId!;
                     // nameController.text =
                     //     onChange == true ? state.studentName! : studentName;
                     // Globals.gradeList.add(state.grade!);
-                    rubricNotDetected = true;
+                    rubricNotDetected.value = true;
                     return failureScreen(
                         id: state.studentId!, grade: state.grade!);
                   }
@@ -654,72 +661,82 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   Widget pointsButton(index, int grade) {
     isSelected ? indexColor.value = grade : null;
-
     return ValueListenableBuilder(
-      valueListenable: indexColor,
-      builder: (BuildContext context, dynamic value, Widget? child) {
-        return InkWell(
-            onTap: () {
-              pointScored = index.toString();
+        valueListenable: rubricNotDetected,
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return ValueListenableBuilder(
+            valueListenable: indexColor,
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return InkWell(
+                  onTap: () {
+                    pointScored.value = index.toString();
 
-              // updateDetails(isUpdateData: true);
+                    // updateDetails(isUpdateData: true);
 
-              isSelected = false;
-              rubricNotDetected = false;
-              indexColor.value = index;
+                    isSelected = false;
+                    rubricNotDetected.value = false;
+                    indexColor.value = index;
 
-              // nameController.text = studentName;
-              // idController.text = studentId;
-              //.text = studentId;
-            },
-            child: AnimatedContainer(
-              duration: Duration(microseconds: 100),
-              padding: EdgeInsets.only(
-                bottom: 5,
-              ),
-              decoration: BoxDecoration(
-                color: index == indexColor.value
-                    ? rubricNotDetected == true && isSelected == true
-                        ? Colors.red
-                        : AppTheme.kSelectedColor
-                    : Colors.grey,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
-                ),
-              ),
-              child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  decoration: BoxDecoration(
-                    color:
-                        Color(0xff000000) != Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                    border: Border.all(
+                    // nameController.text = studentName;
+                    // idController.text = studentId;
+                    //.text = studentId;
+                  },
+                  child: AnimatedContainer(
+                    duration: Duration(microseconds: 100),
+                    padding: EdgeInsets.only(
+                      bottom: 5,
+                    ),
+                    decoration: BoxDecoration(
                       color: index == indexColor.value
-                          ? rubricNotDetected == true && isSelected == true
+                          ? rubricNotDetected.value == true &&
+                                  isSelected == true
                               ? Colors.red
                               : AppTheme.kSelectedColor
                           : Colors.grey,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8),
+                      ),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: TranslationWidget(
-                    message: Globals.pointsEarnedList[index].toString(),
-                    toLanguage: Globals.selectedLanguage,
-                    fromLanguage: "en",
-                    builder: (translatedMessage) => Text(
-                      translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                          color: indexColor.value == index
-                              ? rubricNotDetected == true && isSelected == true
-                                  ? Colors.red
-                                  : AppTheme.kSelectedColor
-                              : Colors.grey),
-                    ),
-                  )),
-            ));
-      },
-    );
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                        decoration: BoxDecoration(
+                          color: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                          border: Border.all(
+                            color: index == indexColor.value
+                                ? rubricNotDetected.value == true &&
+                                        isSelected == true
+                                    ? Colors.red
+                                    : AppTheme.kSelectedColor
+                                : Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: TranslationWidget(
+                          message: Globals.pointsEarnedList[index].toString(),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    color: indexColor.value == index
+                                        ? rubricNotDetected.value == true &&
+                                                isSelected == true
+                                            ? Colors.red
+                                            : AppTheme.kSelectedColor
+                                        : Colors.grey),
+                          ),
+                        )),
+                  ));
+            },
+          );
+        });
   }
 
   Widget textFormField({
@@ -828,7 +845,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
     if (isUpdateData == true && Globals.studentInfo != null) {
       Globals.studentInfo!.last.studentName = nameController.text;
       Globals.studentInfo!.last.studentId = idController.text;
-      Globals.studentInfo!.last.studentGrade = pointScored;
+      Globals.studentInfo!.last.studentGrade = pointScored.value;
       Globals.studentInfo!.last.pointpossible = Globals.pointpossible;
 
       // Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
@@ -843,9 +860,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
       if (Globals.studentInfo == null) {
         final StudentAssessmentInfo studentAssessmentInfo =
             StudentAssessmentInfo();
-        studentAssessmentInfo.studentName = nameController.text;
+        studentAssessmentInfo.studentName =
+            nameController.text.isNotEmpty ? nameController.text : "unknown";
         studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored;
+        studentAssessmentInfo.studentGrade = pointScored.value;
         studentAssessmentInfo.pointpossible = Globals.pointpossible;
         // studentAssessmentInfo.assessmentName = Globals.assessmentName;
         Globals.studentInfo!.add(studentAssessmentInfo);
@@ -856,9 +874,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
         }
         if (!id.contains(idController.text)) {
           StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
-          studentAssessmentInfo.studentName = nameController.text;
+          studentAssessmentInfo.studentName =
+              nameController.text.isNotEmpty ? nameController.text : "unknown";
           studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade = pointScored;
+          studentAssessmentInfo.studentGrade = pointScored.value;
           studentAssessmentInfo.pointpossible = Globals.pointpossible;
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           Globals.studentInfo!.add(studentAssessmentInfo);
