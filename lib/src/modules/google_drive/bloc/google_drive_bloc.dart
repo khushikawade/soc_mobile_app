@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:mime_type/mime_type.dart';
@@ -77,16 +78,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           print('Authentication required');
-          await _toRefreshAuthenticationToken(event.refreshtoken!);
-          List<UserInformation> _userprofilelocalData =
-              await UserGoogleProfile.getUserProfile();
+          var result = await _toRefreshAuthenticationToken(event.refreshtoken!);
+          print(result);
+          if (result == true) {
+            List<UserInformation> _userprofilelocalData =
+                await UserGoogleProfile.getUserProfile();
 
-          GetDriveFolderIdEvent(
-              isFromOcrHome: true,
-              //  filePath: file,
-              token: _userprofilelocalData[0].authorizationToken,
-              folderName: event.folderName,
-              refreshtoken: _userprofilelocalData[0].refreshToken);
+            GetDriveFolderIdEvent(
+                isFromOcrHome: true,
+                //  filePath: file,
+                token: _userprofilelocalData[0].authorizationToken,
+                folderName: event.folderName,
+                refreshtoken: _userprofilelocalData[0].refreshToken);
+            yield GoogleSuccess(assessmentSection: event.assessmentSection);
+          } else {
+            // Utility.noInternetSnackBar('Reauthentication is required');
+            yield ErrorState(errorMsg: 'Reauthentication is required');
+          }
         }
 
         if (Globals.googleDriveFolderId != "") {
@@ -282,8 +290,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.noInternetSnackBar("No Internet Connection")
-            : print(e);
-        throw (e);
+            : throw (e);
       }
     }
     if (event is GetAssessmentDetail) {
@@ -364,7 +371,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.noInternetSnackBar("No Internet Connection")
-            : print(e);
+            : errorThrow();
+        //print(e);
         throw (e);
       }
     }
@@ -454,6 +462,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         yield ShareLinkRecived(shareLink: link);
       }
     }
+  }
+
+  void errorThrow() {
+    BuildContext? context = Globals.navigatorKey.currentContext;
+    Utility.noInternetSnackBar('Error caught while parsing the file.');
+    Navigator.pop(context!);
   }
 
   Future<List<HistoryAssessment>> listSort(List<HistoryAssessment> list) async {
@@ -643,9 +657,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print('Authentication required');
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
-        bool result = await _toRefreshAuthenticationToken(
+        var result = await _toRefreshAuthenticationToken(
             _userprofilelocalData[0].refreshToken!);
-        if (result) {
+        if (result == true) {
           GetHistoryAssessmentFromDrive();
         }
       }
@@ -769,13 +783,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         var bytes = await consolidateHttpClientResponseBytes(response);
         filePath = '$dir/$fileName';
         file = File(filePath);
-        await file.writeAsBytes(bytes);
+        await file.writeAsBytes(bytes, flush: true);
         return filePath;
       }
       print('Unable to download the file');
       return "";
     } catch (e) {
-      print("donload exception");
+      print("download exception");
       print(e);
       throw (e);
     }
@@ -789,26 +803,31 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           body: body,
           isGoogleApi: true);
       if (response.statusCode == 200) {
-        String newToken = response.data['body']["access_token"];
-        print("New access token received : $newToken");
-        List<UserInformation> _userprofilelocalData =
-            await UserGoogleProfile.getUserProfile();
+        var newToken = response.data['body']; //["access_token"]
+        //!=null?response.data['body']["access_token"]:response.data['body']["error"];
+        if (newToken["access_token"] != null) {
+          print("New access token received : ${newToken["access_token"]}");
+          List<UserInformation> _userprofilelocalData =
+              await UserGoogleProfile.getUserProfile();
 
-        UserInformation updatedObj = UserInformation(
-            userName: _userprofilelocalData[0].userName,
-            userEmail: _userprofilelocalData[0].userEmail,
-            profilePicture: _userprofilelocalData[0].profilePicture,
-            refreshToken: _userprofilelocalData[0].refreshToken,
-            authorizationToken: newToken);
-        print("now updating the token on local db");
-        // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
+          UserInformation updatedObj = UserInformation(
+              userName: _userprofilelocalData[0].userName,
+              userEmail: _userprofilelocalData[0].userEmail,
+              profilePicture: _userprofilelocalData[0].profilePicture,
+              refreshToken: _userprofilelocalData[0].refreshToken,
+              authorizationToken: newToken["access_token"]);
+          print("now updating the token on local db");
+          // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
 
-        await UserGoogleProfile.updateUserProfile(updatedObj);
+          await UserGoogleProfile.updateUserProfile(updatedObj);
 
-        //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
+          //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 
-        print("token is updated ");
-        return true;
+          print("token is updated ");
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
         //  throw ('something_went_wrong');

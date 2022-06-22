@@ -7,6 +7,8 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -21,8 +23,10 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../../services/local_database/local_db.dart';
+import '../../../widgets/google_auth_webview.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
 
@@ -204,7 +208,7 @@ class _OpticalCharacterRecognitionPageState
         BlocListener<GoogleDriveBloc, GoogleDriveState>(
             bloc: _googleDriveBloc,
             child: Container(),
-            listener: (context, state) {
+            listener: (context, state) async{
               if (state is GoogleDriveLoading) {
                 Utility.loadingDialog(context);
               }
@@ -220,7 +224,8 @@ class _OpticalCharacterRecognitionPageState
               if (state is ErrorState) {
                 Navigator.of(context).pop();
                 Utility.noInternetSnackBar(
-                    "Technical issue try again after some time");
+                    state.errorMsg!);
+                await _launchURL('Google Authentication');
               }
             }),
         GestureDetector(
@@ -516,7 +521,7 @@ class _OpticalCharacterRecognitionPageState
     updateLocalDb();
 
     _bloc.add(SaveSubjectListDetails());
-    // print(Globals.scoringRubric);
+    print(Globals.scoringRubric);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -532,6 +537,11 @@ class _OpticalCharacterRecognitionPageState
                             : '2',
               )),
     );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => CreateAssessment())
+    // );
   }
 
   void _beforenavigateOnAssessmentSection() {
@@ -540,5 +550,48 @@ class _OpticalCharacterRecognitionPageState
       context,
       MaterialPageRoute(builder: (context) => AssessmentSummary()),
     );
+  }
+
+  _launchURL(String? title) async {
+    var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
+        ? Color(0xff000000)
+        : Color(0xffFFFFFF);
+
+    var value = await pushNewScreen(
+      context,
+      screen: GoogleAuthWebview(
+        title: title!,
+        url: Globals.appSetting.authenticationURL ??
+            '' + //Overrides.secureLoginURL +
+                '?' +
+                Globals.appSetting.appLogoC +
+                '?' +
+                themeColor.toString().split('0xff')[1].split(')')[0],
+        isbuttomsheet: true,
+        language: Globals.selectedLanguage,
+        hideAppbar: false,
+        hideShare: true,
+        zoomEnabled: false,
+      ),
+      withNavBar: false,
+    );
+
+    if (value.toString().contains('authenticationfailure')) {
+      Navigator.pop(context, false);
+      Utility.showSnackBar(
+          _scaffoldKey,
+          'You are not authorized to access the feature. Please use the authorized account.',
+          context,
+          50.0);
+    } else if (value.toString().contains('success')) {
+      value = value.split('?')[1] ?? '';
+      //Save user profile
+      await Utility.saveUserProfile(value);
+      // List<UserInformation> _userprofilelocalData =
+      //     await UserGoogleProfile.getUserProfile();
+      // verifyUserAndGetDriveFolder(_userprofilelocalData);
+      // Push to the grading system
+    //  Navigator.pop(context);
+    }
   }
 }

@@ -89,8 +89,9 @@ class GoogleDriveAccess {
   }
 
   static Future excelToJson(String file) async {
-    var bytes = File(file).readAsBytesSync();
-    var excel = Excel.decodeBytes(bytes);
+    var bytes =  File(file).readAsBytesSync();
+    var excel =  Excel.decodeBytes(bytes);
+    print(excel);
     int i = 0;
     List<dynamic> keys = <dynamic>[];
     List<Map<String, dynamic>> json = <Map<String, dynamic>>[];

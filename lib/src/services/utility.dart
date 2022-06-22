@@ -13,6 +13,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
+import '../modules/google_drive/model/user_profile.dart';
+import '../modules/ocr/modal/user_info.dart';
+import 'local_database/local_db.dart';
+
 class Utility {
   static Size displaySize(BuildContext context) {
     return MediaQuery.of(context).size;
@@ -470,5 +474,23 @@ class Utility {
             ),
           );
         });
+  }
+  
+
+  static Future<void> saveUserProfile(String profileData) async {
+    UserGoogleProfile.clearUserProfile();
+    List<String> profile = profileData.split('+');
+    UserInformation _userInformation = UserInformation(
+        userName: profile[0].toString().split('=')[1],
+        userEmail: profile[1].toString().split('=')[1],
+        profilePicture: profile[2].toString().split('=')[1],
+        authorizationToken:
+            profile[3].toString().split('=')[1].replaceAll('#', ''),
+        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+
+    //Save user profile to locally
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    await _localDb.addData(_userInformation);
+    await _localDb.close();
   }
 }

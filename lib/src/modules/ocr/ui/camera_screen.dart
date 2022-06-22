@@ -255,18 +255,18 @@ class _CameraScreenState extends State<CameraScreen>
                   child: Stack(children: [
                     Center(child: controller!.buildPreview()),
                     Positioned(
-                      bottom: 0.0,
+                      bottom: 15.0,
                       child: Container(
                         color: Colors.transparent,
                         height: MediaQuery.of(context).orientation ==
                                 Orientation.portrait
-                            ? MediaQuery.of(context).size.height * 0.15
+                            ? MediaQuery.of(context).size.height * 0.2
                             : MediaQuery.of(context).size.height * 0.25,
                         width: MediaQuery.of(context).size.width,
                         child: Center(
                           child: Container(
-                              height: 60,
-                              width: 60,
+                              height: 90,
+                              width: 90,
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: Colors.transparent,
