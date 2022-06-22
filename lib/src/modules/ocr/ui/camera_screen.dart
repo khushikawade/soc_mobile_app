@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -65,6 +67,8 @@ class _CameraScreenState extends State<CameraScreen>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+
+  LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
 
   @override
   void initState() {
@@ -177,7 +181,7 @@ class _CameraScreenState extends State<CameraScreen>
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       )),
-                  onPressed: () {
+                  onPressed: () async {
                     ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
                     if (Globals.studentInfo!.length > 0) {
@@ -212,13 +216,17 @@ class _CameraScreenState extends State<CameraScreen>
                         });
 
                         _driveBloc.add(UpdateDocOnDrive(
-                          isLoading: true,
+                            isLoading: true,
                             studentData: Globals.studentInfo!));
                       } else {
+                        List<String> classSuggestions =
+                            await _localDb.getData();
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CreateAssessment()),
+                              builder: (context) => CreateAssessment(
+                                  classSuggestions: classSuggestions)),
                         );
                       }
                     } else {

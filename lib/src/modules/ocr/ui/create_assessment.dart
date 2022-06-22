@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -19,8 +20,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class CreateAssessment extends StatefulWidget {
-  const CreateAssessment({Key? key}) : super(key: key);
-
+  CreateAssessment({Key? key, required this.classSuggestions})
+      : super(key: key);
+  List<String> classSuggestions;
   @override
   State<CreateAssessment> createState() => _CreateAssessmentState();
 }
@@ -40,6 +42,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   File? imageFile;
   final ImagePicker _picker = ImagePicker();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+  LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
 
   @override
   void initState() {
@@ -166,6 +169,20 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           }
                         },
                       ),
+                      if (widget.classSuggestions.length > 0)
+                        SpacerWidget(_KVertcalSpace / 4),
+                      if (widget.classSuggestions.length > 0)
+                        Wrap(
+                          children: List<Widget>.generate(
+                            widget.classSuggestions.length,
+                            (int index) {
+                              return _suggestionClips(
+                                  index: index,
+                                  classSuggestions: widget.classSuggestions);
+                            },
+                          ).toList(),
+                        ),
+
                       SpacerWidget(_KVertcalSpace / 2),
                       highlightText(
                           text: 'Scan Question',
@@ -506,13 +523,46 @@ class _CreateAssessmentState extends State<CreateAssessment>
     }
   }
 
-  void _navigateToSubjectSection() {
+  void _navigateToSubjectSection() async {
+    for (int i = 0; i < widget.classSuggestions.length; i++) {
+      classController.text == widget.classSuggestions[i]
+          ? widget.classSuggestions.removeAt(i)
+          : print("nothing ---------->");
+    }
+
+    widget.classSuggestions.insert(0, classController.text);
+// ignore: unnecessary_statements
+    if (widget.classSuggestions.length > 9) {
+      widget.classSuggestions.removeAt(0);
+    }
+
+    await _localDb.clear();
+    widget.classSuggestions.forEach((String e) {
+      _localDb.addData(e);
+    });
+
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => SubjectSelection(
                 selectedClass: selectedGrade.value.toString(),
               )),
+    );
+  }
+
+  Widget _suggestionClips(
+      {required int index, required List<String> classSuggestions}) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 5.0),
+      child: FilterChip(
+        disabledColor: Colors.transparent,
+        label: Text(classSuggestions[index]),
+        onSelected: (bool value) {
+          value
+              ? classController.text = classSuggestions[index]
+              : print("nothing selected");
+        },
+      ),
     );
   }
 }

@@ -531,6 +531,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                                       return Center(
                                           child: CircularProgressIndicator(
+                                        strokeWidth: 2,
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primaryVariant,
@@ -834,7 +835,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             ? MediaQuery.of(context).size.width / 2
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
-                        message: "Data Saved",
+                        message: "Saved to Data Dashboard",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
@@ -848,7 +849,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 ),
                 content: TranslationWidget(
                     message:
-                        'Yay! Data has been successully saved to the dashboard',
+                        'Yay! Assessment data has been successfully added to your school’s Data Dashboard.',
+
+                    //     'Yay! Data has been successully saved to the dashboard',
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
