@@ -71,9 +71,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       iconsList = [0xe876, 0xe871, 0xe87a];
       iconsName = ["Share", "Drive", "Dashboard"];
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
+      _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
     } else {
       if (widget.isScanMore != true) {
         _driveBloc.add(GetShareLink(fileId: widget.fileId));
+      } else {
+        widget.shareLink = Globals.shareableLink;
       }
 
       iconsList = Globals.ocrResultIcons;
@@ -180,6 +183,19 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           bloc: _driveBloc,
                           builder:
                               (BuildContext contxt, GoogleDriveState state) {
+                            if (state is GoogleDriveLoading2) {
+                              return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.7,
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
+                                )),
+                              );
+                            }
+
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
                                 isAssessmentAlreadySaved = state.obj[0] !=
@@ -231,24 +247,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //     )),
                             //   );
                             // }
-                            return Container(
-                              height: MediaQuery.of(context).size.height * 0.7,
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryVariant,
-                              )),
-                            );
+                            return Container();
                           },
                           listener:
                               (BuildContext contxt, GoogleDriveState state) {
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
-                                if (state.obj.first.isSavedOnDashBoard ==
-                                    "YES") {
-                                  dashoardState.value = "Success";
-                                }
+                                // if (state.obj.first.isSavedOnDashBoard ==
+                                //     "YES") {
+                                //   dashoardState.value = "Success";
+                                // }
                                 sheetrubricScore =
                                     state.obj.first.scoringRubric;
                                 webContentLink = state.webContentLink;
@@ -302,9 +310,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               element.isSavedOnDashBoard = "YES";
                             });
 
-                            _driveBloc.add(UpdateDocOnDrive(
-                                fileId: widget.fileId,
-                                studentData: Globals.studentInfo!));
+                            // _driveBloc.add(UpdateDocOnDrive(
+                            //   isLoading: false,
+                            //     fileId: widget.fileId,
+                            //     studentData: Globals.studentInfo!)
+                            //     );
 
                             _showSaveDataPopUp();
 
@@ -317,6 +327,19 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         },
                         child: EmptyContainer()),
                   ),
+                  BlocListener(
+                      bloc: _ocrBloc,
+                      listener: (context, state) async {
+                        if (state is OcrLoading2) {
+                          dashoardState.value = 'Loading';
+                        }
+                        if (state is AssessmentDashboardStatus) {
+                          state.obj!
+                              ? dashoardState.value = 'Success'
+                              : dashoardState.value = '';
+                        }
+                      },
+                      child: Container()),
                 ],
               ),
             ),
@@ -595,6 +618,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       isHistoryAssessmentSection:
                                           widget.assessmentDetailPage!));
                                 } else {
+                                  widget.assessmentDetailPage!
+                                      ? Globals.lastDeshboardId = ''
+                                      : print(
+                                          "not a assessmentdatilpage-------->");
                                   _ocrBloc.add(SaveAssessmentToDashboard(
                                       assessmentSheetPublicURL:
                                           widget.shareLink,
@@ -612,7 +639,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       scaffoldKey: scaffoldKey,
                                       context: context,
                                       isHistoryAssessmentSection:
-                                          widget.assessmentDetailPage!));
+                                          widget.assessmentDetailPage!,
+                                      fileId: widget.fileId ?? ''));
                                 }
                               }
                               // else if (index == 3 &&

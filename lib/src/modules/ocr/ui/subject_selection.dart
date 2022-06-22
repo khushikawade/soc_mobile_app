@@ -773,6 +773,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               });
 
                               _googleDriveBloc.add(UpdateDocOnDrive(
+                                isLoading: true,
                                   studentData:
                                       //list2
                                       Globals.studentInfo!));
@@ -788,6 +789,49 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       Utility.loadingDialog(context);
                                     }
                                     if (state is GoogleSuccess) {
+                                      Globals.lastDeshboardId = '';
+                                      _ocrBloc.add(SaveAndGetAssessmentID(
+                                          assessmentName:
+                                              Globals.assessmentName!,
+                                          rubricScore: Globals.scoringRubric!,
+                                          subjectId: subjectId!,
+                                          schoolId:
+                                              Globals.appSetting.schoolNameC!,
+                                          standardId: standardId!,
+                                          scaffoldKey: _scaffoldKey,
+                                          context: context,
+                                          fileId: Globals.googleExcelSheetId!));
+                                      // Navigator.of(context).pop();
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) =>
+                                      //           ResultsSummary(
+                                      //             fileId: Globals
+                                      //                 .googleExcelSheetId,
+                                      //             subjectId: subjectId ?? '',
+                                      //             standardId: standardId ?? '',
+                                      //             asssessmentName:
+                                      //                 Globals.assessmentName,
+                                      //             shareLink: '',
+                                      //             assessmentDetailPage: false,
+                                      //           )),
+                                      // );
+                                    }
+                                    if (state is ErrorState) {
+                                      Navigator.of(context).pop();
+                                      Utility.noInternetSnackBar(
+                                          "Technical issue try again after some time");
+                                    }
+                                  }),
+                              BlocListener<OcrBloc, OcrState>(
+                                  bloc: _ocrBloc,
+                                  child: Container(),
+                                  listener: (context, state) {
+                                    if (state is OcrLoading) {
+                                      Utility.loadingDialog(context);
+                                    }
+                                    if (state is AssessmentIdSuccess) {
                                       Navigator.of(context).pop();
                                       Navigator.push(
                                         context,
@@ -804,11 +848,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                   assessmentDetailPage: false,
                                                 )),
                                       );
-                                    }
-                                    if (state is ErrorState) {
-                                      Navigator.of(context).pop();
-                                      Utility.noInternetSnackBar(
-                                          "Technical issue try again after some time");
                                     }
                                   }),
                               Utility.textWidget(

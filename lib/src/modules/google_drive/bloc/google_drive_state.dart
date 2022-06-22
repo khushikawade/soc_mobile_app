@@ -13,6 +13,10 @@ class GoogleDriveLoading extends GoogleDriveState {
   @override
   List<Object> get props => [];
 }
+class GoogleDriveLoading2 extends GoogleDriveState {
+  @override
+  List<Object> get props => [];
+}
 
 // ignore: must_be_immutable
 class GoogleDriveGetSuccess extends GoogleDriveState {

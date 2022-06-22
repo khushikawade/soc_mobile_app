@@ -10,6 +10,8 @@ class OcrInitial extends OcrState {}
 
 class OcrLoading extends OcrState {}
 
+class OcrLoading2 extends OcrState {}
+
 class SearchLoading extends OcrState {}
 
 class FetchTextFromImageSuccess extends OcrState {
@@ -139,7 +141,6 @@ class FetchTextFromImageFailure extends OcrState {
   List<Object> get props => [];
 }
 
-
 class AssessmentSavedSuccessfully extends OcrState {
   final obj;
   AssessmentSavedSuccessfully({this.obj});
@@ -160,4 +161,26 @@ class SuccessStudentDetails extends OcrState {
 
   @override
   List<Object> get props => [];
+}
+
+class AssessmentIdSuccess extends OcrState {
+  String? obj;
+  AssessmentIdSuccess({this.obj});
+  AssessmentIdSuccess copyWith({final obj}) {
+    return AssessmentIdSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [obj!];
+}
+
+class AssessmentDashboardStatus extends OcrState {
+  bool? obj;
+  AssessmentDashboardStatus({this.obj});
+  AssessmentDashboardStatus copyWith({final obj}) {
+    return AssessmentDashboardStatus(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [obj!];
 }

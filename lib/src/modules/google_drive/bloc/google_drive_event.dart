@@ -34,7 +34,8 @@ class CreateExcelSheetToDrive extends GoogleDriveEvent {
 class UpdateDocOnDrive extends GoogleDriveEvent {
   final List<StudentAssessmentInfo>? studentData;
   final String? fileId;
-  UpdateDocOnDrive({this.studentData, this.fileId});
+  bool isLoading;
+  UpdateDocOnDrive({this.studentData, this.fileId, required this.isLoading});
   @override
   List<Object> get props => [];
 }

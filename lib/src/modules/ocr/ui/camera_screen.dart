@@ -212,6 +212,7 @@ class _CameraScreenState extends State<CameraScreen>
                         });
 
                         _driveBloc.add(UpdateDocOnDrive(
+                          isLoading: true,
                             studentData: Globals.studentInfo!));
                       } else {
                         Navigator.pushReplacement(
