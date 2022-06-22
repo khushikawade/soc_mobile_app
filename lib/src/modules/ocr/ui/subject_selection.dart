@@ -122,7 +122,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     } else if (pageIndex.value == 2) {
                       isSubmitButton.value = false;
                       if (widget.isSearchPage == true) {
-                      //   FatchSubjectDetails(type: 'nyc', keyword: keyword));
+                        //   FatchSubjectDetails(type: 'nyc', keyword: keyword));
                         Navigator.pop(context);
                       } else {
                         _ocrBloc.add(
@@ -169,7 +169,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               //   child:SearchBar(controller:searchController , onSaved: (value){},)
                               // )
                               : SearchBar(
-                                isSubLearningPage: pageIndex.value == 2 ? true : false ,
+                                  isSubLearningPage:
+                                      pageIndex.value == 2 ? true : false,
                                   onTap: () {
                                     if (pageIndex.value == 1) {
                                       FocusManager.instance.primaryFocus
@@ -330,9 +331,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         return Utility.textWidget(
             text: pageIndex.value == 0
                 ? 'Subject'
-                : pageIndex.value == 1
-                    ? 'Learning Standard'
-                    : 'NY Next Generation Learning Standard',
+                // : pageIndex.value == 1
+                //     ? 'NY Next Generation Learning Standard'
+                : 'NY Next Generation Learning Standard',
             context: context);
       },
       child: Container(),
