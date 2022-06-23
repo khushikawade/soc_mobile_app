@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
@@ -12,15 +13,20 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../widgets/suggestion_chip.dart';
+
 class CreateAssessment extends StatefulWidget {
-  CreateAssessment({Key? key, required this.classSuggestions})
+  CreateAssessment(
+      {Key? key, required this.classSuggestions, required this.customGrades})
       : super(key: key);
-  List<String> classSuggestions;
+  final List<String> classSuggestions;
+  final List<String> customGrades;
   @override
   State<CreateAssessment> createState() => _CreateAssessmentState();
 }
@@ -42,6 +48,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
 
+  final addController = TextEditingController();
   @override
   void initState() {
     // listScrollController.addListener(_scrollListener);
@@ -56,277 +63,246 @@ class _CreateAssessmentState extends State<CreateAssessment>
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async => false,
-        child: Stack(children: [
+      onWillPop: () async => false,
+      child: Stack(
+        children: [
           CommonBackGroundImgWidget(),
           Scaffold(
-              key: scaffoldKey,
-              resizeToAvoidBottomInset: true,
-              floatingActionButton: textActionButton(),
-              // floatingActionButtonLocation:
-              //   FloatingActionButtonLocation.centerFloat,
-              backgroundColor: Colors.transparent,
-              appBar: CustomOcrAppBarWidget(
-                isbackOnSuccess: isBackFromCamera,
-                key: GlobalKey(),
-                isBackButton: false,
-                isHomeButtonPopup: true,
-              ),
-              // AppBar(
-              //   elevation: 0,
-              //   automaticallyImplyLeading: false,
-              //   actions: [
-              //     Container(
-              //       padding: EdgeInsets.only(right: 10),
-              //       child: Icon(
-              //         IconData(0xe874,
-              //             fontFamily: Overrides.kFontFam,
-              //             fontPackage: Overrides.kFontPkg),
-              //         color: AppTheme.kButtonColor,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              //  CustomAppBarWidget(
-              //   appBarTitle: 'OCR',
-              //   isSearch: true,
-              //   isShare: false,
-              //   language: Globals.selectedLanguage,
-              //   isCenterIcon: false,
-              //   ishtmlpage: false,
-              //   sharedpopBodytext: '',
-              //   sharedpopUpheaderText: '',
-              // ),
-              body: Form(
-                  key: _formKey,
-                  child:
-                      // GestureDetector(
-                      //   onVerticalDragDown: (_) {
-                      //     hideKeyboard();
-                      //   },
-                      //   child:
+            key: scaffoldKey,
+            resizeToAvoidBottomInset: true,
+            floatingActionButton: textActionButton(),
+            // floatingActionButtonLocation:
+            //   FloatingActionButtonLocation.centerFloat,
+            backgroundColor: Colors.transparent,
+            appBar: CustomOcrAppBarWidget(
+              isbackOnSuccess: isBackFromCamera,
+              key: GlobalKey(),
+              isBackButton: false,
+              isHomeButtonPopup: true,
+            ),
 
-                      ListView(
-                        padding: EdgeInsets.only(bottom: 20),
+            body: Container(
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  // color: Colors.red,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  height:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? MediaQuery.of(context).size.height
+                          : MediaQuery.of(context).size.width,
+                  child: ListView(
+                    // controller: listScrollController,
+                    shrinkWrap: true,
                     children: [
-                      Container(
-                        // color: Colors.red,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        height: MediaQuery.of(context).orientation ==
-                                Orientation.portrait
-                            ? MediaQuery.of(context).size.height
-                            : MediaQuery.of(context).size.width,
-                        child: ListView(padding: EdgeInsets.only(bottom: 20),
-                          // controller: listScrollController,
-                          shrinkWrap: true,
-                          children: [
-                            SpacerWidget(_KVertcalSpace * 0.50),
-                            highlightText(
-                              text: 'Create Assessment',
-                              theme: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            SpacerWidget(_KVertcalSpace / 1.8),
-                            // highlightText(
-                            //   text: 'Assessment Name',
-                            //   theme: Theme.of(context)
-                            //       .textTheme
-                            //       .headline6!
-                            //       .copyWith(fontWeight: FontWeight.bold),
-                            // ),
-                            // SpacerWidget(_KVertcalSpace / 1.8),
-                            highlightText(
-                                text: 'Assessment Name',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            textFormField(
-                                controller: assessmentController,
-                                hintText: 'Assessment Name',
-                                validator: (String? value) {
-                                  if (value!.isEmpty) {
-                                    return 'Assessment name is required';
-                                  } else if (value.length < 2) {
-                                    return 'Assessment name should contain atlease 2 characters';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                onSaved: (String value) {}),
-                            // SpacerWidget(_KVertcalSpace / 2),
-                            // highlightText(
-                            //     text: 'Class Name',
-                            //     theme: Theme.of(context)
-                            //         .textTheme
-                            //         .headline2!
-                            //         .copyWith(
-                            //             color: Theme.of(context)
-                            //                 .colorScheme
-                            //                 .primaryVariant
-                            //                 .withOpacity(0.3))),
-                            // textFormField(
-                            //     controller: classController,
-                            //     hintText: '1st',
-                            //     // onSaved: (String value) {},
-                            //     validator: (String? value) {
-                            //       if (value!.isEmpty) {
-                            //         return 'Class name is required';
-                            //       } else {
-                            //         return null;
-                            //       }
-                            //     },
-                            //     onSaved: (String value) {}),
-                            SpacerWidget(_KVertcalSpace / 2),
-                            highlightText(
-                                text: 'Class Name',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            textFormField(
-                              controller: classController,
-                              hintText: '1st',
-                              onSaved: (String value) {},
-                              validator: (String? value) {
-                                if (value!.isEmpty) {
-                                  return 'Class name is required';
-                                } else {
-                                  return null;
-                                }
-                              },
-                            ),
-                            SpacerWidget(_KVertcalSpace / 2),
-                            highlightText(
-                                text: 'Select Grade',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            SpacerWidget(_KVertcalSpace / 5),
-                            scoringButton(),
-                            SpacerWidget(_KVertcalSpace / 3),
-                            highlightText(
-                                text: 'Scan Assessment (Optional)',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            SpacerWidget(_KVertcalSpace / 4),
-                            GestureDetector(
-                              onTap: () {
-                                _cameraImage(context);
-                              },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      border: Border.all(
-                                          width: 2,
-                                          color: AppTheme.kButtonColor),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  height: 120,
-                                  width: MediaQuery.of(context).size.width,
-                                  child:
-                                      // imageFile != null
-                                      //     ?
-                                      ValueListenableBuilder(
-                                          valueListenable: isimageFilePicked,
-                                          child: Container(),
-                                          builder: (BuildContext context,
-                                              dynamic value, Widget? child) {
-                                            return isimageFilePicked.value ==
-                                                    true
-                                                ? ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    child: Image.file(
-                                                      imageFile!,
-                                                      fit: BoxFit.contain,
-                                                    ),
-                                                  )
-                                                : Container(
-                                                  //margin: EdgeInsets.only(bottom: 40),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.add_a_photo,
-                                                        color: AppTheme
-                                                            .kButtonColor
-                                                            .withOpacity(1.0),
-                                                      ),
-                                                    ),
-                                                  );
-                                          })
-                                  // : Container(
-                                  //     child: Center(
-                                  //       child: Icon(
-                                  //         Icons.add_a_photo,
-                                  //         color: AppTheme.kButtonColor
-                                  //             .withOpacity(1.0),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  ),
-                            ),
-                            
-
-                            //To scroll the screen in case of keyboard appears
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom))
-
-                            // BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                            //     bloc: _googleDriveBloc,
-                            //     listener: (context, state) async {
-                            //       if (state is GoogleDriveLoading) {
-                            //         Utility.showSnackBar(
-                            //             scaffoldKey,
-                            //             'Please wait while assessment is creating',
-                            //             context,
-                            //             null);
-                            //       } else if (state is ExcelSheetCreated) {
-                            //         Navigator.push(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //               builder: (context) => SubjectSelection(
-                            //                     selectedClass:
-                            //                         selectedGrade.value.toString(),
-                            //                   )),
-                            //         );
-                            //       }
-                            //     },
-                            //     child: Container()),
-                            // SpacerWidget(_KVertcalSpace / 20),
-                          ],
+                      SpacerWidget(_KVertcalSpace * 0.50),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: highlightText(
+                          text: 'Create Assessment',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
-                        // ]),
-                        // ),
-                        // ),
                       ),
+                      SpacerWidget(_KVertcalSpace / 1.8),
+                      highlightText(
+                          text: 'Assessment Name',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      textFormField(
+                          controller: assessmentController,
+                          hintText: 'Assessment Name',
+                          validator: (String? value) {
+                            if (value!.isEmpty) {
+                              return 'Assessment name is required';
+                            } else if (value.length < 2) {
+                              return 'Assessment name should contain atlease 2 characters';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (String value) {}),
+                      SpacerWidget(_KVertcalSpace / 2),
+                      highlightText(
+                          text: 'Class Name',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 11,
+                        child: textFormField(
+                          controller: classController,
+                          hintText: '1st',
+                          onSaved: (String value) {},
+                          validator: (String? value) {
+                            if (value!.isEmpty) {
+                              return 'Class name is required';
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
+                      if (widget.classSuggestions.length > 0)
+                        SpacerWidget(_KVertcalSpace / 15),
+                      if (widget.classSuggestions.length > 0)
+                        Container(
+                          height: 30,
+                          //padding: EdgeInsets.only(left: 2.0),
+                          child: ChipsFilter(
+                              selectedValue: (String value) {
+                                value.isNotEmpty
+                                    ? classController.text = value
+                                    : print("");
+                              },
+                              selected:
+                                  1, // Select the second filter as default
+                              filters: widget.classSuggestions),
+                        ),
+
+                      // if (widget.classSuggestions.length > 0)
+                      //   SpacerWidget(_KVertcalSpace / 4),
+                      // if (widget.classSuggestions.length > 0)
+                      //   Wrap(
+                      //     children: List<Widget>.generate(
+                      //       widget.classSuggestions.length,
+                      //       (int index) {
+                      //         return _suggestionClips(
+                      //             index: index,
+                      //             classSuggestions: widget.classSuggestions);
+                      //       },
+                      //     ).toList(),
+                      //   ),
+
+                      SpacerWidget(_KVertcalSpace / 2),
+                      highlightText(
+                          text: 'Select Grade',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      SpacerWidget(_KVertcalSpace / 3),
+                      scoringButton(),
+                      SpacerWidget(_KVertcalSpace / 2),
+                      highlightText(
+                          text: 'Scan Question',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      SpacerWidget(_KVertcalSpace / 4),
+                      GestureDetector(
+                        onTap: () {
+                          _cameraImage(context);
+                        },
+                        child: Container( margin: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).size.height*0.15),
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                border: Border.all(
+                                    width: 2, color: AppTheme.kButtonColor),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
+                            height: 150,
+                            width: MediaQuery.of(context).size.width,
+                            child:
+                                // imageFile != null
+                                //     ?
+                                ValueListenableBuilder(
+                                    valueListenable: isimageFilePicked,
+                                    child: Container(),
+                                    builder: (BuildContext context,
+                                        dynamic value, Widget? child) {
+                                      return isimageFilePicked.value == true
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image.file(
+                                                imageFile!,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            )
+                                          : Container(
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.add_a_photo,
+                                                  color: AppTheme.kButtonColor
+                                                      .withOpacity(1.0),
+                                                ),
+                                              ),
+                                            );
+                                    })
+                            // : Container(
+                            //     child: Center(
+                            //       child: Icon(
+                            //         Icons.add_a_photo,
+                            //         color: AppTheme.kButtonColor
+                            //             .withOpacity(1.0),
+                            //       ),
+                            //     ),
+                            //   ),
+                            ),
+                      ),
+                      
+                      //To scroll the screen in case of keyboard appears
+                      Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom))
+
+                      // BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                      //     bloc: _googleDriveBloc,
+                      //     listener: (context, state) async {
+                      //       if (state is GoogleDriveLoading) {
+                      //         Utility.showSnackBar(
+                      //             scaffoldKey,
+                      //             'Please wait while assessment is creating',
+                      //             context,
+                      //             null);
+                      //       } else if (state is ExcelSheetCreated) {
+                      //         Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => SubjectSelection(
+                      //                     selectedClass:
+                      //                         selectedGrade.value.toString(),
+                      //                   )),
+                      //         );
+                      //       }
+                      //     },
+                      //     child: Container()),
+                      // SpacerWidget(_KVertcalSpace / 20),
                     ],
-                  )))
-        ]));
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget textwidget({required String text, required dynamic textTheme}) {
@@ -357,11 +333,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     childAspectRatio: 5 / 6,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 10),
-                itemCount: Globals.classList.length,
+                itemCount: widget.customGrades.length,
                 itemBuilder: (BuildContext ctx, index) {
                   return Bouncing(
                     onPress: () {
-                      selectedGrade.value = index;
+                      widget.customGrades[index] == '+'
+                          ? _addSectionBottomSheet()
+                          : selectedGrade.value = index;
                     },
                     child: Transform.scale(
                       scale: 1, //_scale!,
@@ -388,7 +366,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               )),
                           child: Center(
                             child: textwidget(
-                              text: Globals.classList[index],
+                              text: widget.customGrades[index],
                               textTheme: Theme.of(context)
                                   .textTheme
                                   .headline1!
@@ -592,19 +570,49 @@ class _CreateAssessmentState extends State<CreateAssessment>
     );
   }
 
-  Widget _suggestionClips(
-      {required int index, required List<String> classSuggestions}) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 5.0),
-      child: FilterChip(
-        disabledColor: Colors.transparent,
-        label: Text(classSuggestions[index]),
-        onSelected: (bool value) {
-          value
-              ? classController.text = classSuggestions[index]
-              : print("nothing selected");
-        },
-      ),
-    );
+  _addSectionBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        elevation: 10,
+        context: context,
+        builder: (context) => BottomSheetWidget(
+              title: 'Add Custom Grade',
+              isImageField: false,
+              textFieldTitleOne: 'Grade Name',
+              isSubjectScreen: true,
+              sheetHeight:
+                  MediaQuery.of(context).orientation == Orientation.landscape
+                      ? MediaQuery.of(context).size.height * 0.82
+                      : MediaQuery.of(context).size.height * 0.40,
+              valueChanged: (controller) async {
+                await updateList(
+                  sectionName: controller.text,
+                );
+
+                controller.clear();
+                Navigator.pop(context, false);
+              },
+            ));
+  }
+
+  updateList({required String sectionName}) async {
+    LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
+
+    if (!widget.customGrades.contains(sectionName)) {
+      widget.customGrades.add(sectionName);
+      setState(() {});
+    } else {
+      Utility.showSnackBar(
+          scaffoldKey, "Subject $sectionName already exist", context, null);
+    }
+
+    await _localDb.clear();
+    widget.customGrades.forEach((String e) {
+      _localDb.addData(e);
+    });
   }
 }

@@ -485,22 +485,47 @@ class Utility {
           return new WillPopScope(
               onWillPop: () async => false,
               child: SimpleDialog(
-                  backgroundColor: Colors.black54,
+                  backgroundColor:  Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Color(0xff111C20)
+              : Color(0xffF7F8F9),//Colors.black54,
                   children: <Widget>[
-                    Center(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 30,
-                            ),
-                            CircularProgressIndicator(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                          ]),
+                    Container(
+                      height: 70,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                             Utility.textWidget(text: 'Please Wait', context: context, textTheme: Theme.of(context).textTheme.headline6!.copyWith(
+                            color: 
+                            // Color(0xff000000) ==
+                            //         Theme.of(context).backgroundColor
+                            //     ? Color(0xffFFFFFF)
+                            //     :
+                                 Color(0xff000000),
+                            fontSize: Globals.deviceType == "phone"
+                                ? AppTheme.kBottomSheetTitleSize
+                                : AppTheme.kBottomSheetTitleSize * 1.3,
+                          )),
+                          SizedBox(
+                                    height: 10,
+                                  ),
+                          Center(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  CircularProgressIndicator(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                ]),
+                          ),
+                        ],
+                      ),
                     )
                   ]));
         });

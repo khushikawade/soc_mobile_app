@@ -222,12 +222,29 @@ class _CameraScreenState extends State<CameraScreen>
                         List<String> classSuggestions =
                             await _localDb.getData();
 
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateAssessment(
-                                  classSuggestions: classSuggestions)),
-                        );
+                        LocalDatabase<String> classSectionLocalDb =
+                            LocalDatabase('class_section_list');
+
+                        List<String> localSectionList =
+                            await classSectionLocalDb.getData();
+                        if (localSectionList.isEmpty) {
+                          print("local db is empty");
+                          Globals.classList.forEach((String e) {
+                            classSectionLocalDb.addData(e);
+                          });
+                        } else {
+                          print("local db is not empty");
+                          Globals.classList = [];
+                          Globals.classList.addAll(localSectionList);
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CreateAssessment(
+                                    customGrades: Globals.classList,
+                                    classSuggestions: classSuggestions)),
+                          );
+                        }
                       }
                     } else {
                       Utility.showSnackBar(
