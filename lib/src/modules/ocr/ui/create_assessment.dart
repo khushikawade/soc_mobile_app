@@ -120,17 +120,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     shrinkWrap: true,
                     children: [
                       SpacerWidget(_KVertcalSpace * 0.50),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: highlightText(
-                          text: 'Create Assessment',
-                          theme: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
+                      highlightText(
+                        text: 'Create Assessment',
+                        theme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold),
                       ),
                       SpacerWidget(_KVertcalSpace / 1.8),
                       highlightText(
@@ -335,6 +330,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
+            width: 50,
             height: MediaQuery.of(context).orientation == Orientation.portrait
                 ? MediaQuery.of(context).size.height * 0.45
                 : MediaQuery.of(context).size.width * 0.35,
@@ -377,17 +373,23 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                     : Colors.grey,
                               )),
                           child: Center(
-                            child: textwidget(
-                              text: widget.classSectionList[index],
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(
-                                      color: selectedGrade.value == index
-                                          ? AppTheme.kSelectedColor
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant),
+                            child: FittedBox(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 5.0, right: 5.0),
+                                child: textwidget(
+                                  text: widget.classSectionList[index],
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .headline1!
+                                      .copyWith(
+                                          color: selectedGrade.value == index
+                                              ? AppTheme.kSelectedColor
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -615,8 +617,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
     LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
 
     if (!widget.classSectionList.contains(sectionName)) {
+      widget.classSectionList.removeLast();
       widget.classSectionList.add(sectionName);
+      widget.classSectionList.add('+');
+
       setState(() {});
+      selectedGrade.value = widget.classSectionList.length - 2;
     } else {
       Utility.showSnackBar(
           scaffoldKey, "Subject $sectionName already exist", context, null);
