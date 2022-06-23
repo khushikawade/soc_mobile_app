@@ -776,7 +776,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               });
 
                               _googleDriveBloc.add(UpdateDocOnDrive(
-                                isLoading: true,
+                                  isLoading: true,
                                   studentData:
                                       //list2
                                       Globals.studentInfo!));

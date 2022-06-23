@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
@@ -12,17 +13,20 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:camera/camera.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 
 class CreateAssessment extends StatefulWidget {
-  CreateAssessment({Key? key, required this.classSuggestions})
+  CreateAssessment(
+      {Key? key,
+      required this.classSuggestions,
+      required this.classSectionList})
       : super(key: key);
   List<String> classSuggestions;
+  List<String> classSectionList;
   @override
   State<CreateAssessment> createState() => _CreateAssessmentState();
 }
@@ -43,7 +47,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final ImagePicker _picker = ImagePicker();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-  bool _selected = false;
+
+  final addController = TextEditingController();
   @override
   void initState() {
     // listScrollController.addListener(_scrollListener);
@@ -340,11 +345,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     childAspectRatio: 5 / 6,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 10),
-                itemCount: Globals.classList.length,
+                itemCount: widget.classSectionList.length,
                 itemBuilder: (BuildContext ctx, index) {
                   return Bouncing(
                     onPress: () {
-                      selectedGrade.value = index;
+                      widget.classSectionList[index] == '+'
+                          ? _addSectionBottomSheet()
+                          : selectedGrade.value = index;
                     },
                     child: Transform.scale(
                       scale: 1, //_scale!,
@@ -371,7 +378,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               )),
                           child: Center(
                             child: textwidget(
-                              text: Globals.classList[index],
+                              text: widget.classSectionList[index],
                               textTheme: Theme.of(context)
                                   .textTheme
                                   .headline1!
@@ -573,6 +580,52 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 selectedClass: selectedGrade.value.toString(),
               )),
     );
+  }
+
+  _addSectionBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        elevation: 10,
+        context: context,
+        builder: (context) => BottomSheetWidget(
+              title: 'Add Class Section',
+              isImageField: false,
+              textFieldTitleOne: 'Section Name',
+              isSubjectScreen: true,
+              sheetHeight:
+                  MediaQuery.of(context).orientation == Orientation.landscape
+                      ? MediaQuery.of(context).size.height * 0.82
+                      : MediaQuery.of(context).size.height * 0.40,
+              valueChanged: (controller) async {
+                await updateList(
+                  sectionName: controller.text,
+                );
+
+                controller.clear();
+                Navigator.pop(context, false);
+              },
+            ));
+  }
+
+  updateList({required String sectionName}) async {
+    LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
+
+    if (!widget.classSectionList.contains(sectionName)) {
+      widget.classSectionList.add(sectionName);
+      setState(() {});
+    } else {
+      Utility.showSnackBar(
+          scaffoldKey, "Subject $sectionName already exist", context, null);
+    }
+
+    await _localDb.clear();
+    widget.classSectionList.forEach((String e) {
+      _localDb.addData(e);
+    });
   }
 }
 

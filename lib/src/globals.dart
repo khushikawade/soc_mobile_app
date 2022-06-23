@@ -87,7 +87,7 @@ class Globals {
   //   'Measurement'
   // ];
   // static List subjectList = ['Maths', 'Science', 'ELA', '+'];
-  static List classList = [
+  static List<String> classList = [
     'K',
     '1',
     '2',
@@ -101,7 +101,6 @@ class Globals {
     '10',
     '11',
     '12',
-    '?',
     '+'
   ];
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe87a];
