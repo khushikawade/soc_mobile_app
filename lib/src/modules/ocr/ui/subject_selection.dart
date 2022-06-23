@@ -722,7 +722,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               AppTheme.kButtonColor.withOpacity(1.0),
                           onPressed: () async {
                             if (!connected) {
-                              Utility.noInternetSnackBar(
+                              Utility.currentScreenSnackBar(
                                   "No Internet Connection");
                             } else {
                               LocalDatabase<CustomRubicModal> _localDb =
@@ -750,6 +750,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 }
                               }
 
+                              //TODO : REMOVE THIS AND ADD COMMON FIELDS IN EXCEL MODEL (SAME IN CASE OF SCAN MORE AT CAMERA SCREEN)
                               //Adding blank fields to the list : Static data
                               Globals.studentInfo!.forEach((element) {
                                 element.subject = subject;
@@ -789,7 +790,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   child: Container(),
                                   listener: (context, state) {
                                     if (state is GoogleDriveLoading) {
-                                      Utility.loadingDialog(context);
+                                      Utility.showLoadingDialog(context);
                                     }
                                     if (state is GoogleSuccess) {
                                       Globals.lastDeshboardId = '';
@@ -804,26 +805,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           scaffoldKey: _scaffoldKey,
                                           context: context,
                                           fileId: Globals.googleExcelSheetId!));
-                                      // Navigator.of(context).pop();
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //       builder: (context) =>
-                                      //           ResultsSummary(
-                                      //             fileId: Globals
-                                      //                 .googleExcelSheetId,
-                                      //             subjectId: subjectId ?? '',
-                                      //             standardId: standardId ?? '',
-                                      //             asssessmentName:
-                                      //                 Globals.assessmentName,
-                                      //             shareLink: '',
-                                      //             assessmentDetailPage: false,
-                                      //           )),
-                                      // );
+                                      
                                     }
                                     if (state is ErrorState) {
                                       Navigator.of(context).pop();
-                                      Utility.noInternetSnackBar(
+                                      Utility.currentScreenSnackBar(
                                           "Technical issue try again after some time");
                                     }
                                   }),
@@ -832,7 +818,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   child: Container(),
                                   listener: (context, state) {
                                     if (state is OcrLoading) {
-                                      Utility.loadingDialog(context);
+                                      Utility.showLoadingDialog(context);
                                     }
                                     if (state is AssessmentIdSuccess) {
                                       Navigator.of(context).pop();
@@ -923,9 +909,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   showBottomSheet() {
     showMaterialModalBottomSheet(
       backgroundColor: Colors.transparent,
-      // Color(0xff000000) != Theme.of(context).backgroundColor
-      //     ? Color(0xffF7F8F9)
-      //     : Color(0xff111C20),
       animationCurve: Curves.easeOutQuart,
       elevation: 10,
       context: context,

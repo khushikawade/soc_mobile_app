@@ -423,7 +423,7 @@ class Utility {
   //   }
   // }
 
-  static void noInternetSnackBar(String text) {
+  static void currentScreenSnackBar(String text) {
     //Use to show snackbar at any current screen
     BuildContext? context = Globals.navigatorKey.currentContext;
 
@@ -447,35 +447,89 @@ class Utility {
     }
   }
 
-  static void loadingDialog(BuildContext context) async {
-    // show the loading dialog
-    showDialog(
-        // The user CANNOT close this dialog  by pressing outsite it
-        barrierDismissible: false,
+  // static void loadingDialog(BuildContext context) async {
+  //   // show the loading dialog
+  //   showDialog(
+  //       // The user CANNOT close this dialog  by pressing outsite it
+  //       barrierDismissible: false,
+  //       context: context,
+  //       builder: (_) {
+  //         return Dialog(
+  //           // The background color
+  //           backgroundColor: Colors.white,
+  //           child: Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 20),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: const [
+  //                 // The loading indicator
+  //                 CircularProgressIndicator(),
+  //                 SizedBox(
+  //                   height: 15,
+  //                 ),
+  //                 // Some text
+  //                 Text('Loading...')
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
+  
+  static void showLoadingDialog(BuildContext context) async {
+    return showDialog<void>(
+        useRootNavigator: false,
         context: context,
-        builder: (_) {
-          return Dialog(
-            // The background color
-            backgroundColor: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  // The loading indicator
-                  CircularProgressIndicator(),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  // Some text
-                  Text('Loading...')
-                ],
-              ),
-            ),
-          );
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  backgroundColor:  Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Color(0xff111C20)
+              : Color(0xffF7F8F9),//Colors.black54,
+                  children: <Widget>[
+                    Container(
+                      height: 70,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                             Utility.textWidget(text: 'Please Wait', context: context, textTheme: Theme.of(context).textTheme.headline6!.copyWith(
+                            color: 
+                            // Color(0xff000000) ==
+                            //         Theme.of(context).backgroundColor
+                            //     ? Color(0xffFFFFFF)
+                            //     :
+                                 Color(0xff000000),
+                            fontSize: Globals.deviceType == "phone"
+                                ? AppTheme.kBottomSheetTitleSize
+                                : AppTheme.kBottomSheetTitleSize * 1.3,
+                          )),
+                          SizedBox(
+                                    height: 10,
+                                  ),
+                          Center(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  CircularProgressIndicator(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                ]),
+                          ),
+                        ],
+                      ),
+                    )
+                  ]));
         });
   }
-  
 
   static Future<void> saveUserProfile(String profileData) async {
     UserGoogleProfile.clearUserProfile();
