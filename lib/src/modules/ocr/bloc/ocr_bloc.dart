@@ -75,7 +75,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         StudentDetails data = await fetchStudentDetails(event.ossId);
         yield SuccessStudentDetails(
             studentName: "${data.firstNameC} ${data.lastNameC}");
-        print(data);
+        print('SuccessStudentDetails : $data');
       } catch (e) {
         print(e);
       }
@@ -158,12 +158,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             studentName: event.studentName, studentId: event.studentId);
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.noInternetSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         throw (e);
       }
@@ -180,12 +180,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.noInternetSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         throw (e);
       }
@@ -228,12 +228,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         bool result = await saveSubjectListDetails();
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.noInternetSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         throw (e);
       }
@@ -299,6 +299,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             standardId = event.standardId;
             subjectId = event.subjectId;
           }
+          //TO DO
           if (event.isHistoryAssessmentSection == true) {
             String dashboardId = await saveAssessmentToDashboard(
               fileId: event.fileId,
@@ -346,12 +347,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.noInternetSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         throw (e);
       }
@@ -371,6 +372,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield AssessmentIdSuccess(obj: dashboardId);
       }
     }
+
     if (event is GetDashBoardStatus) {
       try {
         yield OcrLoading2();
@@ -869,7 +871,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
       if (response.statusCode == 200) {
         StudentDetails res = StudentDetails.fromJson(response.data['body']);
-        print(res);
+        print('fetchStudentDetails : $res');
         return res;
       } else {
         throw ('something_went_wrong');

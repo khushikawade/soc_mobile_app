@@ -169,7 +169,7 @@ class _OpticalCharacterRecognitionPageState
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (!connected) {
-                      Utility.noInternetSnackBar("No Internet Connection");
+                      Utility.currentScreenSnackBar("No Internet Connection");
                     } else {
                       Globals.studentInfo!.clear();
                       if (Globals.googleDriveFolderId!.isEmpty) {
@@ -226,7 +226,7 @@ class _OpticalCharacterRecognitionPageState
             child: Container(),
             listener: (context, state) async {
               if (state is GoogleDriveLoading) {
-                Utility.loadingDialog(context);
+                Utility.showLoadingDialog(context);
               }
               if (state is GoogleSuccess) {
                 if (state.assessmentSection == true) {
@@ -239,7 +239,7 @@ class _OpticalCharacterRecognitionPageState
               }
               if (state is ErrorState) {
                 Navigator.of(context).pop();
-                Utility.noInternetSnackBar(state.errorMsg!);
+                Utility.currentScreenSnackBar(state.errorMsg!);
                 await _launchURL('Google Authentication');
               }
             }),

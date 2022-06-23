@@ -107,6 +107,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       //   child:
 
                       ListView(
+                        padding: EdgeInsets.only(bottom: 20),
                     children: [
                       Container(
                         // color: Colors.red,
@@ -115,7 +116,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                 Orientation.portrait
                             ? MediaQuery.of(context).size.height
                             : MediaQuery.of(context).size.width,
-                        child: ListView(
+                        child: ListView(padding: EdgeInsets.only(bottom: 20),
                           // controller: listScrollController,
                           shrinkWrap: true,
                           children: [
@@ -207,7 +208,20 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             ),
                             SpacerWidget(_KVertcalSpace / 2),
                             highlightText(
-                                text: 'Scan Question',
+                                text: 'Select Grade',
+                                theme: Theme.of(context)
+                                    .textTheme
+                                    .headline2!
+                                    .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant
+                                            .withOpacity(0.3))),
+                            SpacerWidget(_KVertcalSpace / 5),
+                            scoringButton(),
+                            SpacerWidget(_KVertcalSpace / 3),
+                            highlightText(
+                                text: 'Scan Assessment (Optional)',
                                 theme: Theme.of(context)
                                     .textTheme
                                     .headline2!
@@ -251,6 +265,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                     ),
                                                   )
                                                 : Container(
+                                                  //margin: EdgeInsets.only(bottom: 40),
                                                     child: Center(
                                                       child: Icon(
                                                         Icons.add_a_photo,
@@ -272,19 +287,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                   //   ),
                                   ),
                             ),
-                            SpacerWidget(_KVertcalSpace / 2),
-                            highlightText(
-                                text: 'Select Grade',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            SpacerWidget(_KVertcalSpace / 5),
-                            scoringButton(),
+                            
 
                             //To scroll the screen in case of keyboard appears
                             Padding(
@@ -345,7 +348,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
             height: MediaQuery.of(context).orientation == Orientation.portrait
-                ? MediaQuery.of(context).size.height * 0.45
+                ? MediaQuery.of(context).size.height * 0.25
                 : MediaQuery.of(context).size.width * 0.35,
             child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -479,7 +482,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             onPressed: () async {
               FocusScope.of(context).requestFocus(FocusNode());
               if (!connected) {
-                Utility.noInternetSnackBar("No Internet Connection");
+                Utility.currentScreenSnackBar("No Internet Connection");
               } else {
                 if (_formKey.currentState!.validate()) {
                   if (imageFile != null && imageFile!.path.isNotEmpty) {
@@ -521,7 +524,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: Container(),
                     listener: (context, state) {
                       if (state is GoogleDriveLoading) {
-                        Utility.loadingDialog(context);
+                        Utility.showLoadingDialog(context);
                       }
                       if (state is ExcelSheetCreated) {
                         Navigator.of(context).pop();
@@ -529,7 +532,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       }
                       if (state is ErrorState) {
                         Navigator.of(context).pop();
-                        Utility.noInternetSnackBar(
+                        Utility.currentScreenSnackBar(
                             "Technical issue try again after some time");
                       }
                     }),

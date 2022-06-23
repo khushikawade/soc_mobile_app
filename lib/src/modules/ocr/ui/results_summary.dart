@@ -77,6 +77,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       if (widget.isScanMore != true) {
         _driveBloc.add(GetShareLink(fileId: widget.fileId));
       } else {
+        //TODO : REMOVE GLOBAL ACCESS : IMPROVE
         widget.shareLink = Globals.shareableLink;
       }
 
@@ -84,6 +85,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       iconsName = Globals.ocrResultIconsName;
       assessmentCount.value = Globals.studentInfo!.length;
     }
+    //Checking in case of scan more if data is already saved to the dashboard for previously scanned sheets
     if (Globals.studentInfo!.length == Globals.scanMoreStudentInfoLength) {
       dashoardState.value = 'Success';
     }
@@ -515,7 +517,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             icon: index == 0 &&
                                     !widget.assessmentDetailPage! &&
                                     widget.isScanMore == null
-                                ? BlocBuilder(
+                                ?
+                                //Calling builder in case of result summary (Not detail page)
+
+                                BlocBuilder(
                                     bloc: _driveBloc,
                                     builder: (context, state) {
                                       if (state is ShareLinkRecived) {
@@ -535,13 +540,25 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         );
                                       }
 
-                                      return Center(
-                                          child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant,
-                                      ));
+                                      return Container(
+                                          padding: EdgeInsets.only(
+                                              bottom: 14, top: 8),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.058,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.058,
+                                          alignment: Alignment.center,
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                          )));
                                     })
                                 : Icon(
                                     IconData(
@@ -590,9 +607,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         widget.shareLink!.isNotEmpty
                                     ? Share.share(widget.shareLink!)
                                     : print("no link ");
-                              } else if ((widget.assessmentDetailPage!
-                                  ? index == 1
-                                  : index == 2)) {
+                              } else if (!widget.assessmentDetailPage! &&
+                                  // ? index == 1
+                                  // :
+                                  index == 2) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -605,7 +623,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   dashoardState.value == '') {
                                 Globals.scanMoreStudentInfoLength =
                                     Globals.studentInfo!.length - 1;
+
                                 if (widget.isScanMore == true &&
+                                    widget.assessmentListLenght != null &&
                                     widget.assessmentListLenght! <
                                         Globals.studentInfo!.length) {
                                   _ocrBloc.add(SaveAssessmentToDashboard(
@@ -629,6 +649,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       ? Globals.lastDeshboardId = ''
                                       : print(
                                           "not a assessmentdatilpage-------->");
+
                                   _ocrBloc.add(SaveAssessmentToDashboard(
                                       assessmentSheetPublicURL:
                                           widget.shareLink,
@@ -650,14 +671,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       fileId: widget.fileId ?? ''));
                                 }
                               }
-                              // else if (index == 3 &&
-                              //     dashoardState.value == 'Success') {
-                              // Utility.showSnackBar(
-                              //     scaffoldKey,
-                              //     'Data has already been saved to the dashboard',
-                              //     context,
-                              //     null);
-                              // }
                             },
                           ),
                         ),
