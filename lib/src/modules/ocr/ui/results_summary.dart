@@ -14,6 +14,7 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:share/share.dart';
 import '../../../widgets/empty_container_widget.dart';
 import '../../google_drive/model/user_profile.dart';
@@ -683,7 +684,48 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         scrollDirection: Axis.vertical,
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
-          return _buildList(index, _list, context);
+          return Slidable(
+              // Specify a key if the Slidable is dismissible.
+              key: ValueKey(index),
+
+              // The start action pane is the one at the left or the top side.
+              // startActionPane: ActionPane(
+              //   // A motion is a widget used to control how the pane animates.
+              //   motion: const ScrollMotion(),
+
+              //   // A pane can dismiss the Slidable.
+              //   dismissible: DismissiblePane(onDismissed: () {}),
+
+              //   // All actions are defined in the children parameter.
+              //   children: [
+              //     // A SlidableAction can have an icon and/or a label.
+              //   ],
+              // ),
+
+              // The end action pane is the one at the right or the bottom side.
+              endActionPane: ActionPane(
+                //   dismissible: DismissiblePane(onDismissed: () {}),
+                motion: ScrollMotion(),
+                children: [
+                  SlidableAction(
+                    // An action can be bigger than the others.
+
+                    onPressed: doNothing(context, index),
+                    backgroundColor: AppTheme.kButtonColor,
+                    foregroundColor: Colors.white,
+                    icon: Icons.edit,
+                    label: 'Edit',
+                  ),
+                  SlidableAction(
+                    onPressed: doNothing(context, index),
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    icon: Icons.delete,
+                    label: 'Delete',
+                  ),
+                ],
+              ),
+              child: _buildList(index, _list, context));
         },
       ),
     );
@@ -1002,4 +1044,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   //             );
   //           }));
   // }
+
+  doNothing(BuildContext context, int index) {}
 }

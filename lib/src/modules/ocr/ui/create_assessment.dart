@@ -616,7 +616,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
     if (!widget.classSectionList.contains(sectionName)) {
       widget.classSectionList.add(sectionName);
+
       setState(() {});
+      selectedGrade.value = widget.classSectionList.length - 1;
     } else {
       Utility.showSnackBar(
           scaffoldKey, "Subject $sectionName already exist", context, null);
