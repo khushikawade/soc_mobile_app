@@ -12,10 +12,12 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 
 class CreateAssessment extends StatefulWidget {
   CreateAssessment({Key? key, required this.classSuggestions})
@@ -41,7 +43,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final ImagePicker _picker = ImagePicker();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-
+  bool _selected = false;
   @override
   void initState() {
     // listScrollController.addListener(_scrollListener);
@@ -56,274 +58,258 @@ class _CreateAssessmentState extends State<CreateAssessment>
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async => false,
-        child: Stack(children: [
+      onWillPop: () async => false,
+      child: Stack(
+        children: [
           CommonBackGroundImgWidget(),
           Scaffold(
-              key: scaffoldKey,
-              resizeToAvoidBottomInset: true,
-              floatingActionButton: textActionButton(),
-              // floatingActionButtonLocation:
-              //   FloatingActionButtonLocation.centerFloat,
-              backgroundColor: Colors.transparent,
-              appBar: CustomOcrAppBarWidget(
-                isbackOnSuccess: isBackFromCamera,
-                key: GlobalKey(),
-                isBackButton: false,
-                isHomeButtonPopup: true,
-              ),
-              // AppBar(
-              //   elevation: 0,
-              //   automaticallyImplyLeading: false,
-              //   actions: [
-              //     Container(
-              //       padding: EdgeInsets.only(right: 10),
-              //       child: Icon(
-              //         IconData(0xe874,
-              //             fontFamily: Overrides.kFontFam,
-              //             fontPackage: Overrides.kFontPkg),
-              //         color: AppTheme.kButtonColor,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              //  CustomAppBarWidget(
-              //   appBarTitle: 'OCR',
-              //   isSearch: true,
-              //   isShare: false,
-              //   language: Globals.selectedLanguage,
-              //   isCenterIcon: false,
-              //   ishtmlpage: false,
-              //   sharedpopBodytext: '',
-              //   sharedpopUpheaderText: '',
-              // ),
-              body: Form(
-                  key: _formKey,
-                  child:
-                      // GestureDetector(
-                      //   onVerticalDragDown: (_) {
-                      //     hideKeyboard();
-                      //   },
-                      //   child:
-
-                      ListView(
+            key: scaffoldKey,
+            resizeToAvoidBottomInset: true,
+            floatingActionButton: textActionButton(),
+            // floatingActionButtonLocation:
+            //   FloatingActionButtonLocation.centerFloat,
+            backgroundColor: Colors.transparent,
+            appBar: CustomOcrAppBarWidget(
+              isbackOnSuccess: isBackFromCamera,
+              key: GlobalKey(),
+              isBackButton: false,
+              isHomeButtonPopup: true,
+            ),
+            // AppBar(
+            //   elevation: 0,
+            //   automaticallyImplyLeading: false,
+            //   actions: [
+            //     Container(
+            //       padding: EdgeInsets.only(right: 10),
+            //       child: Icon(
+            //         IconData(0xe874,
+            //             fontFamily: Overrides.kFontFam,
+            //             fontPackage: Overrides.kFontPkg),
+            //         color: AppTheme.kButtonColor,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            //  CustomAppBarWidget(
+            //   appBarTitle: 'OCR',
+            //   isSearch: true,
+            //   isShare: false,
+            //   language: Globals.selectedLanguage,
+            //   isCenterIcon: false,
+            //   ishtmlpage: false,
+            //   sharedpopBodytext: '',
+            //   sharedpopUpheaderText: '',
+            // ),
+            body: Form(
+              key: _formKey,
+              child: ListView(children: [
+                Container(
+                  // color: Colors.red,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  height:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? MediaQuery.of(context).size.height
+                          : MediaQuery.of(context).size.width,
+                  child: ListView(
+                    // controller: listScrollController,
+                    shrinkWrap: true,
                     children: [
-                      Container(
-                        // color: Colors.red,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        height: MediaQuery.of(context).orientation ==
-                                Orientation.portrait
-                            ? MediaQuery.of(context).size.height
-                            : MediaQuery.of(context).size.width,
-                        child: ListView(
-                          // controller: listScrollController,
-                          shrinkWrap: true,
-                          children: [
-                            SpacerWidget(_KVertcalSpace * 0.50),
-                            highlightText(
-                              text: 'Create Assessment',
-                              theme: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            SpacerWidget(_KVertcalSpace / 1.8),
-                            // highlightText(
-                            //   text: 'Assessment Name',
-                            //   theme: Theme.of(context)
-                            //       .textTheme
-                            //       .headline6!
-                            //       .copyWith(fontWeight: FontWeight.bold),
-                            // ),
-                            // SpacerWidget(_KVertcalSpace / 1.8),
-                            highlightText(
-                                text: 'Assessment Name',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            textFormField(
-                                controller: assessmentController,
-                                hintText: 'Assessment Name',
-                                validator: (String? value) {
-                                  if (value!.isEmpty) {
-                                    return 'Assessment name is required';
-                                  } else if (value.length < 2) {
-                                    return 'Assessment name should contain atlease 2 characters';
-                                  } else {
-                                    return null;
-                                  }
-                                },
-                                onSaved: (String value) {}),
-                            // SpacerWidget(_KVertcalSpace / 2),
-                            // highlightText(
-                            //     text: 'Class Name',
-                            //     theme: Theme.of(context)
-                            //         .textTheme
-                            //         .headline2!
-                            //         .copyWith(
-                            //             color: Theme.of(context)
-                            //                 .colorScheme
-                            //                 .primaryVariant
-                            //                 .withOpacity(0.3))),
-                            // textFormField(
-                            //     controller: classController,
-                            //     hintText: '1st',
-                            //     // onSaved: (String value) {},
-                            //     validator: (String? value) {
-                            //       if (value!.isEmpty) {
-                            //         return 'Class name is required';
-                            //       } else {
-                            //         return null;
-                            //       }
-                            //     },
-                            //     onSaved: (String value) {}),
-                            SpacerWidget(_KVertcalSpace / 2),
-                            highlightText(
-                                text: 'Class Name',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            textFormField(
-                              controller: classController,
-                              hintText: '1st',
-                              onSaved: (String value) {},
-                              validator: (String? value) {
-                                if (value!.isEmpty) {
-                                  return 'Class name is required';
-                                } else {
-                                  return null;
-                                }
-                              },
-                            ),
-                            SpacerWidget(_KVertcalSpace / 2),
-                            highlightText(
-                                text: 'Scan Question',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            SpacerWidget(_KVertcalSpace / 4),
-                            GestureDetector(
-                              onTap: () {
-                                _cameraImage(context);
-                              },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      border: Border.all(
-                                          width: 2,
-                                          color: AppTheme.kButtonColor),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  height: 120,
-                                  width: MediaQuery.of(context).size.width,
-                                  child:
-                                      // imageFile != null
-                                      //     ?
-                                      ValueListenableBuilder(
-                                          valueListenable: isimageFilePicked,
-                                          child: Container(),
-                                          builder: (BuildContext context,
-                                              dynamic value, Widget? child) {
-                                            return isimageFilePicked.value ==
-                                                    true
-                                                ? ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    child: Image.file(
-                                                      imageFile!,
-                                                      fit: BoxFit.contain,
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.add_a_photo,
-                                                        color: AppTheme
-                                                            .kButtonColor
-                                                            .withOpacity(1.0),
-                                                      ),
-                                                    ),
-                                                  );
-                                          })
-                                  // : Container(
-                                  //     child: Center(
-                                  //       child: Icon(
-                                  //         Icons.add_a_photo,
-                                  //         color: AppTheme.kButtonColor
-                                  //             .withOpacity(1.0),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  ),
-                            ),
-                            SpacerWidget(_KVertcalSpace / 2),
-                            highlightText(
-                                text: 'Select Grade',
-                                theme: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryVariant
-                                            .withOpacity(0.3))),
-                            SpacerWidget(_KVertcalSpace / 5),
-                            scoringButton(),
-
-                            //To scroll the screen in case of keyboard appears
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom))
-
-                            // BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                            //     bloc: _googleDriveBloc,
-                            //     listener: (context, state) async {
-                            //       if (state is GoogleDriveLoading) {
-                            //         Utility.showSnackBar(
-                            //             scaffoldKey,
-                            //             'Please wait while assessment is creating',
-                            //             context,
-                            //             null);
-                            //       } else if (state is ExcelSheetCreated) {
-                            //         Navigator.push(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //               builder: (context) => SubjectSelection(
-                            //                     selectedClass:
-                            //                         selectedGrade.value.toString(),
-                            //                   )),
-                            //         );
-                            //       }
-                            //     },
-                            //     child: Container()),
-                            // SpacerWidget(_KVertcalSpace / 20),
-                          ],
+                      SpacerWidget(_KVertcalSpace * 0.50),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: highlightText(
+                          text: 'Create Assessment',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(fontWeight: FontWeight.bold),
                         ),
-                        // ]),
-                        // ),
-                        // ),
                       ),
+                      SpacerWidget(_KVertcalSpace / 1.8),
+                      highlightText(
+                          text: 'Assessment Name',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      textFormField(
+                          controller: assessmentController,
+                          hintText: 'Assessment Name',
+                          validator: (String? value) {
+                            if (value!.isEmpty) {
+                              return 'Assessment name is required';
+                            } else if (value.length < 2) {
+                              return 'Assessment name should contain atlease 2 characters';
+                            } else {
+                              return null;
+                            }
+                          },
+                          onSaved: (String value) {}),
+                      SpacerWidget(_KVertcalSpace / 2),
+                      highlightText(
+                          text: 'Class Name',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height / 11,
+                        child: textFormField(
+                          controller: classController,
+                          hintText: '1st',
+                          onSaved: (String value) {},
+                          validator: (String? value) {
+                            if (value!.isEmpty) {
+                              return 'Class name is required';
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                      ),
+                      if (widget.classSuggestions.length > 0)
+                        SpacerWidget(_KVertcalSpace / 4),
+                      if (widget.classSuggestions.length > 0)
+                        Container(
+                          height: 25,
+                          //padding: EdgeInsets.only(left: 2.0),
+                          child: ChipsFilter(
+                              selectedValue: (String value) {
+                                value.isNotEmpty
+                                    ? classController.text = value
+                                    : print("");
+                              },
+                              selected:
+                                  1, // Select the second filter as default
+                              filters: widget.classSuggestions),
+                        ),
+
+                      // if (widget.classSuggestions.length > 0)
+                      //   SpacerWidget(_KVertcalSpace / 4),
+                      // if (widget.classSuggestions.length > 0)
+                      //   Wrap(
+                      //     children: List<Widget>.generate(
+                      //       widget.classSuggestions.length,
+                      //       (int index) {
+                      //         return _suggestionClips(
+                      //             index: index,
+                      //             classSuggestions: widget.classSuggestions);
+                      //       },
+                      //     ).toList(),
+                      //   ),
+
+                      SpacerWidget(_KVertcalSpace / 2),
+                      highlightText(
+                          text: 'Scan Question',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      SpacerWidget(_KVertcalSpace / 4),
+                      GestureDetector(
+                        onTap: () {
+                          _cameraImage(context);
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                border: Border.all(
+                                    width: 2, color: AppTheme.kButtonColor),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
+                            height: 150,
+                            width: MediaQuery.of(context).size.width,
+                            child:
+                                // imageFile != null
+                                //     ?
+                                ValueListenableBuilder(
+                                    valueListenable: isimageFilePicked,
+                                    child: Container(),
+                                    builder: (BuildContext context,
+                                        dynamic value, Widget? child) {
+                                      return isimageFilePicked.value == true
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image.file(
+                                                imageFile!,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            )
+                                          : Container(
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.add_a_photo,
+                                                  color: AppTheme.kButtonColor
+                                                      .withOpacity(1.0),
+                                                ),
+                                              ),
+                                            );
+                                    })
+                            // : Container(
+                            //     child: Center(
+                            //       child: Icon(
+                            //         Icons.add_a_photo,
+                            //         color: AppTheme.kButtonColor
+                            //             .withOpacity(1.0),
+                            //       ),
+                            //     ),
+                            //   ),
+                            ),
+                      ),
+                      SpacerWidget(_KVertcalSpace / 0.90),
+                      scoringButton(),
+
+                      //To scroll the screen in case of keyboard appears
+                      Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom))
+
+                      // BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                      //     bloc: _googleDriveBloc,
+                      //     listener: (context, state) async {
+                      //       if (state is GoogleDriveLoading) {
+                      //         Utility.showSnackBar(
+                      //             scaffoldKey,
+                      //             'Please wait while assessment is creating',
+                      //             context,
+                      //             null);
+                      //       } else if (state is ExcelSheetCreated) {
+                      //         Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => SubjectSelection(
+                      //                     selectedClass:
+                      //                         selectedGrade.value.toString(),
+                      //                   )),
+                      //         );
+                      //       }
+                      //     },
+                      //     child: Container()),
+                      // SpacerWidget(_KVertcalSpace / 20),
                     ],
-                  )))
-        ]));
+                  ),
+                ),
+              ]),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget textwidget({required String text, required dynamic textTheme}) {
@@ -588,19 +574,106 @@ class _CreateAssessmentState extends State<CreateAssessment>
               )),
     );
   }
+}
 
-  Widget _suggestionClips(
-      {required int index, required List<String> classSuggestions}) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 5.0),
-      child: FilterChip(
-        disabledColor: Colors.transparent,
-        label: Text(classSuggestions[index]),
-        onSelected: (bool value) {
-          value
-              ? classController.text = classSuggestions[index]
-              : print("nothing selected");
-        },
+class ChipsFilter extends StatefulWidget {
+  final void Function(String) selectedValue;
+
+  ///
+  /// The list of the filters
+  ///
+  final List<String>? filters;
+
+  ///
+  /// The default selected index starting with 0
+  ///
+  final int? selected;
+
+  ChipsFilter(
+      {Key? key, this.filters, this.selected, required this.selectedValue})
+      : super(key: key);
+
+  @override
+  _ChipsFilterState createState() => _ChipsFilterState();
+}
+
+class _ChipsFilterState extends State<ChipsFilter> {
+  ///
+  /// Currently selected index
+  ///
+  int? selectedIndex;
+  bool active = false;
+  @override
+  void initState() {
+    // When [widget.selected] is defined, check the value and set it as
+    // [selectedIndex]
+    if (widget.selected != null &&
+        widget.selected! >= 0 &&
+        widget.selected! < widget.filters!.length) {
+      this.selectedIndex = widget.selected;
+    }
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ListView.builder(
+        itemBuilder: this.chipBuilder,
+        itemCount: widget.filters!.length,
+        scrollDirection: Axis.horizontal,
+      ),
+    );
+  }
+
+  ///
+  /// Build a single chip
+  ///
+  Widget chipBuilder(
+    context,
+    currentIndex,
+  ) {
+    String filter = widget.filters![currentIndex];
+    bool isActive = this.selectedIndex == currentIndex;
+
+    return GestureDetector(
+      onTap: () {
+        active = true;
+        setState(() {
+          widget.selectedValue(widget.filters![currentIndex!]);
+          selectedIndex = currentIndex;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        margin: EdgeInsets.only(left: 5),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                spreadRadius: 1.0,
+                // blurRadius: 1.0,
+                color:
+                    isActive && active ? AppTheme.kSelectedColor : Colors.grey),
+          ],
+          color: Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Colors.white
+              : Colors.black,
+          border: Border.all(
+              color:
+                  isActive && active ? AppTheme.kSelectedColor : Colors.grey),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              filter,
+              style:
+                  Theme.of(context).textTheme.headline6!.copyWith(fontSize: 12),
+            ),
+          ],
+        ),
       ),
     );
   }
