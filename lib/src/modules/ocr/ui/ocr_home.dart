@@ -172,12 +172,12 @@ class _OpticalCharacterRecognitionPageState
                       Utility.currentScreenSnackBar("No Internet Connection");
                     } else {
                       Utility.showLoadingDialog(context);
-                      // Globals.studentInfo!.clear();
-                      // if (Globals.googleDriveFolderId!.isEmpty) {
-                      //   _triggerDriveFolderEvent(false);
-                      // } else {
-                      //   _beforenavigateOnCameraSection();
-                      // }
+                      Globals.studentInfo!.clear();
+                      if (Globals.googleDriveFolderId!.isEmpty) {
+                        _triggerDriveFolderEvent(false);
+                      } else {
+                        _beforenavigateOnCameraSection();
+                      }
 
                       // Navigator.push(
                       //   context,
