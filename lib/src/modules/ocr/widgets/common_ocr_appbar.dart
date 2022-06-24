@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -241,7 +242,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   if (snapshot.hasData) {
                     return InkWell(
                       onTap: () {
-                        _showPopUp(snapshot.data!);
+                        
+                     
+                       _showPopUp(snapshot.data!);
                         print("profile url");
                       },
                       child: ClipRRect(
@@ -438,126 +441,127 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         barrierDismissible: true,
         context: context,
         builder: (context) {
+           return CustomDialogBox(profileData:  userInformation);
           // RenderBox renderBox = (widget.key as GlobalKey)
           //     .currentContext
           //     .findAncestorRenderObjectOfType() as RenderBox;
           // Offset position = renderBox.localToGlobal(Offset.zero);
-          return Material(
-            type: MaterialType.transparency,
-            child: Stack(
-              children: [
-                Positioned(
-                  right: 10,
-                  left: 0,
-                  top: MediaQuery.of(context).orientation ==
-                          Orientation.landscape
-                      ? MediaQuery.of(context).size.width / 10
-                      : MediaQuery.of(context).size.height / 10,
-                  child: Container(
-                      height: MediaQuery.of(context).orientation ==
-                              Orientation.landscape
-                          ? MediaQuery.of(context).size.height / 2
-                          : MediaQuery.of(context).size.height / 4.5,
-                      // height: 500,
-                      //  width: double.maxFinite,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.height / 60,
-                          vertical: MediaQuery.of(context).size.height / 60),
-                      margin: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width / 1.9),
-                      decoration: BoxDecoration(
-                          color: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: AppTheme.kSelectedColor,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(.1),
-                                blurRadius: 8)
-                          ]),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: AppTheme.kButtonColor,
-                            radius: 28.0,
-                            child: ClipOval(
-                                child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    height: 50,
-                                    width: 50,
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                    imageUrl: userInformation.profilePicture!,
-                                    placeholder: (context, url) => Center(
-                                          child: CupertinoActivityIndicator(),
-                                        ))),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Text(
-                            userInformation.userName!.replaceAll("%20", " "),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SpacerWidget(
-                            3.0,
-                          ),
-                          Text(userInformation.userEmail!,
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2!
-                                  .copyWith(
-                                    color: Colors.grey.shade500,
-                                  )),
-                          SpacerWidget(8.0),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("Sign Out",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1!
-                                        .copyWith(
-                                            color: Colors.grey.shade500,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20)),
-                                IconButton(
-                                  onPressed: () {
-                                    // Globals.homeIndex=
-                                    UserGoogleProfile.clearUserProfile();
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                                  isFromOcrSection: true,
-                                                )),
-                                        (_) => false);
-                                  },
-                                  icon: Icon(
-                                    Icons.logout,
-                                    size: 26,
-                                    color: AppTheme.kButtonColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )),
-                ),
-              ],
-            ),
-          );
+          // return Material(
+          //   type: MaterialType.transparency,
+          //   child: Stack(
+          //     children: [
+          //       Positioned(
+          //         right: 10,
+          //         left: 0,
+          //         top: MediaQuery.of(context).orientation ==
+          //                 Orientation.landscape
+          //             ? MediaQuery.of(context).size.width / 10
+          //             : MediaQuery.of(context).size.height / 10,
+          //         child: Container(
+          //             height: MediaQuery.of(context).orientation ==
+          //                     Orientation.landscape
+          //                 ? MediaQuery.of(context).size.height / 2
+          //                 : MediaQuery.of(context).size.height / 4.5,
+          //             // height: 500,
+          //             //  width: double.maxFinite,
+          //             padding: EdgeInsets.symmetric(
+          //                 horizontal: MediaQuery.of(context).size.height / 60,
+          //                 vertical: MediaQuery.of(context).size.height / 60),
+          //             margin: EdgeInsets.only(
+          //                 left: MediaQuery.of(context).size.width / 1.9),
+          //             decoration: BoxDecoration(
+          //                 color: Color(0xff000000) !=
+          //                         Theme.of(context).backgroundColor
+          //                     ? Color(0xffF7F8F9)
+          //                     : Color(0xff111C20),
+          //                 borderRadius: BorderRadius.circular(24),
+          //                 border: Border.all(
+          //                   color: AppTheme.kSelectedColor,
+          //                 ),
+          //                 boxShadow: [
+          //                   BoxShadow(
+          //                       color: Colors.black.withOpacity(.1),
+          //                       blurRadius: 8)
+          //                 ]),
+          //             child: Column(
+          //               crossAxisAlignment: CrossAxisAlignment.center,
+          //               mainAxisAlignment: MainAxisAlignment.start,
+          //               children: [
+          //                 CircleAvatar(
+          //                   backgroundColor: AppTheme.kButtonColor,
+          //                   radius: 28.0,
+          //                   child: ClipOval(
+          //                       child: CachedNetworkImage(
+          //                           fit: BoxFit.cover,
+          //                           height: 50,
+          //                           width: 50,
+          //                           errorWidget: (context, url, error) =>
+          //                               Icon(Icons.error),
+          //                           imageUrl: userInformation.profilePicture!,
+          //                           placeholder: (context, url) => Center(
+          //                                 child: CupertinoActivityIndicator(),
+          //                               ))),
+          //                 ),
+          //                 SizedBox(
+          //                   height: 5.0,
+          //                 ),
+          //                 Text(
+          //                   userInformation.userName!.replaceAll("%20", " "),
+          //                   style: Theme.of(context)
+          //                       .textTheme
+          //                       .headline3!
+          //                       .copyWith(fontWeight: FontWeight.bold),
+          //                 ),
+          //                 SpacerWidget(
+          //                   3.0,
+          //                 ),
+          //                 Text(userInformation.userEmail!,
+          //                     textAlign: TextAlign.center,
+          //                     style: Theme.of(context)
+          //                         .textTheme
+          //                         .subtitle2!
+          //                         .copyWith(
+          //                           color: Colors.grey.shade500,
+          //                         )),
+          //                 SpacerWidget(8.0),
+          //                 Expanded(
+          //                   child: Row(
+          //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //                     children: [
+          //                       Text("Sign Out",
+          //                           style: Theme.of(context)
+          //                               .textTheme
+          //                               .subtitle1!
+          //                               .copyWith(
+          //                                   color: Colors.grey.shade500,
+          //                                   fontWeight: FontWeight.bold,
+          //                                   fontSize: 20)),
+          //                       IconButton(
+          //                         onPressed: () {
+          //                           // Globals.homeIndex=
+          //                           UserGoogleProfile.clearUserProfile();
+          //                           Navigator.of(context).pushAndRemoveUntil(
+          //                               MaterialPageRoute(
+          //                                   builder: (context) => HomePage(
+          //                                         isFromOcrSection: true,
+          //                                       )),
+          //                               (_) => false);
+          //                         },
+          //                         icon: Icon(
+          //                           Icons.logout,
+          //                           size: 26,
+          //                           color: AppTheme.kButtonColor,
+          //                         ),
+          //                       ),
+          //                     ],
+          //                   ),
+          //                 ),
+          //               ],
+          //             )),
+          //       ),
+          //     ],
+          //   ),
+          // );
         });
   }
 }
