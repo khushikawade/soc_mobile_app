@@ -480,7 +480,7 @@ class Utility {
     return showDialog<void>(
         useRootNavigator: false,
         context: context,
-        barrierDismissible: false,
+        barrierDismissible: true,
         builder: (BuildContext context) {
           return new WillPopScope(
               onWillPop: () async => false,

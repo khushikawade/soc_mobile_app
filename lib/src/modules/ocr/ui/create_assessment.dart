@@ -96,17 +96,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     shrinkWrap: true,
                     children: [
                       SpacerWidget(_KVertcalSpace * 0.50),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: highlightText(
-                          text: 'Create Assessment',
-                          theme: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
+                      highlightText(
+                        text: 'Create Assessment',
+                        theme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold),
                       ),
                       SpacerWidget(_KVertcalSpace / 1.8),
                       highlightText(
@@ -218,8 +213,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         onTap: () {
                           _cameraImage(context);
                         },
-                        child: Container( margin: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height*0.15),
+                        child: Container(
+                            margin: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.15),
                             decoration: BoxDecoration(
                                 color: Colors.grey.shade200,
                                 border: Border.all(
@@ -266,7 +263,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             //   ),
                             ),
                       ),
-                      
+
                       //To scroll the screen in case of keyboard appears
                       Padding(
                           padding: EdgeInsets.only(
@@ -323,6 +320,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
+            width: 50,
             height: MediaQuery.of(context).orientation == Orientation.portrait
                 ? MediaQuery.of(context).size.height * 0.25
                 : MediaQuery.of(context).size.width * 0.35,
@@ -365,17 +363,23 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                     : Colors.grey,
                               )),
                           child: Center(
-                            child: textwidget(
-                              text: widget.customGrades[index],
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(
-                                      color: selectedGrade.value == index
-                                          ? AppTheme.kSelectedColor
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant),
+                            child: FittedBox(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 5.0, right: 5.0),
+                                child: textwidget(
+                                  text: widget.customGrades[index],
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .headline1!
+                                      .copyWith(
+                                          color: selectedGrade.value == index
+                                              ? AppTheme.kSelectedColor
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -603,8 +607,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
     LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
 
     if (!widget.customGrades.contains(sectionName)) {
+      widget.customGrades.removeLast();
       widget.customGrades.add(sectionName);
+      widget.customGrades.add('+');
+
       setState(() {});
+      selectedGrade.value = widget.customGrades.length - 2;
     } else {
       Utility.showSnackBar(
           scaffoldKey, "Subject $sectionName already exist", context, null);

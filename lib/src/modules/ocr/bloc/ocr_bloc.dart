@@ -80,6 +80,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         print(e);
       }
     }
+
     if (event is SearchSubjectDetails) {
       try {
         List<SubjectDetailList> data = await fatchSubjectDetails(
@@ -89,12 +90,22 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             gradeNo: event.grade,
             subjectSelected: event.subjectSelected);
         List<SubjectDetailList> list = [];
+
         if (event.type == 'subject') {
+          //Subjects from database
           List<SubjectDetailList> subjectList = [];
           subjectList.addAll(data);
+
+          //Custom subjects
           List<SubjectDetailList> list =
               await fatchLocalSubject(event.keyword!);
           subjectList.addAll(list);
+
+           //Sorting the list based on subject name
+          subjectList.forEach((element) { 
+            if(element.subjectNameC!=null){
+          subjectList.sort((a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));}});
+
           bool check = false;
           for (int i = 0; i < subjectList.length; i++) {
             if (subjectList[i]
@@ -116,6 +127,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             obj: list,
           );
         } else if (event.type == 'nyc') {
+           //Sorting the list based on subject name
+          data.forEach((element) { 
+            if(element.domainNameC!=null){
+          data.sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));}});
+
           for (int i = 0; i < data.length; i++) {
             if (data[i]
                 .domainNameC!
@@ -756,13 +772,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     // studentDetails.removeAt(0);
 
     for (int i = 0; i < studentDetails.length; i++) {
-      bodyContent.add(recordtoJson(
+      //To bypass the titles saving in the dashboard
+    if(studentDetails[i].studentId!='Id'){  bodyContent.add(recordtoJson(
           assessmentId,
           Utility.getCurrentDate(DateTime.now()),
           studentDetails[i].studentGrade ?? '',
           studentDetails[i].studentId ?? '',
           studentDetails[i].assessmentImage ?? '',
-          studentDetails[i].studentName ?? ''));
+          studentDetails[i].studentName ?? ''));}
     }
 
     final ResponseModel response = await _dbServices.postapi(

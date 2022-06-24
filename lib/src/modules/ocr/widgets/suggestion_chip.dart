@@ -3,6 +3,7 @@ import '../../../styles/theme.dart';
 
 class ChipsFilter extends StatefulWidget {
   final void Function(String) selectedValue;
+
   ///
   /// The list of the filters
   ///
@@ -70,23 +71,21 @@ class _ChipsFilterState extends State<ChipsFilter> {
         });
       },
       child: Container(
-
         padding: EdgeInsets.symmetric(horizontal: 20),
         margin: EdgeInsets.only(left: 5),
         decoration: BoxDecoration(
-          
           boxShadow: [
             BoxShadow(
                 // spreadRadius: 1.0,
                 // blurRadius: 1.0,
                 // color:
                 //     isActive && active ? AppTheme.kSelectedColor : Colors.grey
-                    ),
+                ),
           ],
-          color://Colors.transparent,
-            Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Color(0xffF7F8F9)
-              : Color(0xff111C20),
+          color: //Colors.transparent,
+              Color(0xff000000) != Theme.of(context).backgroundColor
+                  ? Color(0xffF7F8F9)
+                  : Color(0xff111C20),
           border: Border.all(
               color:
                   isActive && active ? AppTheme.kSelectedColor : Colors.grey),

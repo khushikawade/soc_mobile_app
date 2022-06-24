@@ -24,6 +24,7 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -520,7 +521,7 @@ class _OpticalCharacterRecognitionPageState
         refreshtoken: _profileData[0].refreshToken));
   }
 
-  void _beforenavigateOnCameraSection() {
+  void _beforenavigateOnCameraSection() async{
     print(
         "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
 
@@ -551,10 +552,13 @@ class _OpticalCharacterRecognitionPageState
                             : '2',
               )),
     );
+    //  LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    // List<String> classSuggestions =
+    //                         await _localDb.getData();
     // Navigator.push(
     //   context,
     //   MaterialPageRoute(
-    //       builder: (context) => CreateAssessment())
+    //       builder: (context) => CreateAssessment(classSuggestions: classSuggestions,customGrades:Globals.classList,))
     // );
   }
 
