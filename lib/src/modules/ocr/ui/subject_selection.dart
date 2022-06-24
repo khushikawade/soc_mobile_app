@@ -249,6 +249,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   });
                         }),
                     SpacerWidget(_KVertcalSpace / 4),
+                    ValueListenableBuilder(
+                        valueListenable: pageIndex,
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          return pageIndex.value == 1
+                              ? searchDomainText()
+                              : Container();
+                        }),
+                    SpacerWidget(_KVertcalSpace / 4),
                     blocBuilderWidget(),
                     BlocListener(
                       bloc: _ocrBloc,
@@ -278,16 +287,42 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         bloc: _ocrBloc,
         builder: (context, state) {
           if (state is SubjectDataSuccess) {
+            state.obj!.forEach((element) {
+              if (element.subjectNameC != null) {
+                state.obj!
+                    .sort((a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));
+              }
+            });
             // state.obj!.forEach((element) { userAddedSubjectList.add(element.subjectNameC!);});
 
             return gridButtonsWidget(list: state.obj!, page: 0);
           } else if (state is NycDataSuccess) {
+            state.obj.forEach((element) {
+              if (element.domainNameC != null) {
+                state.obj
+                    .sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));
+              }
+            });
+
             return gridButtonsWidget(list: state.obj, page: 1);
           } else if (state is NycSubDataSuccess) {
+            state.obj!.forEach((element) {
+              if (element.domainCodeC != null) {
+                state.obj!.sort((a, b) => a.name!.compareTo(b.name!));
+              }
+            });
+
             return buttonListWidget(list: state.obj!);
           } else if (state is SearchSubjectDetailsSuccess) {
             List<SubjectDetailList> list = [];
             if (pageIndex.value == 0) {
+              state.obj!.forEach((element) {
+                if (element.subjectNameC != null) {
+                  state.obj!.sort(
+                      (a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));
+                }
+              });
+
               for (int i = 0; i < state.obj!.length; i++) {
                 if (state.obj![i].subjectNameC!
                     .toUpperCase()
@@ -296,6 +331,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 }
               }
             } else if (pageIndex.value == 1) {
+              state.obj!.forEach((element) {
+                if (element.domainNameC != null) {
+                  state.obj!
+                      .sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));
+                }
+              });
+
               for (int i = 0; i < state.obj!.length; i++) {
                 if (state.obj![i].domainNameC!
                     .toUpperCase()
@@ -304,6 +346,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 }
               }
             } else if (pageIndex.value == 2) {
+              state.obj!.forEach((element) {
+                if (element.domainCodeC != null) {
+                  state.obj!
+                      .sort((a, b) => a.domainCodeC!.compareTo(b.domainCodeC!));
+                }
+              });
+
               for (int i = 0; i < state.obj!.length; i++) {
                 if (state.obj![i].standardAndDescriptionC!
                     .toUpperCase()
@@ -338,6 +387,18 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       },
       child: Container(),
     );
+  }
+
+  Widget searchDomainText() {
+    return Utility.textWidget(
+        text: 'Select Domain',
+        // : pageIndex.value == 1
+        //     ? 'NY Next Generation Learning Standard'
+
+        textTheme: Theme.of(context).textTheme.subtitle1!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+        context: context);
   }
 
   Widget buttonListWidget({required List<SubjectDetailList> list}) {
@@ -805,7 +866,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           scaffoldKey: _scaffoldKey,
                                           context: context,
                                           fileId: Globals.googleExcelSheetId!));
-                                      
                                     }
                                     if (state is ErrorState) {
                                       Navigator.of(context).pop();

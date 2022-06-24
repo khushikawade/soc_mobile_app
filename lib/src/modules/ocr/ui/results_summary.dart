@@ -860,6 +860,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
                           return Text(translatedMessage.toString(),
+                           textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline1!

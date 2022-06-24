@@ -480,7 +480,7 @@ class Utility {
     return showDialog<void>(
         useRootNavigator: false,
         context: context,
-        barrierDismissible: false,
+        barrierDismissible: true,
         builder: (BuildContext context) {
           return new WillPopScope(
               onWillPop: () async => false,
@@ -491,11 +491,12 @@ class Utility {
                   children: <Widget>[
                     Container(
                       height: 70,
+                      width: MediaQuery.of(context).size.width*0.4,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                             Utility.textWidget(text: 'Please Wait', context: context, textTheme: Theme.of(context).textTheme.headline6!.copyWith(
+                             Utility.textWidget(text: 'Please Wait...', context: context, textTheme: Theme.of(context).textTheme.headline6!.copyWith(
                             color: 
                             // Color(0xff000000) ==
                             //         Theme.of(context).backgroundColor

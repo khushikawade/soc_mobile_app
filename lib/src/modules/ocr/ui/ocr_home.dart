@@ -6,7 +6,6 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -171,7 +170,7 @@ class _OpticalCharacterRecognitionPageState
                     if (!connected) {
                       Utility.currentScreenSnackBar("No Internet Connection");
                     } else {
-                      Utility.showLoadingDialog(context);
+                      //Utility.showLoadingDialog(context);
                       Globals.studentInfo!.clear();
                       if (Globals.googleDriveFolderId!.isEmpty) {
                         _triggerDriveFolderEvent(false);
@@ -522,7 +521,7 @@ class _OpticalCharacterRecognitionPageState
         refreshtoken: _profileData[0].refreshToken));
   }
 
-  void _beforenavigateOnCameraSection() {
+  void _beforenavigateOnCameraSection() async{
     print(
         "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
 
@@ -553,10 +552,13 @@ class _OpticalCharacterRecognitionPageState
                             : '2',
               )),
     );
+    //  LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    // List<String> classSuggestions =
+    //                         await _localDb.getData();
     // Navigator.push(
     //   context,
     //   MaterialPageRoute(
-    //       builder: (context) => CreateAssessment())
+    //       builder: (context) => CreateAssessment(classSuggestions: classSuggestions,customGrades:Globals.classList,))
     // );
   }
 
