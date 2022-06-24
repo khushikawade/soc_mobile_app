@@ -336,6 +336,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Row(children:[
               Utility.textWidget(
                   text: 'Manual Entry',
                   context: context,
@@ -357,7 +358,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         fontPackage: Overrides.kFontPkg),
                     size: 19,
                     color: Colors.white),
-              ),
+              ),]),
+                Icon(Icons.refresh,
+                      // IconData( Icons.refresh,
+                      //     fontFamily: Overrides.kFontFam,
+                      //     fontPackage: Overrides.kFontPkg),
+                      size: 34,
+                      color: AppTheme.kButtonColor,
+                    ),
+              
             ],
           ),
 
@@ -611,6 +620,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     ),
                   ],
                 )),
+                
           ),
         ],
         // ),

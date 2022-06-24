@@ -6,7 +6,6 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -25,7 +24,6 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/google_auth_webview.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -171,13 +169,13 @@ class _OpticalCharacterRecognitionPageState
                     if (!connected) {
                       Utility.currentScreenSnackBar("No Internet Connection");
                     } else {
-                      Utility.showLoadingDialog(context);
-                      // Globals.studentInfo!.clear();
-                      // if (Globals.googleDriveFolderId!.isEmpty) {
-                      //   _triggerDriveFolderEvent(false);
-                      // } else {
-                      //   _beforenavigateOnCameraSection();
-                      // }
+                      //Utility.showLoadingDialog(context);
+                      Globals.studentInfo!.clear();
+                      if (Globals.googleDriveFolderId!.isEmpty) {
+                        _triggerDriveFolderEvent(false);
+                      } else {
+                        _beforenavigateOnCameraSection();
+                      }
 
                       // Navigator.push(
                       //   context,
