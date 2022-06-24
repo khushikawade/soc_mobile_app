@@ -266,7 +266,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     // nameController.text =
                     //     onChange == true ? state.studentName! : studentName;
                     // Globals.gradeList.add(state.grade!);
-                    rubricNotDetected.value = true;
+                    if (state.grade == '') {
+                      rubricNotDetected.value = true;
+                    }
+
                     return failureScreen(
                         id: state.studentId!, grade: state.grade!);
                   }
@@ -328,7 +331,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
             listener: (context, state) async {
               if (state is SuccessStudentDetails) {
                 nameController.text = state.studentName;
+                isStudentNameFilled.value = state.studentName;
                 isNameUpdated.value = !isNameUpdated.value;
+               // _formKey1.currentState!.validate();
               }
             },
           ),
@@ -455,6 +460,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 _formKey1.currentState!.validate();
                 // updateDetails(isUpdateData: true);
                 studentId = idController.text;
+                if (idController.text.length == 9 &&
+                    idController.text[0] == '2') {
+                  _bloc2.add(FetchStudentDetails(ossId: idController.text));
+                }
                 onChange = true;
               },
               validator: (String? value) {
