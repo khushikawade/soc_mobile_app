@@ -4,7 +4,9 @@ import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -67,6 +69,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   List<StudentAssessmentInfo> historyRecordList = [];
   List iconsList = [];
   List iconsName = [];
+
+  final editingStudentNameController = TextEditingController();
+  final editingStudentIdController = TextEditingController();
+  final editingStudentScoreController = TextEditingController();
+
+  ValueNotifier<List<StudentAssessmentInfo>> sudentRecordList =
+      ValueNotifier(Globals.studentInfo!);
+  // ValueNotifier<int> _listCount = ValueNotifier(Globals.studentInfo!.length);
+
   @override
   void initState() {
     if (widget.assessmentDetailPage!) {
@@ -176,9 +187,22 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       ? Column(
                           children: [
                             resultTitle(),
-                            listView(
-                              Globals.studentInfo!,
-                            ),
+                            Builder(builder: (context) {
+                              return ValueListenableBuilder(
+                                  valueListenable: assessmentCount,
+                                  builder: (BuildContext context, int listCount,
+                                      Widget? child) {
+                                    return ValueListenableBuilder(
+                                        valueListenable: sudentRecordList,
+                                        builder: (BuildContext context,
+                                            List<StudentAssessmentInfo> newList,
+                                            Widget? child) {
+                                          return listView(
+                                            sudentRecordList.value,
+                                          );
+                                        });
+                                  });
+                            }),
                           ],
                         )
                       : BlocConsumer(
@@ -685,39 +709,31 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
           return Slidable(
+              enabled: (Globals.scanMoreStudentInfoLength ?? -1) <= index
+                  ? true
+                  : false,
               // Specify a key if the Slidable is dismissible.
               key: ValueKey(index),
-
-              // The start action pane is the one at the left or the top side.
-              // startActionPane: ActionPane(
-              //   // A motion is a widget used to control how the pane animates.
-              //   motion: const ScrollMotion(),
-
-              //   // A pane can dismiss the Slidable.
-              //   dismissible: DismissiblePane(onDismissed: () {}),
-
-              //   // All actions are defined in the children parameter.
-              //   children: [
-              //     // A SlidableAction can have an icon and/or a label.
-              //   ],
-              // ),
-
-              // The end action pane is the one at the right or the bottom side.
               endActionPane: ActionPane(
-                //   dismissible: DismissiblePane(onDismissed: () {}),
                 motion: ScrollMotion(),
                 children: [
                   SlidableAction(
+                    flex: 2,
                     // An action can be bigger than the others.
 
-                    onPressed: doNothing(context, index),
+                    onPressed: (i) {
+                      print(i);
+                      doNothing(context, index, true);
+                    },
                     backgroundColor: AppTheme.kButtonColor,
                     foregroundColor: Colors.white,
                     icon: Icons.edit,
                     label: 'Edit',
                   ),
                   SlidableAction(
-                    onPressed: doNothing(context, index),
+                    onPressed: (i) {
+                      doNothing(context, index, false);
+                    },
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
                     icon: Icons.delete,
@@ -1045,5 +1061,188 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   //           }));
   // }
 
-  doNothing(BuildContext context, int index) {}
+  doNothing(BuildContext context, int index, bool? edit) {
+    if (edit!) {
+      editingStudentNameController.text =
+          Globals.studentInfo![index].studentName!;
+      editingStudentIdController.text = Globals.studentInfo![index].studentId!;
+      editingStudentScoreController.text =
+          Globals.studentInfo![index].studentGrade!;
+      editBottomSheet(
+          controllerOne: editingStudentNameController,
+          controllerTwo: editingStudentIdController,
+          controllerThree: editingStudentScoreController,
+          index: index);
+    } else {
+      Globals.studentInfo!.length > 2
+          ? _deletePopUP(
+              studentName: Globals.studentInfo![index].studentName!,
+              index: index)
+          : Utility.noInternetSnackBar(
+              "You not able to delelet the last record");
+    }
+  }
+
+  editBottomSheet(
+      {required TextEditingController controllerOne,
+      required TextEditingController controllerTwo,
+      required TextEditingController controllerThree,
+      required int index}) {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => EditBottomSheet(
+              textFieldControllerthree: controllerThree,
+              textFieldControllerOne: controllerOne,
+              textFieldControllerTwo: controllerTwo,
+              sheetHeight: MediaQuery.of(context).size.height / 2.0,
+              title: 'Edit',
+              isImageField: false,
+              textFieldTitleOne: 'Student Name',
+              textFieldTitleTwo: ' Student Id',
+              textFileTitleThree: "Student Grade",
+              isSubjectScreen: false,
+              update: (
+                  {required TextEditingController name,
+                  required TextEditingController id,
+                  required TextEditingController score}) {
+                Globals.studentInfo![index].studentName = name.text;
+                Globals.studentInfo![index].studentId = id.text;
+                Globals.studentInfo![index].studentGrade = score.text;
+                Navigator.pop(context);
+                assessmentCount.value = Globals.studentInfo!.length;
+                sudentRecordList.value = Globals.studentInfo!;
+              },
+            ));
+  }
+
+  _deletePopUP({required String studentName, required int index}) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Center(
+                  child: Container(
+                    padding: Globals.deviceType == 'phone'
+                        ? null
+                        : const EdgeInsets.only(top: 10.0),
+                    height: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                    width: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                    child: TranslationWidget(
+                        message: "Delete",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(color: Colors.red));
+                        }),
+                  ),
+                ),
+                content: TranslationWidget(
+                    message: ' are you sure want to delete this record ',
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return RichText(
+                        text: TextSpan(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.black),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '" $studentName "',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            TextSpan(text: translatedMessage),
+                          ],
+                        ),
+                      );
+
+                      //  Text(translatedMessage.toString(),
+                      //     style: Theme.of(context)
+                      //         .textTheme
+                      //         .headline2!
+                      //         .copyWith(color: Colors.black));
+                    }),
+                actions: <Widget>[
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        child: TranslationWidget(
+                            message: "No",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppTheme.kButtonColor,
+                                      ));
+                            }),
+                        onPressed: () {
+                          //Globals.iscameraPopup = false;
+                          Navigator.pop(
+                            context,
+                          );
+                        },
+                      ),
+                      TextButton(
+                        child: TranslationWidget(
+                            message: "Delete ",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: Colors.red,
+                                      ));
+                            }),
+                        onPressed: () {
+                          Globals.studentInfo!.removeAt(index);
+                          assessmentCount.value = Globals.studentInfo!.length;
+                          sudentRecordList.value = Globals.studentInfo!;
+                          Navigator.pop(
+                            context,
+                          );
+                        },
+                      ),
+                    ],
+                  )
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              );
+            }));
+  }
 }
