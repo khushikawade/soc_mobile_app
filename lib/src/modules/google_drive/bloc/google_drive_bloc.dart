@@ -184,7 +184,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               customRubricImage: "Custom Rubric Image",
               assessmentImage: "Assessment Image",
               questionImgUrl: "Assessment Question Img",
-              isSavedOnDashBoard: "Saved on Dashboard",
             ));
 
         print(assessmentData);

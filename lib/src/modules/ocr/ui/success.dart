@@ -242,7 +242,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             isStudentNameFilled.value = state.studentName ?? ''
                         : null;
                     pointScored.value = state.grade!;
-                  //  animatedWidth.value = 250.0;
+                    //  animatedWidth.value = 250.0;
                     // updateDetails();
 
                   }
