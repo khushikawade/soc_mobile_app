@@ -181,10 +181,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                         )),
                                 (_) => false);
                           }
-
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(builder: (context) => HomePage()),
-                          // );
                         },
                         icon: Icon(
                           IconData(0xe874,
@@ -198,33 +194,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           widget.assessmentDetailPage == true
               ? Container()
               : widget.isSuccessState == false || widget.isResultScreen == true
-                  // ||
-                  // widget.isbackOnSuccess == true
                   ? widget.actionIcon!
-                  // Container(
-                  //     padding: widget.isSuccessState != false
-                  //         ? EdgeInsets.only(right: 10)
-                  //         : EdgeInsets.zero,
-                  //     child: IconButton(
-                  //       onPressed: () {
-                  //         if (widget.isSuccessState == false) {
-                  //           Navigator.push(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                   builder: (_) => CameraScreen()));
-                  //         } else if (widget.isResultScreen == true) {
-                  //           onFinishedPopup();
-                  //         }
-                  //       },
-                  //       icon: Icon(
-                  //         IconData(0xe877,
-                  //             fontFamily: Overrides.kFontFam,
-                  //             fontPackage: Overrides.kFontPkg),
-                  //         size: 30,
-                  //         color: AppTheme.kButtonColor,
-                  //       ),
-                  //     ),
-                  //   )
                   : ValueListenableBuilder(
                       valueListenable: widget.isbackOnSuccess!,
                       builder:
@@ -240,15 +210,15 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                 future: getUserProfile(),
                 builder: (context, AsyncSnapshot<UserInformation> snapshot) {
                   if (snapshot.hasData) {
-                    return InkWell(
-                      onTap: () {
-                        
-                     
-                       _showPopUp(snapshot.data!);
-                        print("profile url");
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(60),
+                    return ClipRRect(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(60),
+                      ), //.circular(60),
+                      child: GestureDetector(
+                        onTap: () {
+                          _showPopUp(snapshot.data!);
+                          print("profile url");
+                        },
                         child: CachedNetworkImage(
                           // height: 30,
                           fit: BoxFit.cover,
@@ -437,11 +407,11 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   }
 
   void _showPopUp(UserInformation userInformation) {
-    showCupertinoModalPopup(
+    showDialog(
         barrierDismissible: true,
         context: context,
         builder: (context) {
-           return CustomDialogBox(profileData:  userInformation);
+          return CustomDialogBox(profileData: userInformation);
           // RenderBox renderBox = (widget.key as GlobalKey)
           //     .currentContext
           //     .findAncestorRenderObjectOfType() as RenderBox;
