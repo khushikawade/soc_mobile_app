@@ -709,9 +709,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
           return Slidable(
-              enabled: (Globals.scanMoreStudentInfoLength ?? -1) <= index
-                  ? true
-                  : false,
+              enabled: widget.assessmentDetailPage!
+                  ? false
+                  : (Globals.scanMoreStudentInfoLength ?? -1) <= index
+                      ? true
+                      : false,
               // Specify a key if the Slidable is dismissible.
               key: ValueKey(index),
               endActionPane: ActionPane(
@@ -723,7 +725,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                     onPressed: (i) {
                       print(i);
-                      doNothing(context, index, true);
+                      performEditAndDelete(context, index, true);
                     },
                     backgroundColor: AppTheme.kButtonColor,
                     foregroundColor: Colors.white,
@@ -732,7 +734,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ),
                   SlidableAction(
                     onPressed: (i) {
-                      doNothing(context, index, false);
+                      performEditAndDelete(context, index, false);
                     },
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
@@ -1061,7 +1063,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   //           }));
   // }
 
-  doNothing(BuildContext context, int index, bool? edit) {
+  performEditAndDelete(BuildContext context, int index, bool? edit) {
     if (edit!) {
       editingStudentNameController.text =
           Globals.studentInfo![index].studentName!;
