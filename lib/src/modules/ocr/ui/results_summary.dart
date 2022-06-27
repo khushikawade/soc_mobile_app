@@ -52,6 +52,7 @@ class ResultsSummary extends StatefulWidget {
 class _ResultsSummaryState extends State<ResultsSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+  GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
   // int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
@@ -164,13 +165,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Utility.textWidget(
-                            text: 'Results Summary',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(fontWeight: FontWeight.bold)),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Utility.textWidget(
+                              text: 'Results Summary',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(fontWeight: FontWeight.bold)),
+                        ),
                         ValueListenableBuilder(
                             valueListenable: assessmentCount,
                             builder: (BuildContext context, int value,
@@ -203,6 +209,22 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         });
                                   });
                             }),
+                            BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                                bloc: _driveBloc2,
+                                child: Container(),
+                                listener: (context, state) {
+                                  if (state is GoogleDriveLoading) {
+                                    Utility.loadingDialog(context);
+                                  }
+                                  if (state is GoogleSuccess) {
+                                    Navigator.of(context).pop();
+                                  }
+                                  if (state is ErrorState) {
+                                    Navigator.of(context).pop();
+                                    Utility.noInternetSnackBar(
+                                        "Technical issue try again after some time");
+                                  }
+                                }),
                           ],
                         )
                       : BlocConsumer(
@@ -709,7 +731,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
           return Slidable(
-              enabled: widget.assessmentDetailPage== true
+              enabled: widget.assessmentDetailPage == true
                   ? false
                   : (Globals.scanMoreStudentInfoLength ?? -1) <= index
                       ? true
@@ -720,7 +742,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 motion: ScrollMotion(),
                 children: [
                   SlidableAction(
-                    flex: 2,
                     // An action can be bigger than the others.
 
                     onPressed: (i) {
@@ -1118,6 +1139,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 Globals.studentInfo![index].studentId = id.text;
                 Globals.studentInfo![index].studentGrade = score.text;
                 Navigator.pop(context);
+
+                _driveBloc2.add(UpdateDocOnDrive(
+                    isLoading: true,
+                    studentData:
+                        //list2
+                        Globals.studentInfo!));
                 assessmentCount.value = Globals.studentInfo!.length;
                 sudentRecordList.value = Globals.studentInfo!;
               },
@@ -1237,6 +1264,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           Navigator.pop(
                             context,
                           );
+
+                          _driveBloc2.add(UpdateDocOnDrive(
+                              isLoading: true,
+                              studentData:
+                                  //list2
+                                  Globals.studentInfo!));
                         },
                       ),
                     ],

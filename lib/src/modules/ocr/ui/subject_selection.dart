@@ -175,6 +175,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     if (pageIndex.value == 1) {
                                       FocusManager.instance.primaryFocus
                                           ?.unfocus();
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -775,11 +776,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 element.isSavedOnDashBoard = "NO";
                               });
 
-                              _googleDriveBloc.add(UpdateDocOnDrive(
-                                  isLoading: true,
-                                  studentData:
-                                      //list2
-                                      Globals.studentInfo!));
+                              _googleDriveBloc.add(
+                                UpdateDocOnDrive(
+                                    isLoading: true,
+                                    studentData:
+                                        //list2
+                                        Globals.studentInfo!),
+                              );
                             }
                           },
                           label: Row(
