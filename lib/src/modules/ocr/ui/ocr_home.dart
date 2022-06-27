@@ -521,7 +521,7 @@ class _OpticalCharacterRecognitionPageState
         refreshtoken: _profileData[0].refreshToken));
   }
 
-  void _beforenavigateOnCameraSection() async{
+  void _beforenavigateOnCameraSection() async {
     print(
         "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
 

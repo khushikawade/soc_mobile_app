@@ -46,6 +46,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool onChange = false;
   String studentName = '';
   String studentId = '';
+  final ValueNotifier<bool> scanFailure = ValueNotifier<bool>(false);
   final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
@@ -269,7 +270,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   if (state.grade == '') {
                     rubricNotDetected.value = true;
                   }
-
+                  scanFailure.value = true;
                   return failureScreen(
                       id: state.studentId!, grade: state.grade!);
                 }
@@ -278,20 +279,27 @@ class _SuccessScreenState extends State<SuccessScreen> {
               },
             ),
           ),
-          floatingActionButton: Align(
-              alignment: Alignment.bottomCenter,
-              child: retryButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CameraScreen(
-                              isScanMore: widget.isScanMore,
-                              pointPossible: widget.pointPossible,
-                            )),
-                  );
-                },
-              )),
+          floatingActionButton: ValueListenableBuilder(
+              valueListenable: scanFailure,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return scanFailure.value == true
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
+                        child: retryButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraScreen(
+                                        isScanMore: widget.isScanMore,
+                                        pointPossible: widget.pointPossible,
+                                      )),
+                            );
+                          },
+                        ))
+                    : Container();
+              }),
           // retryButton(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
