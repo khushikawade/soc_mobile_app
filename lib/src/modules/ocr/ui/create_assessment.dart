@@ -507,15 +507,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     listener: (context, state) {
                       if (state is GoogleDriveLoading) {
                         Utility.showLoadingDialog(context);
-                        Future.delayed(Duration(seconds: 15), () {
-                          Navigator.pop(context);
-                          Utility.showSnackBar(
-                              Globals.scaffoldKey,
-                              'Something went wrong. Please try again',
-                              context,
-                              null);
-                        });
-                      }
+                        }
+                     
                       if (state is ExcelSheetCreated) {
                         Navigator.of(context).pop();
                         _navigateToSubjectSection();

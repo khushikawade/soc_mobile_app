@@ -166,7 +166,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             builder: (BuildContext context, int value,
                                 Widget? child) {
                               return Text(
-                                  "${assessmentCount.value > 0 ? assessmentCount.value-1 : ''}",
+                                  "${assessmentCount.value > 0 ? assessmentCount.value - 1 : ''}",
                                   style: Theme.of(context).textTheme.headline3);
                             }),
                       ],
@@ -762,7 +762,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
-            width: isScrolling.value ? null : 200,
+            width: isScrolling.value ? null : 130,
             child: FloatingActionButton.extended(
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
@@ -860,7 +860,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
                           return Text(translatedMessage.toString(),
-                           textAlign: TextAlign.center,
+                              textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline1!

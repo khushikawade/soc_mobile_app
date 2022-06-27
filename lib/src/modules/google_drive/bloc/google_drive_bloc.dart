@@ -504,7 +504,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           body: body,
           isGoogleApi: true);
 
-      if (response.statusCode != 401 &&response.statusCode == 200 && response.data['statusCode']!=500) {
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
         //  String id = response.data['id'];
         print("Folder created successfully : ${response.data['body']['id']}");
         return Globals.googleDriveFolderId = response.data['body']['id'];
@@ -533,7 +535,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isGoogleAPI: true);
 
-      if (response.statusCode != 401 && response.statusCode == 200 && response.data['statusCode']!=500) {
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
         var data = response.data
             //   ['body']
             ['files'];
@@ -548,7 +552,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // return data[i];
         //   }
         // }
-      } else if (response.statusCode == 401 || response.data['statusCode']!=500) {
+      } else if (response.statusCode == 401 ||
+          response.data['statusCode'] != 500) {
         print("Invalid credentials");
         return response.statusCode;
       }
@@ -583,7 +588,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         headers: headers,
         isGoogleApi: true);
 
-    if (response.statusCode != 401 &&response.statusCode == 200 && response.data['statusCode']!=500 ) {
+    if (response.statusCode != 401 &&
+        response.statusCode == 200 &&
+        response.data['statusCode'] != 500) {
       print("file created successfully : ${response.data['id']}");
 
       String fileId = response.data['body']['id'];
@@ -599,7 +606,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       //   await _getShareableLink(accessToken, fileId, refreshToken);
       // }
       return true;
-    } else if (response.statusCode == 401 || response.data['statusCode']!=500) {
+    } else if (response.statusCode == 401 ||
+        response.data['statusCode'] != 500) {
       //To regernerate fresh access token
       await _toRefreshAuthenticationToken(refreshToken!);
       CreateExcelSheetToDrive(name: name);
@@ -626,7 +634,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       headers: headers,
       body: file.readAsBytesSync(),
     );
-    if (response.statusCode != 401 && response.statusCode == 200 && response.data['statusCode']!=500) {
+    if (response.statusCode != 401 &&
+        response.statusCode == 200 &&
+        response.data['statusCode'] != 500) {
       print("upload result data to assessment file completed");
       return true;
     } else {
@@ -652,7 +662,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isGoogleAPI: true);
 
-      if (response.statusCode != 401 && response.statusCode == 200 && response.data['statusCode']!=500) {
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
         print("assessment list is received ");
         print(response.data);
         List<HistoryAssessment> _list =
@@ -660,7 +672,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
         return _list;
-      } else if (response.statusCode == 401 || response.data['statusCode']!=500) {
+      } else if (response.statusCode == 401 ||
+          response.data['statusCode'] != 500) {
         print('Authentication required');
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
@@ -701,12 +714,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         body: body,
         isGoogleApi: true);
 
-    if (response.statusCode != 401 && response.statusCode == 200 && response.data['statusCode']!=500) {
+    if (response.statusCode != 401 &&
+        response.statusCode == 200 &&
+        response.data['statusCode'] != 500) {
       print("File permission has been updated");
 
       return true;
     }
-    if (response.statusCode == 401 || response.data['statusCode']!=500) {
+    if (response.statusCode == 401 || response.data['statusCode'] != 500) {
       await _toRefreshAuthenticationToken(refreshToken!);
       _updateSheetPermission(token, fileId, refreshToken);
     }
@@ -727,13 +742,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         headers: headers,
         isGoogleAPI: true);
 
-    if (response.statusCode != 401 && response.statusCode == 200 && response.data['statusCode']!=500) {
+    if (response.statusCode != 401 &&
+        response.statusCode == 200 &&
+        response.data['statusCode'] != 500) {
       print(
           " get file link   ----------->${response.data['body']['webViewLink']}");
       // var data = response.data;
       return response.data['body']['webViewLink'];
     }
-    if (response.statusCode == 401 || response.data['statusCode']!=500) {
+    if (response.statusCode == 401 || response.data['statusCode'] != 500) {
       await _toRefreshAuthenticationToken(refreshToken!);
       _getShareableLink(
           token: token, fileId: fileId, refreshToken: refreshToken);
@@ -753,7 +770,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         headers: headers,
         isGoogleAPI: true);
 
-    if (response.statusCode != 401 &&response.statusCode == 200 && response.data['statusCode']!=500) {
+    if (response.statusCode != 401 &&
+        response.statusCode == 200 &&
+        response.data['statusCode'] != 500) {
       return response.data['body'];
       // print('File URL Received :${data['webViewLink']}');
       // String downloadLink = data['exportLinks'] != null
@@ -762,7 +781,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       //     : '';
       // return downloadLink;
     }
-    if (response.statusCode == 401 || response.data['statusCode']!=500) {
+    if (response.statusCode == 401 || response.data['statusCode'] != 500) {
       await _toRefreshAuthenticationToken(refreshToken!);
       GetAssessmentDetail(fileId: fileId);
     }
@@ -812,7 +831,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
           body: body,
           isGoogleApi: true);
-      if (response.statusCode != 401 && response.statusCode == 200 && response.data['statusCode']!=500) {
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
         var newToken = response.data['body']; //["access_token"]
         //!=null?response.data['body']["access_token"]:response.data['body']["error"];
         if (newToken["access_token"] != null) {
@@ -869,7 +890,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // headers: headers,
         isGoogleApi: true);
 
-    if (response.statusCode != 401 &&response.statusCode == 200 && response.data['statusCode']!=500) {
+    if (response.statusCode != 401 &&
+        response.statusCode == 200 &&
+        response.data['statusCode'] != 500) {
       print("url is recived");
       return response.data['body']['Location'];
     } else {
