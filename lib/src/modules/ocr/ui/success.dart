@@ -66,7 +66,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final ValueNotifier<String> pointScored = ValueNotifier<String>('2');
 
-  final ValueNotifier<double> animatedWidth = ValueNotifier<double>(0.0);
+  // final ValueNotifier<double> animatedWidth = ValueNotifier<double>(0.0);
 
   @override
   void initState() {
@@ -82,16 +82,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: Stack(children: [
         CommonBackGroundImgWidget(),
         Scaffold(
-            floatingActionButton: ValueListenableBuilder(
-                valueListenable: animatedWidth,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  return NetflixCustomButton(
-                      animatedWidth: animatedWidth.value,
-                      width: 250,
-                      height: 50,
-                      animationDuration: Duration(milliseconds: 1000));
-                }),
+            // floatingActionButton: ValueListenableBuilder(
+            //     valueListenable: animatedWidth,
+            //     child: Container(),
+            //     builder: (BuildContext context, dynamic value, Widget? child) {
+            //       return NetflixCustomButton(
+            //           animatedWidth: animatedWidth.value,
+            //           width: 250,
+            //           height: 50,
+            //           animationDuration: Duration(milliseconds: 1000));
+            //     }),
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
@@ -242,7 +242,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             isStudentNameFilled.value = state.studentName ?? ''
                         : null;
                     pointScored.value = state.grade!;
-                    animatedWidth.value = 250.0;
+                  //  animatedWidth.value = 250.0;
                     // updateDetails();
 
                   }
