@@ -32,9 +32,9 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 0));
     scaleAnimation = CurvedAnimation(
-        parent: controller!,
-        curve: Curves.bounceInOut,
-        );
+      parent: controller!,
+      curve: Curves.bounceInOut,
+    );
 
     controller!.addListener(() {
       setState(() {});
@@ -47,9 +47,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
   Widget build(BuildContext context) {
     return new BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-        child: 
-        
-        Dialog(
+        child: Dialog(
             clipBehavior: Clip.antiAliasWithSaveLayer,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -59,8 +57,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
             child: ScaleTransition(
               scale: scaleAnimation!,
               child: contentBox(context),
-            ))
-            );
+            )));
   }
 
   contentBox(context) {
