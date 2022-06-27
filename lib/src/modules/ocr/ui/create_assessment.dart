@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
@@ -13,20 +12,18 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:image_picker/image_picker.dart';
+import '../widgets/suggestion_chip.dart';
 
 class CreateAssessment extends StatefulWidget {
   CreateAssessment(
-      {Key? key,
-      required this.classSuggestions,
-      required this.classSectionList})
+      {Key? key, required this.classSuggestions, required this.customGrades})
       : super(key: key);
-  List<String> classSuggestions;
-  List<String> classSectionList;
+  final List<String> classSuggestions;
+  final List<String> customGrades;
   @override
   State<CreateAssessment> createState() => _CreateAssessmentState();
 }
@@ -80,35 +77,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
               isBackButton: false,
               isHomeButtonPopup: true,
             ),
-            // AppBar(
-            //   elevation: 0,
-            //   automaticallyImplyLeading: false,
-            //   actions: [
-            //     Container(
-            //       padding: EdgeInsets.only(right: 10),
-            //       child: Icon(
-            //         IconData(0xe874,
-            //             fontFamily: Overrides.kFontFam,
-            //             fontPackage: Overrides.kFontPkg),
-            //         color: AppTheme.kButtonColor,
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            //  CustomAppBarWidget(
-            //   appBarTitle: 'OCR',
-            //   isSearch: true,
-            //   isShare: false,
-            //   language: Globals.selectedLanguage,
-            //   isCenterIcon: false,
-            //   ishtmlpage: false,
-            //   sharedpopBodytext: '',
-            //   sharedpopUpheaderText: '',
-            // ),
-            body: Form(
-              key: _formKey,
-              child: ListView(children: [
-                Container(
+
+            body: Container(
+              child: Form(
+                key: _formKey,
+                child: Container(
                   // color: Colors.red,
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   height:
@@ -120,17 +93,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     shrinkWrap: true,
                     children: [
                       SpacerWidget(_KVertcalSpace * 0.50),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: highlightText(
-                          text: 'Create Assessment',
-                          theme: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
+                      highlightText(
+                        text: 'Create Assessment',
+                        theme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold),
                       ),
                       SpacerWidget(_KVertcalSpace / 1.8),
                       highlightText(
@@ -183,10 +151,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         ),
                       ),
                       if (widget.classSuggestions.length > 0)
-                        SpacerWidget(_KVertcalSpace / 4),
+                        SpacerWidget(_KVertcalSpace / 15),
                       if (widget.classSuggestions.length > 0)
                         Container(
-                          height: 25,
+                          height: 30,
                           //padding: EdgeInsets.only(left: 2.0),
                           child: ChipsFilter(
                               selectedValue: (String value) {
@@ -215,6 +183,19 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
                       SpacerWidget(_KVertcalSpace / 2),
                       highlightText(
+                          text: 'Select Grade',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant
+                                      .withOpacity(0.3))),
+                      SpacerWidget(_KVertcalSpace / 3),
+                      scoringButton(),
+                      SpacerWidget(_KVertcalSpace / 2),
+                      highlightText(
                           text: 'Scan Question',
                           theme: Theme.of(context)
                               .textTheme
@@ -230,6 +211,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           _cameraImage(context);
                         },
                         child: Container(
+                            margin: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.15),
                             decoration: BoxDecoration(
                                 color: Colors.grey.shade200,
                                 border: Border.all(
@@ -276,8 +260,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             //   ),
                             ),
                       ),
-                      SpacerWidget(_KVertcalSpace / 0.90),
-                      scoringButton(),
 
                       //To scroll the screen in case of keyboard appears
                       Padding(
@@ -309,7 +291,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     ],
                   ),
                 ),
-              ]),
+              ),
             ),
           ),
         ],
@@ -335,8 +317,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
+            width: 50,
             height: MediaQuery.of(context).orientation == Orientation.portrait
-                ? MediaQuery.of(context).size.height * 0.45
+                ? MediaQuery.of(context).size.height * 0.25
                 : MediaQuery.of(context).size.width * 0.35,
             child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -345,11 +328,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     childAspectRatio: 5 / 6,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 10),
-                itemCount: widget.classSectionList.length,
+                itemCount: widget.customGrades.length,
                 itemBuilder: (BuildContext ctx, index) {
                   return Bouncing(
                     onPress: () {
-                      widget.classSectionList[index] == '+'
+                      widget.customGrades[index] == '+'
                           ? _addSectionBottomSheet()
                           : selectedGrade.value = index;
                     },
@@ -377,17 +360,23 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                     : Colors.grey,
                               )),
                           child: Center(
-                            child: textwidget(
-                              text: widget.classSectionList[index],
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline1!
-                                  .copyWith(
-                                      color: selectedGrade.value == index
-                                          ? AppTheme.kSelectedColor
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant),
+                            child: FittedBox(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 5.0, right: 5.0),
+                                child: textwidget(
+                                  text: widget.customGrades[index],
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .headline1!
+                                      .copyWith(
+                                          color: selectedGrade.value == index
+                                              ? AppTheme.kSelectedColor
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -472,7 +461,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             onPressed: () async {
               FocusScope.of(context).requestFocus(FocusNode());
               if (!connected) {
-                Utility.noInternetSnackBar("No Internet Connection");
+                Utility.currentScreenSnackBar("No Internet Connection");
               } else {
                 if (_formKey.currentState!.validate()) {
                   if (imageFile != null && imageFile!.path.isNotEmpty) {
@@ -514,15 +503,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: Container(),
                     listener: (context, state) {
                       if (state is GoogleDriveLoading) {
-                        Utility.loadingDialog(context);
+                        Utility.showLoadingDialog(context);
                       }
+
                       if (state is ExcelSheetCreated) {
                         Navigator.of(context).pop();
                         _navigateToSubjectSection();
                       }
                       if (state is ErrorState) {
                         Navigator.of(context).pop();
-                        Utility.noInternetSnackBar(
+                        Utility.currentScreenSnackBar(
                             "Technical issue try again after some time");
                       }
                     }),
@@ -592,9 +582,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
         elevation: 10,
         context: context,
         builder: (context) => BottomSheetWidget(
-              title: 'Add Class Section',
+              title: 'Add Custom Grade',
               isImageField: false,
-              textFieldTitleOne: 'Section Name',
+              textFieldTitleOne: 'Grade Name',
               isSubjectScreen: true,
               sheetHeight:
                   MediaQuery.of(context).orientation == Orientation.landscape
@@ -614,122 +604,21 @@ class _CreateAssessmentState extends State<CreateAssessment>
   updateList({required String sectionName}) async {
     LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
 
-    if (!widget.classSectionList.contains(sectionName)) {
-      widget.classSectionList.add(sectionName);
+    if (!widget.customGrades.contains(sectionName)) {
+      widget.customGrades.removeLast();
+      widget.customGrades.add(sectionName);
+      widget.customGrades.add('+');
 
       setState(() {});
-      selectedGrade.value = widget.classSectionList.length - 1;
+      selectedGrade.value = widget.customGrades.length - 2;
     } else {
       Utility.showSnackBar(
           scaffoldKey, "Subject $sectionName already exist", context, null);
     }
 
     await _localDb.clear();
-    widget.classSectionList.forEach((String e) {
+    widget.customGrades.forEach((String e) {
       _localDb.addData(e);
     });
-  }
-}
-
-class ChipsFilter extends StatefulWidget {
-  final void Function(String) selectedValue;
-
-  ///
-  /// The list of the filters
-  ///
-  final List<String>? filters;
-
-  ///
-  /// The default selected index starting with 0
-  ///
-  final int? selected;
-
-  ChipsFilter(
-      {Key? key, this.filters, this.selected, required this.selectedValue})
-      : super(key: key);
-
-  @override
-  _ChipsFilterState createState() => _ChipsFilterState();
-}
-
-class _ChipsFilterState extends State<ChipsFilter> {
-  ///
-  /// Currently selected index
-  ///
-  int? selectedIndex;
-  bool active = false;
-  @override
-  void initState() {
-    // When [widget.selected] is defined, check the value and set it as
-    // [selectedIndex]
-    if (widget.selected != null &&
-        widget.selected! >= 0 &&
-        widget.selected! < widget.filters!.length) {
-      this.selectedIndex = widget.selected;
-    }
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ListView.builder(
-        itemBuilder: this.chipBuilder,
-        itemCount: widget.filters!.length,
-        scrollDirection: Axis.horizontal,
-      ),
-    );
-  }
-
-  ///
-  /// Build a single chip
-  ///
-  Widget chipBuilder(
-    context,
-    currentIndex,
-  ) {
-    String filter = widget.filters![currentIndex];
-    bool isActive = this.selectedIndex == currentIndex;
-
-    return GestureDetector(
-      onTap: () {
-        active = true;
-        setState(() {
-          widget.selectedValue(widget.filters![currentIndex!]);
-          selectedIndex = currentIndex;
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        margin: EdgeInsets.only(left: 5),
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                spreadRadius: 1.0,
-                // blurRadius: 1.0,
-                color:
-                    isActive && active ? AppTheme.kSelectedColor : Colors.grey),
-          ],
-          color: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Colors.white
-              : Colors.black,
-          border: Border.all(
-              color:
-                  isActive && active ? AppTheme.kSelectedColor : Colors.grey),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              filter,
-              style:
-                  Theme.of(context).textTheme.headline6!.copyWith(fontSize: 12),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -13,6 +13,7 @@ class GoogleDriveLoading extends GoogleDriveState {
   @override
   List<Object> get props => [];
 }
+
 class GoogleDriveLoading2 extends GoogleDriveState {
   @override
   List<Object> get props => [];
@@ -95,14 +96,14 @@ class GoogleSuccess extends GoogleDriveState {
 }
 
 class ErrorState extends GoogleDriveState {
-final  String? errorMsg;
-   ErrorState({this.errorMsg});
+  final String? errorMsg;
+  ErrorState({this.errorMsg});
   @override
   List<Object> get props => [];
 }
 
 class ShareLinkRecived extends GoogleDriveState {
- final String? shareLink;
+  final String? shareLink;
   ShareLinkRecived({required this.shareLink});
   @override
   List<Object> get props => [];

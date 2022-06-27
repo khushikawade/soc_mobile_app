@@ -130,37 +130,18 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                   // mainAxisSize: MainAxisSize.min,
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
-                      child: Utility.textWidget(
-                          context: context,
-                          text: widget.textFieldTitleOne!,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(color: Colors.black)),
-                    ),
-                    Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                        ),
-                        child: _textFiled(
-                            whichContoller: 1,
-                            msg: "field is required ",
-                            controller: widget.textFieldControllerOne)),
-                    widget.textFieldTitleTwo != null
+                    widget.textFieldTitleOne != null
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
+                                    horizontal: 20,
+                                  ),
                                   child: Utility.textWidget(
                                       context: context,
-                                      text: widget.textFieldTitleTwo!,
+                                      text: widget.textFieldTitleOne!,
                                       textTheme: Theme.of(context)
                                           .textTheme
                                           .subtitle1!
@@ -173,46 +154,90 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                           )),
                                 ),
                                 Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 20),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                    ),
                                     child: _textFiled(
-                                        whichContoller: 2,
-                                        keyboardType: TextInputType.number,
-                                        maxNineDigit: 9,
+                                        whichContoller: 1,
                                         msg: "field is required ",
                                         controller:
-                                            widget.textFieldControllerTwo)),
+                                            widget.textFieldControllerOne))
                               ])
                         : Container(),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            child: Utility.textWidget(
-                                context: context,
-                                text: widget.textFileTitleThree!,
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(
-                                      color: Color(0xff000000) ==
-                                              Theme.of(context).backgroundColor
-                                          ? Color(0xffFFFFFF)
-                                          : Color(0xff000000),
-                                    )),
-                          ),
-                          Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: _textFiled(
-                                  whichContoller: 3,
-                                  keyboardType: TextInputType.number,
-                                  maxNineDigit: 1,
-                                  msg: "field is required ",
-                                  controller: widget.textFieldControllerthree)),
-                        ]),
+                    widget.textFieldTitleTwo != null
+                        ? Container(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: 20, right: 20, top: 25),
+                                    child: Utility.textWidget(
+                                        context: context,
+                                        text: widget.textFieldTitleTwo!,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                              color: Color(0xff000000) ==
+                                                      Theme.of(context)
+                                                          .backgroundColor
+                                                  ? Color(0xffFFFFFF)
+                                                  : Color(0xff000000),
+                                            )),
+                                  ),
+                                  Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 20),
+                                      child: _textFiled(
+                                          whichContoller: 2,
+                                          keyboardType: TextInputType.number,
+                                          maxNineDigit: 9,
+                                          msg: "field is required ",
+                                          controller:
+                                              widget.textFieldControllerTwo)),
+                                ]),
+                          )
+                        : Container(),
+                    widget.textFileTitleThree != null
+                        ? Container(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                      left: 20,
+                                      right: 20,
+                                    ),
+                                    child: Utility.textWidget(
+                                        context: context,
+                                        text: widget.textFileTitleThree!,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                              color: Color(0xff000000) ==
+                                                      Theme.of(context)
+                                                          .backgroundColor
+                                                  ? Color(0xffFFFFFF)
+                                                  : Color(0xff000000),
+                                            )),
+                                  ),
+                                  Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 20),
+                                      child: _textFiled(
+                                          whichContoller: 3,
+                                          keyboardType: TextInputType.number,
+                                          maxNineDigit: 1,
+                                          msg: "field is required ",
+                                          controller:
+                                              widget.textFieldControllerthree)),
+                                ]),
+                          )
+                        : Container(),
                     widget.isImageField!
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -311,7 +336,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                           label: Row(
                             children: [
                               Utility.textWidget(
-                                  text: 'Submit',
+                                  text: 'Update',
                                   context: context,
                                   textTheme: Theme.of(context)
                                       .textTheme
@@ -462,6 +487,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
     return TextFormField(
       keyboardType: keyboardType ?? null,
       maxLength: maxNineDigit ?? null,
+
       validator: (text) {
         if (text == null || text.isEmpty) {
           return msg;
@@ -488,6 +514,10 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
               : Color(
                   0xff000000), //Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
+        counterStyle: TextStyle(
+            color: Color(0xff000000) == Theme.of(context).backgroundColor
+                ? Color(0xffFFFFFF)
+                : Color(0xff000000)),
         fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
