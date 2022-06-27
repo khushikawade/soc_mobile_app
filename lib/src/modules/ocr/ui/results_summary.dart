@@ -52,6 +52,7 @@ class ResultsSummary extends StatefulWidget {
 class _ResultsSummaryState extends State<ResultsSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+  GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
   // int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
@@ -179,8 +180,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               builder: (BuildContext context, int value,
                                   Widget? child) {
                                 return Text(
-                                    "${assessmentCount.value > 0 ? assessmentCount.value - 1 : ''}",
-                                    style: Theme.of(context).textTheme.headline3);
+                                    "${assessmentCount.value > 0 ? assessmentCount.value : ''}",
+                                    style:
+                                        Theme.of(context).textTheme.headline3);
                               }),
                         ],
                       ),
@@ -193,12 +195,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               Builder(builder: (context) {
                                 return ValueListenableBuilder(
                                     valueListenable: assessmentCount,
-                                    builder: (BuildContext context, int listCount,
-                                        Widget? child) {
+                                    builder: (BuildContext context,
+                                        int listCount, Widget? child) {
                                       return ValueListenableBuilder(
                                           valueListenable: sudentRecordList,
                                           builder: (BuildContext context,
-                                              List<StudentAssessmentInfo> newList,
+                                              List<StudentAssessmentInfo>
+                                                  newList,
                                               Widget? child) {
                                             return listView(
                                               sudentRecordList.value,
@@ -206,6 +209,22 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           });
                                     });
                               }),
+                              BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                                  bloc: _driveBloc2,
+                                  child: Container(),
+                                  listener: (context, state) {
+                                    if (state is GoogleDriveLoading) {
+                                      Utility.showLoadingDialog(context);
+                                    }
+                                    if (state is GoogleSuccess) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    if (state is ErrorState) {
+                                      Navigator.of(context).pop();
+                                      Utility.currentScreenSnackBar(
+                                          "Technical issue try again after some time");
+                                    }
+                                  }),
                             ],
                           )
                         : BlocConsumer(
@@ -227,15 +246,45 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                               if (state is AssessmentDetailSuccess) {
                                 if (state.obj.length > 0) {
-                                  isAssessmentAlreadySaved = state.obj[0] !=
-                                              null &&
-                                          state.obj[0] != ''
-                                      ? state.obj[0].isSavedOnDashBoard != null &&
-                                              state.obj[0].isSavedOnDashBoard !=
-                                                  ''
-                                          ? state.obj[0].isSavedOnDashBoard
-                                          : ''.toString()
-                                      : '';
+                                  isAssessmentAlreadySaved =
+                                      state.obj[0] != null && state.obj[0] != ''
+                                          ? state.obj[0].isSavedOnDashBoard !=
+                                                      null &&
+                                                  state.obj[0]
+                                                          .isSavedOnDashBoard !=
+                                                      ''
+                                              ? state.obj[0].isSavedOnDashBoard
+                                              : ''.toString()
+                                          : '';
+                                  return Column(
+                                    children: [
+                                      resultTitle(),
+                                      listView(
+                                        state.obj,
+                                      )
+                                    ],
+                                  );
+                                } else {
+                                  return Expanded(
+                                    child: NoDataFoundErrorWidget(
+                                        isResultNotFoundMsg: true,
+                                        isNews: false,
+                                        isEvents: false),
+                                  );
+                                }
+                              }
+                              if (state is AssessmentDetailSuccess) {
+                                if (state.obj.length > 0) {
+                                  isAssessmentAlreadySaved =
+                                      state.obj[0] != null && state.obj[0] != ''
+                                          ? state.obj[0].isSavedOnDashBoard !=
+                                                      null &&
+                                                  state.obj[0]
+                                                          .isSavedOnDashBoard !=
+                                                      ''
+                                              ? state.obj[0].isSavedOnDashBoard
+                                              : ''.toString()
+                                          : '';
                                   return Column(
                                     children: [
                                       resultTitle(),
@@ -320,9 +369,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             .first.learningStandard ==
                                         null
                                     ? "NA"
-                                    : Globals.studentInfo!.first.learningStandard;
-                                element.subLearningStandard = Globals.studentInfo!
-                                            .first.subLearningStandard ==
+                                    : Globals
+                                        .studentInfo!.first.learningStandard;
+                                element.subLearningStandard = Globals
+                                            .studentInfo!
+                                            .first
+                                            .subLearningStandard ==
                                         null
                                     ? "NA"
                                     : Globals
@@ -331,7 +383,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 element.customRubricImage = Globals
                                         .studentInfo!.first.customRubricImage ??
                                     "NA";
-                                element.grade = Globals.studentInfo!.first.grade;
+                                element.grade =
+                                    Globals.studentInfo!.first.grade;
                                 element.className = Globals.assessmentName!
                                     .split("_")[1]; //widget.selectedClass;
                                 element.questionImgUrl =
@@ -735,7 +788,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 motion: ScrollMotion(),
                 children: [
                   SlidableAction(
-                    flex: 2,
                     // An action can be bigger than the others.
 
                     onPressed: (i) {
@@ -1134,6 +1186,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 Globals.studentInfo![index].studentId = id.text;
                 Globals.studentInfo![index].studentGrade = score.text;
                 Navigator.pop(context);
+
+                _driveBloc2.add(UpdateDocOnDrive(
+                    isLoading: true,
+                    studentData:
+                        //list2
+                        Globals.studentInfo!));
                 assessmentCount.value = Globals.studentInfo!.length;
                 sudentRecordList.value = Globals.studentInfo!;
               },
@@ -1253,6 +1311,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           Navigator.pop(
                             context,
                           );
+
+                          _driveBloc2.add(UpdateDocOnDrive(
+                              isLoading: true,
+                              studentData:
+                                  //list2
+                                  Globals.studentInfo!));
                         },
                       ),
                     ],

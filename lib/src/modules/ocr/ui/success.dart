@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/modules/ocr/widgets/animation_button.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -64,6 +66,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final ValueNotifier<String> pointScored = ValueNotifier<String>('2');
+
+  // final ValueNotifier<double> animatedWidth = ValueNotifier<double>(0.0);
+
   @override
   void initState() {
     super.initState();
@@ -204,7 +209,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     });
                   }
                 } else if (state is FetchTextFromImageFailure) {
-                   scanFailure.value = true;
+                  scanFailure.value = true;
                   setState(() {
                     failure = true;
                   });
@@ -271,7 +276,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   if (state.grade == '') {
                     rubricNotDetected.value = true;
                   }
-                 
+
                   return failureScreen(
                       id: state.studentId!, grade: state.grade!);
                 }
