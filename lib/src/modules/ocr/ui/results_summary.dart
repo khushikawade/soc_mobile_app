@@ -709,7 +709,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
           return Slidable(
-              enabled: widget.assessmentDetailPage== true
+              enabled: widget.assessmentDetailPage == true
                   ? false
                   : (Globals.scanMoreStudentInfoLength ?? -1) <= index
                       ? true
