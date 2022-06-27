@@ -180,7 +180,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               builder: (BuildContext context, int value,
                                   Widget? child) {
                                 return Text(
-                                    "${assessmentCount.value > 0 ? assessmentCount.value : ''}",
+                                    "${assessmentCount.value > 0 ? assessmentCount.value - 1 : ''}",
                                     style:
                                         Theme.of(context).textTheme.headline3);
                               }),
