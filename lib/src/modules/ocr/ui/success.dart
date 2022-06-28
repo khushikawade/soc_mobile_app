@@ -48,7 +48,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool onChange = false;
   String studentName = '';
   String studentId = '';
-  final ValueNotifier<bool> scanFailure = ValueNotifier<bool>(false);
+  late Timer timer;
+  final ValueNotifier<String> scanFailure = ValueNotifier<String>('');
   final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
@@ -67,7 +68,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final ValueNotifier<String> pointScored = ValueNotifier<String>('2');
 
-  // final ValueNotifier<double> animatedWidth = ValueNotifier<double>(0.0);
+  final ValueNotifier<bool> animationStart = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -151,11 +152,17 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 await Future.delayed(Duration(milliseconds: 200));
                 if (state is OcrLoading) {
                   // isRetryButton.value = false;
+
                   Timer(Duration(seconds: 5), () {
                     isRetryButton.value = true;
                   });
                 }
                 if (state is FetchTextFromImageSuccess) {
+                  //  scanFailure.value = 'Success';
+                  // Future.delayed(Duration(milliseconds: 500));
+                  scanFailure.value = 'Success';
+                  _performAnimation();
+
                   widget.pointPossible == '2'
                       ? Globals.pointsEarnedList = [0, 1, 2]
                       : widget.pointPossible == '3'
@@ -175,7 +182,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   if (_formKey2.currentState!.validate()) {
                     if (nameController.text.isNotEmpty &&
                         idController.text.isNotEmpty) {
-                      Timer(Duration(seconds: 5), () async {
+                      timer = Timer(Duration(seconds: 5), () async {
                         updateDetails();
                         String imgExtension = widget.imgPath.path.substring(
                             widget.imgPath.path.lastIndexOf(".") + 1);
@@ -209,7 +216,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     });
                   }
                 } else if (state is FetchTextFromImageFailure) {
-                  scanFailure.value = true;
+                  scanFailure.value = 'Failure';
+
                   setState(() {
                     failure = true;
                   });
@@ -257,6 +265,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // idController.text = state.studentId!;
                   // nameController.text = state.studentName!;
                   // Globals.gradeList.add(state.grade!);
+
                   return successScreen(
                       id: state.studentId!, grade: state.grade!);
                 } else if (state is FetchTextFromImageFailure) {
@@ -289,7 +298,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               valueListenable: scanFailure,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                return scanFailure.value == true
+                return scanFailure.value == "Failure"
                     ? Align(
                         alignment: Alignment.bottomCenter,
                         child: retryButton(
@@ -304,7 +313,57 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             );
                           },
                         ))
-                    : Container();
+                    : scanFailure.value == "Success"
+                        ? Align(
+                            alignment: Alignment.bottomCenter,
+                            child:
+                                //  SuccessCustomButton(
+                                //   width: MediaQuery.of(context).size.width * 0.3,
+                                //   animatedWidth:
+                                //       MediaQuery.of(context).size.width * 0.3,
+                                //   // animatedWidth: animatedWidth.value
+                                // )
+                                ValueListenableBuilder(
+                                    valueListenable: animationStart,
+                                    child: Container(),
+                                    builder: (BuildContext context,
+                                        dynamic value, Widget? child) {
+                                      return InkWell(
+                                        onTap: () {
+                                          if (animationStart.value == true) {
+                                            timer.cancel();
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CameraScreen(
+                                                        isScanMore:
+                                                            widget.isScanMore,
+                                                        pointPossible: widget
+                                                            .pointPossible,
+                                                      )),
+                                            );
+                                          } else {
+                                            print("Not -------------> move");
+                                          }
+                                        },
+                                        child: SuccessCustomButton(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.4,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.055,
+                                            animationDuration:
+                                                Duration(milliseconds: 4950),
+                                            animationStart:
+                                                animationStart.value),
+                                      );
+                                    }),
+                          )
+                        : Container();
               }),
           // retryButton(),
           floatingActionButtonLocation:
@@ -616,7 +675,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           Center(child: pointsEarnedButton(int.parse(grade))),
           SpacerWidget(_KVertcalSpace / 2),
           Center(child: imagePreviewWidget()),
-          SpacerWidget(_KVertcalSpace / 1.28),
+          SpacerWidget(_KVertcalSpace / 2.8),
           Center(
             child: Container(
                 width: MediaQuery.of(context).size.width * 0.5,
@@ -930,5 +989,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   isScanMore: widget.isScanMore,
                   pointPossible: widget.pointPossible,
                 )));
+  }
+
+  void _performAnimation() {
+    Timer(Duration(milliseconds: 50), () async {
+      animationStart.value = true;
+    });
   }
 }
