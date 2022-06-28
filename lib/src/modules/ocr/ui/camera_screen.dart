@@ -147,7 +147,7 @@ class _CameraScreenState extends State<CameraScreen>
                 child: Container(),
                 listener: (context, state) {
                   if (state is GoogleDriveLoading) {
-                    Utility.loadingDialog(context);
+                    Utility.showLoadingDialog(context);
                   }
                   if (state is GoogleSuccess) {
                     Navigator.of(context).pop();
@@ -167,8 +167,8 @@ class _CameraScreenState extends State<CameraScreen>
                   }
                   if (state is ErrorState) {
                     Navigator.of(context).pop();
-                    Utility.noInternetSnackBar(
-                        "Technical issue try again after some time");
+                    Utility.currentScreenSnackBar(
+                        "Technical issue, Please try again");
                   }
                 }),
             Container(
@@ -241,7 +241,7 @@ class _CameraScreenState extends State<CameraScreen>
                             context,
                             MaterialPageRoute(
                                 builder: (context) => CreateAssessment(
-                                    classSectionList: Globals.classList,
+                                    customGrades: Globals.classList,
                                     classSuggestions: classSuggestions)),
                           );
                         }

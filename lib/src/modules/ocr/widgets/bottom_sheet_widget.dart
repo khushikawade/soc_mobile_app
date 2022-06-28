@@ -78,6 +78,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               icon: Icon(
                 Icons.clear,
                 size: Globals.deviceType == "phone" ? 28 : 36,
+                color: AppTheme.kButtonColor,
               ),
             ),
             Container(
@@ -129,7 +130,11 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                           textTheme: Theme.of(context)
                               .textTheme
                               .subtitle1!
-                              .copyWith(color: Colors.black)),
+                              .copyWith(color:   Color(0xff000000) ==
+                                                    Theme.of(context)
+                                                        .backgroundColor
+                                                ? Color(0xffFFFFFF)
+                                                : Color(0xff000000),)),
                     ),
                     Container(
                       padding: EdgeInsets.symmetric(
