@@ -48,7 +48,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool onChange = false;
   String studentName = '';
   String studentId = '';
-  late Timer timer;
+  late Timer? timer;
   final ValueNotifier<String> scanFailure = ValueNotifier<String>('');
   final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
@@ -184,7 +184,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   if (_formKey2.currentState!.validate()) {
                     if (nameController.text.isNotEmpty &&
                         idController.text.isNotEmpty) {
-                      timer = Timer(Duration(seconds: 5), () async {
+                      timer = await Timer(Duration(seconds: 5), () async {
                         updateDetails();
                         String imgExtension = widget.imgPath.path.substring(
                             widget.imgPath.path.lastIndexOf(".") + 1);
@@ -333,7 +333,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                       return InkWell(
                                         onTap: () async {
                                           if (animationStart.value == true) {
-                                            timer.cancel();
+                                            timer!.cancel();
 
                                             updateDetails();
                                             String imgExtension = widget
