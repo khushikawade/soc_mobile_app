@@ -835,7 +835,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                             Globals.questionImgUrl!.isNotEmpty
                                         ? Globals.questionImgUrl
                                         : "NA";
-                                element.isSavedOnDashBoard = "NO";
                               });
 
                               _googleDriveBloc.add(

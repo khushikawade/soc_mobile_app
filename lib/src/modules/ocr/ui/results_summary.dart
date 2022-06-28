@@ -246,16 +246,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                               if (state is AssessmentDetailSuccess) {
                                 if (state.obj.length > 0) {
-                                  isAssessmentAlreadySaved =
-                                      state.obj[0] != null && state.obj[0] != ''
-                                          ? state.obj[0].isSavedOnDashBoard !=
-                                                      null &&
-                                                  state.obj[0]
-                                                          .isSavedOnDashBoard !=
-                                                      ''
-                                              ? state.obj[0].isSavedOnDashBoard
-                                              : ''.toString()
-                                          : '';
+                                  // isAssessmentAlreadySaved =
+                                  //     state.obj[0] != null && state.obj[0] != ''
+                                  //         ? state.obj[0].isSavedOnDashBoard !=
+                                  //                     null &&
+                                  //                 state.obj[0]
+                                  //                         .isSavedOnDashBoard !=
+                                  //                     ''
+                                  //             ? state.obj[0].isSavedOnDashBoard
+                                  //             : ''.toString()
+                                  //         : '';
                                   return Column(
                                     children: [
                                       resultTitle(),
@@ -275,16 +275,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               }
                               if (state is AssessmentDetailSuccess) {
                                 if (state.obj.length > 0) {
-                                  isAssessmentAlreadySaved =
-                                      state.obj[0] != null && state.obj[0] != ''
-                                          ? state.obj[0].isSavedOnDashBoard !=
-                                                      null &&
-                                                  state.obj[0]
-                                                          .isSavedOnDashBoard !=
-                                                      ''
-                                              ? state.obj[0].isSavedOnDashBoard
-                                              : ''.toString()
-                                          : '';
+                                  // isAssessmentAlreadySaved =
+                                  // state.obj[0] != null && state.obj[0] != ''
+                                  //     ? state.obj[0].isSavedOnDashBoard !=
+                                  //                 null &&
+                                  //             state.obj[0]
+                                  //                     .isSavedOnDashBoard !=
+                                  //                 ''
+                                  //         ? state.obj[0].isSavedOnDashBoard
+                                  //         : ''.toString()
+                                  //     : '';
                                   return Column(
                                     children: [
                                       resultTitle(),
@@ -389,7 +389,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     .split("_")[1]; //widget.selectedClass;
                                 element.questionImgUrl =
                                     Globals.studentInfo!.first.questionImgUrl;
-                                element.isSavedOnDashBoard = "YES";
+                                // element.isSavedOnDashBoard = "YES";
                               });
 
                               // _driveBloc.add(UpdateDocOnDrive(
@@ -414,11 +414,57 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         listener: (context, state) async {
                           if (state is OcrLoading2) {
                             dashoardState.value = 'Loading';
-                          }
-                          if (state is AssessmentDashboardStatus) {
-                            state.obj!
-                                ? dashoardState.value = 'Success'
-                                : dashoardState.value = '';
+                          } else if (state is AssessmentSavedSuccessfully) {
+                            dashoardState.value = 'Success';
+
+                            if (Globals.studentInfo!.length > 0 &&
+                                Globals.studentInfo![0].studentId == 'Id') {
+                              Globals.studentInfo!.removeAt(0);
+                            }
+
+                            //To copy the static content in the sheet
+                            Globals.studentInfo!.forEach((element) {
+                              element.subject =
+                                  Globals.studentInfo!.first.subject;
+                              element.learningStandard = Globals.studentInfo!
+                                          .first.learningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals.studentInfo!.first.learningStandard;
+                              element.subLearningStandard = Globals.studentInfo!
+                                          .first.subLearningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals
+                                      .studentInfo!.first.subLearningStandard;
+                              element.scoringRubric = Globals.scoringRubric;
+                              element.customRubricImage = Globals
+                                      .studentInfo!.first.customRubricImage ??
+                                  "NA";
+                              element.grade = Globals.studentInfo!.first.grade;
+                              element.className = Globals.assessmentName!
+                                  .split("_")[1]; //widget.selectedClass;
+                              element.questionImgUrl =
+                                  Globals.studentInfo!.first.questionImgUrl;
+                              if (element.isSavedOnDashBoard == null) {
+                                element.isSavedOnDashBoard = true;
+                              }
+                            });
+                            assessmentCount.value = Globals.studentInfo!.length;
+
+                            // _driveBloc.add(UpdateDocOnDrive(
+                            //   isLoading: false,
+                            //     fileId: widget.fileId,
+                            //     studentData: Globals.studentInfo!)
+                            //     );
+
+                            _showSaveDataPopUp();
+
+                            // Utility.showSnackBar(
+                            //     scaffoldKey,
+                            //     'Yay! Data has been successully saved to the dashboard',
+                            //     context,
+                            //     null);
                           }
                         },
                         child: Container()),
@@ -777,11 +823,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         itemCount: _list.length, // Globals.gradeList.length,
         itemBuilder: (BuildContext context, int index) {
           return Slidable(
-              enabled: widget.assessmentDetailPage == true
-                  ? false
-                  : (Globals.scanMoreStudentInfoLength ?? -1) <= index
-                      ? true
-                      : false,
+              enabled: widget.assessmentDetailPage == true ? false : true,
               // Specify a key if the Slidable is dismissible.
               key: ValueKey(index),
               endActionPane: ActionPane(
@@ -792,18 +834,28 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                     onPressed: (i) {
                       print(i);
-                      performEditAndDelete(context, index, true);
+                      _list[index].isSavedOnDashBoard == null
+                          ? performEditAndDelete(context, index, true)
+                          : Utility.currentScreenSnackBar(
+                              "Sorry ! You already saved into school dashboard");
                     },
-                    backgroundColor: AppTheme.kButtonColor,
+                    backgroundColor: _list[index].isSavedOnDashBoard == null
+                        ? AppTheme.kButtonColor
+                        : Colors.grey,
                     foregroundColor: Colors.white,
                     icon: Icons.edit,
                     label: 'Edit',
                   ),
                   SlidableAction(
                     onPressed: (i) {
-                      performEditAndDelete(context, index, false);
+                      _list[index].isSavedOnDashBoard == null
+                          ? performEditAndDelete(context, index, false)
+                          : Utility.currentScreenSnackBar(
+                              "Sorry ! You already saved into school dashboard");
                     },
-                    backgroundColor: Colors.red,
+                    backgroundColor: _list[index].isSavedOnDashBoard == null
+                        ? Colors.red
+                        : Colors.grey,
                     foregroundColor: Colors.white,
                     icon: Icons.delete,
                     label: 'Delete',
