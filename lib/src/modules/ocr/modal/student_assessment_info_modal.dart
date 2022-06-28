@@ -13,6 +13,7 @@ class StudentAssessmentInfo {
   String? className;
   String? questionImgUrl;
   bool? isSavedOnDashBoard;
+  
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,

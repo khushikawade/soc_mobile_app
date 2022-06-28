@@ -100,7 +100,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   updateDetails(isUpdateData: true);
                   _navigatetoCameraSection();
                 } else {
-                  if (_formKey1.currentState!.validate()) {
+                  if(_formKey1.currentState==null){
+                    scanFailure.value=true;
+                  }
+                  else if (_formKey1.currentState!.validate()) {
                     // if (!isSelected) {
                     // Utility.showSnackBar(_scaffoldKey,
                     //     'Please select the earned point', context, null);
@@ -801,6 +804,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     controller: controller,
                     cursorColor: Theme.of(context).colorScheme.primaryVariant,
                     decoration: InputDecoration(
+                      counterStyle: TextStyle(
+            color: Color(0xff000000) == Theme.of(context).backgroundColor
+                ? Color(0xffFFFFFF)
+                : Color(0xff000000)),
                       // errorText: controller.text.isEmpty ? errormsg : null,
                       hintText: hintText,
                       hintStyle: Theme.of(context)
@@ -878,6 +885,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   void updateDetails({bool? isUpdateData}) {
+    if(Globals.studentInfo!.length>0&&
+     Globals.studentInfo![0].studentId=="Id"){
+        Globals.studentInfo!.remove(0);
+     }
+
     if (isUpdateData == true && Globals.studentInfo != null) {
       Globals.studentInfo!.last.studentName = nameController.text;
       Globals.studentInfo!.last.studentId = idController.text;
@@ -900,13 +912,17 @@ class _SuccessScreenState extends State<SuccessScreen> {
             nameController.text.isNotEmpty ? nameController.text : "unknown";
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade = pointScored.value;
-        studentAssessmentInfo.pointpossible = Globals.pointpossible;
+        studentAssessmentInfo.pointpossible = Globals.pointpossible??'2';
         // studentAssessmentInfo.assessmentName = Globals.assessmentName;
         Globals.studentInfo!.add(studentAssessmentInfo);
       } else {
         List id = [];
         for (int i = 0; i < Globals.studentInfo!.length; i++) {
-          id.add(Globals.studentInfo![i].studentId);
+          if(!Globals.studentInfo!.contains(id)){
+          id.add(Globals.studentInfo![i].studentId);}
+          else{
+            print('Record is already exist in the list. Skipping...');
+          }
         }
         if (!id.contains(idController.text)) {
           StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
@@ -916,7 +932,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentGrade = pointScored.value;
           studentAssessmentInfo.pointpossible = Globals.pointpossible;
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+          if(!Globals.studentInfo!.contains(id)){
           Globals.studentInfo!.add(studentAssessmentInfo);
+          }
         }
       }
     }

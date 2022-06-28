@@ -101,10 +101,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               await fatchLocalSubject(event.keyword!);
           subjectList.addAll(list);
 
-           //Sorting the list based on subject name
-          subjectList.forEach((element) { 
-            if(element.subjectNameC!=null){
-          subjectList.sort((a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));}});
+          //Sorting the list based on subject name
+          subjectList.forEach((element) {
+            if (element.subjectNameC != null) {
+              subjectList
+                  .sort((a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));
+            }
+          });
 
           bool check = false;
           for (int i = 0; i < subjectList.length; i++) {
@@ -127,10 +130,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             obj: list,
           );
         } else if (event.type == 'nyc') {
-           //Sorting the list based on subject name
-          data.forEach((element) { 
-            if(element.domainNameC!=null){
-          data.sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));}});
+          //Sorting the list based on subject name
+          data.forEach((element) {
+            if (element.domainNameC != null) {
+              data.sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));
+            }
+          });
 
           for (int i = 0; i < data.length; i++) {
             if (data[i]
@@ -287,11 +292,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               yield AssessmentSavedSuccessfully();
             }
           } else {
+            
             Utility.showSnackBar(
                 event.scaffoldKey,
                 'Unable to save the result. Please try again.',
                 event.context,
                 null);
+
+                yield OcrErrorReceived();
             throw ('something went wrong');
           }
         } else {
@@ -773,13 +781,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     for (int i = 0; i < studentDetails.length; i++) {
       //To bypass the titles saving in the dashboard
-    if(studentDetails[i].studentId!='Id'){  bodyContent.add(recordtoJson(
-          assessmentId,
-          Utility.getCurrentDate(DateTime.now()),
-          studentDetails[i].studentGrade ?? '',
-          studentDetails[i].studentId ?? '',
-          studentDetails[i].assessmentImage ?? '',
-          studentDetails[i].studentName ?? ''));}
+      if (studentDetails[i].studentId != 'Id') {
+        bodyContent.add(recordtoJson(
+            assessmentId,
+            Utility.getCurrentDate(DateTime.now()),
+            studentDetails[i].studentGrade ?? '',
+            studentDetails[i].studentId ?? '',
+            studentDetails[i].assessmentImage ?? '',
+            studentDetails[i].studentName ?? ''));
+      }
     }
 
     final ResponseModel response = await _dbServices.postapi(

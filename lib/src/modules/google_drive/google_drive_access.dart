@@ -63,9 +63,9 @@ class GoogleDriveAccess {
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 12, rowIndex: row))
             .value = data[row].questionImgUrl;
-        sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
-            .value = data[row].isSavedOnDashBoard;
+        // sheet
+        //     .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
+        //     .value = data[row].isSavedOnDashBoard;
 
         // if (data[row].subject == "Math" || data[row].subject == "ELA") {
         //         sheet

@@ -87,6 +87,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
               },
               icon: Icon(
                 Icons.clear,
+                 color: AppTheme.kButtonColor,
                 size: Globals.deviceType == "phone" ? 28 : 36,
               ),
             ),

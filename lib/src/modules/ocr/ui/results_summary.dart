@@ -57,6 +57,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   // int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> updateSlidableAction = ValueNotifier<bool>(false);
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
   int? assessmentListLenght;
@@ -96,7 +97,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
       iconsList = Globals.ocrResultIcons;
       iconsName = Globals.ocrResultIconsName;
-      assessmentCount.value = Globals.studentInfo!.length;
+      if (Globals.studentInfo![0].studentId == 'Id') {
+        assessmentCount.value = Globals.studentInfo!.length - 1;
+      } else {
+        assessmentCount.value = Globals.studentInfo!.length;
+      }
     }
     //Checking in case of scan more if data is already saved to the dashboard for previously scanned sheets
     if (Globals.studentInfo!.length == Globals.scanMoreStudentInfoLength) {
@@ -180,7 +185,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               builder: (BuildContext context, int value,
                                   Widget? child) {
                                 return Text(
-                                    "${assessmentCount.value > 0 ? assessmentCount.value - 1 : ''}",
+                                    "${assessmentCount.value > 0 ? assessmentCount.value : ''}",
                                     style:
                                         Theme.of(context).textTheme.headline3);
                               }),
@@ -355,42 +360,54 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             if (state is OcrLoading) {
                               dashoardState.value = 'Loading';
                             } else if (state is AssessmentSavedSuccessfully) {
+                              //To update slidable action buttons : Enable/Disable
+                              updateSlidableAction.value=true;
+
                               dashoardState.value = 'Success';
                               if (Globals.studentInfo!.length > 0 &&
                                   Globals.studentInfo![0].studentId == 'Id') {
                                 Globals.studentInfo!.removeAt(0);
                               }
 
-                              //To copy the static content in the sheet
+                            
                               Globals.studentInfo!.forEach((element) {
-                                element.subject =
-                                    Globals.studentInfo!.first.subject;
-                                element.learningStandard = Globals.studentInfo!
-                                            .first.learningStandard ==
-                                        null
-                                    ? "NA"
-                                    : Globals
-                                        .studentInfo!.first.learningStandard;
-                                element.subLearningStandard = Globals
-                                            .studentInfo!
-                                            .first
-                                            .subLearningStandard ==
-                                        null
-                                    ? "NA"
-                                    : Globals
-                                        .studentInfo!.first.subLearningStandard;
-                                element.scoringRubric = Globals.scoringRubric;
-                                element.customRubricImage = Globals
-                                        .studentInfo!.first.customRubricImage ??
-                                    "NA";
-                                element.grade =
-                                    Globals.studentInfo!.first.grade;
-                                element.className = Globals.assessmentName!
-                                    .split("_")[1]; //widget.selectedClass;
-                                element.questionImgUrl =
-                                    Globals.studentInfo!.first.questionImgUrl;
-                                // element.isSavedOnDashBoard = "YES";
+                                // element.subject =
+                                //     Globals.studentInfo!.first.subject;
+                                // element.learningStandard = Globals.studentInfo!
+                                //             .first.learningStandard ==
+                                //         null
+                                //     ? "NA"
+                                //     : Globals
+                                //         .studentInfo!.first.learningStandard;
+                                // element.subLearningStandard = Globals
+                                //             .studentInfo!
+                                //             .first
+                                //             .subLearningStandard ==
+                                //         null
+                                //     ? "NA"
+                                //     : Globals
+                                //         .studentInfo!.first.subLearningStandard;
+                                // element.scoringRubric = Globals.scoringRubric;
+                                // element.customRubricImage = Globals
+                                //         .studentInfo!.first.customRubricImage ??
+                                //     "NA";
+                                // element.grade =
+                                //     Globals.studentInfo!.first.grade;
+                                // element.className = Globals.assessmentName!
+                                //     .split("_")[1]; //widget.selectedClass;
+                                // element.questionImgUrl =
+                                //     Globals.studentInfo!.first.questionImgUrl;
+
+
+
+                                //Disabling all the existing records edit functionality. Only scan more records will be allowed to edit.
+                                if (element.isSavedOnDashBoard == null) {
+                                  element.isSavedOnDashBoard = true;
+                                }
                               });
+
+                              assessmentCount.value =
+                                  Globals.studentInfo!.length;
 
                               // _driveBloc.add(UpdateDocOnDrive(
                               //   isLoading: false,
@@ -405,69 +422,72 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               //     'Yay! Data has been successully saved to the dashboard',
                               //     context,
                               //     null);
+                            }else if(state is OcrErrorReceived){
+                              updateSlidableAction.value=false;
                             }
                           },
                           child: EmptyContainer()),
                     ),
-                    BlocListener(
-                        bloc: _ocrBloc,
-                        listener: (context, state) async {
-                          if (state is OcrLoading2) {
-                            dashoardState.value = 'Loading';
-                          } else if (state is AssessmentSavedSuccessfully) {
-                            dashoardState.value = 'Success';
 
-                            if (Globals.studentInfo!.length > 0 &&
-                                Globals.studentInfo![0].studentId == 'Id') {
-                              Globals.studentInfo!.removeAt(0);
-                            }
+                    // BlocListener(
+                    //     bloc: _ocrBloc,
+                    //     listener: (context, state) async {
+                    //       if (state is OcrLoading2) {
+                    //         dashoardState.value = 'Loading';
+                    //       } else if (state is AssessmentSavedSuccessfully) {
+                    //         dashoardState.value = 'Success';
 
-                            //To copy the static content in the sheet
-                            Globals.studentInfo!.forEach((element) {
-                              element.subject =
-                                  Globals.studentInfo!.first.subject;
-                              element.learningStandard = Globals.studentInfo!
-                                          .first.learningStandard ==
-                                      null
-                                  ? "NA"
-                                  : Globals.studentInfo!.first.learningStandard;
-                              element.subLearningStandard = Globals.studentInfo!
-                                          .first.subLearningStandard ==
-                                      null
-                                  ? "NA"
-                                  : Globals
-                                      .studentInfo!.first.subLearningStandard;
-                              element.scoringRubric = Globals.scoringRubric;
-                              element.customRubricImage = Globals
-                                      .studentInfo!.first.customRubricImage ??
-                                  "NA";
-                              element.grade = Globals.studentInfo!.first.grade;
-                              element.className = Globals.assessmentName!
-                                  .split("_")[1]; //widget.selectedClass;
-                              element.questionImgUrl =
-                                  Globals.studentInfo!.first.questionImgUrl;
-                              if (element.isSavedOnDashBoard == null) {
-                                element.isSavedOnDashBoard = true;
-                              }
-                            });
-                            assessmentCount.value = Globals.studentInfo!.length;
+                    //         if (Globals.studentInfo!.length > 0 &&
+                    //             Globals.studentInfo![0].studentId == 'Id') {
+                    //           Globals.studentInfo!.removeAt(0);
+                    //         }
 
-                            // _driveBloc.add(UpdateDocOnDrive(
-                            //   isLoading: false,
-                            //     fileId: widget.fileId,
-                            //     studentData: Globals.studentInfo!)
-                            //     );
+                    //         //To copy the static content in the sheet
+                    //         Globals.studentInfo!.forEach((element) {
+                    //           element.subject =
+                    //               Globals.studentInfo!.first.subject;
+                    //           element.learningStandard = Globals.studentInfo!
+                    //                       .first.learningStandard ==
+                    //                   null
+                    //               ? "NA"
+                    //               : Globals.studentInfo!.first.learningStandard;
+                    //           element.subLearningStandard = Globals.studentInfo!
+                    //                       .first.subLearningStandard ==
+                    //                   null
+                    //               ? "NA"
+                    //               : Globals
+                    //                   .studentInfo!.first.subLearningStandard;
+                    //           element.scoringRubric = Globals.scoringRubric;
+                    //           element.customRubricImage = Globals
+                    //                   .studentInfo!.first.customRubricImage ??
+                    //               "NA";
+                    //           element.grade = Globals.studentInfo!.first.grade;
+                    //           element.className = Globals.assessmentName!
+                    //               .split("_")[1]; //widget.selectedClass;
+                    //           element.questionImgUrl =
+                    //               Globals.studentInfo!.first.questionImgUrl;
+                    //           if (element.isSavedOnDashBoard == null) {
+                    //             element.isSavedOnDashBoard = true;
+                    //           }
+                    //         });
+                    //         assessmentCount.value = Globals.studentInfo!.length;
 
-                            _showSaveDataPopUp();
+                    //         // _driveBloc.add(UpdateDocOnDrive(
+                    //         //   isLoading: false,
+                    //         //     fileId: widget.fileId,
+                    //         //     studentData: Globals.studentInfo!)
+                    //         //     );
 
-                            // Utility.showSnackBar(
-                            //     scaffoldKey,
-                            //     'Yay! Data has been successully saved to the dashboard',
-                            //     context,
-                            //     null);
-                          }
-                        },
-                        child: Container()),
+                    //         _showSaveDataPopUp();
+
+                    // Utility.showSnackBar(
+                    //     scaffoldKey,
+                    //     'Yay! Data has been successully saved to the dashboard',
+                    //     context,
+                    //     null);
+                    // }
+
+                    // child: Container()),
                   ],
                 ),
               ),
@@ -806,7 +826,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Widget listView(List<StudentAssessmentInfo> _list) {
-    return Container(
+    return ValueListenableBuilder<bool>(
+        valueListenable: updateSlidableAction,
+        child: Container(),
+        builder: (BuildContext context, bool value, Widget? child) {
+          return Container(
       // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
       height: widget.assessmentDetailPage!
           ? (MediaQuery.of(context).orientation == Orientation.portrait
@@ -837,7 +861,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       _list[index].isSavedOnDashBoard == null
                           ? performEditAndDelete(context, index, true)
                           : Utility.currentScreenSnackBar(
-                              "Sorry ! You already saved into school dashboard");
+                              "You cannot edit the record which is already saved to \'Data Dashboard\'");
                     },
                     backgroundColor: _list[index].isSavedOnDashBoard == null
                         ? AppTheme.kButtonColor
@@ -865,7 +889,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               child: _buildList(index, _list, context));
         },
       ),
-    );
+    );});
   }
 
   Widget _buildList(int index, List<StudentAssessmentInfo> _list, context) {
