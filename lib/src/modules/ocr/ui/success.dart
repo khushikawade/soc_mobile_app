@@ -331,10 +331,25 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     builder: (BuildContext context,
                                         dynamic value, Widget? child) {
                                       return InkWell(
-                                        onTap: () {
+                                        onTap: () async {
                                           if (animationStart.value == true) {
                                             timer.cancel();
-                                            Navigator.pushReplacement(
+
+                                            updateDetails();
+                                            String imgExtension = widget
+                                                .imgPath.path
+                                                .substring(widget.imgPath.path
+                                                        .lastIndexOf(".") +
+                                                    1);
+                                            _googleDriveBloc.add(
+                                                AssessmentImgToAwsBucked(
+                                                    imgBase64: widget.img64,
+                                                    imgExtension: imgExtension,
+                                                    studentId:
+                                                        idController.text));
+                                            // }
+                                            // COMMENT below section for enableing the camera
+                                            var result = await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
@@ -345,6 +360,21 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                             .pointPossible,
                                                       )),
                                             );
+                                            if (result == true) {
+                                              isBackFromCamera.value = result;
+                                            }
+
+                                            // Navigator.pushReplacement(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) =>
+                                            //           CameraScreen(
+                                            //             isScanMore:
+                                            //                 widget.isScanMore,
+                                            //             pointPossible: widget
+                                            //                 .pointPossible,
+                                            //           )),
+                                            // );
                                           } else {
                                             print("Not -------------> move");
                                           }
@@ -702,6 +732,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   ],
                 )),
           ),
+          SpacerWidget(MediaQuery.of(context).size.height * 0.15),
         ],
         // ),
       ),
