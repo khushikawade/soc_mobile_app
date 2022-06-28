@@ -268,12 +268,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             await UserGoogleProfile.getUserProfile();
         if (event.previouslyAddedListLength != null &&
             event.previouslyAddedListLength! < Globals.studentInfo!.length) {
-          List<StudentAssessmentInfo> _list = Globals.studentInfo!;
-          _list.removeRange(0, event.previouslyAddedListLength!);
+          // List<StudentAssessmentInfo> _list = Globals.studentInfo!;
 
-          if (Globals.lastDeshboardId != '') {
+          //Removing the previous scanned records to save only latest scanned sheets to the dashboard
+          // _list.removeRange(0, event.previouslyAddedListLength!+1); //+1 - To remove title as well
+
+          if (Globals.currentAssessmentId != '') {
             await _sendEmailToAdmin(
-              assessmentId: Globals.lastDeshboardId,
+              assessmentId: Globals.currentAssessmentId,
               name: _profileData[0].userName!.replaceAll("%", " "),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
@@ -281,25 +283,28 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
             );
             bool result = await saveResultToDashboard(
-                assessmentId: Globals.lastDeshboardId, studentDetails: _list);
+                assessmentId: Globals.currentAssessmentId,
+                studentDetails: Globals.studentInfo!,
+                previousListLength: event.previouslyAddedListLength ?? 0);
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: Globals.lastDeshboardId, studentDetails: _list);
+                  assessmentId: Globals.currentAssessmentId,
+                  studentDetails: Globals.studentInfo!,
+                  previousListLength: event.previouslyAddedListLength ?? 0);
             } else {
               //print("result Record is saved on DB");
 
               yield AssessmentSavedSuccessfully();
             }
           } else {
-            
             Utility.showSnackBar(
                 event.scaffoldKey,
                 'Unable to save the result. Please try again.',
                 event.context,
                 null);
 
-                yield OcrErrorReceived();
+            yield OcrErrorReceived();
             throw ('something went wrong');
           }
         } else {
@@ -334,12 +339,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               standardId: standardId,
             );
 
-            Globals.lastDeshboardId = dashboardId;
+            Globals.currentAssessmentId = dashboardId;
           }
 
-          if (Globals.lastDeshboardId.isNotEmpty) {
+          if (Globals.currentAssessmentId.isNotEmpty) {
             await _sendEmailToAdmin(
-              assessmentId: Globals.lastDeshboardId,
+              assessmentId: Globals.currentAssessmentId,
               name: _profileData[0].userName!.replaceAll("%", " "),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
@@ -348,13 +353,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             );
 
             bool result = await saveResultToDashboard(
-                assessmentId: Globals.lastDeshboardId,
-                studentDetails: event.resultList);
+                assessmentId: Globals.currentAssessmentId,
+                studentDetails: event.resultList,
+                previousListLength: event.previouslyAddedListLength ?? 0);
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: Globals.lastDeshboardId,
-                  studentDetails: event.resultList);
+                  assessmentId: Globals.currentAssessmentId,
+                  studentDetails: event.resultList,
+                  previousListLength: event.previouslyAddedListLength ?? 0);
             } else {
               //print("result Record is saved on DB");
 
@@ -392,7 +399,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           standardId: event.standardId);
 
       if (dashboardId.isNotEmpty) {
-        Globals.lastDeshboardId = dashboardId;
+        Globals.currentAssessmentId = dashboardId;
         yield AssessmentIdSuccess(obj: dashboardId);
       }
     }
@@ -774,12 +781,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<bool> saveResultToDashboard(
       {required String assessmentId,
-      required List<StudentAssessmentInfo> studentDetails}) async {
+      required List<StudentAssessmentInfo> studentDetails,
+      required previousListLength}) async {
     List<Map> bodyContent = [];
 
     // studentDetails.removeAt(0);
 
-    for (int i = 0; i < studentDetails.length; i++) {
+    for (int i = previousListLength + 1; i < studentDetails.length; i++) {
       //To bypass the titles saving in the dashboard
       if (studentDetails[i].studentId != 'Id') {
         bodyContent.add(recordtoJson(

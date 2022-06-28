@@ -361,7 +361,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               dashoardState.value = 'Loading';
                             } else if (state is AssessmentSavedSuccessfully) {
                               //To update slidable action buttons : Enable/Disable
-                              updateSlidableAction.value=true;
+                              updateSlidableAction.value = true;
 
                               dashoardState.value = 'Success';
                               if (Globals.studentInfo!.length > 0 &&
@@ -369,7 +369,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 Globals.studentInfo!.removeAt(0);
                               }
 
-                            
                               Globals.studentInfo!.forEach((element) {
                                 // element.subject =
                                 //     Globals.studentInfo!.first.subject;
@@ -398,8 +397,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 // element.questionImgUrl =
                                 //     Globals.studentInfo!.first.questionImgUrl;
 
-
-
                                 //Disabling all the existing records edit functionality. Only scan more records will be allowed to edit.
                                 if (element.isSavedOnDashBoard == null) {
                                   element.isSavedOnDashBoard = true;
@@ -422,8 +419,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               //     'Yay! Data has been successully saved to the dashboard',
                               //     context,
                               //     null);
-                            }else if(state is OcrErrorReceived){
-                              updateSlidableAction.value=false;
+                            } else if (state is OcrErrorReceived) {
+                              updateSlidableAction.value = false;
                             }
                           },
                           child: EmptyContainer()),
@@ -792,7 +789,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           widget.assessmentDetailPage!));
                                 } else {
                                   widget.assessmentDetailPage!
-                                      ? Globals.lastDeshboardId = ''
+                                      ? Globals.currentAssessmentId = ''
                                       : print(
                                           "not a assessmentdatilpage-------->");
 
@@ -831,65 +828,68 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
-      // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
-      height: widget.assessmentDetailPage!
-          ? (MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.65
-              : MediaQuery.of(context).size.height * 0.45)
-          : (MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.5
-              : MediaQuery.of(context).size.height * 0.45),
-      child: ListView.builder(
-        controller: _scrollController,
-        shrinkWrap: true,
-        // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
-        scrollDirection: Axis.vertical,
-        itemCount: _list.length, // Globals.gradeList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Slidable(
-              enabled: widget.assessmentDetailPage == true ? false : true,
-              // Specify a key if the Slidable is dismissible.
-              key: ValueKey(index),
-              endActionPane: ActionPane(
-                motion: ScrollMotion(),
-                children: [
-                  SlidableAction(
-                    // An action can be bigger than the others.
+            // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
+            height: widget.assessmentDetailPage!
+                ? (MediaQuery.of(context).orientation == Orientation.portrait
+                    ? MediaQuery.of(context).size.height * 0.65
+                    : MediaQuery.of(context).size.height * 0.45)
+                : (MediaQuery.of(context).orientation == Orientation.portrait
+                    ? MediaQuery.of(context).size.height * 0.5
+                    : MediaQuery.of(context).size.height * 0.45),
+            child: ListView.builder(
+              controller: _scrollController,
+              shrinkWrap: true,
+              // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+              scrollDirection: Axis.vertical,
+              itemCount: _list.length, // Globals.gradeList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Slidable(
+                    enabled: widget.assessmentDetailPage == true ? false : true,
+                    // Specify a key if the Slidable is dismissible.
+                    key: ValueKey(index),
+                    endActionPane: ActionPane(
+                      motion: ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          // An action can be bigger than the others.
 
-                    onPressed: (i) {
-                      print(i);
-                      _list[index].isSavedOnDashBoard == null
-                          ? performEditAndDelete(context, index, true)
-                          : Utility.currentScreenSnackBar(
-                              "You cannot edit the record which is already saved to \'Data Dashboard\'");
-                    },
-                    backgroundColor: _list[index].isSavedOnDashBoard == null
-                        ? AppTheme.kButtonColor
-                        : Colors.grey,
-                    foregroundColor: Colors.white,
-                    icon: Icons.edit,
-                    label: 'Edit',
-                  ),
-                  SlidableAction(
-                    onPressed: (i) {
-                      _list[index].isSavedOnDashBoard == null
-                          ? performEditAndDelete(context, index, false)
-                          : Utility.currentScreenSnackBar(
-                              "Sorry ! You already saved into school dashboard");
-                    },
-                    backgroundColor: _list[index].isSavedOnDashBoard == null
-                        ? Colors.red
-                        : Colors.grey,
-                    foregroundColor: Colors.white,
-                    icon: Icons.delete,
-                    label: 'Delete',
-                  ),
-                ],
-              ),
-              child: _buildList(index, _list, context));
-        },
-      ),
-    );});
+                          onPressed: (i) {
+                            print(i);
+                            _list[index].isSavedOnDashBoard == null
+                                ? performEditAndDelete(context, index, true)
+                                : Utility.currentScreenSnackBar(
+                                    "You cannot edit the record which is already saved to the \'Data Dashboard\'");
+                          },
+                          backgroundColor:
+                              _list[index].isSavedOnDashBoard == null
+                                  ? AppTheme.kButtonColor
+                                  : Colors.grey,
+                          foregroundColor: Colors.white,
+                          icon: Icons.edit,
+                          label: 'Edit',
+                        ),
+                        SlidableAction(
+                          onPressed: (i) {
+                            _list[index].isSavedOnDashBoard == null
+                                ? performEditAndDelete(context, index, false)
+                                : Utility.currentScreenSnackBar(
+                                    "Sorry ! You already saved into school dashboard");
+                          },
+                          backgroundColor:
+                              _list[index].isSavedOnDashBoard == null
+                                  ? Colors.red
+                                  : Colors.grey,
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        ),
+                      ],
+                    ),
+                    child: _buildList(index, _list, context));
+              },
+            ),
+          );
+        });
   }
 
   Widget _buildList(int index, List<StudentAssessmentInfo> _list, context) {

@@ -856,7 +856,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       Utility.showLoadingDialog(context);
                                     }
                                     if (state is GoogleSuccess) {
-                                      Globals.lastDeshboardId = '';
+                                      Globals.currentAssessmentId = '';
                                       _ocrBloc.add(SaveAndGetAssessmentID(
                                           assessmentName:
                                               Globals.assessmentName??'Assessment Name',

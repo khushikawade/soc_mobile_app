@@ -120,7 +120,7 @@ class Globals {
   static String? pointpossible = '2';
   static String? assessmentName;
   static int? scanMoreStudentInfoLength;
-  static String lastDeshboardId = '';
+  static String currentAssessmentId = '';
   // static final nameController = TextEditingController();
   static final ValueNotifier<String> updateStudentName =
       ValueNotifier<String>('');
