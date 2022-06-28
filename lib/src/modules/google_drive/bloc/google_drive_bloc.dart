@@ -445,7 +445,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           await UserGoogleProfile.getUserProfile();
 
       String link = await _getShareableLink(
-          fileId: event.fileId??'',
+          fileId: event.fileId ?? '',
           refreshToken: _userprofilelocalData[0].refreshToken,
           token: _userprofilelocalData[0].authorizationToken!);
 

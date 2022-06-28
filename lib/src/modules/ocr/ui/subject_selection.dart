@@ -597,9 +597,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           FocusManager.instance.primaryFocus?.unfocus();
 
                           if (pageIndex.value == 0) {
-                            subject = list[index].subjectNameC??'';
-                            subjectId = list[index].subjectC??'';
-                            standardId = list[index].id??'';
+                            subject = list[index].subjectNameC ?? '';
+                            subjectId = list[index].subjectC ?? '';
+                            standardId = list[index].id ?? '';
                             subjectIndex1.value = index;
                             if ((subject != 'Math' &&
                                 subject != 'Science' &&
@@ -859,15 +859,20 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       Globals.currentAssessmentId = '';
                                       _ocrBloc.add(SaveAndGetAssessmentID(
                                           assessmentName:
-                                              Globals.assessmentName??'Assessment Name',
-                                          rubricScore: Globals.scoringRubric??'2',
-                                          subjectId: subjectId??'', //Student Id will not be there in case of custom subject
+                                              Globals.assessmentName ??
+                                                  'Assessment Name',
+                                          rubricScore:
+                                              Globals.scoringRubric ?? '2',
+                                          subjectId: subjectId ??
+                                              '', //Student Id will not be there in case of custom subject
                                           schoolId:
-                                              Globals.appSetting.schoolNameC??'',
-                                          standardId: standardId??'',
+                                              Globals.appSetting.schoolNameC ??
+                                                  '',
+                                          standardId: standardId ?? '',
                                           scaffoldKey: _scaffoldKey,
                                           context: context,
-                                          fileId: Globals.googleExcelSheetId??'Excel Id not found'));
+                                          fileId: Globals.googleExcelSheetId ??
+                                              'Excel Id not found'));
                                     }
                                     if (state is ErrorState) {
                                       Navigator.of(context).pop();
