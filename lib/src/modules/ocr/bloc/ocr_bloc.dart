@@ -269,7 +269,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         if (event.previouslyAddedListLength != null &&
             event.previouslyAddedListLength! < Globals.studentInfo!.length) {
           // List<StudentAssessmentInfo> _list = Globals.studentInfo!;
-
           //Removing the previous scanned records to save only latest scanned sheets to the dashboard
           // _list.removeRange(0, event.previouslyAddedListLength!+1); //+1 - To remove title as well
 
@@ -285,13 +284,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             bool result = await saveResultToDashboard(
                 assessmentId: Globals.currentAssessmentId,
                 studentDetails: Globals.studentInfo!,
-                previousListLength: event.previouslyAddedListLength ?? 0);
+                previousListLength: event.previouslyAddedListLength ?? 0,
+                isHistoryDetailPage: event.isHistoryAssessmentSection);
 
             if (!result) {
               saveResultToDashboard(
                   assessmentId: Globals.currentAssessmentId,
                   studentDetails: Globals.studentInfo!,
-                  previousListLength: event.previouslyAddedListLength ?? 0);
+                  previousListLength: event.previouslyAddedListLength ?? 0,
+                  isHistoryDetailPage: event.isHistoryAssessmentSection);
             } else {
               //print("result Record is saved on DB");
 
@@ -355,13 +356,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             bool result = await saveResultToDashboard(
                 assessmentId: Globals.currentAssessmentId,
                 studentDetails: event.resultList,
-                previousListLength: event.previouslyAddedListLength ?? 0);
+                previousListLength: event.previouslyAddedListLength ?? 0,
+                isHistoryDetailPage: event.isHistoryAssessmentSection);
 
             if (!result) {
               saveResultToDashboard(
                   assessmentId: Globals.currentAssessmentId,
                   studentDetails: event.resultList,
-                  previousListLength: event.previouslyAddedListLength ?? 0);
+                  previousListLength: event.previouslyAddedListLength ?? 0,
+                  isHistoryDetailPage: event.isHistoryAssessmentSection);
             } else {
               //print("result Record is saved on DB");
 
@@ -782,12 +785,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<bool> saveResultToDashboard(
       {required String assessmentId,
       required List<StudentAssessmentInfo> studentDetails,
-      required previousListLength}) async {
+      required previousListLength,
+      required isHistoryDetailPage}) async {
     List<Map> bodyContent = [];
 
     // studentDetails.removeAt(0);
-
-    for (int i = previousListLength + 1; i < studentDetails.length; i++) {
+    int initIndex = isHistoryDetailPage == true
+        ? previousListLength
+        : previousListLength + 1;
+    for (int i = initIndex; i < studentDetails.length; i++) {
       //To bypass the titles saving in the dashboard
       if (studentDetails[i].studentId != 'Id') {
         bodyContent.add(recordtoJson(
