@@ -443,145 +443,248 @@ class _SuccessScreenState extends State<SuccessScreen> {
     required String id,
     required String grade,
   }) {
-    return Form(
-      key: _formKey1,
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BlocListener<OcrBloc, OcrState>(
-            bloc: _bloc2,
-            child: Container(),
-            listener: (context, state) async {
-              if (state is SuccessStudentDetails) {
-                nameController.text = state.studentName;
-                isStudentNameFilled.value = state.studentName;
-                isNameUpdated.value = !isNameUpdated.value;
-                // _formKey1.currentState!.validate();
-              }
-            },
-          ),
-          SpacerWidget(15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Utility.textWidget(
-                  text: 'Manual Entry',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline1!
-                      .copyWith(fontWeight: FontWeight.bold)),
-              SizedBox(
-                width: 5.0,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xffCF6679),
-                ),
-                child: Icon(
-                    IconData(0xe838,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    size: 19,
-                    color: Colors.white),
-              ),
-            ],
-          ),
-
-          SpacerWidget(_KVertcalSpace * 0.25),
-          Utility.textWidget(
-              text: 'Student Name',
-              context: context,
-              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.5))),
-
-          //                 ValueListenableBuilder(
-          // valueListenable: isStudentNameFilled,
-          // builder: (BuildContext context, dynamic value, Widget? child) {
-          //   print(isStudentNameFilled.value);
-          //   return
-          textFormField(
-              controller: nameController,
-              hintText: 'Student Name',
-              // keyboardType: TextInputType.,
-              isFailure: true,
-              // errormsg:
-              //     "If you would like to save the student in database, Please enter the student name",
-              onSaved: (String value) {
-                isStudentNameFilled.value = value;
-                // _formKey1.currentState!.validate();
-                // value != '' ? valuechange = true : valuechange = false;
-                //  updateDetails(isUpdateData: true);
-                studentName = nameController.text;
-                onChange = true;
-              },
-              validator: (String? value) {
-                // isStudentNameFilled.value= value!;//nameController.text;
-                // if (value!.isEmpty) {
-                //   return 'If you would like to save the student details in database, Please enter the student name';
-                // } else if (value.length < 3) {
-                //   return 'Make sure the student name contains more than 3 character';
-                // } else {
-                //   return null;
-                // }
-                // return null;
-              }),
-
-          ValueListenableBuilder(
-              valueListenable: isStudentNameFilled,
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Form(
+        key: _formKey1,
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BlocListener<OcrBloc, OcrState>(
+              bloc: _bloc2,
               child: Container(),
-              builder: (BuildContext context, dynamic value, Widget? child) {
-                return Container(
-                  padding: isStudentNameFilled.value.isNotEmpty ||
-                          nameController.text.length < 3
-                      ? EdgeInsets.only(top: 8)
-                      : null,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    isStudentNameFilled.value == ""
-                        ? 'If you would like to save the student details in database, Please enter the student name'
-                        : nameController.text.length < 3
-                            ? 'Make sure the student name contains more than 3 character'
-                            : '',
-                    style: TextStyle(color: Colors.red),
+              listener: (context, state) async {
+                if (state is SuccessStudentDetails) {
+                  nameController.text = state.studentName;
+                  isStudentNameFilled.value = state.studentName;
+                  isNameUpdated.value = !isNameUpdated.value;
+                  // _formKey1.currentState!.validate();
+                }
+              },
+            ),
+            SpacerWidget(15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Utility.textWidget(
+                    text: 'Manual Entry',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline1!
+                        .copyWith(fontWeight: FontWeight.bold)),
+                SizedBox(
+                  width: 5.0,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xffCF6679),
                   ),
-                );
-              }),
-          //       ;},
-          //   child: Container(),
-          // ),
-          SpacerWidget(_KVertcalSpace / 2),
-          Utility.textWidget(
-              text: 'Student ID',
-              context: context,
-              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.5))),
-          textFormField(
+                  child: Icon(
+                      IconData(0xe838,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: 19,
+                      color: Colors.white),
+                ),
+              ],
+            ),
+
+            SpacerWidget(_KVertcalSpace * 0.25),
+            Utility.textWidget(
+                text: 'Student Name',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+
+            //                 ValueListenableBuilder(
+            // valueListenable: isStudentNameFilled,
+            // builder: (BuildContext context, dynamic value, Widget? child) {
+            //   print(isStudentNameFilled.value);
+            //   return
+            textFormField(
+                controller: nameController,
+                hintText: 'Student Name',
+                // keyboardType: TextInputType.,
+                isFailure: true,
+                // errormsg:
+                //     "If you would like to save the student in database, Please enter the student name",
+                onSaved: (String value) {
+                  isStudentNameFilled.value = value;
+                  // _formKey1.currentState!.validate();
+                  // value != '' ? valuechange = true : valuechange = false;
+                  //  updateDetails(isUpdateData: true);
+                  studentName = nameController.text;
+                  onChange = true;
+                },
+                validator: (String? value) {
+                  // isStudentNameFilled.value= value!;//nameController.text;
+                  // if (value!.isEmpty) {
+                  //   return 'If you would like to save the student details in database, Please enter the student name';
+                  // } else if (value.length < 3) {
+                  //   return 'Make sure the student name contains more than 3 character';
+                  // } else {
+                  //   return null;
+                  // }
+                  // return null;
+                }),
+
+            ValueListenableBuilder(
+                valueListenable: isStudentNameFilled,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Container(
+                    padding: isStudentNameFilled.value.isNotEmpty ||
+                            nameController.text.length < 3
+                        ? EdgeInsets.only(top: 8)
+                        : null,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      isStudentNameFilled.value == ""
+                          ? 'If you would like to save the student details in database, Please enter the student name'
+                          : nameController.text.length < 3
+                              ? 'Make sure the student name contains more than 3 character'
+                              : '',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  );
+                }),
+            //       ;},
+            //   child: Container(),
+            // ),
+            SpacerWidget(_KVertcalSpace / 2),
+            Utility.textWidget(
+                text: 'Student ID',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+            textFormField(
+                controller: idController,
+                keyboardType: TextInputType.number,
+                hintText: 'Student Id',
+                isFailure: true,
+                // errormsg:
+                //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+                onSaved: (String value) {
+                  _formKey1.currentState!.validate();
+                  // updateDetails(isUpdateData: true);
+                  studentId = idController.text;
+                  if (idController.text.length == 9 &&
+                      idController.text[0] == '2') {
+                    _bloc2.add(FetchStudentDetails(ossId: idController.text));
+                  }
+                  onChange = true;
+                },
+                validator: (String? value) {
+                  if (value!.length != 9) {
+                    return 'Student Id must have 9 digit numbers';
+                  } else if (!value.startsWith('2')) {
+                    return 'Student Id must starts with \'2\'';
+                  } else {
+                    return null;
+                  }
+                },
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  // FilteringTextInputFormatter.allow(
+                  //     RegExp("[0-9]")),
+                ],
+                maxNineDigit: true),
+            SpacerWidget(_KVertcalSpace / 2),
+            Center(
+              child: Utility.textWidget(
+                  text: 'Points Earned',
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primaryVariant
+                          .withOpacity(0.5))),
+            ),
+            SpacerWidget(_KVertcalSpace / 4),
+            Center(
+                child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
+            SpacerWidget(_KVertcalSpace / 2),
+            Center(child: imagePreviewWidget()),
+            SpacerWidget(_KVertcalSpace / 0.9),
+            SpacerWidget(_KVertcalSpace / 1.5),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget successScreen({required String id, required String grade}) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Form(
+        key: _formKey2,
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //  SpacerWidget(_KVertcalSpace / 5),
+            SpacerWidget(_KVertcalSpace * 0.25),
+            Utility.textWidget(
+                text: 'Student Name',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.3))),
+            textFormField(
+                controller: nameController,
+                hintText: 'Student Name',
+                isFailure: false,
+                // errormsg: "Make sure to save the record with student name",
+                onSaved: (String value) {
+                  _formKey2.currentState!.validate();
+                  value != '' ? valuechange = true : valuechange = false;
+
+                  //updateDetails(isUpdateData: true);
+                  onChange = true;
+                },
+                validator: (String? value) {
+                  if (value!.isEmpty) {
+                    return 'If you would like to save the student details in database, Please enter the student name';
+                  } else if (value.length < 3) {
+                    return 'Make sure the student name contains more than 3 character';
+                  } else {
+                    return null;
+                  }
+                }),
+            SpacerWidget(_KVertcalSpace / 2),
+            Utility.textWidget(
+                text: 'Student Id',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+            textFormField(
               controller: idController,
               keyboardType: TextInputType.number,
               hintText: 'Student Id',
-              isFailure: true,
               // errormsg:
               //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+              isFailure: false,
               onSaved: (String value) {
-                _formKey1.currentState!.validate();
-                // updateDetails(isUpdateData: true);
-                studentId = idController.text;
-                if (idController.text.length == 9 &&
-                    idController.text[0] == '2') {
-                  _bloc2.add(FetchStudentDetails(ossId: idController.text));
-                }
+                _formKey2.currentState!.validate();
+                //  updateDetails(isUpdateData: true);
                 onChange = true;
               },
               validator: (String? value) {
-                if (value!.length != 9) {
+                if (value!.isEmpty) {
+                  return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
+                } else if (value.length != 9) {
                   return 'Student Id must have 9 digit numbers';
                 } else if (!value.startsWith('2')) {
                   return 'Student Id must starts with \'2\'';
@@ -591,150 +694,54 @@ class _SuccessScreenState extends State<SuccessScreen> {
               },
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
-                // FilteringTextInputFormatter.allow(
-                //     RegExp("[0-9]")),
+                FilteringTextInputFormatter.allow(
+                    RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
               ],
-              maxNineDigit: true),
-          SpacerWidget(_KVertcalSpace / 2),
-          Center(
-            child: Utility.textWidget(
-                text: 'Points Earned',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.5))),
-          ),
-          SpacerWidget(_KVertcalSpace / 4),
-          Center(child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
-          SpacerWidget(_KVertcalSpace / 2),
-          Center(child: imagePreviewWidget()),
-          SpacerWidget(_KVertcalSpace / 0.9),
-          SpacerWidget(_KVertcalSpace / 1.5),
-        ],
-      ),
-    );
-  }
-
-  Widget successScreen({required String id, required String grade}) {
-    return Form(
-      key: _formKey2,
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          //  SpacerWidget(_KVertcalSpace / 5),
-          SpacerWidget(_KVertcalSpace * 0.25),
-          Utility.textWidget(
-              text: 'Student Name',
-              context: context,
-              textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.3))),
-          textFormField(
-              controller: nameController,
-              hintText: 'Student Name',
-              isFailure: false,
-              // errormsg: "Make sure to save the record with student name",
-              onSaved: (String value) {
-                _formKey2.currentState!.validate();
-                value != '' ? valuechange = true : valuechange = false;
-
-                //updateDetails(isUpdateData: true);
-                onChange = true;
-              },
-              validator: (String? value) {
-                if (value!.isEmpty) {
-                  return 'If you would like to save the student details in database, Please enter the student name';
-                } else if (value.length < 3) {
-                  return 'Make sure the student name contains more than 3 character';
-                } else {
-                  return null;
-                }
-              }),
-          SpacerWidget(_KVertcalSpace / 2),
-          Utility.textWidget(
-              text: 'Student Id',
-              context: context,
-              textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.5))),
-          textFormField(
-            controller: idController,
-            keyboardType: TextInputType.number,
-            hintText: 'Student Id',
-            // errormsg:
-            //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-            isFailure: false,
-            onSaved: (String value) {
-              _formKey2.currentState!.validate();
-              //  updateDetails(isUpdateData: true);
-              onChange = true;
-            },
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
-              } else if (value.length != 9) {
-                return 'Student Id must have 9 digit numbers';
-              } else if (!value.startsWith('2')) {
-                return 'Student Id must starts with \'2\'';
-              } else {
-                return null;
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              FilteringTextInputFormatter.allow(
-                  RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
-            ],
-          ),
-          SpacerWidget(_KVertcalSpace / 2),
-          Center(
-            child: Utility.textWidget(
-                text: 'Points Earned',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.5))),
-          ),
-          SpacerWidget(_KVertcalSpace / 4),
-          Center(child: pointsEarnedButton(int.parse(grade))),
-          SpacerWidget(_KVertcalSpace / 2),
-          Center(child: imagePreviewWidget()),
-          SpacerWidget(_KVertcalSpace / 2.8),
-          Center(
-            child: Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                // color: Colors.blue,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Utility.textWidget(
-                        text: 'All Good!',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    Icon(
-                      IconData(0xe878,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      size: 34,
-                      color: AppTheme.kButtonColor,
-                    ),
-                  ],
-                )),
-          ),
-          SpacerWidget(MediaQuery.of(context).size.height * 0.15),
-        ],
-        // ),
+            ),
+            SpacerWidget(_KVertcalSpace / 2),
+            Center(
+              child: Utility.textWidget(
+                  text: 'Points Earned',
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primaryVariant
+                          .withOpacity(0.5))),
+            ),
+            SpacerWidget(_KVertcalSpace / 4),
+            Center(child: pointsEarnedButton(int.parse(grade))),
+            SpacerWidget(_KVertcalSpace / 2),
+            Center(child: imagePreviewWidget()),
+            SpacerWidget(_KVertcalSpace / 2.8),
+            Center(
+              child: Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  // color: Colors.blue,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Utility.textWidget(
+                          text: 'All Good!',
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(fontWeight: FontWeight.bold)),
+                      Icon(
+                        IconData(0xe878,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        size: 34,
+                        color: AppTheme.kButtonColor,
+                      ),
+                    ],
+                  )),
+            ),
+            SpacerWidget(MediaQuery.of(context).size.height * 0.15),
+          ],
+          // ),
+        ),
       ),
     );
   }
