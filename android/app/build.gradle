@@ -48,7 +48,7 @@ android {
                 force 'androidx.core:core-ktx:1.6.0' 
             }
         }
-        applicationId "com.app.p2346HH"
+        applicationId "com.test.soc"
         minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion 31
