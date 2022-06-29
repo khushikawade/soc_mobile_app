@@ -537,8 +537,33 @@ class _SearchPageState extends State<SearchPage> {
                                       data.titleC,
                                       data.appIconUrlC,
                                       data.id,
+<<<<<<< HEAD
                                       data.objectName,
                                       data.typeC,
+=======
+                                      data.name,
+                                      data.objectName,
+                                      data.rtfHTMLC,
+                                      data.typeC,
+                                      // data.schoolId,
+                                      // data.dept,
+                                      data.statusC,
+                                      data.urlC,
+                                      data.pdfURL,
+                                      data.sortOrder,
+                                      data.deepLink,
+                                      data.appURLC,
+                                      data.calendarId,
+                                      data.emailC,
+                                      data.imageUrlC,
+                                      data.phoneC,
+                                      data.webURLC,
+                                      data.address,
+                                      data.geoLocation,
+                                      data.descriptionC,
+                                      data.latitude,
+                                      data.longitude,
+>>>>>>> 18df4ad4cdfae0a1e47e0a12a0811d330d58f22e
                                       data.darkModeIconC);
                                   addtoDataBase(recentitem);
                                 }
@@ -569,7 +594,13 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ));
+<<<<<<< HEAD
           } else {
+=======
+          }
+      
+          else {
+>>>>>>> 18df4ad4cdfae0a1e47e0a12a0811d330d58f22e
             return Container(height: 0);
           }
         });
@@ -752,6 +783,10 @@ class _SearchPageState extends State<SearchPage> {
                                     obj: state.recordObject,
                                     objectType: state.objectType!,
                                     objectName: state.objectName!);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 18df4ad4cdfae0a1e47e0a12a0811d330d58f22e
                               } else {
                                 Utility.showSnackBar(
                                     _scaffoldKey,
