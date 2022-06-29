@@ -5,10 +5,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
-<<<<<<< HEAD
-=======
 import 'package:Soc/src/styles/marquee.dart';
->>>>>>> search_improvement_dev
 //import 'package:Soc/src/modules/students/ui/demo.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -151,15 +148,10 @@ class _StudentPageState extends State<StudentPage> {
                                           Orientation.portrait &&
                                       translatedMessage.toString().length > 11
                                   ? Expanded(
-<<<<<<< HEAD
-                                      child: Marquee(
-                                        text: translatedMessage.toString(),
-=======
                                       child: MarqueeWidget(
                                       pauseDuration: Duration(seconds: 1),
                                       child: Text(
                                         translatedMessage.toString(),
->>>>>>> search_improvement_dev
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyText1!
@@ -168,26 +160,6 @@ class _StudentPageState extends State<StudentPage> {
                                                         "phone"
                                                     ? 16
                                                     : 24),
-<<<<<<< HEAD
-                                        scrollAxis: Axis.horizontal,
-                                        velocity: 30.0,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        blankSpace: 50,
-                                        //MediaQuery.of(context).size.width
-                                        // velocity: 100.0,
-                                        pauseAfterRound: Duration(seconds: 5),
-                                        showFadingOnlyWhenScrolling: true,
-                                        startPadding: 10.0,
-                                        accelerationDuration:
-                                            Duration(seconds: 1),
-                                        accelerationCurve: Curves.linear,
-                                        decelerationDuration:
-                                            Duration(milliseconds: 500),
-                                        decelerationCurve: Curves.easeOut,
-                                      ),
-                                    )
-=======
                                       ),
                                     )
 
@@ -221,7 +193,6 @@ class _StudentPageState extends State<StudentPage> {
                                       //   startAfter: Duration.zero,
                                       // ),
                                       )
->>>>>>> search_improvement_dev
                                   : MediaQuery.of(context).orientation ==
                                               Orientation.landscape &&
                                           translatedMessage.toString().length >
@@ -259,21 +230,6 @@ class _StudentPageState extends State<StudentPage> {
                                           //   crossAxisAlignment:
                                           //       CrossAxisAlignment.start,
 
-<<<<<<< HEAD
-                                          blankSpace:
-                                              50, //MediaQuery.of(context).size.width
-                                          // velocity: 100.0,
-                                          pauseAfterRound: Duration(seconds: 5),
-                                          showFadingOnlyWhenScrolling: true,
-                                          startPadding: 10.0,
-                                          accelerationDuration:
-                                              Duration(seconds: 1),
-                                          accelerationCurve: Curves.linear,
-                                          decelerationDuration:
-                                              Duration(milliseconds: 500),
-                                          decelerationCurve: Curves.easeOut,
-                                        ))
-=======
                                           //   blankSpace:
                                           //       50, //MediaQuery.of(context).size.width
                                           //   // velocity: 100.0,
@@ -290,7 +246,6 @@ class _StudentPageState extends State<StudentPage> {
                                           // )
 
                                           )
->>>>>>> search_improvement_dev
                                       : SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
                                           child: Text(
