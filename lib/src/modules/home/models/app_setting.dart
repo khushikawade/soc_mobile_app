@@ -110,7 +110,7 @@ class AppSetting {
   bool? disableDarkMode;
   @HiveField(52)
   String? authenticationURL;
-  @HiveField(5)
+  @HiveField(53)
   String? enableGraded;
 
   AppSetting(

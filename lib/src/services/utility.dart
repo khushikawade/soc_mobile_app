@@ -429,8 +429,18 @@ class Utility {
 
     ScaffoldMessenger.of(context!).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(text),
-    ));
+        content: TranslationWidget(
+            message: text,
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) {
+              return Text(translatedMessage.toString(),
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.background,
+                    fontWeight: FontWeight.w600,
+                  ));
+            })));
   }
 
   static Future<bool> checkUserConnection() async {
@@ -475,7 +485,7 @@ class Utility {
   //         );
   //       });
   // }
-  
+
   static void showLoadingDialog(BuildContext context) async {
     return showDialog<void>(
         useRootNavigator: false,
@@ -485,31 +495,38 @@ class Utility {
           return new WillPopScope(
               onWillPop: () async => false,
               child: SimpleDialog(
-                  backgroundColor:  Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Color(0xff111C20)
-              : Color(0xffF7F8F9),//Colors.black54,
+                  backgroundColor:
+                      Color(0xff000000) != Theme.of(context).backgroundColor
+                          ? Color(0xff111C20)
+                          : Color(0xffF7F8F9), //Colors.black54,
                   children: <Widget>[
                     Container(
                       height: 70,
-                      width: MediaQuery.of(context).size.width*0.4,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                             Utility.textWidget(text: 'Please Wait...', context: context, textTheme: Theme.of(context).textTheme.headline6!.copyWith(
-                            color: 
-                            // Color(0xff000000) ==
-                            //         Theme.of(context).backgroundColor
-                            //     ? Color(0xffFFFFFF)
-                            //     :
-                                 Color(0xff000000),
-                            fontSize: Globals.deviceType == "phone"
-                                ? AppTheme.kBottomSheetTitleSize
-                                : AppTheme.kBottomSheetTitleSize * 1.3,
-                          )),
+                          Utility.textWidget(
+                              text: 'Please Wait...',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(
+                                    color:
+                                        // Color(0xff000000) ==
+                                        //         Theme.of(context).backgroundColor
+                                        //     ? Color(0xffFFFFFF)
+                                        //     :
+                                        Color(0xff000000),
+                                    fontSize: Globals.deviceType == "phone"
+                                        ? AppTheme.kBottomSheetTitleSize
+                                        : AppTheme.kBottomSheetTitleSize * 1.3,
+                                  )),
                           SizedBox(
-                                    height: 10,
-                                  ),
+                            height: 10,
+                          ),
                           Center(
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../services/local_database/local_db.dart';
+import '../../../widgets/common_pdf_viewer_page.dart';
 import '../../../widgets/google_auth_webview.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
@@ -109,12 +110,22 @@ class _OpticalCharacterRecognitionPageState
                         await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (BuildContext context) => OcrPdfViewer(
+                                builder: (BuildContext context) =>
+                                    CommonPdfViewerPage(
+                                      isOCRFeature: true,
+                                      isHomePage: false,
                                       url: Overrides.rubric_Score_PDF_URL,
-                                      tittle: "information",
-                                      isbuttomsheet: true,
+                                      tittle: '',
+                                      isbuttomsheet: false,
                                       language: Globals.selectedLanguage,
-                                    )));
+                                    )
+                                // OcrPdfViewer(
+                                //       url: Overrides.rubric_Score_PDF_URL,
+                                //       tittle: "information",
+                                //       isbuttomsheet: true,
+                                //       language: Globals.selectedLanguage,
+                                //     )
+                                ));
                       },
                       icon: Icon(
                         info,

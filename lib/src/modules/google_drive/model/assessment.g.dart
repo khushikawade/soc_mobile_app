@@ -22,13 +22,15 @@ class HistoryAssessmentAdapter extends TypeAdapter<HistoryAssessment> {
       fileid: fields[2] as String?,
       label: fields[3] as dynamic,
       webContentLink: fields[4] as String?,
+      createdDate: fields[5] as String?,
+      modifiedDate: fields[6] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, HistoryAssessment obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -38,7 +40,11 @@ class HistoryAssessmentAdapter extends TypeAdapter<HistoryAssessment> {
       ..writeByte(3)
       ..write(obj.label)
       ..writeByte(4)
-      ..write(obj.webContentLink);
+      ..write(obj.webContentLink)
+      ..writeByte(5)
+      ..write(obj.createdDate)
+      ..writeByte(6)
+      ..write(obj.modifiedDate);
   }
 
   @override

@@ -232,7 +232,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               : Globals.pointsEarnedList.length = 2;
                   if (state.grade == '') {
                     Utility.showSnackBar(_scaffoldKey,
-                        'Could not detect the right score', context, null);
+                        'Could Not Detect The Right Score', context, null);
                   }
                   onChange == false
                       ? idController.text = state.studentId ?? ''
@@ -543,14 +543,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         ? EdgeInsets.only(top: 8)
                         : null,
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      isStudentNameFilled.value == ""
-                          ? 'If you would like to save the student details in database, Please enter the student name'
-                          : nameController.text.length < 3
-                              ? 'Make sure the student name contains more than 3 character'
-                              : '',
-                      style: TextStyle(color: Colors.red),
-                    ),
+                    child: TranslationWidget(
+                        message: isStudentNameFilled.value == ""
+                            ? 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name'
+                            : nameController.text.length < 3
+                                ? 'Make Sure The Student Name Contains More Than 3 Character'
+                                : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage,
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }),
                   );
                 }),
             //       ;},
@@ -568,7 +574,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             textFormField(
                 controller: idController,
                 keyboardType: TextInputType.number,
-                hintText: 'Student Id',
+                hintText: 'Student ID',
                 isFailure: true,
                 // errormsg:
                 //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
@@ -584,9 +590,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 },
                 validator: (String? value) {
                   if (value!.length != 9) {
-                    return 'Student Id must have 9 digit numbers';
+                    return 'Student ID Must Have 9 Digits Number';
                   } else if (!value.startsWith('2')) {
-                    return 'Student Id must starts with \'2\'';
+                    return 'Student ID Must Starts With \'2\'';
                   } else {
                     return null;
                   }
@@ -653,9 +659,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 },
                 validator: (String? value) {
                   if (value!.isEmpty) {
-                    return 'If you would like to save the student details in database, Please enter the student name';
+                    return 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name';
                   } else if (value.length < 3) {
-                    return 'Make sure the student name contains more than 3 character';
+                    return 'Make Sure The Student Name Contains More Than 3 Characters';
                   } else {
                     return null;
                   }
@@ -683,11 +689,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
               },
               validator: (String? value) {
                 if (value!.isEmpty) {
-                  return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
+                  return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
                 } else if (value.length != 9) {
-                  return 'Student Id must have 9 digit numbers';
+                  return 'Student ID Must Have 9 Digits Number';
                 } else if (!value.startsWith('2')) {
-                  return 'Student Id must starts with \'2\'';
+                  return 'Student ID Must Starts With \'2\'';
                 } else {
                   return null;
                 }
@@ -1006,7 +1012,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         final StudentAssessmentInfo studentAssessmentInfo =
             StudentAssessmentInfo();
         studentAssessmentInfo.studentName =
-            nameController.text.isNotEmpty ? nameController.text : "unknown";
+            nameController.text.isNotEmpty ? nameController.text : "Unknown";
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade = pointScored.value;
         studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
@@ -1024,7 +1030,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         if (!id.contains(idController.text)) {
           StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
           studentAssessmentInfo.studentName =
-              nameController.text.isNotEmpty ? nameController.text : "unknown";
+              nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
           studentAssessmentInfo.studentGrade = pointScored.value;
           studentAssessmentInfo.pointpossible = Globals.pointpossible;

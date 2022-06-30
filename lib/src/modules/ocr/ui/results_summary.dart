@@ -141,12 +141,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   padding: EdgeInsets.only(right: 5),
                   child: TextButton(
                       style: ButtonStyle(alignment: Alignment.center),
-                      child: Text("DONE",
-                          style: TextStyle(
-                            color: AppTheme.kButtonColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          )),
+                      child: TranslationWidget(
+                          message: "DONE",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage,
+                                style: TextStyle(
+                                  color: AppTheme.kButtonColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ));
+                          }),
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         Navigator.of(context).pushAndRemoveUntil(
@@ -227,7 +233,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     if (state is ErrorState) {
                                       Navigator.of(context).pop();
                                       Utility.currentScreenSnackBar(
-                                          "Technical issue try again after some time");
+                                          "Something Went Wrong. Please Try Again.");
                                     }
                                   }),
                             ],
@@ -859,7 +865,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, true)
                                 : Utility.currentScreenSnackBar(
-                                    "You cannot edit the record which is already saved to the \'Data Dashboard\'");
+                                    "You Cannot Edit The Record Which Is Already Saved To The \'Data Dashboard\'");
                           },
                           backgroundColor:
                               _list[index].isSavedOnDashBoard == null
@@ -874,7 +880,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, false)
                                 : Utility.currentScreenSnackBar(
-                                    "Sorry ! You already saved into school dashboard");
+                                    "You Cannot Delete The Record Which Is Already Saved To The \'Data Dashboard\'");
                           },
                           backgroundColor:
                               _list[index].isSavedOnDashBoard == null
@@ -1046,7 +1052,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             ? MediaQuery.of(context).size.width / 2
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
-                        message: "Saved to Data Dashboard",
+                        message: "Saved To Data Dashboard",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
@@ -1111,11 +1117,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   getGoogleFolderPath() async {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
-    Utility.showSnackBar(
-        scaffoldKey,
-        "Unable to navigate at the moment. Please try again later",
-        context,
-        null);
+    Utility.showSnackBar(scaffoldKey,
+        "Unable To Navigate At The Moment. Please Try Again.", context, null);
 
     _driveBloc.add(GetDriveFolderIdEvent(
         isFromOcrHome: false,
@@ -1124,89 +1127,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         folderName: "SOLVED GRADED+",
         refreshtoken: _profileData[0].refreshToken));
   }
-  // onFinishedPopup() {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) =>
-  //           OrientationBuilder(builder: (context, orientation) {
-  //             return AlertDialog(
-  //               backgroundColor: Colors.white,
-  //               title: Container(
-  //                   padding: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : const EdgeInsets.only(top: 10.0),
-  //                   height: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : orientation == Orientation.portrait
-  //                           ? MediaQuery.of(context).size.height / 15
-  //                           : MediaQuery.of(context).size.width / 15,
-  //                   width: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : orientation == Orientation.portrait
-  //                           ? MediaQuery.of(context).size.width / 2
-  //                           : MediaQuery.of(context).size.height / 2,
-  //                   child: Row(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       Utility.textWidget(
-  //                           text: 'Finished!',
-  //                           context: context,
-  //                           textTheme: Theme.of(context)
-  //                               .textTheme
-  //                               .headline6!
-  //                               .copyWith(
-  //                                   fontWeight: FontWeight.bold,
-  //                                   color: Colors.black)),
-  //                       SizedBox(width: 10),
-  //                       Icon(
-  //                         IconData(0xe878,
-  //                             fontFamily: Overrides.kFontFam,
-  //                             fontPackage: Overrides.kFontPkg),
-  //                         size: 30,
-  //                         color: AppTheme.kButtonColor,
-  //                       ),
-  //                     ],
-  //                   )),
-  //               actions: [
-  //                 Container(
-  //                   height: 1,
-  //                   width: MediaQuery.of(context).size.height,
-  //                   color: Colors.grey.withOpacity(0.2),
-  //                 ),
-  //                 Center(
-  //                   child: Container(
-  //                     // height: 20,
-  //                     child: TextButton(
-  //                       child: TranslationWidget(
-  //                           message: "Done ",
-  //                           fromLanguage: "en",
-  //                           toLanguage: Globals.selectedLanguage,
-  //                           builder: (translatedMessage) {
-  //                             return Text(translatedMessage.toString(),
-  //                                 style: Theme.of(context)
-  //                                     .textTheme
-  //                                     .headline5!
-  //                                     .copyWith(
-  //                                       color: AppTheme.kButtonColor,
-  //                                     ));
-  //                           }),
-  //                       onPressed: () {
-  //                         //Globals.iscameraPopup = false;
-  //                         Navigator.of(context).pushAndRemoveUntil(
-  //                             MaterialPageRoute(
-  //                                 builder: (context) => HomePage()),
-  //                             (_) => false);
-  //                       },
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //               shape: RoundedRectangleBorder(
-  //                   borderRadius: BorderRadius.circular(12)),
-  //               elevation: 16,
-  //             );
-  //           }));
-  // }
 
   performEditAndDelete(BuildContext context, int index, bool? edit) {
     if (edit!) {
@@ -1226,7 +1146,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               studentName: Globals.studentInfo![index].studentName!,
               index: index)
           : Utility.currentScreenSnackBar(
-              "You not able to delelet the last record");
+              "Action Not Performed. Result List Cannot Be Empty.");
     }
   }
 
@@ -1298,7 +1218,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             ? MediaQuery.of(context).size.width / 2
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
-                        message: "Delete",
+                        message: "Delete Record",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
@@ -1311,7 +1231,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ),
                 ),
                 content: TranslationWidget(
-                    message: ' are you sure want to delete this record ',
+                    message: 'You are about to delete the record - ',
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
@@ -1322,11 +1242,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               .headline2!
                               .copyWith(color: Colors.black),
                           children: <TextSpan>[
+                            TextSpan(text: translatedMessage),
                             TextSpan(
-                                text: '" $studentName "',
+                                text: '"$studentName"',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold)),
-                            TextSpan(text: translatedMessage),
                           ],
                         ),
                       );
@@ -1348,7 +1268,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     children: [
                       TextButton(
                         child: TranslationWidget(
-                            message: "No",
+                            message: "Keep the record",
                             fromLanguage: "en",
                             toLanguage: Globals.selectedLanguage,
                             builder: (translatedMessage) {

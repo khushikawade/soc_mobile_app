@@ -218,6 +218,7 @@ class _SearchPageState extends State<SearchPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
+                        isOCRFeature: false,
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,

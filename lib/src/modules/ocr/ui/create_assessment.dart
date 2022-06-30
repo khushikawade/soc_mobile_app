@@ -116,9 +116,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           hintText: 'Assessment Name',
                           validator: (String? value) {
                             if (value!.isEmpty) {
-                              return 'Assessment name is required';
+                              return 'Assessment Name Is Required';
                             } else if (value.length < 2) {
-                              return 'Assessment name should contain atlease 2 characters';
+                              return 'Assessment Name Should Contains Atleast 2 Characters';
                             } else {
                               return null;
                             }
@@ -143,7 +143,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           onSaved: (String value) {},
                           validator: (String? value) {
                             if (value!.isEmpty) {
-                              return 'Class name is required';
+                              return 'Class Name Is Required';
                             } else {
                               return null;
                             }
@@ -513,7 +513,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       if (state is ErrorState) {
                         Navigator.of(context).pop();
                         Utility.currentScreenSnackBar(
-                            "Technical issue try again after some time");
+                            "Something Went Wrong. Please Try Again.");
                       }
                     }),
                 textwidget(
@@ -613,7 +613,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
       selectedGrade.value = widget.customGrades.length - 2;
     } else {
       Utility.showSnackBar(
-          scaffoldKey, "Subject $sectionName already exist", context, null);
+          scaffoldKey, "Subject \'$sectionName\' Already Exist", context, null);
     }
 
     await _localDb.clear();

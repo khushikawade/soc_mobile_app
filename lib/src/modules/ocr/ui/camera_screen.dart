@@ -168,19 +168,25 @@ class _CameraScreenState extends State<CameraScreen>
                   if (state is ErrorState) {
                     Navigator.of(context).pop();
                     Utility.currentScreenSnackBar(
-                        "Technical issue, Please try again");
+                        "Something Went Wrong. Please Try Again.");
                   }
                 }),
             Container(
                 padding: EdgeInsets.only(right: 5),
                 child: TextButton(
                   style: ButtonStyle(alignment: Alignment.center),
-                  child: Text("DONE",
-                      style: TextStyle(
-                        color: AppTheme.kButtonColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      )),
+                  child: TranslationWidget(
+                      message: "DONE",
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) {
+                        return Text(translatedMessage,
+                            style: TextStyle(
+                              color: AppTheme.kButtonColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ));
+                      }),
                   onPressed: () async {
                     ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
@@ -436,7 +442,7 @@ class _CameraScreenState extends State<CameraScreen>
             Center(
               child: TextButton(
                 child: TranslationWidget(
-                    message: "ok ",
+                    message: "Ok",
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {

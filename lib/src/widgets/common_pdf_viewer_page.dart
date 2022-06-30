@@ -7,16 +7,21 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../modules/ocr/widgets/common_ocr_appbar.dart';
+
 // ignore: must_be_immutable
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
   String? tittle = '';
   String? language;
   bool? isHomePage;
+  bool? isOCRFeature;
+  final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   bool isbuttomsheet;
   CommonPdfViewerPage(
       {Key? key,
+      @required this.isOCRFeature,
       @required this.url,
       @required this.tittle,
       required this.isbuttomsheet,
@@ -76,21 +81,38 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   void dispose() {
     super.dispose();
   }
+// CustomOcrAppBarWidget(
+//             isbackOnSuccess: widget.isBackFromCamera,
+//             key: GlobalKey(),
+//             isBackButton: false,
+//           )
+
+  appBarWidget() {
+    if (widget.isOCRFeature == true) {
+      return CustomOcrAppBarWidget(
+        isbackOnSuccess: widget.isBackFromCamera,
+        key: GlobalKey(),
+        isBackButton: false,
+      );
+    } else if (widget.isHomePage == true) {
+      return null;
+    } else {
+      CustomAppBarWidget(
+        isSearch: false,
+        isShare: true,
+        appBarTitle: widget.tittle!,
+        sharedpopBodytext: widget.url.toString(),
+        sharedpopUpheaderText: "Please check out this",
+        language: Globals.selectedLanguage,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         // backgroundColor: Colors.white,
-        appBar: widget.isHomePage == true
-            ? null
-            : CustomAppBarWidget(
-                isSearch: false,
-                isShare: true,
-                appBarTitle: widget.tittle!,
-                sharedpopBodytext: widget.url.toString(),
-                sharedpopUpheaderText: "Please check out this",
-                language: Globals.selectedLanguage,
-              ),
+        appBar: appBarWidget(),
         body: widget.url != null && widget.url != ""
             ? document == null
                 ? Center(

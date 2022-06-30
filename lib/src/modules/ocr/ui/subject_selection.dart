@@ -872,12 +872,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           scaffoldKey: _scaffoldKey,
                                           context: context,
                                           fileId: Globals.googleExcelSheetId ??
-                                              'Excel Id not found'));
+                                              'Excel Id Not Found'));
                                     }
                                     if (state is ErrorState) {
                                       Navigator.of(context).pop();
                                       Utility.currentScreenSnackBar(
-                                          "Technical issue try again after some time");
+                                          "Something Went Wrong. Please Try Again.");
                                     }
                                   }),
                               BlocListener<OcrBloc, OcrState>(
@@ -952,7 +952,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       _localData.add(subjectDetailList);
     } else {
       Utility.showSnackBar(
-          _scaffoldKey, "Subject $subjectName already exist", context, null);
+          _scaffoldKey, "Subject \'$subjectName\' Already Exist", context, null);
     }
 
     await _localDb.clear();
@@ -1015,7 +1015,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: TextFieldWidget(
-                    msg: "Subject is already exist",
+                    msg: "Subject Is Already Exist",
                     controller: addController,
                     onSaved: (String value) {}),
               ),
