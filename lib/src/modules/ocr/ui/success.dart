@@ -606,6 +606,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             SpacerWidget(_KVertcalSpace / 2),
             Center(
               child: Utility.textWidget(
+                  textAlign: TextAlign.center,
                   text: 'Points Earned',
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline2!.copyWith(
@@ -767,30 +768,32 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Widget pointsEarnedButton(int grade) {
-    return Container(
-        alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height * 0.1,
-        width: MediaQuery.of(context).size.width,
-        child: Globals.pointsEarnedList.length > 4
-            ? ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return Center(child: pointsButton(index, grade));
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 12,
-                  );
-                },
-                itemCount: Globals.pointsEarnedList.length)
-            : Row(
-                // scrollDirection: Axis.horizontal,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: Globals.pointsEarnedList
-                    .map<Widget>((element) => pointsButton(
-                        Globals.pointsEarnedList.indexOf(element), grade))
-                    .toList(),
-              ));
+    return FittedBox(
+      child: Container(
+          alignment: Alignment.center,
+          height: MediaQuery.of(context).size.height * 0.1,
+          width: MediaQuery.of(context).size.width,
+          child: Globals.pointsEarnedList.length > 4
+              ? ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(child: pointsButton(index, grade));
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      width: 12,
+                    );
+                  },
+                  itemCount: Globals.pointsEarnedList.length)
+              : Row(
+                  // scrollDirection: Axis.horizontal,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: Globals.pointsEarnedList
+                      .map<Widget>((element) => pointsButton(
+                          Globals.pointsEarnedList.indexOf(element), grade))
+                      .toList(),
+                )),
+    );
   }
 
   Widget pointsButton(index, int grade) {
@@ -832,8 +835,18 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       ),
                     ),
                     child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                        alignment: Alignment.center,
+                        height: //Globals.pointsEarnedList.length>3?
+                            MediaQuery.of(context).size.height *
+                                0.08, //:MediaQuery.of(context).size.height*0.2,
+                        width:
+                            //Globals.pointsEarnedList.length>3?
+                            MediaQuery.of(context).size.width * 0.17,
+                        //:MediaQuery.of(context).size.width*0.2,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical:
+                                20), //horizontal: Globals.pointsEarnedList.length>3?20:30
                         decoration: BoxDecoration(
                           color: Color(0xff000000) !=
                                   Theme.of(context).backgroundColor

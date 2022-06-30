@@ -62,11 +62,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   // new part of code
   final ValueNotifier<int> pageIndex = ValueNotifier<int>(0);
   final ValueNotifier<int> subjectIndex1 =
-      ValueNotifier<int>(50000); //To bypass the default selection
+      ValueNotifier<int>(-1); //To bypass the default selection
   final ValueNotifier<int> nycIndex1 =
-      ValueNotifier<int>(5000); //To bypass the default selection
+      ValueNotifier<int>(-1); //To bypass the default selection
   final ValueNotifier<int> nycSubIndex1 =
-      ValueNotifier<int>(5000); //To bypass the default selection
+      ValueNotifier<int>(-1); //To bypass the default selection
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   @override
@@ -296,7 +296,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             });
             // state.obj!.forEach((element) { userAddedSubjectList.add(element.subjectNameC!);});
 
-            return gridButtonsWidget(list: state.obj!, page: 0);
+            return gridButtonsWidget(
+                list: state.obj!, page: 0, isSubjectScreen: true);
           } else if (state is NycDataSuccess) {
             state.obj.forEach((element) {
               if (element.domainNameC != null) {
@@ -305,7 +306,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               }
             });
 
-            return gridButtonsWidget(list: state.obj, page: 1);
+            return gridButtonsWidget(
+                list: state.obj, page: 1, isSubjectScreen: false);
           } else if (state is NycSubDataSuccess) {
             state.obj!.forEach((element) {
               if (element.domainCodeC != null) {
@@ -364,9 +366,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             }
 
             return pageIndex.value == 0
-                ? gridButtonsWidget(list: list, page: 0)
+                ? gridButtonsWidget(list: list, page: 0, isSubjectScreen: true)
                 : pageIndex.value == 1
-                    ? gridButtonsWidget(list: list, page: 1)
+                    ? gridButtonsWidget(
+                        list: list, page: 1, isSubjectScreen: false)
                     : buttonListWidget(list: list);
           }
           return Container();
@@ -413,6 +416,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               : MediaQuery.of(context).size.width * 0.50,
           width: MediaQuery.of(context).size.width * 0.9,
           child: ListView.separated(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * 0.03),
             itemCount: list.length,
             itemBuilder: (BuildContext ctx, index) {
               return Column(children: [
@@ -423,7 +428,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           list[index].standardAndDescriptionC!.split(' - ')[0];
                       if (pageIndex.value == 2) {
                         nycSubIndex1.value = index;
-                        if (nycSubIndex1.value != 50000) {
+                        if (nycSubIndex1.value != -1) {
                           isSubmitButton.value = true;
                         }
                       }
@@ -567,7 +572,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget gridButtonsWidget({required List<SubjectDetailList> list, int? page}) {
+  Widget gridButtonsWidget(
+      {required List<SubjectDetailList> list,
+      int? page,
+      bool? isSubjectScreen}) {
     return ValueListenableBuilder(
       valueListenable: pageIndex.value == 0 ? subjectIndex1 : nycIndex1,
       child: Container(),
@@ -579,6 +587,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               : MediaQuery.of(context).size.width * 0.30,
           width: MediaQuery.of(context).size.width * 0.9,
           child: GridView.builder(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * 0.05),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 180,
                   childAspectRatio: 5 / 3,
@@ -600,7 +610,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             subject = list[index].subjectNameC ?? '';
                             subjectId = list[index].subjectC ?? '';
                             standardId = list[index].id ?? '';
+
                             subjectIndex1.value = index;
+
                             if ((subject != 'Math' &&
                                 subject != 'Science' &&
                                 subject != 'ELA' &&
@@ -615,7 +627,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             }
                           } else if (pageIndex.value == 1) {
                             nycIndex1.value = index;
-                            nycSubIndex1.value = index;
+                            // nycSubIndex1.value = index;
 
                             if (index < list.length) {
                               keywordSub = list[index].domainNameC;
@@ -656,8 +668,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             duration: Duration(microseconds: 100),
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 10),
-                              alignment: Alignment.center,
+                              alignment: isSubjectScreen == true
+                                  ? Alignment.center
+                                  : Alignment.centerLeft,
                               child: Utility.textWidget(
+                                  textAlign: TextAlign.left,
                                   text: page == 0
                                       ? list[index].subjectNameC!
                                       : list[index].domainNameC!,
@@ -951,8 +966,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       subjectDetailList.subjectNameC = subjectName;
       _localData.add(subjectDetailList);
     } else {
-      Utility.showSnackBar(
-          _scaffoldKey, "Subject \'$subjectName\' Already Exist", context, null);
+      Utility.showSnackBar(_scaffoldKey,
+          "Subject \'$subjectName\' Already Exist", context, null);
     }
 
     await _localDb.clear();

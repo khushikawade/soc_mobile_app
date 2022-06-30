@@ -571,7 +571,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String? refreshToken}) async {
     Map body = {
       'name': name,
-      'description': 'Newly created file',
+      'description': 'Assessment \'$name\' result has been generated.',
       'mimeType': 'application/vnd.google-apps.spreadsheet',
       'parents': ['$folderId']
     };

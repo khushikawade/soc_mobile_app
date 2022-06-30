@@ -366,13 +366,15 @@ class Utility {
   }
 
   static Widget textWidget(
-      {required String text, textTheme, required context}) {
+      {required String text, textTheme, required context,textAlign}) {
     return TranslationWidget(
       message: text,
       toLanguage: Globals.selectedLanguage,
       fromLanguage: "en",
       builder: (translatedMessage) => Text(
+        
         translatedMessage.toString(),
+        textAlign: textAlign??null,
         style: textTheme != null
             ? textTheme
             : Theme.of(context).textTheme.headline6!.copyWith(
@@ -491,6 +493,7 @@ class Utility {
         useRootNavigator: false,
         context: context,
         barrierDismissible: true,
+
         builder: (BuildContext context) {
           return new WillPopScope(
               onWillPop: () async => false,
