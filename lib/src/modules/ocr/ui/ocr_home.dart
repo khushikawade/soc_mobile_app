@@ -553,6 +553,7 @@ class _OpticalCharacterRecognitionPageState
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
+                onlyForPicture: false,
                 scaffoldKey: _scaffoldKey,
                 isScanMore: false,
                 pointPossible: rubricScoreSelectedColor.value == 0

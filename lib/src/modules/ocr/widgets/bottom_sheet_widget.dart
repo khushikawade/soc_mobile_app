@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -466,16 +467,31 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   }
 
   Future<void> _cameraImage(BuildContext context) async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    File? photo = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+              onlyForPicture: true, isScanMore: false, pointPossible: '')),
+    );
     if (photo != null) {
       setState(() {
         imageFile = File(photo.path);
-
         Navigator.pop(context);
       });
     } else {
       Navigator.pop(context);
     }
+
+    // final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    // if (photo != null) {
+    //   setState(() {
+    //     imageFile = File(photo.path);
+
+    //     Navigator.pop(context);
+    //   });
+    // } else {
+    //   Navigator.pop(context);
+    // }
   }
 
   _imgFromGallery(BuildContext context) async {
