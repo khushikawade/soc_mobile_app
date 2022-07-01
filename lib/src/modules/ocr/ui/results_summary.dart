@@ -1014,6 +1014,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                            onlyForPicture: false,
                                 isScanMore: true,
                                 // lastStudentInfoLenght: Globals.studentInfo!.length,
                                 pointPossible: Globals.pointpossible ?? '2',

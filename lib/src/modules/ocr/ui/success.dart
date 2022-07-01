@@ -198,6 +198,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                    onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
                                   )),
@@ -309,6 +310,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
+                                        onlyForPicture: false,
                                         isScanMore: widget.isScanMore,
                                         pointPossible: widget.pointPossible,
                                       )),
@@ -354,6 +356,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       CameraScreen(
+                                                        onlyForPicture: false,
                                                         isScanMore:
                                                             widget.isScanMore,
                                                         pointPossible: widget
@@ -427,6 +430,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                    onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
                                   )),
@@ -1064,6 +1068,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
+                  onlyForPicture: false,
                   isScanMore: widget.isScanMore,
                   pointPossible: widget.pointPossible,
                 )));

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -89,16 +90,22 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           ? MediaQuery.of(context).size.height
                           : MediaQuery.of(context).size.width,
                   child: ListView(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.2),
                     // controller: listScrollController,
                     shrinkWrap: true,
                     children: [
                       SpacerWidget(_KVertcalSpace * 0.50),
-                      highlightText(
-                        text: 'Create Assessment',
-                        theme: Theme.of(context)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: highlightText(
+                          text: 'Create Assessment',
+                          theme: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SpacerWidget(_KVertcalSpace / 1.8),
                       highlightText(
@@ -194,9 +201,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .withOpacity(0.3))),
                       SpacerWidget(_KVertcalSpace / 3),
                       scoringButton(),
-                      SpacerWidget(_KVertcalSpace / 2),
+                      SpacerWidget(_KVertcalSpace / 4),
                       highlightText(
-                          text: 'Scan Question',
+                          text: 'Scan Assessment (Optional)',
                           theme: Theme.of(context)
                               .textTheme
                               .headline2!
@@ -205,89 +212,117 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .colorScheme
                                       .primaryVariant
                                       .withOpacity(0.3))),
-                      SpacerWidget(_KVertcalSpace / 4),
-                      GestureDetector(
-                        onTap: () {
-                          _cameraImage(context);
-                        },
-                        child: Container(
-                            margin: EdgeInsets.only(
-                                bottom:
-                                    MediaQuery.of(context).size.height * 0.15),
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                border: Border.all(
-                                    width: 2, color: AppTheme.kButtonColor),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0))),
-                            height: 150,
-                            width: MediaQuery.of(context).size.width,
-                            child:
-                                // imageFile != null
-                                //     ?
-                                ValueListenableBuilder(
-                                    valueListenable: isimageFilePicked,
-                                    child: Container(),
-                                    builder: (BuildContext context,
-                                        dynamic value, Widget? child) {
-                                      return isimageFilePicked.value == true
-                                          ? ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: Image.file(
-                                                imageFile!,
-                                                fit: BoxFit.contain,
-                                              ),
-                                            )
-                                          : Container(
-                                              child: Center(
-                                                child: Icon(
-                                                  Icons.add_a_photo,
-                                                  color: AppTheme.kButtonColor
-                                                      .withOpacity(1.0),
-                                                ),
-                                              ),
-                                            );
-                                    })
-                            // : Container(
-                            //     child: Center(
-                            //       child: Icon(
-                            //         Icons.add_a_photo,
-                            //         color: AppTheme.kButtonColor
-                            //             .withOpacity(1.0),
-                            //       ),
-                            //     ),
-                            //   ),
-                            ),
+                      // SpacerWidget(_KVertcalSpace / 3),
+                      Row(
+                        children: [
+                          ValueListenableBuilder(
+                              valueListenable: isimageFilePicked,
+                              builder: (BuildContext context, dynamic value,
+                                  Widget? child) {
+                                return Padding(
+                                    padding: const EdgeInsets.only(left: 4.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _cameraImage(context);
+                                      },
+                                      child: Container(
+                                        height:50,
+                                          child: Row(
+                                        children: [
+                                          Text(
+                                            isimageFilePicked.value != true
+                                                ? 'Scan Assessment'
+                                                : 'Assessment Selected',
+                                            style: TextStyle(
+                                                color: isimageFilePicked
+                                                            .value !=
+                                                        true
+                                                    ? Colors.white
+                                                    : AppTheme.kSelectedColor,
+                                                fontSize: 14),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Icon(
+                                              isimageFilePicked.value != true
+                                                  ? Icons.add_a_photo
+                                                  : Icons.check,
+                                              color: isimageFilePicked.value !=
+                                                      true
+                                                  ? Colors.white
+                                                  : AppTheme.kSelectedColor,
+                                              size: 18,
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                    ));
+                              }),
+                        ],
                       ),
+
+                      SpacerWidget(_KVertcalSpace),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     _cameraImage(context);
+                      //   },
+                      //   child:
+                      //    Container(
+                      //       margin: EdgeInsets.only(
+                      //           bottom:
+                      //               MediaQuery.of(context).size.height * 0.15),
+                      //       decoration: BoxDecoration(
+                      //           color: Colors.grey.shade200,
+                      //           border: Border.all(
+                      //               width: 2, color: AppTheme.kButtonColor),
+                      //           borderRadius:
+                      //               BorderRadius.all(Radius.circular(10.0))),
+                      //       height: 150,
+                      //       width: MediaQuery.of(context).size.width,
+                      //       child:
+                      //           // imageFile != null
+                      //           //     ?
+                      //           ValueListenableBuilder(
+                      //               valueListenable: isimageFilePicked,
+                      //               child: Container(),
+                      //               builder: (BuildContext context,
+                      //                   dynamic value, Widget? child) {
+                      //                 return isimageFilePicked.value == true
+                      //                     ? ClipRRect(
+                      //                         borderRadius:
+                      //                             BorderRadius.circular(10),
+                      //                         child: Image.file(
+                      //                           imageFile!,
+                      //                           fit: BoxFit.contain,
+                      //                         ),
+                      //                       )
+                      //                     : Container(
+                      //                         child: Center(
+                      //                           child: Icon(
+                      //                             Icons.add_a_photo,
+                      //                             color: AppTheme.kButtonColor
+                      //                                 .withOpacity(1.0),
+                      //                           ),
+                      //                         ),
+                      //                       );
+                      //               })
+                      //       // : Container(
+                      //       //     child: Center(
+                      //       //       child: Icon(
+                      //       //         Icons.add_a_photo,
+                      //       //         color: AppTheme.kButtonColor
+                      //       //             .withOpacity(1.0),
+                      //       //       ),
+                      //       //     ),
+                      //       //   ),
+                      //       ),
+                      // ),
 
                       //To scroll the screen in case of keyboard appears
                       Padding(
                           padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom))
-
-                      // BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                      //     bloc: _googleDriveBloc,
-                      //     listener: (context, state) async {
-                      //       if (state is GoogleDriveLoading) {
-                      //         Utility.showSnackBar(
-                      //             scaffoldKey,
-                      //             'Please wait while assessment is creating',
-                      //             context,
-                      //             null);
-                      //       } else if (state is ExcelSheetCreated) {
-                      //         Navigator.push(
-                      //           context,
-                      //           MaterialPageRoute(
-                      //               builder: (context) => SubjectSelection(
-                      //                     selectedClass:
-                      //                         selectedGrade.value.toString(),
-                      //                   )),
-                      //         );
-                      //       }
-                      //     },
-                      //     child: Container()),
-                      // SpacerWidget(_KVertcalSpace / 20),
                     ],
                   ),
                 ),
@@ -319,14 +354,15 @@ class _CreateAssessmentState extends State<CreateAssessment>
           return Container(
             width: 50,
             height: MediaQuery.of(context).orientation == Orientation.portrait
-                ? MediaQuery.of(context).size.height * 0.25
+                ? MediaQuery.of(context).size.height * 0.24
                 : MediaQuery.of(context).size.width * 0.35,
             child: GridView.builder(
+                shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 50,
                     childAspectRatio: 5 / 6,
-                    crossAxisSpacing: 12,
+                    crossAxisSpacing: 15,
                     mainAxisSpacing: 10),
                 itemCount: widget.customGrades.length,
                 itemBuilder: (BuildContext ctx, index) {
@@ -538,13 +574,25 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   Future<void> _cameraImage(BuildContext context) async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    File? photo = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+              onlyForPicture: true, isScanMore: false, pointPossible: '')),
+    );
     if (photo != null) {
-      imageFile = File(photo.path);
+      imageFile = photo;
       isimageFilePicked.value = true;
     } else {
       isimageFilePicked.value = false;
     }
+    // final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    // if (photo != null) {
+    //   imageFile = File(photo.path);
+    //   isimageFilePicked.value = true;
+    // } else {
+    //   isimageFilePicked.value = false;
+    // }
   }
 
   void _navigateToSubjectSection() async {

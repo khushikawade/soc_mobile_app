@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
@@ -21,6 +20,7 @@ import 'package:wakelock/wakelock.dart';
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
+  final onlyForPicture;
 
   final scaffoldKey;
 
@@ -28,6 +28,7 @@ class CameraScreen extends StatefulWidget {
       {Key? key,
       required this.pointPossible,
       required this.isScanMore,
+      required this.onlyForPicture,
       this.scaffoldKey})
       : super(key: key);
   @override
@@ -115,7 +116,9 @@ class _CameraScreenState extends State<CameraScreen>
                       onPressed: () {
                         //To dispose the snackbar message before navigating back if exist
                         //    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                        Navigator.pop(context, true);
+                        widget.onlyForPicture
+                            ? Navigator.pop(context, null)
+                            : Navigator.pop(context, true);
                       },
                       icon: Icon(
                         IconData(0xe80d,
@@ -142,125 +145,131 @@ class _CameraScreenState extends State<CameraScreen>
             ],
           ),
           actions: [
-            BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                bloc: _driveBloc,
-                child: Container(),
-                listener: (context, state) {
-                  if (state is GoogleDriveLoading) {
-                    Utility.showLoadingDialog(context);
-                  }
-                  if (state is GoogleSuccess) {
-                    Navigator.of(context).pop();
+            widget.onlyForPicture
+                ? Container()
+                : BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                    bloc: _driveBloc,
+                    child: Container(),
+                    listener: (context, state) {
+                      if (state is GoogleDriveLoading) {
+                        Utility.showLoadingDialog(context);
+                      }
+                      if (state is GoogleSuccess) {
+                        Navigator.of(context).pop();
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ResultsSummary(
-                                asssessmentName: Globals.assessmentName,
-                                shareLink: Globals.shareableLink ?? '',
-                                assessmentDetailPage: false,
-                                isScanMore: true,
-                                assessmentListLenght:
-                                    Globals.scanMoreStudentInfoLength,
-                              )),
-                    );
-                  }
-                  if (state is ErrorState) {
-                    Navigator.of(context).pop();
-                    Utility.currentScreenSnackBar(
-                        "Something Went Wrong. Please Try Again.");
-                  }
-                }),
-            Container(
-                padding: EdgeInsets.only(right: 5),
-                child: TextButton(
-                  style: ButtonStyle(alignment: Alignment.center),
-                  child: TranslationWidget(
-                      message: "DONE",
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) {
-                        return Text(translatedMessage,
-                            style: TextStyle(
-                              color: AppTheme.kButtonColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ));
-                      }),
-                  onPressed: () async {
-                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ResultsSummary(
+                                    asssessmentName: Globals.assessmentName,
+                                    shareLink: Globals.shareableLink ?? '',
+                                    assessmentDetailPage: false,
+                                    isScanMore: true,
+                                    assessmentListLenght:
+                                        Globals.scanMoreStudentInfoLength,
+                                  )),
+                        );
+                      }
+                      if (state is ErrorState) {
+                        Navigator.of(context).pop();
+                        Utility.currentScreenSnackBar(
+                            "Something Went Wrong. Please Try Again.");
+                      }
+                    }),
+            widget.onlyForPicture
+                ? Container()
+                : Container(
+                    padding: EdgeInsets.only(right: 5),
+                    child: TextButton(
+                      style: ButtonStyle(alignment: Alignment.center),
+                      child: TranslationWidget(
+                          message: "DONE",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage,
+                                style: TextStyle(
+                                  color: AppTheme.kButtonColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ));
+                          }),
+                      onPressed: () async {
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
-                    if (Globals.studentInfo!.length > 0) {
-                      if (widget.isScanMore == true) {
-                        //To remove the titles if exist in the list
-                        if (Globals.studentInfo![0].studentId == 'Id') {
-                          Globals.studentInfo!.removeAt(0);
-                        }
+                        if (Globals.studentInfo!.length > 0) {
+                          if (widget.isScanMore == true) {
+                            //To remove the titles if exist in the list
+                            if (Globals.studentInfo![0].studentId == 'Id') {
+                              Globals.studentInfo!.removeAt(0);
+                            }
 
-                        //To copy the static content in the sheet
-                        Globals.studentInfo!.forEach((element) {
-                          element.subject = Globals.studentInfo!.first.subject;
-                          element.learningStandard =
-                              Globals.studentInfo!.first.learningStandard ==
+                            //To copy the static content in the sheet
+                            Globals.studentInfo!.forEach((element) {
+                              element.subject =
+                                  Globals.studentInfo!.first.subject;
+                              element.learningStandard = Globals.studentInfo!
+                                          .first.learningStandard ==
                                       null
                                   ? "NA"
                                   : Globals.studentInfo!.first.learningStandard;
-                          element.subLearningStandard = Globals
-                                      .studentInfo!.first.subLearningStandard ==
-                                  null
-                              ? "NA"
-                              : Globals.studentInfo!.first.subLearningStandard;
-                          element.scoringRubric = Globals.scoringRubric;
-                          element.customRubricImage =
-                              Globals.studentInfo!.first.customRubricImage ??
+                              element.subLearningStandard = Globals.studentInfo!
+                                          .first.subLearningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals
+                                      .studentInfo!.first.subLearningStandard;
+                              element.scoringRubric = Globals.scoringRubric;
+                              element.customRubricImage = Globals
+                                      .studentInfo!.first.customRubricImage ??
                                   "NA";
-                          element.grade = Globals.studentInfo!.first.grade;
-                          element.className = Globals.assessmentName!
-                              .split("_")[1]; //widget.selectedClass;
-                          element.questionImgUrl =
-                              Globals.studentInfo!.first.questionImgUrl;
-                        });
+                              element.grade = Globals.studentInfo!.first.grade;
+                              element.className = Globals.assessmentName!
+                                  .split("_")[1]; //widget.selectedClass;
+                              element.questionImgUrl =
+                                  Globals.studentInfo!.first.questionImgUrl;
+                            });
 
-                        _driveBloc.add(UpdateDocOnDrive(
-                            isLoading: true,
-                            studentData: Globals.studentInfo!));
-                      } else {
-                        List<String> classSuggestions =
-                            await _localDb.getData();
+                            _driveBloc.add(UpdateDocOnDrive(
+                                isLoading: true,
+                                studentData: Globals.studentInfo!));
+                          } else {
+                            List<String> classSuggestions =
+                                await _localDb.getData();
 
-                        LocalDatabase<String> classSectionLocalDb =
-                            LocalDatabase('class_section_list');
+                            LocalDatabase<String> classSectionLocalDb =
+                                LocalDatabase('class_section_list');
 
-                        List<String> localSectionList =
-                            await classSectionLocalDb.getData();
-                        if (localSectionList.isEmpty) {
-                          print("local db is empty");
-                          Globals.classList.forEach((String e) {
-                            classSectionLocalDb.addData(e);
-                          });
+                            List<String> localSectionList =
+                                await classSectionLocalDb.getData();
+                            if (localSectionList.isEmpty) {
+                              print("local db is empty");
+                              Globals.classList.forEach((String e) {
+                                classSectionLocalDb.addData(e);
+                              });
+                            } else {
+                              print("local db is not empty");
+                              Globals.classList = [];
+                              Globals.classList.addAll(localSectionList);
+
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreateAssessment(
+                                        customGrades: Globals.classList,
+                                        classSuggestions: classSuggestions)),
+                              );
+                            }
+                          }
                         } else {
-                          print("local db is not empty");
-                          Globals.classList = [];
-                          Globals.classList.addAll(localSectionList);
-
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateAssessment(
-                                    customGrades: Globals.classList,
-                                    classSuggestions: classSuggestions)),
-                          );
+                          Utility.showSnackBar(
+                              _scaffoldKey,
+                              "Assessment not found! Please scan a student assessment to proceed further",
+                              context,
+                              null);
                         }
-                      }
-                    } else {
-                      Utility.showSnackBar(
-                          _scaffoldKey,
-                          "Assessment not found! Please scan a student assessment to proceed further",
-                          context,
-                          null);
-                    }
-                  },
-                )),
+                      },
+                    )),
             Globals.studentInfo!.length == 0
                 ? IconButton(
                     onPressed: () {
@@ -327,17 +336,22 @@ class _CameraScreenState extends State<CameraScreen>
                                   );
                                   print(widget.pointPossible);
                                   await controller!.setFlashMode(FlashMode.off);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SuccessScreen(
-                                              isScanMore: widget.isScanMore,
-                                              img64: img64,
-                                              imgPath: imageFile,
-                                              pointPossible:
-                                                  widget.pointPossible,
-                                            )),
-                                  );
+
+                                  if (widget.onlyForPicture) {
+                                    Navigator.pop(context, imageFile);
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SuccessScreen(
+                                                isScanMore: widget.isScanMore,
+                                                img64: img64,
+                                                imgPath: imageFile,
+                                                pointPossible:
+                                                    widget.pointPossible,
+                                              )),
+                                    );
+                                  }
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
