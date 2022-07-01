@@ -561,7 +561,7 @@ class _OpticalCharacterRecognitionPageState
                         ? '3'
                         : rubricScoreSelectedColor.value == 4
                             ? '4'
-                            : '2',
+                            : '4', //In case of 'None' or 'Custom rubric' selection
               )),
     );
     //  LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
