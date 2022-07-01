@@ -130,6 +130,7 @@ class _OpticalCharacterRecognitionPageState
                       },
                       icon: Icon(
                         info,
+                        size: Globals.deviceType=='tablet'?35:null,
                         color: Color(0xff000000) !=
                                 Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
@@ -140,7 +141,7 @@ class _OpticalCharacterRecognitionPageState
                 ),
                 SpacerWidget(_KVertcalSpace / 4),
                 Container(
-                    height: MediaQuery.of(context).size.height * 0.47,
+                    height: Globals.deviceType=='tablet'?MediaQuery.of(context).size.height * 0.6 :MediaQuery.of(context).size.height * 0.47,
                     child: scoringRubric()),
                 // Container(
                 //   child: BlocListener<HomeBloc, HomeState>(

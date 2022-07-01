@@ -366,15 +366,14 @@ class Utility {
   }
 
   static Widget textWidget(
-      {required String text, textTheme, required context,textAlign}) {
+      {required String text, textTheme, required context, textAlign}) {
     return TranslationWidget(
       message: text,
       toLanguage: Globals.selectedLanguage,
       fromLanguage: "en",
       builder: (translatedMessage) => Text(
-        
         translatedMessage.toString(),
-        textAlign: textAlign??null,
+        textAlign: textAlign ?? null,
         style: textTheme != null
             ? textTheme
             : Theme.of(context).textTheme.headline6!.copyWith(
@@ -493,7 +492,6 @@ class Utility {
         useRootNavigator: false,
         context: context,
         barrierDismissible: true,
-
         builder: (BuildContext context) {
           return new WillPopScope(
               onWillPop: () async => false,
@@ -517,12 +515,10 @@ class Utility {
                                   .textTheme
                                   .headline6!
                                   .copyWith(
-                                    color:
-                                        // Color(0xff000000) ==
-                                        //         Theme.of(context).backgroundColor
-                                        //     ? Color(0xffFFFFFF)
-                                        //     :
-                                        Color(0xff000000),
+                                    color: Color(0xff000000) ==
+                                            Theme.of(context).backgroundColor
+                                        ? Color(0xffFFFFFF)
+                                        : Color(0xff000000),
                                     fontSize: Globals.deviceType == "phone"
                                         ? AppTheme.kBottomSheetTitleSize
                                         : AppTheme.kBottomSheetTitleSize * 1.3,
@@ -538,7 +534,7 @@ class Utility {
                                     width: 10,
                                   ),
                                   CircularProgressIndicator(
-                                    color: Theme.of(context).primaryColor,
+                                    color: AppTheme.kButtonColor,
                                   ),
                                   SizedBox(
                                     width: 10,

@@ -314,7 +314,11 @@ class _StaffPageState extends State<StaffPage> {
             duration: const Duration(milliseconds: 650),
             curve: Curves.decelerate,
             child: Container(
-              width: !isScrolling.value ? null : 150,
+              width: !isScrolling.value
+                  ? null
+                  : Globals.deviceType == 'phone'
+                      ? 150
+                      : 210,
               child: FloatingActionButton.extended(
                   isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
@@ -338,8 +342,9 @@ class _StaffPageState extends State<StaffPage> {
                       );
                     }
                   },
-                  icon:
-                      Icon(Icons.add, color: Theme.of(context).backgroundColor),
+                  icon: Icon(Icons.add,
+                      size: Globals.deviceType == 'tablet' ? 30 : null,
+                      color: Theme.of(context).backgroundColor),
                   label: textwidget(
                       text: 'Assessment',
                       textTheme: Theme.of(context)

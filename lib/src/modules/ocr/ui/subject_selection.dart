@@ -158,21 +158,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             Widget? child) {
                           return pageIndex.value == 0
                               ? Container()
-
-                              //  pageIndex.value == 1 ? GestureDetector(
-                              //   onTap: (){
-                              //     Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //               builder: (context) =>
-                              //                   SearchScreenPage(
-                              //                     keyword: keyword,
-                              //                     grade: widget.selectedClass,
-                              //                   )),
-                              //         );
-                              //   },
-                              //   child:SearchBar(controller:searchController , onSaved: (value){},)
-                              // )
                               : SearchBar(
                                   isSubLearningPage:
                                       pageIndex.value == 2 ? true : false,
@@ -604,62 +589,67 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               itemBuilder: (BuildContext ctx, index) {
                 return page == 1 || (page == 0 && index < list.length)
                     ? Bouncing(
-                        onPress: () {
-                          if (page != 1) {
-                            print("INSIDE ON TAPPPPPPPPPPPPPPPPPPPPP");
-                          }
+                        // onPress: () {
 
-                          searchController.clear();
-                          FocusManager.instance.primaryFocus?.unfocus();
-
-                          if (pageIndex.value == 0) {
-                            isSkipButton.value = true;
-                            subject = list[index].subjectNameC ?? '';
-                            subjectId = list[index].subjectC ?? '';
-                            standardId = list[index].id ?? '';
-
-                            subjectIndex1.value = index;
-
-                            if ((subject != 'Math' &&
-                                subject != 'Science' &&
-                                subject != 'ELA' &&
-                                subject != null)) {
-                              isSubmitButton.value = true;
+                        // },
+                        child: InkWell(
+                          onTap: () {
+                            if (page != 1) {
+                              print("INSIDE ON TAPPPPPPPPPPPPPPPPPPPPP");
                             }
 
-                            if (index < list.length && !isSubmitButton.value) {
-                              keyword = list[index].subjectNameC;
-                              _ocrBloc.add(FatchSubjectDetails(
-                                  type: 'nyc', keyword: keyword));
-                            }
-                          } else if (pageIndex.value == 1) {
-                            learningStandard = list[index].domainNameC;
-                            nycIndex1.value = index;
-                            // nycSubIndex1.value = index;
+                            searchController.clear();
+                            FocusManager.instance.primaryFocus?.unfocus();
 
-                            if (index < list.length) {
-                              keywordSub = list[index].domainNameC;
-                              _ocrBloc.add(FatchSubjectDetails(
-                                  type: 'nycSub', keyword: keywordSub));
+                            if (pageIndex.value == 0) {
+                              isSkipButton.value = true;
+                              subject = list[index].subjectNameC ?? '';
+                              subjectId = list[index].subjectC ?? '';
+                              standardId = list[index].id ?? '';
+
+                              subjectIndex1.value = index;
+
+                              if ((subject != 'Math' &&
+                                  subject != 'Science' &&
+                                  subject != 'ELA' &&
+                                  subject != null)) {
+                                isSubmitButton.value = true;
+                              }
+
+                              if (index < list.length &&
+                                  !isSubmitButton.value) {
+                                keyword = list[index].subjectNameC;
+                                _ocrBloc.add(FatchSubjectDetails(
+                                    type: 'nyc', keyword: keyword));
+                              }
+                            } else if (pageIndex.value == 1) {
+                              learningStandard = list[index].domainNameC;
+                              nycIndex1.value = index;
+                              // nycSubIndex1.value = index;
+
+                              if (index < list.length) {
+                                keywordSub = list[index].domainNameC;
+                                _ocrBloc.add(FatchSubjectDetails(
+                                    type: 'nycSub', keyword: keywordSub));
+                              }
                             }
-                          }
-                          if (index >= list.length &&
-                              index !=
-                                  list.length + userAddedSubjectList.length) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ResultsSummary(
-                                        subjectId: subjectId ?? '',
-                                        standardId: standardId ?? '',
-                                        asssessmentName: Globals.assessmentName,
-                                        shareLink: Globals.shareableLink!,
-                                        assessmentDetailPage: false,
-                                      )),
-                            );
-                          }
-                        },
-                        child: Container(
+                            if (index >= list.length &&
+                                index !=
+                                    list.length + userAddedSubjectList.length) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResultsSummary(
+                                          subjectId: subjectId ?? '',
+                                          standardId: standardId ?? '',
+                                          asssessmentName:
+                                              Globals.assessmentName,
+                                          shareLink: Globals.shareableLink!,
+                                          assessmentDetailPage: false,
+                                        )),
+                              );
+                            }
+                          },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
                             decoration: BoxDecoration(
@@ -708,13 +698,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         ),
                       )
                     : Bouncing(
-                        onPress: () {
-                          if (pageIndex.value == 0) {
-                            subjectIndex1.value = index;
-                          }
-                          customRubricBottomSheet();
-                        },
-                        child: Container(
+                        child: InkWell(
+                          onTap: () {
+                            if (pageIndex.value == 0) {
+                              subjectIndex1.value = index;
+                            }
+                            customRubricBottomSheet();
+                          },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
                             decoration: BoxDecoration(
