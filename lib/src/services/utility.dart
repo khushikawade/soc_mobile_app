@@ -502,8 +502,10 @@ class Utility {
                           : Color(0xffF7F8F9), //Colors.black54,
                   children: <Widget>[
                     Container(
-                      height: 70,
-                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: Globals.deviceType == 'phone' ? 70 : 100,
+                      width: Globals.deviceType == 'phone'
+                          ? MediaQuery.of(context).size.width * 0.4
+                          : MediaQuery.of(context).size.width * 0.5,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -515,7 +517,7 @@ class Utility {
                                   .textTheme
                                   .headline6!
                                   .copyWith(
-                                    color: Color(0xff000000) ==
+                                    color: Color(0xff000000) !=
                                             Theme.of(context).backgroundColor
                                         ? Color(0xffFFFFFF)
                                         : Color(0xff000000),

@@ -401,9 +401,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       builder: (BuildContext context, dynamic value, Widget? child) {
         return Container(
           padding: EdgeInsets.only(bottom: 50),
-          height: MediaQuery.of(context).orientation == Orientation.portrait
+          height: Globals.deviceType == 'phone'
               ? MediaQuery.of(context).size.height * 0.65
-              : MediaQuery.of(context).size.width * 0.50,
+              : MediaQuery.of(context).size.height * 0.7,
           width: MediaQuery.of(context).size.width * 0.9,
           child: ListView.separated(
             padding: EdgeInsets.only(
@@ -580,10 +580,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           child: GridView.builder(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height * 0.05),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 180,
-                  childAspectRatio: 5 / 3,
-                  crossAxisSpacing: 15,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: Globals.deviceType == 'phone' ? 180 : 400,
+                  childAspectRatio:
+                      Globals.deviceType == 'phone' ? 5 / 3 : 5 / 1.5,
+                  crossAxisSpacing: Globals.deviceType == 'phone' ? 15 : 20,
                   mainAxisSpacing: 15),
               itemCount: page == 1 ? list.length : list.length + 1,
               itemBuilder: (BuildContext ctx, index) {

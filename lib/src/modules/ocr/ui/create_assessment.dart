@@ -238,10 +238,19 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                     color: isimageFilePicked
                                                                 .value !=
                                                             true
-                                                        ? Colors.white
+                                                        ? Color(0xff000000) ==
+                                                                Theme.of(
+                                                                        context)
+                                                                    .backgroundColor
+                                                            ? Color(0xffFFFFFF)
+                                                            : Color(0xff000000)
                                                         : AppTheme
                                                             .kSelectedColor,
-                                                    fontSize: 14),
+                                                    fontSize:
+                                                        Globals.deviceType ==
+                                                                'phone'
+                                                            ? 14
+                                                            : 20),
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
@@ -254,9 +263,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                   color: isimageFilePicked
                                                               .value !=
                                                           true
-                                                      ? Colors.white
+                                                      ? Color(0xff000000) ==
+                                                              Theme.of(context)
+                                                                  .backgroundColor
+                                                          ? Color(0xffFFFFFF)
+                                                          : Color(0xff000000)
                                                       : AppTheme.kSelectedColor,
-                                                  size: 18,
+                                                  size: Globals.deviceType ==
+                                                          'phone'
+                                                      ? 18
+                                                      : 22,
                                                 ),
                                               ),
                                             ],
@@ -356,17 +372,18 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
-            width: 50,
-            height: MediaQuery.of(context).orientation == Orientation.portrait
+            // color: Colors.red,
+            // width: 100,
+            height: Globals.deviceType == 'phone'
                 ? MediaQuery.of(context).size.height * 0.24
-                : MediaQuery.of(context).size.width * 0.35,
+                : MediaQuery.of(context).size.width * 0.25,
             child: GridView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 50,
+                // physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: Globals.deviceType == 'phone' ? 50 : 70,
                     childAspectRatio: 5 / 6,
-                    crossAxisSpacing: 15,
+                    crossAxisSpacing: Globals.deviceType == 'phone' ? 15 : 50,
                     mainAxisSpacing: 10),
                 itemCount: widget.customGrades.length,
                 itemBuilder: (BuildContext ctx, index) {

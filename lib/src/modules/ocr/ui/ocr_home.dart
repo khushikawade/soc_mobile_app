@@ -130,7 +130,7 @@ class _OpticalCharacterRecognitionPageState
                       },
                       icon: Icon(
                         info,
-                        size: Globals.deviceType=='tablet'?35:null,
+                        size: Globals.deviceType == 'tablet' ? 35 : null,
                         color: Color(0xff000000) !=
                                 Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
@@ -141,7 +141,9 @@ class _OpticalCharacterRecognitionPageState
                 ),
                 SpacerWidget(_KVertcalSpace / 4),
                 Container(
-                    height: Globals.deviceType=='tablet'?MediaQuery.of(context).size.height * 0.6 :MediaQuery.of(context).size.height * 0.47,
+                    height: Globals.deviceType == 'tablet'
+                        ? MediaQuery.of(context).size.height * 0.6
+                        : MediaQuery.of(context).size.height * 0.47,
                     child: scoringRubric()),
                 // Container(
                 //   child: BlocListener<HomeBloc, HomeState>(
@@ -286,11 +288,13 @@ class _OpticalCharacterRecognitionPageState
       ),
       width: MediaQuery.of(context).size.width * 0.9,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: Globals.deviceType=='phone'? MainAxisAlignment.spaceBetween:MainAxisAlignment.start,
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: Globals.pointsList
             .map<Widget>(
-                (element) => pointsButton(Globals.pointsList.indexOf(element)))
+                (element) => Container(
+                  padding:Globals.deviceType=='tablet'? EdgeInsets.only(right: 20):null,
+                  child: pointsButton(Globals.pointsList.indexOf(element))))
             .toList(),
       ),
     );
@@ -386,7 +390,8 @@ class _OpticalCharacterRecognitionPageState
                                       Orientation.portrait
                                   ? MediaQuery.of(context).size.width * 0.5
                                   : MediaQuery.of(context).size.height * 0.5,
-                          childAspectRatio: 6 / 3.5,
+                          childAspectRatio:
+                              Globals.deviceType == 'phone' ? 6 / 3.5 : 5 / 2,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 20),
                       itemCount: RubricScoreList.scoringList.length,
