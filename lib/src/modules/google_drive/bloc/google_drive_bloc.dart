@@ -670,18 +670,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       };
       String query =
           '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
-      // print('https://www.googleapis.com/drive/v3/files?fields=*&q=' +
-      //     Uri.encodeFull(
-      //         'trashed = false and mimeType = \'applicatison/vnd.google-apps.folder\' and name = \'SOLVED%20GRADED%2B\''));
+
       final ResponseModel response = await _dbServices.getapiNew(
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
               'https://www.googleapis.com/drive/v3/files?q=' +
               Uri.encodeFull(query),
-
-          //trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\'',
-          // Uri.encodeFull(
-          //     '\'SOLVED GRADED%2B\''),
-          //     '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files?fields=*',
           headers: headers,
           isGoogleAPI: true);
 
