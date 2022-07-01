@@ -111,7 +111,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (e == 'NO_CONNECTION') {
           Utility.currentScreenSnackBar("No Internet Connection");
         } else {
-          yield ErrorState();
+          yield ErrorState(errorMsg: e.toString());
         }
         throw (e);
       }
@@ -150,7 +150,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (e == 'NO_CONNECTION') {
           Utility.currentScreenSnackBar("No Internet Connection");
         } else {
-          yield ErrorState();
+          yield ErrorState(errorMsg: e.toString());
         }
         throw (e);
       }
