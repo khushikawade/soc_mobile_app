@@ -48,7 +48,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             token: event.token, folderName: event.folderName);
         //  print('FolderId = ${folderObject['id']}');
 
-        if (folderObject != 401 || folderObject != 500) {
+        if (folderObject != 401 && folderObject != 500) {
           if (folderObject.length == 0) {
             print(
                 'Folder doesn\'t exist already. Creating new folder on drive');
@@ -563,6 +563,40 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (link != '') {
         Globals.shareableLink = link;
         yield ShareLinkRecived(shareLink: link);
+      }
+    }
+
+    if (event is RefreshAuthenticationTokenEvent) {
+      try {
+        List<UserInformation> _userprofilelocalData =
+            await UserGoogleProfile.getUserProfile();
+        print("calling refresh token api===============");
+        var result = await _toRefreshAuthenticationToken(
+            _userprofilelocalData[0].refreshToken!);
+        if (result == true) {
+          print(
+              "token received sending back refresh toke success state on screen================");
+          yield RefreshAuthenticationTokenSuccessState();
+        } else {
+          print(
+              'refreh token not update re-calling refresh event again==============');
+          RefreshAuthenticationTokenEvent();
+        }
+      } on SocketException catch (e) {
+        e.message == 'Connection failed'
+            ? Utility.currentScreenSnackBar("No Internet Connection")
+            : print(e);
+
+        rethrow;
+      } catch (e) {
+        print(
+            'refresh token error sending back error state on screen==================');
+        if (e == 'NO_CONNECTION') {
+          Utility.currentScreenSnackBar("No Internet Connection");
+        } else {
+          yield ErrorState();
+        }
+        throw (e);
       }
     }
   }

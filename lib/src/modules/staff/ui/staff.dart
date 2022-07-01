@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
@@ -136,7 +137,9 @@ class _StaffPageState extends State<StaffPage> {
       // Push to the grading system
       pushNewScreen(
         context,
-        screen: OpticalCharacterRecognition(),
+        screen: StartupPage(
+          isOcrSection: true,
+        ),
         withNavBar: false,
       );
     }
@@ -328,7 +331,9 @@ class _StaffPageState extends State<StaffPage> {
                       verifyUserAndGetDriveFolder(_profileData);
                       pushNewScreen(
                         context,
-                        screen: OpticalCharacterRecognition(),
+                        screen: StartupPage(
+                          isOcrSection: true,
+                        ),
                         withNavBar: false,
                       );
                     }

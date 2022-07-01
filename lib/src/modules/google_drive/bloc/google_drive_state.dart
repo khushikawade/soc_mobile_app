@@ -108,3 +108,9 @@ class ShareLinkRecived extends GoogleDriveState {
   @override
   List<Object> get props => [];
 }
+
+class RefreshAuthenticationTokenSuccessState extends GoogleDriveState {
+  RefreshAuthenticationTokenSuccessState();
+  @override
+  List<Object> get props => [];
+}

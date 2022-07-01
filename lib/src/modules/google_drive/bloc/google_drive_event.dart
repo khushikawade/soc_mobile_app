@@ -105,3 +105,9 @@ class GetShareLink extends GoogleDriveEvent {
   @override
   List<Object> get props => [];
 }
+
+class RefreshAuthenticationTokenEvent extends GoogleDriveEvent {
+  RefreshAuthenticationTokenEvent();
+  @override
+  List<Object> get props => [];
+}

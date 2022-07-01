@@ -90,7 +90,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           ? MediaQuery.of(context).size.height
                           : MediaQuery.of(context).size.width,
                   child: ListView(
-                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.2),
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).size.height * 0.2),
                     // controller: listScrollController,
                     shrinkWrap: true,
                     children: [
@@ -226,37 +227,40 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                         _cameraImage(context);
                                       },
                                       child: Container(
-                                        height:50,
+                                          height: 50,
                                           child: Row(
-                                        children: [
-                                          Text(
-                                            isimageFilePicked.value != true
-                                                ? 'Scan Assessment'
-                                                : 'Assessment Selected',
-                                            style: TextStyle(
-                                                color: isimageFilePicked
-                                                            .value !=
-                                                        true
-                                                    ? Colors.white
-                                                    : AppTheme.kSelectedColor,
-                                                fontSize: 14),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 5.0),
-                                            child: Icon(
-                                              isimageFilePicked.value != true
-                                                  ? Icons.add_a_photo
-                                                  : Icons.check,
-                                              color: isimageFilePicked.value !=
-                                                      true
-                                                  ? Colors.white
-                                                  : AppTheme.kSelectedColor,
-                                              size: 18,
-                                            ),
-                                          ),
-                                        ],
-                                      )),
+                                            children: [
+                                              Text(
+                                                isimageFilePicked.value != true
+                                                    ? 'Scan Assessment'
+                                                    : 'Assessment Selected',
+                                                style: TextStyle(
+                                                    color: isimageFilePicked
+                                                                .value !=
+                                                            true
+                                                        ? Colors.white
+                                                        : AppTheme
+                                                            .kSelectedColor,
+                                                    fontSize: 14),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 5.0),
+                                                child: Icon(
+                                                  isimageFilePicked.value !=
+                                                          true
+                                                      ? Icons.add_a_photo
+                                                      : Icons.check,
+                                                  color: isimageFilePicked
+                                                              .value !=
+                                                          true
+                                                      ? Colors.white
+                                                      : AppTheme.kSelectedColor,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          )),
                                     ));
                               }),
                         ],

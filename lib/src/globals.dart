@@ -132,5 +132,5 @@ class Globals {
   // static List<UserInformation> userprofilelocalData = [];
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static String? questionImgUrl;
-  static File?  questionImgFilePath;
+  static File? questionImgFilePath;
 }

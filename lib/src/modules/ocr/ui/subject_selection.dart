@@ -68,6 +68,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<int> nycSubIndex1 =
       ValueNotifier<int>(-1); //To bypass the default selection
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isSkipButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   @override
   initState() {
@@ -116,10 +117,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   onPressed: () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (pageIndex.value == 1) {
+                      // isSkipButton.value = false;
+                      isSkipButton.value = false;
+
                       isSubmitButton.value = false;
                       _ocrBloc.add(FatchSubjectDetails(
                           type: 'subject', keyword: widget.selectedClass));
                     } else if (pageIndex.value == 2) {
+                      // isSkipButton.value = false;
                       isSubmitButton.value = false;
                       if (widget.isSearchPage == true) {
                         //   FatchSubjectDetails(type: 'nyc', keyword: keyword));
@@ -430,6 +435,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         nycSubIndex1.value = index;
                         if (nycSubIndex1.value != -1) {
                           isSubmitButton.value = true;
+                          isSkipButton.value = false;
                         }
                       }
                     },
@@ -600,13 +606,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     ? Bouncing(
                         onPress: () {
                           if (page != 1) {
-                            learningStandard = list[index].domainNameC;
+                            print("INSIDE ON TAPPPPPPPPPPPPPPPPPPPPP");
                           }
 
                           searchController.clear();
                           FocusManager.instance.primaryFocus?.unfocus();
 
                           if (pageIndex.value == 0) {
+                            isSkipButton.value = true;
                             subject = list[index].subjectNameC ?? '';
                             subjectId = list[index].subjectC ?? '';
                             standardId = list[index].id ?? '';
@@ -626,6 +633,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   type: 'nyc', keyword: keyword));
                             }
                           } else if (pageIndex.value == 1) {
+                            learningStandard = list[index].domainNameC;
                             nycIndex1.value = index;
                             // nycSubIndex1.value = index;
 
@@ -783,183 +791,222 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   }
 
   Widget submitAssessmentButton() {
-    return ValueListenableBuilder(
-      valueListenable: isSubmitButton,
-      child: Container(),
-      builder: (BuildContext context, dynamic value, Widget? child) {
-        return //pageIndex.value == 2
-            isSubmitButton.value
-                ? OfflineBuilder(
-                    connectivityBuilder: (BuildContext context,
-                        ConnectivityResult connectivity, Widget child) {
-                      final bool connected =
-                          connectivity != ConnectivityResult.none;
-                      return FloatingActionButton.extended(
-                          backgroundColor:
-                              AppTheme.kButtonColor.withOpacity(1.0),
-                          onPressed: () async {
-                            if (!connected) {
-                              Utility.currentScreenSnackBar(
-                                  "No Internet Connection");
-                            } else {
-                              LocalDatabase<CustomRubicModal> _localDb =
-                                  LocalDatabase('custom_rubic');
-                              List<CustomRubicModal>? _localData =
-                                  await _localDb.getData();
-                              String? rubricImgUrl;
-                              bool? isCustomRubricSelcted = false;
-                              int selectedRubric = 0;
-                              // String? rubricScore;
-                              for (int i = 0; i < _localData.length; i++) {
-                                if (_localData[i].customOrStandardRubic ==
-                                        "Custom" &&
-                                    _localData[i].name ==
-                                        Globals.scoringRubric!) {
-                                  rubricImgUrl = _localData[i].imgUrl;
-                                  isCustomRubricSelcted = true;
-                                  selectedRubric = i;
-                                  // rubricScore = null;
-                                }
-                                // else if (_localData[i].name ==
-                                //         Globals.scoringRubric &&
-                                //     _localData[i].customOrStandardRubic !=
-                                //         "Custom") {
-                                //   // rubricScore = _localData[i].score;
-                                // }
-                                else {
-                                  rubricImgUrl = 'NA';
-                                  // rubricScore = 'NA';
-                                }
-                              }
-
-                              //TODO : REMOVE THIS AND ADD COMMON FIELDS IN EXCEL MODEL (SAME IN CASE OF SCAN MORE AT CAMERA SCREEN)
-                              //Adding blank fields to the list : Static data
-                              Globals.studentInfo!.forEach((element) {
-                                element.subject = subject;
-                                element.learningStandard =
-                                    learningStandard == null
-                                        ? "NA"
-                                        : learningStandard;
-                                element.subLearningStandard =
-                                    subLearningStandard == null
-                                        ? "NA"
-                                        : subLearningStandard;
-                                element.scoringRubric = Globals.scoringRubric;
-                                element.className =
-                                    Globals.assessmentName!.split("_")[1];
-                                element.customRubricImage =
-                                    rubricImgUrl ?? "NA";
-                                element.grade = widget.selectedClass;
-                                element.questionImgUrl =
-                                    Globals.questionImgUrl != null &&
-                                            Globals.questionImgUrl!.isNotEmpty
-                                        ? Globals.questionImgUrl
-                                        : "NA";
-                              });
-
-                              _googleDriveBloc.add(
-                                UpdateDocOnDrive(
-                                    selectedRubric: selectedRubric,
-                                    isCustomRubricSelcted:
-                                        isCustomRubricSelcted,
-                                    isLoading: true,
-                                    studentData:
-                                        //list2
-                                        Globals.studentInfo!),
-                              );
-                            }
-                          },
-                          label: Row(
-                            children: [
-                              BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                                  bloc: _googleDriveBloc,
-                                  child: Container(),
-                                  listener: (context, state) {
-                                    if (state is GoogleDriveLoading) {
-                                      Utility.showLoadingDialog(context);
-                                    }
-                                    if (state is GoogleSuccess) {
-                                      Globals.currentAssessmentId = '';
-                                      _ocrBloc.add(SaveAndGetAssessmentID(
-                                          assessmentName:
-                                              Globals.assessmentName ??
-                                                  'Assessment Name',
-                                          rubricScore:
-                                              Globals.scoringRubric ?? '2',
-                                          subjectId: subjectId ??
-                                              '', //Student Id will not be there in case of custom subject
-                                          schoolId:
-                                              Globals.appSetting.schoolNameC ??
+    return Wrap(
+      alignment: WrapAlignment.end,
+      children: [
+        ValueListenableBuilder(
+            valueListenable: isSkipButton,
+            child: Container(),
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return isSkipButton.value
+                  ? OfflineBuilder(
+                      connectivityBuilder: (BuildContext context,
+                          ConnectivityResult connectivity, Widget child) {
+                        final bool connected =
+                            connectivity != ConnectivityResult.none;
+                        return FloatingActionButton.extended(
+                            backgroundColor:
+                                AppTheme.kButtonColor.withOpacity(1.0),
+                            onPressed: () async {
+                              _uploadSheetOnDriveAndnavigate(
+                                  isSkip: true, connected: connected);
+                            },
+                            label: Row(
+                              children: [
+                                BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                                    bloc: _googleDriveBloc,
+                                    child: Container(),
+                                    listener: (context, state) {
+                                      if (state is GoogleDriveLoading) {
+                                        Utility.showLoadingDialog(context);
+                                      }
+                                      if (state is GoogleSuccess) {
+                                        Globals.currentAssessmentId = '';
+                                        _ocrBloc.add(SaveAndGetAssessmentID(
+                                            assessmentName:
+                                                Globals.assessmentName ??
+                                                    'Assessment Name',
+                                            rubricScore:
+                                                Globals.scoringRubric ?? '2',
+                                            subjectId: subjectId ??
+                                                '', //Student Id will not be there in case of custom subject
+                                            schoolId: Globals
+                                                    .appSetting.schoolNameC ??
+                                                '',
+                                            standardId: standardId ?? '',
+                                            scaffoldKey: _scaffoldKey,
+                                            context: context,
+                                            fileId:
+                                                Globals.googleExcelSheetId ??
+                                                    'Excel Id not found'));
+                                      }
+                                      if (state is ErrorState) {
+                                        Navigator.of(context).pop();
+                                        Utility.currentScreenSnackBar(
+                                            "Technical issue try again after some time");
+                                      }
+                                    }),
+                                BlocListener<OcrBloc, OcrState>(
+                                    bloc: _ocrBloc,
+                                    child: Container(),
+                                    listener: (context, state) {
+                                      if (state is OcrLoading) {
+                                        Utility.showLoadingDialog(context);
+                                      }
+                                      if (state is AssessmentIdSuccess) {
+                                        Navigator.of(context).pop();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ResultsSummary(
+                                                    fileId: Globals
+                                                        .googleExcelSheetId,
+                                                    subjectId: subjectId ?? '',
+                                                    standardId:
+                                                        standardId ?? '',
+                                                    asssessmentName:
+                                                        Globals.assessmentName,
+                                                    shareLink: '',
+                                                    assessmentDetailPage: false,
+                                                  )),
+                                        );
+                                      }
+                                    }),
+                                Utility.textWidget(
+                                    text: 'Skip',
+                                    context: context,
+                                    textTheme: Theme.of(context)
+                                        .textTheme
+                                        .headline2!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .backgroundColor)),
+                              ],
+                            ));
+                      },
+                      child: Container(),
+                    )
+                  : Container();
+            }),
+        ValueListenableBuilder(
+          valueListenable: isSubmitButton,
+          child: Container(),
+          builder: (BuildContext context, dynamic value, Widget? child) {
+            return //pageIndex.value == 2
+                isSubmitButton.value
+                    ? OfflineBuilder(
+                        connectivityBuilder: (BuildContext context,
+                            ConnectivityResult connectivity, Widget child) {
+                          final bool connected =
+                              connectivity != ConnectivityResult.none;
+                          return FloatingActionButton.extended(
+                              backgroundColor:
+                                  AppTheme.kButtonColor.withOpacity(1.0),
+                              onPressed: () async {
+                                _uploadSheetOnDriveAndnavigate(
+                                    isSkip: false, connected: connected);
+                              },
+                              label: Row(
+                                children: [
+                                  BlocListener<GoogleDriveBloc,
+                                          GoogleDriveState>(
+                                      bloc: _googleDriveBloc,
+                                      child: Container(),
+                                      listener: (context, state) {
+                                        if (state is GoogleDriveLoading) {
+                                          Utility.showLoadingDialog(context);
+                                        }
+                                        if (state is GoogleSuccess) {
+                                          Globals.currentAssessmentId = '';
+                                          _ocrBloc.add(SaveAndGetAssessmentID(
+                                              assessmentName:
+                                                  Globals.assessmentName ??
+                                                      'Assessment Name',
+                                              rubricScore:
+                                                  Globals.scoringRubric ?? '2',
+                                              subjectId: subjectId ??
+                                                  '', //Student Id will not be there in case of custom subject
+                                              schoolId: Globals
+                                                      .appSetting.schoolNameC ??
                                                   '',
-                                          standardId: standardId ?? '',
-                                          scaffoldKey: _scaffoldKey,
-                                          context: context,
-                                          fileId: Globals.googleExcelSheetId ??
-                                              'Excel Id Not Found'));
-                                    }
-                                    if (state is ErrorState) {
-                                      Navigator.of(context).pop();
-                                      Utility.currentScreenSnackBar(
-                                          "Something Went Wrong. Please Try Again.");
-                                    }
-                                  }),
-                              BlocListener<OcrBloc, OcrState>(
-                                  bloc: _ocrBloc,
-                                  child: Container(),
-                                  listener: (context, state) {
-                                    if (state is OcrLoading) {
-                                      Utility.showLoadingDialog(context);
-                                    }
-                                    if (state is AssessmentIdSuccess) {
-                                      Navigator.of(context).pop();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ResultsSummary(
-                                                  fileId: Globals
-                                                      .googleExcelSheetId,
-                                                  subjectId: subjectId ?? '',
-                                                  standardId: standardId ?? '',
-                                                  asssessmentName:
-                                                      Globals.assessmentName,
-                                                  shareLink: '',
-                                                  assessmentDetailPage: false,
-                                                )),
-                                      );
-                                    }
-                                  }),
-                              Utility.textWidget(
-                                  text: 'Save to drive',
-                                  context: context,
-                                  textTheme: Theme.of(context)
-                                      .textTheme
-                                      .headline2!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .backgroundColor)),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Container(
-                                //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                                child: Image(
-                                  width:
-                                      Globals.deviceType == "phone" ? 23 : 28,
-                                  height:
-                                      Globals.deviceType == "phone" ? 23 : 28,
-                                  image: AssetImage(
-                                    "assets/images/drive_ico.png",
+                                              standardId: standardId ?? '',
+                                              scaffoldKey: _scaffoldKey,
+                                              context: context,
+                                              fileId:
+                                                  Globals.googleExcelSheetId ??
+                                                      'Excel Id not found'));
+                                        }
+                                        if (state is ErrorState) {
+                                          Navigator.of(context).pop();
+                                          Utility.currentScreenSnackBar(
+                                              "Technical issue try again after some time");
+                                        }
+                                      }),
+                                  BlocListener<OcrBloc, OcrState>(
+                                      bloc: _ocrBloc,
+                                      child: Container(),
+                                      listener: (context, state) {
+                                        if (state is OcrLoading) {
+                                          Utility.showLoadingDialog(context);
+                                        }
+                                        if (state is AssessmentIdSuccess) {
+                                          Navigator.of(context).pop();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ResultsSummary(
+                                                      fileId: Globals
+                                                          .googleExcelSheetId,
+                                                      subjectId:
+                                                          subjectId ?? '',
+                                                      standardId:
+                                                          standardId ?? '',
+                                                      asssessmentName: Globals
+                                                          .assessmentName,
+                                                      shareLink: '',
+                                                      assessmentDetailPage:
+                                                          false,
+                                                    )),
+                                          );
+                                        }
+                                      }),
+                                  Utility.textWidget(
+                                      text: 'Save to drive',
+                                      context: context,
+                                      textTheme: Theme.of(context)
+                                          .textTheme
+                                          .headline2!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .backgroundColor)),
+                                  SizedBox(
+                                    width: 5,
                                   ),
-                                ),
-                              ),
-                            ],
-                          ));
-                    },
-                    child: Container(),
-                  )
-                : Container();
-      },
+                                  Container(
+                                    //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                                    child: Image(
+                                      width: Globals.deviceType == "phone"
+                                          ? 23
+                                          : 28,
+                                      height: Globals.deviceType == "phone"
+                                          ? 23
+                                          : 28,
+                                      image: AssetImage(
+                                        "assets/images/drive_ico.png",
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ));
+                        },
+                        child: Container(),
+                      )
+                    : Container();
+          },
+        ),
+      ],
     );
   }
 
@@ -1078,5 +1125,60 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         ),
       ),
     );
+  }
+
+  void _uploadSheetOnDriveAndnavigate(
+      {required bool isSkip, required bool connected}) async {
+    {
+      if (!connected) {
+        Utility.currentScreenSnackBar("No Internet Connection");
+      } else {
+        LocalDatabase<CustomRubicModal> _localDb =
+            LocalDatabase('custom_rubic');
+        List<CustomRubicModal>? _localData = await _localDb.getData();
+        String? rubricImgUrl;
+        // String? rubricScore;
+        for (int i = 0; i < _localData.length; i++) {
+          if (_localData[i].customOrStandardRubic == "Custom" &&
+              _localData[i].name == Globals.scoringRubric!.split(" ")[0]) {
+            rubricImgUrl = _localData[i].imgUrl;
+            // rubricScore = null;
+          }
+          if (_localData[i].name == Globals.scoringRubric &&
+              _localData[i].customOrStandardRubic != "Custom") {
+            // rubricScore = _localData[i].score;
+          } else {
+            rubricImgUrl = 'NA';
+            // rubricScore = 'NA';
+          }
+        }
+
+        //TODO : REMOVE THIS AND ADD COMMON FIELDS IN EXCEL MODEL (SAME IN CASE OF SCAN MORE AT CAMERA SCREEN)
+        //Adding blank fields to the list : Static data
+        Globals.studentInfo!.forEach((element) {
+          element.subject = subject;
+          element.learningStandard =
+              learningStandard == null ? "NA" : learningStandard;
+          element.subLearningStandard =
+              subLearningStandard == null ? "NA" : subLearningStandard;
+          element.scoringRubric = Globals.scoringRubric;
+          element.className = Globals.assessmentName!.split("_")[1];
+          element.customRubricImage = rubricImgUrl ?? "NA";
+          element.grade = widget.selectedClass;
+          element.questionImgUrl = Globals.questionImgUrl != null &&
+                  Globals.questionImgUrl!.isNotEmpty
+              ? Globals.questionImgUrl
+              : "NA";
+        });
+
+        _googleDriveBloc.add(
+          UpdateDocOnDrive(
+              isLoading: true,
+              studentData:
+                  //list2
+                  Globals.studentInfo!),
+        );
+      }
+    }
   }
 }
