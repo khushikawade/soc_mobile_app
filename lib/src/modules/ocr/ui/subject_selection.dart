@@ -51,7 +51,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   OcrBloc _ocrBloc = OcrBloc();
   List<String> userAddedSubjectList = [];
   final _debouncer = Debouncer(milliseconds: 10);
-  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+  GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   String? subject;
   String? learningStandard;
@@ -842,7 +842,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     child: Container(),
                                     listener: (context, state) {
                                       if (state is OcrLoading) {
-                                        Utility.showLoadingDialog(context);
+                                       // Utility.showLoadingDialog(context);
                                       }
                                       if (state is AssessmentIdSuccess) {
                                         Navigator.of(context).pop();
@@ -939,7 +939,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       child: Container(),
                                       listener: (context, state) {
                                         if (state is OcrLoading) {
-                                          Utility.showLoadingDialog(context);
+                                          //Utility.showLoadingDialog(context);
                                         }
                                         if (state is AssessmentIdSuccess) {
                                           Navigator.of(context).pop();

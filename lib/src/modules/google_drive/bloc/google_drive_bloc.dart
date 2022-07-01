@@ -671,17 +671,28 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String query =
           '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
 
+      // final ResponseModel response = await _dbServices.getapiNew(
+      //     '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
+      //         'https://www.googleapis.com/drive/v3/files?q=' +
+      //         Uri.encodeFull(query),
+      //     headers: headers,
+      //     isGoogleAPI: true);
       final ResponseModel response = await _dbServices.getapiNew(
-          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
-              'https://www.googleapis.com/drive/v3/files?q=' +
-              Uri.encodeFull(query),
+          'https://www.googleapis.com/drive/v3/files?fields=*&q=trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\'',
+
+          // Uri.encodeFull(
+
+          //     '\'SOLVED GRADED%2B\''),
+
+          //     '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files?fields=*',
+
           headers: headers,
           isGoogleAPI: true);
 
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        var data = response.data['body']['files'];
+        var data = response.data['files'];
         // print(data);
         print("folder id recived ----->");
         return data[0];

@@ -525,9 +525,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 SpacerWidget(10),
                 !widget.assessmentDetailPage!
                     ? _bottomButtons(context, iconsList, iconsName,
-                        webContentLink: Globals.googleDriveFolderPath!)
+                        webContentLink: Globals.googleDriveFolderPath ?? '')
                     : ValueListenableBuilder(
                         valueListenable: isSuccessStateRecived,
+                        child: Container(),
                         builder:
                             (BuildContext context, bool value, Widget? child) {
                           return isSuccessStateRecived.value == true
@@ -1014,7 +1015,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
-                            onlyForPicture: false,
+                                onlyForPicture: false,
                                 isScanMore: true,
                                 // lastStudentInfoLenght: Globals.studentInfo!.length,
                                 pointPossible: Globals.pointpossible ?? '2',
@@ -1071,6 +1072,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   iconsList.indexOf(element), iconName,
                   webContentLink: webContentLink))
               .toList(),
+          // [
+          //  // Container()
+          // ]
         ));
   }
 
