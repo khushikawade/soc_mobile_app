@@ -586,7 +586,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // updateDetails(isUpdateData: true);
                   studentId = idController.text;
                   if (idController.text.length == 9 &&
-                      idController.text[0] == '2') {
+                      (idController.text[0] == '2' ||
+                          idController.text[0] == '1')) {
                     _bloc2.add(FetchStudentDetails(ossId: idController.text));
                   }
                   onChange = true;
@@ -594,8 +595,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 validator: (String? value) {
                   if (value!.length != 9) {
                     return 'Student ID Must Have 9 Digits Number';
-                  } else if (!value.startsWith('2')) {
-                    return 'Student ID Must Starts With \'2\'';
+                  } else if (!value.startsWith('2') && !value.startsWith('1')) {
+                    return 'Student ID Must Starts With \'2\' & 1';
                   } else {
                     return null;
                   }
@@ -696,7 +697,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
                 } else if (value.length != 9) {
                   return 'Student ID Must Have 9 Digits Number';
-                } else if (!value.startsWith('2')) {
+                } else if (!value.startsWith('2') && !value.startsWith('1')) {
                   return 'Student ID Must Starts With \'2\'';
                 } else {
                   return null;
