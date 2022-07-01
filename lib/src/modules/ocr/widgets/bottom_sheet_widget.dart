@@ -127,14 +127,13 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                       child: Utility.textWidget(
                           context: context,
                           text: widget.textFieldTitleOne!,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(color:   Color(0xff000000) ==
-                                                    Theme.of(context)
-                                                        .backgroundColor
-                                                ? Color(0xffFFFFFF)
-                                                : Color(0xff000000),)),
+                          textTheme:
+                              Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    color: Color(0xff000000) ==
+                                            Theme.of(context).backgroundColor
+                                        ? Color(0xffFFFFFF)
+                                        : Color(0xff000000),
+                                  )),
                     ),
                     Container(
                       padding: EdgeInsets.symmetric(
@@ -296,6 +295,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                           name: textFieldControllerOne.text,
                                           score: textFieldController2.text,
                                           imgBase64: imageB64,
+                                          filePath: imageFile,
                                           customOrStandardRubic: "Custom"));
                                   print("calling get img url");
                                   _googleBloc.add(ImageToAwsBucked(

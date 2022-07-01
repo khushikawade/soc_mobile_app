@@ -1011,6 +1011,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       Globals.studentInfo!.last.studentId = idController.text;
       Globals.studentInfo!.last.studentGrade = pointScored.value;
       Globals.studentInfo!.last.pointpossible = Globals.pointpossible;
+      Globals.studentInfo!.last.assessmentImgPath = widget.imgPath;
 
       // Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
       // StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
@@ -1029,6 +1030,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade = pointScored.value;
         studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
+        studentAssessmentInfo.assessmentImgPath = widget.imgPath;
         // studentAssessmentInfo.assessmentName = Globals.assessmentName;
         Globals.studentInfo!.add(studentAssessmentInfo);
       } else {
@@ -1047,6 +1049,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentId = idController.text;
           studentAssessmentInfo.studentGrade = pointScored.value;
           studentAssessmentInfo.pointpossible = Globals.pointpossible;
+          studentAssessmentInfo.assessmentImgPath = widget.imgPath;
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           if (!Globals.studentInfo!.contains(id)) {
             Globals.studentInfo!.add(studentAssessmentInfo);

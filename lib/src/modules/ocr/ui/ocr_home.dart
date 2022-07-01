@@ -25,7 +25,6 @@ import '../../../widgets/common_pdf_viewer_page.dart';
 import '../../../widgets/google_auth_webview.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -55,6 +54,8 @@ class _OpticalCharacterRecognitionPageState
 
   @override
   void initState() {
+    Globals.questionImgUrl = '';
+    Globals.questionImgFilePath = null;
     Utility.setLocked();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
@@ -533,8 +534,8 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnCameraSection() async {
-    print(
-        "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
+    // print(
+    //     "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
 
     Globals.pointpossible = rubricScoreSelectedColor.value == 0
         ? '2'

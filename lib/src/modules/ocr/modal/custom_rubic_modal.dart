@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:hive/hive.dart';
 part 'custom_rubic_modal.g.dart';
 
@@ -13,12 +15,15 @@ class CustomRubicModal {
   String? imgUrl;
   @HiveField(4)
   String? customOrStandardRubic;
+  @HiveField(5)
+  File? filePath;
   CustomRubicModal(
       {this.name,
       this.score,
       this.imgBase64,
       this.imgUrl,
-      this.customOrStandardRubic});
+      this.customOrStandardRubic,
+      this.filePath});
 }
 
 class RubricScoreList {

@@ -272,24 +272,24 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           //Removing the previous scanned records to save only latest scanned sheets to the dashboard
           // _list.removeRange(0, event.previouslyAddedListLength!+1); //+1 - To remove title as well
 
-          if (Globals.currentAssessmentId != '') {
+          if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
             await _sendEmailToAdmin(
-              assessmentId: Globals.currentAssessmentId,
-              name: _profileData[0].userName!.replaceAll("%", " "),
+              assessmentId: event.assessmentId!,
+              name: _profileData[0].userName!.replaceAll("%20", " "),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
               email: _profileData[0].userEmail!,
               assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
             );
             bool result = await saveResultToDashboard(
-                assessmentId: Globals.currentAssessmentId,
+                assessmentId: event.assessmentId!,
                 studentDetails: Globals.studentInfo!,
                 previousListLength: event.previouslyAddedListLength ?? 0,
                 isHistoryDetailPage: event.isHistoryAssessmentSection);
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: Globals.currentAssessmentId,
+                  assessmentId: event.assessmentId!,
                   studentDetails: Globals.studentInfo!,
                   previousListLength: event.previouslyAddedListLength ?? 0,
                   isHistoryDetailPage: event.isHistoryAssessmentSection);
@@ -330,22 +330,22 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             subjectId = event.subjectId;
           }
           //TO DO
-          if (event.isHistoryAssessmentSection == true) {
-            String dashboardId = await saveAssessmentToDashboard(
-              fileId: event.fileId,
-              assessmentName: event.assessmentName,
-              rubicScore: await rubricPickList(event.rubricScore),
-              subjectId: subjectId,
-              schoolId: event.schoolId,
-              standardId: standardId,
-            );
+          // if (event.isHistoryAssessmentSection == true) {
+          //   String dashboardId = await saveAssessmentToDashboard(
+          //     fileId: event.fileId,
+          //     assessmentName: event.assessmentName,
+          //     rubicScore: await rubricPickList(event.rubricScore),
+          //     subjectId: subjectId,
+          //     schoolId: event.schoolId,
+          //     standardId: standardId,
+          //   );
 
-            Globals.currentAssessmentId = dashboardId;
-          }
+          //   Globals.currentAssessmentId = dashboardId;
+          // }
 
-          if (Globals.currentAssessmentId.isNotEmpty) {
+          if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
             await _sendEmailToAdmin(
-              assessmentId: Globals.currentAssessmentId,
+              assessmentId: event.assessmentId!,
               name: _profileData[0].userName!.replaceAll("%", " "),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
@@ -354,14 +354,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             );
 
             bool result = await saveResultToDashboard(
-                assessmentId: Globals.currentAssessmentId,
+                assessmentId: event.assessmentId!,
                 studentDetails: event.resultList,
                 previousListLength: event.previouslyAddedListLength ?? 0,
                 isHistoryDetailPage: event.isHistoryAssessmentSection);
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: Globals.currentAssessmentId,
+                  assessmentId: event.assessmentId!,
                   studentDetails: event.resultList,
                   previousListLength: event.previouslyAddedListLength ?? 0,
                   isHistoryDetailPage: event.isHistoryAssessmentSection);
@@ -410,10 +410,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is GetDashBoardStatus) {
       try {
         yield OcrLoading2();
-        bool status = await _getTheDashBoardStatus(fileId: event.fileId);
-        yield AssessmentDashboardStatus(obj: status);
+        List object;
+        object = await _getTheDashBoardStatus(fileId: event.fileId);
+
+        if (object[1] != '') {
+          yield AssessmentDashboardStatus(
+              resultRecordCount: object[0], assessmentId: object[1]);
+        }
+        yield AssessmentDashboardStatus(resultRecordCount: null, assessmentId: null);
       } catch (e) {
-        yield AssessmentDashboardStatus(obj: false);
+        yield AssessmentDashboardStatus(resultRecordCount: null, assessmentId: null);
       }
     }
   }
@@ -844,6 +850,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     // studentDetails.removeAt(0);
     for (int i = 0; i < studentResultDetails.length; i++) {
+      if(studentResultDetails[i].studentId=="Id"){
+          studentResultDetails.remove(i);
+      }
       bodyContent.add(recordtoJson(
           assessmentId,
           Utility.getCurrentDate(DateTime.now()),
@@ -855,10 +864,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     final body = {
       "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
       "to": "techadmin@solvedconsulting.com, appdevelopersdp7@gmail.com",
-      "subject": "Data saved to the dashboard",
+      "subject": "Data Saved To The Dashboard",
       // "html":
       "text":
-          '''School Id : $schoolId \nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n').replaceAll('}', ', \n')}'''
+          '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
     };
 
     final ResponseModel response = await _dbServices.postapi(
@@ -922,7 +931,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _getTheDashBoardStatus({required String fileId}) async {
+  Future<List> _getTheDashBoardStatus({required String fileId}) async {
     try {
       final ResponseModel response = await _dbServices.getapiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
@@ -932,19 +941,19 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           String assessmentId = response.data['body'][0]['Assessment_Id'];
 
           if (assessmentId.isNotEmpty) {
-            bool result =
-                await _getAssessmentRecord(assessmentId: assessmentId);
-            return result;
+            int result = await _getAssessmentRecord(assessmentId: assessmentId);
+
+            return [result, assessmentId];
           }
         }
       }
-      return false;
+      return [0, ''];
     } catch (e) {
       throw ('something_went_wrong');
     }
   }
 
-  _getAssessmentRecord({required String assessmentId}) async {
+  Future<int> _getAssessmentRecord({required String assessmentId}) async {
     try {
       final ResponseModel response = await _dbServices.getapiNew(
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Result__c/\"Assessment_Id\"='$assessmentId'",
@@ -952,10 +961,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       if (response.statusCode == 200) {
         var data = response.data["body"];
         if (data.length > 0) {
-          return true;
+          print(
+              "--------->printing length in saved on dashboard ${data.length}");
+          return data.length;
         }
-        return false;
       }
+      return 0;
     } catch (e) {
       throw ('something_went_wrong');
     }

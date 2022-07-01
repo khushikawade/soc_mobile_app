@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
@@ -130,4 +132,5 @@ class Globals {
   // static List<UserInformation> userprofilelocalData = [];
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static String? questionImgUrl;
+  static File?  questionImgFilePath;
 }

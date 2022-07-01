@@ -465,10 +465,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
               } else {
                 if (_formKey.currentState!.validate()) {
                   if (imageFile != null && imageFile!.path.isNotEmpty) {
+                    
                     String imgExtension = imageFile!.path
                         .substring(imageFile!.path.lastIndexOf(".") + 1);
                     List<int> imageBytes = imageFile!.readAsBytesSync();
                     String imageB64 = base64Encode(imageBytes);
+                    Globals.questionImgFilePath = imageFile;
+
+
                     _googleDriveBloc.add(QuestionImgToAwsBucked(
                         imgBase64: imageB64, imgExtension: imgExtension));
                   }

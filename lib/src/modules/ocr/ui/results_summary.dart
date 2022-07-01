@@ -65,6 +65,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isSuccessStateRecived = ValueNotifier<bool>(false);
   String? isAssessmentAlreadySaved = '';
+  int? savedRecordCount;
 
   String? webContentLink;
   String? sheetrubricScore;
@@ -79,6 +80,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   ValueNotifier<List<StudentAssessmentInfo>> sudentRecordList =
       ValueNotifier(Globals.studentInfo!);
   // ValueNotifier<int> _listCount = ValueNotifier(Globals.studentInfo!.length);
+
+  String? historyAssessmentId;
 
   @override
   void initState() {
@@ -257,6 +260,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                               if (state is AssessmentDetailSuccess) {
                                 if (state.obj.length > 0) {
+                                  print(
+                                      "record length ---===========> ${state.obj.length}");
+                                  print(
+                                      "record length ---===========> $savedRecordCount");
+                                  savedRecordCount != null
+                                      ? savedRecordCount == state.obj.length
+                                          ? dashoardState.value = 'Success'
+                                          : dashoardState.value = ''
+                                      : print("");
                                   // isAssessmentAlreadySaved =
                                   //     state.obj[0] != null && state.obj[0] != ''
                                   //         ? state.obj[0].isSavedOnDashBoard !=
@@ -427,6 +439,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               //     null);
                             } else if (state is OcrErrorReceived) {
                               updateSlidableAction.value = false;
+                            }
+                            if (state is AssessmentDashboardStatus) {
+                              if (state.assessmentId == null &&
+                                  state.resultRecordCount == null) {
+                                dashoardState.value = '';
+                              } else {
+                                savedRecordCount = state.resultRecordCount;
+                                historyAssessmentId = state.assessmentId;
+                              }
                             }
                           },
                           child: EmptyContainer()),
@@ -778,6 +799,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     widget.assessmentListLenght! <
                                         Globals.studentInfo!.length) {
                                   _ocrBloc.add(SaveAssessmentToDashboard(
+                                      assessmentId:
+                                          !widget.assessmentDetailPage!
+                                              ? Globals.currentAssessmentId
+                                              : historyAssessmentId ?? '',
                                       assessmentSheetPublicURL:
                                           widget.shareLink,
                                       resultList: Globals.studentInfo!,
@@ -794,17 +819,36 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       isHistoryAssessmentSection:
                                           widget.assessmentDetailPage!));
                                 } else {
-                                  widget.assessmentDetailPage!
-                                      ? Globals.currentAssessmentId = ''
-                                      : print(
-                                          "not a assessmentdatilpage-------->");
+                                  // Adding the non saved record of dashboard in the list
+                                  List<StudentAssessmentInfo> _listRecord = [];
+
+                                  if (widget.assessmentDetailPage! &&
+                                      savedRecordCount != null &&
+                                      historyRecordList.length !=
+                                          savedRecordCount!) {
+                                    _listRecord = historyRecordList.sublist(
+                                        savedRecordCount!,
+                                        historyRecordList.length);
+
+                                    // print(historyRecordList);
+                                    // print(_listRecord);
+                                    // print("_listRecord");
+                                  } else {
+                                    //
+                                    _listRecord = historyRecordList;
+                                    // print("_listRecord");
+                                  }
 
                                   _ocrBloc.add(SaveAssessmentToDashboard(
+                                      assessmentId:
+                                          !widget.assessmentDetailPage!
+                                              ? Globals.currentAssessmentId
+                                              : historyAssessmentId ?? '',
                                       assessmentSheetPublicURL:
                                           widget.shareLink,
                                       resultList: !widget.assessmentDetailPage!
                                           ? Globals.studentInfo!
-                                          : historyRecordList,
+                                          : _listRecord,
                                       assessmentName: widget.asssessmentName,
                                       rubricScore: !widget.assessmentDetailPage!
                                           ? widget.rubricScore ?? ''

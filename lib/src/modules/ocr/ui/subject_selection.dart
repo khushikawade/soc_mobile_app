@@ -807,21 +807,26 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               List<CustomRubicModal>? _localData =
                                   await _localDb.getData();
                               String? rubricImgUrl;
+                              bool? isCustomRubricSelcted = false;
+                              int selectedRubric = 0;
                               // String? rubricScore;
                               for (int i = 0; i < _localData.length; i++) {
                                 if (_localData[i].customOrStandardRubic ==
                                         "Custom" &&
                                     _localData[i].name ==
-                                        Globals.scoringRubric!.split(" ")[0]) {
+                                        Globals.scoringRubric!) {
                                   rubricImgUrl = _localData[i].imgUrl;
+                                  isCustomRubricSelcted = true;
+                                  selectedRubric = i;
                                   // rubricScore = null;
                                 }
-                                if (_localData[i].name ==
-                                        Globals.scoringRubric &&
-                                    _localData[i].customOrStandardRubic !=
-                                        "Custom") {
-                                  // rubricScore = _localData[i].score;
-                                } else {
+                                // else if (_localData[i].name ==
+                                //         Globals.scoringRubric &&
+                                //     _localData[i].customOrStandardRubic !=
+                                //         "Custom") {
+                                //   // rubricScore = _localData[i].score;
+                                // }
+                                else {
                                   rubricImgUrl = 'NA';
                                   // rubricScore = 'NA';
                                 }
@@ -854,6 +859,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                               _googleDriveBloc.add(
                                 UpdateDocOnDrive(
+                                    selectedRubric: selectedRubric,
+                                    isCustomRubricSelcted:
+                                        isCustomRubricSelcted,
                                     isLoading: true,
                                     studentData:
                                         //list2

@@ -119,7 +119,6 @@ class NycSubDataSuccess extends OcrState {
   List<Object> get props => [];
 }
 
-
 class RecentListSuccess extends OcrState {
   final List<SubjectDetailList>? obj;
   RecentListSuccess({
@@ -191,12 +190,17 @@ class AssessmentIdSuccess extends OcrState {
 }
 
 class AssessmentDashboardStatus extends OcrState {
-  bool? obj;
-  AssessmentDashboardStatus({this.obj});
-  AssessmentDashboardStatus copyWith({final obj}) {
-    return AssessmentDashboardStatus(obj: obj ?? this.obj);
+  int? resultRecordCount;
+  String? assessmentId;
+  AssessmentDashboardStatus({ this.resultRecordCount,required this.assessmentId});
+  AssessmentDashboardStatus copyWith(
+      {final obj, final recordCount, final assessmentId}) {
+    return AssessmentDashboardStatus(
+       
+        resultRecordCount: recordCount ?? this.resultRecordCount,
+        assessmentId: assessmentId ?? this.assessmentId);
   }
 
   @override
-  List<Object> get props => [obj!];
+  List<Object> get props => [];
 }

@@ -93,6 +93,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
   final bool isHistoryAssessmentSection;
   final String? assessmentSheetPublicURL;
   final String? fileId;
+  final String? assessmentId;
   SaveAssessmentToDashboard(
       {required this.assessmentName,
       required this.rubricScore,
@@ -105,6 +106,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
       required this.resultList,
       required this.isHistoryAssessmentSection,
       required this.assessmentSheetPublicURL,
+      required this.assessmentId,
       this.fileId});
 
   @override

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
@@ -28,6 +29,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   final DbServices _dbServices = DbServices();
   // final HiveDbServices _localDbService = HiveDbServices();
   GoogleDriveState get initialState => GoogleDriveInitial();
+  int _totalRetry = 0;
 
   @override
   Stream<GoogleDriveState> mapEventToState(
@@ -42,11 +44,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (event.isFromOcrHome!) {
           yield GoogleDriveLoading();
         }
-        folderObject = await _getGoogleDriveFolderList(
+        folderObject = await _getGoogleDriveFolderId(
             token: event.token, folderName: event.folderName);
         //  print('FolderId = ${folderObject['id']}');
 
-        if (folderObject != 401) {
+        if (folderObject != 401 || folderObject != 500) {
           if (folderObject.length == 0) {
             print(
                 'Folder doesn\'t exist already. Creating new folder on drive');
@@ -162,10 +164,118 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
+        LocalDatabase<CustomRubicModal> customRubicLocalDb =
+            LocalDatabase('custom_rubic');
+        List<CustomRubicModal>? customRubicLocalData =
+            await customRubicLocalDb.getData();
+
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
+
         checkForGoogleExcelId(); //To check for excel sheet id
         if (assessmentData!.length > 0 && assessmentData[0].studentId == 'Id') {
           assessmentData.removeAt(0);
+        }
+
+        for (int i = 0; i < assessmentData.length; i++) {
+          // Checking for 'Assessment Sheets Image' to get URL for specific index if not exist
+          if (assessmentData[i].assessmentImage == null ||
+              assessmentData[i].assessmentImage == '') {
+            print("assessment  img is empty index ------$i");
+
+            String imgExtension = assessmentData[i]
+                .assessmentImgPath!
+                .path
+                .substring(
+                    assessmentData[i].assessmentImgPath!.path.lastIndexOf(".") +
+                        1);
+            List<int> imageBytes =
+                assessmentData[i].assessmentImgPath!.readAsBytesSync();
+            String imageB64 = base64Encode(imageBytes);
+
+            String imgUrl = await _uploadImgB64AndGetUrl(
+                imgBase64: imageB64,
+                imgExtension: imgExtension,
+                section: "assessment-sheet");
+
+            imgUrl != ""
+                ? assessmentData[i].assessmentImage = imgUrl
+                : print("error");
+          }
+          // Checking for 'Custom rubric score Image' to get URL for specific index if not exist
+
+          if (event.isCustomRubricSelcted == true &&
+              (assessmentData[i].customRubricImage == null ||
+                  assessmentData[i].customRubricImage!.isEmpty) &&
+              event.selectedRubric != 0 &&
+              customRubicLocalData[event.selectedRubric!].filePath != null &&
+              customRubicLocalData[event.selectedRubric!]
+                  .filePath!
+                  .path
+                  .isNotEmpty) {
+            if (customRubicLocalData[event.selectedRubric!].imgUrl != null ||
+                customRubicLocalData[event.selectedRubric!]
+                    .imgUrl!
+                    .isNotEmpty) {
+              assessmentData.forEach((element) {
+                element.customRubricImage =
+                    customRubicLocalData[event.selectedRubric!].imgUrl;
+              });
+            } else {
+              String imgExtension = customRubicLocalData[event.selectedRubric!]
+                  .filePath!
+                  .path
+                  .substring(customRubicLocalData[event.selectedRubric!]
+                          .filePath!
+                          .path
+                          .lastIndexOf(".") +
+                      1);
+
+              String imgUrl = await _uploadImgB64AndGetUrl(
+                  imgBase64:
+                      customRubicLocalData[event.selectedRubric!].imgBase64,
+                  imgExtension: imgExtension,
+                  section: 'rubric-score');
+              if (imgUrl != '') {
+                assessmentData.forEach((element) {
+                  element.customRubricImage = imgUrl;
+                });
+              } else {
+                print("image errrrrrrrrrrrrror");
+              }
+            }
+          }
+
+          // Assessment Question Image
+          if (Globals.questionImgFilePath != null &&
+              Globals.questionImgFilePath!.path.isNotEmpty &&
+              (assessmentData[i].questionImgUrl == null ||
+                  assessmentData[i].questionImgUrl == '')) {
+            if (Globals.questionImgUrl != null ||
+                Globals.questionImgUrl!.isEmpty) {
+              assessmentData.forEach((element) {
+                element.questionImgUrl = Globals.questionImgUrl;
+              });
+            } else {
+              String imgExtension = Globals.questionImgFilePath!.path.substring(
+                  Globals.questionImgFilePath!.path.lastIndexOf(".") + 1);
+
+              List<int> imageBytes =
+                  Globals.questionImgFilePath!.readAsBytesSync();
+
+              String imageB64 = base64Encode(imageBytes);
+
+              Globals.questionImgUrl = await _uploadImgB64AndGetUrl(
+                  imgBase64: imageB64,
+                  imgExtension: imgExtension,
+                  section: 'rubric-score');
+
+              Globals.questionImgUrl!.isNotEmpty
+                  ? assessmentData.forEach((element) {
+                      element.questionImgUrl = Globals.questionImgUrl;
+                    })
+                  : print("image erooooooooooooooooo");
+            }
+          }
         }
 
         assessmentData.insert(
@@ -376,7 +486,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             imgExtension: event.imgExtension,
             section: 'rubric-score');
         //  int index = RubricScoreList.scoringList.length - 1;
-        print(RubricScoreList.scoringList);
+        //   print(RubricScoreList.scoringList);
         imgUrl != ""
             ? RubricScoreList.scoringList.last.imgUrl = imgUrl
             : _uploadImgB64AndGetUrl(
@@ -430,6 +540,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: 'rubric-score');
+
         Globals.questionImgUrl!.isNotEmpty
             ? print("question image url upload done")
             : print("error uploading question img");
@@ -516,7 +627,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future _getGoogleDriveFolderList(
+  Future _getGoogleDriveFolderId(
       {required String? token, required String? folderName}) async {
     try {
       Map<String, String> headers = {
@@ -554,7 +665,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } else if (response.statusCode == 401 ||
           response.data['statusCode'] == 500) {
         print("Invalid credentials");
-        return response.statusCode;
+
+        return response.statusCode == 401 ? response.statusCode : 500;
       }
       return "";
     } catch (e) {
@@ -605,8 +717,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       //   await _getShareableLink(accessToken, fileId, refreshToken);
       // }
       return true;
-    } else if (response.statusCode == 401 ||
-        response.data['statusCode'] == 500) {
+    } else if ((response.statusCode == 401 ||
+            response.data['statusCode'] == 500) &&
+        _totalRetry < 3) {
+      _totalRetry++;
       //To regernerate fresh access token
       await _toRefreshAuthenticationToken(refreshToken!);
       CreateExcelSheetToDrive(name: name);
@@ -638,8 +752,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         response.data['statusCode'] != 500) {
       print("upload result data to assessment file completed");
       return true;
-    } else if (response.statusCode == 401 ||
-        response.data['statusCode'] == 500) {
+    } else if ((response.statusCode == 401 ||
+            response.data['statusCode'] == 500) &&
+        _totalRetry < 3) {
+      _totalRetry++;
       print("errorrrrr-------------> upload on drive");
       print(response.statusCode);
       await _toRefreshAuthenticationToken(refreshToken!);
@@ -678,8 +794,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
         return _list;
-      } else if (response.statusCode == 401 ||
-          response.data['statusCode'] == 500) {
+      } else if ((response.statusCode == 401 ||
+              response.data['statusCode'] == 500) &&
+          _totalRetry < 3) {
+        _totalRetry++;
         print('Authentication required');
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
@@ -727,7 +845,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       return true;
     }
-    if (response.statusCode == 401 || response.data['statusCode'] == 500) {
+    if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
+        _totalRetry < 3) {
+      _totalRetry++;
       await _toRefreshAuthenticationToken(refreshToken!);
       _updateSheetPermission(token, fileId, refreshToken);
     }
@@ -756,7 +876,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       // var data = response.data;
       return response.data['body']['webViewLink'];
     }
-    if (response.statusCode == 401 || response.data['statusCode'] == 500) {
+    if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
+        _totalRetry < 3) {
+      _totalRetry++;
       await _toRefreshAuthenticationToken(refreshToken!);
       _getShareableLink(
           token: token, fileId: fileId, refreshToken: refreshToken);
@@ -787,7 +909,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       //     : '';
       // return downloadLink;
     }
-    if (response.statusCode == 401 || response.data['statusCode'] == 500) {
+    if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
+        _totalRetry < 3) {
+      _totalRetry++;
       await _toRefreshAuthenticationToken(refreshToken!);
       GetAssessmentDetail(fileId: fileId);
     }
@@ -901,10 +1025,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         response.data['statusCode'] != 500) {
       print("url is recived");
       return response.data['body']['Location'];
-    } else {
+    } else if ((response.statusCode == 401 ||
+            response.data['statusCode'] == 500) &&
+        _totalRetry < 3) {
       print(response.statusCode);
-      print("url is not recived");
-      return "";
+      print("url is not recived,Retrying...");
+
+      _totalRetry++;
+      await _uploadImgB64AndGetUrl(
+          imgBase64: imgBase64, imgExtension: imgExtension, section: section);
     }
+    return "";
   }
 }

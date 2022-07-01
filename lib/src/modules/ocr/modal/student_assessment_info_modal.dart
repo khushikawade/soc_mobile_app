@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class StudentAssessmentInfo {
   String? studentName;
   String? studentId;
@@ -13,7 +15,8 @@ class StudentAssessmentInfo {
   String? className;
   String? questionImgUrl;
   bool? isSavedOnDashBoard;
-  
+  File? assessmentImgPath;
+
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,
@@ -29,8 +32,7 @@ class StudentAssessmentInfo {
       this.className,
       this.questionImgUrl,
       this.isSavedOnDashBoard,
-      
-      });
+      this.assessmentImgPath});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(
