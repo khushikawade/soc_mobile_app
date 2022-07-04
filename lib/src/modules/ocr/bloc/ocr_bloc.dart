@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
@@ -434,15 +435,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           headers: {"Content-type": "application/json; charset=utf-8"});
 
       if (response.statusCode == 200) {
-        List<SubjectDetailList> _list = response.data['body']
+        List<SubjectDetailList> _list = jsonDecode(jsonEncode(response.data['body']))
             .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
             .toList();
         //print(_list);
         LocalDatabase<SubjectDetailList> _localDb =
             LocalDatabase(Strings.ocrSubjectObjectName);
         await _localDb.clear();
+
         _list.forEach((SubjectDetailList e) {
-          _localDb.addData(e);
+          //To decode the special characters
+          utf8.decode(utf8.encode(_localDb.addData(e).toString()));
         });
         // _list.removeWhere((SubjectList element) => element.status == 'Hide');
         return true;

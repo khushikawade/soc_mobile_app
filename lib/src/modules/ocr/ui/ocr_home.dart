@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -25,6 +26,7 @@ import '../../../widgets/common_pdf_viewer_page.dart';
 import '../../../widgets/google_auth_webview.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -578,6 +580,12 @@ class _OpticalCharacterRecognitionPageState
     //   context,
     //   MaterialPageRoute(
     //       builder: (context) => CreateAssessment(classSuggestions: classSuggestions,customGrades:Globals.classList,))
+    // );
+
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => SuccessScreen(img64: '', imgPath: File(''))
     // );
   }
 

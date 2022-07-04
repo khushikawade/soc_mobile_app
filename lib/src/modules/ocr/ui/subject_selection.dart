@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
@@ -438,7 +440,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       duration: Duration(microseconds: 100),
                       child: Container(
                         padding: EdgeInsets.all(15),
-                        alignment: Alignment.center,
+                        alignment: Alignment.centerLeft,
                         child: RichText(
                           text: list[index].standardAndDescriptionC != null &&
                                   list[index]
@@ -842,7 +844,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     child: Container(),
                                     listener: (context, state) {
                                       if (state is OcrLoading) {
-                                       // Utility.showLoadingDialog(context);
+                                        // Utility.showLoadingDialog(context);
                                       }
                                       if (state is AssessmentIdSuccess) {
                                         Navigator.of(context).pop();
