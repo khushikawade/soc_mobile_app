@@ -981,8 +981,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
           color: AppTheme.kButtonColor,
           borderRadius: BorderRadius.all(Radius.circular(25)),
         ),
-        height: MediaQuery.of(context).size.height * 0.055,
-        width: MediaQuery.of(context).size.width * 0.3,
+        height:  MediaQuery.of(context).size.height * 0.055,
+        width: Globals.deviceType=='phone'? MediaQuery.of(context).size.width * 0.3: MediaQuery.of(context).size.width * 0.2,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

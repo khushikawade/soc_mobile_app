@@ -81,38 +81,31 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   void dispose() {
     super.dispose();
   }
-// CustomOcrAppBarWidget(
-//             isbackOnSuccess: widget.isBackFromCamera,
-//             key: GlobalKey(),
-//             isBackButton: false,
-//           )
 
-  appBarWidget() {
-    if (widget.isOCRFeature == true) {
-      return CustomOcrAppBarWidget(
-        isbackOnSuccess: widget.isBackFromCamera,
-        key: GlobalKey(),
-        isBackButton: false,
-      );
-    } else if (widget.isHomePage == true) {
-      return null;
-    } else {
-      CustomAppBarWidget(
-        isSearch: false,
-        isShare: true,
-        appBarTitle: widget.tittle!,
-        sharedpopBodytext: widget.url.toString(),
-        sharedpopUpheaderText: "Please check out this",
-        language: Globals.selectedLanguage,
-      );
-    }
+  appBarOCRWidget() {
+    return CustomOcrAppBarWidget(
+      isbackOnSuccess: widget.isBackFromCamera,
+      key: GlobalKey(),
+      isBackButton: false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         // backgroundColor: Colors.white,
-        appBar: appBarWidget(),
+        appBar: widget.isOCRFeature == true
+            ? appBarOCRWidget()
+            : widget.isHomePage == true
+                ? null
+                : CustomAppBarWidget(
+                    isSearch: false,
+                    isShare: true,
+                    appBarTitle: widget.tittle!,
+                    sharedpopBodytext: widget.url.toString(),
+                    sharedpopUpheaderText: "Please check out this",
+                    language: Globals.selectedLanguage,
+                  ),
         body: widget.url != null && widget.url != ""
             ? document == null
                 ? Center(
