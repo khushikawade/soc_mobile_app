@@ -300,9 +300,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         : const EdgeInsets.only(top: 10.0),
                     height: Globals.deviceType == 'phone'
                         ? null
-                        : orientation == Orientation.portrait
-                            ? MediaQuery.of(context).size.height / 15
-                            : MediaQuery.of(context).size.width / 15,
+                        : 50,
                     width: Globals.deviceType == 'phone'
                         ? null
                         : orientation == Orientation.portrait
@@ -314,6 +312,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
                           return Text(translatedMessage.toString(),
+                          textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline1!
@@ -328,6 +327,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
                       return Text(translatedMessage.toString(),
+                        textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
                               .headline2!

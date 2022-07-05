@@ -41,6 +41,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isimageFilePicked = ValueNotifier<bool>(false);
+  final ValueNotifier<String> assessmentNameError = ValueNotifier<String>('');
+  final ValueNotifier<String> classError = ValueNotifier<String>('');
+
   File? imageFile;
   final ImagePicker _picker = ImagePicker();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -123,15 +126,39 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           controller: assessmentController,
                           hintText: 'Assessment Name',
                           validator: (String? value) {
-                            if (value!.isEmpty) {
-                              return 'Assessment Name Is Required';
-                            } else if (value.length < 2) {
-                              return 'Assessment Name Should Contains Atleast 2 Characters';
-                            } else {
-                              return null;
-                            }
+                            return null;
                           },
-                          onSaved: (String value) {}),
+                          onSaved: (String value) {
+                            assessmentNameError.value = value;
+                          }),
+
+                      //Used to tramslate the error message
+                      ValueListenableBuilder(
+                          valueListenable: assessmentNameError,
+                          child: Container(),
+                          builder: (BuildContext context, dynamic value,
+                              Widget? child) {
+                            return Container(
+                              padding: assessmentNameError.value.isEmpty
+                                  ? EdgeInsets.only(top: 8)
+                                  : null,
+                              alignment: Alignment.centerLeft,
+                              child: TranslationWidget(
+                                  message: assessmentNameError.value.isEmpty
+                                      ? 'Assessment Name Is Required'
+                                      : assessmentNameError.value.length < 2
+                                          ? 'Assessment Name Should Contains Atleast 2 Characters'
+                                          : '',
+                                  fromLanguage: "en",
+                                  toLanguage: Globals.selectedLanguage,
+                                  builder: (translatedMessage) {
+                                    return Text(
+                                      translatedMessage,
+                                      style: TextStyle(color: Colors.red),
+                                    );
+                                  }),
+                            );
+                          }),
                       SpacerWidget(_KVertcalSpace / 2),
                       highlightText(
                           text: 'Class Name',
@@ -145,17 +172,45 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .withOpacity(0.3))),
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 11,
-                        child: textFormField(
-                          controller: classController,
-                          hintText: '1st',
-                          onSaved: (String value) {},
-                          validator: (String? value) {
-                            if (value!.isEmpty) {
-                              return 'Class Name Is Required';
-                            } else {
-                              return null;
-                            }
-                          },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            textFormField(
+                              controller: classController,
+                              hintText: '1st',
+                              onSaved: (String value) {
+                                classError.value = value;
+                              },
+                              validator: (String? value) {
+                                return null;
+                              },
+                            ),
+                            ValueListenableBuilder(
+                                valueListenable: classError,
+                                child: Container(),
+                                builder: (BuildContext context, dynamic value,
+                                    Widget? child) {
+                                  return Container(
+                                    padding: classError.value.isEmpty
+                                        ? EdgeInsets.only(top: 8)
+                                        : null,
+                                    alignment: Alignment.centerLeft,
+                                    child: TranslationWidget(
+                                        message: classError.value.isEmpty
+                                            ? 'Class Is Required'
+                                            : '',
+                                        fromLanguage: "en",
+                                        toLanguage: Globals.selectedLanguage,
+                                        builder: (translatedMessage) {
+                                          return Text(
+                                            translatedMessage,
+                                            style: TextStyle(color: Colors.red),
+                                          );
+                                        }),
+                                  );
+                                }),
+                          ],
                         ),
                       ),
                       if (widget.classSuggestions.length > 0)
@@ -203,9 +258,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       SpacerWidget(_KVertcalSpace / 3),
                       scoringButton(),
                       SpacerWidget(_KVertcalSpace / 4),
-                      highlightText(
+                      Utility.textWidget(
+                          context: context,
                           text: 'Scan Assessment (Optional)',
-                          theme: Theme.of(context)
+                          textTheme: Theme.of(context)
                               .textTheme
                               .headline2!
                               .copyWith(
@@ -230,11 +286,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                           height: 50,
                                           child: Row(
                                             children: [
-                                              Text(
-                                                isimageFilePicked.value != true
+                                              Utility.textWidget(
+                                                context: context,
+                                                text: isimageFilePicked.value !=
+                                                        true
                                                     ? 'Scan Assessment'
                                                     : 'Assessment Selected',
-                                                style: TextStyle(
+                                                textTheme: TextStyle(
                                                     color: isimageFilePicked
                                                                 .value !=
                                                             true
@@ -477,6 +535,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
       cursorColor: Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
         hintText: hintText,
+        errorText: null,
         errorMaxLines: 2,
         hintStyle: Theme.of(context)
             .textTheme
@@ -486,12 +545,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+                assessmentNameError.value.isEmpty||assessmentNameError.value.length<2||classError.value.isEmpty?Colors.red: Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
           ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.primaryVariant.withOpacity(
+              color: assessmentNameError.value.isEmpty||assessmentNameError.value.length<2||classError.value.isEmpty?Colors.red:Theme.of(context).colorScheme.primaryVariant.withOpacity(
                   0.5) // Theme.of(context).colorScheme.primaryVariant,
               ),
         ),
@@ -520,7 +579,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
               if (!connected) {
                 Utility.currentScreenSnackBar("No Internet Connection");
               } else {
-                if (_formKey.currentState!.validate()) {
+                // if (_formKey.currentState!.validate()) {
+                  if(assessmentNameError.value.isNotEmpty&&assessmentNameError.value.length>2 &&classError.value.isNotEmpty){
                   if (imageFile != null && imageFile!.path.isNotEmpty) {
                     String imgExtension = imageFile!.path
                         .substring(imageFile!.path.lastIndexOf(".") + 1);

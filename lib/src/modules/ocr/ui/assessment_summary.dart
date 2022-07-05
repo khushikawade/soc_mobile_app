@@ -124,32 +124,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   Widget _buildList(List<HistoryAssessment> list, int index) {
     return Column(
       children: [
-        // BlocListener(
-        //     bloc: _ocrBloc,
-        //     listener: (context, state) async {
-        //       if (state is OcrLoading) {
-        //         Utility.loadingDialog(context);
-        //       }
-        //       if (state is AssessmentDashboardStatus) {
-        //         Navigator.of(context).pop();
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(
-        //               builder: (context) => ResultsSummary(
-        //                     asssessmentName: list[index].title!,
-        //                     shareLink: list[index].webContentLink,
-        //                     fileId: list[index].fileid,
-        //                     assessmentDetailPage: true,
-        //                   )),
-        //         );
-        //       }
-        //     },
-        //     child: Container()),
         InkWell(
           onTap: () {
-            print(list[index].fileid);
-            //   _ocrBloc.add(GetDashBoardStatus(fileId: list[index].fileid!));
-
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -163,10 +139,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
           },
           child: Container(
             decoration: BoxDecoration(
-                // border: Border.all(
-                //   // color: Theme.of(context).colorScheme.background,
-                //   // width: 0.65,
-                // ),
                 borderRadius: BorderRadius.circular(0.0),
                 color: (index % 2 == 0)
                     ? Theme.of(context).colorScheme.background ==
@@ -196,7 +168,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline2),
                 // subtitle:
-                trailing: InkWell(
+                trailing: GestureDetector(
                   onTap: () {
                     list[index].webContentLink != null &&
                             list[index].webContentLink != ''
@@ -211,6 +183,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         Color(0xff000000) != Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
                             : Color(0xffF7F8F9),
+                    size: Globals.deviceType == 'phone' ? 28 : 38,
                   ),
                 )),
           ),

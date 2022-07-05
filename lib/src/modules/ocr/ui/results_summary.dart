@@ -650,8 +650,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         child: Container(
                           //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
                           child: Image(
-                            width: Globals.deviceType == "phone" ? 35 : 32,
-                            height: Globals.deviceType == "phone" ? 35 : 32,
+                            width: Globals.deviceType == "phone" ? 35 : 50,
+                            height: Globals.deviceType == "phone" ? 35 : 50,
                             image: AssetImage(
                               "assets/images/drive_ico.png",
                             ),
@@ -705,8 +705,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                       ? index == 2
                                                       : index == 3) &&
                                                   dashoardState.value == ''
-                                              ? 38
-                                              : 32,
+                                              ? Globals.deviceType == 'phone'
+                                                  ? 38
+                                                  : 45
+                                              : Globals.deviceType == 'phone'
+                                                  ? 32
+                                                  : 45,
                                           color: AppTheme.kButtonColor,
                                         );
                                       }
@@ -745,8 +749,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                 ? index == 2
                                                 : index == 3) &&
                                             dashoardState.value == ''
-                                        ? 38
-                                        : 32,
+                                        ? Globals.deviceType == 'phone'
+                                            ? 38
+                                            : 55
+                                        : Globals.deviceType == 'phone'
+                                            ? 32
+                                            : 48,
                                     color: (widget.assessmentDetailPage! &&
                                                 index == 2 &&
                                                 isAssessmentAlreadySaved ==
@@ -1004,7 +1012,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
-            width: isScrolling.value ? null : 130,
+            // width: isScrolling.value ? null : 130,
             child: FloatingActionButton.extended(
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
@@ -1028,7 +1036,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     color: Theme.of(context).backgroundColor,
                     size: 16),
                 label: Utility.textWidget(
-                    text: 'Scan More',
+                    text: isScrolling.value ? '' : 'Scan More',
                     context: context,
                     textTheme: Theme.of(context)
                         .textTheme
@@ -1041,6 +1049,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   Widget _bottomButtons(context, List iconsList, List iconName,
       {required String webContentLink}) {
     return Container(
+        alignment: Alignment.center,
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor == Color(0xff000000)
                 ? Color(0xff162429)
@@ -1055,7 +1064,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             borderRadius: BorderRadius.circular(4)),
         margin: widget.assessmentDetailPage!
             ? EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.07)
-            : null,
+            : Globals.deviceType == 'tablet'
+                ? EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.03)
+                : null,
         padding: EdgeInsets.symmetric(horizontal: 20),
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.086

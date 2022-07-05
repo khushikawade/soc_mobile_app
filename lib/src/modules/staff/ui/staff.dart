@@ -307,6 +307,7 @@ class _StaffPageState extends State<StaffPage> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return AnimatedPositioned(
+          
             bottom: 40.0,
             right: !isScrolling.value
                 ? 8
@@ -314,11 +315,11 @@ class _StaffPageState extends State<StaffPage> {
             duration: const Duration(milliseconds: 650),
             curve: Curves.decelerate,
             child: Container(
-              width: !isScrolling.value
-                  ? null
-                  : Globals.deviceType == 'phone'
-                      ? 150
-                      : 210,
+              // width: !isScrolling.value
+              //     ? null
+              //     : Globals.deviceType == 'phone'
+              //         ? 150
+              //         : 210,
               child: FloatingActionButton.extended(
                   isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
@@ -345,8 +346,9 @@ class _StaffPageState extends State<StaffPage> {
                   icon: Icon(Icons.add,
                       size: Globals.deviceType == 'tablet' ? 30 : null,
                       color: Theme.of(context).backgroundColor),
-                  label: textwidget(
-                      text: 'Assessment',
+                  label: Utility.textWidget(
+                      text:!isScrolling.value?'': 'Assessment',
+                      context:context,
                       textTheme: Theme.of(context)
                           .textTheme
                           .headline2!

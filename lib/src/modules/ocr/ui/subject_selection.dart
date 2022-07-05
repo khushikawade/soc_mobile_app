@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:Soc/src/globals.dart';
@@ -16,6 +17,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
+import 'package:Soc/src/widgets/image_to_text.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,6 +74,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isSkipButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+
   @override
   initState() {
     if (widget.isSearchPage == true) {
@@ -258,6 +261,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         if (state is SubjectDataSuccess) {
                           pageIndex.value = 0;
                         } else if (state is NycDataSuccess) {
+                          // AnimationController?.dispose();
                           pageIndex.value = 1;
                         } else if (state is NycSubDataSuccess) {
                           pageIndex.value = 2;
@@ -376,8 +380,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         return Utility.textWidget(
             text: pageIndex.value == 0
                 ? 'Subject'
-                // : pageIndex.value == 1
-                //     ? 'NY Next Generation Learning Standard'
                 : 'NY Next Generation Learning Standard',
             context: context);
       },
@@ -388,9 +390,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   Widget searchDomainText() {
     return Utility.textWidget(
         text: 'Select Domain',
-        // : pageIndex.value == 1
-        //     ? 'NY Next Generation Learning Standard'
-
         textTheme: Theme.of(context).textTheme.subtitle1!.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -538,7 +537,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     child: AnimatedContainer(
-                      duration: Duration(seconds: 5),
+                      // duration: Duration(seconds: 5),
+                      duration: Duration(microseconds: 100),
                       curve: Curves.easeOutExpo,
                       child: LinearProgressIndicator(
                         valueColor: new AlwaysStoppedAnimation<Color>(
@@ -666,7 +666,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 Radius.circular(8),
                               ),
                             ),
-                            duration: Duration(microseconds: 100),
+                            duration: Duration(microseconds: 5000),
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               alignment: isSubjectScreen == true

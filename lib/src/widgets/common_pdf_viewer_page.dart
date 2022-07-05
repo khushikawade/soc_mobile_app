@@ -86,7 +86,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
     return CustomOcrAppBarWidget(
       isbackOnSuccess: widget.isBackFromCamera,
       key: GlobalKey(),
-      isBackButton: false,
+      isBackButton: true,
     );
   }
 

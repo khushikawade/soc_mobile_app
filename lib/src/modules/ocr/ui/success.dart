@@ -51,6 +51,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final ValueNotifier<String> scanFailure = ValueNotifier<String>('');
   final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
+  final ValueNotifier<String> isStudentIdFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> rubricNotDetected = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isNameUpdated = ValueNotifier<bool>(false);
@@ -102,7 +103,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 } else {
                   if (_formKey1.currentState == null) {
                     scanFailure.value = 'Failure';
-                  } else if (_formKey1.currentState!.validate()) {
+                  } 
+                  if(isStudentIdFilled.value.isNotEmpty&& isStudentIdFilled.value.length==9&& (isStudentIdFilled.value.startsWith('2')||isStudentIdFilled.value.startsWith('1'))){
+                    
+                  // else if (_formKey1.currentState!.validate()) {
                     // if (!isSelected) {
                     // Utility.showSnackBar(_scaffoldKey,
                     //     'Please select the earned point', context, null);
@@ -180,7 +184,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   //   reconizeText(pathOfImage);
                   // });
 
-                  if (_formKey2.currentState!.validate()) {
+                  // if (_formKey2.currentState!.validate()) {
+                    if(isStudentIdFilled.value.isNotEmpty&& isStudentIdFilled.value.length==9&& (isStudentIdFilled.value.startsWith('2')||isStudentIdFilled.value.startsWith('1'))){
                     if (nameController.text.isNotEmpty &&
                         idController.text.isNotEmpty) {
                       timer = await Timer(Duration(seconds: 5), () async {
@@ -525,15 +530,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange = true;
                 },
                 validator: (String? value) {
-                  // isStudentNameFilled.value= value!;//nameController.text;
-                  // if (value!.isEmpty) {
-                  //   return 'If you would like to save the student details in database, Please enter the student name';
-                  // } else if (value.length < 3) {
-                  //   return 'Make sure the student name contains more than 3 character';
-                  // } else {
-                  //   return null;
-                  // }
-                  // return null;
+                  isStudentNameFilled.value= value!;//nameController.text;
+                 
+                  return isStudentNameFilled.value.isEmpty|| isStudentNameFilled.value.length<3?'': null;
                 }),
 
             ValueListenableBuilder(
@@ -582,6 +581,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 // errormsg:
                 //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
                 onSaved: (String value) {
+                  isStudentIdFilled.value=value;
                   _formKey1.currentState!.validate();
                   // updateDetails(isUpdateData: true);
                   studentId = idController.text;
@@ -593,13 +593,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange = true;
                 },
                 validator: (String? value) {
-                  if (value!.length != 9) {
-                    return 'Student ID Must Have 9 Digits Number';
-                  } else if (!value.startsWith('2') && !value.startsWith('1')) {
-                    return 'Student ID Must Starts With \'2\' & 1';
-                  } else {
-                    return null;
-                  }
+                  isStudentIdFilled.value= value!;
+                  return (!isStudentIdFilled.value.startsWith('2') && !isStudentIdFilled.value.startsWith('1')) ||isStudentIdFilled.value.length<9?'':null;
+                  
                 },
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
@@ -607,6 +603,35 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   //     RegExp("[0-9]")),
                 ],
                 maxNineDigit: true),
+            ValueListenableBuilder(
+                valueListenable: isStudentIdFilled,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Container(
+                    padding: isStudentIdFilled.value.isEmpty ||
+                            idController.text.length < 9
+                        ? EdgeInsets.only(top: 0)
+                        : null,
+                    alignment: Alignment.centerLeft,
+                    child: TranslationWidget(
+                        message: isStudentIdFilled.value == ""
+                            ? 'Student ID is required'
+                            : isStudentIdFilled.value.length != 9
+                                ? 'Student ID Must Have 9 Digits Number'
+                                : !isStudentIdFilled.value.startsWith('2') &&
+                                        !isStudentIdFilled.value.startsWith('1')
+                                    ? 'Student ID Must Starts Either With \'2\' Or \'1\''
+                                    : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage,
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }),
+                  );
+                }),
             SpacerWidget(_KVertcalSpace / 2),
             Center(
               child: Utility.textWidget(
@@ -656,6 +681,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 isFailure: false,
                 // errormsg: "Make sure to save the record with student name",
                 onSaved: (String value) {
+                    isStudentNameFilled.value = value;
                   _formKey2.currentState!.validate();
                   value != '' ? valuechange = true : valuechange = false;
 
@@ -663,13 +689,41 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange = true;
                 },
                 validator: (String? value) {
-                  if (value!.isEmpty) {
-                    return 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name';
-                  } else if (value.length < 3) {
-                    return 'Make Sure The Student Name Contains More Than 3 Characters';
-                  } else {
-                    return null;
-                  }
+                  isStudentNameFilled.value=value!;
+                return null;
+                  // if (value!.isEmpty) {
+                  //   return 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name';
+                  // } else if (value.length < 3) {
+                  //   return 'Make Sure The Student Name Contains More Than 3 Characters';
+                  // } else {
+                  //   return null;
+                  // }
+                }),
+                 ValueListenableBuilder(
+                valueListenable: isStudentNameFilled,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Container(
+                    padding: isStudentNameFilled.value.isNotEmpty ||
+                            nameController.text.length < 3
+                        ? EdgeInsets.only(top: 8)
+                        : null,
+                    alignment: Alignment.centerLeft,
+                    child: TranslationWidget(
+                        message: isStudentNameFilled.value == ""
+                            ? 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name'
+                            : nameController.text.length < 3
+                                ? 'Make Sure The Student Name Contains More Than 3 Character'
+                                : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage,
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }),
+                  );
                 }),
             SpacerWidget(_KVertcalSpace / 2),
             Utility.textWidget(
@@ -688,27 +742,58 @@ class _SuccessScreenState extends State<SuccessScreen> {
               //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
               isFailure: false,
               onSaved: (String value) {
+                isStudentIdFilled.value=value;
                 _formKey2.currentState!.validate();
                 //  updateDetails(isUpdateData: true);
                 onChange = true;
               },
               validator: (String? value) {
-                if (value!.isEmpty) {
-                  return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
-                } else if (value.length != 9) {
-                  return 'Student ID Must Have 9 Digits Number';
-                } else if (!value.startsWith('2') && !value.startsWith('1')) {
-                  return 'Student ID Must Starts With \'2\'';
-                } else {
-                  return null;
-                }
+                isStudentIdFilled.value=value!;
+                return null;
+                // if (value!.isEmpty) {
+                //   return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
+                // } else if (value.length != 9) {
+                //   return 'Student ID Must Have 9 Digits Number';
+                // } else if (!value.startsWith('2') && !value.startsWith('1')) {
+                //   return 'Student ID Must Starts With \'2\'';
+                // } else {
+                //   return null;
+                // }
               },
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 FilteringTextInputFormatter.allow(
                     RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
               ],
-            ),
+            ), ValueListenableBuilder(
+                valueListenable: isStudentIdFilled,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Container(
+                    padding: isStudentIdFilled.value.isEmpty ||
+                            idController.text.length < 9
+                        ? EdgeInsets.only(top: 0)
+                        : null,
+                    alignment: Alignment.centerLeft,
+                    child: TranslationWidget(
+                        message: isStudentIdFilled.value == ""
+                            ? 'Student ID is required'
+                            : isStudentIdFilled.value.length != 9
+                                ? 'Student ID Must Have 9 Digits Number'
+                                : !isStudentIdFilled.value.startsWith('2') &&
+                                        !isStudentIdFilled.value.startsWith('1')
+                                    ? 'Student ID Must Starts Either With \'2\' Or \'1\''
+                                    : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage,
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }),
+                  );
+                }),
             SpacerWidget(_KVertcalSpace / 2),
             Center(
               child: Utility.textWidget(
@@ -930,6 +1015,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               : Color(0xff000000)),
                       // errorText: controller.text.isEmpty ? errormsg : null,
                       hintText: hintText,
+
                       hintStyle: Theme.of(context)
                           .textTheme
                           .headline6!
@@ -976,29 +1062,33 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget retryButton({required final onPressed}) {
     return InkWell(
       onTap: onPressed,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.kButtonColor,
-          borderRadius: BorderRadius.all(Radius.circular(25)),
-        ),
-        height:  MediaQuery.of(context).size.height * 0.055,
-        width: Globals.deviceType=='phone'? MediaQuery.of(context).size.width * 0.3: MediaQuery.of(context).size.width * 0.2,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.refresh,
-                color: Theme.of(context).backgroundColor, size: 28),
-            SizedBox(width: 5),
-            Center(
-              child: Utility.textWidget(
-                text: 'Retry',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline1!.copyWith(
-                      color: Theme.of(context).backgroundColor,
-                    ),
+      child: FittedBox(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: AppTheme.kButtonColor,
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+          ),
+          height: MediaQuery.of(context).size.height * 0.055,
+          // width: Globals.deviceType=='phone'? MediaQuery.of(context).size.width * 0.3: MediaQuery.of(context).size.width * 0.2,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.refresh,
+                  color: Theme.of(context).backgroundColor,
+                  size: Globals.deviceType == 'phone' ? 28 : 40),
+              SizedBox(width: 5),
+              Center(
+                child: Utility.textWidget(
+                  text: 'Retry',
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline1!.copyWith(
+                        color: Theme.of(context).backgroundColor,
+                      ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
