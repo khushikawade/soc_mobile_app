@@ -471,7 +471,10 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
-              onlyForPicture: true, isScanMore: false, pointPossible: '')),
+              isFromHistoryAssessmentScanMore: false,
+              onlyForPicture: true,
+              isScanMore: false,
+              pointPossible: '')),
     );
     if (photo != null) {
       setState(() {

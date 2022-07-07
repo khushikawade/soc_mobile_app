@@ -546,7 +546,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                         element.grade = widget.grade;
                       });
 
-                      _googleDriveBloc.add(UpdateDocOnDrive(
+                      _googleDriveBloc.add(UpdateDocOnDrive(   assessmentName:  Globals.assessmentName!,
+                           fileId: Globals.googleExcelSheetId,
                           isLoading: true,
                           studentData:
                               //list2

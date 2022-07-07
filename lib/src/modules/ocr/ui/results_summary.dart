@@ -4,7 +4,6 @@ import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
-
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -35,16 +34,18 @@ class ResultsSummary extends StatefulWidget {
     this.assessmentListLenght,
     required this.shareLink,
     required this.asssessmentName,
+    this.historysecondTime,
   }) : super(key: key);
   final bool? assessmentDetailPage;
-  final String? fileId;
+  String? fileId;
   final String? subjectId;
   final String? standardId;
   final String? rubricScore;
   final bool? isScanMore;
   final int? assessmentListLenght;
   String? shareLink;
-  final asssessmentName;
+  String? asssessmentName;
+  bool? historysecondTime;
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
 }
@@ -86,6 +87,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   @override
   void initState() {
     if (widget.assessmentDetailPage!) {
+      Globals.historyStudentInfo = [];
+      if (widget.historysecondTime == true) {
+        widget.asssessmentName = Globals.historyAssessmentName;
+        widget.fileId = Globals.historyAssessmentFileId;
+      } else {
+        Globals.historyAssessmentName = '';
+        Globals.historyAssessmentFileId = '';
+        Globals.historyAssessmentName = widget.asssessmentName;
+        Globals.historyAssessmentFileId = widget.fileId;
+      }
+
       iconsList = [0xe876, 0xe871, 0xe87a];
       iconsName = ["Share", "Drive", "Dashboard"];
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
@@ -260,6 +272,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                               if (state is AssessmentDetailSuccess) {
                                 if (state.obj.length > 0) {
+                                  Globals.historyStudentInfo = state.obj;
                                   print(
                                       "record length ---===========> ${state.obj.length}");
                                   print(
@@ -282,9 +295,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   return Column(
                                     children: [
                                       resultTitle(),
-                                      listView(
-                                        state.obj,
-                                      )
+                                      listView(Globals.historyStudentInfo!)
                                     ],
                                   );
                                 } else {
@@ -518,10 +529,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             ),
             floatingActionButton: Column(
               mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                !widget.assessmentDetailPage!
-                    ? _scanFloatingWidget()
-                    : Container(),
+                if (!widget.assessmentDetailPage!) _scanFloatingWidget(),
                 SpacerWidget(10),
                 !widget.assessmentDetailPage!
                     ? _bottomButtons(context, iconsList, iconsName,
@@ -532,8 +542,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         builder:
                             (BuildContext context, bool value, Widget? child) {
                           return isSuccessStateRecived.value == true
-                              ? _bottomButtons(context, iconsList, iconsName,
-                                  webContentLink: webContentLink!)
+                              ? Column(
+                                  children: [
+                                    _scanFloatingWidget(),
+                                    SpacerWidget(10),
+                                    _bottomButtons(
+                                        context, iconsList, iconsName,
+                                        webContentLink: webContentLink!),
+                                  ],
+                                )
                               : Container();
                         }),
               ],
@@ -817,7 +834,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       resultList: Globals.studentInfo!,
                                       previouslyAddedListLength:
                                           widget.assessmentListLenght,
-                                      assessmentName: widget.asssessmentName,
+                                      assessmentName: widget.asssessmentName!,
                                       rubricScore: widget.rubricScore ?? '',
                                       subjectId: widget.subjectId ?? '',
                                       schoolId: Globals
@@ -858,7 +875,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       resultList: !widget.assessmentDetailPage!
                                           ? Globals.studentInfo!
                                           : _listRecord,
-                                      assessmentName: widget.asssessmentName,
+                                      assessmentName: widget.asssessmentName!,
                                       rubricScore: !widget.assessmentDetailPage!
                                           ? widget.rubricScore ?? ''
                                           : sheetrubricScore ?? '',
@@ -899,7 +916,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               //padding:widget.assessmentDetailPage==true? EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.06):null,
               controller: _scrollController,
               shrinkWrap: true,
-              // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+              padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
               scrollDirection: Axis.vertical,
               itemCount: _list.length, // Globals.gradeList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -1012,6 +1029,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
+            margin: EdgeInsets.only(left: 15),
+            alignment: Alignment.center,
             // width: isScrolling.value ? null : 130,
             child: FloatingActionButton.extended(
                 isExtended: !isScrolling.value,
@@ -1023,6 +1042,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                                oneTimeCamera: widget.assessmentDetailPage!,
+                                isFromHistoryAssessmentScanMore:
+                                    widget.assessmentDetailPage!,
                                 onlyForPicture: false,
                                 isScanMore: true,
                                 // lastStudentInfoLenght: Globals.studentInfo!.length,
@@ -1063,12 +1085,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             ],
             borderRadius: BorderRadius.circular(4)),
         margin: widget.assessmentDetailPage!
-            ? EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.07)
+            ? EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.28,
+                right: MediaQuery.of(context).size.width * 0.25)
             : Globals.deviceType == 'tablet'
                 ? EdgeInsets.only(
                     right: MediaQuery.of(context).size.width * 0.03)
                 : null,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: Globals.deviceType == 'tablet'
+            ? EdgeInsets.symmetric(horizontal: 20)
+            : EdgeInsets.symmetric(horizontal: 8),
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.086
             : MediaQuery.of(context).size.width * 0.086,
@@ -1246,6 +1272,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 Navigator.pop(context);
 
                 _driveBloc2.add(UpdateDocOnDrive(
+                    assessmentName: Globals.assessmentName!,
+                    fileId: Globals.googleExcelSheetId,
                     isLoading: true,
                     studentData:
                         //list2
@@ -1371,6 +1399,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           );
 
                           _driveBloc2.add(UpdateDocOnDrive(
+                              assessmentName: Globals.assessmentName!,
+                              fileId: Globals.googleExcelSheetId,
                               isLoading: true,
                               studentData:
                                   //list2

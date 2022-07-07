@@ -37,12 +37,15 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
   bool isLoading;
   bool? isCustomRubricSelcted;
   int? selectedRubric;
+  final String? assessmentName;
   UpdateDocOnDrive(
       {this.studentData,
-      this.fileId,
+      required this.fileId,
       required this.isLoading,
       this.isCustomRubricSelcted,
-      this.selectedRubric});
+      this.selectedRubric,
+      required this.assessmentName
+      });
   @override
   List<Object> get props => [];
 }

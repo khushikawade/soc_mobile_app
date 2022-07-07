@@ -170,48 +170,45 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .colorScheme
                                       .primaryVariant
                                       .withOpacity(0.3))),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 11,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            textFormField(
-                              controller: classController,
-                              hintText: '1st',
-                              onSaved: (String value) {
-                                classError.value = value;
-                              },
-                              validator: (String? value) {
-                                return null;
-                              },
-                            ),
-                            ValueListenableBuilder(
-                                valueListenable: classError,
-                                child: Container(),
-                                builder: (BuildContext context, dynamic value,
-                                    Widget? child) {
-                                  return Container(
-                                    padding: classError.value.isEmpty
-                                        ? EdgeInsets.only(top: 8)
-                                        : null,
-                                    alignment: Alignment.centerLeft,
-                                    child: TranslationWidget(
-                                        message: classError.value.isEmpty
-                                            ? 'Class Is Required'
-                                            : '',
-                                        fromLanguage: "en",
-                                        toLanguage: Globals.selectedLanguage,
-                                        builder: (translatedMessage) {
-                                          return Text(
-                                            translatedMessage,
-                                            style: TextStyle(color: Colors.red),
-                                          );
-                                        }),
-                                  );
-                                }),
-                          ],
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          textFormField(
+                            controller: classController,
+                            hintText: '1st',
+                            onSaved: (String value) {
+                              classError.value = value;
+                            },
+                            validator: (String? value) {
+                              return null;
+                            },
+                          ),
+                          ValueListenableBuilder(
+                              valueListenable: classError,
+                              child: Container(),
+                              builder: (BuildContext context, dynamic value,
+                                  Widget? child) {
+                                return Container(
+                                  padding: classError.value.isEmpty
+                                      ? EdgeInsets.only(top: 8)
+                                      : null,
+                                  alignment: Alignment.centerLeft,
+                                  child: TranslationWidget(
+                                      message: classError.value.isEmpty
+                                          ? 'Class Is Required'
+                                          : '',
+                                      fromLanguage: "en",
+                                      toLanguage: Globals.selectedLanguage,
+                                      builder: (translatedMessage) {
+                                        return Text(
+                                          translatedMessage,
+                                          style: TextStyle(color: Colors.red),
+                                        );
+                                      }),
+                                );
+                              }),
+                        ],
                       ),
                       if (widget.classSuggestions.length > 0)
                         SpacerWidget(_KVertcalSpace / 15),
@@ -544,14 +541,21 @@ class _CreateAssessmentState extends State<CreateAssessment>
         fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-            color:
-                assessmentNameError.value.isEmpty||assessmentNameError.value.length<2||classError.value.isEmpty?Colors.red: Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+            color: assessmentNameError.value.isEmpty ||
+                    assessmentNameError.value.length < 2 ||
+                    classError.value.isEmpty
+                ? Colors.red
+                : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
           ),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
-              color: assessmentNameError.value.isEmpty||assessmentNameError.value.length<2||classError.value.isEmpty?Colors.red:Theme.of(context).colorScheme.primaryVariant.withOpacity(
-                  0.5) // Theme.of(context).colorScheme.primaryVariant,
+              color: assessmentNameError.value.isEmpty ||
+                      assessmentNameError.value.length < 2 ||
+                      classError.value.isEmpty
+                  ? Colors.red
+                  : Theme.of(context).colorScheme.primaryVariant.withOpacity(
+                      0.5) // Theme.of(context).colorScheme.primaryVariant,
               ),
         ),
         contentPadding: EdgeInsets.only(top: 10, bottom: 10),
@@ -580,7 +584,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 Utility.currentScreenSnackBar("No Internet Connection");
               } else {
                 // if (_formKey.currentState!.validate()) {
-                  if(assessmentNameError.value.isNotEmpty&&assessmentNameError.value.length>2 &&classError.value.isNotEmpty){
+                if (assessmentNameError.value.isNotEmpty &&
+                    assessmentNameError.value.length > 2 &&
+                    classError.value.isNotEmpty) {
                   if (imageFile != null && imageFile!.path.isNotEmpty) {
                     String imgExtension = imageFile!.path
                         .substring(imageFile!.path.lastIndexOf(".") + 1);
@@ -659,7 +665,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
-              onlyForPicture: true, isScanMore: false, pointPossible: '')),
+              isFromHistoryAssessmentScanMore: false,
+              onlyForPicture: true,
+              isScanMore: false,
+              pointPossible: '')),
     );
     if (photo != null) {
       imageFile = photo;

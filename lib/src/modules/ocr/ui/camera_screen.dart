@@ -21,15 +21,18 @@ class CameraScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
   final onlyForPicture;
-
+  final bool isFromHistoryAssessmentScanMore;
   final scaffoldKey;
+  final bool? oneTimeCamera;
 
   const CameraScreen(
       {Key? key,
       required this.pointPossible,
       required this.isScanMore,
       required this.onlyForPicture,
-      this.scaffoldKey})
+      this.scaffoldKey,
+      required this.isFromHistoryAssessmentScanMore,
+      this.oneTimeCamera})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -156,19 +159,47 @@ class _CameraScreenState extends State<CameraScreen>
                       }
                       if (state is GoogleSuccess) {
                         Navigator.of(context).pop();
+                        if (widget.isFromHistoryAssessmentScanMore == true) {
+                          Navigator.of(context)
+                            ..pop()
+                            ..pop()
+                            ..pop();
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ResultsSummary(
-                                    asssessmentName: Globals.assessmentName,
-                                    shareLink: Globals.shareableLink ?? '',
-                                    assessmentDetailPage: false,
-                                    isScanMore: true,
-                                    assessmentListLenght:
-                                        Globals.scanMoreStudentInfoLength,
-                                  )),
-                        );
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (context) => ResultsSummary(
+                                      historysecondTime:
+                                          widget.isFromHistoryAssessmentScanMore
+                                              ? true
+                                              : null,
+                                      asssessmentName: Globals.assessmentName,
+                                      shareLink: Globals.shareableLink ?? '',
+                                      assessmentDetailPage: widget
+                                          .isFromHistoryAssessmentScanMore,
+                                      isScanMore: true,
+                                      assessmentListLenght:
+                                          Globals.scanMoreStudentInfoLength,
+                                    )),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ResultsSummary(
+                                      historysecondTime:
+                                          widget.isFromHistoryAssessmentScanMore
+                                              ? true
+                                              : null,
+                                      asssessmentName: Globals.assessmentName,
+                                      shareLink: Globals.shareableLink ?? '',
+                                      assessmentDetailPage: widget
+                                          .isFromHistoryAssessmentScanMore,
+                                      isScanMore: true,
+                                      assessmentListLenght:
+                                          Globals.scanMoreStudentInfoLength,
+                                    )),
+                          );
+                        }
                       }
                       if (state is ErrorState) {
                         Navigator.of(context).pop();
@@ -197,8 +228,63 @@ class _CameraScreenState extends State<CameraScreen>
                       onPressed: () async {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
-                        if (Globals.studentInfo!.length > 0) {
-                          if (widget.isScanMore == true) {
+                        if (widget.isFromHistoryAssessmentScanMore == true
+                            ? Globals.historyStudentInfo!.length > 0
+                            : Globals.studentInfo!.length > 0) {
+                          if (widget.isFromHistoryAssessmentScanMore == true) {
+                            if (Globals.historyStudentInfo![0].studentId ==
+                                'Id') {
+                              Globals.historyStudentInfo!.removeAt(0);
+                            }
+
+                            //To copy the static content in the sheet
+                            Globals.historyStudentInfo!.forEach((element) {
+                              element.subject =
+                                  Globals.historyStudentInfo!.first.subject;
+                              element.learningStandard = Globals
+                                          .historyStudentInfo!
+                                          .first
+                                          .learningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals.historyStudentInfo!.first
+                                      .learningStandard;
+
+                              element.subLearningStandard = Globals
+                                          .historyStudentInfo!
+                                          .first
+                                          .subLearningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals.historyStudentInfo!.first
+                                      .subLearningStandard;
+                              element.scoringRubric = Globals
+                                      .historyStudentInfo!
+                                      .first
+                                      .scoringRubric ??
+                                  'NA';
+                              element.customRubricImage = Globals
+                                      .historyStudentInfo!
+                                      .first
+                                      .customRubricImage ??
+                                  "NA";
+                              element.grade =
+                                  Globals.historyStudentInfo!.first.grade;
+                              element.className =
+                                  Globals.historyStudentInfo!.first.className ??
+                                      'NA';
+                              //widget.selectedClass;
+                              element.questionImgUrl = Globals
+                                  .historyStudentInfo!.first.questionImgUrl;
+                            });
+
+                            _driveBloc.add(UpdateDocOnDrive(
+                                assessmentName: Globals.historyAssessmentName,
+                                fileId: Globals.historyAssessmentFileId,
+                                isLoading: true,
+                                studentData: Globals.historyStudentInfo!));
+                          } else if (!widget.isFromHistoryAssessmentScanMore &&
+                              widget.isScanMore == true) {
                             //To remove the titles if exist in the list
                             if (Globals.studentInfo![0].studentId == 'Id') {
                               Globals.studentInfo!.removeAt(0);
@@ -231,6 +317,8 @@ class _CameraScreenState extends State<CameraScreen>
                             });
 
                             _driveBloc.add(UpdateDocOnDrive(
+                                assessmentName: Globals.assessmentName!,
+                                fileId: Globals.googleExcelSheetId,
                                 isLoading: true,
                                 studentData: Globals.studentInfo!));
                           } else {
@@ -340,10 +428,20 @@ class _CameraScreenState extends State<CameraScreen>
                                   if (widget.onlyForPicture) {
                                     Navigator.pop(context, imageFile);
                                   } else {
+                                    if (widget.isFromHistoryAssessmentScanMore ==
+                                            true &&
+                                        widget.oneTimeCamera == null) {
+                                      Navigator.of(context)
+                                        ..pop()
+                                        ..pop();
+                                    }
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SuccessScreen(
+                                                isFromHistoryAssessmentScanMore:
+                                                    widget
+                                                        .isFromHistoryAssessmentScanMore,
                                                 isScanMore: widget.isScanMore,
                                                 img64: img64,
                                                 imgPath: imageFile,

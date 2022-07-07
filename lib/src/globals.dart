@@ -133,4 +133,7 @@ class Globals {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static String? questionImgUrl;
   static File? questionImgFilePath;
+  static late List<StudentAssessmentInfo>? historyStudentInfo = [];
+  static String? historyAssessmentName = '';
+  static String? historyAssessmentFileId = '';
 }

@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
@@ -17,7 +15,6 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
-import 'package:Soc/src/widgets/image_to_text.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -1166,6 +1163,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
         _googleDriveBloc.add(
           UpdateDocOnDrive(
+              assessmentName: Globals.assessmentName,
+              fileId: Globals.googleExcelSheetId,
               isLoading: true,
               studentData:
                   //list2

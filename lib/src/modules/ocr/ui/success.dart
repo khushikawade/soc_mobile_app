@@ -22,13 +22,14 @@ class SuccessScreen extends StatefulWidget {
   final File imgPath;
   final String? pointPossible;
   final bool? isScanMore;
-
+  final bool? isFromHistoryAssessmentScanMore;
   SuccessScreen(
       {Key? key,
       required this.img64,
       required this.imgPath,
       this.pointPossible,
-      this.isScanMore})
+      this.isScanMore,
+      required this.isFromHistoryAssessmentScanMore})
       : super(key: key);
 
   @override
@@ -98,7 +99,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 IconButton(
               onPressed: () {
                 if (isBackFromCamera.value == true) {
-                  updateDetails(isUpdateData: true);
+                  updateDetails(
+                      isUpdateData: true,
+                      isFromHistoryAssessmentScanMore:
+                          widget.isFromHistoryAssessmentScanMore);
                   _navigatetoCameraSection();
                 } else {
                   if (_formKey1.currentState == null) {
@@ -113,7 +117,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     // } else {
                     print(pointScored.value);
 
-                    updateDetails();
+                    updateDetails(
+                        isFromHistoryAssessmentScanMore:
+                            widget.isFromHistoryAssessmentScanMore);
 
                     // if (nameController.text.isNotEmpty &&
                     //     nameController.text.length >= 3 &&
@@ -189,7 +195,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     if (nameController.text.isNotEmpty &&
                         idController.text.isNotEmpty) {
                       timer = await Timer(Duration(seconds: 5), () async {
-                        updateDetails();
+                        updateDetails(
+                            isFromHistoryAssessmentScanMore:
+                                widget.isFromHistoryAssessmentScanMore);
                         String imgExtension = widget.imgPath.path.substring(
                             widget.imgPath.path.lastIndexOf(".") + 1);
                         _googleDriveBloc.add(AssessmentImgToAwsBucked(
@@ -202,6 +210,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                    isFromHistoryAssessmentScanMore:
+                                        widget.isFromHistoryAssessmentScanMore!,
                                     onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
@@ -314,6 +324,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
+                                        isFromHistoryAssessmentScanMore: widget
+                                            .isFromHistoryAssessmentScanMore!,
                                         onlyForPicture: false,
                                         isScanMore: widget.isScanMore,
                                         pointPossible: widget.pointPossible,
@@ -341,7 +353,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                           if (animationStart.value == true) {
                                             timer!.cancel();
 
-                                            updateDetails();
+                                            updateDetails(
+                                                isFromHistoryAssessmentScanMore:
+                                                    widget
+                                                        .isFromHistoryAssessmentScanMore);
                                             String imgExtension = widget
                                                 .imgPath.path
                                                 .substring(widget.imgPath.path
@@ -360,6 +375,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       CameraScreen(
+                                                        isFromHistoryAssessmentScanMore:
+                                                            widget
+                                                                .isFromHistoryAssessmentScanMore!,
                                                         onlyForPicture: false,
                                                         isScanMore:
                                                             widget.isScanMore,
@@ -434,6 +452,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                    isFromHistoryAssessmentScanMore:
+                                        widget.isFromHistoryAssessmentScanMore!,
                                     onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
@@ -1094,59 +1114,114 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
-  void updateDetails({bool? isUpdateData}) {
-    if (Globals.studentInfo!.length > 0 &&
-        Globals.studentInfo![0].studentId == "Id") {
-      Globals.studentInfo!.remove(0);
-    }
+  void updateDetails(
+      {bool? isUpdateData, required bool? isFromHistoryAssessmentScanMore}) {
+    if (isFromHistoryAssessmentScanMore == true) {
+      if (Globals.historyStudentInfo!.length > 0 &&
+          Globals.historyStudentInfo![0].studentId == "Id") {
+        Globals.historyStudentInfo!.remove(0);
+      }
 
-    if (isUpdateData == true && Globals.studentInfo != null) {
-      Globals.studentInfo!.last.studentName = nameController.text;
-      Globals.studentInfo!.last.studentId = idController.text;
-      Globals.studentInfo!.last.studentGrade = pointScored.value;
-      Globals.studentInfo!.last.pointpossible = Globals.pointpossible;
-      Globals.studentInfo!.last.assessmentImgPath = widget.imgPath;
-
-      // Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
-      // StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
-      // studentAssessmentInfo.studentName = nameController.text;
-      // studentAssessmentInfo.studentId = idController.text;
-      // studentAssessmentInfo.studentGrade = pointScored;
-      // studentAssessmentInfo.pointpossible = Globals.pointpossible;
-      // //studentAssessmentInfo.assessmentName = Globals.assessmentName;
-      // Globals.studentInfo!.add(studentAssessmentInfo);
-    } else {
-      if (Globals.studentInfo == null) {
-        final StudentAssessmentInfo studentAssessmentInfo =
-            StudentAssessmentInfo();
-        studentAssessmentInfo.studentName =
-            nameController.text.isNotEmpty ? nameController.text : "Unknown";
-        studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored.value;
-        studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
-        studentAssessmentInfo.assessmentImgPath = widget.imgPath;
-        // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-        Globals.studentInfo!.add(studentAssessmentInfo);
+      if (isUpdateData == true && Globals.historyStudentInfo != null) {
+        Globals.historyStudentInfo!.last.studentName = nameController.text;
+        Globals.historyStudentInfo!.last.studentId = idController.text;
+        Globals.historyStudentInfo!.last.studentGrade = pointScored.value;
+        Globals.historyStudentInfo!.last.pointpossible = Globals.pointpossible;
+        Globals.historyStudentInfo!.last.assessmentImgPath = widget.imgPath;
       } else {
-        List id = [];
-        for (int i = 0; i < Globals.studentInfo!.length; i++) {
-          if (!Globals.studentInfo!.contains(id)) {
-            id.add(Globals.studentInfo![i].studentId);
-          } else {
-            print('Record is already exist in the list. Skipping...');
-          }
-        }
-        if (!id.contains(idController.text)) {
-          StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
+        if (Globals.historyStudentInfo == null) {
+          final StudentAssessmentInfo studentAssessmentInfo =
+              StudentAssessmentInfo();
           studentAssessmentInfo.studentName =
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
           studentAssessmentInfo.studentGrade = pointScored.value;
-          studentAssessmentInfo.pointpossible = Globals.pointpossible;
+          studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
           studentAssessmentInfo.assessmentImgPath = widget.imgPath;
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-          if (!Globals.studentInfo!.contains(id)) {
-            Globals.studentInfo!.add(studentAssessmentInfo);
+          Globals.historyStudentInfo!.add(studentAssessmentInfo);
+        } else {
+          List id = [];
+          for (int i = 0; i < Globals.historyStudentInfo!.length; i++) {
+            if (!Globals.historyStudentInfo!.contains(id)) {
+              id.add(Globals.historyStudentInfo![i].studentId);
+            } else {
+              print('Record is already exist in the list. Skipping...');
+            }
+          }
+          if (!id.contains(idController.text)) {
+            StudentAssessmentInfo studentAssessmentInfo =
+                StudentAssessmentInfo();
+            studentAssessmentInfo.studentName = nameController.text.isNotEmpty
+                ? nameController.text
+                : "Unknown";
+            studentAssessmentInfo.studentId = idController.text;
+            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.pointpossible = Globals.pointpossible;
+            studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+            // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+            if (!Globals.historyStudentInfo!.contains(id)) {
+              Globals.historyStudentInfo!.add(studentAssessmentInfo);
+            }
+          }
+        }
+      }
+    } else {
+      if (Globals.studentInfo!.length > 0 &&
+          Globals.studentInfo![0].studentId == "Id") {
+        Globals.studentInfo!.remove(0);
+      }
+
+      if (isUpdateData == true && Globals.studentInfo != null) {
+        Globals.studentInfo!.last.studentName = nameController.text;
+        Globals.studentInfo!.last.studentId = idController.text;
+        Globals.studentInfo!.last.studentGrade = pointScored.value;
+        Globals.studentInfo!.last.pointpossible = Globals.pointpossible;
+        Globals.studentInfo!.last.assessmentImgPath = widget.imgPath;
+
+        // Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
+        // StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
+        // studentAssessmentInfo.studentName = nameController.text;
+        // studentAssessmentInfo.studentId = idController.text;
+        // studentAssessmentInfo.studentGrade = pointScored;
+        // studentAssessmentInfo.pointpossible = Globals.pointpossible;
+        // //studentAssessmentInfo.assessmentName = Globals.assessmentName;
+        // Globals.studentInfo!.add(studentAssessmentInfo);
+      } else {
+        if (Globals.studentInfo == null) {
+          final StudentAssessmentInfo studentAssessmentInfo =
+              StudentAssessmentInfo();
+          studentAssessmentInfo.studentName =
+              nameController.text.isNotEmpty ? nameController.text : "Unknown";
+          studentAssessmentInfo.studentId = idController.text;
+          studentAssessmentInfo.studentGrade = pointScored.value;
+          studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
+          studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+          // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+          Globals.studentInfo!.add(studentAssessmentInfo);
+        } else {
+          List id = [];
+          for (int i = 0; i < Globals.studentInfo!.length; i++) {
+            if (!Globals.studentInfo!.contains(id)) {
+              id.add(Globals.studentInfo![i].studentId);
+            } else {
+              print('Record is already exist in the list. Skipping...');
+            }
+          }
+          if (!id.contains(idController.text)) {
+            StudentAssessmentInfo studentAssessmentInfo =
+                StudentAssessmentInfo();
+            studentAssessmentInfo.studentName = nameController.text.isNotEmpty
+                ? nameController.text
+                : "Unknown";
+            studentAssessmentInfo.studentId = idController.text;
+            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.pointpossible = Globals.pointpossible;
+            studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+            // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+            if (!Globals.studentInfo!.contains(id)) {
+              Globals.studentInfo!.add(studentAssessmentInfo);
+            }
           }
         }
       }
@@ -1158,6 +1233,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
+                  isFromHistoryAssessmentScanMore:
+                      widget.isFromHistoryAssessmentScanMore!,
                   onlyForPicture: false,
                   isScanMore: widget.isScanMore,
                   pointPossible: widget.pointPossible,

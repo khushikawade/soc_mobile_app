@@ -561,6 +561,7 @@ class _OpticalCharacterRecognitionPageState
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
+                isFromHistoryAssessmentScanMore: false,
                 onlyForPicture: false,
                 scaffoldKey: _scaffoldKey,
                 isScanMore: false,

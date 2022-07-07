@@ -299,23 +299,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print(assessmentData);
 //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
-            data: assessmentData, name: Globals.assessmentName!);
+            data: assessmentData, name: event.assessmentName!);
 
 //Update the created excel file to drive with all the result data
         bool uploadresult = await uploadSheetOnDrive(
-            file,
-            event.fileId == null ? Globals.googleExcelSheetId : event.fileId,
-            _userprofilelocalData[0].authorizationToken,
-            _userprofilelocalData[0].refreshToken);
+            assessmentName: event.assessmentName!,
+            file: file,
+            id: event.fileId,
+            accessToken: _userprofilelocalData[0].authorizationToken,
+            refreshToken: _userprofilelocalData[0].refreshToken);
 
         if (!uploadresult) {
           await _toRefreshAuthenticationToken(
               _userprofilelocalData[0].refreshToken!);
           await uploadSheetOnDrive(
-              file,
-              Globals.googleExcelSheetId,
-              _userprofilelocalData[0].authorizationToken,
-              _userprofilelocalData[0].refreshToken);
+              assessmentName: event.assessmentName!,
+              file: file,
+              id: event.fileId,
+              accessToken: _userprofilelocalData[0].authorizationToken,
+              refreshToken: _userprofilelocalData[0].refreshToken);
         } else {
           if (event.isLoading) {
             yield GoogleSuccess();
@@ -771,7 +773,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }
 
   Future uploadSheetOnDrive(
-      File? file, String? id, String? accessToken, String? refreshToken) async {
+      {required String assessmentName,
+      required File? file,
+      required String? id,
+      required String? accessToken,
+      required String? refreshToken}) async {
     // String accessToken = await Prefs.getToken();
     String? mimeType = mime(basename(file!.path).toLowerCase());
     print(mimeType);
@@ -802,6 +808,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       print(response.statusCode);
       await _toRefreshAuthenticationToken(refreshToken!);
       UpdateDocOnDrive(
+          assessmentName: assessmentName,
+          fileId: id,
           isLoading: true,
           studentData:
               //list2
