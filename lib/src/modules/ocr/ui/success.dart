@@ -107,10 +107,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 } else {
                   if (_formKey1.currentState == null) {
                     scanFailure.value = 'Failure';
-                  } 
-                  if(isStudentIdFilled.value.isNotEmpty&& isStudentIdFilled.value.length==9&& (isStudentIdFilled.value.startsWith('2')||isStudentIdFilled.value.startsWith('1'))){
-                    
-                  // else if (_formKey1.currentState!.validate()) {
+                  }
+                  if (isStudentIdFilled.value.isNotEmpty &&
+                      isStudentIdFilled.value.length == 9 &&
+                      (isStudentIdFilled.value.startsWith('2') ||
+                          isStudentIdFilled.value.startsWith('1'))) {
+                    // else if (_formKey1.currentState!.validate()) {
                     // if (!isSelected) {
                     // Utility.showSnackBar(_scaffoldKey,
                     //     'Please select the earned point', context, null);
@@ -191,7 +193,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // });
 
                   // if (_formKey2.currentState!.validate()) {
-                    if(isStudentIdFilled.value.isNotEmpty&& isStudentIdFilled.value.length==9&& (isStudentIdFilled.value.startsWith('2')||isStudentIdFilled.value.startsWith('1'))){
+                  if (isStudentIdFilled.value.isNotEmpty &&
+                      isStudentIdFilled.value.length == 9 &&
+                      (isStudentIdFilled.value.startsWith('2') ||
+                          isStudentIdFilled.value.startsWith('1'))) {
                     if (nameController.text.isNotEmpty &&
                         idController.text.isNotEmpty) {
                       timer = await Timer(Duration(seconds: 5), () async {
@@ -228,16 +233,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       });
                     }
                   } else {
-                    setState(() {
-                      failure = true;
-                    });
+                    // setState(() {
+                    failure = true;
+                    // });
                   }
                 } else if (state is FetchTextFromImageFailure) {
                   scanFailure.value = 'Failure';
 
-                  setState(() {
-                    failure = true;
-                  });
+                  // setState(() {
+                  failure = true;
+                  // });
                   widget.pointPossible == '2'
                       ? Globals.pointsEarnedList = [0, 1, 2]
                       : widget.pointPossible == '3'
@@ -550,9 +555,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange = true;
                 },
                 validator: (String? value) {
-                  isStudentNameFilled.value= value!;//nameController.text;
-                 
-                  return isStudentNameFilled.value.isEmpty|| isStudentNameFilled.value.length<3?'': null;
+                  isStudentNameFilled.value = value!; //nameController.text;
+
+                  return isStudentNameFilled.value.isEmpty ||
+                          isStudentNameFilled.value.length < 3
+                      ? ''
+                      : null;
                 }),
 
             ValueListenableBuilder(
@@ -601,7 +609,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 // errormsg:
                 //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
                 onSaved: (String value) {
-                  isStudentIdFilled.value=value;
+                  isStudentIdFilled.value = value;
                   _formKey1.currentState!.validate();
                   // updateDetails(isUpdateData: true);
                   studentId = idController.text;
@@ -613,9 +621,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange = true;
                 },
                 validator: (String? value) {
-                  isStudentIdFilled.value= value!;
-                  return (!isStudentIdFilled.value.startsWith('2') && !isStudentIdFilled.value.startsWith('1')) ||isStudentIdFilled.value.length<9?'':null;
-                  
+                  isStudentIdFilled.value = value!;
+                  return (!isStudentIdFilled.value.startsWith('2') &&
+                              !isStudentIdFilled.value.startsWith('1')) ||
+                          isStudentIdFilled.value.length < 9
+                      ? ''
+                      : null;
                 },
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
@@ -701,7 +712,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 isFailure: false,
                 // errormsg: "Make sure to save the record with student name",
                 onSaved: (String value) {
-                    isStudentNameFilled.value = value;
+                  isStudentNameFilled.value = value;
                   _formKey2.currentState!.validate();
                   value != '' ? valuechange = true : valuechange = false;
 
@@ -709,8 +720,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange = true;
                 },
                 validator: (String? value) {
-                  isStudentNameFilled.value=value!;
-                return null;
+                  isStudentNameFilled.value = value!;
+                  return null;
                   // if (value!.isEmpty) {
                   //   return 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name';
                   // } else if (value.length < 3) {
@@ -719,7 +730,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   //   return null;
                   // }
                 }),
-                 ValueListenableBuilder(
+            ValueListenableBuilder(
                 valueListenable: isStudentNameFilled,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
@@ -762,13 +773,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
               //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
               isFailure: false,
               onSaved: (String value) {
-                isStudentIdFilled.value=value;
+                isStudentIdFilled.value = value;
                 _formKey2.currentState!.validate();
                 //  updateDetails(isUpdateData: true);
                 onChange = true;
               },
               validator: (String? value) {
-                isStudentIdFilled.value=value!;
+                isStudentIdFilled.value = value!;
                 return null;
                 // if (value!.isEmpty) {
                 //   return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
@@ -785,7 +796,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 FilteringTextInputFormatter.allow(
                     RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
               ],
-            ), ValueListenableBuilder(
+            ),
+            ValueListenableBuilder(
                 valueListenable: isStudentIdFilled,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
@@ -922,6 +934,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     isSelected = false;
                     rubricNotDetected.value = false;
                     indexColor.value = index;
+                    // updateDetails(isUpdateData: true);
 
                     // nameController.text = studentName;
                     // idController.text = studentId;
@@ -1194,8 +1207,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentName =
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade = pointScored.value;
-          studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
+          studentAssessmentInfo.studentGrade =
+              indexColor.value.toString(); //pointScored.value;
+          studentAssessmentInfo.pointpossible = Globals.pointpossible;
           studentAssessmentInfo.assessmentImgPath = widget.imgPath;
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           Globals.studentInfo!.add(studentAssessmentInfo);

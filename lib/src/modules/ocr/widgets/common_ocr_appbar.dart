@@ -166,6 +166,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       padding: widget.isSuccessState != false
                           ? EdgeInsets.only(right: 10)
                           : EdgeInsets.zero,
+
+                          
                       child:
                           //widget.actionIcon,
                           IconButton(
