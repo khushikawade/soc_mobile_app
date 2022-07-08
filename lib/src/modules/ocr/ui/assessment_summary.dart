@@ -28,7 +28,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
-  OcrBloc _ocrBloc = OcrBloc();
+//  OcrBloc _ocrBloc = OcrBloc();
 
   @override
   void initState() {
@@ -73,29 +73,49 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   ),
                 ),
                 SpacerWidget(_KVertcalSpace / 3),
-                BlocBuilder(
-                    bloc: _driveBloc,
-                    builder: (BuildContext contxt, GoogleDriveState state) {
-                      if (state is GoogleDriveGetSuccess) {
-                        return state.obj!.length > 0
-                            ? Expanded(child: listView(state.obj!))
-                            : Expanded(
-                                child: NoDataFoundErrorWidget(
-                                    isResultNotFoundMsg: true,
-                                    isNews: false,
-                                    isEvents: false),
-                              );
-                      } else if (state is GoogleDriveLoading) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          child: Center(
-                              child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                          )),
-                        );
+                BlocConsumer(
+                  bloc: _driveBloc,
+                  builder: (BuildContext contxt, GoogleDriveState state) {
+                    if (state is GoogleDriveGetSuccess) {
+                      return state.obj!.length > 0
+                          ? Expanded(child: listView(state.obj!))
+                          : Expanded(
+                              child: NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: true,
+                                  isNews: false,
+                                  isEvents: false),
+                            );
+                    } else if (state is GoogleDriveLoading) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        )),
+                      );
+                    }
+
+                    return Container();
+                  },
+                  listener:
+                      (BuildContext contxt, GoogleDriveState state) async {
+                    if (state is ErrorState) {
+                      if (state.errorMsg == 'Reauthentication is required') {
+                        await Utility.refreshAuthenticationToken(
+                            isNavigator: false,
+                            errorMsg: state.errorMsg!,
+                            context: context,
+                            scaffoldKey: _scaffoldKey);
+
+                        _driveBloc.add(GetHistoryAssessmentFromDrive());
+                      } else {
+                        Navigator.of(context).pop();
+                        Utility.currentScreenSnackBar(
+                            "Something Went Wrong. Please Try Again.");
                       }
-                      return Container();
-                    }),
+                    }
+                  },
+                ),
               ],
             ),
           ),

@@ -626,7 +626,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 BlocListener<GoogleDriveBloc, GoogleDriveState>(
                     bloc: _googleDriveBloc,
                     child: Container(),
-                    listener: (context, state) {
+                    listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
                         Utility.showLoadingDialog(context);
                       }
@@ -636,9 +636,24 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         _navigateToSubjectSection();
                       }
                       if (state is ErrorState) {
-                        Navigator.of(context).pop();
-                        Utility.currentScreenSnackBar(
-                            "Something Went Wrong. Please Try Again.");
+                        if (state.errorMsg == 'Reauthentication is required') {
+                          await Utility.refreshAuthenticationToken(
+                              isNavigator: true,
+                              errorMsg: state.errorMsg!,
+                              context: context,
+                              scaffoldKey: scaffoldKey);
+
+                          _googleDriveBloc.add(CreateExcelSheetToDrive(
+                              name:
+                                  "${assessmentController.text}_${classController.text}"));
+                        } else {
+                          Navigator.of(context).pop();
+                          Utility.currentScreenSnackBar(
+                              "Something Went Wrong. Please Try Again.");
+                        }
+                        // Navigator.of(context).pop();
+                        // Utility.currentScreenSnackBar(
+                        //     "Something Went Wrong. Please Try Again.");
                       }
                     }),
                 textwidget(

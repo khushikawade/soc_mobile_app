@@ -238,7 +238,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               BlocListener<GoogleDriveBloc, GoogleDriveState>(
                                   bloc: _driveBloc2,
                                   child: Container(),
-                                  listener: (context, state) {
+                                  listener: (context, state) async {
                                     if (state is GoogleDriveLoading) {
                                       Utility.showLoadingDialog(context);
                                     }
@@ -246,9 +246,31 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       Navigator.of(context).pop();
                                     }
                                     if (state is ErrorState) {
-                                      Navigator.of(context).pop();
-                                      Utility.currentScreenSnackBar(
-                                          "Something Went Wrong. Please Try Again.");
+                                      if (state.errorMsg ==
+                                          'Reauthentication is required') {
+                                        await Utility
+                                            .refreshAuthenticationToken(
+                                                isNavigator: true,
+                                                errorMsg: state.errorMsg!,
+                                                context: context,
+                                                scaffoldKey: scaffoldKey);
+
+                                        _driveBloc2.add(UpdateDocOnDrive(
+                                           assessmentName: Globals.assessmentName!,
+                    fileId: Globals.googleExcelSheetId,
+                                            isLoading: true,
+                                            studentData:
+                                                //list2
+                                                Globals.studentInfo!));
+                                      } else {
+                                        Navigator.of(context).pop();
+                                        Utility.currentScreenSnackBar(
+                                            "Something Went Wrong. Please Try Again.");
+                                      }
+
+                                      // Navigator.of(context).pop();
+                                      // Utility.currentScreenSnackBar(
+                                      //     "Something Went Wrong. Please Try Again.");
                                     }
                                   }),
                             ],
@@ -361,8 +383,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               // }
                               return Container();
                             },
-                            listener:
-                                (BuildContext contxt, GoogleDriveState state) {
+                            listener: (BuildContext contxt,
+                                GoogleDriveState state) async {
                               if (state is AssessmentDetailSuccess) {
                                 if (state.obj.length > 0) {
                                   // if (state.obj.first.isSavedOnDashBoard ==
@@ -376,6 +398,22 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   historyRecordList = state.obj;
 
                                   assessmentCount.value = state.obj.length;
+                                }
+                              } else if (state is ErrorState) {
+                                if (state.errorMsg ==
+                                    'Reauthentication is required') {
+                                  await Utility.refreshAuthenticationToken(
+                                      isNavigator: false,
+                                      errorMsg: state.errorMsg!,
+                                      context: context,
+                                      scaffoldKey: scaffoldKey);
+
+                                  _driveBloc.add(GetAssessmentDetail(
+                                      fileId: widget.fileId));
+                                } else {
+                                  Navigator.of(context).pop();
+                                  Utility.currentScreenSnackBar(
+                                      "Something Went Wrong. Please Try Again.");
                                 }
                               }
                             },
@@ -708,7 +746,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 ?
                                 //Calling builder in case of result summary (Not detail page)
 
-                                BlocBuilder(
+                                BlocConsumer(
                                     bloc: _driveBloc,
                                     builder: (context, state) {
                                       if (state is ShareLinkRecived) {
@@ -751,7 +789,28 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                 .colorScheme
                                                 .primaryVariant,
                                           )));
-                                    })
+                                    },
+                                    listener: (context, state) async {
+                                      if (state is ErrorState) {
+                                        if (state.errorMsg ==
+                                            'Reauthentication is required') {
+                                          await Utility
+                                              .refreshAuthenticationToken(
+                                                  isNavigator: false,
+                                                  errorMsg: state.errorMsg!,
+                                                  context: context,
+                                                  scaffoldKey: scaffoldKey);
+
+                                          _driveBloc.add(GetShareLink(
+                                              fileId: widget.fileId));
+                                        } else {
+                                          Navigator.of(context).pop();
+                                          Utility.currentScreenSnackBar(
+                                              "Something Went Wrong. Please Try Again.");
+                                        }
+                                      }
+                                    },
+                                  )
                                 : Icon(
                                     IconData(
                                         (widget.assessmentDetailPage!

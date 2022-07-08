@@ -788,7 +788,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             valueListenable: isSkipButton,
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
-              return isSkipButton.value
+              return isSkipButton.value && pageIndex.value != 0
                   ? OfflineBuilder(
                       connectivityBuilder: (BuildContext context,
                           ConnectivityResult connectivity, Widget child) {
@@ -806,7 +806,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 BlocListener<GoogleDriveBloc, GoogleDriveState>(
                                     bloc: _googleDriveBloc,
                                     child: Container(),
-                                    listener: (context, state) {
+                                    listener: (context, state) async {
                                       if (state is GoogleDriveLoading) {
                                         Utility.showLoadingDialog(context);
                                       }
@@ -831,9 +831,31 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                     'Excel Id not found'));
                                       }
                                       if (state is ErrorState) {
-                                        Navigator.of(context).pop();
-                                        Utility.currentScreenSnackBar(
-                                            "Technical issue try again after some time");
+                                        if (state.errorMsg ==
+                                            'Reauthentication is required') {
+                                          await Utility
+                                              .refreshAuthenticationToken(
+                                                  isNavigator: true,
+                                                  errorMsg: state.errorMsg!,
+                                                  context: context,
+                                                  scaffoldKey: _scaffoldKey);
+
+                                          _googleDriveBloc.add(
+                                            UpdateDocOnDrive(
+                                                assessmentName:
+                                                    Globals.assessmentName,
+                                                fileId:
+                                                    Globals.googleExcelSheetId,
+                                                isLoading: true,
+                                                studentData:
+                                                    //list2
+                                                    Globals.studentInfo!),
+                                          );
+                                        } else {
+                                          Navigator.of(context).pop();
+                                          Utility.currentScreenSnackBar(
+                                              "Something Went Wrong. Please Try Again.");
+                                        }
                                       }
                                     }),
                                 BlocListener<OcrBloc, OcrState>(
@@ -903,7 +925,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           GoogleDriveState>(
                                       bloc: _googleDriveBloc,
                                       child: Container(),
-                                      listener: (context, state) {
+                                      listener: (context, state) async {
                                         if (state is GoogleDriveLoading) {
                                           Utility.showLoadingDialog(context);
                                         }
@@ -928,9 +950,31 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                       'Excel Id not found'));
                                         }
                                         if (state is ErrorState) {
-                                          Navigator.of(context).pop();
-                                          Utility.currentScreenSnackBar(
-                                              "Technical issue try again after some time");
+                                          if (state.errorMsg ==
+                                              'Reauthentication is required') {
+                                            await Utility
+                                                .refreshAuthenticationToken(
+                                                    isNavigator: true,
+                                                    errorMsg: state.errorMsg!,
+                                                    context: context,
+                                                    scaffoldKey: _scaffoldKey);
+
+                                            _googleDriveBloc.add(
+                                              UpdateDocOnDrive(
+                                                  assessmentName:
+                                                      Globals.assessmentName,
+                                                  fileId: Globals
+                                                      .googleExcelSheetId,
+                                                  isLoading: true,
+                                                  studentData:
+                                                      //list2
+                                                      Globals.studentInfo!),
+                                            );
+                                          } else {
+                                            Navigator.of(context).pop();
+                                            Utility.currentScreenSnackBar(
+                                                "Something Went Wrong. Please Try Again.");
+                                          }
                                         }
                                       }),
                                   BlocListener<OcrBloc, OcrState>(

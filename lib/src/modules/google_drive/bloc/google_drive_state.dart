@@ -97,7 +97,8 @@ class GoogleSuccess extends GoogleDriveState {
 
 class ErrorState extends GoogleDriveState {
   final String? errorMsg;
-  ErrorState({this.errorMsg});
+  final isAssessmentSection;
+  ErrorState({this.errorMsg, this.isAssessmentSection});
   @override
   List<Object> get props => [];
 }

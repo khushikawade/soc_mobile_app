@@ -153,7 +153,7 @@ class _CameraScreenState extends State<CameraScreen>
                 : BlocListener<GoogleDriveBloc, GoogleDriveState>(
                     bloc: _driveBloc,
                     child: Container(),
-                    listener: (context, state) {
+                    listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
                         Utility.showLoadingDialog(context);
                       }
@@ -202,9 +202,23 @@ class _CameraScreenState extends State<CameraScreen>
                         }
                       }
                       if (state is ErrorState) {
-                        Navigator.of(context).pop();
-                        Utility.currentScreenSnackBar(
-                            "Something Went Wrong. Please Try Again.");
+                        if (state.errorMsg == 'Reauthentication is required') {
+                          await Utility.refreshAuthenticationToken(
+                              isNavigator: true,
+                              errorMsg: state.errorMsg!,
+                              context: context,
+                              scaffoldKey: _scaffoldKey);
+
+                          _driveBloc.add(UpdateDocOnDrive(
+                               assessmentName: Globals.historyAssessmentName,
+                                fileId: Globals.historyAssessmentFileId,
+                              isLoading: true,
+                              studentData: Globals.studentInfo!));
+                        } else {
+                          Navigator.of(context).pop();
+                          Utility.currentScreenSnackBar(
+                              "Something Went Wrong. Please Try Again.");
+                        }
                       }
                     }),
             widget.onlyForPicture

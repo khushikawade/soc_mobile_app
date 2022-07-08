@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -255,9 +256,24 @@ class _OpticalCharacterRecognitionPageState
                 }
               }
               if (state is ErrorState) {
-                Navigator.of(context).pop();
-                Utility.currentScreenSnackBar(state.errorMsg!);
-                await _launchURL('Google Authentication');
+                if (state.errorMsg == 'Reauthentication is required') {
+                  await Utility.refreshAuthenticationToken(
+                      isNavigator: true,
+                      errorMsg: state.errorMsg!,
+                      context: context,
+                      scaffoldKey: _scaffoldKey);
+
+                  _triggerDriveFolderEvent(state.isAssessmentSection);
+                } else {
+                  Navigator.of(context).pop();
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.");
+                }
+                // Utility.refreshAuthenticationToken(
+                //     state.errorMsg!, context, _scaffoldKey);
+
+                //  await _launchURL('Google Authentication');
+
               }
             }),
         GestureDetector(
@@ -290,13 +306,16 @@ class _OpticalCharacterRecognitionPageState
       ),
       width: MediaQuery.of(context).size.width * 0.9,
       child: Row(
-        mainAxisAlignment: Globals.deviceType=='phone'? MainAxisAlignment.spaceBetween:MainAxisAlignment.start,
+        mainAxisAlignment: Globals.deviceType == 'phone'
+            ? MainAxisAlignment.spaceBetween
+            : MainAxisAlignment.start,
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: Globals.pointsList
-            .map<Widget>(
-                (element) => Container(
-                  padding:Globals.deviceType=='tablet'? EdgeInsets.only(right: 20):null,
-                  child: pointsButton(Globals.pointsList.indexOf(element))))
+            .map<Widget>((element) => Container(
+                padding: Globals.deviceType == 'tablet'
+                    ? EdgeInsets.only(right: 20)
+                    : null,
+                child: pointsButton(Globals.pointsList.indexOf(element))))
             .toList(),
       ),
     );
@@ -532,6 +551,7 @@ class _OpticalCharacterRecognitionPageState
   void _triggerDriveFolderEvent(bool isTriggerdbyAssessmentSection) async {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
+
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         assessmentSection: isTriggerdbyAssessmentSection ? true : null,
         isFromOcrHome: true,
@@ -596,48 +616,5 @@ class _OpticalCharacterRecognitionPageState
       context,
       MaterialPageRoute(builder: (context) => AssessmentSummary()),
     );
-  }
-
-  _launchURL(String? title) async {
-    var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
-        ? Color(0xff000000)
-        : Color(0xffFFFFFF);
-
-    var value = await pushNewScreen(
-      context,
-      screen: GoogleAuthWebview(
-        title: title!,
-        url: Globals.appSetting.authenticationURL ??
-            '' + //Overrides.secureLoginURL +
-                '?' +
-                Globals.appSetting.appLogoC +
-                '?' +
-                themeColor.toString().split('0xff')[1].split(')')[0],
-        isbuttomsheet: true,
-        language: Globals.selectedLanguage,
-        hideAppbar: false,
-        hideShare: true,
-        zoomEnabled: false,
-      ),
-      withNavBar: false,
-    );
-
-    if (value.toString().contains('authenticationfailure')) {
-      Navigator.pop(context, false);
-      Utility.showSnackBar(
-          _scaffoldKey,
-          'You are not authorized to access the feature. Please use the authorized account.',
-          context,
-          50.0);
-    } else if (value.toString().contains('success')) {
-      value = value.split('?')[1] ?? '';
-      //Save user profile
-      await Utility.saveUserProfile(value);
-      // List<UserInformation> _userprofilelocalData =
-      //     await UserGoogleProfile.getUserProfile();
-      // verifyUserAndGetDriveFolder(_userprofilelocalData);
-      // Push to the grading system
-      //  Navigator.pop(context);
-    }
   }
 }

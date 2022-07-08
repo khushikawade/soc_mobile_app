@@ -276,7 +276,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
             await _sendEmailToAdmin(
               assessmentId: event.assessmentId!,
-              name: _profileData[0].userName!.replaceAll("%20", " "),
+              name: _profileData[0].userName!.replaceAll("%20", " ").replaceAll("20", ""),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
               email: _profileData[0].userEmail!,
