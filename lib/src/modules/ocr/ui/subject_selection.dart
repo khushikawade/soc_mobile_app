@@ -614,6 +614,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   subject != 'ELA' &&
                                   subject != null)) {
                                 isSubmitButton.value = true;
+                              }else{
+                                isSubmitButton.value = false;
                               }
 
                               if (index < list.length &&

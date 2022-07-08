@@ -21,10 +21,8 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
-import '../../../widgets/google_auth_webview.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
 import 'create_assessment.dart';
@@ -577,31 +575,32 @@ class _OpticalCharacterRecognitionPageState
 
     _bloc.add(SaveSubjectListDetails());
     print(Globals.scoringRubric);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CameraScreen(
-                isFromHistoryAssessmentScanMore: false,
-                onlyForPicture: false,
-                scaffoldKey: _scaffoldKey,
-                isScanMore: false,
-                pointPossible: rubricScoreSelectedColor.value == 0
-                    ? '2'
-                    : rubricScoreSelectedColor.value == 2
-                        ? '3'
-                        : rubricScoreSelectedColor.value == 4
-                            ? '4'
-                            : '4', //In case of 'None' or 'Custom rubric' selection
-              )),
-    );
-    //  LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-    // List<String> classSuggestions =
-    //                         await _localDb.getData();
     // Navigator.push(
     //   context,
     //   MaterialPageRoute(
-    //       builder: (context) => CreateAssessment(classSuggestions: classSuggestions,customGrades:Globals.classList,))
+    //       builder: (context) => CameraScreen(
+    //             isFromHistoryAssessmentScanMore: false,
+    //             onlyForPicture: false,
+    //             scaffoldKey: _scaffoldKey,
+    //             isScanMore: false,
+    //             pointPossible: rubricScoreSelectedColor.value == 0
+    //                 ? '2'
+    //                 : rubricScoreSelectedColor.value == 2
+    //                     ? '3'
+    //                     : rubricScoreSelectedColor.value == 4
+    //                         ? '4'
+    //                         : '4', //In case of 'None' or 'Custom rubric' selection
+    //           )),
     // );
+    LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    List<String> classSuggestions = await _localDb.getData();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CreateAssessment(
+                  classSuggestions: classSuggestions,
+                  customGrades: Globals.classList,
+                )));
 
     // Navigator.push(
     //   context,
