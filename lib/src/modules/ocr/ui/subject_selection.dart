@@ -753,33 +753,35 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   customRubricBottomSheet() {
     showModalBottomSheet(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
-        backgroundColor: Colors.transparent,
-        elevation: 10,
-        context: context,
-        builder: (context) => BottomSheetWidget(
-              title: 'Add Subject',
-              isImageField: false,
-              textFieldTitleOne: 'Subject Name',
-              isSubjectScreen: true,
-              sheetHeight:
-                  MediaQuery.of(context).orientation == Orientation.landscape
-                      ? MediaQuery.of(context).size.height * 0.82
-                      : MediaQuery.of(context).size.height * 0.40,
-              valueChanged: (controller) async {
-                await updateList(
-                    subjectName: controller.text,
-                    classNo: widget.selectedClass!);
-                _ocrBloc.add(FatchSubjectDetails(
-                    type: 'subject', keyword: widget.selectedClass));
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      elevation: 10,
+      context: context,
+      builder: (context) => BottomSheetWidget(
+        title: 'Add Subject',
+        isImageField: false,
+        textFieldTitleOne: 'Subject Name',
+        isSubjectScreen: true,
+        sheetHeight: MediaQuery.of(context).orientation == Orientation.landscape
+            ? MediaQuery.of(context).size.height * 0.82
+            : MediaQuery.of(context).size.height * 0.45,
+        valueChanged: (controller) async {
+          await updateList(
+              subjectName: controller.text, classNo: widget.selectedClass!);
+          _ocrBloc.add(FatchSubjectDetails(
+              type: 'subject', keyword: widget.selectedClass));
 
-                controller.clear();
-                Navigator.pop(context, false);
-              },
-            ));
+          controller.clear();
+          Navigator.pop(context, false);
+        },
+      ),
+      // SizedBox(
+      //   height: 30,
+      // )
+    );
   }
 
   Widget submitAssessmentButton() {
@@ -1079,89 +1081,92 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     }
   }
 
-  showBottomSheet() {
-    showMaterialModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      animationCurve: Curves.easeOutQuart,
-      elevation: 10,
-      context: context,
-      builder: (context) => SingleChildScrollView(
-        controller: ModalScrollController.of(context),
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.7,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 60,
-                decoration: BoxDecoration(
-                    color: AppTheme.kButtonColor,
-                    border: Border.symmetric(horizontal: BorderSide.none),
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(15),
-                        topLeft: Radius.circular(15))),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Utility.textWidget(
-                    context: context,
-                    text: 'Add Subject',
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline1!
-                        .copyWith(color: Colors.black)),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: TextFieldWidget(
-                    msg: "Subject Is Already Exist",
-                    controller: addController,
-                    onSaved: (String value) {}),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: FloatingActionButton.extended(
-                    backgroundColor: AppTheme.kButtonColor
-                        .withOpacity(nycSubIndex1.value == null ? 0.5 : 1.0),
-                    onPressed: () async {
-                      await updateList(
-                          subjectName: addController.text,
-                          classNo: widget.selectedClass!);
-                      _ocrBloc.add(FatchSubjectDetails(
-                          type: 'subject', keyword: widget.selectedClass));
+  // showBottomSheet() {
+  //   showMaterialModalBottomSheet(
+  //     backgroundColor: Colors.transparent,
+  //     animationCurve: Curves.easeOutQuart,
+  //     elevation: 10,
+  //     context: context,
+  //     builder: (context) => SingleChildScrollView(
+  //       controller: ModalScrollController.of(context),
+  //       child: Container(
+  //         height: MediaQuery.of(context).size.height * 0.7,
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           borderRadius: BorderRadius.circular(15),
+  //         ),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: [
+  //             Container(
+  //               height: 60,
+  //               decoration: BoxDecoration(
+  //                   color: AppTheme.kButtonColor,
+  //                   border: Border.symmetric(horizontal: BorderSide.none),
+  //                   borderRadius: BorderRadius.only(
+  //                       topRight: Radius.circular(15),
+  //                       topLeft: Radius.circular(15))),
+  //             ),
+  //             SizedBox(
+  //               height: 30,
+  //             ),
+  //             Container(
+  //               padding: EdgeInsets.symmetric(horizontal: 20),
+  //               child: Utility.textWidget(
+  //                   context: context,
+  //                   text: 'Add Subject',
+  //                   textTheme: Theme.of(context)
+  //                       .textTheme
+  //                       .headline1!
+  //                       .copyWith(color: Colors.black)),
+  //             ),
+  //             Container(
+  //               padding: EdgeInsets.symmetric(horizontal: 20),
+  //               child: TextFieldWidget(
+  //                   msg: "Subject Is Already Exist",
+  //                   controller: addController,
+  //                   onSaved: (String value) {}),
+  //             ),
+  //             SizedBox(
+  //               height: 80,
+  //             ),
+  //             Container(
+  //               //padding: EdgeInsets.symmetric(horizontal: 20,),
+  //               child: FloatingActionButton.extended(
+  //                   backgroundColor: AppTheme.kButtonColor
+  //                       .withOpacity(nycSubIndex1.value == null ? 0.5 : 1.0),
+  //                   onPressed: () async {
+  //                     await updateList(
+  //                         subjectName: addController.text,
+  //                         classNo: widget.selectedClass!);
+  //                     _ocrBloc.add(FatchSubjectDetails(
+  //                         type: 'subject', keyword: widget.selectedClass));
 
-                      // await fatchList(classNo: widget.selectedClass!);
-                      Navigator.pop(context, false);
-                    },
-                    label: Row(
-                      children: [
-                        Utility.textWidget(
-                            text: 'Submit',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline2!
-                                .copyWith(
-                                    color: Theme.of(context).backgroundColor)),
-                      ],
-                    )),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  //                     // await fatchList(classNo: widget.selectedClass!);
+  //                     Navigator.pop(context, false);
+  //                   },
+  //                   label: Row(
+  //                     children: [
+  //                       Utility.textWidget(
+  //                           text: 'Submit',
+  //                           context: context,
+  //                           textTheme: Theme.of(context)
+  //                               .textTheme
+  //                               .headline2!
+  //                               .copyWith(
+  //                                   color: Theme.of(context).backgroundColor)),
+  //                     ],
+  //                   )),
+  //             ),
+  //             SizedBox(
+  //               height: 80,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _uploadSheetOnDriveAndnavigate(
       {required bool isSkip, required bool connected}) async {
