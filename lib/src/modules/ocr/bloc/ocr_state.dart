@@ -10,6 +10,8 @@ class OcrInitial extends OcrState {}
 
 class OcrLoading extends OcrState {}
 
+class OcrLoading2 extends OcrState {}
+
 class SearchLoading extends OcrState {}
 
 class FetchTextFromImageSuccess extends OcrState {
@@ -117,7 +119,6 @@ class NycSubDataSuccess extends OcrState {
   List<Object> get props => [];
 }
 
-
 class RecentListSuccess extends OcrState {
   final List<SubjectDetailList>? obj;
   RecentListSuccess({
@@ -155,7 +156,6 @@ class FetchTextFromImageFailure extends OcrState {
   List<Object> get props => [];
 }
 
-
 class AssessmentSavedSuccessfully extends OcrState {
   final obj;
   AssessmentSavedSuccessfully({this.obj});
@@ -172,6 +172,33 @@ class SuccessStudentDetails extends OcrState {
   SuccessStudentDetails({required this.studentName});
   SuccessStudentDetails copyWith({final obj}) {
     return SuccessStudentDetails(studentName: obj ?? this.studentName);
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class AssessmentIdSuccess extends OcrState {
+  String? obj;
+  AssessmentIdSuccess({this.obj});
+  AssessmentIdSuccess copyWith({final obj}) {
+    return AssessmentIdSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [obj!];
+}
+
+class AssessmentDashboardStatus extends OcrState {
+  int? resultRecordCount;
+  String? assessmentId;
+  AssessmentDashboardStatus({ this.resultRecordCount,required this.assessmentId});
+  AssessmentDashboardStatus copyWith(
+      {final obj, final recordCount, final assessmentId}) {
+    return AssessmentDashboardStatus(
+       
+        resultRecordCount: recordCount ?? this.resultRecordCount,
+        assessmentId: assessmentId ?? this.assessmentId);
   }
 
   @override

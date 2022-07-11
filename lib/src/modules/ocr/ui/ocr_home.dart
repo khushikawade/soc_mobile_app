@@ -1,12 +1,13 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -18,8 +19,10 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import '../../../services/local_database/local_db.dart';
+import '../../../widgets/common_pdf_viewer_page.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
 import 'create_assessment.dart';
@@ -52,6 +55,8 @@ class _OpticalCharacterRecognitionPageState
 
   @override
   void initState() {
+    Globals.questionImgUrl = '';
+    Globals.questionImgFilePath = null;
     Utility.setLocked();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();
@@ -107,15 +112,26 @@ class _OpticalCharacterRecognitionPageState
                         await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (BuildContext context) => OcrPdfViewer(
+                                builder: (BuildContext context) =>
+                                    CommonPdfViewerPage(
+                                      isOCRFeature: true,
+                                      isHomePage: false,
                                       url: Overrides.rubric_Score_PDF_URL,
-                                      tittle: "information",
-                                      isbuttomsheet: true,
+                                      tittle: '',
+                                      isbuttomsheet: false,
                                       language: Globals.selectedLanguage,
-                                    )));
+                                    )
+                                // OcrPdfViewer(
+                                //       url: Overrides.rubric_Score_PDF_URL,
+                                //       tittle: "information",
+                                //       isbuttomsheet: true,
+                                //       language: Globals.selectedLanguage,
+                                //     )
+                                ));
                       },
                       icon: Icon(
                         info,
+                        size: Globals.deviceType == 'tablet' ? 35 : null,
                         color: Color(0xff000000) !=
                                 Theme.of(context).backgroundColor
                             ? Color(0xff111C20)
@@ -126,7 +142,9 @@ class _OpticalCharacterRecognitionPageState
                 ),
                 SpacerWidget(_KVertcalSpace / 4),
                 Container(
-                    height: MediaQuery.of(context).size.height * 0.47,
+                    height: Globals.deviceType == 'tablet'
+                        ? MediaQuery.of(context).size.height * 0.6
+                        : MediaQuery.of(context).size.height * 0.47,
                     child: scoringRubric()),
                 // Container(
                 //   child: BlocListener<HomeBloc, HomeState>(
@@ -166,35 +184,16 @@ class _OpticalCharacterRecognitionPageState
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (!connected) {
-                      Utility.noInternetSnackBar();
+                      Utility.currentScreenSnackBar("No Internet Connection");
                     } else {
+                      //Utility.showLoadingDialog(context);
                       Globals.studentInfo!.clear();
                       if (Globals.googleDriveFolderId!.isEmpty) {
-                        List<UserInformation> _profileData =
-                            await UserGoogleProfile.getUserProfile();
-                        _googleDriveBloc.add(GetDriveFolderIdEvent(
-                            //  filePath: file,
-                            token: _profileData[0].authorizationToken,
-                            folderName: "SOLVED GRADED+",
-                            refreshtoken: _profileData[0].refreshToken));
+                        _triggerDriveFolderEvent(false);
+                      } else {
+                        _beforenavigateOnCameraSection();
                       }
 
-                      print(
-                          "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
-
-                      Globals.pointpossible =
-                          rubricScoreSelectedColor.value == 0
-                              ? '2'
-                              : rubricScoreSelectedColor.value == 2
-                                  ? '3'
-                                  : rubricScoreSelectedColor.value == 4
-                                      ? '4'
-                                      : '2';
-                      Globals.googleExcelSheetId = "";
-                      updateLocalDb();
-
-                      _bloc.add(SaveSubjectListDetails());
-                      // print(Globals.scoringRubric);
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
@@ -213,10 +212,11 @@ class _OpticalCharacterRecognitionPageState
                       //           )),
                       // );
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => CreateAssessment()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => CreateAssessment()),
+                      // );
                       //  getGallaryImage(); // COMMENT
                     }
                   },
@@ -237,13 +237,50 @@ class _OpticalCharacterRecognitionPageState
             child: Container(),
           );
         }),
+        BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: _googleDriveBloc,
+            child: Container(),
+            listener: (context, state) async {
+              if (state is GoogleDriveLoading) {
+                Utility.showLoadingDialog(context);
+              }
+              if (state is GoogleSuccess) {
+                if (state.assessmentSection == true) {
+                  Navigator.of(context).pop();
+                  _beforenavigateOnAssessmentSection();
+                } else {
+                  Navigator.of(context).pop();
+                  _beforenavigateOnCameraSection();
+                }
+              }
+              if (state is ErrorState) {
+                if (state.errorMsg == 'Reauthentication is required') {
+                  await Utility.refreshAuthenticationToken(
+                      isNavigator: true,
+                      errorMsg: state.errorMsg!,
+                      context: context,
+                      scaffoldKey: _scaffoldKey);
+
+                  _triggerDriveFolderEvent(state.isAssessmentSection);
+                } else {
+                  Navigator.of(context).pop();
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.");
+                }
+                // Utility.refreshAuthenticationToken(
+                //     state.errorMsg!, context, _scaffoldKey);
+
+                //  await _launchURL('Google Authentication');
+
+              }
+            }),
         GestureDetector(
-          onTap: () {
-            updateLocalDb();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AssessmentSummary()),
-            );
+          onTap: () async {
+            if (Globals.googleDriveFolderId!.isEmpty) {
+              _triggerDriveFolderEvent(true);
+            } else {
+              _beforenavigateOnAssessmentSection();
+            }
           },
           child: Container(
               padding: EdgeInsets.only(top: 10),
@@ -267,11 +304,16 @@ class _OpticalCharacterRecognitionPageState
       ),
       width: MediaQuery.of(context).size.width * 0.9,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: Globals.deviceType == 'phone'
+            ? MainAxisAlignment.spaceBetween
+            : MainAxisAlignment.start,
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: Globals.pointsList
-            .map<Widget>(
-                (element) => pointsButton(Globals.pointsList.indexOf(element)))
+            .map<Widget>((element) => Container(
+                padding: Globals.deviceType == 'tablet'
+                    ? EdgeInsets.only(right: 20)
+                    : null,
+                child: pointsButton(Globals.pointsList.indexOf(element))))
             .toList(),
       ),
     );
@@ -367,7 +409,8 @@ class _OpticalCharacterRecognitionPageState
                                       Orientation.portrait
                                   ? MediaQuery.of(context).size.width * 0.5
                                   : MediaQuery.of(context).size.height * 0.5,
-                          childAspectRatio: 6 / 3.5,
+                          childAspectRatio:
+                              Globals.deviceType == 'phone' ? 6 / 3.5 : 5 / 2,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 20),
                       itemCount: RubricScoreList.scoringList.length,
@@ -501,5 +544,76 @@ class _OpticalCharacterRecognitionPageState
     RubricScoreList.scoringList.forEach((CustomRubicModal e) {
       _localDb.addData(e);
     });
+  }
+
+  void _triggerDriveFolderEvent(bool isTriggerdbyAssessmentSection) async {
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+
+    _googleDriveBloc.add(GetDriveFolderIdEvent(
+        assessmentSection: isTriggerdbyAssessmentSection ? true : null,
+        isFromOcrHome: true,
+        //  filePath: file,
+        token: _profileData[0].authorizationToken,
+        folderName: "SOLVED GRADED+",
+        refreshtoken: _profileData[0].refreshToken));
+  }
+
+  void _beforenavigateOnCameraSection() async {
+    // print(
+    //     "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
+
+    Globals.pointpossible = rubricScoreSelectedColor.value == 0
+        ? '2'
+        : rubricScoreSelectedColor.value == 2
+            ? '3'
+            : rubricScoreSelectedColor.value == 4
+                ? '4'
+                : '2';
+    Globals.googleExcelSheetId = "";
+    updateLocalDb();
+
+    _bloc.add(SaveSubjectListDetails());
+    print(Globals.scoringRubric);
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => CameraScreen(
+    //             isFromHistoryAssessmentScanMore: false,
+    //             onlyForPicture: false,
+    //             scaffoldKey: _scaffoldKey,
+    //             isScanMore: false,
+    //             pointPossible: rubricScoreSelectedColor.value == 0
+    //                 ? '2'
+    //                 : rubricScoreSelectedColor.value == 2
+    //                     ? '3'
+    //                     : rubricScoreSelectedColor.value == 4
+    //                         ? '4'
+    //                         : '4', //In case of 'None' or 'Custom rubric' selection
+    //           )),
+    // );
+    LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    List<String> classSuggestions = await _localDb.getData();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CreateAssessment(
+                  classSuggestions: classSuggestions,
+                  customGrades: Globals.classList,
+                )));
+
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => SuccessScreen(img64: '', imgPath: File(''))
+    // );
+  }
+
+  void _beforenavigateOnAssessmentSection() {
+    updateLocalDb();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AssessmentSummary()),
+    );
   }
 }

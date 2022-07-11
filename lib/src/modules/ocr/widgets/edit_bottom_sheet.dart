@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
-import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -13,37 +11,46 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../../widgets/textfield_widget.dart';
 
-class BottomSheetWidget extends StatefulWidget {
-  BottomSheetWidget(
+// ignore: must_be_immutable
+class EditBottomSheet extends StatefulWidget {
+  EditBottomSheet(
       {Key? key,
-      this.update,
       required this.title,
       required this.isImageField,
       required this.textFieldTitleOne,
       this.textFieldTitleTwo,
+      this.textFileTitleThree,
       this.sheetHeight,
       required this.isSubjectScreen,
       this.onTap,
-      this.valueChanged})
+      this.valueChanged,
+      required this.textFieldControllerOne,
+      required this.textFieldControllerTwo,
+      required this.textFieldControllerthree,
+      required this.update})
       : super(key: key);
 
-  final ValueChanged<bool>? update;
   final bool? isImageField;
   final String? title;
   final String? textFieldTitleOne;
   final String? textFieldTitleTwo;
+  final String? textFileTitleThree;
   final double? sheetHeight;
   final bool? isSubjectScreen;
   final VoidCallback? onTap;
   final ValueChanged? valueChanged;
-
+  final TextEditingController textFieldControllerOne;
+  final TextEditingController textFieldControllerTwo;
+  final TextEditingController textFieldControllerthree;
+  final Function(
+      {required TextEditingController name,
+      required TextEditingController id,
+      required TextEditingController score}) update;
   @override
-  State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
+  State<EditBottomSheet> createState() => _BottomSheetWidgetState();
 }
 
-class _BottomSheetWidgetState extends State<BottomSheetWidget> {
-  final textFieldControllerOne = TextEditingController();
-  final textFieldController2 = TextEditingController();
+class _BottomSheetWidgetState extends State<EditBottomSheet> {
   final ImagePicker _picker = ImagePicker();
   File? imageFile;
   // final formKey = new GlobalKey<FormState>();
@@ -53,8 +60,9 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: MediaQuery.of(context).viewInsets / 1.5,
+      padding: MediaQuery.of(context).viewInsets / 1.1,
       controller: ModalScrollController.of(context),
+      physics: NeverScrollableScrollPhysics(),
       child: Container(
         height: widget.sheetHeight != null
             ? widget.sheetHeight
@@ -69,6 +77,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             IconButton(
@@ -78,8 +87,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               },
               icon: Icon(
                 Icons.clear,
+                 color: AppTheme.kButtonColor,
                 size: Globals.deviceType == "phone" ? 28 : 36,
-                color: AppTheme.kButtonColor,
               ),
             ),
             Container(
@@ -117,45 +126,23 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               key: _formKey,
               child: Expanded(
                 child: ListView(
+                  //   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   // mainAxisSize: MainAxisSize.min,
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
-                      child: Utility.textWidget(
-                          context: context,
-                          text: widget.textFieldTitleOne!,
-                          textTheme:
-                              Theme.of(context).textTheme.subtitle1!.copyWith(
-                                    color: Color(0xff000000) ==
-                                            Theme.of(context).backgroundColor
-                                        ? Color(0xffFFFFFF)
-                                        : Color(0xff000000),
-                                  )),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
-                      child: TextFieldWidget(
-                          msg: "Field is required",
-                          controller: textFieldControllerOne,
-                          onSaved: (String value) {}),
-                    ),
-                    widget.textFieldTitleTwo != null
+                    widget.textFieldTitleOne != null
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
+                                    horizontal: 20,
+                                  ),
                                   child: Utility.textWidget(
                                       context: context,
-                                      text: widget.textFieldTitleTwo!,
+                                      text: widget.textFieldTitleOne!,
                                       textTheme: Theme.of(context)
                                           .textTheme
                                           .subtitle1!
@@ -168,13 +155,89 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                           )),
                                 ),
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: TextFieldWidget(
-                                      msg: "Field is required",
-                                      controller: textFieldController2,
-                                      onSaved: (String value) {}),
-                                ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                    ),
+                                    child: _textFiled(
+                                        whichContoller: 1,
+                                        msg: "field is required ",
+                                        controller:
+                                            widget.textFieldControllerOne))
                               ])
+                        : Container(),
+                    widget.textFieldTitleTwo != null
+                        ? Container(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: 20, right: 20, top: 25),
+                                    child: Utility.textWidget(
+                                        context: context,
+                                        text: widget.textFieldTitleTwo!,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                              color: Color(0xff000000) ==
+                                                      Theme.of(context)
+                                                          .backgroundColor
+                                                  ? Color(0xffFFFFFF)
+                                                  : Color(0xff000000),
+                                            )),
+                                  ),
+                                  Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 20),
+                                      child: _textFiled(
+                                          whichContoller: 2,
+                                          keyboardType: TextInputType.number,
+                                          maxNineDigit: 9,
+                                          msg: "field is required ",
+                                          controller:
+                                              widget.textFieldControllerTwo)),
+                                ]),
+                          )
+                        : Container(),
+                    widget.textFileTitleThree != null
+                        ? Container(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                      left: 20,
+                                      right: 20,
+                                    ),
+                                    child: Utility.textWidget(
+                                        context: context,
+                                        text: widget.textFileTitleThree!,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                              color: Color(0xff000000) ==
+                                                      Theme.of(context)
+                                                          .backgroundColor
+                                                  ? Color(0xffFFFFFF)
+                                                  : Color(0xff000000),
+                                            )),
+                                  ),
+                                  Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 20),
+                                      child: _textFiled(
+                                          whichContoller: 3,
+                                          keyboardType: TextInputType.number,
+                                          maxNineDigit: 1,
+                                          msg: "field is required ",
+                                          controller:
+                                              widget.textFieldControllerthree)),
+                                ]),
+                          )
                         : Container(),
                     widget.isImageField!
                         ? Column(
@@ -252,17 +315,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                                 ),
                                               ),
                                             ),
-
-                                      //  imageFile != null
-                                      //     ? Image.file(
-                                      //         imageFile!,
-                                      //         fit: BoxFit.fitWidth,
-                                      //       )
-                                      //     : Container(
-                                      //         child: Center(
-                                      //           child: Icon(Icons.add_a_photo),
-                                      //         ),
-                                      //       ),
                                     ),
                                   ),
                                 ),
@@ -276,83 +328,16 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                               AppTheme.kButtonColor.withOpacity(1.0),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              if (widget.isSubjectScreen!) {
-                                widget.valueChanged!(textFieldControllerOne);
-                              } else {
-                                // TODO submit
-
-                                print("calling submit");
-                                if (imageFile != null) {
-                                  String imgExtension = imageFile!.path
-                                      .substring(
-                                          imageFile!.path.lastIndexOf(".") + 1);
-                                  print('Image Extension : $imgExtension');
-                                  List<int> imageBytes =
-                                      imageFile!.readAsBytesSync();
-                                  String imageB64 = base64Encode(imageBytes);
-
-                                  RubricScoreList.scoringList.add(
-                                      CustomRubicModal(
-                                          name: textFieldControllerOne.text,
-                                          score: textFieldController2.text,
-                                          imgBase64: imageB64,
-                                          filePath: imageFile,
-                                          customOrStandardRubic: "Custom"));
-                                  print("calling get img url");
-                                  _googleBloc.add(ImageToAwsBucked(
-                                      imgBase64: RubricScoreList
-                                          .scoringList.last.imgBase64,
-                                      imgExtension: imgExtension));
-                                } else {
-                                  print("save score and name on local db");
-                                  RubricScoreList.scoringList.add(
-                                      CustomRubicModal(
-                                          name: textFieldControllerOne.text,
-                                          score: textFieldController2.text,
-                                          customOrStandardRubic: "Custom"));
-                                }
-
-                                widget.update!(true);
-                                Navigator.pop(
-                                  context,
-                                );
-                              }
+                              widget.update(
+                                  name: widget.textFieldControllerOne,
+                                  id: widget.textFieldControllerTwo,
+                                  score: widget.textFieldControllerthree);
                             }
-
-                            // if (nameController.text.isNotEmpty &&
-                            //     customScoreController.text.isNotEmpty) {
-                            //   List<int> imageBytes;
-                            //   if (imageFile != null) {
-                            //     imageBytes = imageFile!.readAsBytesSync();
-                            //     String imageB64 = base64Encode(imageBytes);
-                            //     print("image64 is recived --------->$imageB64");
-                            //     RubricScoreList.scoringList.add(CustomRubicModal(
-                            //         name: nameController.text,
-                            //         score: customScoreController.text,
-                            //         imgBase64: imageB64,
-                            //         customOrStandardRubic: "Custom"));
-
-                            //     _googleBloc.add(ImageToAwsBucked(
-                            //         imgBase64: RubricScoreList.scoringList.last.imgBase64));
-                            //   } else {
-                            //     RubricScoreList.scoringList.add(CustomRubicModal(
-                            //         name: nameController.text,
-                            //         score: customScoreController.text,
-                            //         customOrStandardRubic: "Custom"));
-                            //   }
-
-                            //   widget.update(true);
-                            //   Navigator.pop(
-                            //     context,
-                            //   );
-                            // } else {
-                            //   print("error");
-                            // }
                           },
                           label: Row(
                             children: [
                               Utility.textWidget(
-                                  text: 'Submit',
+                                  text: 'Update',
                                   context: context,
                                   textTheme: Theme.of(context)
                                       .textTheme
@@ -467,34 +452,16 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
   }
 
   Future<void> _cameraImage(BuildContext context) async {
-    File? photo = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CameraScreen(
-              isFromHistoryAssessmentScanMore: false,
-              onlyForPicture: true,
-              isScanMore: false,
-              pointPossible: '')),
-    );
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
     if (photo != null) {
       setState(() {
         imageFile = File(photo.path);
+
         Navigator.pop(context);
       });
     } else {
       Navigator.pop(context);
     }
-
-    // final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    // if (photo != null) {
-    //   setState(() {
-    //     imageFile = File(photo.path);
-
-    //     Navigator.pop(context);
-    //   });
-    // } else {
-    //   Navigator.pop(context);
-    // }
   }
 
   _imgFromGallery(BuildContext context) async {
@@ -509,5 +476,69 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     } else {
       Navigator.pop(context);
     }
+  }
+
+  Widget _textFiled({
+    required int whichContoller,
+    required String msg,
+    required TextEditingController controller,
+    int? maxNineDigit,
+    TextInputType? keyboardType,
+  }) {
+    return TextFormField(
+      keyboardType: keyboardType ?? null,
+      maxLength: maxNineDigit ?? null,
+
+      validator: (text) {
+        if (text == null || text.isEmpty) {
+          return msg;
+        } else {
+          if (text.length != 9 && whichContoller == 2) {
+            return msg;
+          } else if (text.length != 1 && whichContoller == 3) {
+            return msg;
+          }
+        }
+
+        return null;
+      },
+
+      autofocus: false,
+      textAlign: TextAlign.start,
+      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+      controller: controller,
+      cursorColor: //Theme.of(context).colorScheme.primaryVariant,
+          Color(0xff000000) == Theme.of(context).backgroundColor
+              ? Color(0xffFFFFFF)
+              : Color(
+                  0xff000000), //Theme.of(context).colorScheme.primaryVariant,
+      decoration: InputDecoration(
+        counterStyle: TextStyle(
+            color: Color(0xff000000) == Theme.of(context).backgroundColor
+                ? Color(0xffFFFFFF)
+                : Color(0xff000000)),
+        fillColor: Colors.transparent,
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: AppTheme.kButtonColor,
+          ),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: AppTheme
+                .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
+          ),
+        ),
+        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+        border: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: AppTheme.kButtonColor,
+          ),
+        ),
+      ),
+      onChanged: (vlaue) {},
+    );
   }
 }

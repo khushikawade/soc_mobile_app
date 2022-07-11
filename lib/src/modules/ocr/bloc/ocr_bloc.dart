@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
@@ -60,8 +61,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
     if (event is FetchRecentSearch) {
       try {
-        List<SubjectDetailList> recentDetails =
-            await fetchRecentList(type: event.type,className: event.className,subjectName: event.subjectName);
+        List<SubjectDetailList> recentDetails = await fetchRecentList(
+            type: event.type,
+            className: event.className,
+            subjectName: event.subjectName);
         yield RecentListSuccess(obj: recentDetails);
       } catch (e) {}
     }
@@ -73,11 +76,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         StudentDetails data = await fetchStudentDetails(event.ossId);
         yield SuccessStudentDetails(
             studentName: "${data.firstNameC} ${data.lastNameC}");
-        print(data);
+        print('SuccessStudentDetails : $data');
       } catch (e) {
         print(e);
       }
     }
+
     if (event is SearchSubjectDetails) {
       try {
         List<SubjectDetailList> data = await fatchSubjectDetails(
@@ -87,12 +91,25 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             gradeNo: event.grade,
             subjectSelected: event.subjectSelected);
         List<SubjectDetailList> list = [];
+
         if (event.type == 'subject') {
+          //Subjects from database
           List<SubjectDetailList> subjectList = [];
           subjectList.addAll(data);
+
+          //Custom subjects
           List<SubjectDetailList> list =
               await fatchLocalSubject(event.keyword!);
           subjectList.addAll(list);
+
+          //Sorting the list based on subject name
+          subjectList.forEach((element) {
+            if (element.subjectNameC != null) {
+              subjectList
+                  .sort((a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));
+            }
+          });
+
           bool check = false;
           for (int i = 0; i < subjectList.length; i++) {
             if (subjectList[i]
@@ -114,6 +131,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             obj: list,
           );
         } else if (event.type == 'nyc') {
+          //Sorting the list based on subject name
+          data.forEach((element) {
+            if (element.domainNameC != null) {
+              data.sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));
+            }
+          });
+
           for (int i = 0; i < data.length; i++) {
             if (data[i]
                 .domainNameC!
@@ -156,11 +180,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             studentName: event.studentName, studentId: event.studentId);
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.currentScreenSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -176,11 +202,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.currentScreenSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -222,11 +250,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         bool result = await saveSubjectListDetails();
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.currentScreenSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
       }
     }
@@ -239,24 +269,31 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             await UserGoogleProfile.getUserProfile();
         if (event.previouslyAddedListLength != null &&
             event.previouslyAddedListLength! < Globals.studentInfo!.length) {
-          List<StudentAssessmentInfo> _list = Globals.studentInfo!;
-          _list.removeRange(0, event.previouslyAddedListLength!);
+          // List<StudentAssessmentInfo> _list = Globals.studentInfo!;
+          //Removing the previous scanned records to save only latest scanned sheets to the dashboard
+          // _list.removeRange(0, event.previouslyAddedListLength!+1); //+1 - To remove title as well
 
-          if (Globals.lastDeshboardId != '') {
+          if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
             await _sendEmailToAdmin(
-              assessmentId: Globals.lastDeshboardId,
-              name: _profileData[0].userName!.replaceAll("%", " "),
+              assessmentId: event.assessmentId!,
+              name: _profileData[0].userName!.replaceAll("%20", " ").replaceAll("20", ""),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
               email: _profileData[0].userEmail!,
               assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
             );
             bool result = await saveResultToDashboard(
-                assessmentId: Globals.lastDeshboardId, studentDetails: _list);
+                assessmentId: event.assessmentId!,
+                studentDetails: Globals.studentInfo!,
+                previousListLength: event.previouslyAddedListLength ?? 0,
+                isHistoryDetailPage: event.isHistoryAssessmentSection);
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: Globals.lastDeshboardId, studentDetails: _list);
+                  assessmentId: event.assessmentId!,
+                  studentDetails: Globals.studentInfo!,
+                  previousListLength: event.previouslyAddedListLength ?? 0,
+                  isHistoryDetailPage: event.isHistoryAssessmentSection);
             } else {
               //print("result Record is saved on DB");
 
@@ -268,6 +305,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
                 'Unable to save the result. Please try again.',
                 event.context,
                 null);
+
+            yield OcrErrorReceived();
             throw ('something went wrong');
           }
         } else {
@@ -291,19 +330,23 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             standardId = event.standardId;
             subjectId = event.subjectId;
           }
+          //TO DO
+          // if (event.isHistoryAssessmentSection == true) {
+          //   String dashboardId = await saveAssessmentToDashboard(
+          //     fileId: event.fileId,
+          //     assessmentName: event.assessmentName,
+          //     rubicScore: await rubricPickList(event.rubricScore),
+          //     subjectId: subjectId,
+          //     schoolId: event.schoolId,
+          //     standardId: standardId,
+          //   );
 
-          String dashboardId = await saveAssessmentToDashboard(
-              assessmentName: event.assessmentName,
-              rubicScore: await rubricPickList(event.rubricScore),
-              subjectId: subjectId,
-              schoolId: event.schoolId,
-              standardId: standardId);
+          //   Globals.currentAssessmentId = dashboardId;
+          // }
 
-          Globals.lastDeshboardId = dashboardId;
-
-          if (dashboardId != '') {
+          if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
             await _sendEmailToAdmin(
-              assessmentId: dashboardId,
+              assessmentId: event.assessmentId!,
               name: _profileData[0].userName!.replaceAll("%", " "),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
@@ -312,11 +355,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             );
 
             bool result = await saveResultToDashboard(
-                assessmentId: dashboardId, studentDetails: event.resultList);
+                assessmentId: event.assessmentId!,
+                studentDetails: event.resultList,
+                previousListLength: event.previouslyAddedListLength ?? 0,
+                isHistoryDetailPage: event.isHistoryAssessmentSection);
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: dashboardId, studentDetails: event.resultList);
+                  assessmentId: event.assessmentId!,
+                  studentDetails: event.resultList,
+                  previousListLength: event.previouslyAddedListLength ?? 0,
+                  isHistoryDetailPage: event.isHistoryAssessmentSection);
             } else {
               //print("result Record is saved on DB");
 
@@ -333,12 +382,45 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.noInternetSnackBar()
+            ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION' ? Utility.noInternetSnackBar() : print(e);
+        e == 'NO_CONNECTION'
+            ? Utility.currentScreenSnackBar("No Internet Connection")
+            : print(e);
         throw (e);
+      }
+    }
+    if (event is SaveAndGetAssessmentID) {
+      yield OcrLoading();
+      String dashboardId = await saveAssessmentToDashboard(
+          fileId: event.fileId,
+          assessmentName: event.assessmentName,
+          rubicScore: await rubricPickList(event.rubricScore),
+          subjectId: event.subjectId,
+          schoolId: event.schoolId,
+          standardId: event.standardId);
+
+      if (dashboardId.isNotEmpty) {
+        Globals.currentAssessmentId = dashboardId;
+        yield AssessmentIdSuccess(obj: dashboardId);
+      }
+    }
+
+    if (event is GetDashBoardStatus) {
+      try {
+        yield OcrLoading2();
+        List object;
+        object = await _getTheDashBoardStatus(fileId: event.fileId);
+
+        if (object[1] != '') {
+          yield AssessmentDashboardStatus(
+              resultRecordCount: object[0], assessmentId: object[1]);
+        }
+        yield AssessmentDashboardStatus(resultRecordCount: null, assessmentId: null);
+      } catch (e) {
+        yield AssessmentDashboardStatus(resultRecordCount: null, assessmentId: null);
       }
     }
   }
@@ -353,15 +435,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           headers: {"Content-type": "application/json; charset=utf-8"});
 
       if (response.statusCode == 200) {
-        List<SubjectDetailList> _list = response.data['body']
+        List<SubjectDetailList> _list = jsonDecode(jsonEncode(response.data['body']))
             .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
             .toList();
         //print(_list);
         LocalDatabase<SubjectDetailList> _localDb =
             LocalDatabase(Strings.ocrSubjectObjectName);
         await _localDb.clear();
+
         _list.forEach((SubjectDetailList e) {
-          _localDb.addData(e);
+          //To decode the special characters
+          utf8.decode(utf8.encode(_localDb.addData(e).toString()));
         });
         // _list.removeWhere((SubjectList element) => element.status == 'Hide');
         return true;
@@ -657,6 +741,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     required String? subjectId,
     required String? schoolId,
     required String? standardId,
+    required String? fileId,
   }) async {
     String currentDate = Utility.getCurrentDate(DateTime.now());
 
@@ -672,7 +757,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       "School__c": schoolId,
       "School_year__c": currentDate.split("-")[0],
       "Standard__c": standardId != '' ? standardId : null,
-      "Subject__c": subjectId != '' ? subjectId : null
+      "Subject__c": subjectId != '' ? subjectId : null,
+      "Google_File_Id": fileId ?? ''
     };
     final ResponseModel response = await _dbServices.postapi(
       "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
@@ -707,19 +793,26 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<bool> saveResultToDashboard(
       {required String assessmentId,
-      required List<StudentAssessmentInfo> studentDetails}) async {
+      required List<StudentAssessmentInfo> studentDetails,
+      required previousListLength,
+      required isHistoryDetailPage}) async {
     List<Map> bodyContent = [];
 
     // studentDetails.removeAt(0);
-
-    for (int i = 0; i < studentDetails.length; i++) {
-      bodyContent.add(recordtoJson(
-          assessmentId,
-          Utility.getCurrentDate(DateTime.now()),
-          studentDetails[i].studentGrade ?? '',
-          studentDetails[i].studentId ?? '',
-          studentDetails[i].assessmentImage ?? '',
-          studentDetails[i].studentName ?? ''));
+    int initIndex = isHistoryDetailPage == true
+        ? previousListLength
+        : previousListLength + 1;
+    for (int i = initIndex; i < studentDetails.length; i++) {
+      //To bypass the titles saving in the dashboard
+      if (studentDetails[i].studentId != 'Id') {
+        bodyContent.add(recordtoJson(
+            assessmentId,
+            Utility.getCurrentDate(DateTime.now()),
+            studentDetails[i].studentGrade ?? '',
+            studentDetails[i].studentId ?? '',
+            studentDetails[i].assessmentImage ?? '',
+            studentDetails[i].studentName ?? ''));
+      }
     }
 
     final ResponseModel response = await _dbServices.postapi(
@@ -760,6 +853,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     // studentDetails.removeAt(0);
     for (int i = 0; i < studentResultDetails.length; i++) {
+      if(studentResultDetails[i].studentId=="Id"){
+          studentResultDetails.remove(i);
+      }
       bodyContent.add(recordtoJson(
           assessmentId,
           Utility.getCurrentDate(DateTime.now()),
@@ -771,10 +867,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     final body = {
       "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
       "to": "techadmin@solvedconsulting.com, appdevelopersdp7@gmail.com",
-      "subject": "Data saved to the dashboard",
+      "subject": "Data Saved To The Dashboard",
       // "html":
       "text":
-          '''School Id : $schoolId \nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n').replaceAll('}', ', \n')}'''
+          '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
     };
 
     final ResponseModel response = await _dbServices.postapi(
@@ -828,7 +924,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
       if (response.statusCode == 200) {
         StudentDetails res = StudentDetails.fromJson(response.data['body']);
-        print(res);
+        print('fetchStudentDetails : $res');
         return res;
       } else {
         throw ('something_went_wrong');
@@ -838,7 +934,52 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future fetchRecentList({required String? type,required String? className,required String? subjectName,}) async {
+  Future<List> _getTheDashBoardStatus({required String fileId}) async {
+    try {
+      final ResponseModel response = await _dbServices.getapiNew(
+          'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
+          isGoogleAPI: true);
+      if (response.statusCode == 200) {
+        if (response.data['body'].length > 0) {
+          String assessmentId = response.data['body'][0]['Assessment_Id'];
+
+          if (assessmentId.isNotEmpty) {
+            int result = await _getAssessmentRecord(assessmentId: assessmentId);
+
+            return [result, assessmentId];
+          }
+        }
+      }
+      return [0, ''];
+    } catch (e) {
+      throw ('something_went_wrong');
+    }
+  }
+
+  Future<int> _getAssessmentRecord({required String assessmentId}) async {
+    try {
+      final ResponseModel response = await _dbServices.getapiNew(
+          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Result__c/\"Assessment_Id\"='$assessmentId'",
+          isGoogleAPI: true);
+      if (response.statusCode == 200) {
+        var data = response.data["body"];
+        if (data.length > 0) {
+          print(
+              "--------->printing length in saved on dashboard ${data.length}");
+          return data.length;
+        }
+      }
+      return 0;
+    } catch (e) {
+      throw ('something_went_wrong');
+    }
+  }
+
+  Future fetchRecentList({
+    required String? type,
+    required String? className,
+    required String? subjectName,
+  }) async {
     try {
       LocalDatabase<SubjectDetailList> _localDb =
           LocalDatabase("$className$subjectName${type}RecentList");

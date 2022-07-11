@@ -22,13 +22,14 @@ class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
       imgBase64: fields[2] as String?,
       imgUrl: fields[3] as String?,
       customOrStandardRubic: fields[4] as String?,
+      filePath: fields[5] as File?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CustomRubicModal obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
       ..writeByte(3)
       ..write(obj.imgUrl)
       ..writeByte(4)
-      ..write(obj.customOrStandardRubic);
+      ..write(obj.customOrStandardRubic)
+      ..writeByte(5)
+      ..write(obj.filePath);
   }
 
   @override

@@ -92,6 +92,8 @@ class SaveAssessmentToDashboard extends OcrEvent {
   final List<StudentAssessmentInfo> resultList;
   final bool isHistoryAssessmentSection;
   final String? assessmentSheetPublicURL;
+  final String? fileId;
+  final String? assessmentId;
   SaveAssessmentToDashboard(
       {required this.assessmentName,
       required this.rubricScore,
@@ -102,7 +104,34 @@ class SaveAssessmentToDashboard extends OcrEvent {
       required this.context,
       this.previouslyAddedListLength,
       required this.resultList,
-      required this.isHistoryAssessmentSection, required this.assessmentSheetPublicURL});
+      required this.isHistoryAssessmentSection,
+      required this.assessmentSheetPublicURL,
+      required this.assessmentId,
+      this.fileId});
+
+  @override
+  List<Object> get props => [];
+}
+
+class SaveAndGetAssessmentID extends OcrEvent {
+  final String assessmentName;
+  final String rubricScore;
+  final String subjectId;
+  final String schoolId;
+  final String standardId;
+  final String fileId;
+  final scaffoldKey;
+  final context;
+
+  SaveAndGetAssessmentID(
+      {required this.assessmentName,
+      required this.rubricScore,
+      required this.subjectId,
+      required this.schoolId,
+      required this.standardId,
+      required this.scaffoldKey,
+      required this.context,
+      required this.fileId});
 
   @override
   List<Object> get props => [];
@@ -118,13 +147,27 @@ class FetchStudentDetails extends OcrEvent {
 
   //String toString() => 'GlobalSearchEvent { keyword: $base64}';
 }
+
+class GetDashBoardStatus extends OcrEvent {
+  final String fileId;
+
+  GetDashBoardStatus({required this.fileId});
+
+  @override
+  List<Object> get props => [fileId];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $fileId}';
+}
+
 class FetchRecentSearch extends OcrEvent {
   final String? type;
   final String? className;
   final String? subjectName;
- // final String? type;
+  // final String? type;
 
-  FetchRecentSearch({required this.type,required this.className, required this.subjectName});
+  FetchRecentSearch(
+      {required this.type, required this.className, required this.subjectName});
 
   @override
   List<Object> get props => [];

@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/modules/ocr/widgets/animation_button.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -21,13 +22,14 @@ class SuccessScreen extends StatefulWidget {
   final File imgPath;
   final String? pointPossible;
   final bool? isScanMore;
-
+  final bool? isFromHistoryAssessmentScanMore;
   SuccessScreen(
       {Key? key,
       required this.img64,
       required this.imgPath,
       this.pointPossible,
-      this.isScanMore})
+      this.isScanMore,
+      required this.isFromHistoryAssessmentScanMore})
       : super(key: key);
 
   @override
@@ -46,8 +48,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
   bool onChange = false;
   String studentName = '';
   String studentId = '';
+  late Timer? timer;
+  final ValueNotifier<String> scanFailure = ValueNotifier<String>('');
   final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
+  final ValueNotifier<String> isStudentIdFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> rubricNotDetected = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isNameUpdated = ValueNotifier<bool>(false);
@@ -63,6 +68,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final ValueNotifier<String> pointScored = ValueNotifier<String>('2');
+
+  final ValueNotifier<bool> animationStart = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     super.initState();
@@ -77,204 +85,352 @@ class _SuccessScreenState extends State<SuccessScreen> {
       child: Stack(children: [
         CommonBackGroundImgWidget(),
         Scaffold(
-            key: _scaffoldKey,
-            backgroundColor: Colors.transparent,
-            appBar: CustomOcrAppBarWidget(
-              isBackButton: false,
-              isSuccessState: !failure,
-              //isFailureState: failure,
-              isHomeButtonPopup: true,
-              isbackOnSuccess: isBackFromCamera,
-              actionIcon:
-                  //  failure == true
-                  //     ?
-                  IconButton(
-                onPressed: () {
-                  if (isBackFromCamera.value == true) {
-                    updateDetails(isUpdateData: true);
-                    _navigatetoCameraSection();
-                  } else {
-                    if (_formKey1.currentState!.validate()) {
-                      // if (!isSelected) {
-                      // Utility.showSnackBar(_scaffoldKey,
-                      //     'Please select the earned point', context, null);
-                      // } else {
-                      print(pointScored.value);
+          key: _scaffoldKey,
+          backgroundColor: Colors.transparent,
+          appBar: CustomOcrAppBarWidget(
+            isBackButton: false,
+            isSuccessState: !failure,
+            //isFailureState: failure,
+            isHomeButtonPopup: true,
+            isbackOnSuccess: isBackFromCamera,
+            actionIcon:
+                //  failure == true
+                //     ?
+                IconButton(
+              onPressed: () {
+                if (isBackFromCamera.value == true) {
+                  updateDetails(
+                      isUpdateData: true,
+                      isFromHistoryAssessmentScanMore:
+                          widget.isFromHistoryAssessmentScanMore);
+                  _navigatetoCameraSection();
+                } else {
+                  if (_formKey1.currentState == null) {
+                    scanFailure.value = 'Failure';
+                  }
+                  if (isStudentIdFilled.value.isNotEmpty &&
+                      isStudentIdFilled.value.length == 9 &&
+                      (isStudentIdFilled.value.startsWith('2') ||
+                          isStudentIdFilled.value.startsWith('1'))) {
+                    // else if (_formKey1.currentState!.validate()) {
+                    // if (!isSelected) {
+                    // Utility.showSnackBar(_scaffoldKey,
+                    //     'Please select the earned point', context, null);
+                    // } else {
+                    print(pointScored.value);
 
-                      updateDetails();
+                    updateDetails(
+                        isFromHistoryAssessmentScanMore:
+                            widget.isFromHistoryAssessmentScanMore);
 
-                      // if (nameController.text.isNotEmpty &&
-                      //     nameController.text.length >= 3 &&
-                      //     idController.text.isNotEmpty)
-                      if (idController.text.isNotEmpty) {
-                        _bloc.add(SaveStudentDetails(
-                            studentName: nameController.text,
-                            studentId: idController.text));
+                    // if (nameController.text.isNotEmpty &&
+                    //     nameController.text.length >= 3 &&
+                    //     idController.text.isNotEmpty)
+                    if (idController.text.isNotEmpty) {
+                      _bloc.add(SaveStudentDetails(
+                          studentName: nameController.text,
+                          studentId: idController.text));
+                      String imgExtension = widget.imgPath.path
+                          .substring(widget.imgPath.path.lastIndexOf(".") + 1);
+
+                      _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                          imgBase64: widget.img64,
+                          imgExtension: imgExtension,
+                          studentId: idController.text));
+                      // }
+                      // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
+                      print(Globals.studentInfo!);
+                      _navigatetoCameraSection();
+                    }
+                  }
+                }
+              },
+              icon: Icon(
+                IconData(0xe877,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                size: 30,
+                color: AppTheme.kButtonColor,
+              ),
+            ),
+            // : null,
+            key: null,
+          ),
+          body: Container(
+            padding: EdgeInsets.only(left: 20, right: 20),
+            child: BlocConsumer<OcrBloc, OcrState>(
+              bloc: _bloc, // provide the local bloc instance
+
+              listener: (context, state) async {
+                await Future.delayed(Duration(milliseconds: 200));
+                if (state is OcrLoading) {
+                  // isRetryButton.value = false;
+
+                  Timer(Duration(seconds: 5), () {
+                    isRetryButton.value = true;
+                  });
+                }
+                if (state is FetchTextFromImageSuccess) {
+                  //  scanFailure.value = 'Success';
+                  // Future.delayed(Duration(milliseconds: 500));
+                  scanFailure.value = 'Success';
+                  _performAnimation();
+
+                  widget.pointPossible == '2'
+                      ? Globals.pointsEarnedList = [0, 1, 2]
+                      : widget.pointPossible == '3'
+                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                          : widget.pointPossible == '4'
+                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                              : Globals.pointsEarnedList.length = 2;
+                  nameController.text =
+                      isStudentNameFilled.value = state.studentName!;
+                  onChange == false
+                      ? idController.text = state.studentId!
+                      : null;
+                  pointScored.value = state.grade!;
+                  //   reconizeText(pathOfImage);
+                  // });
+
+                  // if (_formKey2.currentState!.validate()) {
+                  if (isStudentIdFilled.value.isNotEmpty &&
+                      isStudentIdFilled.value.length == 9 &&
+                      (isStudentIdFilled.value.startsWith('2') ||
+                          isStudentIdFilled.value.startsWith('1'))) {
+                    if (nameController.text.isNotEmpty &&
+                        idController.text.isNotEmpty) {
+                      timer = await Timer(Duration(seconds: 5), () async {
+                        updateDetails(
+                            isFromHistoryAssessmentScanMore:
+                                widget.isFromHistoryAssessmentScanMore);
                         String imgExtension = widget.imgPath.path.substring(
                             widget.imgPath.path.lastIndexOf(".") + 1);
-
                         _googleDriveBloc.add(AssessmentImgToAwsBucked(
                             imgBase64: widget.img64,
                             imgExtension: imgExtension,
                             studentId: idController.text));
                         // }
-                        // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
-                        print(Globals.studentInfo!);
-                        _navigatetoCameraSection();
-                      }
-                    }
-                  }
-                },
-                icon: Icon(
-                  IconData(0xe877,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  size: 30,
-                  color: AppTheme.kButtonColor,
-                ),
-              ),
-              // : null,
-              key: null,
-            ),
-            body: Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: BlocConsumer<OcrBloc, OcrState>(
-                bloc: _bloc, // provide the local bloc instance
+                        // COMMENT below section for enableing the camera
+                        var result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CameraScreen(
+                                    isFromHistoryAssessmentScanMore:
+                                        widget.isFromHistoryAssessmentScanMore!,
+                                    onlyForPicture: false,
+                                    isScanMore: widget.isScanMore,
+                                    pointPossible: widget.pointPossible,
+                                  )),
+                        );
+                        if (result == true) {
+                          isBackFromCamera.value = result;
+                        }
 
-                listener: (context, state) async {
-                  await Future.delayed(Duration(milliseconds: 200));
-                  if (state is OcrLoading) {
-                    // isRetryButton.value = false;
-                    Timer(Duration(seconds: 5), () {
-                      isRetryButton.value = true;
-                    });
-                  }
-                  if (state is FetchTextFromImageSuccess) {
-                    widget.pointPossible == '2'
-                        ? Globals.pointsEarnedList = [0, 1, 2]
-                        : widget.pointPossible == '3'
-                            ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                            : widget.pointPossible == '4'
-                                ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                                : Globals.pointsEarnedList.length = 2;
-                    nameController.text =
-                        isStudentNameFilled.value = state.studentName!;
-                    onChange == false
-                        ? idController.text = state.studentId!
-                        : null;
-                    pointScored.value = state.grade!;
-                    //   reconizeText(pathOfImage);
-                    // });
+                        //UNCOMMENT below section for enableing the camera
 
-                    if (_formKey2.currentState!.validate()) {
-                      if (nameController.text.isNotEmpty &&
-                          idController.text.isNotEmpty) {
-                        Timer(Duration(seconds: 5), () async {
-                          updateDetails();
-                          String imgExtension = widget.imgPath.path.substring(
-                              widget.imgPath.path.lastIndexOf(".") + 1);
-                          _googleDriveBloc.add(AssessmentImgToAwsBucked(
-                              imgBase64: widget.img64,
-                              imgExtension: imgExtension,
-                              studentId: idController.text));
-                          // }
-                          // COMMENT below section for enableing the camera
-                          var result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CameraScreen(
-                                      isScanMore: widget.isScanMore,
-                                      pointPossible: widget.pointPossible,
-                                    )),
-                          );
-                          if (result == true) {
-                            isBackFromCamera.value = result;
-                          }
-
-                          //UNCOMMENT below section for enableing the camera
-
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (_) => CameraScreen()));
-                        });
-                      }
-                    } else {
-                      setState(() {
-                        failure = true;
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (_) => CameraScreen()));
                       });
                     }
-                  } else if (state is FetchTextFromImageFailure) {
-                    setState(() {
-                      failure = true;
-                    });
-                    widget.pointPossible == '2'
-                        ? Globals.pointsEarnedList = [0, 1, 2]
-                        : widget.pointPossible == '3'
-                            ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                            : widget.pointPossible == '4'
-                                ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                                : Globals.pointsEarnedList.length = 2;
-                    if (state.grade == '') {
-                      Utility.showSnackBar(_scaffoldKey,
-                          'Could not detect the right score', context, null);
-                    }
-                    onChange == false
-                        ? idController.text = state.studentId ?? ''
-                        : state.studentId == ''
-                            ? studentId
-                            : null;
-                    onChange == false
-                        ? nameController.text =
-                            isStudentNameFilled.value = state.studentName ?? ''
-                        : null;
-                    pointScored.value = state.grade!;
-                    // updateDetails();
-
+                  } else {
+                    // setState(() {
+                    failure = true;
+                    // });
                   }
-                  // do stuff here based on BlocA's state
-                },
-                builder: (context, state) {
-                  if (state is OcrLoading) {
-                    return loadingScreen();
+                } else if (state is FetchTextFromImageFailure) {
+                  scanFailure.value = 'Failure';
 
-                    // Center(
-                    //   child: CircularProgressIndicator(
-                    //     color: AppTheme.kButtonColor,
-                    //   ),
-                    // );
-                  } else if (state is FetchTextFromImageSuccess) {
-                    nameController.text = state.studentName!;
-                    onChange == false
-                        ? idController.text = state.studentId!
-                        : null;
-                    pointScored.value = state.grade!;
-                    // idController.text = state.studentId!;
-                    // nameController.text = state.studentName!;
-                    // Globals.gradeList.add(state.grade!);
-                    return successScreen(
-                        id: state.studentId!, grade: state.grade!);
-                  } else if (state is FetchTextFromImageFailure) {
-                    onChange == false
-                        ? idController.text = state.studentId ?? ''
-                        : state.studentId == ''
-                            ? studentId
-                            : null;
-                    onChange == false
-                        ? nameController.text = state.studentName ?? ''
-                        : null;
-                    pointScored.value = state.grade!;
-                    // idController.text = state.studentId!;
-                    // nameController.text =
-                    //     onChange == true ? state.studentName! : studentName;
-                    // Globals.gradeList.add(state.grade!);
+                  // setState(() {
+                  failure = true;
+                  // });
+                  widget.pointPossible == '2'
+                      ? Globals.pointsEarnedList = [0, 1, 2]
+                      : widget.pointPossible == '3'
+                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                          : widget.pointPossible == '4'
+                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                              : Globals.pointsEarnedList.length = 2;
+                  if (state.grade == '') {
+                    Utility.showSnackBar(_scaffoldKey,
+                        'Could Not Detect The Right Score', context, null);
+                  }
+                  onChange == false
+                      ? idController.text = state.studentId ?? ''
+                      : state.studentId == ''
+                          ? studentId
+                          : null;
+                  onChange == false
+                      ? nameController.text =
+                          isStudentNameFilled.value = state.studentName ?? ''
+                      : null;
+                  pointScored.value = state.grade!;
+                  // updateDetails();
+
+                }
+                // do stuff here based on BlocA's state
+              },
+              builder: (context, state) {
+                if (state is OcrLoading) {
+                  return loadingScreen();
+
+                  // Center(
+                  //   child: CircularProgressIndicator(
+                  //     color: AppTheme.kButtonColor,
+                  //   ),
+                  // );
+                } else if (state is FetchTextFromImageSuccess) {
+                  nameController.text = state.studentName!;
+                  onChange == false
+                      ? idController.text = state.studentId!
+                      : null;
+                  pointScored.value = state.grade!;
+                  // idController.text = state.studentId!;
+                  // nameController.text = state.studentName!;
+                  // Globals.gradeList.add(state.grade!);
+
+                  return successScreen(
+                      id: state.studentId!, grade: state.grade!);
+                } else if (state is FetchTextFromImageFailure) {
+                  onChange == false
+                      ? idController.text = state.studentId ?? ''
+                      : state.studentId == ''
+                          ? studentId
+                          : null;
+                  onChange == false
+                      ? nameController.text = state.studentName ?? ''
+                      : null;
+                  pointScored.value = state.grade!;
+                  // idController.text = state.studentId!;
+                  // nameController.text =
+                  //     onChange == true ? state.studentName! : studentName;
+                  // Globals.gradeList.add(state.grade!);
+                  if (state.grade == '') {
                     rubricNotDetected.value = true;
-                    return failureScreen(
-                        id: state.studentId!, grade: state.grade!);
                   }
-                  return Container();
-                  // return widget here based on BlocA's state
-                },
-              ),
-            ))
+
+                  return failureScreen(
+                      id: state.studentId!, grade: state.grade!);
+                }
+                return Container();
+                // return widget here based on BlocA's state
+              },
+            ),
+          ),
+          floatingActionButton: ValueListenableBuilder(
+              valueListenable: scanFailure,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return scanFailure.value == "Failure"
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
+                        child: retryButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraScreen(
+                                        isFromHistoryAssessmentScanMore: widget
+                                            .isFromHistoryAssessmentScanMore!,
+                                        onlyForPicture: false,
+                                        isScanMore: widget.isScanMore,
+                                        pointPossible: widget.pointPossible,
+                                      )),
+                            );
+                          },
+                        ))
+                    : scanFailure.value == "Success"
+                        ? Align(
+                            alignment: Alignment.bottomCenter,
+                            child:
+                                //  SuccessCustomButton(
+                                //   width: MediaQuery.of(context).size.width * 0.3,
+                                //   animatedWidth:
+                                //       MediaQuery.of(context).size.width * 0.3,
+                                //   // animatedWidth: animatedWidth.value
+                                // )
+                                ValueListenableBuilder(
+                                    valueListenable: animationStart,
+                                    child: Container(),
+                                    builder: (BuildContext context,
+                                        dynamic value, Widget? child) {
+                                      return InkWell(
+                                        onTap: () async {
+                                          if (animationStart.value == true) {
+                                            timer!.cancel();
+
+                                            updateDetails(
+                                                isFromHistoryAssessmentScanMore:
+                                                    widget
+                                                        .isFromHistoryAssessmentScanMore);
+                                            String imgExtension = widget
+                                                .imgPath.path
+                                                .substring(widget.imgPath.path
+                                                        .lastIndexOf(".") +
+                                                    1);
+                                            _googleDriveBloc.add(
+                                                AssessmentImgToAwsBucked(
+                                                    imgBase64: widget.img64,
+                                                    imgExtension: imgExtension,
+                                                    studentId:
+                                                        idController.text));
+                                            // }
+                                            // COMMENT below section for enableing the camera
+                                            var result = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CameraScreen(
+                                                        isFromHistoryAssessmentScanMore:
+                                                            widget
+                                                                .isFromHistoryAssessmentScanMore!,
+                                                        onlyForPicture: false,
+                                                        isScanMore:
+                                                            widget.isScanMore,
+                                                        pointPossible: widget
+                                                            .pointPossible,
+                                                      )),
+                                            );
+                                            if (result == true) {
+                                              isBackFromCamera.value = result;
+                                            }
+
+                                            // Navigator.pushReplacement(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //       builder: (context) =>
+                                            //           CameraScreen(
+                                            //             isScanMore:
+                                            //                 widget.isScanMore,
+                                            //             pointPossible: widget
+                                            //                 .pointPossible,
+                                            //           )),
+                                            // );
+                                          } else {
+                                            print("Not -------------> move");
+                                          }
+                                        },
+                                        child: SuccessCustomButton(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.4,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.055,
+                                            animationDuration:
+                                                Duration(milliseconds: 4950),
+                                            animationStart:
+                                                animationStart.value),
+                                      );
+                                    }),
+                          )
+                        : Container();
+              }),
+          // retryButton(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        )
       ]),
     );
   }
@@ -301,6 +457,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                    isFromHistoryAssessmentScanMore:
+                                        widget.isFromHistoryAssessmentScanMore!,
+                                    onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
                                   )),
@@ -317,303 +476,400 @@ class _SuccessScreenState extends State<SuccessScreen> {
     required String id,
     required String grade,
   }) {
-    return Form(
-      key: _formKey1,
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BlocListener<OcrBloc, OcrState>(
-            bloc: _bloc2,
-            child: Container(),
-            listener: (context, state) async {
-              if (state is SuccessStudentDetails) {
-                nameController.text = state.studentName;
-                isNameUpdated.value = !isNameUpdated.value;
-              }
-            },
-          ),
-          SpacerWidget(15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Utility.textWidget(
-                  text: 'Manual Entry',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline1!
-                      .copyWith(fontWeight: FontWeight.bold)),
-              SizedBox(
-                width: 5.0,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xffCF6679),
-                ),
-                child: Icon(
-                    IconData(0xe838,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    size: 19,
-                    color: Colors.white),
-              ),
-            ],
-          ),
-
-          SpacerWidget(_KVertcalSpace * 0.25),
-          Utility.textWidget(
-              text: 'Student Name',
-              context: context,
-              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.5))),
-
-          //                 ValueListenableBuilder(
-          // valueListenable: isStudentNameFilled,
-          // builder: (BuildContext context, dynamic value, Widget? child) {
-          //   print(isStudentNameFilled.value);
-          //   return
-          textFormField(
-              controller: nameController,
-              hintText: 'Student Name',
-              // keyboardType: TextInputType.,
-              isFailure: true,
-              // errormsg:
-              //     "If you would like to save the student in database, Please enter the student name",
-              onSaved: (String value) {
-                isStudentNameFilled.value = value;
-                // _formKey1.currentState!.validate();
-                // value != '' ? valuechange = true : valuechange = false;
-                //  updateDetails(isUpdateData: true);
-                studentName = nameController.text;
-                onChange = true;
-              },
-              validator: (String? value) {
-                // isStudentNameFilled.value= value!;//nameController.text;
-                // if (value!.isEmpty) {
-                //   return 'If you would like to save the student details in database, Please enter the student name';
-                // } else if (value.length < 3) {
-                //   return 'Make sure the student name contains more than 3 character';
-                // } else {
-                //   return null;
-                // }
-                // return null;
-              }),
-
-          ValueListenableBuilder(
-              valueListenable: isStudentNameFilled,
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Form(
+        key: _formKey1,
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BlocListener<OcrBloc, OcrState>(
+              bloc: _bloc2,
               child: Container(),
-              builder: (BuildContext context, dynamic value, Widget? child) {
-                return Container(
-                  padding: isStudentNameFilled.value.isNotEmpty ||
-                          nameController.text.length < 3
-                      ? EdgeInsets.only(top: 8)
-                      : null,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    isStudentNameFilled.value == ""
-                        ? 'If you would like to save the student details in database, Please enter the student name'
-                        : nameController.text.length < 3
-                            ? 'Make sure the student name contains more than 3 character'
-                            : '',
-                    style: TextStyle(color: Colors.red),
+              listener: (context, state) async {
+                if (state is SuccessStudentDetails) {
+                  nameController.text = state.studentName;
+                  isStudentNameFilled.value = state.studentName;
+                  isNameUpdated.value = !isNameUpdated.value;
+                  // _formKey1.currentState!.validate();
+                }
+              },
+            ),
+            SpacerWidget(15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Utility.textWidget(
+                    text: 'Manual Entry',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline1!
+                        .copyWith(fontWeight: FontWeight.bold)),
+                SizedBox(
+                  width: 5.0,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color(0xffCF6679),
                   ),
-                );
-              }),
-          //       ;},
-          //   child: Container(),
-          // ),
-          SpacerWidget(_KVertcalSpace / 2),
-          Utility.textWidget(
-              text: 'Student ID',
-              context: context,
-              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.5))),
-          textFormField(
+                  child: Icon(
+                      IconData(0xe838,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: 19,
+                      color: Colors.white),
+                ),
+              ],
+            ),
+
+            SpacerWidget(_KVertcalSpace * 0.25),
+            Utility.textWidget(
+                text: 'Student Name',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+
+            //                 ValueListenableBuilder(
+            // valueListenable: isStudentNameFilled,
+            // builder: (BuildContext context, dynamic value, Widget? child) {
+            //   print(isStudentNameFilled.value);
+            //   return
+            textFormField(
+                controller: nameController,
+                hintText: 'Student Name',
+                // keyboardType: TextInputType.,
+                isFailure: true,
+                // errormsg:
+                //     "If you would like to save the student in database, Please enter the student name",
+                onSaved: (String value) {
+                  isStudentNameFilled.value = value;
+                  // _formKey1.currentState!.validate();
+                  // value != '' ? valuechange = true : valuechange = false;
+                  //  updateDetails(isUpdateData: true);
+                  studentName = nameController.text;
+                  onChange = true;
+                },
+                validator: (String? value) {
+                  isStudentNameFilled.value = value!; //nameController.text;
+
+                  return isStudentNameFilled.value.isEmpty ||
+                          isStudentNameFilled.value.length < 3
+                      ? ''
+                      : null;
+                }),
+
+            ValueListenableBuilder(
+                valueListenable: isStudentNameFilled,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Container(
+                    padding: isStudentNameFilled.value.isNotEmpty ||
+                            nameController.text.length < 3
+                        ? EdgeInsets.only(top: 8)
+                        : null,
+                    alignment: Alignment.centerLeft,
+                    child: TranslationWidget(
+                        message: isStudentNameFilled.value == ""
+                            ? 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name'
+                            : nameController.text.length < 3
+                                ? 'Make Sure The Student Name Contains More Than 3 Character'
+                                : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage,
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }),
+                  );
+                }),
+            //       ;},
+            //   child: Container(),
+            // ),
+            SpacerWidget(_KVertcalSpace / 2),
+            Utility.textWidget(
+                text: 'Student ID',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+            textFormField(
+                controller: idController,
+                keyboardType: TextInputType.number,
+                hintText: 'Student ID',
+                isFailure: true,
+                // errormsg:
+                //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+                onSaved: (String value) {
+                  isStudentIdFilled.value = value;
+                  _formKey1.currentState!.validate();
+                  // updateDetails(isUpdateData: true);
+                  studentId = idController.text;
+                  if (idController.text.length == 9 &&
+                      (idController.text[0] == '2' ||
+                          idController.text[0] == '1')) {
+                    _bloc2.add(FetchStudentDetails(ossId: idController.text));
+                  }
+                  onChange = true;
+                },
+                validator: (String? value) {
+                  isStudentIdFilled.value = value!;
+                  return (!isStudentIdFilled.value.startsWith('2') &&
+                              !isStudentIdFilled.value.startsWith('1')) ||
+                          isStudentIdFilled.value.length < 9
+                      ? ''
+                      : null;
+                },
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  // FilteringTextInputFormatter.allow(
+                  //     RegExp("[0-9]")),
+                ],
+                maxNineDigit: true),
+            ValueListenableBuilder(
+                valueListenable: isStudentIdFilled,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Container(
+                    padding: isStudentIdFilled.value.isEmpty ||
+                            idController.text.length < 9
+                        ? EdgeInsets.only(top: 0)
+                        : null,
+                    alignment: Alignment.centerLeft,
+                    child: TranslationWidget(
+                        message: isStudentIdFilled.value == ""
+                            ? 'Student ID is required'
+                            : isStudentIdFilled.value.length != 9
+                                ? 'Student ID Must Have 9 Digits Number'
+                                : !isStudentIdFilled.value.startsWith('2') &&
+                                        !isStudentIdFilled.value.startsWith('1')
+                                    ? 'Student ID Must Starts Either With \'2\' Or \'1\''
+                                    : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage,
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }),
+                  );
+                }),
+            SpacerWidget(_KVertcalSpace / 2),
+            Center(
+              child: Utility.textWidget(
+                  textAlign: TextAlign.center,
+                  text: 'Points Earned',
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primaryVariant
+                          .withOpacity(0.5))),
+            ),
+            SpacerWidget(_KVertcalSpace / 4),
+            Center(
+                child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
+            SpacerWidget(_KVertcalSpace / 2),
+            Center(child: imagePreviewWidget()),
+            SpacerWidget(_KVertcalSpace / 0.9),
+            SpacerWidget(_KVertcalSpace / 1.5),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget successScreen({required String id, required String grade}) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      child: Form(
+        key: _formKey2,
+        child: ListView(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //  SpacerWidget(_KVertcalSpace / 5),
+            SpacerWidget(_KVertcalSpace * 0.25),
+            Utility.textWidget(
+                text: 'Student Name',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.3))),
+            textFormField(
+                controller: nameController,
+                hintText: 'Student Name',
+                isFailure: false,
+                // errormsg: "Make sure to save the record with student name",
+                onSaved: (String value) {
+                  isStudentNameFilled.value = value;
+                  _formKey2.currentState!.validate();
+                  value != '' ? valuechange = true : valuechange = false;
+
+                  //updateDetails(isUpdateData: true);
+                  onChange = true;
+                },
+                validator: (String? value) {
+                  isStudentNameFilled.value = value!;
+                  return null;
+                  // if (value!.isEmpty) {
+                  //   return 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name';
+                  // } else if (value.length < 3) {
+                  //   return 'Make Sure The Student Name Contains More Than 3 Characters';
+                  // } else {
+                  //   return null;
+                  // }
+                }),
+            ValueListenableBuilder(
+                valueListenable: isStudentNameFilled,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Container(
+                    padding: isStudentNameFilled.value.isNotEmpty ||
+                            nameController.text.length < 3
+                        ? EdgeInsets.only(top: 8)
+                        : null,
+                    alignment: Alignment.centerLeft,
+                    child: TranslationWidget(
+                        message: isStudentNameFilled.value == ""
+                            ? 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name'
+                            : nameController.text.length < 3
+                                ? 'Make Sure The Student Name Contains More Than 3 Character'
+                                : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage,
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }),
+                  );
+                }),
+            SpacerWidget(_KVertcalSpace / 2),
+            Utility.textWidget(
+                text: 'Student Id',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.5))),
+            textFormField(
               controller: idController,
               keyboardType: TextInputType.number,
               hintText: 'Student Id',
-              isFailure: true,
               // errormsg:
               //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+              isFailure: false,
               onSaved: (String value) {
-                _formKey1.currentState!.validate();
-                // updateDetails(isUpdateData: true);
-                studentId = idController.text;
+                isStudentIdFilled.value = value;
+                _formKey2.currentState!.validate();
+                //  updateDetails(isUpdateData: true);
                 onChange = true;
               },
               validator: (String? value) {
-                if (value!.length != 9) {
-                  return 'Student Id must have 9 digit numbers';
-                } else if (!value.startsWith('2')) {
-                  return 'Student Id must starts with \'2\'';
-                } else {
-                  return null;
-                }
+                isStudentIdFilled.value = value!;
+                return null;
+                // if (value!.isEmpty) {
+                //   return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
+                // } else if (value.length != 9) {
+                //   return 'Student ID Must Have 9 Digits Number';
+                // } else if (!value.startsWith('2') && !value.startsWith('1')) {
+                //   return 'Student ID Must Starts With \'2\'';
+                // } else {
+                //   return null;
+                // }
               },
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 FilteringTextInputFormatter.allow(
                     RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
               ],
-              maxNineDigit: true),
-          SpacerWidget(_KVertcalSpace / 2),
-          Center(
-            child: Utility.textWidget(
-                text: 'Points Earned',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.5))),
-          ),
-          SpacerWidget(_KVertcalSpace / 4),
-          Center(child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
-          SpacerWidget(_KVertcalSpace / 2),
-          Center(child: imagePreviewWidget()),
-          SpacerWidget(_KVertcalSpace / 0.9),
-          Center(child: retryButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CameraScreen(
-                          isScanMore: widget.isScanMore,
-                          pointPossible: widget.pointPossible,
-                        )),
-              );
-            },
-          )),
-          SpacerWidget(_KVertcalSpace / 1.5),
-        ],
-      ),
-    );
-  }
-
-  Widget successScreen({required String id, required String grade}) {
-    return Form(
-      key: _formKey2,
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          //  SpacerWidget(_KVertcalSpace / 5),
-          SpacerWidget(_KVertcalSpace * 0.25),
-          Utility.textWidget(
-              text: 'Student Name',
-              context: context,
-              textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.3))),
-          textFormField(
-              controller: nameController,
-              hintText: 'Student Name',
-              isFailure: false,
-              // errormsg: "Make sure to save the record with student name",
-              onSaved: (String value) {
-                _formKey2.currentState!.validate();
-                value != '' ? valuechange = true : valuechange = false;
-
-                //updateDetails(isUpdateData: true);
-                onChange = true;
-              },
-              validator: (String? value) {
-                if (value!.isEmpty) {
-                  return 'If you would like to save the student details in database, Please enter the student name';
-                } else if (value.length < 3) {
-                  return 'Make sure the student name contains more than 3 character';
-                } else {
-                  return null;
-                }
-              }),
-          SpacerWidget(_KVertcalSpace / 2),
-          Utility.textWidget(
-              text: 'Student Id',
-              context: context,
-              textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryVariant
-                      .withOpacity(0.5))),
-          textFormField(
-            controller: idController,
-            keyboardType: TextInputType.number,
-            hintText: 'Student Id',
-            // errormsg:
-            //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-            isFailure: false,
-            onSaved: (String value) {
-              _formKey2.currentState!.validate();
-              //  updateDetails(isUpdateData: true);
-              onChange = true;
-            },
-            validator: (String? value) {
-              if (value!.isEmpty) {
-                return "Student Id should not be empty, must start with '2' and contains a '9' digit number.";
-              } else if (value.length != 9) {
-                return 'Student Id must have 9 digit numbers';
-              } else if (!value.startsWith('2')) {
-                return 'Student Id must starts with \'2\'';
-              } else {
-                return null;
-              }
-            },
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              FilteringTextInputFormatter.allow(
-                  RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
-            ],
-          ),
-          SpacerWidget(_KVertcalSpace / 2),
-          Center(
-            child: Utility.textWidget(
-                text: 'Points Earned',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.5))),
-          ),
-          SpacerWidget(_KVertcalSpace / 4),
-          Center(child: pointsEarnedButton(int.parse(grade))),
-          SpacerWidget(_KVertcalSpace / 2),
-          Center(child: imagePreviewWidget()),
-          SpacerWidget(_KVertcalSpace / 1.28),
-          Center(
-            child: Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                // color: Colors.blue,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Utility.textWidget(
-                        text: 'All Good!',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    Icon(
-                      IconData(0xe878,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      size: 34,
-                      color: AppTheme.kButtonColor,
-                    ),
-                  ],
-                )),
-          ),
-        ],
-        // ),
+            ),
+            ValueListenableBuilder(
+                valueListenable: isStudentIdFilled,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return Container(
+                    padding: isStudentIdFilled.value.isEmpty ||
+                            idController.text.length < 9
+                        ? EdgeInsets.only(top: 0)
+                        : null,
+                    alignment: Alignment.centerLeft,
+                    child: TranslationWidget(
+                        message: isStudentIdFilled.value == ""
+                            ? 'Student ID is required'
+                            : isStudentIdFilled.value.length != 9
+                                ? 'Student ID Must Have 9 Digits Number'
+                                : !isStudentIdFilled.value.startsWith('2') &&
+                                        !isStudentIdFilled.value.startsWith('1')
+                                    ? 'Student ID Must Starts Either With \'2\' Or \'1\''
+                                    : '',
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(
+                            translatedMessage,
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }),
+                  );
+                }),
+            SpacerWidget(_KVertcalSpace / 2),
+            Center(
+              child: Utility.textWidget(
+                  text: 'Points Earned',
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primaryVariant
+                          .withOpacity(0.5))),
+            ),
+            SpacerWidget(_KVertcalSpace / 4),
+            Center(child: pointsEarnedButton(int.parse(grade))),
+            SpacerWidget(_KVertcalSpace / 2),
+            Center(child: imagePreviewWidget()),
+            SpacerWidget(_KVertcalSpace / 2.8),
+            Center(
+              child: Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  // color: Colors.blue,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Utility.textWidget(
+                          text: 'All Good!',
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(fontWeight: FontWeight.bold)),
+                      Icon(
+                        IconData(0xe878,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        size: 34,
+                        color: AppTheme.kButtonColor,
+                      ),
+                    ],
+                  )),
+            ),
+            SpacerWidget(MediaQuery.of(context).size.height * 0.15),
+          ],
+          // ),
+        ),
       ),
     );
   }
@@ -633,30 +889,32 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Widget pointsEarnedButton(int grade) {
-    return Container(
-        alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height * 0.1,
-        width: MediaQuery.of(context).size.width,
-        child: Globals.pointsEarnedList.length > 4
-            ? ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return Center(child: pointsButton(index, grade));
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 12,
-                  );
-                },
-                itemCount: Globals.pointsEarnedList.length)
-            : Row(
-                // scrollDirection: Axis.horizontal,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: Globals.pointsEarnedList
-                    .map<Widget>((element) => pointsButton(
-                        Globals.pointsEarnedList.indexOf(element), grade))
-                    .toList(),
-              ));
+    return FittedBox(
+      child: Container(
+          alignment: Alignment.center,
+          height: MediaQuery.of(context).size.height * 0.1,
+          width: MediaQuery.of(context).size.width,
+          child: Globals.pointsEarnedList.length > 4
+              ? ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(child: pointsButton(index, grade));
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      width: 12,
+                    );
+                  },
+                  itemCount: Globals.pointsEarnedList.length)
+              : Row(
+                  // scrollDirection: Axis.horizontal,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: Globals.pointsEarnedList
+                      .map<Widget>((element) => pointsButton(
+                          Globals.pointsEarnedList.indexOf(element), grade))
+                      .toList(),
+                )),
+    );
   }
 
   Widget pointsButton(index, int grade) {
@@ -676,6 +934,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     isSelected = false;
                     rubricNotDetected.value = false;
                     indexColor.value = index;
+                    // updateDetails(isUpdateData: true);
 
                     // nameController.text = studentName;
                     // idController.text = studentId;
@@ -698,8 +957,18 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       ),
                     ),
                     child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                        alignment: Alignment.center,
+                        height: //Globals.pointsEarnedList.length>3?
+                            MediaQuery.of(context).size.height *
+                                0.08, //:MediaQuery.of(context).size.height*0.2,
+                        width:
+                            //Globals.pointsEarnedList.length>3?
+                            MediaQuery.of(context).size.width * 0.17,
+                        //:MediaQuery.of(context).size.width*0.2,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical:
+                                20), //horizontal: Globals.pointsEarnedList.length>3?20:30
                         decoration: BoxDecoration(
                           color: Color(0xff000000) !=
                                   Theme.of(context).backgroundColor
@@ -772,8 +1041,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     controller: controller,
                     cursorColor: Theme.of(context).colorScheme.primaryVariant,
                     decoration: InputDecoration(
+                      counterStyle: TextStyle(
+                          color: Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffFFFFFF)
+                              : Color(0xff000000)),
                       // errorText: controller.text.isEmpty ? errormsg : null,
                       hintText: hintText,
+
                       hintStyle: Theme.of(context)
                           .textTheme
                           .headline6!
@@ -820,67 +1095,148 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget retryButton({required final onPressed}) {
     return InkWell(
       onTap: onPressed,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.kButtonColor,
-          borderRadius: BorderRadius.all(Radius.circular(25)),
-        ),
-        height: 54,
-        width: MediaQuery.of(context).size.width * 0.42,
-        child: Center(
-          child: Utility.textWidget(
-            text: 'Retry',
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline1!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+      child: FittedBox(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: AppTheme.kButtonColor,
+            borderRadius: BorderRadius.all(Radius.circular(25)),
+          ),
+          height: MediaQuery.of(context).size.height * 0.055,
+          // width: Globals.deviceType=='phone'? MediaQuery.of(context).size.width * 0.3: MediaQuery.of(context).size.width * 0.2,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.refresh,
+                  color: Theme.of(context).backgroundColor,
+                  size: Globals.deviceType == 'phone' ? 28 : 40),
+              SizedBox(width: 5),
+              Center(
+                child: Utility.textWidget(
+                  text: 'Retry',
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline1!.copyWith(
+                        color: Theme.of(context).backgroundColor,
+                      ),
                 ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  void updateDetails({bool? isUpdateData}) {
-    if (isUpdateData == true && Globals.studentInfo != null) {
-      Globals.studentInfo!.last.studentName = nameController.text;
-      Globals.studentInfo!.last.studentId = idController.text;
-      Globals.studentInfo!.last.studentGrade = pointScored.value;
-      Globals.studentInfo!.last.pointpossible = Globals.pointpossible;
+  void updateDetails(
+      {bool? isUpdateData, required bool? isFromHistoryAssessmentScanMore}) {
+    if (isFromHistoryAssessmentScanMore == true) {
+      if (Globals.historyStudentInfo!.length > 0 &&
+          Globals.historyStudentInfo![0].studentId == "Id") {
+        Globals.historyStudentInfo!.remove(0);
+      }
 
-      // Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
-      // StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
-      // studentAssessmentInfo.studentName = nameController.text;
-      // studentAssessmentInfo.studentId = idController.text;
-      // studentAssessmentInfo.studentGrade = pointScored;
-      // studentAssessmentInfo.pointpossible = Globals.pointpossible;
-      // //studentAssessmentInfo.assessmentName = Globals.assessmentName;
-      // Globals.studentInfo!.add(studentAssessmentInfo);
-    } else {
-      if (Globals.studentInfo == null) {
-        final StudentAssessmentInfo studentAssessmentInfo =
-            StudentAssessmentInfo();
-        studentAssessmentInfo.studentName =
-            nameController.text.isNotEmpty ? nameController.text : "unknown";
-        studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored.value;
-        studentAssessmentInfo.pointpossible = Globals.pointpossible;
-        // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-        Globals.studentInfo!.add(studentAssessmentInfo);
+      if (isUpdateData == true && Globals.historyStudentInfo != null) {
+        Globals.historyStudentInfo!.last.studentName = nameController.text;
+        Globals.historyStudentInfo!.last.studentId = idController.text;
+        Globals.historyStudentInfo!.last.studentGrade = pointScored.value;
+        Globals.historyStudentInfo!.last.pointpossible = Globals.pointpossible;
+        Globals.historyStudentInfo!.last.assessmentImgPath = widget.imgPath;
       } else {
-        List id = [];
-        for (int i = 0; i < Globals.studentInfo!.length; i++) {
-          id.add(Globals.studentInfo![i].studentId);
-        }
-        if (!id.contains(idController.text)) {
-          StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
+        if (Globals.historyStudentInfo == null) {
+          final StudentAssessmentInfo studentAssessmentInfo =
+              StudentAssessmentInfo();
           studentAssessmentInfo.studentName =
-              nameController.text.isNotEmpty ? nameController.text : "unknown";
+              nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
           studentAssessmentInfo.studentGrade = pointScored.value;
+          studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
+          studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+          // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+          Globals.historyStudentInfo!.add(studentAssessmentInfo);
+        } else {
+          List id = [];
+          for (int i = 0; i < Globals.historyStudentInfo!.length; i++) {
+            if (!Globals.historyStudentInfo!.contains(id)) {
+              id.add(Globals.historyStudentInfo![i].studentId);
+            } else {
+              print('Record is already exist in the list. Skipping...');
+            }
+          }
+          if (!id.contains(idController.text)) {
+            StudentAssessmentInfo studentAssessmentInfo =
+                StudentAssessmentInfo();
+            studentAssessmentInfo.studentName = nameController.text.isNotEmpty
+                ? nameController.text
+                : "Unknown";
+            studentAssessmentInfo.studentId = idController.text;
+            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.pointpossible = Globals.pointpossible;
+            studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+            // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+            if (!Globals.historyStudentInfo!.contains(id)) {
+              Globals.historyStudentInfo!.add(studentAssessmentInfo);
+            }
+          }
+        }
+      }
+    } else {
+      if (Globals.studentInfo!.length > 0 &&
+          Globals.studentInfo![0].studentId == "Id") {
+        Globals.studentInfo!.remove(0);
+      }
+
+      if (isUpdateData == true && Globals.studentInfo != null) {
+        Globals.studentInfo!.last.studentName = nameController.text;
+        Globals.studentInfo!.last.studentId = idController.text;
+        Globals.studentInfo!.last.studentGrade = pointScored.value;
+        Globals.studentInfo!.last.pointpossible = Globals.pointpossible;
+        Globals.studentInfo!.last.assessmentImgPath = widget.imgPath;
+
+        // Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
+        // StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
+        // studentAssessmentInfo.studentName = nameController.text;
+        // studentAssessmentInfo.studentId = idController.text;
+        // studentAssessmentInfo.studentGrade = pointScored;
+        // studentAssessmentInfo.pointpossible = Globals.pointpossible;
+        // //studentAssessmentInfo.assessmentName = Globals.assessmentName;
+        // Globals.studentInfo!.add(studentAssessmentInfo);
+      } else {
+        if (Globals.studentInfo == null) {
+          final StudentAssessmentInfo studentAssessmentInfo =
+              StudentAssessmentInfo();
+          studentAssessmentInfo.studentName =
+              nameController.text.isNotEmpty ? nameController.text : "Unknown";
+          studentAssessmentInfo.studentId = idController.text;
+          studentAssessmentInfo.studentGrade =
+              indexColor.value.toString(); //pointScored.value;
           studentAssessmentInfo.pointpossible = Globals.pointpossible;
+          studentAssessmentInfo.assessmentImgPath = widget.imgPath;
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           Globals.studentInfo!.add(studentAssessmentInfo);
+        } else {
+          List id = [];
+          for (int i = 0; i < Globals.studentInfo!.length; i++) {
+            if (!Globals.studentInfo!.contains(id)) {
+              id.add(Globals.studentInfo![i].studentId);
+            } else {
+              print('Record is already exist in the list. Skipping...');
+            }
+          }
+          if (!id.contains(idController.text)) {
+            StudentAssessmentInfo studentAssessmentInfo =
+                StudentAssessmentInfo();
+            studentAssessmentInfo.studentName = nameController.text.isNotEmpty
+                ? nameController.text
+                : "Unknown";
+            studentAssessmentInfo.studentId = idController.text;
+            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.pointpossible = Globals.pointpossible;
+            studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+            // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+            if (!Globals.studentInfo!.contains(id)) {
+              Globals.studentInfo!.add(studentAssessmentInfo);
+            }
+          }
         }
       }
     }
@@ -891,8 +1247,17 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
+                  isFromHistoryAssessmentScanMore:
+                      widget.isFromHistoryAssessmentScanMore!,
+                  onlyForPicture: false,
                   isScanMore: widget.isScanMore,
                   pointPossible: widget.pointPossible,
                 )));
+  }
+
+  void _performAnimation() {
+    Timer(Duration(milliseconds: 50), () async {
+      animationStart.value = true;
+    });
   }
 }

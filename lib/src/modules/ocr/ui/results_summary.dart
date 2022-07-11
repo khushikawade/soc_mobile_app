@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,6 +15,7 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:share/share.dart';
 import '../../../widgets/empty_container_widget.dart';
 import '../../google_drive/model/user_profile.dart';
@@ -32,16 +34,18 @@ class ResultsSummary extends StatefulWidget {
     this.assessmentListLenght,
     required this.shareLink,
     required this.asssessmentName,
+    this.historysecondTime,
   }) : super(key: key);
   final bool? assessmentDetailPage;
-  final String? fileId;
+  String? fileId;
   final String? subjectId;
   final String? standardId;
   final String? rubricScore;
   final bool? isScanMore;
   final int? assessmentListLenght;
-  final String? shareLink;
-  final asssessmentName;
+  String? shareLink;
+  String? asssessmentName;
+  bool? historysecondTime;
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
 }
@@ -49,10 +53,12 @@ class ResultsSummary extends StatefulWidget {
 class _ResultsSummaryState extends State<ResultsSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+  GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
   // int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> updateSlidableAction = ValueNotifier<bool>(false);
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
   int? assessmentListLenght;
@@ -60,23 +66,59 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isSuccessStateRecived = ValueNotifier<bool>(false);
   String? isAssessmentAlreadySaved = '';
+  int? savedRecordCount;
 
   String? webContentLink;
   String? sheetrubricScore;
   List<StudentAssessmentInfo> historyRecordList = [];
   List iconsList = [];
   List iconsName = [];
+
+  final editingStudentNameController = TextEditingController();
+  final editingStudentIdController = TextEditingController();
+  final editingStudentScoreController = TextEditingController();
+
+  ValueNotifier<List<StudentAssessmentInfo>> sudentRecordList =
+      ValueNotifier(Globals.studentInfo!);
+  // ValueNotifier<int> _listCount = ValueNotifier(Globals.studentInfo!.length);
+
+  String? historyAssessmentId;
+
   @override
   void initState() {
     if (widget.assessmentDetailPage!) {
+      Globals.historyStudentInfo = [];
+      if (widget.historysecondTime == true) {
+        widget.asssessmentName = Globals.historyAssessmentName;
+        widget.fileId = Globals.historyAssessmentFileId;
+      } else {
+        Globals.historyAssessmentName = '';
+        Globals.historyAssessmentFileId = '';
+        Globals.historyAssessmentName = widget.asssessmentName;
+        Globals.historyAssessmentFileId = widget.fileId;
+      }
+
       iconsList = [0xe876, 0xe871, 0xe87a];
       iconsName = ["Share", "Drive", "Dashboard"];
       _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
+      _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
     } else {
+      if (widget.isScanMore != true) {
+        _driveBloc.add(GetShareLink(fileId: widget.fileId));
+      } else {
+        //TODO : REMOVE GLOBAL ACCESS : IMPROVE
+        widget.shareLink = Globals.shareableLink;
+      }
+
       iconsList = Globals.ocrResultIcons;
       iconsName = Globals.ocrResultIconsName;
-      assessmentCount.value = Globals.studentInfo!.length;
+      if (Globals.studentInfo![0].studentId == 'Id') {
+        assessmentCount.value = Globals.studentInfo!.length - 1;
+      } else {
+        assessmentCount.value = Globals.studentInfo!.length;
+      }
     }
+    //Checking in case of scan more if data is already saved to the dashboard for previously scanned sheets
     if (Globals.studentInfo!.length == Globals.scanMoreStudentInfoLength) {
       dashoardState.value = 'Success';
     }
@@ -114,12 +156,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   padding: EdgeInsets.only(right: 5),
                   child: TextButton(
                       style: ButtonStyle(alignment: Alignment.center),
-                      child: Text("DONE",
-                          style: TextStyle(
-                            color: AppTheme.kButtonColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          )),
+                      child: TranslationWidget(
+                          message: "DONE",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage,
+                                style: TextStyle(
+                                  color: AppTheme.kButtonColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ));
+                          }),
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         Navigator.of(context).pushAndRemoveUntil(
@@ -135,205 +183,412 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
             body: Container(
               //     padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SpacerWidget(_KVertcalSpace * 0.50),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Utility.textWidget(
-                            text: 'Results Summary',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(fontWeight: FontWeight.bold)),
-                        ValueListenableBuilder(
-                            valueListenable: assessmentCount,
-                            builder: (BuildContext context, int value,
-                                Widget? child) {
-                              return Text(
-                                  "${assessmentCount.value > 0 ? assessmentCount.value : ''}",
-                                  style: Theme.of(context).textTheme.headline3);
-                            }),
-                      ],
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SpacerWidget(_KVertcalSpace * 0.50),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Utility.textWidget(
+                              text: 'Results Summary',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(fontWeight: FontWeight.bold)),
+                          ValueListenableBuilder(
+                              valueListenable: assessmentCount,
+                              builder: (BuildContext context, int value,
+                                  Widget? child) {
+                                return Text(
+                                    "${assessmentCount.value > 0 ? assessmentCount.value : ''}",
+                                    style:
+                                        Theme.of(context).textTheme.headline3);
+                              }),
+                        ],
+                      ),
                     ),
-                  ),
-                  SpacerWidget(_KVertcalSpace / 3),
-                  !widget.assessmentDetailPage!
-                      ? Column(
-                          children: [
-                            resultTitle(),
-                            listView(
-                              Globals.studentInfo!,
-                            ),
-                          ],
-                        )
-                      : BlocConsumer(
-                          bloc: _driveBloc,
-                          builder:
-                              (BuildContext contxt, GoogleDriveState state) {
-                            if (state is AssessmentDetailSuccess) {
-                              if (state.obj.length > 0) {
-                                isAssessmentAlreadySaved = state.obj[0] !=
-                                            null &&
-                                        state.obj[0] != ''
-                                    ? state.obj[0].isSavedOnDashBoard != null &&
-                                            state.obj[0].isSavedOnDashBoard !=
-                                                ''
-                                        ? state.obj[0].isSavedOnDashBoard
-                                        : ''.toString()
-                                    : '';
-                                return Column(
-                                  children: [
-                                    resultTitle(),
-                                    listView(
-                                      state.obj,
-                                    )
-                                  ],
-                                );
-                              } else {
-                                return Expanded(
-                                  child: NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: true,
-                                      isNews: false,
-                                      isEvents: false),
+                    SpacerWidget(_KVertcalSpace / 3),
+                    !widget.assessmentDetailPage!
+                        ? Column(
+                            children: [
+                              resultTitle(),
+                              Builder(builder: (context) {
+                                return ValueListenableBuilder(
+                                    valueListenable: assessmentCount,
+                                    builder: (BuildContext context,
+                                        int listCount, Widget? child) {
+                                      return ValueListenableBuilder(
+                                          valueListenable: sudentRecordList,
+                                          builder: (BuildContext context,
+                                              List<StudentAssessmentInfo>
+                                                  newList,
+                                              Widget? child) {
+                                            return listView(
+                                              sudentRecordList.value,
+                                            );
+                                          });
+                                    });
+                              }),
+                              BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                                  bloc: _driveBloc2,
+                                  child: Container(),
+                                  listener: (context, state) async {
+                                    if (state is GoogleDriveLoading) {
+                                      Utility.showLoadingDialog(context);
+                                    }
+                                    if (state is GoogleSuccess) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    if (state is ErrorState) {
+                                      if (state.errorMsg ==
+                                          'Reauthentication is required') {
+                                        await Utility
+                                            .refreshAuthenticationToken(
+                                                isNavigator: true,
+                                                errorMsg: state.errorMsg!,
+                                                context: context,
+                                                scaffoldKey: scaffoldKey);
+
+                                        _driveBloc2.add(UpdateDocOnDrive(
+                                           assessmentName: Globals.assessmentName!,
+                    fileId: Globals.googleExcelSheetId,
+                                            isLoading: true,
+                                            studentData:
+                                                //list2
+                                                Globals.studentInfo!));
+                                      } else {
+                                        Navigator.of(context).pop();
+                                        Utility.currentScreenSnackBar(
+                                            "Something Went Wrong. Please Try Again.");
+                                      }
+
+                                      // Navigator.of(context).pop();
+                                      // Utility.currentScreenSnackBar(
+                                      //     "Something Went Wrong. Please Try Again.");
+                                    }
+                                  }),
+                            ],
+                          )
+                        : BlocConsumer(
+                            bloc: _driveBloc,
+                            builder:
+                                (BuildContext contxt, GoogleDriveState state) {
+                              if (state is GoogleDriveLoading2) {
+                                return Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  )),
                                 );
                               }
-                              // return
 
-                              // state.obj.length > 1
-                              //     ? listView(
-                              //         state.obj,
-                              //       )
-                              //     : Expanded(
-                              //         child: NoDataFoundErrorWidget(
-                              //             isResultNotFoundMsg: true,
-                              //             isNews: false,
-                              //             isEvents: false),
-                              //       );
-                            }
-                            //  else if (state is GoogleNoAssessment) {
-                            //   return Container(
-                            //     height:
-                            //         MediaQuery.of(context).size.height * 0.7,
-                            //     child: Center(
-                            //         child: Text(
-                            //       "No assessment available",
-                            //       style: Theme.of(context).textTheme.bodyText1!,
-                            //     )),
-                            //   );
-                            // }
-                            return Container(
-                              height: MediaQuery.of(context).size.height * 0.7,
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryVariant,
-                              )),
-                            );
-                          },
-                          listener:
-                              (BuildContext contxt, GoogleDriveState state) {
-                            if (state is AssessmentDetailSuccess) {
-                              if (state.obj.length > 0) {
-                                if (state.obj.first.isSavedOnDashBoard ==
-                                    "YES") {
-                                  dashoardState.value = "Success";
+                              if (state is AssessmentDetailSuccess) {
+                                if (state.obj.length > 0) {
+                                  Globals.historyStudentInfo = state.obj;
+                                  print(
+                                      "record length ---===========> ${state.obj.length}");
+                                  print(
+                                      "record length ---===========> $savedRecordCount");
+                                  savedRecordCount != null
+                                      ? savedRecordCount == state.obj.length
+                                          ? dashoardState.value = 'Success'
+                                          : dashoardState.value = ''
+                                      : print("");
+                                  // isAssessmentAlreadySaved =
+                                  //     state.obj[0] != null && state.obj[0] != ''
+                                  //         ? state.obj[0].isSavedOnDashBoard !=
+                                  //                     null &&
+                                  //                 state.obj[0]
+                                  //                         .isSavedOnDashBoard !=
+                                  //                     ''
+                                  //             ? state.obj[0].isSavedOnDashBoard
+                                  //             : ''.toString()
+                                  //         : '';
+                                  return Column(
+                                    children: [
+                                      resultTitle(),
+                                      listView(Globals.historyStudentInfo!)
+                                    ],
+                                  );
+                                } else {
+                                  return Expanded(
+                                    child: NoDataFoundErrorWidget(
+                                        isResultNotFoundMsg: true,
+                                        isNews: false,
+                                        isEvents: false),
+                                  );
                                 }
-                                sheetrubricScore =
-                                    state.obj.first.scoringRubric;
-                                webContentLink = state.webContentLink;
-                                isSuccessStateRecived.value = true;
-                                historyRecordList = state.obj;
+                              }
+                              if (state is AssessmentDetailSuccess) {
+                                if (state.obj.length > 0) {
+                                  // isAssessmentAlreadySaved =
+                                  // state.obj[0] != null && state.obj[0] != ''
+                                  //     ? state.obj[0].isSavedOnDashBoard !=
+                                  //                 null &&
+                                  //             state.obj[0]
+                                  //                     .isSavedOnDashBoard !=
+                                  //                 ''
+                                  //         ? state.obj[0].isSavedOnDashBoard
+                                  //         : ''.toString()
+                                  //     : '';
+                                  return Column(
+                                    children: [
+                                      resultTitle(),
+                                      listView(
+                                        state.obj,
+                                      )
+                                    ],
+                                  );
+                                } else {
+                                  return Expanded(
+                                    child: NoDataFoundErrorWidget(
+                                        isResultNotFoundMsg: true,
+                                        isNews: false,
+                                        isEvents: false),
+                                  );
+                                }
+                                // return
 
-                                assessmentCount.value = state.obj.length;
+                                // state.obj.length > 1
+                                //     ? listView(
+                                //         state.obj,
+                                //       )
+                                //     : Expanded(
+                                //         child: NoDataFoundErrorWidget(
+                                //             isResultNotFoundMsg: true,
+                                //             isNews: false,
+                                //             isEvents: false),
+                                //       );
+                              }
+                              //  else if (state is GoogleNoAssessment) {
+                              //   return Container(
+                              //     height:
+                              //         MediaQuery.of(context).size.height * 0.7,
+                              //     child: Center(
+                              //         child: Text(
+                              //       "No assessment available",
+                              //       style: Theme.of(context).textTheme.bodyText1!,
+                              //     )),
+                              //   );
+                              // }
+                              return Container();
+                            },
+                            listener: (BuildContext contxt,
+                                GoogleDriveState state) async {
+                              if (state is AssessmentDetailSuccess) {
+                                if (state.obj.length > 0) {
+                                  // if (state.obj.first.isSavedOnDashBoard ==
+                                  //     "YES") {
+                                  //   dashoardState.value = "Success";
+                                  // }
+                                  sheetrubricScore =
+                                      state.obj.first.scoringRubric;
+                                  webContentLink = state.webContentLink;
+                                  isSuccessStateRecived.value = true;
+                                  historyRecordList = state.obj;
+
+                                  assessmentCount.value = state.obj.length;
+                                }
+                              } else if (state is ErrorState) {
+                                if (state.errorMsg ==
+                                    'Reauthentication is required') {
+                                  await Utility.refreshAuthenticationToken(
+                                      isNavigator: false,
+                                      errorMsg: state.errorMsg!,
+                                      context: context,
+                                      scaffoldKey: scaffoldKey);
+
+                                  _driveBloc.add(GetAssessmentDetail(
+                                      fileId: widget.fileId));
+                                } else {
+                                  Navigator.of(context).pop();
+                                  Utility.currentScreenSnackBar(
+                                      "Something Went Wrong. Please Try Again.");
+                                }
+                              }
+                            },
+                          ),
+                    Container(
+                      height: 0,
+                      width: 0,
+                      child: BlocListener<OcrBloc, OcrState>(
+                          bloc: _ocrBloc,
+                          listener: (context, state) async {
+                            if (state is OcrLoading) {
+                              dashoardState.value = 'Loading';
+                            } else if (state is AssessmentSavedSuccessfully) {
+                              //To update slidable action buttons : Enable/Disable
+                              updateSlidableAction.value = true;
+
+                              dashoardState.value = 'Success';
+                              if (Globals.studentInfo!.length > 0 &&
+                                  Globals.studentInfo![0].studentId == 'Id') {
+                                Globals.studentInfo!.removeAt(0);
+                              }
+
+                              Globals.studentInfo!.forEach((element) {
+                                // element.subject =
+                                //     Globals.studentInfo!.first.subject;
+                                // element.learningStandard = Globals.studentInfo!
+                                //             .first.learningStandard ==
+                                //         null
+                                //     ? "NA"
+                                //     : Globals
+                                //         .studentInfo!.first.learningStandard;
+                                // element.subLearningStandard = Globals
+                                //             .studentInfo!
+                                //             .first
+                                //             .subLearningStandard ==
+                                //         null
+                                //     ? "NA"
+                                //     : Globals
+                                //         .studentInfo!.first.subLearningStandard;
+                                // element.scoringRubric = Globals.scoringRubric;
+                                // element.customRubricImage = Globals
+                                //         .studentInfo!.first.customRubricImage ??
+                                //     "NA";
+                                // element.grade =
+                                //     Globals.studentInfo!.first.grade;
+                                // element.className = Globals.assessmentName!
+                                //     .split("_")[1]; //widget.selectedClass;
+                                // element.questionImgUrl =
+                                //     Globals.studentInfo!.first.questionImgUrl;
+
+                                //Disabling all the existing records edit functionality. Only scan more records will be allowed to edit.
+                                if (element.isSavedOnDashBoard == null) {
+                                  element.isSavedOnDashBoard = true;
+                                }
+                              });
+
+                              assessmentCount.value =
+                                  Globals.studentInfo!.length;
+
+                              // _driveBloc.add(UpdateDocOnDrive(
+                              //   isLoading: false,
+                              //     fileId: widget.fileId,
+                              //     studentData: Globals.studentInfo!)
+                              //     );
+
+                              _showSaveDataPopUp();
+
+                              // Utility.showSnackBar(
+                              //     scaffoldKey,
+                              //     'Yay! Data has been successully saved to the dashboard',
+                              //     context,
+                              //     null);
+                            } else if (state is OcrErrorReceived) {
+                              updateSlidableAction.value = false;
+                            }
+                            if (state is AssessmentDashboardStatus) {
+                              if (state.assessmentId == null &&
+                                  state.resultRecordCount == null) {
+                                dashoardState.value = '';
+                              } else {
+                                savedRecordCount = state.resultRecordCount;
+                                historyAssessmentId = state.assessmentId;
                               }
                             }
                           },
-                        ),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<OcrBloc, OcrState>(
-                        bloc: _ocrBloc,
-                        listener: (context, state) async {
-                          if (state is OcrLoading) {
-                            dashoardState.value = 'Loading';
-                          } else if (state is AssessmentSavedSuccessfully) {
-                            dashoardState.value = 'Success';
-                            if (Globals.studentInfo!.length > 0 &&
-                                Globals.studentInfo![0].studentId == 'Id') {
-                              Globals.studentInfo!.removeAt(0);
-                            }
+                          child: EmptyContainer()),
+                    ),
 
-                            //To copy the static content in the sheet
-                            Globals.studentInfo!.forEach((element) {
-                              element.subject =
-                                  Globals.studentInfo!.first.subject;
-                              element.learningStandard = Globals.studentInfo!
-                                          .first.learningStandard ==
-                                      null
-                                  ? "NA"
-                                  : Globals.studentInfo!.first.learningStandard;
-                              element.subLearningStandard = Globals.studentInfo!
-                                          .first.subLearningStandard ==
-                                      null
-                                  ? "NA"
-                                  : Globals
-                                      .studentInfo!.first.subLearningStandard;
-                              element.scoringRubric = Globals.scoringRubric;
-                              element.customRubricImage = Globals
-                                      .studentInfo!.first.customRubricImage ??
-                                  "NA";
-                              element.grade = Globals.studentInfo!.first.grade;
-                              element.className = Globals.assessmentName!
-                                  .split("_")[1]; //widget.selectedClass;
-                              element.questionImgUrl =
-                                  Globals.studentInfo!.first.questionImgUrl;
-                              element.isSavedOnDashBoard = "YES";
-                            });
+                    // BlocListener(
+                    //     bloc: _ocrBloc,
+                    //     listener: (context, state) async {
+                    //       if (state is OcrLoading2) {
+                    //         dashoardState.value = 'Loading';
+                    //       } else if (state is AssessmentSavedSuccessfully) {
+                    //         dashoardState.value = 'Success';
 
-                            _driveBloc.add(UpdateDocOnDrive(
-                                fileId: widget.fileId,
-                                studentData: Globals.studentInfo!));
+                    //         if (Globals.studentInfo!.length > 0 &&
+                    //             Globals.studentInfo![0].studentId == 'Id') {
+                    //           Globals.studentInfo!.removeAt(0);
+                    //         }
 
-                            _showSaveDataPopUp();
+                    //         //To copy the static content in the sheet
+                    //         Globals.studentInfo!.forEach((element) {
+                    //           element.subject =
+                    //               Globals.studentInfo!.first.subject;
+                    //           element.learningStandard = Globals.studentInfo!
+                    //                       .first.learningStandard ==
+                    //                   null
+                    //               ? "NA"
+                    //               : Globals.studentInfo!.first.learningStandard;
+                    //           element.subLearningStandard = Globals.studentInfo!
+                    //                       .first.subLearningStandard ==
+                    //                   null
+                    //               ? "NA"
+                    //               : Globals
+                    //                   .studentInfo!.first.subLearningStandard;
+                    //           element.scoringRubric = Globals.scoringRubric;
+                    //           element.customRubricImage = Globals
+                    //                   .studentInfo!.first.customRubricImage ??
+                    //               "NA";
+                    //           element.grade = Globals.studentInfo!.first.grade;
+                    //           element.className = Globals.assessmentName!
+                    //               .split("_")[1]; //widget.selectedClass;
+                    //           element.questionImgUrl =
+                    //               Globals.studentInfo!.first.questionImgUrl;
+                    //           if (element.isSavedOnDashBoard == null) {
+                    //             element.isSavedOnDashBoard = true;
+                    //           }
+                    //         });
+                    //         assessmentCount.value = Globals.studentInfo!.length;
 
-                            // Utility.showSnackBar(
-                            //     scaffoldKey,
-                            //     'Yay! Data has been successully saved to the dashboard',
-                            //     context,
-                            //     null);
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                ],
+                    //         // _driveBloc.add(UpdateDocOnDrive(
+                    //         //   isLoading: false,
+                    //         //     fileId: widget.fileId,
+                    //         //     studentData: Globals.studentInfo!)
+                    //         //     );
+
+                    //         _showSaveDataPopUp();
+
+                    // Utility.showSnackBar(
+                    //     scaffoldKey,
+                    //     'Yay! Data has been successully saved to the dashboard',
+                    //     context,
+                    //     null);
+                    // }
+
+                    // child: Container()),
+                  ],
+                ),
               ),
             ),
             floatingActionButton: Column(
               mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                !widget.assessmentDetailPage!
-                    ? _scanFloatingWidget()
-                    : Container(),
+                if (!widget.assessmentDetailPage!) _scanFloatingWidget(),
                 SpacerWidget(10),
                 !widget.assessmentDetailPage!
                     ? _bottomButtons(context, iconsList, iconsName,
-                        webContentLink: Globals.googleDriveFolderPath!)
+                        webContentLink: Globals.googleDriveFolderPath ?? '')
                     : ValueListenableBuilder(
                         valueListenable: isSuccessStateRecived,
+                        child: Container(),
                         builder:
                             (BuildContext context, bool value, Widget? child) {
                           return isSuccessStateRecived.value == true
-                              ? _bottomButtons(context, iconsList, iconsName,
-                                  webContentLink: webContentLink!)
+                              ? Column(
+                                  children: [
+                                    _scanFloatingWidget(),
+                                    SpacerWidget(10),
+                                    _bottomButtons(
+                                        context, iconsList, iconsName,
+                                        webContentLink: webContentLink!),
+                                  ],
+                                )
                               : Container();
                         }),
               ],
@@ -450,8 +705,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         child: Container(
                           //    margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
                           child: Image(
-                            width: Globals.deviceType == "phone" ? 35 : 32,
-                            height: Globals.deviceType == "phone" ? 35 : 32,
+                            width: Globals.deviceType == "phone" ? 35 : 50,
+                            height: Globals.deviceType == "phone" ? 35 : 50,
                             image: AssetImage(
                               "assets/images/drive_ico.png",
                             ),
@@ -485,52 +740,132 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       : Expanded(
                           child: IconButton(
                             padding: EdgeInsets.all(0),
-                            icon: Icon(
-                              IconData(
-                                  (widget.assessmentDetailPage!
-                                              ? index == 2
-                                              : index == 3) &&
-                                          dashoardState.value == 'Success'
-                                      ? 0xe877
-                                      : iconsList[index],
-                                  fontFamily: Overrides.kFontFam,
-                                  fontPackage: Overrides.kFontPkg),
-                              size: (widget.assessmentDetailPage!
-                                          ? index == 2
-                                          : index == 3) &&
-                                      dashoardState.value == ''
-                                  ? 38
-                                  : 32,
-                              color: (widget.assessmentDetailPage! &&
-                                          index == 2 &&
-                                          isAssessmentAlreadySaved == 'YES') ||
-                                      (widget.assessmentDetailPage! &&
-                                          index == 2 &&
-                                          dashoardState.value == 'Success')
-                                  ? Colors.green
-                                  : index == 2 ||
-                                          (index == 3 &&
-                                              dashoardState.value == '')
-                                      ? Theme.of(context).backgroundColor ==
-                                              Color(0xff000000)
-                                          ? Colors.white
-                                          : Colors.black
-                                      : (widget.assessmentDetailPage!
-                                                  ? index == 2
-                                                  : index == 3) &&
-                                              dashoardState.value == 'Success'
-                                          ? Colors.green
-                                          : AppTheme.kButtonColor,
-                            ),
+                            icon: index == 0 &&
+                                    !widget.assessmentDetailPage! &&
+                                    widget.isScanMore == null
+                                ?
+                                //Calling builder in case of result summary (Not detail page)
+
+                                BlocConsumer(
+                                    bloc: _driveBloc,
+                                    builder: (context, state) {
+                                      if (state is ShareLinkRecived) {
+                                        widget.shareLink = state.shareLink;
+
+                                        return Icon(
+                                          IconData(iconsList[index],
+                                              fontFamily: Overrides.kFontFam,
+                                              fontPackage: Overrides.kFontPkg),
+                                          size: (widget.assessmentDetailPage!
+                                                      ? index == 2
+                                                      : index == 3) &&
+                                                  dashoardState.value == ''
+                                              ? Globals.deviceType == 'phone'
+                                                  ? 38
+                                                  : 45
+                                              : Globals.deviceType == 'phone'
+                                                  ? 32
+                                                  : 45,
+                                          color: AppTheme.kButtonColor,
+                                        );
+                                      }
+
+                                      return Container(
+                                          padding: EdgeInsets.only(
+                                              bottom: 14, top: 8),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.058,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.058,
+                                          alignment: Alignment.center,
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                          )));
+                                    },
+                                    listener: (context, state) async {
+                                      if (state is ErrorState) {
+                                        if (state.errorMsg ==
+                                            'Reauthentication is required') {
+                                          await Utility
+                                              .refreshAuthenticationToken(
+                                                  isNavigator: false,
+                                                  errorMsg: state.errorMsg!,
+                                                  context: context,
+                                                  scaffoldKey: scaffoldKey);
+
+                                          _driveBloc.add(GetShareLink(
+                                              fileId: widget.fileId));
+                                        } else {
+                                          Navigator.of(context).pop();
+                                          Utility.currentScreenSnackBar(
+                                              "Something Went Wrong. Please Try Again.");
+                                        }
+                                      }
+                                    },
+                                  )
+                                : Icon(
+                                    IconData(
+                                        (widget.assessmentDetailPage!
+                                                    ? index == 2
+                                                    : index == 3) &&
+                                                dashoardState.value == 'Success'
+                                            ? 0xe877
+                                            : iconsList[index],
+                                        fontFamily: Overrides.kFontFam,
+                                        fontPackage: Overrides.kFontPkg),
+                                    size: (widget.assessmentDetailPage!
+                                                ? index == 2
+                                                : index == 3) &&
+                                            dashoardState.value == ''
+                                        ? Globals.deviceType == 'phone'
+                                            ? 38
+                                            : 55
+                                        : Globals.deviceType == 'phone'
+                                            ? 32
+                                            : 48,
+                                    color: (widget.assessmentDetailPage! &&
+                                                index == 2 &&
+                                                isAssessmentAlreadySaved ==
+                                                    'YES') ||
+                                            (widget.assessmentDetailPage! &&
+                                                index == 2 &&
+                                                dashoardState.value ==
+                                                    'Success')
+                                        ? Colors.green
+                                        : index == 2 ||
+                                                (index == 3 &&
+                                                    dashoardState.value == '')
+                                            ? Theme.of(context)
+                                                        .backgroundColor ==
+                                                    Color(0xff000000)
+                                                ? Colors.white
+                                                : Colors.black
+                                            : (widget.assessmentDetailPage!
+                                                        ? index == 2
+                                                        : index == 3) &&
+                                                    dashoardState.value ==
+                                                        'Success'
+                                                ? Colors.green
+                                                : AppTheme.kButtonColor,
+                                  ),
                             onPressed: () {
                               if (index == 0) {
                                 widget.shareLink != null &&
                                         widget.shareLink!.isNotEmpty
                                     ? Share.share(widget.shareLink!)
                                     : print("no link ");
-                              } else if ((widget.assessmentDetailPage!
-                                  ? index == 1
-                                  : index == 2)) {
+                              } else if (!widget.assessmentDetailPage! &&
+                                  // ? index == 1
+                                  // :
+                                  index == 2) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -543,16 +878,22 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   dashoardState.value == '') {
                                 Globals.scanMoreStudentInfoLength =
                                     Globals.studentInfo!.length - 1;
+
                                 if (widget.isScanMore == true &&
+                                    widget.assessmentListLenght != null &&
                                     widget.assessmentListLenght! <
                                         Globals.studentInfo!.length) {
                                   _ocrBloc.add(SaveAssessmentToDashboard(
+                                      assessmentId:
+                                          !widget.assessmentDetailPage!
+                                              ? Globals.currentAssessmentId
+                                              : historyAssessmentId ?? '',
                                       assessmentSheetPublicURL:
                                           widget.shareLink,
                                       resultList: Globals.studentInfo!,
                                       previouslyAddedListLength:
                                           widget.assessmentListLenght,
-                                      assessmentName: widget.asssessmentName,
+                                      assessmentName: widget.asssessmentName!,
                                       rubricScore: widget.rubricScore ?? '',
                                       subjectId: widget.subjectId ?? '',
                                       schoolId: Globals
@@ -563,13 +904,37 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       isHistoryAssessmentSection:
                                           widget.assessmentDetailPage!));
                                 } else {
+                                  // Adding the non saved record of dashboard in the list
+                                  List<StudentAssessmentInfo> _listRecord = [];
+
+                                  if (widget.assessmentDetailPage! &&
+                                      savedRecordCount != null &&
+                                      historyRecordList.length !=
+                                          savedRecordCount!) {
+                                    _listRecord = historyRecordList.sublist(
+                                        savedRecordCount!,
+                                        historyRecordList.length);
+
+                                    // print(historyRecordList);
+                                    // print(_listRecord);
+                                    // print("_listRecord");
+                                  } else {
+                                    //
+                                    _listRecord = historyRecordList;
+                                    // print("_listRecord");
+                                  }
+
                                   _ocrBloc.add(SaveAssessmentToDashboard(
+                                      assessmentId:
+                                          !widget.assessmentDetailPage!
+                                              ? Globals.currentAssessmentId
+                                              : historyAssessmentId ?? '',
                                       assessmentSheetPublicURL:
                                           widget.shareLink,
                                       resultList: !widget.assessmentDetailPage!
                                           ? Globals.studentInfo!
-                                          : historyRecordList,
-                                      assessmentName: widget.asssessmentName,
+                                          : _listRecord,
+                                      assessmentName: widget.asssessmentName!,
                                       rubricScore: !widget.assessmentDetailPage!
                                           ? widget.rubricScore ?? ''
                                           : sheetrubricScore ?? '',
@@ -580,17 +945,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       scaffoldKey: scaffoldKey,
                                       context: context,
                                       isHistoryAssessmentSection:
-                                          widget.assessmentDetailPage!));
+                                          widget.assessmentDetailPage!,
+                                      fileId: widget.fileId ?? ''));
                                 }
                               }
-                              // else if (index == 3 &&
-                              //     dashoardState.value == 'Success') {
-                              // Utility.showSnackBar(
-                              //     scaffoldKey,
-                              //     'Data has already been saved to the dashboard',
-                              //     context,
-                              //     null);
-                              // }
                             },
                           ),
                         ),
@@ -600,26 +958,74 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Widget listView(List<StudentAssessmentInfo> _list) {
-    return Container(
-      // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
-      height: widget.assessmentDetailPage!
-          ? (MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.65
-              : MediaQuery.of(context).size.height * 0.45)
-          : (MediaQuery.of(context).orientation == Orientation.portrait
-              ? MediaQuery.of(context).size.height * 0.5
-              : MediaQuery.of(context).size.height * 0.45),
-      child: ListView.builder(
-        controller: _scrollController,
-        shrinkWrap: true,
-        // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
-        scrollDirection: Axis.vertical,
-        itemCount: _list.length, // Globals.gradeList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildList(index, _list, context);
-        },
-      ),
-    );
+    return ValueListenableBuilder<bool>(
+        valueListenable: updateSlidableAction,
+        child: Container(),
+        builder: (BuildContext context, bool value, Widget? child) {
+          return Container(
+            // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
+            height: widget.assessmentDetailPage!
+                ? (MediaQuery.of(context).orientation == Orientation.portrait
+                    ? MediaQuery.of(context).size.height * 0.58
+                    : MediaQuery.of(context).size.height * 0.45)
+                : (MediaQuery.of(context).orientation == Orientation.portrait
+                    ? MediaQuery.of(context).size.height * 0.5
+                    : MediaQuery.of(context).size.height * 0.45),
+            child: ListView.builder(
+              //padding:widget.assessmentDetailPage==true? EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.06):null,
+              controller: _scrollController,
+              shrinkWrap: true,
+              padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+              scrollDirection: Axis.vertical,
+              itemCount: _list.length, // Globals.gradeList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Slidable(
+                    enabled: widget.assessmentDetailPage == true ? false : true,
+                    // Specify a key if the Slidable is dismissible.
+                    key: ValueKey(index),
+                    endActionPane: ActionPane(
+                      motion: ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          // An action can be bigger than the others.
+
+                          onPressed: (i) {
+                            print(i);
+                            _list[index].isSavedOnDashBoard == null
+                                ? performEditAndDelete(context, index, true)
+                                : Utility.currentScreenSnackBar(
+                                    "You Cannot Edit The Record Which Is Already Saved To The \'Data Dashboard\'");
+                          },
+                          backgroundColor:
+                              _list[index].isSavedOnDashBoard == null
+                                  ? AppTheme.kButtonColor
+                                  : Colors.grey,
+                          foregroundColor: Colors.white,
+                          icon: Icons.edit,
+                          label: 'Edit',
+                        ),
+                        SlidableAction(
+                          onPressed: (i) {
+                            _list[index].isSavedOnDashBoard == null
+                                ? performEditAndDelete(context, index, false)
+                                : Utility.currentScreenSnackBar(
+                                    "You Cannot Delete The Record Which Is Already Saved To The \'Data Dashboard\'");
+                          },
+                          backgroundColor:
+                              _list[index].isSavedOnDashBoard == null
+                                  ? Colors.red
+                                  : Colors.grey,
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        ),
+                      ],
+                    ),
+                    child: _buildList(index, _list, context));
+              },
+            ),
+          );
+        });
   }
 
   Widget _buildList(int index, List<StudentAssessmentInfo> _list, context) {
@@ -682,7 +1088,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
-            width: isScrolling.value ? null : 200,
+            margin: EdgeInsets.only(left: 15),
+            alignment: Alignment.center,
+            // width: isScrolling.value ? null : 130,
             child: FloatingActionButton.extended(
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
@@ -693,6 +1101,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                                oneTimeCamera: widget.assessmentDetailPage!,
+                                isFromHistoryAssessmentScanMore:
+                                    widget.assessmentDetailPage!,
+                                onlyForPicture: false,
                                 isScanMore: true,
                                 // lastStudentInfoLenght: Globals.studentInfo!.length,
                                 pointPossible: Globals.pointpossible ?? '2',
@@ -705,7 +1117,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     color: Theme.of(context).backgroundColor,
                     size: 16),
                 label: Utility.textWidget(
-                    text: 'Scan More',
+                    text: isScrolling.value ? '' : 'Scan More',
                     context: context,
                     textTheme: Theme.of(context)
                         .textTheme
@@ -718,6 +1130,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   Widget _bottomButtons(context, List iconsList, List iconName,
       {required String webContentLink}) {
     return Container(
+        alignment: Alignment.center,
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor == Color(0xff000000)
                 ? Color(0xff162429)
@@ -731,9 +1144,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             ],
             borderRadius: BorderRadius.circular(4)),
         margin: widget.assessmentDetailPage!
-            ? EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.07)
-            : null,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+            ? EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.28,
+                right: MediaQuery.of(context).size.width * 0.25)
+            : Globals.deviceType == 'tablet'
+                ? EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.03)
+                : null,
+        padding: Globals.deviceType == 'tablet'
+            ? EdgeInsets.symmetric(horizontal: 20)
+            : EdgeInsets.symmetric(horizontal: 8),
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.086
             : MediaQuery.of(context).size.width * 0.086,
@@ -749,6 +1169,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   iconsList.indexOf(element), iconName,
                   webContentLink: webContentLink))
               .toList(),
+          // [
+          //  // Container()
+          // ]
         ));
   }
 
@@ -775,11 +1198,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             ? MediaQuery.of(context).size.width / 2
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
-                        message: "Saved to Data Dashboard",
+                        message: "Saved To Data Dashboard",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
                           return Text(translatedMessage.toString(),
+                              textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline1!
@@ -790,6 +1214,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 content: TranslationWidget(
                     message:
                         'Yay! Assessment data has been successfully added to your school’s Data Dashboard.',
+
+                    //     'Yay! Data has been successully saved to the dashboard',
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
@@ -837,99 +1263,215 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   getGoogleFolderPath() async {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
-    Utility.showSnackBar(
-        scaffoldKey,
-        "Unable to navigate at the moment. Please try again later",
-        context,
-        null);
+    Utility.showSnackBar(scaffoldKey,
+        "Unable To Navigate At The Moment. Please Try Again.", context, null);
 
     _driveBloc.add(GetDriveFolderIdEvent(
+        isFromOcrHome: false,
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
         refreshtoken: _profileData[0].refreshToken));
   }
-  // onFinishedPopup() {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) =>
-  //           OrientationBuilder(builder: (context, orientation) {
-  //             return AlertDialog(
-  //               backgroundColor: Colors.white,
-  //               title: Container(
-  //                   padding: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : const EdgeInsets.only(top: 10.0),
-  //                   height: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : orientation == Orientation.portrait
-  //                           ? MediaQuery.of(context).size.height / 15
-  //                           : MediaQuery.of(context).size.width / 15,
-  //                   width: Globals.deviceType == 'phone'
-  //                       ? null
-  //                       : orientation == Orientation.portrait
-  //                           ? MediaQuery.of(context).size.width / 2
-  //                           : MediaQuery.of(context).size.height / 2,
-  //                   child: Row(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       Utility.textWidget(
-  //                           text: 'Finished!',
-  //                           context: context,
-  //                           textTheme: Theme.of(context)
-  //                               .textTheme
-  //                               .headline6!
-  //                               .copyWith(
-  //                                   fontWeight: FontWeight.bold,
-  //                                   color: Colors.black)),
-  //                       SizedBox(width: 10),
-  //                       Icon(
-  //                         IconData(0xe878,
-  //                             fontFamily: Overrides.kFontFam,
-  //                             fontPackage: Overrides.kFontPkg),
-  //                         size: 30,
-  //                         color: AppTheme.kButtonColor,
-  //                       ),
-  //                     ],
-  //                   )),
-  //               actions: [
-  //                 Container(
-  //                   height: 1,
-  //                   width: MediaQuery.of(context).size.height,
-  //                   color: Colors.grey.withOpacity(0.2),
-  //                 ),
-  //                 Center(
-  //                   child: Container(
-  //                     // height: 20,
-  //                     child: TextButton(
-  //                       child: TranslationWidget(
-  //                           message: "Done ",
-  //                           fromLanguage: "en",
-  //                           toLanguage: Globals.selectedLanguage,
-  //                           builder: (translatedMessage) {
-  //                             return Text(translatedMessage.toString(),
-  //                                 style: Theme.of(context)
-  //                                     .textTheme
-  //                                     .headline5!
-  //                                     .copyWith(
-  //                                       color: AppTheme.kButtonColor,
-  //                                     ));
-  //                           }),
-  //                       onPressed: () {
-  //                         //Globals.iscameraPopup = false;
-  //                         Navigator.of(context).pushAndRemoveUntil(
-  //                             MaterialPageRoute(
-  //                                 builder: (context) => HomePage()),
-  //                             (_) => false);
-  //                       },
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //               shape: RoundedRectangleBorder(
-  //                   borderRadius: BorderRadius.circular(12)),
-  //               elevation: 16,
-  //             );
-  //           }));
-  // }
+
+  performEditAndDelete(BuildContext context, int index, bool? edit) {
+    if (edit!) {
+      editingStudentNameController.text =
+          Globals.studentInfo![index].studentName!;
+      editingStudentIdController.text = Globals.studentInfo![index].studentId!;
+      editingStudentScoreController.text =
+          Globals.studentInfo![index].studentGrade!;
+      editBottomSheet(
+          controllerOne: editingStudentNameController,
+          controllerTwo: editingStudentIdController,
+          controllerThree: editingStudentScoreController,
+          index: index);
+    } else {
+      Globals.studentInfo!.length > 2
+          ? _deletePopUP(
+              studentName: Globals.studentInfo![index].studentName!,
+              index: index)
+          : Utility.currentScreenSnackBar(
+              "Action Not Performed. Result List Cannot Be Empty.");
+    }
+  }
+
+  editBottomSheet(
+      {required TextEditingController controllerOne,
+      required TextEditingController controllerTwo,
+      required TextEditingController controllerThree,
+      required int index}) {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => EditBottomSheet(
+              textFieldControllerthree: controllerThree,
+              textFieldControllerOne: controllerOne,
+              textFieldControllerTwo: controllerTwo,
+              sheetHeight: MediaQuery.of(context).size.height / 2.0,
+              title: 'Edit Student Details',
+              isImageField: false,
+              textFieldTitleOne: 'Student Name',
+              textFieldTitleTwo: 'Student Id',
+              textFileTitleThree: "Student Grade",
+              isSubjectScreen: false,
+              update: (
+                  {required TextEditingController name,
+                  required TextEditingController id,
+                  required TextEditingController score}) {
+                Globals.studentInfo![index].studentName = name.text;
+                Globals.studentInfo![index].studentId = id.text;
+                Globals.studentInfo![index].studentGrade = score.text;
+                Navigator.pop(context);
+
+                _driveBloc2.add(UpdateDocOnDrive(
+                    assessmentName: Globals.assessmentName!,
+                    fileId: Globals.googleExcelSheetId,
+                    isLoading: true,
+                    studentData:
+                        //list2
+                        Globals.studentInfo!));
+                assessmentCount.value = Globals.studentInfo!.length;
+                sudentRecordList.value = Globals.studentInfo!;
+              },
+            ));
+  }
+
+  _deletePopUP({required String studentName, required int index}) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Center(
+                  child: Container(
+                    padding: Globals.deviceType == 'phone'
+                        ? null
+                        : const EdgeInsets.only(top: 10.0),
+                    height: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                    width: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                    child: TranslationWidget(
+                        message: "Delete Record",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(color: Colors.red));
+                        }),
+                  ),
+                ),
+                content: TranslationWidget(
+                    message: 'You are about to delete the record - ',
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return RichText(
+                        text: TextSpan(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.black),
+                          children: <TextSpan>[
+                            TextSpan(text: translatedMessage),
+                            TextSpan(
+                                text: '"$studentName"',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      );
+
+                      //  Text(translatedMessage.toString(),
+                      //     style: Theme.of(context)
+                      //         .textTheme
+                      //         .headline2!
+                      //         .copyWith(color: Colors.black));
+                    }),
+                actions: <Widget>[
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        child: TranslationWidget(
+                            message: "Keep the record",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppTheme.kButtonColor,
+                                      ));
+                            }),
+                        onPressed: () {
+                          //Globals.iscameraPopup = false;
+                          Navigator.pop(
+                            context,
+                          );
+                        },
+                      ),
+                      TextButton(
+                        child: TranslationWidget(
+                            message: "Delete ",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: Colors.red,
+                                      ));
+                            }),
+                        onPressed: () {
+                          Globals.studentInfo!.removeAt(index);
+                          assessmentCount.value = Globals.studentInfo!.length;
+                          sudentRecordList.value = Globals.studentInfo!;
+                          Navigator.pop(
+                            context,
+                          );
+
+                          _driveBloc2.add(UpdateDocOnDrive(
+                              assessmentName: Globals.assessmentName!,
+                              fileId: Globals.googleExcelSheetId,
+                              isLoading: true,
+                              studentData:
+                                  //list2
+                                  Globals.studentInfo!));
+                        },
+                      ),
+                    ],
+                  )
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              );
+            }));
+  }
 }

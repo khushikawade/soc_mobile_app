@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
@@ -87,7 +89,7 @@ class Globals {
   //   'Measurement'
   // ];
   // static List subjectList = ['Maths', 'Science', 'ELA', '+'];
-  static List classList = [
+  static List<String> classList = [
     'K',
     '1',
     '2',
@@ -101,7 +103,6 @@ class Globals {
     '10',
     '11',
     '12',
-    '?',
     '+'
   ];
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe87a];
@@ -121,7 +122,7 @@ class Globals {
   static String? pointpossible = '2';
   static String? assessmentName;
   static int? scanMoreStudentInfoLength;
-  static String lastDeshboardId = '';
+  static String currentAssessmentId = '';
   // static final nameController = TextEditingController();
   static final ValueNotifier<String> updateStudentName =
       ValueNotifier<String>('');
@@ -131,4 +132,8 @@ class Globals {
   // static List<UserInformation> userprofilelocalData = [];
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static String? questionImgUrl;
+  static File? questionImgFilePath;
+  static late List<StudentAssessmentInfo>? historyStudentInfo = [];
+  static String? historyAssessmentName = '';
+  static String? historyAssessmentFileId = '';
 }

@@ -7,16 +7,21 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../modules/ocr/widgets/common_ocr_appbar.dart';
+
 // ignore: must_be_immutable
 class CommonPdfViewerPage extends StatefulWidget {
   final String? url;
   String? tittle = '';
   String? language;
   bool? isHomePage;
+  bool? isOCRFeature;
+  final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
   bool isbuttomsheet;
   CommonPdfViewerPage(
       {Key? key,
+      @required this.isOCRFeature,
       @required this.url,
       @required this.tittle,
       required this.isbuttomsheet,
@@ -77,20 +82,30 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
     super.dispose();
   }
 
+  appBarOCRWidget() {
+    return CustomOcrAppBarWidget(
+      isbackOnSuccess: widget.isBackFromCamera,
+      key: GlobalKey(),
+      isBackButton: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         // backgroundColor: Colors.white,
-        appBar: widget.isHomePage == true
-            ? null
-            : CustomAppBarWidget(
-                isSearch: false,
-                isShare: true,
-                appBarTitle: widget.tittle!,
-                sharedpopBodytext: widget.url.toString(),
-                sharedpopUpheaderText: "Please check out this",
-                language: Globals.selectedLanguage,
-              ),
+        appBar: widget.isOCRFeature == true
+            ? appBarOCRWidget()
+            : widget.isHomePage == true
+                ? null
+                : CustomAppBarWidget(
+                    isSearch: false,
+                    isShare: true,
+                    appBarTitle: widget.tittle!,
+                    sharedpopBodytext: widget.url.toString(),
+                    sharedpopUpheaderText: "Please check out this",
+                    language: Globals.selectedLanguage,
+                  ),
         body: widget.url != null && widget.url != ""
             ? document == null
                 ? Center(

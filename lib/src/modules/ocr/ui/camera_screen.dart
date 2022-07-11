@@ -6,26 +6,33 @@ import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wakelock/wakelock.dart';
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
-
+  final onlyForPicture;
+  final bool isFromHistoryAssessmentScanMore;
   final scaffoldKey;
+  final bool? oneTimeCamera;
 
   const CameraScreen(
       {Key? key,
       required this.pointPossible,
       required this.isScanMore,
-      this.scaffoldKey})
+      required this.onlyForPicture,
+      this.scaffoldKey,
+      required this.isFromHistoryAssessmentScanMore,
+      this.oneTimeCamera})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -64,6 +71,8 @@ class _CameraScreenState extends State<CameraScreen>
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+
+  LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
 
   @override
   void initState() {
@@ -110,7 +119,9 @@ class _CameraScreenState extends State<CameraScreen>
                       onPressed: () {
                         //To dispose the snackbar message before navigating back if exist
                         //    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                        Navigator.pop(context, true);
+                        widget.onlyForPicture
+                            ? Navigator.pop(context, null)
+                            : Navigator.pop(context, true);
                       },
                       icon: Icon(
                         IconData(0xe80d,
@@ -137,81 +148,230 @@ class _CameraScreenState extends State<CameraScreen>
             ],
           ),
           actions: [
-            Container(
-                padding: EdgeInsets.only(right: 5),
-                child: TextButton(
-                  style: ButtonStyle(alignment: Alignment.center),
-                  child: Text("DONE",
-                      style: TextStyle(
-                        color: AppTheme.kButtonColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      )),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            widget.onlyForPicture
+                ? Container()
+                : BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                    bloc: _driveBloc,
+                    child: Container(),
+                    listener: (context, state) async {
+                      if (state is GoogleDriveLoading) {
+                        Utility.showLoadingDialog(context);
+                      }
+                      if (state is GoogleSuccess) {
+                        Navigator.of(context).pop();
+                        if (widget.isFromHistoryAssessmentScanMore == true) {
+                          Navigator.of(context)
+                            ..pop()
+                            ..pop()
+                            ..pop();
 
-                    if (Globals.studentInfo!.length > 0) {
-                      if (widget.isScanMore == true) {
-                        //To remove the titles if exist in the list
-                        if (Globals.studentInfo![0].studentId == 'Id') {
-                          Globals.studentInfo!.removeAt(0);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                                builder: (context) => ResultsSummary(
+                                      historysecondTime:
+                                          widget.isFromHistoryAssessmentScanMore
+                                              ? true
+                                              : null,
+                                      asssessmentName: Globals.assessmentName,
+                                      shareLink: Globals.shareableLink ?? '',
+                                      assessmentDetailPage: widget
+                                          .isFromHistoryAssessmentScanMore,
+                                      isScanMore: true,
+                                      assessmentListLenght:
+                                          Globals.scanMoreStudentInfoLength,
+                                    )),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ResultsSummary(
+                                      historysecondTime:
+                                          widget.isFromHistoryAssessmentScanMore
+                                              ? true
+                                              : null,
+                                      asssessmentName: Globals.assessmentName,
+                                      shareLink: Globals.shareableLink ?? '',
+                                      assessmentDetailPage: widget
+                                          .isFromHistoryAssessmentScanMore,
+                                      isScanMore: true,
+                                      assessmentListLenght:
+                                          Globals.scanMoreStudentInfoLength,
+                                    )),
+                          );
                         }
+                      }
+                      if (state is ErrorState) {
+                        if (state.errorMsg == 'Reauthentication is required') {
+                          await Utility.refreshAuthenticationToken(
+                              isNavigator: true,
+                              errorMsg: state.errorMsg!,
+                              context: context,
+                              scaffoldKey: _scaffoldKey);
 
-                        //To copy the static content in the sheet
-                        Globals.studentInfo!.forEach((element) {
-                          element.subject = Globals.studentInfo!.first.subject;
-                          element.learningStandard =
-                              Globals.studentInfo!.first.learningStandard ==
+                          _driveBloc.add(UpdateDocOnDrive(
+                               assessmentName: Globals.historyAssessmentName,
+                                fileId: Globals.historyAssessmentFileId,
+                              isLoading: true,
+                              studentData: Globals.studentInfo!));
+                        } else {
+                          Navigator.of(context).pop();
+                          Utility.currentScreenSnackBar(
+                              "Something Went Wrong. Please Try Again.");
+                        }
+                      }
+                    }),
+            widget.onlyForPicture
+                ? Container()
+                : Container(
+                    padding: EdgeInsets.only(right: 5),
+                    child: TextButton(
+                      style: ButtonStyle(alignment: Alignment.center),
+                      child: TranslationWidget(
+                          message: "DONE",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage,
+                                style: TextStyle(
+                                  color: AppTheme.kButtonColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ));
+                          }),
+                      onPressed: () async {
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+                        if (widget.isFromHistoryAssessmentScanMore == true
+                            ? Globals.historyStudentInfo!.length > 0
+                            : Globals.studentInfo!.length > 0) {
+                          if (widget.isFromHistoryAssessmentScanMore == true) {
+                            if (Globals.historyStudentInfo![0].studentId ==
+                                'Id') {
+                              Globals.historyStudentInfo!.removeAt(0);
+                            }
+
+                            //To copy the static content in the sheet
+                            Globals.historyStudentInfo!.forEach((element) {
+                              element.subject =
+                                  Globals.historyStudentInfo!.first.subject;
+                              element.learningStandard = Globals
+                                          .historyStudentInfo!
+                                          .first
+                                          .learningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals.historyStudentInfo!.first
+                                      .learningStandard;
+
+                              element.subLearningStandard = Globals
+                                          .historyStudentInfo!
+                                          .first
+                                          .subLearningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals.historyStudentInfo!.first
+                                      .subLearningStandard;
+                              element.scoringRubric = Globals
+                                      .historyStudentInfo!
+                                      .first
+                                      .scoringRubric ??
+                                  'NA';
+                              element.customRubricImage = Globals
+                                      .historyStudentInfo!
+                                      .first
+                                      .customRubricImage ??
+                                  "NA";
+                              element.grade =
+                                  Globals.historyStudentInfo!.first.grade;
+                              element.className =
+                                  Globals.historyStudentInfo!.first.className ??
+                                      'NA';
+                              //widget.selectedClass;
+                              element.questionImgUrl = Globals
+                                  .historyStudentInfo!.first.questionImgUrl;
+                            });
+
+                            _driveBloc.add(UpdateDocOnDrive(
+                                assessmentName: Globals.historyAssessmentName,
+                                fileId: Globals.historyAssessmentFileId,
+                                isLoading: true,
+                                studentData: Globals.historyStudentInfo!));
+                          } else if (!widget.isFromHistoryAssessmentScanMore &&
+                              widget.isScanMore == true) {
+                            //To remove the titles if exist in the list
+                            if (Globals.studentInfo![0].studentId == 'Id') {
+                              Globals.studentInfo!.removeAt(0);
+                            }
+
+                            //To copy the static content in the sheet
+                            Globals.studentInfo!.forEach((element) {
+                              element.subject =
+                                  Globals.studentInfo!.first.subject;
+                              element.learningStandard = Globals.studentInfo!
+                                          .first.learningStandard ==
                                       null
                                   ? "NA"
                                   : Globals.studentInfo!.first.learningStandard;
-                          element.subLearningStandard = Globals
-                                      .studentInfo!.first.subLearningStandard ==
-                                  null
-                              ? "NA"
-                              : Globals.studentInfo!.first.subLearningStandard;
-                          element.scoringRubric = Globals.scoringRubric;
-                          element.customRubricImage =
-                              Globals.studentInfo!.first.customRubricImage ??
+                              element.subLearningStandard = Globals.studentInfo!
+                                          .first.subLearningStandard ==
+                                      null
+                                  ? "NA"
+                                  : Globals
+                                      .studentInfo!.first.subLearningStandard;
+                              element.scoringRubric = Globals.scoringRubric;
+                              element.customRubricImage = Globals
+                                      .studentInfo!.first.customRubricImage ??
                                   "NA";
-                          element.grade = Globals.studentInfo!.first.grade;
-                          element.className = Globals.assessmentName!
-                              .split("_")[1]; //widget.selectedClass;
-                          element.questionImgUrl =
-                              Globals.studentInfo!.first.questionImgUrl;
-                        });
+                              element.grade = Globals.studentInfo!.first.grade;
+                              element.className = Globals.assessmentName!
+                                  .split("_")[1]; //widget.selectedClass;
+                              element.questionImgUrl =
+                                  Globals.studentInfo!.first.questionImgUrl;
+                            });
 
-                        _driveBloc.add(UpdateDocOnDrive(
-                            studentData: Globals.studentInfo!));
+                            _driveBloc.add(UpdateDocOnDrive(
+                                assessmentName: Globals.assessmentName!,
+                                fileId: Globals.googleExcelSheetId,
+                                isLoading: true,
+                                studentData: Globals.studentInfo!));
+                          } else {
+                            List<String> classSuggestions =
+                                await _localDb.getData();
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ResultsSummary(
-                                    asssessmentName: Globals.assessmentName,
-                                    shareLink: Globals.shareableLink!,
-                                    assessmentDetailPage: false,
-                                    isScanMore: true,
-                                    assessmentListLenght:
-                                        Globals.scanMoreStudentInfoLength,
-                                  )),
-                        );
-                      } else {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateAssessment()),
-                        );
-                      }
-                    } else {
-                      Utility.showSnackBar(
-                          _scaffoldKey,
-                          "Assessment not found! Please scan a student assessment to proceed further",
-                          context,
-                          null);
-                    }
-                  },
-                )),
+                            LocalDatabase<String> classSectionLocalDb =
+                                LocalDatabase('class_section_list');
+
+                            List<String> localSectionList =
+                                await classSectionLocalDb.getData();
+                            if (localSectionList.isEmpty) {
+                              print("local db is empty");
+                              Globals.classList.forEach((String e) {
+                                classSectionLocalDb.addData(e);
+                              });
+                            } else {
+                              print("local db is not empty");
+                              Globals.classList = [];
+                              Globals.classList.addAll(localSectionList);
+
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreateAssessment(
+                                        customGrades: Globals.classList,
+                                        classSuggestions: classSuggestions)),
+                              );
+                            }
+                          }
+                        } else {
+                          Utility.showSnackBar(
+                              _scaffoldKey,
+                              "Assessment not found! Please scan a student assessment to proceed further",
+                              context,
+                              null);
+                        }
+                      },
+                    )),
             Globals.studentInfo!.length == 0
                 ? IconButton(
                     onPressed: () {
@@ -237,18 +397,18 @@ class _CameraScreenState extends State<CameraScreen>
                   child: Stack(children: [
                     Center(child: controller!.buildPreview()),
                     Positioned(
-                      bottom: 0.0,
+                      bottom: 15.0,
                       child: Container(
                         color: Colors.transparent,
                         height: MediaQuery.of(context).orientation ==
                                 Orientation.portrait
-                            ? MediaQuery.of(context).size.height * 0.15
+                            ? MediaQuery.of(context).size.height * 0.2
                             : MediaQuery.of(context).size.height * 0.25,
                         width: MediaQuery.of(context).size.width,
                         child: Center(
                           child: Container(
-                              height: 60,
-                              width: 60,
+                              height: 90,
+                              width: 90,
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: Colors.transparent,
@@ -278,17 +438,32 @@ class _CameraScreenState extends State<CameraScreen>
                                   );
                                   print(widget.pointPossible);
                                   await controller!.setFlashMode(FlashMode.off);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SuccessScreen(
-                                              isScanMore: widget.isScanMore,
-                                              img64: img64,
-                                              imgPath: imageFile,
-                                              pointPossible:
-                                                  widget.pointPossible,
-                                            )),
-                                  );
+
+                                  if (widget.onlyForPicture) {
+                                    Navigator.pop(context, imageFile);
+                                  } else {
+                                    if (widget.isFromHistoryAssessmentScanMore ==
+                                            true &&
+                                        widget.oneTimeCamera == null) {
+                                      Navigator.of(context)
+                                        ..pop()
+                                        ..pop();
+                                    }
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SuccessScreen(
+                                                isFromHistoryAssessmentScanMore:
+                                                    widget
+                                                        .isFromHistoryAssessmentScanMore,
+                                                isScanMore: widget.isScanMore,
+                                                img64: img64,
+                                                imgPath: imageFile,
+                                                pointPossible:
+                                                    widget.pointPossible,
+                                              )),
+                                    );
+                                  }
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
@@ -393,7 +568,7 @@ class _CameraScreenState extends State<CameraScreen>
             Center(
               child: TextButton(
                 child: TranslationWidget(
-                    message: "ok ",
+                    message: "Ok",
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {

@@ -1,19 +1,28 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
+import '../modules/google_drive/model/user_profile.dart';
+import '../modules/ocr/modal/user_info.dart';
+import 'local_database/local_db.dart';
+
 class Utility {
+  static bool? isOldUser = false;
   static Size displaySize(BuildContext context) {
     return MediaQuery.of(context).size;
   }
@@ -362,13 +371,14 @@ class Utility {
   }
 
   static Widget textWidget(
-      {required String text, textTheme, required context}) {
+      {required String text, textTheme, required context, textAlign}) {
     return TranslationWidget(
       message: text,
       toLanguage: Globals.selectedLanguage,
       fromLanguage: "en",
       builder: (translatedMessage) => Text(
         translatedMessage.toString(),
+        textAlign: textAlign ?? null,
         style: textTheme != null
             ? textTheme
             : Theme.of(context).textTheme.headline6!.copyWith(
@@ -419,19 +429,30 @@ class Utility {
   //   }
   // }
 
-  static void noInternetSnackBar() {
+  static void currentScreenSnackBar(String text) {
     //Use to show snackbar at any current screen
     BuildContext? context = Globals.navigatorKey.currentContext;
 
     ScaffoldMessenger.of(context!).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("No Internet Connection"),
-    ));
+        content: TranslationWidget(
+            message: text,
+            fromLanguage: "en",
+            toLanguage: Globals.selectedLanguage,
+            builder: (translatedMessage) {
+              return Text(translatedMessage.toString(),
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.background,
+                    fontWeight: FontWeight.w600,
+                  ));
+            })));
   }
 
   static Future<bool> checkUserConnection() async {
     try {
-      final result = await InternetAddress.lookup('google.com');
+      final result = await InternetAddress.lookup(
+          'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         return true;
       } else {
@@ -440,5 +461,341 @@ class Utility {
     } on SocketException catch (_) {
       return false;
     }
+  }
+
+  // static void loadingDialog(BuildContext context) async {
+  //   // show the loading dialog
+  //   showDialog(
+  //       // The user CANNOT close this dialog  by pressing outsite it
+  //       barrierDismissible: false,
+  //       context: context,
+  //       builder: (_) {
+  //         return Dialog(
+  //           // The background color
+  //           backgroundColor: Colors.white,
+  //           child: Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 20),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: const [
+  //                 // The loading indicator
+  //                 CircularProgressIndicator(),
+  //                 SizedBox(
+  //                   height: 15,
+  //                 ),
+  //                 // Some text
+  //                 Text('Loading...')
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
+
+  static void showLoadingDialog(BuildContext context) async {
+    return showDialog<void>(
+        useRootNavigator: false,
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return new WillPopScope(
+              onWillPop: () async => false,
+              child: SimpleDialog(
+                  backgroundColor:
+                      Color(0xff000000) != Theme.of(context).backgroundColor
+                          ? Color(0xff111C20)
+                          : Color(0xffF7F8F9), //Colors.black54,
+                  children: <Widget>[
+                    Container(
+                      height: Globals.deviceType == 'phone' ? 70 : 100,
+                      width: Globals.deviceType == 'phone'
+                          ? MediaQuery.of(context).size.width * 0.4
+                          : MediaQuery.of(context).size.width * 0.5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Utility.textWidget(
+                              text: 'Please Wait...',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(
+                                    color: Color(0xff000000) !=
+                                            Theme.of(context).backgroundColor
+                                        ? Color(0xffFFFFFF)
+                                        : Color(0xff000000),
+                                    fontSize: Globals.deviceType == "phone"
+                                        ? AppTheme.kBottomSheetTitleSize
+                                        : AppTheme.kBottomSheetTitleSize * 1.3,
+                                  )),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  CircularProgressIndicator(
+                                    color: AppTheme.kButtonColor,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                ]),
+                          ),
+                        ],
+                      ),
+                    )
+                  ]));
+        });
+  }
+
+  static Future<void> saveUserProfile(String profileData) async {
+    UserGoogleProfile.clearUserProfile();
+    List<String> profile = profileData.split('+');
+    UserInformation _userInformation = UserInformation(
+        userName: profile[0].toString().split('=')[1],
+        userEmail: profile[1].toString().split('=')[1],
+        profilePicture: profile[2].toString().split('=')[1],
+        authorizationToken:
+            profile[3].toString().split('=')[1].replaceAll('#', ''),
+        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+
+    //Save user profile to locally
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    await _localDb.addData(_userInformation);
+    await _localDb.close();
+  }
+
+  static Future<bool> checkUser(
+      {required BuildContext context,
+      required String errorMsg,
+      required GlobalKey scaffoldKey}) async {
+    var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
+        ? Color(0xff000000)
+        : Color(0xffFFFFFF);
+    //  Navigator.of(context).pop();
+
+    Utility.currentScreenSnackBar(errorMsg);
+
+    var value = await pushNewScreen(
+      context,
+      screen: GoogleAuthWebview(
+        title: 'Google Authentication',
+        url: Globals.appSetting.authenticationURL ??
+            '' + //Overrides.secureLoginURL +
+                '?' +
+                Globals.appSetting.appLogoC +
+                '?' +
+                themeColor.toString().split('0xff')[1].split(')')[0],
+        isbuttomsheet: true,
+        language: Globals.selectedLanguage,
+        hideAppbar: false,
+        hideShare: true,
+        zoomEnabled: false,
+      ),
+      withNavBar: false,
+    );
+
+    if (value.toString().contains('authenticationfailure')) {
+      Navigator.pop(context, false);
+      Utility.showSnackBar(
+          scaffoldKey,
+          'You are not authorized to access the feature. Please use the authorized account.',
+          context,
+          50.0);
+    } else if (value.toString().contains('success')) {
+      value = value.split('?')[1] ?? '';
+
+      UserInformation userInformation = await checkUserProfile(value);
+
+      if (userInformation.userName != null) {
+        await userVerificationPopUp(context, userInformation);
+
+        bool value = isOldUser!;
+        isOldUser = false;
+        return value;
+      }
+    }
+    return false;
+  }
+
+  static Future<UserInformation> checkUserProfile(String profileData) async {
+    List<String> profile = profileData.split('+');
+
+    UserInformation _userInformation = UserInformation(
+        userName: profile[0].toString().split('=')[1],
+        userEmail: profile[1].toString().split('=')[1],
+        profilePicture: profile[2].toString().split('=')[1],
+        authorizationToken:
+            profile[3].toString().split('=')[1].replaceAll('#', ''),
+        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+
+    List<UserInformation> _profileData = await _localDb.getData();
+
+    if (_profileData[0].userEmail == _userInformation.userEmail) {
+      //Save user profile to locally
+      await _localDb.clear();
+      await _localDb.addData(_userInformation);
+      await _localDb.close();
+
+      return UserInformation(userName: null);
+    } else {
+      return _userInformation;
+    }
+  }
+
+  static userVerificationPopUp(
+      BuildContext context, UserInformation newUserInfo) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: Center(
+                  child: Container(
+                    padding: Globals.deviceType == 'phone'
+                        ? null
+                        : const EdgeInsets.only(top: 10.0),
+                    height: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.height / 15
+                            : MediaQuery.of(context).size.width / 15,
+                    width: Globals.deviceType == 'phone'
+                        ? null
+                        : orientation == Orientation.portrait
+                            ? MediaQuery.of(context).size.width / 2
+                            : MediaQuery.of(context).size.height / 2,
+                    child: TranslationWidget(
+                        message: "Confirm exit",
+                        fromLanguage: "en",
+                        toLanguage: Globals.selectedLanguage,
+                        builder: (translatedMessage) {
+                          return Text(translatedMessage.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(color: AppTheme.kButtonColor));
+                        }),
+                  ),
+                ),
+                content: TranslationWidget(
+                    message:
+                        "Do you want to exit? You will lose all the scanned assesment sheets.",
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) {
+                      return Text(translatedMessage.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(color: Colors.black));
+                    }),
+                actions: <Widget>[
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      TextButton(
+                        child: TranslationWidget(
+                            message: "No",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppTheme.kButtonColor,
+                                      ));
+                            }),
+                        onPressed: () {
+                          isOldUser = true;
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                      TextButton(
+                        child: TranslationWidget(
+                            message: "Yes ",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: Colors.red,
+                                      ));
+                            }),
+                        onPressed: () async {
+                          //Globals.iscameraPopup = false;
+                          LocalDatabase<UserInformation> _localDb =
+                              LocalDatabase('user_profile');
+
+                          await _localDb.clear();
+                          await _localDb.addData(newUserInfo);
+                          await _localDb.close();
+
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                        isFromOcrSection: true,
+                                      )),
+                              (_) => false);
+                        },
+                      ),
+                    ],
+                  )
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              );
+            }));
+  }
+
+  static Future<bool?> refreshAuthenticationToken({
+    required bool isNavigator,
+    String? errorMsg,
+    BuildContext? context,
+    GlobalKey? scaffoldKey,
+  }) async {
+    await Utility.checkUser(
+        context: context!, errorMsg: errorMsg!, scaffoldKey: scaffoldKey!);
+
+    if (isNavigator == true) {
+      print('+++++++++++++++++++++++++++++++++++++');
+      Navigator.pop(context, false);
+    }
+    return true;
+
+    // if (isOldUser == true) {
+    //   bool? res = await refreshAuthenticationToken(
+    //       isNavigator: isNavigator,
+    //       errorMsg: errorMsg,
+    //       context: context,
+    //       scaffoldKey: scaffoldKey);
+    //   return res == true ? true : false;
+    // } else {
+    //   if (isNavigator == true) {
+    //     print('+++++++++++++++++++++++++++++++++++++');
+    //     Navigator.pop(context, false);
+    //   }
+    //   return true;
+    // }
   }
 }

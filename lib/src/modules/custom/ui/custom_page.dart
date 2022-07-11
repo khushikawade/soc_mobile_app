@@ -188,6 +188,7 @@ class _CustomPagesState extends State<CustomPages> {
       return obj.pdfURL != null && obj.pdfURL != ""
           ? Expanded(
               child: CommonPdfViewerPage(
+                isOCRFeature: false,
                 tittle: '',
                 isHomePage: true,
                 url: obj.pdfURL,

@@ -63,9 +63,9 @@ class GoogleDriveAccess {
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 12, rowIndex: row))
             .value = data[row].questionImgUrl;
-        sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
-            .value = data[row].isSavedOnDashBoard;
+        // sheet
+        //     .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
+        //     .value = data[row].isSavedOnDashBoard;
 
         // if (data[row].subject == "Math" || data[row].subject == "ELA") {
         //         sheet
@@ -95,8 +95,9 @@ class GoogleDriveAccess {
   }
 
   static Future excelToJson(String file) async {
-    var bytes = File(file).readAsBytesSync();
-    var excel = Excel.decodeBytes(bytes);
+    var bytes =  File(file).readAsBytesSync();
+    var excel =  Excel.decodeBytes(bytes);
+    print(excel);
     int i = 0;
     List<dynamic> keys = <dynamic>[];
     List<Map<String, dynamic>> json = <Map<String, dynamic>>[];

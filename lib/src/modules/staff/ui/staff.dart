@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/startup.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
@@ -136,7 +137,9 @@ class _StaffPageState extends State<StaffPage> {
       // Push to the grading system
       pushNewScreen(
         context,
-        screen: OpticalCharacterRecognition(),
+        screen: StartupPage(
+          isOcrSection: true,
+        ),
         withNavBar: false,
       );
     }
@@ -165,7 +168,9 @@ class _StaffPageState extends State<StaffPage> {
         .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
 
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
+    Globals.googleDriveFolderId = '';
     _googleDriveBloc.add(GetDriveFolderIdEvent(
+        isFromOcrHome: false,
         //  filePath: file,
         token: _userprofilelocalData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
@@ -302,6 +307,7 @@ class _StaffPageState extends State<StaffPage> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return AnimatedPositioned(
+          
             bottom: 40.0,
             right: !isScrolling.value
                 ? 8
@@ -309,7 +315,11 @@ class _StaffPageState extends State<StaffPage> {
             duration: const Duration(milliseconds: 650),
             curve: Curves.decelerate,
             child: Container(
-              width: !isScrolling.value ? null : 150,
+              // width: !isScrolling.value
+              //     ? null
+              //     : Globals.deviceType == 'phone'
+              //         ? 150
+              //         : 210,
               child: FloatingActionButton.extended(
                   isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
@@ -326,15 +336,19 @@ class _StaffPageState extends State<StaffPage> {
                       verifyUserAndGetDriveFolder(_profileData);
                       pushNewScreen(
                         context,
-                        screen: OpticalCharacterRecognition(),
+                        screen: StartupPage(
+                          isOcrSection: true,
+                        ),
                         withNavBar: false,
                       );
                     }
                   },
-                  icon:
-                      Icon(Icons.add, color: Theme.of(context).backgroundColor),
-                  label: textwidget(
-                      text: 'Assessment',
+                  icon: Icon(Icons.add,
+                      size: Globals.deviceType == 'tablet' ? 30 : null,
+                      color: Theme.of(context).backgroundColor),
+                  label: Utility.textWidget(
+                      text:!isScrolling.value?'': 'Assessment',
+                      context:context,
                       textTheme: Theme.of(context)
                           .textTheme
                           .headline2!

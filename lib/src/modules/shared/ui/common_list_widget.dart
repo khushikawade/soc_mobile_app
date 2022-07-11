@@ -155,6 +155,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
+                        isOCRFeature: false,
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
