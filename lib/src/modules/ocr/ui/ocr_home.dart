@@ -575,32 +575,32 @@ class _OpticalCharacterRecognitionPageState
 
     _bloc.add(SaveSubjectListDetails());
     print(Globals.scoringRubric);
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => CameraScreen(
-    //             isFromHistoryAssessmentScanMore: false,
-    //             onlyForPicture: false,
-    //             scaffoldKey: _scaffoldKey,
-    //             isScanMore: false,
-    //             pointPossible: rubricScoreSelectedColor.value == 0
-    //                 ? '2'
-    //                 : rubricScoreSelectedColor.value == 2
-    //                     ? '3'
-    //                     : rubricScoreSelectedColor.value == 4
-    //                         ? '4'
-    //                         : '4', //In case of 'None' or 'Custom rubric' selection
-    //           )),
-    // );
-    LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-    List<String> classSuggestions = await _localDb.getData();
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CreateAssessment(
-                  classSuggestions: classSuggestions,
-                  customGrades: Globals.classList,
-                )));
+      context,
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+                isFromHistoryAssessmentScanMore: false,
+                onlyForPicture: false,
+                scaffoldKey: _scaffoldKey,
+                isScanMore: false,
+                pointPossible: rubricScoreSelectedColor.value == 0
+                    ? '2'
+                    : rubricScoreSelectedColor.value == 2
+                        ? '3'
+                        : rubricScoreSelectedColor.value == 4
+                            ? '4'
+                            : '4', //In case of 'None' or 'Custom rubric' selection
+              )),
+    );
+    // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    // List<String> classSuggestions = await _localDb.getData();
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => CreateAssessment(
+    //               classSuggestions: classSuggestions,
+    //               customGrades: Globals.classList,
+    //             )));
 
     // Navigator.push(
     //   context,
