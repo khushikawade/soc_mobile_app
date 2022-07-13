@@ -231,6 +231,7 @@ class _CustomPagesState extends State<CustomPages> {
         obj: widget.customObj,
         isStandardPage: null, //To omit the appbar
         isSubmenu: false,
+        isCustomSection: true,
       );
     } else if (obj.sectionTemplate == "Personnel Directory") {
       return StaffDirectory(

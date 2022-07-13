@@ -32,8 +32,10 @@ class StaffPage extends StatefulWidget {
       this.title,
       this.language,
       this.customObj,
+      required this.isCustomSection, 
       required this.isFromOcr})
       : super(key: key);
+       final bool? isCustomSection;
   final CustomSetting? customObj;
   final String? title;
   final String? language;
@@ -272,7 +274,7 @@ class _StaffPageState extends State<StaffPage> {
         ),
         body: NotificationListener<ScrollNotification>(
           onNotification: onNotification,
-          child: Globals.appSetting.staffBannerImageC != null &&
+          child: widget.isCustomSection==true&&Globals.appSetting.staffBannerImageC != null &&
                   Globals.appSetting.staffBannerImageC != ''
               ? NestedScrollView(
                   //  key: globalKey,

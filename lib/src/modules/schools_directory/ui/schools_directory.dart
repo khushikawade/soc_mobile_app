@@ -19,13 +19,14 @@ class SchoolDirectoryPage extends StatefulWidget {
   final bool? isStandardPage;
   final bool? isSubmenu;
   final String? title;
+   final bool? isCustomSection;
 
   const SchoolDirectoryPage(
       {Key? key,
       this.obj,
       required this.isStandardPage,
       this.isSubmenu,
-      this.title})
+      this.title, required,  required this.isCustomSection})
       : super(key: key);
 
   @override
@@ -249,7 +250,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                     language: Globals.selectedLanguage,
                   )
                 : null),
-        body: widget.isSubmenu == true &&
+        body: widget.isCustomSection==true&&widget.isSubmenu == true &&
                 Globals.appSetting.schoolBannerImageC != null &&
                 Globals.appSetting.schoolBannerImageC != "" &&
                 widget.isSubmenu != true

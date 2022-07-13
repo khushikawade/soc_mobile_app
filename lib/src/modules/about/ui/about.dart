@@ -17,11 +17,13 @@ import '../../shared/ui/common_grid_widget.dart';
 
 class AboutPage extends StatefulWidget {
   final CustomSetting? customObj;
+   final bool? isCustomSection;
   final searchObj;
   AboutPage({
     Key? key,
     this.customObj,
     this.searchObj,
+    required this.isCustomSection
   }) : super(key: key);
 
   @override
@@ -136,7 +138,7 @@ class _AboutPageState extends State<AboutPage> {
             setState(() {});
           },
         ),
-        body: Globals.appSetting.aboutBannerImageC != null &&
+        body: widget.isCustomSection==true&&Globals.appSetting.aboutBannerImageC != null &&
                 Globals.appSetting.aboutBannerImageC != ""
             ? NestedScrollView(
                 headerSliverBuilder:

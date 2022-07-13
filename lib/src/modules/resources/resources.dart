@@ -18,9 +18,11 @@ import '../shared/ui/common_grid_widget.dart';
 
 class ResourcesPage extends StatefulWidget {
   final CustomSetting? customObj;
+  final bool? isCustomSection;
   ResourcesPage({
     Key? key,
     this.customObj,
+    required this.isCustomSection
   }) : super(key: key);
 
   @override
@@ -138,7 +140,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             setState(() {});
           },
         ),
-        body: Globals.appSetting.resourcesBannerImageC != null &&
+        body: widget.isCustomSection==true&&Globals.appSetting.resourcesBannerImageC != null &&
                 Globals.appSetting.resourcesBannerImageC != ""
             ? NestedScrollView(
                 headerSliverBuilder:

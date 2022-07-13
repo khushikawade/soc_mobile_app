@@ -68,7 +68,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                     imageUrl: widget.customObj.customBannerImageC!,
                     bgColor: widget.customObj.customBannerImageC != null
                         ? Utility.getColorFromHex(
-                            widget.customObj.customBannerImageC!)
+                            widget.customObj.customBannerColorC!)
                         : null,
                   )
                 ];

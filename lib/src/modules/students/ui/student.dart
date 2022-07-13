@@ -23,8 +23,9 @@ import 'package:marquee/marquee.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
+   final bool? isCustomSection;
 
-  StudentPage({Key? key, this.homeObj}) : super(key: key);
+  StudentPage({Key? key, this.homeObj, required this.isCustomSection}) : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }
 
@@ -334,7 +335,7 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body: Globals.appSetting.studentBannerImageC != null &&
+        body:widget.isCustomSection==true&& Globals.appSetting.studentBannerImageC != null &&
                 Globals.appSetting.studentBannerImageC != ""
             ? NestedScrollView(
 

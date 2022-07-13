@@ -179,6 +179,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         : false,
                     obj: obj,
                     isStandardPage: false,
+                    isCustomSection: false, //Since its a record here
                   )));
     } else {
       Utility.showSnackBar(
