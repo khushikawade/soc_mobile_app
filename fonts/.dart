@@ -64,8 +64,8 @@ class CustomFlutterIcons {
   static const IconData blue_2 = IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData v1 = IconData(0xe829, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData call = IconData(0xe82a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData microphone_ = IconData(0xe838, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData home = IconData(0xe839, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData home = IconData(0xe837, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData microphone = IconData(0xe838, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData after_school = IconData(0xe844, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData athletics = IconData(0xe845, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData clubs = IconData(0xe846, fontFamily: _kFontFam, fontPackage: _kFontPkg);
