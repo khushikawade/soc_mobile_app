@@ -186,38 +186,12 @@ class _OpticalCharacterRecognitionPageState
                     if (!connected) {
                       Utility.currentScreenSnackBar("No Internet Connection");
                     } else {
-                      //Utility.showLoadingDialog(context);
                       Globals.studentInfo!.clear();
                       if (Globals.googleDriveFolderId!.isEmpty) {
                         _triggerDriveFolderEvent(false);
                       } else {
                         _beforenavigateOnCameraSection();
                       }
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => CameraScreen(
-                      //             scaffoldKey: _scaffoldKey,
-                      //             isScanMore: false,
-                      //             pointPossible: rubricScoreSelectedColor
-                      //                         .value ==
-                      //                     0
-                      //                 ? '2'
-                      //                 : rubricScoreSelectedColor.value == 2
-                      //                     ? '3'
-                      //                     : rubricScoreSelectedColor.value == 4
-                      //                         ? '4'
-                      //                         : '2',
-                      //           )),
-                      // );
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => CreateAssessment()),
-                      // );
-                      //  getGallaryImage(); // COMMENT
                     }
                   },
                   icon: Icon(
@@ -560,9 +534,6 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnCameraSection() async {
-    // print(
-    //     "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
-
     Globals.pointpossible = rubricScoreSelectedColor.value == 0
         ? '2'
         : rubricScoreSelectedColor.value == 2
@@ -574,7 +545,7 @@ class _OpticalCharacterRecognitionPageState
     updateLocalDb();
 
     _bloc.add(SaveSubjectListDetails());
-    print(Globals.scoringRubric);
+    // UNCOMMENT Below
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -592,6 +563,8 @@ class _OpticalCharacterRecognitionPageState
                             : '4', //In case of 'None' or 'Custom rubric' selection
               )),
     );
+    // End
+    // // COMMENT Below
     // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
     // List<String> classSuggestions = await _localDb.getData();
     // Navigator.push(
@@ -601,12 +574,7 @@ class _OpticalCharacterRecognitionPageState
     //               classSuggestions: classSuggestions,
     //               customGrades: Globals.classList,
     //             )));
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => SuccessScreen(img64: '', imgPath: File(''))
-    // );
+    // End
   }
 
   void _beforenavigateOnAssessmentSection() {
