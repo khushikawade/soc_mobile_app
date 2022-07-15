@@ -335,7 +335,7 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body:widget.isCustomSection==true&& Globals.appSetting.studentBannerImageC != null &&
+        body:widget.isCustomSection==false&& Globals.appSetting.studentBannerImageC != null &&
                 Globals.appSetting.studentBannerImageC != ""
             ? NestedScrollView(
 

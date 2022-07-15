@@ -150,7 +150,7 @@ class _FamilyPageState extends State<FamilyPage> {
             setState(() {});
           },
         ),
-        body: Globals.appSetting.familyBannerImageC != null &&
+        body: widget.isCustomSection==false&&Globals.appSetting.familyBannerImageC != null &&
                 Globals.appSetting.familyBannerImageC != ''
             ? NestedScrollView(
                 headerSliverBuilder:

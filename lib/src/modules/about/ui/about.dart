@@ -138,7 +138,7 @@ class _AboutPageState extends State<AboutPage> {
             setState(() {});
           },
         ),
-        body: widget.isCustomSection==true&&Globals.appSetting.aboutBannerImageC != null &&
+        body: widget.isCustomSection==false&&Globals.appSetting.aboutBannerImageC != null &&
                 Globals.appSetting.aboutBannerImageC != ""
             ? NestedScrollView(
                 headerSliverBuilder:

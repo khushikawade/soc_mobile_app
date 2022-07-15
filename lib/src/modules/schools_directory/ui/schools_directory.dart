@@ -250,7 +250,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                     language: Globals.selectedLanguage,
                   )
                 : null),
-        body: widget.isCustomSection==true&&widget.isSubmenu == true &&
+        body: widget.isCustomSection==false&&widget.isSubmenu == true &&
                 Globals.appSetting.schoolBannerImageC != null &&
                 Globals.appSetting.schoolBannerImageC != "" &&
                 widget.isSubmenu != true

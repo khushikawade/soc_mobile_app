@@ -274,7 +274,7 @@ class _StaffPageState extends State<StaffPage> {
         ),
         body: NotificationListener<ScrollNotification>(
           onNotification: onNotification,
-          child: widget.isCustomSection==true&&Globals.appSetting.staffBannerImageC != null &&
+          child: widget.isCustomSection==false&&Globals.appSetting.staffBannerImageC != null &&
                   Globals.appSetting.staffBannerImageC != ''
               ? NestedScrollView(
                   //  key: globalKey,

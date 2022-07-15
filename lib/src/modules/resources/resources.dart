@@ -140,7 +140,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             setState(() {});
           },
         ),
-        body: widget.isCustomSection==true&&Globals.appSetting.resourcesBannerImageC != null &&
+        body: widget.isCustomSection==false&&Globals.appSetting.resourcesBannerImageC != null &&
                 Globals.appSetting.resourcesBannerImageC != ""
             ? NestedScrollView(
                 headerSliverBuilder:
