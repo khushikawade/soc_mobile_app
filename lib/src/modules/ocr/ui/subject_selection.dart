@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/search_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -70,6 +71,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<bool> isSkipButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
+  LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+      LocalDatabase('student_info');
   LocalDatabase<SubjectDetailList> subjectRecentOptionDB =
       LocalDatabase('recent_option_subject');
   LocalDatabase<SubjectDetailList> learningRecentOptionDB =
@@ -939,9 +942,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                 fileId:
                                                     Globals.googleExcelSheetId,
                                                 isLoading: true,
-                                                studentData:
-                                                    //list2
-                                                    Globals.studentInfo!),
+                                                studentData: await Utility
+                                                    .getStudentInfoList(
+                                                        tableName:
+                                                            'student_info')
+                                                //list2
+                                                //Globals.studentInfo!
+                                                ),
                                           );
                                         } else {
                                           Navigator.of(context).pop();
@@ -1054,14 +1061,18 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                             _googleDriveBloc.add(
                                               UpdateDocOnDrive(
-                                                  assessmentName:
-                                                      Globals.assessmentName,
-                                                  fileId: Globals
-                                                      .googleExcelSheetId,
-                                                  isLoading: true,
-                                                  studentData:
-                                                      //list2
-                                                      Globals.studentInfo!),
+                                                assessmentName:
+                                                    Globals.assessmentName,
+                                                fileId:
+                                                    Globals.googleExcelSheetId,
+                                                isLoading: true,
+                                                studentData:
+                                                    //list2
+                                                    await Utility
+                                                        .getStudentInfoList(
+                                                            tableName:
+                                                                'student_info'),
+                                              ),
                                             );
                                           } else {
                                             Navigator.of(context).pop();
@@ -1265,6 +1276,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       } else {
         LocalDatabase<CustomRubicModal> _localDb =
             LocalDatabase('custom_rubic');
+
         List<CustomRubicModal>? _localData = await _localDb.getData();
         String? rubricImgUrl;
         // String? rubricScore;
@@ -1285,21 +1297,80 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
         //TODO : REMOVE THIS AND ADD COMMON FIELDS IN EXCEL MODEL (SAME IN CASE OF SCAN MORE AT CAMERA SCREEN)
         //Adding blank fields to the list : Static data
-        Globals.studentInfo!.forEach((element) {
-          element.subject = subject;
-          element.learningStandard =
-              learningStandard == null ? "NA" : learningStandard;
-          element.subLearningStandard =
-              subLearningStandard == null ? "NA" : subLearningStandard;
-          element.scoringRubric = Globals.scoringRubric;
-          element.className = Globals.assessmentName!.split("_")[1];
-          element.customRubricImage = rubricImgUrl ?? "NA";
-          element.grade = widget.selectedClass;
-          element.questionImgUrl = Globals.questionImgUrl != null &&
-                  Globals.questionImgUrl!.isNotEmpty
-              ? Globals.questionImgUrl
-              : "NA";
-        });
+        // Globals.studentInfo!.forEach((element) {
+        //   element.subject = subject;
+        //   element.learningStandard =
+        //       learningStandard == null ? "NA" : learningStandard;
+        //   element.subLearningStandard =
+        //       subLearningStandard == null ? "NA" : subLearningStandard;
+        //   element.scoringRubric = Globals.scoringRubric;
+        //   element.className = Globals.assessmentName!.split("_")[1];
+        //   element.customRubricImage = rubricImgUrl ?? "NA";
+        //   element.grade = widget.selectedClass;
+        //   element.questionImgUrl = Globals.questionImgUrl != null &&
+        //           Globals.questionImgUrl!.isNotEmpty
+        //       ? Globals.questionImgUrl
+        //       : "NA";
+        // });
+
+        // studentInfodblist.asMap().forEach((index, element) async {
+        //   StudentAssessmentInfo element = studentInfodblist[index];
+
+        //   element.subject = subject;
+        //   element.learningStandard =
+        //       learningStandard == null ? "NA" : learningStandard;
+        //   element.subLearningStandard =
+        //       subLearningStandard == null ? "NA" : subLearningStandard;
+        //   element.scoringRubric = Globals.scoringRubric;
+        //   element.className = Globals.assessmentName!.split("_")[1];
+        //   element.customRubricImage = rubricImgUrl ?? "NA";
+        //   element.grade = widget.selectedClass;
+        //   element.questionImgUrl = Globals.questionImgUrl != null &&
+        //           Globals.questionImgUrl!.isNotEmpty
+        //       ? Globals.questionImgUrl
+        //       : "NA";
+
+        //   await _studentInfoDb.putAt(index, element);
+        // });
+
+        // studentInfodblist.forEach((element) async {
+        //   element.subject = subject;
+        //   element.learningStandard =
+        //       learningStandard == null ? "NA" : learningStandard;
+        //   element.subLearningStandard =
+        //       subLearningStandard == null ? "NA" : subLearningStandard;
+        //   element.scoringRubric = Globals.scoringRubric;
+        //   element.className = Globals.assessmentName!.split("_")[1];
+        //   element.customRubricImage = rubricImgUrl ?? "NA";
+        //   element.grade = widget.selectedClass;
+        //   element.questionImgUrl = Globals.questionImgUrl != null &&
+        //           Globals.questionImgUrl!.isNotEmpty
+        //       ? Globals.questionImgUrl
+        //       : "NA";
+        //   await _studentInfoDb.addData(element);
+        // });
+
+        List<StudentAssessmentInfo> studentInfodblist =
+            await Utility.getStudentInfoList(tableName: 'student_info');
+
+        //Updating remaining common details of assessment
+        StudentAssessmentInfo element = studentInfodblist.first;
+
+        element.subject = subject;
+        element.learningStandard =
+            learningStandard == null ? "NA" : learningStandard;
+        element.subLearningStandard =
+            subLearningStandard == null ? "NA" : subLearningStandard;
+        element.scoringRubric = Globals.scoringRubric;
+        element.className = Globals.assessmentName!.split("_")[1];
+        element.customRubricImage = rubricImgUrl ?? "NA";
+        element.grade = widget.selectedClass;
+        element.questionImgUrl =
+            Globals.questionImgUrl != null && Globals.questionImgUrl!.isNotEmpty
+                ? Globals.questionImgUrl
+                : "NA";
+
+        await _studentInfoDb.putAt(0, element);
 
         _googleDriveBloc.add(
           UpdateDocOnDrive(
@@ -1308,7 +1379,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               isLoading: true,
               studentData:
                   //list2
-                  Globals.studentInfo!),
+                  await Utility.getStudentInfoList(tableName: 'student_info')),
         );
       }
     }

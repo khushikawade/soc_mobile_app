@@ -6,14 +6,11 @@ import 'package:path_provider/path_provider.dart';
 class GoogleDriveAccess {
   static Future generateExcelSheetLocally(
       {required List<StudentAssessmentInfo> data, required String name}) async {
+    print(data);
     try {
       var excel = Excel.createExcel();
       final sheet = excel[excel.getDefaultSheet()!];
-      print(data);
-      // CellStyle cellStyle = CellStyle();
-
       for (int row = 0; row < data.length; row++) {
-        //  if(row==0){ cellStyle.isBold=true;} //Default is false
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
             .value = data[row].studentId;
@@ -32,52 +29,56 @@ class GoogleDriveAccess {
                 .value =
             data[row].pointpossible != '' ? data[row].pointpossible : '2';
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
-            .value = data[row].grade;
+                .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
+                .value =
+            row == 0
+                ? data[row].grade
+                : data[1].grade; //Saving the common data to all the scans
 
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row))
-            .value = data[row].className;
-        // sheet
-        //     .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
-        //     .value = data[row].className;
+                .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row))
+                .value =
+            row == 0
+                ? data[row].className
+                : data[1].className; //Saving the common data to all the scans
+
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
-            .value = data[row].subject;
+                .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
+                .value =
+            row == 0
+                ? data[row].subject
+                : data[1].subject; //Saving the common data to all the scans
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
-            .value = data[row].learningStandard;
+                .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
+                .value =
+            row == 0
+                ? data[row].learningStandard
+                : data[1]
+                    .learningStandard; //Saving the common data to all the scans
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
-            .value = data[row].subLearningStandard;
+                .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
+                .value =
+            row == 0
+                ? data[row].subLearningStandard
+                : data[1].subLearningStandard;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 9, rowIndex: row))
-            .value = data[row].scoringRubric;
+            .value = row == 0 ? data[row].scoringRubric : data[1].scoringRubric;
         sheet
-            .cell(CellIndex.indexByColumnRow(
-                columnIndex: 10, rowIndex: row)) //.isFormula
-            .value = data[row].customRubricImage;
+                .cell(CellIndex.indexByColumnRow(
+                    columnIndex: 10, rowIndex: row)) //.isFormula
+                .value =
+            row == 0 ? data[row].customRubricImage : data[1].customRubricImage;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 11, rowIndex: row))
             .value = data[row].assessmentImage;
         sheet
             .cell(CellIndex.indexByColumnRow(columnIndex: 12, rowIndex: row))
-            .value = data[row].questionImgUrl;
-        // sheet
-        //     .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
-        //     .value = data[row].isSavedOnDashBoard;
-
-        // if (data[row].subject == "Math" || data[row].subject == "ELA") {
-        //         sheet
-        //             .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
-        //             .value = data[row].learningStandard;
-        //         sheet
-        //             .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
-        //             .value = data[row].subLearningStandard;
-        //       }
-
+            .value = row ==
+                0
+            ? data[row].questionImgUrl
+            : data[1].questionImgUrl;
       }
-      // sheet.updateCell(CellIndex.indexByColumnRow(rowIndex: 0), cellStyle);
 
       var fileBytes = excel.save();
 
@@ -95,8 +96,8 @@ class GoogleDriveAccess {
   }
 
   static Future excelToJson(String file) async {
-    var bytes =  File(file).readAsBytesSync();
-    var excel =  Excel.decodeBytes(bytes);
+    var bytes = File(file).readAsBytesSync();
+    var excel = Excel.decodeBytes(bytes);
     print(excel);
     int i = 0;
     List<dynamic> keys = <dynamic>[];

@@ -332,7 +332,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<UserInformation> _profileData =
             await UserGoogleProfile.getUserProfile();
         if (event.previouslyAddedListLength != null &&
-            event.previouslyAddedListLength! < Globals.studentInfo!.length) {
+            event.previouslyAddedListLength! <
+                await Utility.getStudentInfoListLength(
+                    tableName: 'student_info')) {
           // List<StudentAssessmentInfo> _list = Globals.studentInfo!;
           //Removing the previous scanned records to save only latest scanned sheets to the dashboard
           // _list.removeRange(0, event.previouslyAddedListLength!+1); //+1 - To remove title as well
@@ -351,14 +353,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             );
             bool result = await saveResultToDashboard(
                 assessmentId: event.assessmentId!,
-                studentDetails: Globals.studentInfo!,
+                studentDetails:
+                    await Utility.getStudentInfoList(tableName: 'student_info'),
                 previousListLength: event.previouslyAddedListLength ?? 0,
                 isHistoryDetailPage: event.isHistoryAssessmentSection);
 
             if (!result) {
               saveResultToDashboard(
                   assessmentId: event.assessmentId!,
-                  studentDetails: Globals.studentInfo!,
+                  studentDetails: await Utility.getStudentInfoList(
+                      tableName: 'student_info'),
                   previousListLength: event.previouslyAddedListLength ?? 0,
                   isHistoryDetailPage: event.isHistoryAssessmentSection);
             } else {
@@ -828,7 +832,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       "School_year__c": currentDate.split("-")[0],
       "Standard__c": standardId != '' ? standardId : null,
       "Subject__c": subjectId != '' ? subjectId : null,
-      "Google_File_Id": fileId ?? ''
+      "Google_File_Id": fileId ?? '',
     };
     final ResponseModel response = await _dbServices.postapi(
       "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",

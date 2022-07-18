@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
@@ -17,7 +16,9 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 // import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 
 class AssessmentSummary extends StatefulWidget {
-  AssessmentSummary({Key? key}) : super(key: key);
+  bool isFromHomeSection;
+  AssessmentSummary({Key? key, required this.isFromHomeSection})
+      : super(key: key);
   @override
   State<AssessmentSummary> createState() => _AssessmentSummaryState();
 }
@@ -45,80 +46,87 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       child: Stack(
         children: [
           CommonBackGroundImgWidget(),
-          Scaffold(
-            key: _scaffoldKey,
-            backgroundColor: Colors.transparent,
-            appBar: CustomOcrAppBarWidget(
-              isbackOnSuccess: isBackFromCamera,
-              key: GlobalKey(),
-              isBackButton: true,
-              assessmentDetailPage: true,
-              assessmentPage: true,
-              scaffoldKey: _scaffoldKey,
-            ),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SpacerWidget(_KVertcalSpace / 4),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Utility.textWidget(
-                    text: 'Assessment History',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.bold),
+          WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: Scaffold(
+              key: _scaffoldKey,
+              backgroundColor: Colors.transparent,
+              appBar: CustomOcrAppBarWidget(
+                isbackOnSuccess: isBackFromCamera,
+                key: GlobalKey(),
+                isBackButton: widget.isFromHomeSection,
+                assessmentDetailPage: true,
+                assessmentPage: true,
+                scaffoldKey: _scaffoldKey,
+                isFromResultSection:
+                    widget.isFromHomeSection == false ? true : null,
+              ),
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  SpacerWidget(_KVertcalSpace / 4),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Utility.textWidget(
+                      text: 'Assessment History',
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                SpacerWidget(_KVertcalSpace / 3),
-                BlocConsumer(
-                  bloc: _driveBloc,
-                  builder: (BuildContext contxt, GoogleDriveState state) {
-                    if (state is GoogleDriveGetSuccess) {
-                      return state.obj!.length > 0
-                          ? Expanded(child: listView(state.obj!))
-                          : Expanded(
-                              child: NoDataFoundErrorWidget(
-                                  isResultNotFoundMsg: true,
-                                  isNews: false,
-                                  isEvents: false),
-                            );
-                    } else if (state is GoogleDriveLoading) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.7,
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        )),
-                      );
-                    }
-
-                    return Container();
-                  },
-                  listener:
-                      (BuildContext contxt, GoogleDriveState state) async {
-                    if (state is ErrorState) {
-                      if (state.errorMsg == 'Reauthentication is required') {
-                        await Utility.refreshAuthenticationToken(
-                            isNavigator: false,
-                            errorMsg: state.errorMsg!,
-                            context: context,
-                            scaffoldKey: _scaffoldKey);
-
-                        _driveBloc.add(GetHistoryAssessmentFromDrive());
-                      } else {
-                        Navigator.of(context).pop();
-                        Utility.currentScreenSnackBar(
-                            "Something Went Wrong. Please Try Again.");
+                  SpacerWidget(_KVertcalSpace / 3),
+                  BlocConsumer(
+                    bloc: _driveBloc,
+                    builder: (BuildContext contxt, GoogleDriveState state) {
+                      if (state is GoogleDriveGetSuccess) {
+                        return state.obj!.length > 0
+                            ? Expanded(child: listView(state.obj!))
+                            : Expanded(
+                                child: NoDataFoundErrorWidget(
+                                    isResultNotFoundMsg: true,
+                                    isNews: false,
+                                    isEvents: false),
+                              );
+                      } else if (state is GoogleDriveLoading) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          )),
+                        );
                       }
-                    }
-                  },
-                ),
-              ],
+
+                      return Container();
+                    },
+                    listener:
+                        (BuildContext contxt, GoogleDriveState state) async {
+                      if (state is ErrorState) {
+                        if (state.errorMsg == 'Reauthentication is required') {
+                          await Utility.refreshAuthenticationToken(
+                              isNavigator: false,
+                              errorMsg: state.errorMsg!,
+                              context: context,
+                              scaffoldKey: _scaffoldKey);
+
+                          _driveBloc.add(GetHistoryAssessmentFromDrive());
+                        } else {
+                          Navigator.of(context).pop();
+                          Utility.currentScreenSnackBar(
+                              "Something Went Wrong. Please Try Again.");
+                        }
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
+          )
         ],
       ),
     );

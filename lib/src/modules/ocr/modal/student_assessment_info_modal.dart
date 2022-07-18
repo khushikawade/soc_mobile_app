@@ -1,21 +1,40 @@
-import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:hive/hive.dart';
+part 'student_assessment_info_modal.g.dart';
+
+@HiveType(typeId: 21)
 class StudentAssessmentInfo {
+  @HiveField(0)
   String? studentName;
+  @HiveField(1)
   String? studentId;
-  String? studentGrade; //pointsEarned
+  @HiveField(2)
+  String? studentGrade;
+  @HiveField(3) //pointsEarned
   String? pointpossible;
+  @HiveField(4)
   String? grade;
+  @HiveField(5)
   String? subject;
+  @HiveField(6)
   String? learningStandard;
+  @HiveField(7)
   String? subLearningStandard;
+  @HiveField(8)
   String? scoringRubric;
+  @HiveField(9)
   String? customRubricImage;
+  @HiveField(10)
   String? assessmentImage;
+  @HiveField(11)
   String? className;
+  @HiveField(12)
   String? questionImgUrl;
+  @HiveField(13)
   bool? isSavedOnDashBoard;
-  File? assessmentImgPath;
+  @HiveField(14)
+  String? assessmentImgPath;
 
   StudentAssessmentInfo(
       {this.studentName,
