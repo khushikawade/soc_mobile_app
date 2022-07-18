@@ -40,6 +40,7 @@ class CommonListWidget extends StatefulWidget {
 
 class _CommonListWidgetState extends State<CommonListWidget> {
   _launchURL(SharedList obj, String queryParameter) async {
+    // UNCOMMENT
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
@@ -54,23 +55,6 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         .appUrlC!, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
-                    //  hideAppbar: false,
-                    // hideShare: true,
-                    // zoomEnabled: false,
-                    // callBackFunction: (value) {
-                    //   // print(value);
-                    //   if (value.toString().contains('displayName')) {
-                    //     // Navigator.pop(context);
-                    //   Future.delayed(const Duration(milliseconds: 2000), () {
-
-                    //     Navigator.pushReplacement(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //             builder: (BuildContext context) =>
-                    //                 OpticalCharacterRecognition()));
-                    //                 });
-                    //   }
-                    // },
                   )));
     }
   }
