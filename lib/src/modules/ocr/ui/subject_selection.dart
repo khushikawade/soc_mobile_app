@@ -614,7 +614,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   subject != 'ELA' &&
                                   subject != null)) {
                                 isSubmitButton.value = true;
-                              }else{
+                              } else {
                                 isSubmitButton.value = false;
                               }
 
@@ -812,7 +812,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     child: Container(),
                                     listener: (context, state) async {
                                       if (state is GoogleDriveLoading) {
-                                        Utility.showLoadingDialog(context);
+                                        Utility.showLoadingDialog(
+                                            context, true);
                                       }
                                       if (state is GoogleSuccess) {
                                         Globals.currentAssessmentId = '';
@@ -931,7 +932,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       child: Container(),
                                       listener: (context, state) async {
                                         if (state is GoogleDriveLoading) {
-                                          Utility.showLoadingDialog(context);
+                                          Utility.showLoadingDialog(
+                                              context, true);
                                         }
                                         if (state is GoogleSuccess) {
                                           Globals.currentAssessmentId = '';
