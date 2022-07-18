@@ -23,6 +23,7 @@ class SubjectDetailList {
     this.subSubDomainC,
     this.standardAndDescriptionC,
     this.subjectNameC,
+    this.dateTime
   });
   @HiveField(0)
   String? descriptionC;
@@ -52,6 +53,8 @@ class SubjectDetailList {
   String? standardAndDescriptionC;
   @HiveField(13)
   String? subjectNameC;
+   @HiveField(14)
+  DateTime? dateTime;
 
   factory SubjectDetailList.fromRawJson(String str) =>
       SubjectDetailList.fromJson(json.decode(str));

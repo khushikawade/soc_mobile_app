@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
@@ -215,6 +214,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is FatchSubjectDetails) {
       try {
+        LocalDatabase<SubjectDetailList> recentOptionDB =
+            LocalDatabase('recent_option_subject');
         // yield OcrLoading();
 
         List<SubjectDetailList> data = await fatchSubjectDetails(
@@ -231,8 +232,71 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               await fatchLocalSubject(event.keyword!);
           subjectList.addAll(list);
           yield OcrLoading();
+
+          List<SubjectDetailList> recentSubjectlist =
+              await recentOptionDB.getData();
+
+          if (recentSubjectlist.isNotEmpty) {
+            for (int i = 0; i < subjectList.length; i++) {
+              for (int j = 0; j < recentSubjectlist.length; j++) {
+                if (subjectList[i].subjectNameC ==
+                    recentSubjectlist[j].subjectNameC) {
+                  subjectList[i].dateTime = recentSubjectlist[j].dateTime;
+                } else {
+                  if (data[i].dateTime == null) {
+                    //Using old/random date to make sue none of the record contains null date
+                    subjectList[i].dateTime = DateTime.parse('2012-02-27');
+                  }
+                }
+              }
+            }
+          } else {
+            subjectList.forEach((element) {
+              //Using old/random date to make sure none of the record contains null date
+              element.dateTime = DateTime.parse('2012-02-27');
+            });
+          }
+          subjectList.forEach((element) {
+            if (element.subjectNameC != null) {
+              subjectList
+                  .sort((a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));
+            }
+          });
           yield SubjectDataSuccess(obj: subjectList);
         } else if (event.type == 'nyc') {
+          //Recent list created with onTap
+          LocalDatabase<SubjectDetailList> learningRecentOptionDB =
+              LocalDatabase('recent_option_learning_standard');
+
+          List<SubjectDetailList> recentLearninglist =
+              await learningRecentOptionDB.getData();
+
+          if (recentLearninglist.isNotEmpty) {
+            for (int i = 0; i < data.length; i++) {
+              for (int j = 0; j < recentLearninglist.length; j++) {
+                if (data[i].domainNameC == recentLearninglist[j].domainNameC) {
+                  data[i].dateTime = recentLearninglist[j].dateTime;
+                } else {
+                  if (data[i].dateTime == null) {
+                    //Using old/random date to make sue none of the record contains null date
+                    data[i].dateTime = DateTime.parse('2012-02-27');
+                  }
+                }
+              }
+            }
+          } else {
+            data.forEach((element) {
+              //Using old/random date to make sue none of the record contains null date
+              element.dateTime = DateTime.parse('2012-02-27');
+            });
+          }
+
+          data.forEach((element) {
+            if (element.domainNameC != null) {
+              data.sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));
+            }
+          });
+
           yield NycDataSuccess(
             obj: data,
           );
@@ -276,7 +340,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
             await _sendEmailToAdmin(
               assessmentId: event.assessmentId!,
-              name: _profileData[0].userName!.replaceAll("%20", " ").replaceAll("20", ""),
+              name: _profileData[0]
+                  .userName!
+                  .replaceAll("%20", " ")
+                  .replaceAll("20", ""),
               studentResultDetails: event.resultList,
               schoolId: event.schoolId,
               email: _profileData[0].userEmail!,
@@ -418,9 +485,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           yield AssessmentDashboardStatus(
               resultRecordCount: object[0], assessmentId: object[1]);
         }
-        yield AssessmentDashboardStatus(resultRecordCount: null, assessmentId: null);
+        yield AssessmentDashboardStatus(
+            resultRecordCount: null, assessmentId: null);
       } catch (e) {
-        yield AssessmentDashboardStatus(resultRecordCount: null, assessmentId: null);
+        yield AssessmentDashboardStatus(
+            resultRecordCount: null, assessmentId: null);
       }
     }
   }
@@ -435,9 +504,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           headers: {"Content-type": "application/json; charset=utf-8"});
 
       if (response.statusCode == 200) {
-        List<SubjectDetailList> _list = jsonDecode(jsonEncode(response.data['body']))
-            .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
-            .toList();
+        List<SubjectDetailList> _list =
+            jsonDecode(jsonEncode(response.data['body']))
+                .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
+                .toList();
         //print(_list);
         LocalDatabase<SubjectDetailList> _localDb =
             LocalDatabase(Strings.ocrSubjectObjectName);
@@ -853,8 +923,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     // studentDetails.removeAt(0);
     for (int i = 0; i < studentResultDetails.length; i++) {
-      if(studentResultDetails[i].studentId=="Id"){
-          studentResultDetails.remove(i);
+      if (studentResultDetails[i].studentId == "Id") {
+        studentResultDetails.remove(i);
       }
       bodyContent.add(recordtoJson(
           assessmentId,

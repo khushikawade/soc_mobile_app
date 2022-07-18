@@ -38,6 +38,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
         _localData.forEach((element) {
           if (element.completedAtTimestamp != null) {
+            
             _localData.sort((a, b) =>
                 b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
           }

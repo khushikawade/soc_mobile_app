@@ -19,8 +19,6 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import '../../../widgets/textfield_widget.dart';
 import '../widgets/bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
@@ -72,6 +70,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<bool> isSkipButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
+  LocalDatabase<SubjectDetailList> subjectRecentOptionDB =
+      LocalDatabase('recent_option_subject');
+  LocalDatabase<SubjectDetailList> learningRecentOptionDB =
+      LocalDatabase('recent_option_learning_standard');
+
   @override
   initState() {
     if (widget.isSearchPage == true) {
@@ -121,13 +124,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     if (pageIndex.value == 1) {
                       // isSkipButton.value = false;
                       isSkipButton.value = false;
-
+                      subjectIndex1.value = 0;
                       isSubmitButton.value = false;
                       _ocrBloc.add(FatchSubjectDetails(
                           type: 'subject', keyword: widget.selectedClass));
                     } else if (pageIndex.value == 2) {
                       // isSkipButton.value = false;
                       isSubmitButton.value = false;
+                      nycIndex1.value = 0;
                       if (widget.isSearchPage == true) {
                         //   FatchSubjectDetails(type: 'nyc', keyword: keyword));
                         Navigator.pop(context);
@@ -282,9 +286,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         builder: (context, state) {
           if (state is SubjectDataSuccess) {
             state.obj!.forEach((element) {
-              if (element.subjectNameC != null) {
-                state.obj!
-                    .sort((a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));
+              if (element.dateTime != null) {
+                state.obj!.sort((a, b) => DateTime.parse(b.dateTime.toString())
+                    .compareTo(DateTime.parse(a.dateTime.toString())));
               }
             });
             // state.obj!.forEach((element) { userAddedSubjectList.add(element.subjectNameC!);});
@@ -293,9 +297,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 list: state.obj!, page: 0, isSubjectScreen: true);
           } else if (state is NycDataSuccess) {
             state.obj.forEach((element) {
-              if (element.domainNameC != null) {
-                state.obj
-                    .sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));
+              if (element.dateTime != null) {
+                state.obj.sort((a, b) => DateTime.parse(b.dateTime.toString())
+                    .compareTo(DateTime.parse(a.dateTime.toString())));
               }
             });
 
@@ -593,7 +597,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                         // },
                         child: InkWell(
-                          onTap: () {
+                          onTap: () async {
                             if (page != 1) {
                               print("INSIDE ON TAPPPPPPPPPPPPPPPPPPPPP");
                             }
@@ -624,6 +628,47 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 _ocrBloc.add(FatchSubjectDetails(
                                     type: 'nyc', keyword: keyword));
                               }
+                              //To manage the recent subject list
+                              List<SubjectDetailList> recentlUsedList =
+                                  await subjectRecentOptionDB.getData();
+
+                              SubjectDetailList recentSubjectList =
+                                  SubjectDetailList();
+
+                              if (recentlUsedList.isNotEmpty) {
+                                bool addToRecentList = false;
+
+                                //To update the object if already exist
+                                for (int i = 0;
+                                    i < recentlUsedList.length;
+                                    i++) {
+                                  if (recentlUsedList[i].subjectNameC ==
+                                      list[index].subjectNameC) {
+                                    recentSubjectList = recentlUsedList[i];
+
+                                    recentSubjectList.dateTime = DateTime.now();
+                                    await subjectRecentOptionDB.putAt(
+                                        i, recentSubjectList);
+                                    addToRecentList = true;
+                                    break;
+                                  }
+                                }
+
+                                //To add the object if not exist
+                                if (addToRecentList == false) {
+                                  recentSubjectList.subjectNameC =
+                                      list[index].subjectNameC;
+                                  recentSubjectList.dateTime = DateTime.now();
+                                  await subjectRecentOptionDB
+                                      .addData(recentSubjectList);
+                                }
+                              } else {
+                                recentSubjectList.subjectNameC =
+                                    list[index].subjectNameC;
+                                recentSubjectList.dateTime = DateTime.now();
+                                await subjectRecentOptionDB
+                                    .addData(recentSubjectList);
+                              }
                             } else if (pageIndex.value == 1) {
                               learningStandard = list[index].domainNameC;
                               nycIndex1.value = index;
@@ -633,6 +678,48 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 keywordSub = list[index].domainNameC;
                                 _ocrBloc.add(FatchSubjectDetails(
                                     type: 'nycSub', keyword: keywordSub));
+                              }
+                              //To manage the recent learning standard list
+                              List<SubjectDetailList> learningrecentList =
+                                  await learningRecentOptionDB.getData();
+
+                              SubjectDetailList learningRecentObject =
+                                  SubjectDetailList();
+                              //To add the object if not exist
+                              if (learningrecentList.isNotEmpty) {
+                                bool addToRecentList = false;
+
+                                for (int i = 0;
+                                    i < learningrecentList.length;
+                                    i++) {
+                                  if (learningrecentList[i].domainNameC ==
+                                      list[index].domainNameC) {
+                                    learningRecentObject =
+                                        learningrecentList[i];
+
+                                    learningRecentObject.dateTime =
+                                        DateTime.now();
+                                    await learningRecentOptionDB.putAt(
+                                        i, learningRecentObject);
+                                    addToRecentList = true;
+                                    break;
+                                  }
+                                }
+                                //To update the object if not exist
+                                if (addToRecentList == false) {
+                                  learningRecentObject.domainNameC =
+                                      list[index].domainNameC;
+                                  learningRecentObject.dateTime =
+                                      DateTime.now();
+                                  await learningRecentOptionDB
+                                      .addData(learningRecentObject);
+                                }
+                              } else {
+                                learningRecentObject.domainNameC =
+                                    list[index].domainNameC;
+                                learningRecentObject.dateTime = DateTime.now();
+                                await learningRecentOptionDB
+                                    .addData(learningRecentObject);
                               }
                             }
                             if (index >= list.length &&
