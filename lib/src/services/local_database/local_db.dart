@@ -41,5 +41,23 @@ class LocalDatabase<T> extends IRepository<T> {
     await box!.close();
   }
 
+  Future<void> putAt(int index, T object) async {
+    if (boxIsClosed) {
+      await openBox(this.tableName);
+    }
+    box!.putAt(index, object);
+  }
+
+  Future<void> deleteAt(
+    int index,
+  ) async {
+    if (boxIsClosed) {
+      await openBox(this.tableName);
+    }
+    box!.deleteAt(
+      index,
+    );
+  }
+
   bool get boxIsClosed => !(box != null && box!.isOpen);
 }
