@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -216,7 +216,7 @@ class _OpticalCharacterRecognitionPageState
             child: Container(),
             listener: (context, state) async {
               if (state is GoogleDriveLoading) {
-                Utility.showLoadingDialog(context);
+                Utility.showLoadingDialog(context,true);
               }
               if (state is GoogleSuccess) {
                 if (state.assessmentSection == true) {

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
+
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -492,7 +492,7 @@ class Utility {
   //       });
   // }
 
-  static void showLoadingDialog(BuildContext context) async {
+  static void showLoadingDialog(BuildContext context, bool? isOCR) async {
     return showDialog<void>(
         useRootNavigator: false,
         context: context,
@@ -541,7 +541,7 @@ class Utility {
                                     width: 10,
                                   ),
                                   CircularProgressIndicator(
-                                    color: AppTheme.kButtonColor,
+                                    color:isOCR!?AppTheme.kButtonColor:null,
                                   ),
                                   SizedBox(
                                     width: 10,

@@ -27,6 +27,10 @@ class Strings {
   static final String socialActionObjectName = 'social_action';
   static final String globalSearchName = 'global_search';
   static final String calendarObjectName = 'calandar_action';
+  static final String hiveReferenceLogName =
+      'reference_recent_item'; //To get search record object from local database
+
+//Using in Graded+
   static final String googleDrive = 'google_drive';
   static final String ocrSubjectObjectName = 'ocr_subject_details';
 }

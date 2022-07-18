@@ -155,7 +155,7 @@ class _CameraScreenState extends State<CameraScreen>
                     child: Container(),
                     listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context);
+                        Utility.showLoadingDialog(context,true);
                       }
                       if (state is GoogleSuccess) {
                         Navigator.of(context).pop();
