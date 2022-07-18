@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/ocr/widgets/animation_button.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -71,6 +72,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   final ValueNotifier<bool> animationStart = ValueNotifier<bool>(false);
 
+  LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+      LocalDatabase('student_info');
+
+  LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+      LocalDatabase('history_student_info');
   @override
   void initState() {
     super.initState();
@@ -97,7 +103,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 //  failure == true
                 //     ?
                 IconButton(
-              onPressed: () {
+              onPressed: () async {
                 if (isBackFromCamera.value == true) {
                   updateDetails(
                       isUpdateData: true,
@@ -139,7 +145,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           studentId: idController.text));
                       // }
                       // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
-                      print(Globals.studentInfo!);
+
                       _navigatetoCameraSection();
                     }
                   }
@@ -1128,115 +1134,148 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   void updateDetails(
-      {bool? isUpdateData, required bool? isFromHistoryAssessmentScanMore}) {
+      {bool? isUpdateData,
+      required bool? isFromHistoryAssessmentScanMore}) async {
+    StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
+
+    // To add the scan more result to the google file existing list
     if (isFromHistoryAssessmentScanMore == true) {
-      if (Globals.historyStudentInfo!.length > 0 &&
-          Globals.historyStudentInfo![0].studentId == "Id") {
-        Globals.historyStudentInfo!.remove(0);
+      List<StudentAssessmentInfo> historyStudentInfo =
+          await Utility.getStudentInfoList(tableName: 'history_student_info');
+
+      if (historyStudentInfo.length > 0 &&
+          historyStudentInfo[0].studentId == "Id") {
+        historyStudentInfo.remove(0);
       }
 
-      if (isUpdateData == true && Globals.historyStudentInfo != null) {
-        Globals.historyStudentInfo!.last.studentName = nameController.text;
-        Globals.historyStudentInfo!.last.studentId = idController.text;
-        Globals.historyStudentInfo!.last.studentGrade = pointScored.value;
-        Globals.historyStudentInfo!.last.pointpossible = Globals.pointpossible;
-        Globals.historyStudentInfo!.last.assessmentImgPath = widget.imgPath;
+      if (isUpdateData == true && historyStudentInfo.isNotEmpty) {
+        // final StudentAssessmentInfo studentAssessmentInfo =
+        //     StudentAssessmentInfo();
+        studentAssessmentInfo.studentName = nameController.text;
+        studentAssessmentInfo.studentId = idController.text;
+        studentAssessmentInfo.studentGrade = pointScored.value;
+        studentAssessmentInfo.pointpossible = Globals.pointpossible;
+        studentAssessmentInfo.assessmentImgPath =
+            widget.imgPath.path.toString();
+        await _studentInfoDb.putAt(
+            historyStudentInfo.length - 1, studentAssessmentInfo);
+        return;
       } else {
-        if (Globals.historyStudentInfo == null) {
-          final StudentAssessmentInfo studentAssessmentInfo =
-              StudentAssessmentInfo();
+        // StudentAssessmentInfo studentAssessmentInfo =
+        //         StudentAssessmentInfo();
+        if (historyStudentInfo.isEmpty) {
+          // final StudentAssessmentInfo studentAssessmentInfo =
+          //     StudentAssessmentInfo();
           studentAssessmentInfo.studentName =
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
           studentAssessmentInfo.studentGrade = pointScored.value;
           studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
-          studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+          studentAssessmentInfo.assessmentImgPath = widget.imgPath.toString();
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-          Globals.historyStudentInfo!.add(studentAssessmentInfo);
+          await _historyStudentInfoDb.addData(studentAssessmentInfo);
         } else {
           List id = [];
-          for (int i = 0; i < Globals.historyStudentInfo!.length; i++) {
-            if (!Globals.historyStudentInfo!.contains(id)) {
-              id.add(Globals.historyStudentInfo![i].studentId);
+          for (int i = 0; i < historyStudentInfo.length; i++) {
+            if (!historyStudentInfo.contains(id)) {
+              id.add(historyStudentInfo[i].studentId);
             } else {
               print('Record is already exist in the list. Skipping...');
             }
           }
           if (!id.contains(idController.text)) {
-            StudentAssessmentInfo studentAssessmentInfo =
-                StudentAssessmentInfo();
+            // StudentAssessmentInfo studentAssessmentInfo =
+            //     StudentAssessmentInfo();
             studentAssessmentInfo.studentName = nameController.text.isNotEmpty
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
             studentAssessmentInfo.studentGrade = pointScored.value;
             studentAssessmentInfo.pointpossible = Globals.pointpossible;
-            studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+            studentAssessmentInfo.assessmentImgPath =
+                widget.imgPath.path.toString();
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-            if (!Globals.historyStudentInfo!.contains(id)) {
-              Globals.historyStudentInfo!.add(studentAssessmentInfo);
+            if (!historyStudentInfo.contains(id)) {
+              //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
+              await _historyStudentInfoDb.addData(studentAssessmentInfo);
             }
           }
         }
+        return;
       }
     } else {
-      if (Globals.studentInfo!.length > 0 &&
-          Globals.studentInfo![0].studentId == "Id") {
-        Globals.studentInfo!.remove(0);
+      List<StudentAssessmentInfo> studentInfo =
+          await Utility.getStudentInfoList(tableName: 'student_info');
+
+      if (studentInfo.length > 0 && studentInfo[0].studentId == "Id") {
+        studentInfo.remove(0);
       }
 
-      if (isUpdateData == true && Globals.studentInfo != null) {
-        Globals.studentInfo!.last.studentName = nameController.text;
-        Globals.studentInfo!.last.studentId = idController.text;
-        Globals.studentInfo!.last.studentGrade = pointScored.value;
-        Globals.studentInfo!.last.pointpossible = Globals.pointpossible;
-        Globals.studentInfo!.last.assessmentImgPath = widget.imgPath;
-
-        // Globals.studentInfo!.removeAt(Globals.studentInfo!.length - 1);
-        // StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
-        // studentAssessmentInfo.studentName = nameController.text;
-        // studentAssessmentInfo.studentId = idController.text;
-        // studentAssessmentInfo.studentGrade = pointScored;
-        // studentAssessmentInfo.pointpossible = Globals.pointpossible;
-        // //studentAssessmentInfo.assessmentName = Globals.assessmentName;
-        // Globals.studentInfo!.add(studentAssessmentInfo);
+      if (isUpdateData == true && studentInfo.isNotEmpty) {
+        // final StudentAssessmentInfo studentAssessmentInfo =
+        //     StudentAssessmentInfo();
+        studentAssessmentInfo.studentName = nameController.text;
+        studentAssessmentInfo.studentId = idController.text;
+        studentAssessmentInfo.studentGrade = pointScored.value;
+        studentAssessmentInfo.pointpossible =
+            Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
+                ? Globals.pointpossible
+                : '2';
+        studentAssessmentInfo.assessmentImgPath =
+            widget.imgPath.path.toString();
+// To update/edit the scanned details
+        await _studentInfoDb.putAt(
+            studentInfo.length - 1, studentAssessmentInfo);
+        return;
       } else {
-        if (Globals.studentInfo == null) {
-          final StudentAssessmentInfo studentAssessmentInfo =
-              StudentAssessmentInfo();
+        final StudentAssessmentInfo studentAssessmentInfo =
+            StudentAssessmentInfo();
+        if (studentInfo.isEmpty) {
+          // final StudentAssessmentInfo studentAssessmentInfo =
+          //     StudentAssessmentInfo();
           studentAssessmentInfo.studentName =
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade =
-              indexColor.value.toString(); //pointScored.value;
-          studentAssessmentInfo.pointpossible = Globals.pointpossible;
-          studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+          studentAssessmentInfo.studentGrade = pointScored.value;
+          studentAssessmentInfo.pointpossible =
+              Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
+                  ? Globals.pointpossible
+                  : '2';
+          studentAssessmentInfo.assessmentImgPath =
+              widget.imgPath.path.toString();
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-          Globals.studentInfo!.add(studentAssessmentInfo);
+          await _studentInfoDb.addData(studentAssessmentInfo);
+          return;
         } else {
           List id = [];
-          for (int i = 0; i < Globals.studentInfo!.length; i++) {
-            if (!Globals.studentInfo!.contains(id)) {
-              id.add(Globals.studentInfo![i].studentId);
+          for (int i = 0; i < studentInfo.length; i++) {
+            if (!studentInfo.contains(id)) {
+              id.add(studentInfo[i].studentId);
             } else {
               print('Record is already exist in the list. Skipping...');
             }
           }
           if (!id.contains(idController.text)) {
-            StudentAssessmentInfo studentAssessmentInfo =
-                StudentAssessmentInfo();
+            // StudentAssessmentInfo studentAssessmentInfo =
+            //     StudentAssessmentInfo();
             studentAssessmentInfo.studentName = nameController.text.isNotEmpty
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
             studentAssessmentInfo.studentGrade = pointScored.value;
-            studentAssessmentInfo.pointpossible = Globals.pointpossible;
-            studentAssessmentInfo.assessmentImgPath = widget.imgPath;
+            studentAssessmentInfo.pointpossible =
+                Globals.pointpossible != null ||
+                        Globals.pointpossible!.isNotEmpty
+                    ? Globals.pointpossible
+                    : '2';
+            studentAssessmentInfo.assessmentImgPath =
+                widget.imgPath.path.toString();
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-            if (!Globals.studentInfo!.contains(id)) {
-              Globals.studentInfo!.add(studentAssessmentInfo);
+            if (!studentInfo.contains(id)) {
+              await _studentInfoDb.addData(studentAssessmentInfo);
             }
           }
+          return;
         }
       }
     }

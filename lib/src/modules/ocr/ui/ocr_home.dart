@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -48,6 +49,8 @@ class _OpticalCharacterRecognitionPageState
   final ValueNotifier<int> rubricScoreSelectedColor = ValueNotifier<int>(0);
   final ValueNotifier<bool> updateRubricList = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+
+  LocalDatabase<StudentAssessmentInfo> _localDb = LocalDatabase('student_info');
 
   @override
   void initState() {
@@ -182,7 +185,11 @@ class _OpticalCharacterRecognitionPageState
                     if (!connected) {
                       Utility.currentScreenSnackBar("No Internet Connection");
                     } else {
-                      Globals.studentInfo!.clear();
+                      //Utility.showLoadingDialog(context);
+                      // Globals.studentInfo!.clear();
+
+                      await _localDb.clear();
+
                       if (Globals.googleDriveFolderId!.isEmpty) {
                         _triggerDriveFolderEvent(false);
                       } else {
@@ -577,7 +584,7 @@ class _OpticalCharacterRecognitionPageState
     updateLocalDb();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AssessmentSummary()),
+      MaterialPageRoute(builder: (context) => AssessmentSummary(isFromHomeSection: true,)),
     );
   }
 }

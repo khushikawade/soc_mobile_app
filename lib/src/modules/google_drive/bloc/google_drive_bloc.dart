@@ -189,12 +189,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
             String imgExtension = assessmentData[i]
                 .assessmentImgPath!
-                .path
                 .substring(
-                    assessmentData[i].assessmentImgPath!.path.lastIndexOf(".") +
-                        1);
-            List<int> imageBytes =
-                assessmentData[i].assessmentImgPath!.readAsBytesSync();
+                    assessmentData[i].assessmentImgPath!.lastIndexOf(".") + 1);
+            File assessmentImageFile =
+                File(assessmentData[i].assessmentImgPath!);
+            List<int> imageBytes = assessmentImageFile.readAsBytesSync();
             String imageB64 = base64Encode(imageBytes);
 
             String imgUrl = await _uploadImgB64AndGetUrl(
@@ -528,11 +527,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //  int index = RubricScoreList.scoringList.length - 1;
 
         if (imgUrl != "") {
+          LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+              LocalDatabase('student_info');
+
+          List<StudentAssessmentInfo> studentInfo =
+              await Utility.getStudentInfoList(tableName: 'student_info');
+
           print('Image bucket URL received : $imgUrl');
-          for (int i = 0; i < Globals.studentInfo!.length; i++) {
-            if (Globals.studentInfo![i].studentId! == event.studentId) {
+          for (int i = 0; i < studentInfo.length; i++) {
+            if (studentInfo[i].studentId == event.studentId) {
               print("updateing img url");
-              Globals.studentInfo![i].assessmentImage = imgUrl;
+              StudentAssessmentInfo e = studentInfo[i];
+              e.assessmentImage = imgUrl;
+
+              await _studentInfoDb.putAt(i, e);
             }
           }
         } else {
@@ -735,11 +743,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       String fileId = response.data['body']['id'];
       Globals.googleExcelSheetId = fileId;
-      bool result =
-          await _updateSheetPermission(accessToken!, fileId, refreshToken);
-      if (!result) {
-        await _updateSheetPermission(accessToken, fileId, refreshToken);
-      }
+
+      // bool result =
+      //     await _updateSheetPermission(accessToken!, fileId, refreshToken);
+      // if (!result) {
+      //   await _updateSheetPermission(accessToken, fileId, refreshToken);
+      // }
 
       // bool link = await _getShareableLink(accessToken, fileId, refreshToken);
       // if (!link) {
@@ -803,6 +812,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       print("errorrrrr-------------> upload on drive");
       print(response.statusCode);
+
+      //  await _toRefreshAuthenticationToken(refreshToken!);
+      // UpdateDocOnDrive(
+      //     assessmentName: assessmentName,
+      //     fileId: id,
+      //     isLoading: true,
+      //     studentData:
+      //         //list2
+      //         await Utility.getStudentInfoList(tableName: 'student_info'));
 
       var result = await _toRefreshAuthenticationToken(refreshToken!);
 
@@ -957,6 +975,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (response.statusCode != 401 &&
         response.statusCode == 200 &&
         response.data['statusCode'] != 500) {
+      bool result = await _updateSheetPermission(token, fileId, refreshToken);
+      if (!result) {
+        await _updateSheetPermission(token, fileId, refreshToken);
+      }
       print(
           " get file link   ----------->${response.data['body']['webViewLink']}");
       // var data = response.data;

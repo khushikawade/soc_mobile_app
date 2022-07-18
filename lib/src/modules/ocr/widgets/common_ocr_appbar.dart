@@ -7,7 +7,6 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -31,7 +30,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.actionIcon,
       this.scaffoldKey,
       this.customBackButton,
-      required this.isbackOnSuccess})
+      required this.isbackOnSuccess,
+      this.isFromResultSection})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   bool? isSuccessState;
@@ -44,6 +44,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   Widget? actionIcon;
   Widget? customBackButton;
   ValueListenable<bool>? isbackOnSuccess;
+  bool? isFromResultSection;
 
   final scaffoldKey;
 
@@ -73,47 +74,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
             children: [
               widget.customBackButton != null
                   ? widget.customBackButton!
-                  :
-
-                  // widget.isSuccessState == false
-                  //     ? Column(
-                  //       children: [
-                  //         commonGradedLogo(),
-                  //         SpacerWidget(
-                  //                 10.0,
-                  //               ),
-                  //         Row(
-                  //             mainAxisAlignment: MainAxisAlignment.end,
-                  //             children: [
-                  //               Utility.textWidget(
-                  //                   text: 'Manual Entry',
-                  //                   context: context,
-                  //                   textTheme: Theme.of(context)
-                  //                       .textTheme
-                  //                       .headline4!
-                  //                       .copyWith(fontWeight: FontWeight.bold)),
-                  //               SizedBox(
-                  //                 width: 5.0,
-                  //               ),
-                  //               Container(
-                  //                 decoration: BoxDecoration(
-                  //                   shape: BoxShape.circle,
-                  //                   color: Color(0xffCF6679),
-                  //                 ),
-                  //                 child: Icon(
-                  //                     IconData(0xe838,
-                  //                         fontFamily: Overrides.kFontFam,
-                  //                         fontPackage: Overrides.kFontPkg),
-                  //                     size: 19,
-                  //                     color: Colors.white),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //       ],
-                  //     )
-                  //     :
-
-                  widget.isBackButton == true
+                  : widget.isBackButton == true
                       ? IconButton(
                           onPressed: () {
                             //To dispose the snackbar message before navigating back if exist
@@ -132,67 +93,92 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                           height: 0,
                           width: 0,
                         ),
-              //  widget.isSuccessState != false ?
               commonGradedLogo()
-              //  :Container()
             ],
           ),
         ),
         actions: [
-          widget.assessmentPage == true
-              ? GestureDetector(
-                  onTap: () {
-                    print(
-                        'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                    Globals.googleDriveFolderPath != null
-                        ? Utility.launchUrlOnExternalBrowser(
-                            Globals.googleDriveFolderPath!)
-                        : getGoogleFolderPath();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Image(
-                      alignment: Alignment.center,
-                      width: Globals.deviceType == "phone" ? 34 : 32,
-                      height: Globals.deviceType == "phone" ? 34 : 32,
-                      image: AssetImage(
-                        "assets/images/drive_ico.png",
-                      ),
+          widget.isFromResultSection == true
+              ? Container(
+                  padding: widget.isSuccessState != false
+                      ? EdgeInsets.only(right: 10)
+                      : EdgeInsets.zero,
+                  child:
+                      //widget.actionIcon,
+                      IconButton(
+                    onPressed: () {
+                      if (widget.isHomeButtonPopup == true) {
+                        _onHomePressed();
+                      } else {
+                        Utility.setFree();
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                      isFromOcrSection: true,
+                                    )),
+                            (_) => false);
+                      }
+                    },
+                    icon: Icon(
+                      IconData(0xe874,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      color: AppTheme.kButtonColor,
+                      size: 30,
                     ),
-                  ),
-                )
-              : widget.assessmentDetailPage == null
-                  ? Container(
-                      padding: widget.isSuccessState != false
-                          ? EdgeInsets.only(right: 10)
-                          : EdgeInsets.zero,
-
-                          
-                      child:
-                          //widget.actionIcon,
-                          IconButton(
-                        onPressed: () {
-                          if (widget.isHomeButtonPopup == true) {
-                            _onHomePressed();
-                          } else {
-                            Utility.setFree();
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage(
-                                          isFromOcrSection: true,
-                                        )),
-                                (_) => false);
-                          }
-                        },
-                        icon: Icon(
-                          IconData(0xe874,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          color: AppTheme.kButtonColor,
-                          size: 30,
+                  ))
+              : widget.assessmentPage == true
+                  ? GestureDetector(
+                      onTap: () {
+                        print(
+                            'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                        Globals.googleDriveFolderPath != null
+                            ? Utility.launchUrlOnExternalBrowser(
+                                Globals.googleDriveFolderPath!)
+                            : getGoogleFolderPath();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Image(
+                          alignment: Alignment.center,
+                          width: Globals.deviceType == "phone" ? 34 : 32,
+                          height: Globals.deviceType == "phone" ? 34 : 32,
+                          image: AssetImage(
+                            "assets/images/drive_ico.png",
+                          ),
                         ),
-                      ))
-                  : Container(),
+                      ),
+                    )
+                  : widget.assessmentDetailPage == null
+                      ? Container(
+                          padding: widget.isSuccessState != false
+                              ? EdgeInsets.only(right: 10)
+                              : EdgeInsets.zero,
+                          child:
+                              //widget.actionIcon,
+                              IconButton(
+                            onPressed: () {
+                              if (widget.isHomeButtonPopup == true) {
+                                _onHomePressed();
+                              } else {
+                                Utility.setFree();
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage(
+                                              isFromOcrSection: true,
+                                            )),
+                                    (_) => false);
+                              }
+                            },
+                            icon: Icon(
+                              IconData(0xe874,
+                                  fontFamily: Overrides.kFontFam,
+                                  fontPackage: Overrides.kFontPkg),
+                              color: AppTheme.kButtonColor,
+                              size: 30,
+                            ),
+                          ))
+                      : Container(),
           widget.assessmentDetailPage == true
               ? Container()
               : widget.isSuccessState == false || widget.isResultScreen == true
@@ -265,8 +251,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   Widget commonGradedLogo() {
     return Expanded(
       child: Container(
-        // color: widget.isBackButton == true
-        //       ?Colors.red:Colors.green,//widget.isBackButton!=null? Colors.green:Colors.yellow,
         padding: widget.isBackButton == true
             ? EdgeInsets.only(left: 0)
             : EdgeInsets.only(left: 18),
@@ -274,10 +258,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         child: Image(
           alignment: Alignment.centerLeft,
           width: MediaQuery.of(context).size.width * 0.22,
-          // widget.isBackButton == true
-          //     ? MediaQuery.of(context).size.width*0.2 //200
-          //     : MediaQuery.of(context).size.width*0.2, //200,//Globals.deviceType == "phone" ?(widget.isBackButton==null? 200: 300) : 32,
-          // height: Globals.deviceType == "phone" ? 100 : 32,
           image: AssetImage(
             Color(0xff000000) == Theme.of(context).backgroundColor
                 ? "assets/images/graded+_light.png"
@@ -300,9 +280,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     padding: Globals.deviceType == 'phone'
                         ? null
                         : const EdgeInsets.only(top: 10.0),
-                    height: Globals.deviceType == 'phone'
-                        ? null
-                        : 50,
+                    height: Globals.deviceType == 'phone' ? null : 50,
                     width: Globals.deviceType == 'phone'
                         ? null
                         : orientation == Orientation.portrait
@@ -314,7 +292,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
                           return Text(translatedMessage.toString(),
-                          textAlign: TextAlign.center,
+                              textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline1!
@@ -329,7 +307,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
                       return Text(translatedMessage.toString(),
-                        textAlign: TextAlign.center,
+                          textAlign: TextAlign.center,
                           style: Theme.of(context)
                               .textTheme
                               .headline2!
@@ -396,11 +374,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
             }));
   }
 
-  // Future<String?> _getProfileUrl() async {
-  //   List<UserInformation> _userprofilelocalData = await getUserProfile();
-  //   return _userprofilelocalData[0].profilePicture!;
-  // }
-
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
@@ -414,126 +387,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         context: context,
         builder: (context) {
           return CustomDialogBox(profileData: userInformation);
-          // RenderBox renderBox = (widget.key as GlobalKey)
-          //     .currentContext
-          //     .findAncestorRenderObjectOfType() as RenderBox;
-          // Offset position = renderBox.localToGlobal(Offset.zero);
-          // return Material(
-          //   type: MaterialType.transparency,
-          //   child: Stack(
-          //     children: [
-          //       Positioned(
-          //         right: 10,
-          //         left: 0,
-          //         top: MediaQuery.of(context).orientation ==
-          //                 Orientation.landscape
-          //             ? MediaQuery.of(context).size.width / 10
-          //             : MediaQuery.of(context).size.height / 10,
-          //         child: Container(
-          //             height: MediaQuery.of(context).orientation ==
-          //                     Orientation.landscape
-          //                 ? MediaQuery.of(context).size.height / 2
-          //                 : MediaQuery.of(context).size.height / 4.5,
-          //             // height: 500,
-          //             //  width: double.maxFinite,
-          //             padding: EdgeInsets.symmetric(
-          //                 horizontal: MediaQuery.of(context).size.height / 60,
-          //                 vertical: MediaQuery.of(context).size.height / 60),
-          //             margin: EdgeInsets.only(
-          //                 left: MediaQuery.of(context).size.width / 1.9),
-          //             decoration: BoxDecoration(
-          //                 color: Color(0xff000000) !=
-          //                         Theme.of(context).backgroundColor
-          //                     ? Color(0xffF7F8F9)
-          //                     : Color(0xff111C20),
-          //                 borderRadius: BorderRadius.circular(24),
-          //                 border: Border.all(
-          //                   color: AppTheme.kSelectedColor,
-          //                 ),
-          //                 boxShadow: [
-          //                   BoxShadow(
-          //                       color: Colors.black.withOpacity(.1),
-          //                       blurRadius: 8)
-          //                 ]),
-          //             child: Column(
-          //               crossAxisAlignment: CrossAxisAlignment.center,
-          //               mainAxisAlignment: MainAxisAlignment.start,
-          //               children: [
-          //                 CircleAvatar(
-          //                   backgroundColor: AppTheme.kButtonColor,
-          //                   radius: 28.0,
-          //                   child: ClipOval(
-          //                       child: CachedNetworkImage(
-          //                           fit: BoxFit.cover,
-          //                           height: 50,
-          //                           width: 50,
-          //                           errorWidget: (context, url, error) =>
-          //                               Icon(Icons.error),
-          //                           imageUrl: userInformation.profilePicture!,
-          //                           placeholder: (context, url) => Center(
-          //                                 child: CupertinoActivityIndicator(),
-          //                               ))),
-          //                 ),
-          //                 SizedBox(
-          //                   height: 5.0,
-          //                 ),
-          //                 Text(
-          //                   userInformation.userName!.replaceAll("%20", " "),
-          //                   style: Theme.of(context)
-          //                       .textTheme
-          //                       .headline3!
-          //                       .copyWith(fontWeight: FontWeight.bold),
-          //                 ),
-          //                 SpacerWidget(
-          //                   3.0,
-          //                 ),
-          //                 Text(userInformation.userEmail!,
-          //                     textAlign: TextAlign.center,
-          //                     style: Theme.of(context)
-          //                         .textTheme
-          //                         .subtitle2!
-          //                         .copyWith(
-          //                           color: Colors.grey.shade500,
-          //                         )),
-          //                 SpacerWidget(8.0),
-          //                 Expanded(
-          //                   child: Row(
-          //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //                     children: [
-          //                       Text("Sign Out",
-          //                           style: Theme.of(context)
-          //                               .textTheme
-          //                               .subtitle1!
-          //                               .copyWith(
-          //                                   color: Colors.grey.shade500,
-          //                                   fontWeight: FontWeight.bold,
-          //                                   fontSize: 20)),
-          //                       IconButton(
-          //                         onPressed: () {
-          //                           // Globals.homeIndex=
-          //                           UserGoogleProfile.clearUserProfile();
-          //                           Navigator.of(context).pushAndRemoveUntil(
-          //                               MaterialPageRoute(
-          //                                   builder: (context) => HomePage(
-          //                                         isFromOcrSection: true,
-          //                                       )),
-          //                               (_) => false);
-          //                         },
-          //                         icon: Icon(
-          //                           Icons.logout,
-          //                           size: 26,
-          //                           color: AppTheme.kButtonColor,
-          //                         ),
-          //                       ),
-          //                     ],
-          //                   ),
-          //                 ),
-          //               ],
-          //             )),
-          //       ),
-          //     ],
-          //   ),
-          // );
         });
   }
 }
