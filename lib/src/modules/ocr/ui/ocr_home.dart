@@ -543,7 +543,7 @@ class _OpticalCharacterRecognitionPageState
             ? '3'
             : rubricScoreSelectedColor.value == 4
                 ? '4'
-                : '2';
+                : '4'; //In case of 'None' or 'Custom rubric' selection
     Globals.googleExcelSheetId = "";
     updateLocalDb();
 
@@ -553,18 +553,11 @@ class _OpticalCharacterRecognitionPageState
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
-                isFromHistoryAssessmentScanMore: false,
-                onlyForPicture: false,
-                scaffoldKey: _scaffoldKey,
-                isScanMore: false,
-                pointPossible: rubricScoreSelectedColor.value == 0
-                    ? '2'
-                    : rubricScoreSelectedColor.value == 2
-                        ? '3'
-                        : rubricScoreSelectedColor.value == 4
-                            ? '4'
-                            : '4', //In case of 'None' or 'Custom rubric' selection
-              )),
+              isFromHistoryAssessmentScanMore: false,
+              onlyForPicture: false,
+              scaffoldKey: _scaffoldKey,
+              isScanMore: false,
+              pointPossible: Globals.pointpossible)),
     );
     // End
     // // COMMENT Below

@@ -286,6 +286,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // );
                 } else if (state is FetchTextFromImageSuccess) {
                   nameController.text = state.studentName!;
+                  widget.pointPossible == '2'
+                      ? Globals.pointsEarnedList = [0, 1, 2]
+                      : widget.pointPossible == '3'
+                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                          : widget.pointPossible == '4'
+                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                              : Globals.pointsEarnedList.length = 2;
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
@@ -297,6 +304,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   return successScreen(
                       id: state.studentId!, grade: state.grade!);
                 } else if (state is FetchTextFromImageFailure) {
+                  widget.pointPossible == '2'
+                      ? Globals.pointsEarnedList = [0, 1, 2]
+                      : widget.pointPossible == '3'
+                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                          : widget.pointPossible == '4'
+                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                              : Globals.pointsEarnedList.length = 2;
                   onChange == false
                       ? idController.text = state.studentId ?? ''
                       : state.studentId == ''

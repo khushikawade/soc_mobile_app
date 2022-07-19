@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
@@ -542,7 +541,8 @@ class Utility {
                                     width: 10,
                                   ),
                                   CircularProgressIndicator(
-                                    color:isOCR!?AppTheme.kButtonColor:null,
+                                    color:
+                                        isOCR! ? AppTheme.kButtonColor : null,
                                   ),
                                   SizedBox(
                                     width: 10,
