@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
@@ -47,7 +48,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
-
+  LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+      LocalDatabase('student_info');
   @override
   void initState() {
     super.initState();
@@ -533,25 +535,61 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       // Globals.studentInfo!.clear();
 
                       //Adding blank fields to the list : Static data
-                      Globals.studentInfo!.forEach((element) {
-                        element.subject = widget.keyword;
-                        element.learningStandard =
-                            learningStandard == null ? "NA" : learningStandard;
-                        element.subLearningStandard =
-                            subLearningStandard == null
-                                ? "NA"
-                                : subLearningStandard;
-                        element.scoringRubric = Globals.scoringRubric;
-                        element.customRubricImage = rubricImgUrl ?? "NA";
-                        element.grade = widget.grade;
-                      });
+                      List<StudentAssessmentInfo> studentInfodblist =
+                          await Utility.getStudentInfoList(
+                              tableName: 'student_info');
 
-                      _googleDriveBloc.add(UpdateDocOnDrive(   assessmentName:  Globals.assessmentName!,
-                           fileId: Globals.googleExcelSheetId,
+                      // studentInfodblist.asMap().forEach((index, element) async {
+                      //   StudentAssessmentInfo element =
+                      //       studentInfodblist[index];
+                      //   element.subject = widget.keyword;
+                      //   element.learningStandard =
+                      //       learningStandard == null ? "NA" : learningStandard;
+                      //   element.subLearningStandard =
+                      //       subLearningStandard == null
+                      //           ? "NA"
+                      //           : subLearningStandard;
+                      //   element.scoringRubric = Globals.scoringRubric;
+                      //   element.customRubricImage = rubricImgUrl ?? "NA";
+                      //   element.grade = widget.grade;
+
+                      //   await _studentInfoDb.putAt(index, element);
+
+                      // });
+                      // Globals.studentInfo!.forEach((element) {
+                      //   element.subject = widget.keyword;
+                      //   element.learningStandard =
+                      //       learningStandard == null ? "NA" : learningStandard;
+                      //   element.subLearningStandard =
+                      //       subLearningStandard == null
+                      //           ? "NA"
+                      //           : subLearningStandard;
+                      //   element.scoringRubric = Globals.scoringRubric;
+                      //   element.customRubricImage = rubricImgUrl ?? "NA";
+                      //   element.grade = widget.grade;
+                      // });
+
+                      StudentAssessmentInfo element = studentInfodblist[0];
+                      element.subject = widget.keyword;
+                      element.learningStandard =
+                          learningStandard == null ? "NA" : learningStandard;
+                      element.subLearningStandard = subLearningStandard == null
+                          ? "NA"
+                          : subLearningStandard;
+                      element.scoringRubric = Globals.scoringRubric;
+                      element.customRubricImage = rubricImgUrl ?? "NA";
+                      element.grade = widget.grade;
+
+                      await _studentInfoDb.putAt(0, element);
+
+                      _googleDriveBloc.add(UpdateDocOnDrive(
+                          assessmentName: Globals.assessmentName!,
+                          fileId: Globals.googleExcelSheetId,
                           isLoading: true,
                           studentData:
                               //list2
-                              Globals.studentInfo!));
+                              await Utility.getStudentInfoList(
+                                  tableName: 'student_info')));
 
                       Navigator.push(
                         context,

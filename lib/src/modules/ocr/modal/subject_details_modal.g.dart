@@ -31,13 +31,14 @@ class SubjectDetailListAdapter extends TypeAdapter<SubjectDetailList> {
       subSubDomainC: fields[11] as String?,
       standardAndDescriptionC: fields[12] as String?,
       subjectNameC: fields[13] as String?,
+      dateTime: fields[14] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SubjectDetailList obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.descriptionC)
       ..writeByte(1)
@@ -65,7 +66,9 @@ class SubjectDetailListAdapter extends TypeAdapter<SubjectDetailList> {
       ..writeByte(12)
       ..write(obj.standardAndDescriptionC)
       ..writeByte(13)
-      ..write(obj.subjectNameC);
+      ..write(obj.subjectNameC)
+      ..writeByte(14)
+      ..write(obj.dateTime);
   }
 
   @override

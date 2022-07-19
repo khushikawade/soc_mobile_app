@@ -12,6 +12,10 @@ class HomeLoading extends HomeState {}
 
 class SearchLoading extends HomeState {}
 
+class RefrenceSearchLoading extends HomeState {}
+
+class EmptyState extends HomeState {}
+
 class BottomNavigationBarSuccess extends HomeState {
   final obj;
   BottomNavigationBarSuccess({this.obj});
@@ -43,4 +47,28 @@ class HomeErrorReceived extends HomeState {
 
   @override
   List<Object> get props => [err];
+}
+
+class RecordDetailSuccess extends HomeState {
+  final String? objectName;
+  final String? objectType;
+  final recordObject;
+  final bool? isRecentRecod;
+  RecordDetailSuccess(
+      {this.recordObject,
+      this.objectName,
+      this.objectType,
+      required this.isRecentRecod});
+  RecordDetailSuccess copyWith(
+      {final obj, final objectName, final objectType}) {
+    return RecordDetailSuccess(
+      recordObject: recordObject ?? this.recordObject,
+      objectName: objectName ?? this.objectName,
+      objectType: objectType ?? this.objectType,
+      isRecentRecod: isRecentRecod ?? this.isRecentRecod,
+    );
+  }
+
+  @override
+  List<Object> get props => [];
 }

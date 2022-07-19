@@ -308,7 +308,6 @@ class _StaffPageState extends State<StaffPage> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return AnimatedPositioned(
-          
             bottom: 40.0,
             right: !isScrolling.value
                 ? 8
@@ -348,8 +347,8 @@ class _StaffPageState extends State<StaffPage> {
                       size: Globals.deviceType == 'tablet' ? 30 : null,
                       color: Theme.of(context).backgroundColor),
                   label: Utility.textWidget(
-                      text:!isScrolling.value?'': 'Assessment',
-                      context:context,
+                      text: !isScrolling.value ? '' : 'Assessment',
+                      context: context,
                       textTheme: Theme.of(context)
                           .textTheme
                           .headline2!

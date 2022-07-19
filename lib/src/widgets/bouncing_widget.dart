@@ -17,6 +17,8 @@ class _BouncingWidgetState extends State<Bouncing>
   late Animation<double> _scale;
   late AnimationController _controller;
 
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +33,9 @@ class _BouncingWidgetState extends State<Bouncing>
   @override
   void dispose() {
     _controller.dispose();
+    if (_timer != null) {
+      _timer!.cancel();
+    }
     super.dispose();
   }
 
@@ -41,7 +46,7 @@ class _BouncingWidgetState extends State<Bouncing>
         _controller.forward();
       },
       onPointerUp: (PointerUpEvent event) {
-        Timer(Duration(milliseconds: 180), () {
+        _timer = Timer(Duration(milliseconds: 180), () {
           _controller.reverse();
           if (widget.onPress == null) return;
           widget.onPress!();

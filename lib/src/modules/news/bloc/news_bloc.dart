@@ -38,6 +38,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
         _localData.forEach((element) {
           if (element.completedAtTimestamp != null) {
+            
             _localData.sort((a, b) =>
                 b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
           }
@@ -104,10 +105,15 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         );
       } catch (e) {
         if (e.toString().contains('NO_CONNECTION')) {
-          Utility.showSnackBar(event.scaffoldKey,
-              'Make sure you have a proper Internet connection', event.context,null);
-        }else {Utility.showSnackBar(event.scaffoldKey,
-              'Something went wrong', event.context,null);}
+          Utility.showSnackBar(
+              event.scaffoldKey,
+              'Make sure you have a proper Internet connection',
+              event.context,
+              null);
+        } else {
+          Utility.showSnackBar(
+              event.scaffoldKey, 'Something went wrong', event.context, null);
+        }
         yield NewsErrorReceived(err: e);
       }
     }
@@ -125,7 +131,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           obj: _list,
         );
       } catch (e) {
-        
         yield NewsErrorReceived(err: e);
       }
     }

@@ -52,6 +52,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String language2 = Translations.supportedLanguages.last;
   var item;
   var item2;
+
   List<Widget> _screens = [];
   String? _versionNumber;
 
@@ -214,6 +215,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               }
             }
           });
+
     return _screens;
   }
 
@@ -239,6 +241,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
             addNewsIndex(Globals.newsIndex);
           }
+
           setState(() {});
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
@@ -251,6 +254,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget _bottomIcon(title, iconData, section) {
+    //  print(title);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -342,6 +346,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       // hideNavigationBar: true,
       onItemSelected: (i) {
         // _controller.index = i;
+
         setState(() {
           if (previousIndex == i && Globals.urlIndex == i) {
             Globals.webViewController1!.loadUrl(Globals.homeUrl!);
@@ -502,6 +507,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (Globals.customSetting!.length > 0) {
       for (var i = 0; i < Globals.customSetting!.length; i++) {
         // if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
+
         if (Globals.customSetting![i].systemReferenceC == 'News') {
           _screens.add(NewsPage());
           Globals.newsIndex = i;

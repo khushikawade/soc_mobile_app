@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -6,12 +5,11 @@ import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
-import 'package:Soc/src/modules/ocr/widgets/ocr_pdf_viewer.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -25,7 +23,6 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -52,6 +49,8 @@ class _OpticalCharacterRecognitionPageState
   final ValueNotifier<int> rubricScoreSelectedColor = ValueNotifier<int>(0);
   final ValueNotifier<bool> updateRubricList = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+
+  LocalDatabase<StudentAssessmentInfo> _localDb = LocalDatabase('student_info');
 
   @override
   void initState() {
@@ -187,37 +186,15 @@ class _OpticalCharacterRecognitionPageState
                       Utility.currentScreenSnackBar("No Internet Connection");
                     } else {
                       //Utility.showLoadingDialog(context);
-                      Globals.studentInfo!.clear();
+                      // Globals.studentInfo!.clear();
+
+                      await _localDb.clear();
+
                       if (Globals.googleDriveFolderId!.isEmpty) {
                         _triggerDriveFolderEvent(false);
                       } else {
                         _beforenavigateOnCameraSection();
                       }
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => CameraScreen(
-                      //             scaffoldKey: _scaffoldKey,
-                      //             isScanMore: false,
-                      //             pointPossible: rubricScoreSelectedColor
-                      //                         .value ==
-                      //                     0
-                      //                 ? '2'
-                      //                 : rubricScoreSelectedColor.value == 2
-                      //                     ? '3'
-                      //                     : rubricScoreSelectedColor.value == 4
-                      //                         ? '4'
-                      //                         : '2',
-                      //           )),
-                      // );
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => CreateAssessment()),
-                      // );
-                      //  getGallaryImage(); // COMMENT
                     }
                   },
                   icon: Icon(
@@ -242,7 +219,7 @@ class _OpticalCharacterRecognitionPageState
             child: Container(),
             listener: (context, state) async {
               if (state is GoogleDriveLoading) {
-                Utility.showLoadingDialog(context);
+                Utility.showLoadingDialog(context, true);
               }
               if (state is GoogleSuccess) {
                 if (state.assessmentSection == true) {
@@ -560,9 +537,6 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnCameraSection() async {
-    // print(
-    //     "----> ${RubricScoreList.scoringList.last.name} B64-> ${RubricScoreList.scoringList.last.imgBase64}");
-
     Globals.pointpossible = rubricScoreSelectedColor.value == 0
         ? '2'
         : rubricScoreSelectedColor.value == 2
@@ -574,7 +548,7 @@ class _OpticalCharacterRecognitionPageState
     updateLocalDb();
 
     _bloc.add(SaveSubjectListDetails());
-    print(Globals.scoringRubric);
+    // UNCOMMENT Below
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -592,6 +566,8 @@ class _OpticalCharacterRecognitionPageState
                             : '4', //In case of 'None' or 'Custom rubric' selection
               )),
     );
+    // End
+    // // COMMENT Below
     // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
     // List<String> classSuggestions = await _localDb.getData();
     // Navigator.push(
@@ -601,19 +577,14 @@ class _OpticalCharacterRecognitionPageState
     //               classSuggestions: classSuggestions,
     //               customGrades: Globals.classList,
     //             )));
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => SuccessScreen(img64: '', imgPath: File(''))
-    // );
+    // End
   }
 
   void _beforenavigateOnAssessmentSection() {
     updateLocalDb();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AssessmentSummary()),
+      MaterialPageRoute(builder: (context) => AssessmentSummary(isFromHomeSection: true,)),
     );
   }
 }

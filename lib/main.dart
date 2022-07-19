@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
@@ -53,8 +54,8 @@ void main() async {
       ..registerAdapter(UserInformationAdapter())
       ..registerAdapter(SubjectDetailListAdapter())
       ..registerAdapter(HistoryAssessmentAdapter())
-      ..registerAdapter(CustomRubicModalAdapter());
-    ;
+      ..registerAdapter(CustomRubicModalAdapter())
+      ..registerAdapter(StudentAssessmentInfoAdapter());
   }
   clearTheme();
   await disableDarkMode();

@@ -628,7 +628,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: Container(),
                     listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context);
+                        Utility.showLoadingDialog(context,true);
                       }
 
                       if (state is ExcelSheetCreated) {

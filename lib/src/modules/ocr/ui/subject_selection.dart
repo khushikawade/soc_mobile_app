@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/search_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -19,8 +20,6 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import '../../../widgets/textfield_widget.dart';
 import '../widgets/bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
@@ -72,6 +71,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   final ValueNotifier<bool> isSkipButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
+  LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+      LocalDatabase('student_info');
+  LocalDatabase<SubjectDetailList> subjectRecentOptionDB =
+      LocalDatabase('recent_option_subject');
+  LocalDatabase<SubjectDetailList> learningRecentOptionDB =
+      LocalDatabase('recent_option_learning_standard');
+
   @override
   initState() {
     if (widget.isSearchPage == true) {
@@ -121,13 +127,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     if (pageIndex.value == 1) {
                       // isSkipButton.value = false;
                       isSkipButton.value = false;
-
+                      subjectIndex1.value = 0;
                       isSubmitButton.value = false;
                       _ocrBloc.add(FatchSubjectDetails(
                           type: 'subject', keyword: widget.selectedClass));
                     } else if (pageIndex.value == 2) {
                       // isSkipButton.value = false;
                       isSubmitButton.value = false;
+                      nycIndex1.value = 0;
                       if (widget.isSearchPage == true) {
                         //   FatchSubjectDetails(type: 'nyc', keyword: keyword));
                         Navigator.pop(context);
@@ -282,9 +289,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         builder: (context, state) {
           if (state is SubjectDataSuccess) {
             state.obj!.forEach((element) {
-              if (element.subjectNameC != null) {
-                state.obj!
-                    .sort((a, b) => a.subjectNameC!.compareTo(b.subjectNameC!));
+              if (element.dateTime != null) {
+                state.obj!.sort((a, b) => DateTime.parse(b.dateTime.toString())
+                    .compareTo(DateTime.parse(a.dateTime.toString())));
               }
             });
             // state.obj!.forEach((element) { userAddedSubjectList.add(element.subjectNameC!);});
@@ -293,9 +300,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 list: state.obj!, page: 0, isSubjectScreen: true);
           } else if (state is NycDataSuccess) {
             state.obj.forEach((element) {
-              if (element.domainNameC != null) {
-                state.obj
-                    .sort((a, b) => a.domainNameC!.compareTo(b.domainNameC!));
+              if (element.dateTime != null) {
+                state.obj.sort((a, b) => DateTime.parse(b.dateTime.toString())
+                    .compareTo(DateTime.parse(a.dateTime.toString())));
               }
             });
 
@@ -593,7 +600,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                         // },
                         child: InkWell(
-                          onTap: () {
+                          onTap: () async {
                             if (page != 1) {
                               print("INSIDE ON TAPPPPPPPPPPPPPPPPPPPPP");
                             }
@@ -614,7 +621,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   subject != 'ELA' &&
                                   subject != null)) {
                                 isSubmitButton.value = true;
-                              }else{
+                              } else {
                                 isSubmitButton.value = false;
                               }
 
@@ -623,6 +630,47 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 keyword = list[index].subjectNameC;
                                 _ocrBloc.add(FatchSubjectDetails(
                                     type: 'nyc', keyword: keyword));
+                              }
+                              //To manage the recent subject list
+                              List<SubjectDetailList> recentlUsedList =
+                                  await subjectRecentOptionDB.getData();
+
+                              SubjectDetailList recentSubjectList =
+                                  SubjectDetailList();
+
+                              if (recentlUsedList.isNotEmpty) {
+                                bool addToRecentList = false;
+
+                                //To update the object if already exist
+                                for (int i = 0;
+                                    i < recentlUsedList.length;
+                                    i++) {
+                                  if (recentlUsedList[i].subjectNameC ==
+                                      list[index].subjectNameC) {
+                                    recentSubjectList = recentlUsedList[i];
+
+                                    recentSubjectList.dateTime = DateTime.now();
+                                    await subjectRecentOptionDB.putAt(
+                                        i, recentSubjectList);
+                                    addToRecentList = true;
+                                    break;
+                                  }
+                                }
+
+                                //To add the object if not exist
+                                if (addToRecentList == false) {
+                                  recentSubjectList.subjectNameC =
+                                      list[index].subjectNameC;
+                                  recentSubjectList.dateTime = DateTime.now();
+                                  await subjectRecentOptionDB
+                                      .addData(recentSubjectList);
+                                }
+                              } else {
+                                recentSubjectList.subjectNameC =
+                                    list[index].subjectNameC;
+                                recentSubjectList.dateTime = DateTime.now();
+                                await subjectRecentOptionDB
+                                    .addData(recentSubjectList);
                               }
                             } else if (pageIndex.value == 1) {
                               learningStandard = list[index].domainNameC;
@@ -633,6 +681,48 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 keywordSub = list[index].domainNameC;
                                 _ocrBloc.add(FatchSubjectDetails(
                                     type: 'nycSub', keyword: keywordSub));
+                              }
+                              //To manage the recent learning standard list
+                              List<SubjectDetailList> learningrecentList =
+                                  await learningRecentOptionDB.getData();
+
+                              SubjectDetailList learningRecentObject =
+                                  SubjectDetailList();
+                              //To add the object if not exist
+                              if (learningrecentList.isNotEmpty) {
+                                bool addToRecentList = false;
+
+                                for (int i = 0;
+                                    i < learningrecentList.length;
+                                    i++) {
+                                  if (learningrecentList[i].domainNameC ==
+                                      list[index].domainNameC) {
+                                    learningRecentObject =
+                                        learningrecentList[i];
+
+                                    learningRecentObject.dateTime =
+                                        DateTime.now();
+                                    await learningRecentOptionDB.putAt(
+                                        i, learningRecentObject);
+                                    addToRecentList = true;
+                                    break;
+                                  }
+                                }
+                                //To update the object if not exist
+                                if (addToRecentList == false) {
+                                  learningRecentObject.domainNameC =
+                                      list[index].domainNameC;
+                                  learningRecentObject.dateTime =
+                                      DateTime.now();
+                                  await learningRecentOptionDB
+                                      .addData(learningRecentObject);
+                                }
+                              } else {
+                                learningRecentObject.domainNameC =
+                                    list[index].domainNameC;
+                                learningRecentObject.dateTime = DateTime.now();
+                                await learningRecentOptionDB
+                                    .addData(learningRecentObject);
                               }
                             }
                             if (index >= list.length &&
@@ -812,7 +902,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     child: Container(),
                                     listener: (context, state) async {
                                       if (state is GoogleDriveLoading) {
-                                        Utility.showLoadingDialog(context);
+                                        Utility.showLoadingDialog(
+                                            context, true);
                                       }
                                       if (state is GoogleSuccess) {
                                         Globals.currentAssessmentId = '';
@@ -851,9 +942,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                 fileId:
                                                     Globals.googleExcelSheetId,
                                                 isLoading: true,
-                                                studentData:
-                                                    //list2
-                                                    Globals.studentInfo!),
+                                                studentData: await Utility
+                                                    .getStudentInfoList(
+                                                        tableName:
+                                                            'student_info')
+                                                //list2
+                                                //Globals.studentInfo!
+                                                ),
                                           );
                                         } else {
                                           Navigator.of(context).pop();
@@ -931,7 +1026,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       child: Container(),
                                       listener: (context, state) async {
                                         if (state is GoogleDriveLoading) {
-                                          Utility.showLoadingDialog(context);
+                                          Utility.showLoadingDialog(
+                                              context, true);
                                         }
                                         if (state is GoogleSuccess) {
                                           Globals.currentAssessmentId = '';
@@ -965,14 +1061,18 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                             _googleDriveBloc.add(
                                               UpdateDocOnDrive(
-                                                  assessmentName:
-                                                      Globals.assessmentName,
-                                                  fileId: Globals
-                                                      .googleExcelSheetId,
-                                                  isLoading: true,
-                                                  studentData:
-                                                      //list2
-                                                      Globals.studentInfo!),
+                                                assessmentName:
+                                                    Globals.assessmentName,
+                                                fileId:
+                                                    Globals.googleExcelSheetId,
+                                                isLoading: true,
+                                                studentData:
+                                                    //list2
+                                                    await Utility
+                                                        .getStudentInfoList(
+                                                            tableName:
+                                                                'student_info'),
+                                              ),
                                             );
                                           } else {
                                             Navigator.of(context).pop();
@@ -1176,6 +1276,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       } else {
         LocalDatabase<CustomRubicModal> _localDb =
             LocalDatabase('custom_rubic');
+
         List<CustomRubicModal>? _localData = await _localDb.getData();
         String? rubricImgUrl;
         // String? rubricScore;
@@ -1196,21 +1297,80 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
         //TODO : REMOVE THIS AND ADD COMMON FIELDS IN EXCEL MODEL (SAME IN CASE OF SCAN MORE AT CAMERA SCREEN)
         //Adding blank fields to the list : Static data
-        Globals.studentInfo!.forEach((element) {
-          element.subject = subject;
-          element.learningStandard =
-              learningStandard == null ? "NA" : learningStandard;
-          element.subLearningStandard =
-              subLearningStandard == null ? "NA" : subLearningStandard;
-          element.scoringRubric = Globals.scoringRubric;
-          element.className = Globals.assessmentName!.split("_")[1];
-          element.customRubricImage = rubricImgUrl ?? "NA";
-          element.grade = widget.selectedClass;
-          element.questionImgUrl = Globals.questionImgUrl != null &&
-                  Globals.questionImgUrl!.isNotEmpty
-              ? Globals.questionImgUrl
-              : "NA";
-        });
+        // Globals.studentInfo!.forEach((element) {
+        //   element.subject = subject;
+        //   element.learningStandard =
+        //       learningStandard == null ? "NA" : learningStandard;
+        //   element.subLearningStandard =
+        //       subLearningStandard == null ? "NA" : subLearningStandard;
+        //   element.scoringRubric = Globals.scoringRubric;
+        //   element.className = Globals.assessmentName!.split("_")[1];
+        //   element.customRubricImage = rubricImgUrl ?? "NA";
+        //   element.grade = widget.selectedClass;
+        //   element.questionImgUrl = Globals.questionImgUrl != null &&
+        //           Globals.questionImgUrl!.isNotEmpty
+        //       ? Globals.questionImgUrl
+        //       : "NA";
+        // });
+
+        // studentInfodblist.asMap().forEach((index, element) async {
+        //   StudentAssessmentInfo element = studentInfodblist[index];
+
+        //   element.subject = subject;
+        //   element.learningStandard =
+        //       learningStandard == null ? "NA" : learningStandard;
+        //   element.subLearningStandard =
+        //       subLearningStandard == null ? "NA" : subLearningStandard;
+        //   element.scoringRubric = Globals.scoringRubric;
+        //   element.className = Globals.assessmentName!.split("_")[1];
+        //   element.customRubricImage = rubricImgUrl ?? "NA";
+        //   element.grade = widget.selectedClass;
+        //   element.questionImgUrl = Globals.questionImgUrl != null &&
+        //           Globals.questionImgUrl!.isNotEmpty
+        //       ? Globals.questionImgUrl
+        //       : "NA";
+
+        //   await _studentInfoDb.putAt(index, element);
+        // });
+
+        // studentInfodblist.forEach((element) async {
+        //   element.subject = subject;
+        //   element.learningStandard =
+        //       learningStandard == null ? "NA" : learningStandard;
+        //   element.subLearningStandard =
+        //       subLearningStandard == null ? "NA" : subLearningStandard;
+        //   element.scoringRubric = Globals.scoringRubric;
+        //   element.className = Globals.assessmentName!.split("_")[1];
+        //   element.customRubricImage = rubricImgUrl ?? "NA";
+        //   element.grade = widget.selectedClass;
+        //   element.questionImgUrl = Globals.questionImgUrl != null &&
+        //           Globals.questionImgUrl!.isNotEmpty
+        //       ? Globals.questionImgUrl
+        //       : "NA";
+        //   await _studentInfoDb.addData(element);
+        // });
+
+        List<StudentAssessmentInfo> studentInfodblist =
+            await Utility.getStudentInfoList(tableName: 'student_info');
+
+        //Updating remaining common details of assessment
+        StudentAssessmentInfo element = studentInfodblist.first;
+
+        element.subject = subject;
+        element.learningStandard =
+            learningStandard == null ? "NA" : learningStandard;
+        element.subLearningStandard =
+            subLearningStandard == null ? "NA" : subLearningStandard;
+        element.scoringRubric = Globals.scoringRubric;
+        element.className = Globals.assessmentName!.split("_")[1];
+        element.customRubricImage = rubricImgUrl ?? "NA";
+        element.grade = widget.selectedClass;
+        element.questionImgUrl =
+            Globals.questionImgUrl != null && Globals.questionImgUrl!.isNotEmpty
+                ? Globals.questionImgUrl
+                : "NA";
+
+        await _studentInfoDb.putAt(0, element);
 
         _googleDriveBloc.add(
           UpdateDocOnDrive(
@@ -1219,7 +1379,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               isLoading: true,
               studentData:
                   //list2
-                  Globals.studentInfo!),
+                  await Utility.getStudentInfoList(tableName: 'student_info')),
         );
       }
     }
