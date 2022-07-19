@@ -17,14 +17,11 @@ import '../../shared/ui/common_grid_widget.dart';
 
 class AboutPage extends StatefulWidget {
   final CustomSetting? customObj;
-   final bool? isCustomSection;
+  final bool? isCustomSection;
   final searchObj;
-  AboutPage({
-    Key? key,
-    this.customObj,
-    this.searchObj,
-    required this.isCustomSection
-  }) : super(key: key);
+  AboutPage(
+      {Key? key, this.customObj, this.searchObj, required this.isCustomSection})
+      : super(key: key);
 
   @override
   _AboutPageState createState() => _AboutPageState();
@@ -138,19 +135,18 @@ class _AboutPageState extends State<AboutPage> {
             setState(() {});
           },
         ),
-        body: widget.isCustomSection==false&&Globals.appSetting.aboutBannerImageC != null &&
+        body: Globals.appSetting.aboutBannerImageC != null &&
                 Globals.appSetting.aboutBannerImageC != ""
             ? NestedScrollView(
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     BannerImageWidget(
-                      imageUrl: Globals.appSetting.aboutBannerImageC!,
-                      bgColor: Globals.appSetting.aboutBannerColorC != null
-                          ? Utility.getColorFromHex(
-                              Globals.appSetting.aboutBannerColorC!)
-                          : null,
-                    )
+                        imageUrl: Globals.appSetting.aboutBannerImageC!,
+                        bgColor: Globals.appSetting.aboutBannerColorC != null
+                            ? Utility.getColorFromHex(
+                                Globals.appSetting.aboutBannerColorC!)
+                            : Colors.transparent)
                   ];
                 },
                 body: _body('body1'))

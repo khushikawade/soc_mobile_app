@@ -140,7 +140,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             setState(() {});
           },
         ),
-        body: widget.isCustomSection==false&&Globals.appSetting.resourcesBannerImageC != null &&
+        body: Globals.appSetting.resourcesBannerImageC != null &&
                 Globals.appSetting.resourcesBannerImageC != ""
             ? NestedScrollView(
                 headerSliverBuilder:
@@ -151,7 +151,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       bgColor: Globals.appSetting.resourcesBannerColorC != null
                           ? Utility.getColorFromHex(
                               Globals.appSetting.resourcesBannerColorC!)
-                          : null,
+                          : Colors.transparent
                     )
                   ];
                 },

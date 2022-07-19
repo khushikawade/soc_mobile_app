@@ -66,10 +66,10 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                 return <Widget>[
                   BannerImageWidget(
                     imageUrl: widget.customObj.customBannerImageC!,
-                    bgColor: widget.customObj.customBannerImageC != null
+                    bgColor: widget.customObj.customBannerColorC != null
                         ? Utility.getColorFromHex(
                             widget.customObj.customBannerColorC!)
-                        : null,
+                        : Colors.transparent
                   )
                 ];
               },

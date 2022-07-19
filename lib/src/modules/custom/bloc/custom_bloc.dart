@@ -18,6 +18,9 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:collection/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../google_drive/overrides.dart';
 part 'custom_event.dart';
 part 'custom_state.dart';
 
@@ -164,6 +167,17 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
         List<CalendarEventList>? _localData = await _localDb.getData();
+
+        //Clear calendar local data to resolve loading issue
+        SharedPreferences clearCalendarCache =
+            await SharedPreferences.getInstance();
+        final clearChacheResult =
+            clearCalendarCache.getBool('delete_local_calendar_custom');
+        if (clearChacheResult != true) {
+          _localData.clear();
+          await clearCalendarCache.setBool(
+              'delete_local_calendar_custom', true);
+        }
 
         if (_localData.isEmpty) {
           yield CustomLoading();
@@ -325,11 +339,11 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://www.googleapis.com/calendar/v3/calendars/$id/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+            '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/calendar/v3/calendars/$id/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        List dataArray = data["items"];
+        List dataArray = data["body"]["items"];
         List<CalendarEventList> data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();

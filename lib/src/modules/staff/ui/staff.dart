@@ -23,7 +23,6 @@ import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
 import '../../ocr/modal/user_info.dart';
-import '../../ocr/ui/ocr_home.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -274,7 +273,7 @@ class _StaffPageState extends State<StaffPage> {
         ),
         body: NotificationListener<ScrollNotification>(
           onNotification: onNotification,
-          child: widget.isCustomSection==false&&Globals.appSetting.staffBannerImageC != null &&
+          child: Globals.appSetting.staffBannerImageC != null &&
                   Globals.appSetting.staffBannerImageC != ''
               ? NestedScrollView(
                   //  key: globalKey,
@@ -286,7 +285,7 @@ class _StaffPageState extends State<StaffPage> {
                         bgColor: Globals.appSetting.studentBannerColorC != null
                             ? Utility.getColorFromHex(
                                 Globals.appSetting.studentBannerColorC!)
-                            : null,
+                             : Colors.transparent
                       )
                     ];
                   },

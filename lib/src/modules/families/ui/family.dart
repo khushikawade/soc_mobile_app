@@ -150,7 +150,7 @@ class _FamilyPageState extends State<FamilyPage> {
             setState(() {});
           },
         ),
-        body: widget.isCustomSection==false&&Globals.appSetting.familyBannerImageC != null &&
+        body: Globals.appSetting.familyBannerImageC != null &&
                 Globals.appSetting.familyBannerImageC != ''
             ? NestedScrollView(
                 headerSliverBuilder:
@@ -163,7 +163,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                 Globals.appSetting.familyBannerColorC != null
                                     ? Utility.getColorFromHex(
                                         Globals.appSetting.familyBannerColorC!)
-                                    : null,
+                                     : Colors.transparent
                           )
                         : SliverAppBar(),
                   ];
