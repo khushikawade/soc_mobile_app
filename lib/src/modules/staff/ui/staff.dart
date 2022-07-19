@@ -270,7 +270,7 @@ class _StaffPageState extends State<StaffPage> {
           refresh: (v) {
             setState(() {});
           },
-        ),
+        ), 
         body: NotificationListener<ScrollNotification>(
           onNotification: onNotification,
           child: Globals.appSetting.staffBannerImageC != null &&
