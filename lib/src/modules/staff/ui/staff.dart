@@ -121,7 +121,6 @@ class _StaffPageState extends State<StaffPage> {
     );
 
     if (value.toString().contains('authenticationfailure')) {
-      Navigator.pop(context, false);
       Utility.showSnackBar(
           _scaffoldKey,
           'You are not authorized to access the feature. Please use the authorized account.',
