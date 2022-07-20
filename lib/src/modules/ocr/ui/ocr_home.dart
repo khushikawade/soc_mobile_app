@@ -23,6 +23,7 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -549,27 +550,27 @@ class _OpticalCharacterRecognitionPageState
 
     _bloc.add(SaveSubjectListDetails());
     // UNCOMMENT Below
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CameraScreen(
-              isFromHistoryAssessmentScanMore: false,
-              onlyForPicture: false,
-              scaffoldKey: _scaffoldKey,
-              isScanMore: false,
-              pointPossible: Globals.pointpossible)),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => CameraScreen(
+    //           isFromHistoryAssessmentScanMore: false,
+    //           onlyForPicture: false,
+    //           scaffoldKey: _scaffoldKey,
+    //           isScanMore: false,
+    //           pointPossible: Globals.pointpossible)),
+    // );
     // End
     // // COMMENT Below
-    // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-    // List<String> classSuggestions = await _localDb.getData();
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => CreateAssessment(
-    //               classSuggestions: classSuggestions,
-    //               customGrades: Globals.classList,
-    //             )));
+    LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    List<String> classSuggestions = await _localDb.getData();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CreateAssessment(
+                  classSuggestions: classSuggestions,
+                  customGrades: Globals.classList,
+                )));
     // End
   }
 
@@ -577,7 +578,10 @@ class _OpticalCharacterRecognitionPageState
     updateLocalDb();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AssessmentSummary(isFromHomeSection: true,)),
+      MaterialPageRoute(
+          builder: (context) => AssessmentSummary(
+                isFromHomeSection: true,
+              )),
     );
   }
 }
