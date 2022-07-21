@@ -1005,141 +1005,139 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           // print(historyRecordList);
                                           // print(_listRecord);
                                           // print("_listRecord");
-                                        } else {
-                                          Globals.scanMoreStudentInfoLength =
-                                              await Utility
-                                                      .getStudentInfoListLength(
-                                                          tableName:
-                                                              'student_info') -
-                                                  1;
+                                        } //else {
+                                        // Globals.scanMoreStudentInfoLength =
+                                        //     await Utility
+                                        //             .getStudentInfoListLength(
+                                        //                 tableName:
+                                        //                     'student_info') -
+                                        //         1;
 
-                                          if (widget.isScanMore == true &&
-                                              widget.assessmentListLenght !=
-                                                  null &&
-                                              widget.assessmentListLenght! <
-                                                  await Utility
-                                                      .getStudentInfoListLength(
-                                                          tableName:
-                                                              'student_info')) {
-                                            _ocrBloc
-                                                .add(SaveAssessmentToDashboard(
-                                              assessmentId: !widget
-                                                      .assessmentDetailPage!
-                                                  ? Globals.currentAssessmentId
-                                                  : historyAssessmentId ?? '',
-                                              assessmentSheetPublicURL:
-                                                  widget.shareLink,
-                                              resultList: await Utility
-                                                  .getStudentInfoList(
-                                                      tableName:
-                                                          'student_info'),
-                                              previouslyAddedListLength:
-                                                  widget.assessmentListLenght,
-                                              assessmentName:
-                                                  widget.asssessmentName!,
-                                              rubricScore:
-                                                  widget.rubricScore ?? '',
-                                              subjectId: widget.subjectId ?? '',
-                                              schoolId: Globals.appSetting
-                                                  .schoolNameC!, //Account Id
-                                              standardId:
-                                                  widget.standardId ?? '',
-                                              scaffoldKey: scaffoldKey,
-                                              context: context,
-                                              isHistoryAssessmentSection:
-                                                  widget.assessmentDetailPage!,
-                                            ));
-                                          } else {
-                                            // Adding the non saved record of dashboard in the list
-                                            List<StudentAssessmentInfo>
-                                                _listRecord = [];
+                                        // if (widget.isScanMore == true &&
+                                        //     widget.assessmentListLenght !=
+                                        //         null &&
+                                        //     widget.assessmentListLenght! <
+                                        //         await Utility
+                                        //             .getStudentInfoListLength(
+                                        //                 tableName:
+                                        //                     'student_info')) {
+                                        //   _ocrBloc
+                                        //       .add(SaveAssessmentToDashboard(
+                                        //     assessmentId: !widget
+                                        //             .assessmentDetailPage!
+                                        //         ? Globals.currentAssessmentId
+                                        //         : historyAssessmentId ?? '',
+                                        //     assessmentSheetPublicURL:
+                                        //         widget.shareLink,
+                                        //     resultList: await Utility
+                                        //         .getStudentInfoList(
+                                        //             tableName:
+                                        //                 'student_info'),
+                                        //     previouslyAddedListLength:
+                                        //         widget.assessmentListLenght,
+                                        //     assessmentName:
+                                        //         widget.asssessmentName!,
+                                        //     rubricScore:
+                                        //         widget.rubricScore ?? '',
+                                        //     subjectId: widget.subjectId ?? '',
+                                        //     schoolId: Globals.appSetting
+                                        //         .schoolNameC!, //Account Id
+                                        //     standardId:
+                                        //         widget.standardId ?? '',
+                                        //     scaffoldKey: scaffoldKey,
+                                        //     context: context,
+                                        //     isHistoryAssessmentSection:
+                                        //         widget.assessmentDetailPage!,
+                                        //   ));
+                                        // } else {
+                                        // Adding the non saved record of dashboard in the list
+                                        // List<StudentAssessmentInfo>
+                                        //     _listRecord = [];
 
-                                            if (widget.assessmentDetailPage! &&
-                                                savedRecordCount != null &&
-                                                historyRecordList.length !=
-                                                    savedRecordCount!) {
-                                              _listRecord =
-                                                  historyRecordList.sublist(
-                                                      savedRecordCount!,
-                                                      historyRecordList.length);
-                                            } else {
-                                              //
-                                              _listRecord = historyRecordList;
-                                            }
-
-                                            _ocrBloc
-                                                .add(SaveAssessmentToDashboard(
-                                              assessmentId: !widget
-                                                      .assessmentDetailPage!
-                                                  ? Globals.currentAssessmentId
-                                                  : historyAssessmentId ?? '',
-                                              assessmentSheetPublicURL:
-                                                  widget.shareLink,
-                                              resultList: !widget
-                                                      .assessmentDetailPage!
-                                                  ? await Utility
-                                                      .getStudentInfoList(
-                                                          tableName:
-                                                              'student_info')
-                                                  : _listRecord,
-                                              assessmentName:
-                                                  widget.asssessmentName!,
-                                              rubricScore:
-                                                  !widget.assessmentDetailPage!
-                                                      ? widget.rubricScore ?? ''
-                                                      : sheetrubricScore ?? '',
-                                              subjectId: widget.subjectId ?? '',
-                                              schoolId: Globals.appSetting
-                                                  .schoolNameC!, //Account Id
-                                              standardId:
-                                                  widget.standardId ?? '',
-                                              scaffoldKey: scaffoldKey,
-                                              context: context,
-                                              isHistoryAssessmentSection:
-                                                  widget.assessmentDetailPage!,
-                                              fileId: widget.fileId ?? '',
-                                            ));
-                                          }
+                                        // if (widget.assessmentDetailPage! &&
+                                        //     savedRecordCount != null &&
+                                        //     historyRecordList.length !=
+                                        //         savedRecordCount!) {
+                                        //   _listRecord =
+                                        //       historyRecordList.sublist(
+                                        //           savedRecordCount!,
+                                        //           historyRecordList.length);
+                                        // }
+                                        else {
+                                          //
+                                          _listRecord = historyRecordList;
                                         }
+
+                                        _ocrBloc.add(SaveAssessmentToDashboard(
+                                          assessmentId:
+                                              !widget.assessmentDetailPage!
+                                                  ? Globals.currentAssessmentId
+                                                  : historyAssessmentId ?? '',
+                                          assessmentSheetPublicURL:
+                                              widget.shareLink,
+                                          resultList: !widget
+                                                  .assessmentDetailPage!
+                                              ? await Utility
+                                                  .getStudentInfoList(
+                                                      tableName: 'student_info')
+                                              : _listRecord,
+                                          assessmentName:
+                                              widget.asssessmentName!,
+                                          rubricScore:
+                                              !widget.assessmentDetailPage!
+                                                  ? widget.rubricScore ?? ''
+                                                  : sheetrubricScore ?? '',
+                                          subjectId: widget.subjectId ?? '',
+                                          schoolId: Globals.appSetting
+                                              .schoolNameC!, //Account Id
+                                          standardId: widget.standardId ?? '',
+                                          scaffoldKey: scaffoldKey,
+                                          context: context,
+                                          isHistoryAssessmentSection:
+                                              widget.assessmentDetailPage!,
+                                          fileId: widget.fileId ?? '',
+                                        ));
                                       }
                                     }
-                                  } else {
-                                    onDashboardPressed(
-                                        title: 'Upgrade To Premium',
-                                        message:
-                                            'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
                                   }
+                                  // }
+                                } else {
+                                  onDashboardPressed(
+                                      title: 'Upgrade To Premium',
+                                      message:
+                                          'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
+                                }
 
 //Found duplicate in merge
-                                  // _ocrBloc.add(SaveAssessmentToDashboard(
-                                  //     assessmentId:
-                                  //         !widget.assessmentDetailPage!
-                                  //             ? Globals.currentAssessmentId
-                                  //             : historyAssessmentId ?? '',
-                                  //     assessmentSheetPublicURL:
-                                  //         widget.shareLink,
-                                  //     resultList: !widget.assessmentDetailPage!
-                                  //         ? await Utility.getStudentInfoList(
-                                  //             tableName:
-                                  //                 widget.assessmentDetailPage ==
-                                  //                         true
-                                  //                     ? 'history_student_info'
-                                  //                     : 'student_info')
-                                  //         : _listRecord,
-                                  //     assessmentName: widget.asssessmentName!,
-                                  //     rubricScore: !widget.assessmentDetailPage!
-                                  //         ? widget.rubricScore ?? ''
-                                  //         : sheetrubricScore ?? '',
-                                  //     subjectId: widget.subjectId ?? '',
-                                  //     schoolId: Globals
-                                  //         .appSetting.schoolNameC!, //Account Id
-                                  //     standardId: widget.standardId ?? '',
-                                  //     scaffoldKey: scaffoldKey,
-                                  //     context: context,
-                                  //     isHistoryAssessmentSection:
-                                  //         widget.assessmentDetailPage!,
-                                  //     fileId: widget.fileId ?? ''));
-                                }
+                                // _ocrBloc.add(SaveAssessmentToDashboard(
+                                //     assessmentId:
+                                //         !widget.assessmentDetailPage!
+                                //             ? Globals.currentAssessmentId
+                                //             : historyAssessmentId ?? '',
+                                //     assessmentSheetPublicURL:
+                                //         widget.shareLink,
+                                //     resultList: !widget.assessmentDetailPage!
+                                //         ? await Utility.getStudentInfoList(
+                                //             tableName:
+                                //                 widget.assessmentDetailPage ==
+                                //                         true
+                                //                     ? 'history_student_info'
+                                //                     : 'student_info')
+                                //         : _listRecord,
+                                //     assessmentName: widget.asssessmentName!,
+                                //     rubricScore: !widget.assessmentDetailPage!
+                                //         ? widget.rubricScore ?? ''
+                                //         : sheetrubricScore ?? '',
+                                //     subjectId: widget.subjectId ?? '',
+                                //     schoolId: Globals
+                                //         .appSetting.schoolNameC!, //Account Id
+                                //     standardId: widget.standardId ?? '',
+                                //     scaffoldKey: scaffoldKey,
+                                //     context: context,
+                                //     isHistoryAssessmentSection:
+                                //         widget.assessmentDetailPage!,
+                                //     fileId: widget.fileId ?? ''));
+                                // }
                               }),
                         ),
             ],
