@@ -11,7 +11,6 @@ import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
@@ -20,6 +19,7 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import '../../../services/local_database/local_db.dart';
 import '../widgets/bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
@@ -428,6 +428,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           isSkipButton.value = false;
                         }
                       }
+                      print(subLearningStandard);
                     },
                     child: AnimatedContainer(
                       padding: EdgeInsets.only(bottom: 5),
@@ -459,7 +460,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     TextSpan(
                                         text: list[index]
                                             .standardAndDescriptionC!
-                                            .split(' - ')[0],
+                                            .split(' - ')[0]
+                                            .replaceAll('Â', '')
+                                            .replaceAll('U+2612', '')
+                                            .replaceAll('⍰', ''), //🖾
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline2!
@@ -470,7 +474,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     TextSpan(
                                       text: list[index]
                                           .standardAndDescriptionC!
-                                          .split(' - ')[1],
+                                          .split(' - ')[1]
+                                          .replaceAll('Â', '')
+                                          .replaceAll('U+2612', '')
+                                          .replaceAll('⍰', ''),
                                       style:
                                           Theme.of(context).textTheme.headline2,
                                     ),

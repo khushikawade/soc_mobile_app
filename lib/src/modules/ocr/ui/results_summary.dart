@@ -185,428 +185,418 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       })),
               isResultScreen: true,
             ),
-
             body: Container(
               //     padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SpacerWidget(_KVertcalSpace * 0.40),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Utility.textWidget(
-                              text: 'Results Summary',
-                              context: context,
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(fontWeight: FontWeight.bold)),
-                          ValueListenableBuilder(
-                              valueListenable: assessmentCount,
-                              builder: (BuildContext context, int value,
-                                  Widget? child) {
-                                return FutureBuilder(
-                                    future: Utility.getStudentInfoList(
-                                        tableName:
-                                            widget.assessmentDetailPage == true
-                                                ? 'history_student_info'
-                                                : 'student_info'),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<
-                                                List<StudentAssessmentInfo>>
-                                            snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Text('${snapshot.data!.length}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline3);
-                                      }
-                                      return CircularProgressIndicator();
-                                    });
-                              }),
-                        ],
-                      ),
+              child: Column(
+               mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SpacerWidget(_KVertcalSpace * 0.40),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Utility.textWidget(
+                            text: 'Results Summary',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(fontWeight: FontWeight.bold)),
+                        ValueListenableBuilder(
+                            valueListenable: assessmentCount,
+                            builder: (BuildContext context, int value,
+                                Widget? child) {
+                              return FutureBuilder(
+                                  future: Utility.getStudentInfoList(
+                                      tableName:
+                                          widget.assessmentDetailPage == true
+                                              ? 'history_student_info'
+                                              : 'student_info'),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<List<StudentAssessmentInfo>>
+                                          snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Text('${snapshot.data!.length}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline3);
+                                    }
+                                    return CircularProgressIndicator();
+                                  });
+                            }),
+                      ],
                     ),
-                    SpacerWidget(_KVertcalSpace / 3),
-                    !widget.assessmentDetailPage!
-                        ? Column(
-                            children: [
-                              resultTitle(),
-                              Builder(builder: (context) {
-                                return ValueListenableBuilder(
-                                    valueListenable: assessmentCount,
-                                    builder: (BuildContext context,
-                                        int listCount, Widget? child) {
-                                      return FutureBuilder(
-                                          future: Utility.getStudentInfoList(
-                                              tableName:
-                                                  widget.assessmentDetailPage ==
-                                                          true
-                                                      ? 'history_student_info'
-                                                      : 'student_info'),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<
-                                                      List<
-                                                          StudentAssessmentInfo>>
-                                                  snapshot) {
-                                            if (snapshot.hasData) {
-                                              return listView(
-                                                snapshot.data!,
-                                              );
-                                            }
-                                            return CircularProgressIndicator();
-                                          });
-                                    });
-                              }),
-                              BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                                  bloc: _driveBloc2,
-                                  child: Container(),
-                                  listener: (context, state) async {
-                                    if (state is GoogleDriveLoading) {
-                                      Utility.showLoadingDialog(context,true);
-                                    }
-                                    if (state is GoogleSuccess) {
+                  ),
+                  SpacerWidget(_KVertcalSpace / 3),
+                  !widget.assessmentDetailPage!
+                      ? Column(
+                          children: [
+                            resultTitle(),
+                            Builder(builder: (context) {
+                              return ValueListenableBuilder(
+                                  valueListenable: assessmentCount,
+                                  builder: (BuildContext context, int listCount,
+                                      Widget? child) {
+                                    return FutureBuilder(
+                                        future: Utility.getStudentInfoList(
+                                            tableName:
+                                                widget.assessmentDetailPage ==
+                                                        true
+                                                    ? 'history_student_info'
+                                                    : 'student_info'),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<
+                                                    List<StudentAssessmentInfo>>
+                                                snapshot) {
+                                          if (snapshot.hasData) {
+                                            return listView(
+                                              snapshot.data!,
+                                            );
+                                          }
+                                          return CircularProgressIndicator();
+                                        });
+                                  });
+                            }),
+                            BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                                bloc: _driveBloc2,
+                                child: Container(),
+                                listener: (context, state) async {
+                                  if (state is GoogleDriveLoading) {
+                                    Utility.showLoadingDialog(context, true);
+                                  }
+                                  if (state is GoogleSuccess) {
+                                    Navigator.of(context).pop();
+                                  }
+                                  if (state is ErrorState) {
+                                    if (state.errorMsg ==
+                                        'Reauthentication is required') {
+                                      await Utility.refreshAuthenticationToken(
+                                          isNavigator: true,
+                                          errorMsg: state.errorMsg!,
+                                          context: context,
+                                          scaffoldKey: scaffoldKey);
+
+                                      _driveBloc2.add(UpdateDocOnDrive(
+                                        assessmentName: Globals.assessmentName!,
+                                        fileId: Globals.googleExcelSheetId,
+                                        isLoading: true,
+                                        studentData:
+                                            //list2
+                                            await Utility.getStudentInfoList(
+                                                tableName: 'student_info'),
+                                      ));
+                                    } else {
                                       Navigator.of(context).pop();
+                                      Utility.currentScreenSnackBar(
+                                          "Something Went Wrong. Please Try Again.");
                                     }
-                                    if (state is ErrorState) {
-                                      if (state.errorMsg ==
-                                          'Reauthentication is required') {
-                                        await Utility
-                                            .refreshAuthenticationToken(
-                                                isNavigator: true,
-                                                errorMsg: state.errorMsg!,
-                                                context: context,
-                                                scaffoldKey: scaffoldKey);
 
-                                        _driveBloc2.add(UpdateDocOnDrive(
-                                          assessmentName:
-                                              Globals.assessmentName!,
-                                          fileId: Globals.googleExcelSheetId,
-                                          isLoading: true,
-                                          studentData:
-                                              //list2
-                                              await Utility.getStudentInfoList(
-                                                  tableName: 'student_info'),
-                                        ));
-                                      } else {
-                                        Navigator.of(context).pop();
-                                        Utility.currentScreenSnackBar(
-                                            "Something Went Wrong. Please Try Again.");
-                                      }
+                                    // Navigator.of(context).pop();
+                                    // Utility.currentScreenSnackBar(
+                                    //     "Something Went Wrong. Please Try Again.");
+                                  }
+                                }),
+                          ],
+                        )
+                      : BlocConsumer(
+                          bloc: _driveBloc,
+                          builder:
+                              (BuildContext contxt, GoogleDriveState state) {
+                            if (state is GoogleDriveLoading2) {
+                              return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.7,
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
+                                )),
+                              );
+                            }
 
-                                      // Navigator.of(context).pop();
-                                      // Utility.currentScreenSnackBar(
-                                      //     "Something Went Wrong. Please Try Again.");
-                                    }
-                                  }),
-                            ],
-                          )
-                        : BlocConsumer(
-                            bloc: _driveBloc,
-                            builder:
-                                (BuildContext contxt, GoogleDriveState state) {
-                              if (state is GoogleDriveLoading2) {
-                                return Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.7,
-                                  child: Center(
-                                      child: CircularProgressIndicator(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                  )),
+                            if (state is AssessmentDetailSuccess) {
+                              if (state.obj.length > 0) {
+                                //    Globals.historyStudentInfo = state.obj;
+                                state.obj.forEach((e) async {
+                                  await _historyStudentInfoDb.addData(e);
+                                });
+                                print(
+                                    "record length ---===========> ${state.obj.length}");
+                                print(
+                                    "record length ---===========> $savedRecordCount");
+                                savedRecordCount != null
+                                    ? savedRecordCount == state.obj.length
+                                        ? dashoardState.value = 'Success'
+                                        : dashoardState.value = ''
+                                    : print("");
+                                // isAssessmentAlreadySaved =
+                                //     state.obj[0] != null && state.obj[0] != ''
+                                //         ? state.obj[0].isSavedOnDashBoard !=
+                                //                     null &&
+                                //                 state.obj[0]
+                                //                         .isSavedOnDashBoard !=
+                                //                     ''
+                                //             ? state.obj[0].isSavedOnDashBoard
+                                //             : ''.toString()
+                                //         : '';
+                                return Column(
+                                  children: [
+                                    resultTitle(),
+                                    FutureBuilder(
+                                        future: Utility.getStudentInfoList(
+                                            tableName:
+                                                widget.assessmentDetailPage ==
+                                                        true
+                                                    ? 'history_student_info'
+                                                    : 'student_info'),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<
+                                                    List<StudentAssessmentInfo>>
+                                                snapshot) {
+                                          if (snapshot.hasData) {
+                                            return listView(snapshot.data!);
+                                          }
+                                          return Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.7,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            )),
+                                          );
+                                        })
+                                  ],
+                                );
+                              } else {
+                                return Expanded(
+                                  child: NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: true,
+                                      isNews: false,
+                                      isEvents: false),
                                 );
                               }
-
-                              if (state is AssessmentDetailSuccess) {
-                                if (state.obj.length > 0) {
-                                  //    Globals.historyStudentInfo = state.obj;
-                                  state.obj.forEach((e) async {
-                                    await _historyStudentInfoDb.addData(e);
-                                  });
-                                  print(
-                                      "record length ---===========> ${state.obj.length}");
-                                  print(
-                                      "record length ---===========> $savedRecordCount");
-                                  savedRecordCount != null
-                                      ? savedRecordCount == state.obj.length
-                                          ? dashoardState.value = 'Success'
-                                          : dashoardState.value = ''
-                                      : print("");
-                                  // isAssessmentAlreadySaved =
-                                  //     state.obj[0] != null && state.obj[0] != ''
-                                  //         ? state.obj[0].isSavedOnDashBoard !=
-                                  //                     null &&
-                                  //                 state.obj[0]
-                                  //                         .isSavedOnDashBoard !=
-                                  //                     ''
-                                  //             ? state.obj[0].isSavedOnDashBoard
-                                  //             : ''.toString()
-                                  //         : '';
-                                  return Column(
-                                    children: [
-                                      resultTitle(),
-                                      FutureBuilder(
-                                          future: Utility.getStudentInfoList(
-                                              tableName:
-                                                  widget.assessmentDetailPage ==
-                                                          true
-                                                      ? 'history_student_info'
-                                                      : 'student_info'),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<
-                                                      List<
-                                                          StudentAssessmentInfo>>
-                                                  snapshot) {
-                                            if (snapshot.hasData) {
-                                              return listView(snapshot.data!);
-                                            }
-                                            return Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.7,
-                                              child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .primaryVariant,
-                                              )),
-                                            );
-                                          })
-                                    ],
-                                  );
-                                } else {
-                                  return Expanded(
-                                    child: NoDataFoundErrorWidget(
-                                        isResultNotFoundMsg: true,
-                                        isNews: false,
-                                        isEvents: false),
-                                  );
-                                }
-                              }
-                              if (state is AssessmentDetailSuccess) {
-                                if (state.obj.length > 0) {
-                                  // isAssessmentAlreadySaved =
-                                  // state.obj[0] != null && state.obj[0] != ''
-                                  //     ? state.obj[0].isSavedOnDashBoard !=
-                                  //                 null &&
-                                  //             state.obj[0]
-                                  //                     .isSavedOnDashBoard !=
-                                  //                 ''
-                                  //         ? state.obj[0].isSavedOnDashBoard
-                                  //         : ''.toString()
-                                  //     : '';
-                                  return Column(
-                                    children: [
-                                      resultTitle(),
-                                      listView(
-                                        state.obj,
-                                      )
-                                    ],
-                                  );
-                                } else {
-                                  return Expanded(
-                                    child: NoDataFoundErrorWidget(
-                                        isResultNotFoundMsg: true,
-                                        isNews: false,
-                                        isEvents: false),
-                                  );
-                                }
-                                // return
-
-                                // state.obj.length > 1
-                                //     ? listView(
-                                //         state.obj,
-                                //       )
-                                //     : Expanded(
-                                //         child: NoDataFoundErrorWidget(
-                                //             isResultNotFoundMsg: true,
-                                //             isNews: false,
-                                //             isEvents: false),
-                                //       );
-                              }
-                              //  else if (state is GoogleNoAssessment) {
-                              //   return Container(
-                              //     height:
-                              //         MediaQuery.of(context).size.height * 0.7,
-                              //     child: Center(
-                              //         child: Text(
-                              //       "No assessment available",
-                              //       style: Theme.of(context).textTheme.bodyText1!,
-                              //     )),
-                              //   );
-                              // }
-                              return Container();
-                            },
-                            listener: (BuildContext contxt,
-                                GoogleDriveState state) async {
-                              if (state is AssessmentDetailSuccess) {
-                                if (state.obj.length > 0) {
-                                  // if (state.obj.first.isSavedOnDashBoard ==
-                                  //     "YES") {
-                                  //   dashoardState.value = "Success";
-                                  // }
-                                  sheetrubricScore =
-                                      state.obj.first.scoringRubric;
-                                  webContentLink = state.webContentLink;
-                                  isSuccessStateRecived.value = true;
-                                  historyRecordList = state.obj;
-
-                                  assessmentCount.value = state.obj.length;
-                                }
-                              } else if (state is ErrorState) {
-                                if (state.errorMsg ==
-                                    'Reauthentication is required') {
-                                  await Utility.refreshAuthenticationToken(
-                                      isNavigator: false,
-                                      errorMsg: state.errorMsg!,
-                                      context: context,
-                                      scaffoldKey: scaffoldKey);
-
-                                  _driveBloc.add(GetAssessmentDetail(
-                                      fileId: widget.fileId));
-                                } else {
-                                  Navigator.of(context).pop();
-                                  Utility.currentScreenSnackBar(
-                                      "Something Went Wrong. Please Try Again.");
-                                }
-                              }
-                            },
-                          ),
-                    Container(
-                      height: 0,
-                      width: 0,
-                      child: BlocListener<OcrBloc, OcrState>(
-                          bloc: _ocrBloc,
-                          listener: (context, state) async {
-                            if (state is OcrLoading) {
-                              dashoardState.value = 'Loading';
-                            } else if (state is AssessmentSavedSuccessfully) {
-                              //To update slidable action buttons : Enable/Disable
-                              updateSlidableAction.value = true;
-
-                              dashoardState.value = 'Success';
-                              List<StudentAssessmentInfo> studentInfo =
-                                  await Utility.getStudentInfoList(
-                                      tableName: 'student_info');
-
-                              studentInfo
-                                  .asMap()
-                                  .forEach((index, element) async {
-                                StudentAssessmentInfo element =
-                                    studentInfo[index];
-                                //Disabling all the existing records edit functionality. Only scan more records will be allowed to edit.
-                                if (element.isSavedOnDashBoard == null) {
-                                  element.isSavedOnDashBoard = true;
-                                }
-                                await _studentInfoDb.putAt(index, element);
-                              });
-
-                              assessmentCount.value =
-                                  await Utility.getStudentInfoListLength(
-                                      tableName: 'student_info');
-
-                              // _driveBloc.add(UpdateDocOnDrive(
-                              //   isLoading: false,
-                              //     fileId: widget.fileId,
-                              //     studentData: Globals.studentInfo!)
-                              //     );
-
-                              _showDataSavedPopup(
-                                  historyAssessmentSection: false,
-                                  title: 'Saved To Data Dashboard',
-                                  msg:
-                                      'Yay! Assessment data has been successfully added to your school’s Data Dashboard.');
-
-                              // Utility.showSnackBar(
-                              //     scaffoldKey,
-                              //     'Yay! Data has been successully saved to the dashboard',
-                              //     context,
-                              //     null);
-                            } else if (state is OcrErrorReceived) {
-                              updateSlidableAction.value = false;
                             }
-                            if (state is AssessmentDashboardStatus) {
-                              if (state.assessmentId == null &&
-                                  state.resultRecordCount == null) {
-                                dashoardState.value = '';
+                            if (state is AssessmentDetailSuccess) {
+                              if (state.obj.length > 0) {
+                                // isAssessmentAlreadySaved =
+                                // state.obj[0] != null && state.obj[0] != ''
+                                //     ? state.obj[0].isSavedOnDashBoard !=
+                                //                 null &&
+                                //             state.obj[0]
+                                //                     .isSavedOnDashBoard !=
+                                //                 ''
+                                //         ? state.obj[0].isSavedOnDashBoard
+                                //         : ''.toString()
+                                //     : '';
+                                return Column(
+                                  children: [
+                                    resultTitle(),
+                                    listView(
+                                      state.obj,
+                                    )
+                                  ],
+                                );
                               } else {
-                                savedRecordCount = state.resultRecordCount;
-                                historyAssessmentId = state.assessmentId;
+                                return Expanded(
+                                  child: NoDataFoundErrorWidget(
+                                      isResultNotFoundMsg: true,
+                                      isNews: false,
+                                      isEvents: false),
+                                );
+                              }
+                              // return
+
+                              // state.obj.length > 1
+                              //     ? listView(
+                              //         state.obj,
+                              //       )
+                              //     : Expanded(
+                              //         child: NoDataFoundErrorWidget(
+                              //             isResultNotFoundMsg: true,
+                              //             isNews: false,
+                              //             isEvents: false),
+                              //       );
+                            }
+                            //  else if (state is GoogleNoAssessment) {
+                            //   return Container(
+                            //     height:
+                            //         MediaQuery.of(context).size.height * 0.7,
+                            //     child: Center(
+                            //         child: Text(
+                            //       "No assessment available",
+                            //       style: Theme.of(context).textTheme.bodyText1!,
+                            //     )),
+                            //   );
+                            // }
+                            return Container();
+                          },
+                          listener: (BuildContext contxt,
+                              GoogleDriveState state) async {
+                            if (state is AssessmentDetailSuccess) {
+                              if (state.obj.length > 0) {
+                                // if (state.obj.first.isSavedOnDashBoard ==
+                                //     "YES") {
+                                //   dashoardState.value = "Success";
+                                // }
+                                sheetrubricScore =
+                                    state.obj.first.scoringRubric;
+                                webContentLink = state.webContentLink;
+                                isSuccessStateRecived.value = true;
+                                historyRecordList = state.obj;
+
+                                assessmentCount.value = state.obj.length;
+                              }
+                            } else if (state is ErrorState) {
+                              if (state.errorMsg ==
+                                  'Reauthentication is required') {
+                                await Utility.refreshAuthenticationToken(
+                                    isNavigator: false,
+                                    errorMsg: state.errorMsg!,
+                                    context: context,
+                                    scaffoldKey: scaffoldKey);
+
+                                _driveBloc.add(
+                                    GetAssessmentDetail(fileId: widget.fileId));
+                              } else {
+                                Navigator.of(context).pop();
+                                Utility.currentScreenSnackBar(
+                                    "Something Went Wrong. Please Try Again.");
                               }
                             }
                           },
-                          child: EmptyContainer()),
-                    ),
+                        ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<OcrBloc, OcrState>(
+                        bloc: _ocrBloc,
+                        listener: (context, state) async {
+                          if (state is OcrLoading) {
+                            dashoardState.value = 'Loading';
+                          } else if (state is AssessmentSavedSuccessfully) {
+                            //To update slidable action buttons : Enable/Disable
+                            updateSlidableAction.value = true;
 
-                    // BlocListener(
-                    //     bloc: _ocrBloc,
-                    //     listener: (context, state) async {
-                    //       if (state is OcrLoading2) {
-                    //         dashoardState.value = 'Loading';
-                    //       } else if (state is AssessmentSavedSuccessfully) {
-                    //         dashoardState.value = 'Success';
+                            dashoardState.value = 'Success';
+                            List<StudentAssessmentInfo> studentInfo =
+                                await Utility.getStudentInfoList(
+                                    tableName: 'student_info');
 
-                    //         if (Globals.studentInfo!.length > 0 &&
-                    //             Globals.studentInfo![0].studentId == 'Id') {
-                    //           Globals.studentInfo!.removeAt(0);
-                    //         }
+                            studentInfo.asMap().forEach((index, element) async {
+                              StudentAssessmentInfo element =
+                                  studentInfo[index];
+                              //Disabling all the existing records edit functionality. Only scan more records will be allowed to edit.
+                              if (element.isSavedOnDashBoard == null) {
+                                element.isSavedOnDashBoard = true;
+                              }
+                              await _studentInfoDb.putAt(index, element);
+                            });
 
-                    //         //To copy the static content in the sheet
-                    //         Globals.studentInfo!.forEach((element) {
-                    //           element.subject =
-                    //               Globals.studentInfo!.first.subject;
-                    //           element.learningStandard = Globals.studentInfo!
-                    //                       .first.learningStandard ==
-                    //                   null
-                    //               ? "NA"
-                    //               : Globals.studentInfo!.first.learningStandard;
-                    //           element.subLearningStandard = Globals.studentInfo!
-                    //                       .first.subLearningStandard ==
-                    //                   null
-                    //               ? "NA"
-                    //               : Globals
-                    //                   .studentInfo!.first.subLearningStandard;
-                    //           element.scoringRubric = Globals.scoringRubric;
-                    //           element.customRubricImage = Globals
-                    //                   .studentInfo!.first.customRubricImage ??
-                    //               "NA";
-                    //           element.grade = Globals.studentInfo!.first.grade;
-                    //           element.className = Globals.assessmentName!
-                    //               .split("_")[1]; //widget.selectedClass;
-                    //           element.questionImgUrl =
-                    //               Globals.studentInfo!.first.questionImgUrl;
-                    //           if (element.isSavedOnDashBoard == null) {
-                    //             element.isSavedOnDashBoard = true;
-                    //           }
-                    //         });
-                    //         assessmentCount.value = Globals.studentInfo!.length;
+                            assessmentCount.value =
+                                await Utility.getStudentInfoListLength(
+                                    tableName: 'student_info');
 
-                    //         // _driveBloc.add(UpdateDocOnDrive(
-                    //         //   isLoading: false,
-                    //         //     fileId: widget.fileId,
-                    //         //     studentData: Globals.studentInfo!)
-                    //         //     );
+                            // _driveBloc.add(UpdateDocOnDrive(
+                            //   isLoading: false,
+                            //     fileId: widget.fileId,
+                            //     studentData: Globals.studentInfo!)
+                            //     );
 
-                    //         _showSaveDataPopUp();
+                            _showDataSavedPopup(
+                                historyAssessmentSection: false,
+                                title: 'Saved To Data Dashboard',
+                                msg:
+                                    'Yay! Assessment data has been successfully added to your school’s Data Dashboard.');
 
-                    // Utility.showSnackBar(
-                    //     scaffoldKey,
-                    //     'Yay! Data has been successully saved to the dashboard',
-                    //     context,
-                    //     null);
-                    // }
+                            // Utility.showSnackBar(
+                            //     scaffoldKey,
+                            //     'Yay! Data has been successully saved to the dashboard',
+                            //     context,
+                            //     null);
+                          } else if (state is OcrErrorReceived) {
+                            updateSlidableAction.value = false;
+                          }
+                          if (state is AssessmentDashboardStatus) {
+                            if (state.assessmentId == null &&
+                                state.resultRecordCount == null) {
+                              dashoardState.value = '';
+                            } else {
+                              savedRecordCount = state.resultRecordCount;
+                              historyAssessmentId = state.assessmentId;
+                            }
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
 
-                    // child: Container()),
-                  ],
-                ),
+                  // BlocListener(
+                  //     bloc: _ocrBloc,
+                  //     listener: (context, state) async {
+                  //       if (state is OcrLoading2) {
+                  //         dashoardState.value = 'Loading';
+                  //       } else if (state is AssessmentSavedSuccessfully) {
+                  //         dashoardState.value = 'Success';
+
+                  //         if (Globals.studentInfo!.length > 0 &&
+                  //             Globals.studentInfo![0].studentId == 'Id') {
+                  //           Globals.studentInfo!.removeAt(0);
+                  //         }
+
+                  //         //To copy the static content in the sheet
+                  //         Globals.studentInfo!.forEach((element) {
+                  //           element.subject =
+                  //               Globals.studentInfo!.first.subject;
+                  //           element.learningStandard = Globals.studentInfo!
+                  //                       .first.learningStandard ==
+                  //                   null
+                  //               ? "NA"
+                  //               : Globals.studentInfo!.first.learningStandard;
+                  //           element.subLearningStandard = Globals.studentInfo!
+                  //                       .first.subLearningStandard ==
+                  //                   null
+                  //               ? "NA"
+                  //               : Globals
+                  //                   .studentInfo!.first.subLearningStandard;
+                  //           element.scoringRubric = Globals.scoringRubric;
+                  //           element.customRubricImage = Globals
+                  //                   .studentInfo!.first.customRubricImage ??
+                  //               "NA";
+                  //           element.grade = Globals.studentInfo!.first.grade;
+                  //           element.className = Globals.assessmentName!
+                  //               .split("_")[1]; //widget.selectedClass;
+                  //           element.questionImgUrl =
+                  //               Globals.studentInfo!.first.questionImgUrl;
+                  //           if (element.isSavedOnDashBoard == null) {
+                  //             element.isSavedOnDashBoard = true;
+                  //           }
+                  //         });
+                  //         assessmentCount.value = Globals.studentInfo!.length;
+
+                  //         // _driveBloc.add(UpdateDocOnDrive(
+                  //         //   isLoading: false,
+                  //         //     fileId: widget.fileId,
+                  //         //     studentData: Globals.studentInfo!)
+                  //         //     );
+
+                  //         _showSaveDataPopUp();
+
+                  // Utility.showSnackBar(
+                  //     scaffoldKey,
+                  //     'Yay! Data has been successully saved to the dashboard',
+                  //     context,
+                  //     null);
+                  // }
+
+                  // child: Container()),
+                ],
               ),
             ),
             floatingActionButton: Column(
@@ -637,8 +627,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         }),
               ],
             ),
-            // floatingActionButtonLocation:
-            //     FloatingActionButtonLocation.centerFloat,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
           ),
         ],
       ),
@@ -1021,7 +1011,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
             height: widget.assessmentDetailPage!
                 ? (MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.height * 0.58
+                    ? MediaQuery.of(context).size.height * 0.5
                     : MediaQuery.of(context).size.height * 0.45)
                 : (MediaQuery.of(context).orientation == Orientation.portrait
                     ? MediaQuery.of(context).size.height * 0.5
@@ -1143,7 +1133,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
-            margin: EdgeInsets.only(left: 15),
+            //margin: EdgeInsets.only(left: 15),
             alignment: Alignment.center,
             // width: isScrolling.value ? null : 130,
             child: FloatingActionButton.extended(
@@ -1200,12 +1190,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             borderRadius: BorderRadius.circular(4)),
         margin: widget.assessmentDetailPage!
             ? EdgeInsets.only(
-                left: MediaQuery.of(context).size.width * 0.28,
-                right: MediaQuery.of(context).size.width * 0.25)
+                left: MediaQuery.of(context).size.width * 0.20,
+                right: MediaQuery.of(context).size.width * 0.20)
             : !widget.assessmentDetailPage!
                 ? EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.15,
-                    right: MediaQuery.of(context).size.width * 0.1)
+                    left: MediaQuery.of(context).size.width * 0.0,
+                    right: MediaQuery.of(context).size.width * 0.0)
                 : Globals.deviceType == 'tablet'
                     ? EdgeInsets.only(
                         right: MediaQuery.of(context).size.width * 0.03)

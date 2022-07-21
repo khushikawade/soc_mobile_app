@@ -23,6 +23,7 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -543,40 +544,33 @@ class _OpticalCharacterRecognitionPageState
             ? '3'
             : rubricScoreSelectedColor.value == 4
                 ? '4'
-                : '2';
+                : '4'; //In case of 'None' or 'Custom rubric' selection
     Globals.googleExcelSheetId = "";
     updateLocalDb();
 
     _bloc.add(SaveSubjectListDetails());
     // UNCOMMENT Below
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => CameraScreen(
-                isFromHistoryAssessmentScanMore: false,
-                onlyForPicture: false,
-                scaffoldKey: _scaffoldKey,
-                isScanMore: false,
-                pointPossible: rubricScoreSelectedColor.value == 0
-                    ? '2'
-                    : rubricScoreSelectedColor.value == 2
-                        ? '3'
-                        : rubricScoreSelectedColor.value == 4
-                            ? '4'
-                            : '4', //In case of 'None' or 'Custom rubric' selection
-              )),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => CameraScreen(
+    //           isFromHistoryAssessmentScanMore: false,
+    //           onlyForPicture: false,
+    //           scaffoldKey: _scaffoldKey,
+    //           isScanMore: false,
+    //           pointPossible: Globals.pointpossible)),
+    // );
     // End
     // // COMMENT Below
-    // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-    // List<String> classSuggestions = await _localDb.getData();
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => CreateAssessment(
-    //               classSuggestions: classSuggestions,
-    //               customGrades: Globals.classList,
-    //             )));
+    LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    List<String> classSuggestions = await _localDb.getData();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CreateAssessment(
+                  classSuggestions: classSuggestions,
+                  customGrades: Globals.classList,
+                )));
     // End
   }
 

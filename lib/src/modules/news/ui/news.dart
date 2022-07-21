@@ -46,7 +46,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     Globals.isNewTap = false;
     Globals.indicator.value = false;
   }
@@ -84,7 +84,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   void dispose() {
     //free screen orientation
     //  Utility.setFree();
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -95,8 +95,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       child: InkWell(
         onTap: () async {
           if (isCountLoading == true) {
-            Utility.showSnackBar(
-                _scaffoldKey, "Please wait while count is loading", context,null);
+            Utility.showSnackBar(_scaffoldKey,
+                "Please wait while count is loading", context, null);
           } else {
             //free screen orientation
             //  Utility.setFree();
