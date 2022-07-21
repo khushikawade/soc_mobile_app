@@ -584,7 +584,10 @@ class _OpticalCharacterRecognitionPageState
     updateLocalDb();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AssessmentSummary(isFromHomeSection: true,)),
+      MaterialPageRoute(
+          builder: (context) => AssessmentSummary(
+                isFromHomeSection: true,
+              )),
     );
   }
 }
