@@ -16,6 +16,7 @@ import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.da
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
+import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:camera/camera.dart';
 import 'package:device_info/device_info.dart';
@@ -54,6 +55,7 @@ void main() async {
       ..registerAdapter(SubjectDetailListAdapter())
       ..registerAdapter(HistoryAssessmentAdapter())
       ..registerAdapter(CustomRubicModalAdapter())
+      ..registerAdapter(TranslationModalAdapter())
       ..registerAdapter(StudentAssessmentInfoAdapter());
   }
   clearTheme();

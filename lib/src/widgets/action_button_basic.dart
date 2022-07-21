@@ -4,13 +4,17 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/translator/translator_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:share/share.dart';
+import '../translator/language_list.dart';
 
 class UserActionBasic extends StatefulWidget {
   UserActionBasic({
@@ -37,7 +41,7 @@ class UserActionBasic extends StatefulWidget {
 
 class _UserActionBasicState extends State<UserActionBasic> {
   NewsBloc _newsBloc = new NewsBloc();
-  SocialBloc _socialbBloc = SocialBloc();
+  SocialBloc _socialBloc = SocialBloc();
   final ValueNotifier<int> like = ValueNotifier<int>(0);
   final ValueNotifier<int> thanks = ValueNotifier<int>(0);
   final ValueNotifier<int> helpful = ValueNotifier<int>(0);
@@ -103,15 +107,32 @@ class _UserActionBasicState extends State<UserActionBasic> {
                 child: iconNameIndex == index
                     ? Container(
                         constraints: BoxConstraints(),
-                        child: TranslationWidget(
-                          message: Globals.iconsName[index],
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) => Text(
-                            translatedMessage,
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
+                        child: FutureBuilder(
+                            future: _getLocalTranslation(
+                                originalText: Globals.iconsName[index],
+                                toLanguage: Globals.selectedLanguage!),
+                            builder: (context, AsyncSnapshot<String> data) {
+                              if (data.hasData) {
+                                if (data.data!.isNotEmpty) {
+                                  return Text(
+                                    data.data!,
+                                    style: TextStyle(fontSize: 12),
+                                  );
+                                } else {
+                                  return TranslationWidget(
+                                    isUserInteraction: true,
+                                    message: Globals.iconsName[index],
+                                    fromLanguage: "en",
+                                    toLanguage: Globals.selectedLanguage,
+                                    builder: (translatedMessage) => Text(
+                                      translatedMessage,
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  );
+                                }
+                              }
+                              return Container();
+                            }),
                       )
                     : Container(
                         padding: EdgeInsets.all(0),
@@ -130,6 +151,15 @@ class _UserActionBasicState extends State<UserActionBasic> {
           child: LikeButton(
             isLiked: null,
             onTap: (onActionButtonTapped) async {
+              //Save translated text locally
+              final toLanguageCode = Translations.supportedLanguagesCodes(
+                  Globals.selectedLanguage!);
+
+              await _saveTranslatedTextLocally(
+                  originalText: Globals.iconsName[index],
+                  toLanguageCode: toLanguageCode,
+                  translatedText: TranslationAPI.translate(
+                      Globals.iconsName[index], toLanguageCode, true));
               if (connected) {
                 if (index == 3) {
                   await _shareNews();
@@ -257,7 +287,7 @@ class _UserActionBasicState extends State<UserActionBasic> {
           helpful: index == 2 ? 1 : 0,
           shared: index == 3 ? 1 : 0));
     } else if (widget.page == "social") {
-      _socialbBloc.add(SocialAction(
+      _socialBloc.add(SocialAction(
           context: context,
           scaffoldKey: scaffoldKey,
           id: widget.obj
@@ -317,6 +347,7 @@ class _UserActionBasicState extends State<UserActionBasic> {
       setState(() {
         _downloadingFile = false;
       });
+
       // It should only call the fallback function if there's error with the hosted image and it should not run idefinately. Just 3 retries only.
       if (_totalRetry < 3 && e.toString().contains('403')) {
         _totalRetry++;
@@ -374,5 +405,58 @@ class _UserActionBasicState extends State<UserActionBasic> {
                   : share,
       child: Container(),
     );
+  }
+
+//Get the translated text from local database for interaction translation
+  Future<String> _getLocalTranslation(
+      {required String originalText, required String toLanguage}) async {
+    LocalDatabase<TranslationModal> localTranslationDb =
+        LocalDatabase('local_Translation');
+
+    List<TranslationModal> list = await localTranslationDb.getData();
+
+    final toLanguageCode = Translations.supportedLanguagesCodes(toLanguage);
+
+    if (list.isNotEmpty) {
+      for (int i = 0; i < list.length; i++) {
+        if (list[i].originalText == originalText &&
+            list[i].toLanguageCode == toLanguageCode) {
+          return list[i].translatedText!;
+        }
+      }
+    }
+
+    return '';
+  }
+
+//Save translated text locally to bypass the loading of interaction translation
+  Future _saveTranslatedTextLocally(
+      {required Future<String>? translatedText,
+      required String originalText,
+      required String toLanguageCode}) async {
+    LocalDatabase<TranslationModal> localTranslationDb =
+        LocalDatabase('local_Translation');
+    List<TranslationModal> list = await localTranslationDb.getData();
+
+    //Convert Future<String> to String
+    String? translatedTextNew = await translatedText;
+
+    if (list.isNotEmpty) {
+      bool found = list.any((item) =>
+          item.originalText == originalText &&
+          item.toLanguageCode == toLanguageCode);
+
+      if (found == false) {
+        await localTranslationDb.addData(TranslationModal(
+            originalText: originalText,
+            toLanguageCode: toLanguageCode,
+            translatedText: translatedTextNew));
+      }
+    } else {
+      await localTranslationDb.addData(TranslationModal(
+          originalText: originalText,
+          toLanguageCode: toLanguageCode,
+          translatedText: translatedTextNew));
+    }
   }
 }
