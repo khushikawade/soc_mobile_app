@@ -24,13 +24,15 @@ class SuccessScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
   final bool? isFromHistoryAssessmentScanMore;
+  final bool? createdAsPremium;
   SuccessScreen(
       {Key? key,
       required this.img64,
       required this.imgPath,
       this.pointPossible,
       this.isScanMore,
-      required this.isFromHistoryAssessmentScanMore})
+      required this.isFromHistoryAssessmentScanMore,
+      this.createdAsPremium})
       : super(key: key);
 
   @override
@@ -65,6 +67,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final _formKey2 = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool? valuechange;
+  // DateTime currentDateTime = DateTime.now(); //DateTime
+  // // instance for maintaining logs
+  // final OcrBloc _ocrBlocLogs = new OcrBloc();
 
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   // final ValueNotifier<String> stu = ValueNotifier<String>('');
@@ -180,6 +185,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // Future.delayed(Duration(milliseconds: 500));
                   scanFailure.value = 'Success';
                   _performAnimation();
+                  Utility.updateLoges(
+                      //  accountType: 'Free',
+                      activityId: '23',
+                      description: 'Scan Assesment sheet successfully',
+                      operationResult: 'Success');
 
                   widget.pointPossible == '2'
                       ? Globals.pointsEarnedList = [0, 1, 2]
@@ -222,6 +232,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                    createdAsPremium: widget.createdAsPremium,
                                     isFromHistoryAssessmentScanMore:
                                         widget.isFromHistoryAssessmentScanMore!,
                                     onlyForPicture: false,
@@ -261,6 +272,23 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     Utility.showSnackBar(_scaffoldKey,
                         'Could Not Detect The Right Score', context, null);
                   }
+
+                  Utility.updateLoges(
+                      // accountType: 'Free',
+                      activityId: '23',
+                      description: state.grade == '' && state.studentId == ''
+                          ? 'Unable to detect Student Id and grade'
+                          : (state.grade == '' && state.studentId != '')
+                              ? 'Unable to detect rubric score'
+                              : (state.grade != '' && state.studentId == '')
+                                  ? 'Unable to detect Student Id '
+                                  : (state.grade != '' &&
+                                          state.studentId != '' &&
+                                          state.studentName == '')
+                                      ? 'Unable to detect Student Name OR Student does not exist in the database'
+                                      : 'Unable to fatch details(Scan Failure)',
+                      operationResult: 'Failure');
+
                   onChange == false
                       ? idController.text = state.studentId ?? ''
                       : state.studentId == ''
@@ -332,6 +360,26 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         alignment: Alignment.bottomCenter,
                         child: retryButton(
                           onPressed: () {
+                            Utility.updateLoges(
+                                // accountType: 'Free',
+                                activityId: '9',
+                                description:
+                                    'Scan Failure and teacher retry scan',
+                                operationResult: 'Failure');
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraScreen(
+                                        createdAsPremium:
+                                            widget.createdAsPremium,
+                                        isFromHistoryAssessmentScanMore: widget
+                                            .isFromHistoryAssessmentScanMore!,
+                                        onlyForPicture: false,
+                                        isScanMore: widget.isScanMore,
+                                        pointPossible: widget.pointPossible,
+                                      )),
+                            );
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             Navigator.pop(context);
                             // Navigator.pushReplacement(
@@ -371,6 +419,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                 isFromHistoryAssessmentScanMore:
                                                     widget
                                                         .isFromHistoryAssessmentScanMore);
+                                            Utility.updateLoges(
+                                                //  accountType: 'Free',
+                                                activityId: '10',
+                                                description: 'Next Scan',
+                                                operationResult: 'Success');
+
                                             String imgExtension = widget
                                                 .imgPath.path
                                                 .substring(widget.imgPath.path
@@ -392,6 +446,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       CameraScreen(
+                                                        createdAsPremium: widget
+                                                            .createdAsPremium,
                                                         isFromHistoryAssessmentScanMore:
                                                             widget
                                                                 .isFromHistoryAssessmentScanMore!,
@@ -694,7 +750,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
             ),
             SpacerWidget(_KVertcalSpace / 4),
             Center(
-                child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
+                child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade),
+                    isSuccessState: false)),
             SpacerWidget(_KVertcalSpace / 2),
             Center(child: imagePreviewWidget()),
             SpacerWidget(_KVertcalSpace / 0.9),
@@ -739,7 +796,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 },
                 validator: (String? value) {
                   isStudentNameFilled.value = value!;
-                  return null;
+                  // return null;
                   // if (value!.isEmpty) {
                   //   return 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name';
                   // } else if (value.length < 3) {
@@ -800,7 +857,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               },
               validator: (String? value) {
                 isStudentIdFilled.value = value!;
-                return null;
+                // return null;
                 // if (value!.isEmpty) {
                 //   return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
                 // } else if (value.length != 9) {
@@ -858,7 +915,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           .withOpacity(0.5))),
             ),
             SpacerWidget(_KVertcalSpace / 4),
-            Center(child: pointsEarnedButton(int.parse(grade))),
+            Center(
+                child:
+                    pointsEarnedButton(int.parse(grade), isSuccessState: true)),
             SpacerWidget(_KVertcalSpace / 2),
             Center(child: imagePreviewWidget()),
             SpacerWidget(_KVertcalSpace / 2.8),
@@ -908,7 +967,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
-  Widget pointsEarnedButton(int grade) {
+  Widget pointsEarnedButton(int grade, {required bool isSuccessState}) {
     return FittedBox(
       child: Container(
           alignment: Alignment.center,
@@ -918,7 +977,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
               ? ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {
-                    return Center(child: pointsButton(index, grade));
+                    return Center(
+                        child: pointsButton(index, grade,
+                            isSuccessState: isSuccessState));
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return SizedBox(
@@ -931,13 +992,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: Globals.pointsEarnedList
                       .map<Widget>((element) => pointsButton(
-                          Globals.pointsEarnedList.indexOf(element), grade))
+                          Globals.pointsEarnedList.indexOf(element), grade,
+                          isSuccessState: true))
                       .toList(),
                 )),
     );
   }
 
-  Widget pointsButton(index, int grade) {
+  Widget pointsButton(index, int grade, {required bool isSuccessState}) {
     isSelected ? indexColor.value = grade : null;
     return ValueListenableBuilder(
         valueListenable: rubricNotDetected,
@@ -947,10 +1009,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
             builder: (BuildContext context, dynamic value, Widget? child) {
               return InkWell(
                   onTap: () {
-                    pointScored.value = index.toString();
-
                     // updateDetails(isUpdateData: true);
-
+                    Utility.updateLoges(
+                        // accountType: 'Free',
+                        activityId: '8',
+                        description:
+                            'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
+                        operationResult: 'Success');
+                    pointScored.value = index.toString();
+                    // if (isSuccessState) {}
                     isSelected = false;
                     rubricNotDetected.value = false;
                     indexColor.value = index;
@@ -1306,6 +1373,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
+                  createdAsPremium: widget.createdAsPremium,
                   isFromHistoryAssessmentScanMore:
                       widget.isFromHistoryAssessmentScanMore!,
                   onlyForPicture: false,

@@ -17,6 +17,10 @@ class HistoryAssessment {
   String? createdDate;
   @HiveField(6)
   String? modifiedDate;
+  @HiveField(7)
+  String? sessionId;
+  @HiveField(8)
+  String? isCreatedAsPremium;
   HistoryAssessment(
       {this.title,
       this.description,
@@ -24,7 +28,7 @@ class HistoryAssessment {
       this.label,
       this.webContentLink,
       this.createdDate,
-      this.modifiedDate});
+      this.modifiedDate,this.sessionId,this.isCreatedAsPremium});
 
   factory HistoryAssessment.fromJson(Map<String, dynamic> json) =>
       HistoryAssessment(
@@ -35,5 +39,7 @@ class HistoryAssessment {
         webContentLink: json['alternateLink'] as String?,
         createdDate: json['createdDate'] as String?,
         modifiedDate: json['modifiedDate'] as String?,
+        sessionId: '',
+        isCreatedAsPremium: "false",
       );
 }

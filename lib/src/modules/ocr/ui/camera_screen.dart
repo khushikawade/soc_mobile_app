@@ -26,6 +26,8 @@ class CameraScreen extends StatefulWidget {
   final bool isFromHistoryAssessmentScanMore;
   final scaffoldKey;
   final bool? oneTimeCamera;
+  final bool? createdAsPremium;
+  //final HistoryAssessment? obj;
 
   const CameraScreen(
       {Key? key,
@@ -34,7 +36,8 @@ class CameraScreen extends StatefulWidget {
       required this.onlyForPicture,
       this.scaffoldKey,
       required this.isFromHistoryAssessmentScanMore,
-      this.oneTimeCamera})
+      this.oneTimeCamera,
+      this.createdAsPremium})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -206,6 +209,7 @@ class _CameraScreenState extends State<CameraScreen>
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => ResultsSummary(
+                                      createdAsPremium: widget.createdAsPremium,
                                       historysecondTime:
                                           widget.isFromHistoryAssessmentScanMore
                                               ? true
@@ -224,6 +228,7 @@ class _CameraScreenState extends State<CameraScreen>
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ResultsSummary(
+                                      createdAsPremium: widget.createdAsPremium,
                                       historysecondTime:
                                           widget.isFromHistoryAssessmentScanMore
                                               ? true
@@ -248,6 +253,7 @@ class _CameraScreenState extends State<CameraScreen>
                               scaffoldKey: _scaffoldKey);
 
                           _driveBloc.add(UpdateDocOnDrive(
+                              createdAsPremium: widget.createdAsPremium,
                               assessmentName: Globals.historyAssessmentName,
                               fileId: Globals.historyAssessmentFileId,
                               isLoading: true,
@@ -284,6 +290,12 @@ class _CameraScreenState extends State<CameraScreen>
                           }),
                       onPressed: () async {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        Utility.updateLoges(
+                            // accountType: 'Free',
+                            activityId: '19',
+                            description: 'Assessment scan finished',
+                            operationResult: 'Success');
+
                         List<StudentAssessmentInfo> studentInfoDb =
                             await Utility.getStudentInfoList(
                                 tableName:
@@ -386,6 +398,8 @@ class _CameraScreenState extends State<CameraScreen>
                             // await _historyStudentInfoDb.putAt(0, element);
 
                             _driveBloc.add(UpdateDocOnDrive(
+                                createdAsPremium: widget.createdAsPremium ??
+                                    Globals.isPremiumUser,
                                 assessmentName: Globals.historyAssessmentName,
                                 fileId: Globals.historyAssessmentFileId,
                                 isLoading: true,
@@ -482,6 +496,7 @@ class _CameraScreenState extends State<CameraScreen>
                             await _studentInfoDb.putAt(0, element);
 
                             _driveBloc.add(UpdateDocOnDrive(
+                                createdAsPremium: widget.createdAsPremium,
                                 assessmentName: Globals.assessmentName!,
                                 fileId: Globals.googleExcelSheetId,
                                 isLoading: true,
@@ -641,6 +656,8 @@ class _CameraScreenState extends State<CameraScreen>
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SuccessScreen(
+                                                createdAsPremium:
+                                                    widget.createdAsPremium,
                                                 isFromHistoryAssessmentScanMore:
                                                     widget
                                                         .isFromHistoryAssessmentScanMore,

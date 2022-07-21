@@ -28,6 +28,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.assessmentDetailPage,
       this.assessmentPage,
       this.actionIcon,
+      this.sessionId,
       this.scaffoldKey,
       this.customBackButton,
       required this.isbackOnSuccess,
@@ -44,6 +45,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   Widget? actionIcon;
   Widget? customBackButton;
   ValueListenable<bool>? isbackOnSuccess;
+  String? sessionId;
   bool? isFromResultSection;
 
   final scaffoldKey;
@@ -385,6 +387,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
+    Globals.teacherEmailId = _userInformation[0].userEmail!;
     print("printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }

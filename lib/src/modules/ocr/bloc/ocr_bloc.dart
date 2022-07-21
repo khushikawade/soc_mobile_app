@@ -11,9 +11,7 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import '../../../services/local_database/local_db.dart';
 import '../../../services/utility.dart';
-import '../modal/subject_details_modal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -474,11 +472,33 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           rubicScore: await rubricPickList(event.rubricScore),
           subjectId: event.subjectId,
           schoolId: event.schoolId,
-          standardId: event.standardId);
+          standardId: event.standardId,
+          sessionId: event.sessionId,
+          teacherContactId: event.teacherContactId!,
+          teacherEmail: event.teacherEmail!);
 
       if (dashboardId.isNotEmpty) {
         Globals.currentAssessmentId = dashboardId;
         yield AssessmentIdSuccess(obj: dashboardId);
+      }
+    }
+    if (event is LogUserActivityEvent) {
+      //yield OcrLoading();
+      try {
+        print('Session ID : ${event.sessionId}');
+        var body = {
+          "Session_Id": "${event.sessionId}",
+          "Teacher_Id": "${event.teacherId}",
+          "Activity_Id": "${event.activityId}",
+          "Account_Id": "${event.accountId}",
+          "Account_Type": "${event.accountType}",
+          "Date_Time": "${event.dateTime}",
+          "Description": "${event.description}",
+          "Operation_Result": "${event.operationResult}"
+        };
+        await activityLog(body: body);
+      } catch (e) {
+        throw Exception('Something went wrong');
       }
     }
 
@@ -498,6 +518,27 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield AssessmentDashboardStatus(
             resultRecordCount: null, assessmentId: null);
       }
+    }
+  }
+
+  Future<void> activityLog({required body}) async {
+    try {
+      final ResponseModel response = await _dbServices.postapi(
+        Uri.encodeFull(
+            "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/createRecord?objectName=Graded_Activity_Logs"),
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+        },
+        isGoogleApi: true,
+      );
+
+      if (response.statusCode == 200) {
+        print("######### Logs updated Successfully ###########");
+      }
+    } catch (e) {
+      throw Exception("Something went wrong");
     }
   }
 
@@ -734,13 +775,21 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     };
     final body = {"email": email.toString()};
     final ResponseModel response = await _dbServices.postapi(
-        "authorizeEmail?objectName=Contact",
+        "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail?objectName=Contact",
         body: body,
-        headers: headers);
+        headers: headers,
+        isGoogleApi: true);
 
     if (response.statusCode == 200) {
       var res = response.data;
       var data = res["body"];
+      var userType = data["GRADED_Premium__c"];
+      if (userType == "true") {
+        Globals.isPremiumUser = true;
+      } else {
+        Globals.isPremiumUser = false;
+      }
+
       if (data == false) {
         print("this is a new uer now create a user contaact inside database");
         bool result = await createContactToSalesforce(email: email.toString());
@@ -749,11 +798,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } else if (data['Assessment_App_User__c'] != 'true') {
         print("this is a older user now updating datils in database");
+        Globals.teacherId = data['Id'];
         bool result = await updateContactToSalesforce(recordId: data['Id']);
         if (!result) {
           await updateContactToSalesforce(recordId: data['Id']);
         }
       }
+      Globals.teacherId = data['Id'];
       return true;
       // return data;
     } else {
@@ -774,8 +825,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       "Assessment_App_User__c": "true",
       "LastName": email, //.split("@")[0],
       "Email": email,
-      "GRADED_user_type__c":
-          "Free" //Currently free but will be dynamic later on
+      //UNCOMMENT
+      // "GRADED_user_type__c":
+      //     "Free" //Currently free but will be dynamic later on
     };
 
     final ResponseModel response = await _dbServices.postapi(
@@ -784,6 +836,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: body,
         headers: headers);
     if (response.statusCode == 200) {
+      Globals.teacherId = response.data["body"]["id"];
       print("new user created ---->sucessfully ");
       return true;
     } else {
@@ -819,6 +872,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     required String? schoolId,
     required String? standardId,
     required String? fileId,
+    required String sessionId,
+    required String teacherContactId,
+    required String teacherEmail,
   }) async {
     String currentDate = Utility.getCurrentDate(DateTime.now());
 
@@ -836,6 +892,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       "Standard__c": standardId != '' ? standardId : null,
       "Subject__c": subjectId != '' ? subjectId : null,
       "Google_File_Id": fileId ?? '',
+      "Session_Id": sessionId,
+      "Teacher_Contact_Id": teacherContactId,
+      "Teacher_Email": teacherEmail,
+      "Created_As_Premium": Globals.isPremiumUser.toString()
     };
     final ResponseModel response = await _dbServices.postapi(
       "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",

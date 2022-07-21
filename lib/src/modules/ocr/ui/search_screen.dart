@@ -584,6 +584,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       await _studentInfoDb.putAt(0, element);
 
                       _googleDriveBloc.add(UpdateDocOnDrive(
+                          createdAsPremium: Globals.isPremiumUser,
                           assessmentName: Globals.assessmentName!,
                           fileId: Globals.googleExcelSheetId,
                           isLoading: true,

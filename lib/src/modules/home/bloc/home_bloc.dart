@@ -298,6 +298,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.statusCode == 200) {
         final data = response.data['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
+        
 
         _backupAppData();
         if (Globals.appSetting.bannerHeightFactor != null) {

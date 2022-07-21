@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
@@ -106,6 +107,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
+        yield ErrorState();
 
         rethrow;
       } catch (e) {
@@ -303,7 +305,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print(assessmentData);
 //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
-            data: assessmentData, name: event.assessmentName!);
+            data: assessmentData, name: event.assessmentName! , createdAsPremium: event.createdAsPremium);
 
 //Update the created excel file to drive with all the result data
         String uploadresult = await uploadSheetOnDrive(
@@ -877,10 +879,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.data['statusCode'] != 500) {
         print("assessment list is received ");
         print(response.data);
-        List<HistoryAssessment>? _list =
+        List<HistoryAssessment> _list =
             response.data['body']['items'] //response.data['body']['items']
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
+        List<AssessmentDetails> assessmentList = await getAssessmentList();
+        for (int i = 0; i < _list.length; i++) {
+          for (int j = 0; j < assessmentList.length; j++) {
+            if (_list[i].fileid == assessmentList[j].googleFileId && assessmentList[j].googleFileId != '') {
+              _list[i].sessionId = assessmentList[j].sessionId;
+              _list[i].isCreatedAsPremium = assessmentList[j].createdAsPremium;
+
+            }
+          }
+        }
         return _list == null ? [] : _list;
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
@@ -922,6 +934,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           ? Utility.currentScreenSnackBar("No Internet Connection")
           : print(e);
       throw (e);
+    }
+  }
+
+  Future<List<AssessmentDetails>> getAssessmentList() async {
+    try {
+      final ResponseModel response = await _dbServices.getapiNew(
+          'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"School__c"=\'${Globals.appSetting.schoolNameC}\'',
+          //  'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
+          isGoogleAPI: true);
+      if (response.statusCode == 200) {
+        List<AssessmentDetails> _list = response.data['body']
+            .map<AssessmentDetails>((i) => AssessmentDetails.fromJson(i))
+            .toList();
+        return _list;
+      }
+
+      return [];
+    } catch (e) {
+      throw ('something_went_wrong');
     }
   }
 

@@ -155,10 +155,17 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       children: [
         InkWell(
           onTap: () {
+            bool createdAsPremium = false;
+            if (list[index].isCreatedAsPremium == "true") {
+              createdAsPremium = true;
+            }
+
             Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => ResultsSummary(
+                        createdAsPremium: createdAsPremium,
+                        obj: list[index],
                         asssessmentName: list[index].title!,
                         shareLink: list[index].webContentLink,
                         fileId: list[index].fileid,
@@ -199,6 +206,15 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 // subtitle:
                 trailing: GestureDetector(
                   onTap: () {
+                    Utility.updateLoges(
+                        // accountType: 'Free',
+                        activityId: '13',
+                        sessionId: list[index].sessionId != ''
+                            ? list[index].sessionId
+                            : '',
+                        description:
+                            'Teacher tap on Share Button on assessment summery page',
+                        operationResult: 'Success');
                     list[index].webContentLink != null &&
                             list[index].webContentLink != ''
                         ? Share.share(list[index].webContentLink!)

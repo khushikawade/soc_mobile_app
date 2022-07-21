@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -745,6 +746,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
     widget.classSuggestions.forEach((String e) {
       _localDb.addData(e);
     });
+    Utility.updateLoges(
+      //  accountType: 'Free',
+        activityId: '11',
+        description: 'Created G-Excel file',
+        operationResult: 'Success');
 
     Navigator.push(
       context,

@@ -1,9 +1,11 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -26,6 +28,8 @@ import '../modal/user_info.dart';
 class ResultsSummary extends StatefulWidget {
   ResultsSummary({
     Key? key,
+    this.obj,
+    this.createdAsPremium,
     required this.assessmentDetailPage,
     this.fileId,
     this.subjectId,
@@ -39,6 +43,7 @@ class ResultsSummary extends StatefulWidget {
   }) : super(key: key);
   final bool? assessmentDetailPage;
   String? fileId;
+  final HistoryAssessment? obj;
   final String? subjectId;
   final String? standardId;
   final String? rubricScore;
@@ -47,6 +52,7 @@ class ResultsSummary extends StatefulWidget {
   String? shareLink;
   String? asssessmentName;
   bool? historysecondTime;
+  final bool? createdAsPremium;
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
 }
@@ -74,6 +80,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   List<StudentAssessmentInfo> historyRecordList = [];
   List iconsList = [];
   List iconsName = [];
+  bool createdAsPremium = false;
 
   final editingStudentNameController = TextEditingController();
   final editingStudentIdController = TextEditingController();
@@ -153,9 +160,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-               isSuccessState:ValueNotifier<bool>(true),
+              isSuccessState: ValueNotifier<bool>(true),
               isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
+              sessionId: widget.obj != null ? widget.obj!.sessionId : '',
               isBackButton: widget.assessmentDetailPage,
               assessmentDetailPage: widget.assessmentDetailPage,
               actionIcon: Container(
@@ -176,6 +184,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           }),
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        Utility.updateLoges(
+                            //accountType: 'Free',
+                            activityId: '19',
+                            description:
+                                'Teacher Successfully Completed the process and press done ',
+                            operationResult: 'Success');
                         Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
                                 builder: (context) => HomePage(
@@ -280,6 +294,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           scaffoldKey: scaffoldKey);
 
                                       _driveBloc2.add(UpdateDocOnDrive(
+                                        createdAsPremium: createdAsPremium,
                                         assessmentName: Globals.assessmentName!,
                                         fileId: Globals.googleExcelSheetId,
                                         isLoading: true,
@@ -496,7 +511,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 historyAssessmentSection: false,
                                 title: 'Saved To Data Dashboard',
                                 msg:
-                                    'Yay! Assessment data has been successfully added to your school’s Data Dashboard.');
+                                    'Yay! Assessment data has been successfully added to your school’s Data Dashboard.',
+                                noActionText: 'No',
+                                yesActionText: 'Perfect!');
 
                             // Utility.showSnackBar(
                             //     scaffoldKey,
@@ -711,6 +728,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ? Expanded(
                       child: InkWell(
                         onTap: () {
+                          Utility.updateLoges(
+                              // accountType: 'Free',
+                              activityId: '16',
+                              sessionId: widget.assessmentDetailPage == true
+                                  ? widget.obj!.sessionId
+                                  : '',
+                              description: widget.assessmentDetailPage == true
+                                  ? 'Drive Button pressed from Assessment History Detail Page'
+                                  : 'Drive Button pressed from Result Summary',
+                              operationResult: 'Success');
                           Globals.googleDriveFolderPath != null
                               ? Utility.launchUrlOnExternalBrowser(
                                   Globals.googleDriveFolderPath!)
@@ -755,245 +782,365 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         )
                       : Expanded(
                           child: IconButton(
-                            padding: EdgeInsets.all(0),
-                            icon: index == 0 &&
-                                    !widget.assessmentDetailPage! &&
-                                    widget.isScanMore == null
-                                ?
-                                //Calling builder in case of result summary (Not detail page)
+                              padding: EdgeInsets.all(0),
+                              icon: index == 0 &&
+                                      !widget.assessmentDetailPage! &&
+                                      widget.isScanMore == null
+                                  ?
+                                  //Calling builder in case of result summary (Not detail page)
 
-                                BlocConsumer(
-                                    bloc: _driveBloc,
-                                    builder: (context, state) {
-                                      if (state is ShareLinkRecived) {
-                                        widget.shareLink = state.shareLink;
+                                  BlocConsumer(
+                                      bloc: _driveBloc,
+                                      builder: (context, state) {
+                                        if (state is ShareLinkRecived) {
+                                          widget.shareLink = state.shareLink;
 
-                                        return Icon(
-                                          IconData(iconsList[index],
-                                              fontFamily: Overrides.kFontFam,
-                                              fontPackage: Overrides.kFontPkg),
-                                          size: (widget.assessmentDetailPage!
-                                                      ? index == 2
-                                                      : index == 3) &&
-                                                  dashoardState.value == ''
-                                              ? Globals.deviceType == 'phone'
-                                                  ? 38
-                                                  : 45
-                                              : Globals.deviceType == 'phone'
-                                                  ? 32
-                                                  : 45,
-                                          color: AppTheme.kButtonColor,
-                                        );
-                                      }
-
-                                      return Container(
-                                          padding: EdgeInsets.only(
-                                              bottom: 14, top: 8),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.058,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.058,
-                                          alignment: Alignment.center,
-                                          child: Center(
-                                              child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                          )));
-                                    },
-                                    listener: (context, state) async {
-                                      if (state is ErrorState) {
-                                        if (state.errorMsg ==
-                                            'Reauthentication is required') {
-                                          await Utility
-                                              .refreshAuthenticationToken(
-                                                  isNavigator: false,
-                                                  errorMsg: state.errorMsg!,
-                                                  context: context,
-                                                  scaffoldKey: scaffoldKey);
-
-                                          _driveBloc.add(GetShareLink(
-                                              fileId: widget.fileId));
-                                        } else {
-                                          Navigator.of(context).pop();
-                                          Utility.currentScreenSnackBar(
-                                              "Something Went Wrong. Please Try Again.");
-                                        }
-                                      }
-                                    },
-                                  )
-                                : Icon(
-                                    IconData(
-                                        (widget.assessmentDetailPage!
-                                                    ? index == 2
-                                                    : index == 3) &&
-                                                dashoardState.value == 'Success'
-                                            ? 0xe877
-                                            : iconsList[index],
-                                        fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg),
-                                    size: (widget.assessmentDetailPage!
-                                                ? index == 2
-                                                : index == 3) &&
-                                            dashoardState.value == ''
-                                        ? Globals.deviceType == 'phone'
-                                            ? 38
-                                            : 55
-                                        : Globals.deviceType == 'phone'
-                                            ? 32
-                                            : 48,
-                                    color: (widget.assessmentDetailPage! &&
-                                                index == 2 &&
-                                                isAssessmentAlreadySaved ==
-                                                    'YES') ||
-                                            (widget.assessmentDetailPage! &&
-                                                index == 2 &&
-                                                dashoardState.value ==
-                                                    'Success')
-                                        ? Colors.green
-                                        : index == 2 ||
-                                                (index == 3 &&
-                                                    dashoardState.value == '')
-                                            ? Theme.of(context)
-                                                        .backgroundColor ==
-                                                    Color(0xff000000)
-                                                ? Colors.white
-                                                : Colors.black
-                                            : (widget.assessmentDetailPage!
+                                          return Icon(
+                                            IconData(iconsList[index],
+                                                fontFamily: Overrides.kFontFam,
+                                                fontPackage:
+                                                    Overrides.kFontPkg),
+                                            size: (widget.assessmentDetailPage!
                                                         ? index == 2
                                                         : index == 3) &&
-                                                    dashoardState.value ==
-                                                        'Success'
-                                                ? Colors.green
-                                                : AppTheme.kButtonColor,
-                                  ),
-                            onPressed: () async {
-                              if (index == 0) {
-                                widget.shareLink != null &&
-                                        widget.shareLink!.isNotEmpty
-                                    ? Share.share(widget.shareLink!)
-                                    : print("no link ");
-                              } else if (!widget.assessmentDetailPage! &&
-                                  // ? index == 1
-                                  // :
-                                  index == 2) {
-                                _showDataSavedPopup(
-                                    historyAssessmentSection: true,
-                                    title: 'Action Required',
-                                    msg:
-                                        'Current scanned sheets will be lost if you navigate to the history section. Make sure you save data to the Dashboard. \nDo you still want to move forward?');
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) =>
-                                //           AssessmentSummary()),
-                                // );
-                              } else if ((widget.assessmentDetailPage!
-                                      ? index == 2
-                                      : index == 3) &&
-                                  dashoardState.value == '') {
-                                Globals.scanMoreStudentInfoLength =
-                                    await Utility.getStudentInfoListLength(
-                                            tableName:
-                                                widget.assessmentDetailPage ==
-                                                        true
-                                                    ? 'history_student_info'
-                                                    : 'student_info') -
-                                        1;
+                                                    dashoardState.value == ''
+                                                ? Globals.deviceType == 'phone'
+                                                    ? 38
+                                                    : 45
+                                                : Globals.deviceType == 'phone'
+                                                    ? 32
+                                                    : 45,
+                                            color: AppTheme.kButtonColor,
+                                          );
+                                        }
 
-                                if (widget.isScanMore == true &&
-                                    widget.assessmentListLenght != null &&
-                                    widget.assessmentListLenght! <
-                                        await Utility.getStudentInfoListLength(
-                                            tableName:
-                                                widget.assessmentDetailPage ==
-                                                        true
-                                                    ? 'history_student_info'
-                                                    : 'student_info')) {
-                                  _ocrBloc.add(SaveAssessmentToDashboard(
-                                      assessmentId: !widget
-                                              .assessmentDetailPage!
-                                          ? Globals.currentAssessmentId
-                                          : historyAssessmentId ?? '',
-                                      assessmentSheetPublicURL:
-                                          widget.shareLink,
-                                      resultList:
-                                          await Utility.getStudentInfoList(
-                                              tableName:
-                                                  widget.assessmentDetailPage ==
-                                                          true
-                                                      ? 'history_student_info'
-                                                      : 'student_info'),
-                                      previouslyAddedListLength:
-                                          widget.assessmentListLenght,
-                                      assessmentName: widget.asssessmentName!,
-                                      rubricScore: widget.rubricScore ?? '',
-                                      subjectId: widget.subjectId ?? '',
-                                      schoolId: Globals
-                                          .appSetting.schoolNameC!, //Account Id
-                                      standardId: widget.standardId ?? '',
-                                      scaffoldKey: scaffoldKey,
-                                      context: context,
-                                      isHistoryAssessmentSection:
-                                          widget.assessmentDetailPage!));
-                                } else {
-                                  // Adding the non saved record of dashboard in the list
-                                  List<StudentAssessmentInfo> _listRecord = [];
+                                        return Container(
+                                            padding: EdgeInsets.only(
+                                                bottom: 14, top: 8),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.058,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.058,
+                                            alignment: Alignment.center,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            )));
+                                      },
+                                      listener: (context, state) async {
+                                        if (state is ErrorState) {
+                                          if (state.errorMsg ==
+                                              'Reauthentication is required') {
+                                            await Utility
+                                                .refreshAuthenticationToken(
+                                                    isNavigator: false,
+                                                    errorMsg: state.errorMsg!,
+                                                    context: context,
+                                                    scaffoldKey: scaffoldKey);
 
-                                  if (widget.assessmentDetailPage! &&
-                                      savedRecordCount != null &&
-                                      historyRecordList.length !=
-                                          savedRecordCount!) {
-                                    _listRecord = historyRecordList.sublist(
-                                        savedRecordCount!,
-                                        historyRecordList.length);
+                                            _driveBloc.add(GetShareLink(
+                                                fileId: widget.fileId));
+                                          } else {
+                                            Navigator.of(context).pop();
+                                            Utility.currentScreenSnackBar(
+                                                "Something Went Wrong. Please Try Again.");
+                                          }
+                                        }
+                                      },
+                                    )
+                                  : Icon(
+                                      IconData(
+                                          (widget.assessmentDetailPage!
+                                                      ? index == 2
+                                                      : index == 3) &&
+                                                  dashoardState.value ==
+                                                      'Success'
+                                              ? 0xe877
+                                              : iconsList[index],
+                                          fontFamily: Overrides.kFontFam,
+                                          fontPackage: Overrides.kFontPkg),
+                                      size: (widget.assessmentDetailPage!
+                                                  ? index == 2
+                                                  : index == 3) &&
+                                              dashoardState.value == ''
+                                          ? Globals.deviceType == 'phone'
+                                              ? 38
+                                              : 55
+                                          : Globals.deviceType == 'phone'
+                                              ? 32
+                                              : 48,
+                                      color: (widget.assessmentDetailPage! &&
+                                                  index == 2 &&
+                                                  isAssessmentAlreadySaved ==
+                                                      'YES') ||
+                                              (widget.assessmentDetailPage! &&
+                                                  index == 2 &&
+                                                  dashoardState.value ==
+                                                      'Success')
+                                          ? Colors.green
+                                          : index == 2 ||
+                                                  (index == 3 &&
+                                                      dashoardState.value == '')
+                                              ? Theme.of(context)
+                                                          .backgroundColor ==
+                                                      Color(0xff000000)
+                                                  ? Colors.white
+                                                  : Colors.black
+                                              : (widget.assessmentDetailPage!
+                                                          ? index == 2
+                                                          : index == 3) &&
+                                                      dashoardState.value ==
+                                                          'Success'
+                                                  ? Colors.green
+                                                  : AppTheme.kButtonColor,
+                                    ),
+                              onPressed: () async {
+                                if (index == 0) {
+                                  Utility.updateLoges(
+                                      // accountType: 'Free',
+                                      activityId: '13',
+                                      sessionId:
+                                          widget.assessmentDetailPage == true
+                                              ? widget.obj!.sessionId
+                                              : '',
+                                      description: widget
+                                                  .assessmentDetailPage ==
+                                              true
+                                          ? 'Share Button pressed from Assessment History Detail Page'
+                                          : 'Share Button pressed from Result Summary',
+                                      operationResult: 'Success');
+                                  widget.shareLink != null &&
+                                          widget.shareLink!.isNotEmpty
+                                      ? Share.share(widget.shareLink!)
+                                      : print("no link ");
+                                } else if (!widget.assessmentDetailPage! &&
+                                    // ? index == 1
+                                    // :
+                                    index == 2) {
+                                  Utility.updateLoges(
+                                      // accountType: 'Free',
+                                      activityId: '15',
+                                      description:
+                                          'History Assesment button pressed',
+                                      operationResult: 'Success');
 
-                                    // print(historyRecordList);
-                                    // print(_listRecord);
-                                    // print("_listRecord");
+                                  _showDataSavedPopup(
+                                      historyAssessmentSection: true,
+                                      title: 'Action Required',
+                                      msg:
+                                          'If you navigate to the history section, You will not be able to return back to the current screen. \n\nDo you still want to move forward?',
+                                      noActionText: 'No',
+                                      yesActionText: 'Yes, Take Me There');
+                                } else if ((widget.assessmentDetailPage!
+                                        ? index == 2
+                                        : index == 3) &&
+                                    dashoardState.value == '') {
+                                  if (Globals.isPremiumUser) {
+                                    if (widget.assessmentDetailPage == true &&
+                                        widget.createdAsPremium == false) {
+                                      onDashboardPressed(
+                                          title: 'Data Not Saved',
+                                          message:
+                                              'Oops! You cannot save the assessment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the assessment.');
+                                      Globals.scanMoreStudentInfoLength =
+                                          await Utility
+                                                  .getStudentInfoListLength(
+                                                      tableName:
+                                                          'student_info') -
+                                              1;
+                                    } else {
+                                      if (widget.isScanMore == true &&
+                                          widget.assessmentListLenght != null &&
+                                          widget.assessmentListLenght! <
+                                              await Utility
+                                                  .getStudentInfoListLength(
+                                                      tableName:
+                                                          'student_info')) {
+                                        _ocrBloc.add(SaveAssessmentToDashboard(
+                                            assessmentId: !widget
+                                                    .assessmentDetailPage!
+                                                ? Globals.currentAssessmentId
+                                                : historyAssessmentId ?? '',
+                                            assessmentSheetPublicURL:
+                                                widget.shareLink,
+                                            resultList: await Utility
+                                                .getStudentInfoList(
+                                                    tableName: 'student_info'),
+                                            previouslyAddedListLength:
+                                                widget.assessmentListLenght,
+                                            assessmentName:
+                                                widget.asssessmentName!,
+                                            rubricScore:
+                                                widget.rubricScore ?? '',
+                                            subjectId: widget.subjectId ?? '',
+                                            schoolId: Globals.appSetting
+                                                .schoolNameC!, //Account Id
+                                            standardId: widget.standardId ?? '',
+                                            scaffoldKey: scaffoldKey,
+                                            context: context,
+                                            isHistoryAssessmentSection:
+                                                widget.assessmentDetailPage!));
+                                      } else {
+                                        // Adding the non saved record of dashboard in the list
+                                        List<StudentAssessmentInfo>
+                                            _listRecord = [];
+
+                                        if (widget.assessmentDetailPage! &&
+                                            savedRecordCount != null &&
+                                            historyRecordList.length !=
+                                                savedRecordCount!) {
+                                          _listRecord =
+                                              historyRecordList.sublist(
+                                                  savedRecordCount!,
+                                                  historyRecordList.length);
+
+                                          // print(historyRecordList);
+                                          // print(_listRecord);
+                                          // print("_listRecord");
+                                        } else {
+                                          Globals.scanMoreStudentInfoLength =
+                                              await Utility
+                                                      .getStudentInfoListLength(
+                                                          tableName:
+                                                              'student_info') -
+                                                  1;
+
+                                          if (widget.isScanMore == true &&
+                                              widget.assessmentListLenght !=
+                                                  null &&
+                                              widget.assessmentListLenght! <
+                                                  await Utility
+                                                      .getStudentInfoListLength(
+                                                          tableName:
+                                                              'student_info')) {
+                                            _ocrBloc
+                                                .add(SaveAssessmentToDashboard(
+                                              assessmentId: !widget
+                                                      .assessmentDetailPage!
+                                                  ? Globals.currentAssessmentId
+                                                  : historyAssessmentId ?? '',
+                                              assessmentSheetPublicURL:
+                                                  widget.shareLink,
+                                              resultList: await Utility
+                                                  .getStudentInfoList(
+                                                      tableName:
+                                                          'student_info'),
+                                              previouslyAddedListLength:
+                                                  widget.assessmentListLenght,
+                                              assessmentName:
+                                                  widget.asssessmentName!,
+                                              rubricScore:
+                                                  widget.rubricScore ?? '',
+                                              subjectId: widget.subjectId ?? '',
+                                              schoolId: Globals.appSetting
+                                                  .schoolNameC!, //Account Id
+                                              standardId:
+                                                  widget.standardId ?? '',
+                                              scaffoldKey: scaffoldKey,
+                                              context: context,
+                                              isHistoryAssessmentSection:
+                                                  widget.assessmentDetailPage!,
+                                            ));
+                                          } else {
+                                            // Adding the non saved record of dashboard in the list
+                                            List<StudentAssessmentInfo>
+                                                _listRecord = [];
+
+                                            if (widget.assessmentDetailPage! &&
+                                                savedRecordCount != null &&
+                                                historyRecordList.length !=
+                                                    savedRecordCount!) {
+                                              _listRecord =
+                                                  historyRecordList.sublist(
+                                                      savedRecordCount!,
+                                                      historyRecordList.length);
+                                            } else {
+                                              //
+                                              _listRecord = historyRecordList;
+                                            }
+
+                                            _ocrBloc
+                                                .add(SaveAssessmentToDashboard(
+                                              assessmentId: !widget
+                                                      .assessmentDetailPage!
+                                                  ? Globals.currentAssessmentId
+                                                  : historyAssessmentId ?? '',
+                                              assessmentSheetPublicURL:
+                                                  widget.shareLink,
+                                              resultList: !widget
+                                                      .assessmentDetailPage!
+                                                  ? await Utility
+                                                      .getStudentInfoList(
+                                                          tableName:
+                                                              'student_info')
+                                                  : _listRecord,
+                                              assessmentName:
+                                                  widget.asssessmentName!,
+                                              rubricScore:
+                                                  !widget.assessmentDetailPage!
+                                                      ? widget.rubricScore ?? ''
+                                                      : sheetrubricScore ?? '',
+                                              subjectId: widget.subjectId ?? '',
+                                              schoolId: Globals.appSetting
+                                                  .schoolNameC!, //Account Id
+                                              standardId:
+                                                  widget.standardId ?? '',
+                                              scaffoldKey: scaffoldKey,
+                                              context: context,
+                                              isHistoryAssessmentSection:
+                                                  widget.assessmentDetailPage!,
+                                              fileId: widget.fileId ?? '',
+                                            ));
+                                          }
+                                        }
+                                      }
+                                    }
                                   } else {
-                                    //
-                                    _listRecord = historyRecordList;
-                                    // print("_listRecord");
+                                    onDashboardPressed(
+                                        title: 'Upgrade To Premium',
+                                        message:
+                                            'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
                                   }
 
-                                  _ocrBloc.add(SaveAssessmentToDashboard(
-                                      assessmentId:
-                                          !widget.assessmentDetailPage!
-                                              ? Globals.currentAssessmentId
-                                              : historyAssessmentId ?? '',
-                                      assessmentSheetPublicURL:
-                                          widget.shareLink,
-                                      resultList: !widget.assessmentDetailPage!
-                                          ? await Utility.getStudentInfoList(
-                                              tableName:
-                                                  widget.assessmentDetailPage ==
-                                                          true
-                                                      ? 'history_student_info'
-                                                      : 'student_info')
-                                          : _listRecord,
-                                      assessmentName: widget.asssessmentName!,
-                                      rubricScore: !widget.assessmentDetailPage!
-                                          ? widget.rubricScore ?? ''
-                                          : sheetrubricScore ?? '',
-                                      subjectId: widget.subjectId ?? '',
-                                      schoolId: Globals
-                                          .appSetting.schoolNameC!, //Account Id
-                                      standardId: widget.standardId ?? '',
-                                      scaffoldKey: scaffoldKey,
-                                      context: context,
-                                      isHistoryAssessmentSection:
-                                          widget.assessmentDetailPage!,
-                                      fileId: widget.fileId ?? ''));
+//Found duplicate in merge
+                                  // _ocrBloc.add(SaveAssessmentToDashboard(
+                                  //     assessmentId:
+                                  //         !widget.assessmentDetailPage!
+                                  //             ? Globals.currentAssessmentId
+                                  //             : historyAssessmentId ?? '',
+                                  //     assessmentSheetPublicURL:
+                                  //         widget.shareLink,
+                                  //     resultList: !widget.assessmentDetailPage!
+                                  //         ? await Utility.getStudentInfoList(
+                                  //             tableName:
+                                  //                 widget.assessmentDetailPage ==
+                                  //                         true
+                                  //                     ? 'history_student_info'
+                                  //                     : 'student_info')
+                                  //         : _listRecord,
+                                  //     assessmentName: widget.asssessmentName!,
+                                  //     rubricScore: !widget.assessmentDetailPage!
+                                  //         ? widget.rubricScore ?? ''
+                                  //         : sheetrubricScore ?? '',
+                                  //     subjectId: widget.subjectId ?? '',
+                                  //     schoolId: Globals
+                                  //         .appSetting.schoolNameC!, //Account Id
+                                  //     standardId: widget.standardId ?? '',
+                                  //     scaffoldKey: scaffoldKey,
+                                  //     context: context,
+                                  //     isHistoryAssessmentSection:
+                                  //         widget.assessmentDetailPage!,
+                                  //     fileId: widget.fileId ?? ''));
                                 }
-                              }
-                            },
-                          ),
+                              }),
                         ),
             ],
           );
@@ -1140,10 +1287,29 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 onPressed: () {
                   // Globals.scanMoreStudentInfoLength =
                   //     Globals.studentInfo!.length;
+                  Utility.updateLoges(
+                      //accountType: 'Free',
+                      activityId: '22',
+                      sessionId: widget.assessmentDetailPage == true
+                          ? widget.obj!.sessionId
+                          : '',
+                      description: widget.assessmentDetailPage == true
+                          ? 'Scan more button pressed from Assessment History Detail Page'
+                          : 'Scan more button pressed from Result Summary',
+                      operationResult: 'Success');
+
+                  if (widget.obj!.isCreatedAsPremium == "true") {
+                    createdAsPremium = true;
+                  }
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                                createdAsPremium:
+                                    widget.assessmentDetailPage == true
+                                        ? createdAsPremium
+                                        : Globals.isPremiumUser,
                                 oneTimeCamera: widget.assessmentDetailPage!,
                                 isFromHistoryAssessmentScanMore:
                                     widget.assessmentDetailPage!,
@@ -1225,7 +1391,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   _showDataSavedPopup(
       {required bool? historyAssessmentSection,
       required String? title,
-      required String? msg}) {
+      required String? msg,
+      required String? yesActionText,
+      required String? noActionText}) {
     return showDialog(
         context: context,
         builder: (context) =>
@@ -1287,38 +1455,52 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         TextButton(
-                          child: TranslationWidget(
-                              message: "NO ",
-                              fromLanguage: "en",
-                              toLanguage: Globals.selectedLanguage,
-                              builder: (translatedMessage) {
-                                return Text(translatedMessage.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5!
-                                        .copyWith(
-                                          color: AppTheme.kButtonColor,
-                                        ));
-                              }),
+                          child: FittedBox(
+                            child: TranslationWidget(
+                                message: noActionText ?? "NO",
+                                fromLanguage: "en",
+                                toLanguage: Globals.selectedLanguage,
+                                builder: (translatedMessage) {
+                                  return Text(translatedMessage.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5!
+                                          .copyWith(
+                                            fontSize: 16,
+                                            color: AppTheme.kButtonColor,
+                                          ));
+                                }),
+                          ),
                           onPressed: () {
                             //Globals.iscameraPopup = false;
                             Navigator.of(context).pop();
                           },
                         ),
+                        Container(
+                          height: 35,
+                          width: 1,
+                          color: Colors.grey[300],
+                        ),
                         TextButton(
-                          child: TranslationWidget(
-                              message: "OK ",
-                              fromLanguage: "en",
-                              toLanguage: Globals.selectedLanguage,
-                              builder: (translatedMessage) {
-                                return Text(translatedMessage.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline5!
-                                        .copyWith(
-                                          color: AppTheme.kButtonColor,
-                                        ));
-                              }),
+                          child: FittedBox(
+                            child: TranslationWidget(
+                                message: yesActionText ?? "OK ",
+                                fromLanguage: "en",
+                                toLanguage: Globals.selectedLanguage,
+                                builder: (translatedMessage) {
+                                  return Text(translatedMessage.toString(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5!
+                                          .copyWith(
+                                            fontSize: 16,
+                                            color: yesActionText ==
+                                                    'Yes, Take Me There'
+                                                ? Colors.red
+                                                : AppTheme.kButtonColor,
+                                          ));
+                                }),
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
 
@@ -1383,16 +1565,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: 'student_info');
     if (edit!) {
+      Utility.updateLoges(
+          // accountType: 'Free',
+          activityId: '17',
+          description: 'Teacher edit the record',
+          operationResult: 'Success');
       editingStudentNameController.text = studentInfo[index].studentName!;
       editingStudentIdController.text = studentInfo[index].studentId!;
       editingStudentScoreController.text = studentInfo[index].studentGrade!;
-
-      // editingStudentNameController.text =
-      //     Globals.studentInfo![index].studentName!;
-      // editingStudentIdController.text = Globals.studentInfo![index].studentId!;
-      // editingStudentScoreController.text =
-      //     Globals.studentInfo![index].studentGrade!;
-
       editBottomSheet(
           controllerOne: editingStudentNameController,
           controllerTwo: editingStudentIdController,
@@ -1450,8 +1630,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 assessmentCount.value = _list.length;
                 _futurMethod();
                 _method();
+
                 Navigator.pop(context);
                 _driveBloc2.add(UpdateDocOnDrive(
+                  createdAsPremium: Globals.isPremiumUser,
                   assessmentName: Globals.assessmentName!,
                   fileId: Globals.googleExcelSheetId,
                   isLoading: true,
@@ -1461,20 +1643,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           tableName: 'student_info'),
                 ));
 
-                // Globals.studentInfo![index].studentName = name.text;
-                // Globals.studentInfo![index].studentId = id.text;
-                // Globals.studentInfo![index].studentGrade = score.text;
-                // Navigator.pop(context);
-
-                // _driveBloc2.add(UpdateDocOnDrive(
-                //     assessmentName: Globals.assessmentName!,
-                //     fileId: Globals.googleExcelSheetId,
-                //     isLoading: true,
-                //     studentData:
-                //         //list2
-                //         Globals.studentInfo!));
-                // assessmentCount.value = Globals.studentInfo!.length;
-                // sudentRecordList.value = Globals.studentInfo!;
+                // assessmentCount.value = await Utility.getStudentInfoListLength(
+                //           tableName: 'student_info');
+                // sudentRecordList.value = Utility.getStudentInfoList(
+                //           tableName: 'student_info');
               },
             ));
   }
@@ -1604,6 +1776,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           );
 
                           _driveBloc2.add(UpdateDocOnDrive(
+                              createdAsPremium: Globals.isPremiumUser,
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
@@ -1622,6 +1795,19 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             }));
   }
 
+  onDashboardPressed({required String message, required String? title}) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return CommonPopupWidget(
+                  orientation: orientation,
+                  context: context,
+                  message: message,
+                  title: title!);
+            }));
+  }
+
   Future _method() async {
     assessmentCount.value =
         await Utility.getStudentInfoListLength(tableName: 'student_info');
@@ -1636,9 +1822,5 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   void _futurMethod() async {
     _listCount.value =
         await Utility.getStudentInfoListLength(tableName: 'student_info');
-    // ValueNotifier<List<StudentAssessmentInfo>> sudentRecordList =
-    //     ValueNotifier(await Utility.getStudentInfoList());
-    // ValueNotifier<int> _listCount =
-    //     ValueNotifier(await Utility.getStudentInfoListLength());
   }
 }

@@ -902,6 +902,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             onPressed: () async {
                               _uploadSheetOnDriveAndnavigate(
                                   isSkip: true, connected: connected);
+                              Utility.updateLoges(
+                                  // accountType: 'Free',
+                                  activityId: '18',
+                                  description: 'Skip subject selection process',
+                                  operationResult: 'Success');
                             },
                             label: Row(
                               children: [
@@ -931,7 +936,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                             context: context,
                                             fileId:
                                                 Globals.googleExcelSheetId ??
-                                                    'Excel Id not found'));
+                                                    'Excel Id not found',
+                                            sessionId: Globals.sessionId,
+                                            teacherContactId: Globals.teacherId,
+                                            teacherEmail:
+                                                Globals.teacherEmailId));
                                       }
                                       if (state is ErrorState) {
                                         if (state.errorMsg ==
@@ -945,6 +954,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                           _googleDriveBloc.add(
                                             UpdateDocOnDrive(
+                                                createdAsPremium:
+                                                    Globals.isPremiumUser,
                                                 assessmentName:
                                                     Globals.assessmentName,
                                                 fileId:
@@ -1055,7 +1066,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                               context: context,
                                               fileId:
                                                   Globals.googleExcelSheetId ??
-                                                      'Excel Id not found'));
+                                                      'Excel Id not found',
+                                              sessionId: Globals.sessionId,
+                                              teacherContactId:
+                                                  Globals.teacherId,
+                                              teacherEmail:
+                                                  Globals.teacherEmailId));
                                         }
                                         if (state is ErrorState) {
                                           if (state.errorMsg ==
@@ -1069,6 +1085,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                             _googleDriveBloc.add(
                                               UpdateDocOnDrive(
+                                                createdAsPremium:
+                                                    Globals.isPremiumUser,
                                                 assessmentName:
                                                     Globals.assessmentName,
                                                 fileId:
@@ -1098,6 +1116,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         }
                                         if (state is AssessmentIdSuccess) {
                                           Navigator.of(context).pop();
+                                          Utility.updateLoges(
+                                              // accountType: 'Free',
+                                              activityId: '14',
+                                              description: 'Save to drive',
+                                              operationResult: 'Success');
+
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -1382,6 +1406,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
         _googleDriveBloc.add(
           UpdateDocOnDrive(
+              createdAsPremium: Globals.isPremiumUser,
               assessmentName: Globals.assessmentName,
               fileId: Globals.googleExcelSheetId,
               isLoading: true,
