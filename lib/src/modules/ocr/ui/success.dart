@@ -78,9 +78,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
 
-  LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
-      LocalDatabase('history_student_info');
-  @override
   void initState() {
     super.initState();
     _bloc.add(FetchTextFromImage(
@@ -128,20 +125,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       isStudentIdFilled.value.length == 9 &&
                       (isStudentIdFilled.value.startsWith('2') ||
                           isStudentIdFilled.value.startsWith('1'))) {
-                    // else if (_formKey1.currentState!.validate()) {
-                    // if (!isSelected) {
-                    // Utility.showSnackBar(_scaffoldKey,
-                    //     'Please select the earned point', context, null);
-                    // } else {
-                    print(pointScored.value);
-
                     updateDetails(
                         isFromHistoryAssessmentScanMore:
                             widget.isFromHistoryAssessmentScanMore);
 
-                    // if (nameController.text.isNotEmpty &&
-                    //     nameController.text.length >= 3 &&
-                    //     idController.text.isNotEmpty)
                     if (idController.text.isNotEmpty) {
                       _bloc.add(SaveStudentDetails(
                           studentName: nameController.text,
@@ -150,11 +137,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           .substring(widget.imgPath.path.lastIndexOf(".") + 1);
 
                       _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                          isHistoryAssessmentSection:
+                              widget.isFromHistoryAssessmentScanMore,
                           imgBase64: widget.img64,
                           imgExtension: imgExtension,
                           studentId: idController.text));
-                      // }
-                      // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
 
                       _navigatetoCameraSection();
                     }
@@ -227,6 +214,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         String imgExtension = widget.imgPath.path.substring(
                             widget.imgPath.path.lastIndexOf(".") + 1);
                         _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                            isHistoryAssessmentSection:
+                                widget.isFromHistoryAssessmentScanMore,
                             imgBase64: widget.img64,
                             imgExtension: imgExtension,
                             studentId: idController.text));
@@ -410,6 +399,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                     1);
                                             _googleDriveBloc.add(
                                                 AssessmentImgToAwsBucked(
+                                                    isHistoryAssessmentSection:
+                                                        widget
+                                                            .isFromHistoryAssessmentScanMore,
                                                     imgBase64: widget.img64,
                                                     imgExtension: imgExtension,
                                                     studentId:
@@ -1184,8 +1176,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
     // To add the scan more result to the google file existing list
     if (isFromHistoryAssessmentScanMore == true) {
+      LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+          LocalDatabase('history_student_info');
+      @override
       List<StudentAssessmentInfo> historyStudentInfo =
-          await Utility.getStudentInfoList(tableName: 'history_student_info');
+          await _historyStudentInfoDb.getData();
 
       if (historyStudentInfo.length > 0 &&
           historyStudentInfo[0].studentId == "Id") {
@@ -1193,8 +1188,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
       }
 
       if (isUpdateData == true && historyStudentInfo.isNotEmpty) {
-        // final StudentAssessmentInfo studentAssessmentInfo =
-        //     StudentAssessmentInfo();
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade = pointScored.value;
@@ -1207,18 +1200,19 @@ class _SuccessScreenState extends State<SuccessScreen> {
       } else {
         // StudentAssessmentInfo studentAssessmentInfo =
         //         StudentAssessmentInfo();
-        if (historyStudentInfo.isEmpty) {
-          // final StudentAssessmentInfo studentAssessmentInfo =
-          //     StudentAssessmentInfo();
-          studentAssessmentInfo.studentName =
-              nameController.text.isNotEmpty ? nameController.text : "Unknown";
-          studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade = pointScored.value;
-          studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
-          studentAssessmentInfo.assessmentImgPath = widget.imgPath.toString();
-          // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-          await _historyStudentInfoDb.addData(studentAssessmentInfo);
-        } else {
+        // if (historyStudentInfo.isEmpty) {
+        //   // final StudentAssessmentInfo studentAssessmentInfo =
+        //   //     StudentAssessmentInfo();
+        //   studentAssessmentInfo.studentName =
+        //       nameController.text.isNotEmpty ? nameController.text : "Unknown";
+        //   studentAssessmentInfo.studentId = idController.text;
+        //   studentAssessmentInfo.studentGrade = pointScored.value;
+        //   studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
+        //   studentAssessmentInfo.assessmentImgPath = widget.imgPath.toString();
+        //   // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+        //   await _historyStudentInfoDb.addData(studentAssessmentInfo);
+        // } else
+        if (historyStudentInfo.isNotEmpty) {
           List id = [];
           for (int i = 0; i < historyStudentInfo.length; i++) {
             if (!historyStudentInfo.contains(id)) {
@@ -1241,6 +1235,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
+              List list = await _historyStudentInfoDb.getData();
+              print(list);
               await _historyStudentInfoDb.addData(studentAssessmentInfo);
             }
           }
@@ -1300,8 +1296,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
             }
           }
           if (!id.contains(idController.text)) {
-            // StudentAssessmentInfo studentAssessmentInfo =
-            //     StudentAssessmentInfo();
             studentAssessmentInfo.studentName = nameController.text.isNotEmpty
                 ? nameController.text
                 : "Unknown";

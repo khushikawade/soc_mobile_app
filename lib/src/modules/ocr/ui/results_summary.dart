@@ -188,7 +188,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             body: Container(
               //     padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-               mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.40),
@@ -285,7 +285,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         studentData:
                                             //list2
                                             await Utility.getStudentInfoList(
-                                                tableName: 'student_info'),
+                                                tableName:
+                                                    widget.assessmentDetailPage ==
+                                                            true
+                                                        ? 'history_student_info'
+                                                        : 'student_info'),
                                       ));
                                     } else {
                                       Navigator.of(context).pop();
@@ -320,13 +324,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
                                 //    Globals.historyStudentInfo = state.obj;
-                                state.obj.forEach((e) async {
-                                  await _historyStudentInfoDb.addData(e);
-                                });
-                                print(
-                                    "record length ---===========> ${state.obj.length}");
-                                print(
-                                    "record length ---===========> $savedRecordCount");
+
+                                print(state.obj.length);
+
+                                // print(
+                                //     "record length ---===========> ${state.obj.length}");
+                                // print(
+                                //     "record length ---===========> $savedRecordCount");
                                 savedRecordCount != null
                                     ? savedRecordCount == state.obj.length
                                         ? dashoardState.value = 'Success'
@@ -386,16 +390,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             }
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
-                                // isAssessmentAlreadySaved =
-                                // state.obj[0] != null && state.obj[0] != ''
-                                //     ? state.obj[0].isSavedOnDashBoard !=
-                                //                 null &&
-                                //             state.obj[0]
-                                //                     .isSavedOnDashBoard !=
-                                //                 ''
-                                //         ? state.obj[0].isSavedOnDashBoard
-                                //         : ''.toString()
-                                //     : '';
                                 return Column(
                                   children: [
                                     resultTitle(),
@@ -412,40 +406,24 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       isEvents: false),
                                 );
                               }
-                              // return
-
-                              // state.obj.length > 1
-                              //     ? listView(
-                              //         state.obj,
-                              //       )
-                              //     : Expanded(
-                              //         child: NoDataFoundErrorWidget(
-                              //             isResultNotFoundMsg: true,
-                              //             isNews: false,
-                              //             isEvents: false),
-                              //       );
                             }
-                            //  else if (state is GoogleNoAssessment) {
-                            //   return Container(
-                            //     height:
-                            //         MediaQuery.of(context).size.height * 0.7,
-                            //     child: Center(
-                            //         child: Text(
-                            //       "No assessment available",
-                            //       style: Theme.of(context).textTheme.bodyText1!,
-                            //     )),
-                            //   );
-                            // }
+
                             return Container();
                           },
                           listener: (BuildContext contxt,
                               GoogleDriveState state) async {
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
-                                // if (state.obj.first.isSavedOnDashBoard ==
-                                //     "YES") {
-                                //   dashoardState.value = "Success";
-                                // }
+                                if (await Utility.getStudentInfoListLength(
+                                        tableName: 'history_student_info') ==
+                                    0) {
+                                  state.obj.forEach((e) async {
+                                    print(
+                                        'ffffffffffffffffffffffffffffffffffff');
+                                    await _historyStudentInfoDb.addData(e);
+                                  });
+                                }
+
                                 sheetrubricScore =
                                     state.obj.first.scoringRubric;
                                 webContentLink = state.webContentLink;
@@ -488,7 +466,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             dashoardState.value = 'Success';
                             List<StudentAssessmentInfo> studentInfo =
                                 await Utility.getStudentInfoList(
-                                    tableName: 'student_info');
+                                    tableName:
+                                        widget.assessmentDetailPage == true
+                                            ? 'history_student_info'
+                                            : 'student_info');
 
                             studentInfo.asMap().forEach((index, element) async {
                               StudentAssessmentInfo element =
@@ -917,24 +898,36 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   dashoardState.value == '') {
                                 Globals.scanMoreStudentInfoLength =
                                     await Utility.getStudentInfoListLength(
-                                            tableName: 'student_info') -
+                                            tableName:
+                                                widget.assessmentDetailPage ==
+                                                        true
+                                                    ? 'history_student_info'
+                                                    : 'student_info') -
                                         1;
 
                                 if (widget.isScanMore == true &&
                                     widget.assessmentListLenght != null &&
                                     widget.assessmentListLenght! <
                                         await Utility.getStudentInfoListLength(
-                                            tableName: 'student_info')) {
+                                            tableName:
+                                                widget.assessmentDetailPage ==
+                                                        true
+                                                    ? 'history_student_info'
+                                                    : 'student_info')) {
                                   _ocrBloc.add(SaveAssessmentToDashboard(
-                                      assessmentId:
-                                          !widget.assessmentDetailPage!
-                                              ? Globals.currentAssessmentId
-                                              : historyAssessmentId ?? '',
+                                      assessmentId: !widget
+                                              .assessmentDetailPage!
+                                          ? Globals.currentAssessmentId
+                                          : historyAssessmentId ?? '',
                                       assessmentSheetPublicURL:
                                           widget.shareLink,
                                       resultList:
                                           await Utility.getStudentInfoList(
-                                              tableName: 'student_info'),
+                                              tableName:
+                                                  widget.assessmentDetailPage ==
+                                                          true
+                                                      ? 'history_student_info'
+                                                      : 'student_info'),
                                       previouslyAddedListLength:
                                           widget.assessmentListLenght,
                                       assessmentName: widget.asssessmentName!,
@@ -977,7 +970,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           widget.shareLink,
                                       resultList: !widget.assessmentDetailPage!
                                           ? await Utility.getStudentInfoList(
-                                              tableName: 'student_info')
+                                              tableName:
+                                                  widget.assessmentDetailPage ==
+                                                          true
+                                                      ? 'history_student_info'
+                                                      : 'student_info')
                                           : _listRecord,
                                       assessmentName: widget.asssessmentName!,
                                       rubricScore: !widget.assessmentDetailPage!

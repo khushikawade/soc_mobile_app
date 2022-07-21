@@ -527,15 +527,24 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //  int index = RubricScoreList.scoringList.length - 1;
 
         if (imgUrl != "") {
-          LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
-              LocalDatabase('student_info');
+          LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
+              event.isHistoryAssessmentSection == true
+                  ? 'history_student_info'
+                  : 'student_info');
 
           List<StudentAssessmentInfo> studentInfo =
-              await Utility.getStudentInfoList(tableName: 'student_info');
+              await Utility.getStudentInfoList(
+                  tableName: event.isHistoryAssessmentSection == true
+                      ? 'history_student_info'
+                      : 'student_info');
 
           print('Image bucket URL received : $imgUrl');
+          int hhh = 0;
           for (int i = 0; i < studentInfo.length; i++) {
             if (studentInfo[i].studentId == event.studentId) {
+              print(hhh);
+              print(
+                  'gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg');
               print("updateing img url");
               StudentAssessmentInfo e = studentInfo[i];
               e.assessmentImage = imgUrl;

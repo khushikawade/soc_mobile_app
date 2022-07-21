@@ -334,7 +334,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         if (event.previouslyAddedListLength != null &&
             event.previouslyAddedListLength! <
                 await Utility.getStudentInfoListLength(
-                    tableName: 'student_info')) {
+                    tableName: event.isHistoryAssessmentSection==true?'history_student_info'
+                                              : 'student_info')) {
           // List<StudentAssessmentInfo> _list = Globals.studentInfo!;
           //Removing the previous scanned records to save only latest scanned sheets to the dashboard
           // _list.removeRange(0, event.previouslyAddedListLength!+1); //+1 - To remove title as well
@@ -354,7 +355,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             bool result = await saveResultToDashboard(
                 assessmentId: event.assessmentId!,
                 studentDetails:
-                    await Utility.getStudentInfoList(tableName: 'student_info'),
+                    await Utility.getStudentInfoList(tableName: event.isHistoryAssessmentSection==true?'history_student_info'
+                                              : 'student_info'),
                 previousListLength: event.previouslyAddedListLength ?? 0,
                 isHistoryDetailPage: event.isHistoryAssessmentSection);
 
@@ -362,7 +364,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               saveResultToDashboard(
                   assessmentId: event.assessmentId!,
                   studentDetails: await Utility.getStudentInfoList(
-                      tableName: 'student_info'),
+                      tableName: event.isHistoryAssessmentSection==true?'history_student_info'
+                                              : 'student_info'),
                   previousListLength: event.previouslyAddedListLength ?? 0,
                   isHistoryDetailPage: event.isHistoryAssessmentSection);
             } else {

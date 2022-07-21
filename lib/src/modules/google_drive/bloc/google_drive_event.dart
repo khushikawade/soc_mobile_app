@@ -78,11 +78,13 @@ class AssessmentImgToAwsBucked extends GoogleDriveEvent {
   final String? imgBase64;
   final String? imgExtension;
   final String? studentId;
+  final bool? isHistoryAssessmentSection;
 
   AssessmentImgToAwsBucked(
       {required this.imgBase64,
       required this.imgExtension,
-      required this.studentId});
+      required this.studentId,
+      required this.isHistoryAssessmentSection});
 
   @override
   List<Object> get props => [];

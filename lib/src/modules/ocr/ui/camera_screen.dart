@@ -12,6 +12,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -144,7 +145,7 @@ class _CameraScreenState extends State<CameraScreen>
                             )
                           : Container();
                     }
-                    return CircularProgressIndicator(
+                    return CupertinoActivityIndicator(
                       color: Colors.white,
                     );
                   }),
@@ -544,7 +545,7 @@ class _CameraScreenState extends State<CameraScreen>
                           )
                         : Container();
                   }
-                  return CircularProgressIndicator(
+                  return CupertinoActivityIndicator(
                     color: Colors.white,
                   );
                 })
@@ -619,6 +620,13 @@ class _CameraScreenState extends State<CameraScreen>
                                   if (widget.onlyForPicture) {
                                     Navigator.pop(context, imageFile);
                                   } else {
+                                    LocalDatabase<StudentAssessmentInfo>
+                                        _historyStudentInfoDb =
+                                        LocalDatabase('history_student_info');
+
+                                    List l =
+                                        await _historyStudentInfoDb.getData();
+                                    print(l.length);
                                     if (widget.isFromHistoryAssessmentScanMore ==
                                             true &&
                                         widget.oneTimeCamera == null) {
@@ -626,6 +634,9 @@ class _CameraScreenState extends State<CameraScreen>
                                         ..pop()
                                         ..pop();
                                     }
+                                    List p =
+                                        await _historyStudentInfoDb.getData();
+                                    print(p.length);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
