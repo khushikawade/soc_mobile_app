@@ -517,7 +517,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 ),
                 index == list.length - 1
                     ? SizedBox(
-                        height: 20,
+                        height: 40,
                       )
                     : Container()
               ]);
@@ -593,7 +593,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           width: MediaQuery.of(context).size.width * 0.9,
           child: GridView.builder(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height * 0.05),
+                  bottom: MediaQuery.of(context).size.height * 0.09),
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: Globals.deviceType == 'phone' ? 180 : 400,
                   childAspectRatio:

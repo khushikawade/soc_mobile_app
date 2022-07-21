@@ -59,9 +59,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 Globals.googleDriveFolderId!.isNotEmpty) {
               yield GoogleSuccess(assessmentSection: event.assessmentSection);
             }
-          } else if (folderObject.length == 0) {
-            print('No folder found');
-          } else {
+          }
+          // else if (folderObject.length == 0) {
+          //   print('No folder found');
+          // }
+          else {
             // print("Folder Id received : ${folderObject['id']}");
             // print("Folder path received : ${folderObject['webViewLink']}");
 
@@ -701,13 +703,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         var data = response.data['body']['files'];
         // print(data);
         print("folder id recived ----->");
-        return data[0];
+        if (data.length == 0) {
+          return data;
+        } else {
+          return data[0];
+        }
+        // return data[0];
         // for (int i = 0; i < data.length; i++) {
         //   if (data[i]['name'] == folderName &&
         //       data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
         //       data[i]["trashed"] == false) {
         //     // print("folder is already exits : ${data[i]['id']}");
-        // return data[i];
+        //    return data[i];
         //   }
         // }
       } else if (response.statusCode == 401 ||

@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -744,58 +745,73 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Future<void> _showStartDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: TranslationWidget(
-              message: "Images are stored in the Cloud, not on your device",
-              fromLanguage: "en",
-              toLanguage: Globals.selectedLanguage,
-              builder: (translatedMessage) {
-                return Text(translatedMessage.toString(),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline3!.copyWith(
-                        color: Colors.black, fontWeight: FontWeight.bold));
-              }),
-          titleTextStyle: Theme.of(context)
-              .textTheme
-              .headline3!
-              .copyWith(color: Colors.black),
-          actions: [
-            Container(
-              height: 1,
-              width: MediaQuery.of(context).size.height,
-              color: Colors.grey.withOpacity(0.2),
-            ),
-            Center(
-              child: TextButton(
-                child: TranslationWidget(
-                    message: "Ok",
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    bool? showPopUp = pref.getBool("camera_popup");
+
+    return showPopUp == null
+        ? showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: TranslationWidget(
+                    message:
+                        "Images are stored in the Cloud, not on your device",
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
                       return Text(translatedMessage.toString(),
-                          style:
-                              Theme.of(context).textTheme.headline5!.copyWith(
-                                    color: AppTheme.kButtonColor,
-                                  ));
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3!
+                              .copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold));
                     }),
-                onPressed: () {
-                  Globals.iscameraPopup = false;
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ],
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          elevation: 16,
-        );
-      },
-    );
+                titleTextStyle: Theme.of(context)
+                    .textTheme
+                    .headline3!
+                    .copyWith(color: Colors.black),
+                actions: [
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Center(
+                    child: TextButton(
+                      child: TranslationWidget(
+                          message: "Ok",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(
+                                      color: AppTheme.kButtonColor,
+                                    ));
+                          }),
+                      onPressed: () async {
+                        Globals.iscameraPopup = false;
+                        SharedPreferences pref =
+                            await SharedPreferences.getInstance();
+                        pref.setBool("camera_popup", false);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                elevation: 16,
+              );
+            },
+          )
+        : null;
   }
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {

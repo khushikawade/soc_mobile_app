@@ -1156,10 +1156,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
             height: widget.assessmentDetailPage!
                 ? (MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.height * 0.5
+                    ? MediaQuery.of(context).size.height * 0.57
                     : MediaQuery.of(context).size.height * 0.45)
                 : (MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.height * 0.5
+                    ? MediaQuery.of(context).size.height * 0.57
                     : MediaQuery.of(context).size.height * 0.45),
             child: ListView.builder(
               //padding:widget.assessmentDetailPage==true? EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.06):null,
