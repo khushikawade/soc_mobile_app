@@ -76,6 +76,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //   FloatingActionButtonLocation.centerFloat,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+               isSuccessState:ValueNotifier<bool>(true),
               isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: false,

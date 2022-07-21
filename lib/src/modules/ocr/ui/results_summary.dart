@@ -153,6 +153,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+               isSuccessState:ValueNotifier<bool>(true),
               isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: widget.assessmentDetailPage,

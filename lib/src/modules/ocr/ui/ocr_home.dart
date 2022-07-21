@@ -73,6 +73,7 @@ class _OpticalCharacterRecognitionPageState
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            isSuccessState: ValueNotifier<bool>(true),
             isbackOnSuccess: isBackFromCamera,
             key: GlobalKey(),
             isBackButton: false,
@@ -307,7 +308,8 @@ class _OpticalCharacterRecognitionPageState
                 pointPossibleSelectedColor.value = index + 1;
                 //To take the rubric name to result screen and save the same in excel sheet
                 Globals.scoringRubric =
-                    "${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}";
+                    "${RubricScoreList.scoringList[index == 0 ? 0 : index == 1 ? 2 : 4].name} ${RubricScoreList.scoringList[index == 0 ? 0 : index == 1 ? 2 : 4].score}";
+                print(Globals.scoringRubric);
                 if (index == 0) {
                   rubricScoreSelectedColor.value = 0;
                 } else if (index == 1) {
@@ -409,10 +411,10 @@ class _OpticalCharacterRecognitionPageState
                             } else {
                               lastIndex = index;
                               Globals.scoringRubric =
-                                  RubricScoreList.scoringList[index].name;
+                                  '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
                             }
-
-                            print("printing ----> ${Globals.scoringRubric}");
+                            print(Globals.scoringRubric);
+                            // print("printing ----> ${Globals.scoringRubric}");
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
@@ -490,7 +492,8 @@ class _OpticalCharacterRecognitionPageState
       if (lastIndex == null) {
         lastIndex = 0;
       }
-      Globals.scoringRubric = RubricScoreList.scoringList[lastIndex!].name;
+      Globals.scoringRubric =
+          "${RubricScoreList.scoringList[lastIndex!].name}  ${RubricScoreList.scoringList[lastIndex!].score}";
       rubricScoreSelectedColor.value = lastIndex!;
     } else {
       updateRubricList.value = !updateRubricList.value;
@@ -550,27 +553,27 @@ class _OpticalCharacterRecognitionPageState
 
     _bloc.add(SaveSubjectListDetails());
     // UNCOMMENT Below
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => CameraScreen(
-    //           isFromHistoryAssessmentScanMore: false,
-    //           onlyForPicture: false,
-    //           scaffoldKey: _scaffoldKey,
-    //           isScanMore: false,
-    //           pointPossible: Globals.pointpossible)),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+              isFromHistoryAssessmentScanMore: false,
+              onlyForPicture: false,
+              scaffoldKey: _scaffoldKey,
+              isScanMore: false,
+              pointPossible: Globals.pointpossible)),
+    );
     // End
     // // COMMENT Below
-    LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-    List<String> classSuggestions = await _localDb.getData();
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CreateAssessment(
-                  classSuggestions: classSuggestions,
-                  customGrades: Globals.classList,
-                )));
+    // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    // List<String> classSuggestions = await _localDb.getData();
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => CreateAssessment(
+    //               classSuggestions: classSuggestions,
+    //               customGrades: Globals.classList,
+    //             )));
     // End
   }
 

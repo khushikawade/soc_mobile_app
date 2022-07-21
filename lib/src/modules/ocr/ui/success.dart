@@ -41,7 +41,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
   static const double _KVertcalSpace = 60.0;
   OcrBloc _bloc = OcrBloc();
   OcrBloc _bloc2 = OcrBloc();
-  bool failure = false;
+  //bool failure = false;
+  final ValueNotifier<bool> isSuccessResult = ValueNotifier<bool>(true);
+
   // bool rubricNotDetected = false;
 
   //int? indexColor;
@@ -102,7 +104,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
             isBackButton: false,
-            isSuccessState: !failure,
+            isSuccessState: isSuccessResult,
             //isFailureState: failure,
             isHomeButtonPopup: true,
             isbackOnSuccess: isBackFromCamera,
@@ -191,11 +193,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
-
                   pointScored.value = state.grade!;
                   //   reconizeText(pathOfImage);
                   // });
@@ -244,14 +241,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     }
                   } else {
                     // setState(() {
-                    failure = true;
+                    isSuccessResult.value = true;
                     // });
                   }
                 } else if (state is FetchTextFromImageFailure) {
                   scanFailure.value = 'Failure';
 
                   // setState(() {
-                  failure = true;
+                  isSuccessResult.value = false;
                   // });
                   widget.pointPossible == '2'
                       ? Globals.pointsEarnedList = [0, 1, 2]
@@ -269,8 +266,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       : state.studentId == ''
                           ? studentId
                           : null;
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
                   onChange == false
                       ? nameController.text =
                           isStudentNameFilled.value = state.studentName ?? ''
@@ -292,18 +287,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // );
                 } else if (state is FetchTextFromImageSuccess) {
                   nameController.text = state.studentName!;
-                  widget.pointPossible == '2'
-                      ? Globals.pointsEarnedList = [0, 1, 2]
-                      : widget.pointPossible == '3'
-                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                          : widget.pointPossible == '4'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                              : Globals.pointsEarnedList.length = 2;
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
                   pointScored.value = state.grade!;
                   // idController.text = state.studentId!;
                   // nameController.text = state.studentName!;
@@ -312,20 +298,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   return successScreen(
                       id: state.studentId!, grade: state.grade!);
                 } else if (state is FetchTextFromImageFailure) {
-                  widget.pointPossible == '2'
-                      ? Globals.pointsEarnedList = [0, 1, 2]
-                      : widget.pointPossible == '3'
-                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                          : widget.pointPossible == '4'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                              : Globals.pointsEarnedList.length = 2;
                   onChange == false
                       ? idController.text = state.studentId ?? ''
                       : state.studentId == ''
                           ? studentId
                           : null;
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
                   onChange == false
                       ? nameController.text = state.studentName ?? ''
                       : null;
@@ -355,17 +332,19 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         alignment: Alignment.bottomCenter,
                         child: retryButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CameraScreen(
-                                        isFromHistoryAssessmentScanMore: widget
-                                            .isFromHistoryAssessmentScanMore!,
-                                        onlyForPicture: false,
-                                        isScanMore: widget.isScanMore,
-                                        pointPossible: widget.pointPossible,
-                                      )),
-                            );
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            Navigator.pop(context);
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => CameraScreen(
+                            //             isFromHistoryAssessmentScanMore: widget
+                            //                 .isFromHistoryAssessmentScanMore!,
+                            //             onlyForPicture: false,
+                            //             isScanMore: widget.isScanMore,
+                            //             pointPossible: widget.pointPossible,
+                            //           )),
+                            // );
                           },
                         ))
                     : scanFailure.value == "Success"
@@ -486,17 +465,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ),
                 isRetryButton.value == true
                     ? retryButton(onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CameraScreen(
-                                    isFromHistoryAssessmentScanMore:
-                                        widget.isFromHistoryAssessmentScanMore!,
-                                    onlyForPicture: false,
-                                    isScanMore: widget.isScanMore,
-                                    pointPossible: widget.pointPossible,
-                                  )),
-                        );
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        Navigator.pop(context);
+
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => CameraScreen(
+                        //             isFromHistoryAssessmentScanMore:
+                        //                 widget.isFromHistoryAssessmentScanMore!,
+                        //             onlyForPicture: false,
+                        //             isScanMore: widget.isScanMore,
+                        //             pointPossible: widget.pointPossible,
+                        //           )),
+                        // );
                       })
                     : Container()
               ],

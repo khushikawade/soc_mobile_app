@@ -54,6 +54,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               key: _scaffoldKey,
               backgroundColor: Colors.transparent,
               appBar: CustomOcrAppBarWidget(
+                 isSuccessState:ValueNotifier<bool>(true),
                 isbackOnSuccess: isBackFromCamera,
                 key: GlobalKey(),
                 isBackButton: widget.isFromHomeSection,

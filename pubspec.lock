@@ -1462,7 +1462,7 @@ packages:
       name: video_player_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.10"
+    version: "2.0.11"
   wakelock:
     dependency: "direct main"
     description:
@@ -1525,7 +1525,7 @@ packages:
       name: webview_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.14"
+    version: "2.9.0"
   webview_flutter_platform_interface:
     dependency: transitive
     description:

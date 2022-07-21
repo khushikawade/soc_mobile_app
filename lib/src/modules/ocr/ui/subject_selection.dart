@@ -109,6 +109,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
+                isSuccessState: ValueNotifier<bool>(true),
                 isbackOnSuccess: isBackFromCamera,
                 //key: null,
                 isBackButton: true,

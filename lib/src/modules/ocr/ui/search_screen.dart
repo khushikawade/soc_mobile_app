@@ -74,6 +74,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
+             isSuccessState:ValueNotifier<bool>(true),
             isBackButton: true,
             isbackOnSuccess: isBackFromCamera,
             key: GlobalKey(),
