@@ -23,6 +23,7 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -577,7 +578,10 @@ class _OpticalCharacterRecognitionPageState
     updateLocalDb();
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AssessmentSummary(isFromHomeSection: true,)),
+      MaterialPageRoute(
+          builder: (context) => AssessmentSummary(
+                isFromHomeSection: true,
+              )),
     );
   }
 }

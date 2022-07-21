@@ -72,6 +72,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   final ValueNotifier<bool> animationStart = ValueNotifier<bool>(false);
 
+  ScrollController scrollControlleName = new ScrollController();
+  ScrollController scrollControllerId = new ScrollController();
+
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
 
@@ -82,6 +85,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
     super.initState();
     _bloc.add(FetchTextFromImage(
         base64: widget.img64, pointPossible: widget.pointPossible ?? '2'));
+  }
+
+  @override
+  void dispose() {
+    scrollControlleName.dispose();
+    scrollControllerId.dispose();
+    super.dispose();
   }
 
   @override
@@ -194,6 +204,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
+                  // idController.selection = TextSelection.fromPosition(
+                  //     TextPosition(offset: idController.text.length));
+                  // idController.selection = TextSelection.fromPosition(
+                  //     TextPosition(offset: idController.text.length));
+
                   pointScored.value = state.grade!;
                   //   reconizeText(pathOfImage);
                   // });
@@ -265,6 +280,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       : state.studentId == ''
                           ? studentId
                           : null;
+                  // idController.selection = TextSelection.fromPosition(
+                  //     TextPosition(offset: idController.text.length));
                   onChange == false
                       ? nameController.text =
                           isStudentNameFilled.value = state.studentName ?? ''
@@ -296,6 +313,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
+                  // idController.selection = TextSelection.fromPosition(
+                  //     TextPosition(offset: idController.text.length));
                   pointScored.value = state.grade!;
                   // idController.text = state.studentId!;
                   // nameController.text = state.studentName!;
@@ -316,6 +335,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       : state.studentId == ''
                           ? studentId
                           : null;
+                  // idController.selection = TextSelection.fromPosition(
+                  //     TextPosition(offset: idController.text.length));
                   onChange == false
                       ? nameController.text = state.studentName ?? ''
                       : null;
@@ -560,6 +581,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             //   print(isStudentNameFilled.value);
             //   return
             textFormField(
+                scrollController: scrollControlleName,
                 controller: nameController,
                 hintText: 'Student Name',
                 // keyboardType: TextInputType.,
@@ -622,6 +644,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .primaryVariant
                         .withOpacity(0.5))),
             textFormField(
+                scrollController: scrollControllerId,
                 controller: idController,
                 keyboardType: TextInputType.number,
                 hintText: 'Student ID',
@@ -727,6 +750,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .primaryVariant
                         .withOpacity(0.3))),
             textFormField(
+                scrollController: scrollControlleName,
                 controller: nameController,
                 hintText: 'Student Name',
                 isFailure: false,
@@ -786,6 +810,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .primaryVariant
                         .withOpacity(0.5))),
             textFormField(
+              scrollController: scrollControllerId,
+              maxNineDigit: true,
               controller: idController,
               keyboardType: TextInputType.number,
               hintText: 'Student Id',
@@ -1038,6 +1064,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
     List<TextInputFormatter>? inputFormatters,
     bool? maxNineDigit,
     String? hintText,
+    required ScrollController scrollController,
   }) {
     return ValueListenableBuilder(
         valueListenable: isNameUpdated,
@@ -1047,8 +1074,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
               valueListenable: isStudentNameFilled,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
+                controller.selection = TextSelection.fromPosition(
+                    TextPosition(offset: controller.text.length));
                 return TextFormField(
-                    maxLength: maxNineDigit == null ? null : 9,
+                    scrollController: scrollController,
+                    maxLength: maxNineDigit == true ? 9 : null,
                     inputFormatters:
                         inputFormatters == null ? null : inputFormatters,
                     autovalidateMode: AutovalidateMode.always,

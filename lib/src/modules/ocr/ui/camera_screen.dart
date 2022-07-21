@@ -85,7 +85,7 @@ class _CameraScreenState extends State<CameraScreen>
   void initState() {
     Wakelock.enable();
     Globals.iscameraPopup
-        ? WidgetsBinding.instance!
+        ? WidgetsBinding.instance
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
 
@@ -192,7 +192,7 @@ class _CameraScreenState extends State<CameraScreen>
                     child: Container(),
                     listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context,true);
+                        Utility.showLoadingDialog(context, true);
                       }
                       if (state is GoogleSuccess) {
                         Navigator.of(context).pop();
