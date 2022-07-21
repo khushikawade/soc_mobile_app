@@ -325,13 +325,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       message: text,
       fromLanguage: "en",
       toLanguage: Globals.selectedLanguage,
-      builder: (translatedMessage) => Text(
-            '$translatedMessage',
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .headline1!
-                .copyWith(fontSize: 32, fontStyle: FontStyle.italic),
+      builder: (translatedMessage) => Container(
+            child: Text(
+              '$translatedMessage',
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline1!
+                  .copyWith(fontSize: 32, fontStyle: FontStyle.italic),
+            ),
           ));
 
   Widget _tabBarBody() {

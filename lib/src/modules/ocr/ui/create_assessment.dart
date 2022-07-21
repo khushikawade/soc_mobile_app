@@ -123,6 +123,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .primaryVariant
                                       .withOpacity(0.3))),
                       textFormField(
+                          isAssessmenttextFormField: true,
                           controller: assessmentController,
                           hintText: 'Assessment Name',
                           validator: (String? value) {
@@ -175,6 +176,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           textFormField(
+                            isAssessmenttextFormField: false,
                             controller: classController,
                             hintText: '1st',
                             onSaved: (String value) {
@@ -218,9 +220,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           //padding: EdgeInsets.only(left: 2.0),
                           child: ChipsFilter(
                               selectedValue: (String value) {
-                                value.isNotEmpty
-                                    ? classController.text = value
-                                    : print("");
+                                if (value.isNotEmpty) {
+                                  classController.text = value;
+                                  classError.value = value;
+                                }
                               },
                               selected:
                                   1, // Select the second filter as default
@@ -519,56 +522,80 @@ class _CreateAssessmentState extends State<CreateAssessment>
       {required TextEditingController controller,
       required onSaved,
       required hintText,
-      required validator}) {
-    return TextFormField(
-      //
-      autovalidateMode: AutovalidateMode.always,
-      textAlign: TextAlign.start,
-      style: Theme.of(context)
-          .textTheme
-          .headline6!
-          .copyWith(fontWeight: FontWeight.bold),
-      controller: controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-        hintText: hintText,
-        errorText: null,
-        errorMaxLines: 2,
-        hintStyle: Theme.of(context)
-            .textTheme
-            .headline6!
-            .copyWith(fontWeight: FontWeight.bold, color: Colors.grey),
-        fillColor: Colors.transparent,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: assessmentNameError.value.isEmpty ||
-                    assessmentNameError.value.length < 2 ||
-                    classError.value.isEmpty
-                ? Colors.red
-                : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-          ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              color: assessmentNameError.value.isEmpty ||
-                      assessmentNameError.value.length < 2 ||
-                      classError.value.isEmpty
-                  ? Colors.red
-                  : Theme.of(context).colorScheme.primaryVariant.withOpacity(
-                      0.5) // Theme.of(context).colorScheme.primaryVariant,
-              ),
-        ),
-        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
-          ),
-        ),
-      ),
-      onChanged: onSaved,
-      validator: validator,
-    );
+      required validator,
+      required bool isAssessmenttextFormField}) {
+    return ValueListenableBuilder(
+        valueListenable: classError,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return ValueListenableBuilder(
+              valueListenable: assessmentNameError,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return TextFormField(
+                  //
+                  autovalidateMode: AutovalidateMode.always,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6!
+                      .copyWith(fontWeight: FontWeight.bold),
+                  controller: controller,
+                  cursorColor: Theme.of(context).colorScheme.primaryVariant,
+                  decoration: InputDecoration(
+                    hintText: hintText,
+                    errorText: isAssessmenttextFormField == true &&
+                                (controller.text.isEmpty ||
+                                    assessmentNameError.value.length < 2) ||
+                            controller.text.isEmpty
+                        ? ''
+                        : null,
+                    // errorMaxLines: 2,
+                    hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.grey),
+                    fillColor: Colors.transparent,
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.5)
+                          //  controller.text.isEmpty ||
+                          //         assessmentNameError.value.length < 2 ||
+                          //         classError.value.isEmpty
+                          //     ? Colors.red
+                          //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+                          ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.5)
+                          //  assessmentNameError.value.isEmpty ||
+                          //         assessmentNameError.value.length < 2 ||
+                          //         classError.value.isEmpty
+                          //     ? Colors.red
+                          //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(
+                          //         0.5) // Theme.of(context).colorScheme.primaryVariant,
+                          ),
+                    ),
+                    contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primaryVariant
+                            .withOpacity(0.3),
+                      ),
+                    ),
+                  ),
+                  onChanged: onSaved,
+                  validator: validator,
+                );
+              });
+        });
   }
 
   Widget textActionButton() {
@@ -628,7 +655,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: Container(),
                     listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context,true);
+                        Utility.showLoadingDialog(context, true);
                       }
 
                       if (state is ExcelSheetCreated) {
