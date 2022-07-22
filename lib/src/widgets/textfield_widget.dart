@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../services/firstLetterUpperCase.dart';
 import '../styles/theme.dart';
 
 class TextFieldWidget extends StatefulWidget {
@@ -26,6 +28,11 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         }
         return null;
       },
+      textInputAction: TextInputAction.next,
+      inputFormatters: <TextInputFormatter>[
+        //To capitalize first letter of the textfield
+        UpperCaseTextFormatter()
+      ],
 
       autofocus: false,
       textAlign: TextAlign.start,

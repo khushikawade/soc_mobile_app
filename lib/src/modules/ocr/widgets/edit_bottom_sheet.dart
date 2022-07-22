@@ -7,8 +7,10 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import '../../../services/firstLetterUpperCase.dart';
 import '../../../widgets/textfield_widget.dart';
 
 // ignore: must_be_immutable
@@ -87,7 +89,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
               },
               icon: Icon(
                 Icons.clear,
-                 color: AppTheme.kButtonColor,
+                color: AppTheme.kButtonColor,
                 size: Globals.deviceType == "phone" ? 28 : 36,
               ),
             ),
@@ -488,6 +490,11 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
     return TextFormField(
       keyboardType: keyboardType ?? null,
       maxLength: maxNineDigit ?? null,
+      textInputAction: TextInputAction.next,
+      inputFormatters: <TextInputFormatter>[
+        //To capitalize first letter of the textfield
+        UpperCaseTextFormatter()
+      ],
 
       validator: (text) {
         if (text == null || text.isEmpty) {

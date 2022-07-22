@@ -359,9 +359,14 @@ class _EventPageState extends State<EventPage>
                                         buildEvent(i),
                                       );
                                     },
-                                    icon: Icon(IconData(0xe850,
+                                    icon: Icon(
+                                      IconData(
+                                        0xe850,
                                         fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg))),
+                                        fontPackage: Overrides.kFontPkg,
+                                      ),
+                                      color: Colors.red,
+                                    )),
                               )),
                           Container(
                               height: Globals.deviceType == 'phone' ? 35 : 45,
@@ -378,9 +383,12 @@ class _EventPageState extends State<EventPage>
                                           i.htmlLink.toString(),
                                           i.summary.toString());
                                     },
-                                    icon: Icon(IconData(0xe829,
-                                        fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg))),
+                                    icon: Icon(
+                                      IconData(0xe829,
+                                          fontFamily: Overrides.kFontFam,
+                                          fontPackage: Overrides.kFontPkg),
+                                      color: Colors.red,
+                                    )),
                               )),
                         ],
                       ),

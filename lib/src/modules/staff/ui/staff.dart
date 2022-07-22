@@ -31,8 +31,10 @@ class StaffPage extends StatefulWidget {
       this.title,
       this.language,
       this.customObj,
+      required this.isCustomSection, 
       required this.isFromOcr})
       : super(key: key);
+       final bool? isCustomSection;
   final CustomSetting? customObj;
   final String? title;
   final String? language;
@@ -297,7 +299,7 @@ class _StaffPageState extends State<StaffPage> {
           refresh: (v) {
             setState(() {});
           },
-        ),
+        ), 
         body: NotificationListener<ScrollNotification>(
           onNotification: onNotification,
           child: Globals.appSetting.staffBannerImageC != null &&
@@ -312,7 +314,7 @@ class _StaffPageState extends State<StaffPage> {
                         bgColor: Globals.appSetting.studentBannerColorC != null
                             ? Utility.getColorFromHex(
                                 Globals.appSetting.studentBannerColorC!)
-                            : null,
+                             : Colors.transparent
                       )
                     ];
                   },

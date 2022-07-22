@@ -20,7 +20,9 @@ class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
   final CustomSetting? customObj;
-  FamilyPage({Key? key, this.obj, this.searchObj, this.customObj})
+   final bool? isCustomSection;
+
+  FamilyPage({Key? key, this.obj, this.searchObj, this.customObj, required this.isCustomSection})
       : super(key: key);
 
   @override
@@ -161,7 +163,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                 Globals.appSetting.familyBannerColorC != null
                                     ? Utility.getColorFromHex(
                                         Globals.appSetting.familyBannerColorC!)
-                                    : null,
+                                     : Colors.transparent
                           )
                         : SliverAppBar(),
                   ];

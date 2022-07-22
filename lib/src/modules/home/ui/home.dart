@@ -11,7 +11,6 @@ import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
-
 import 'package:Soc/src/modules/students/ui/student.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -179,16 +178,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               } else if (element.contains('student')) {
                 _screens.add(StudentPage(
                   homeObj: widget.homeObj,
+                  isCustomSection: false,
                 ));
               } else if (element.contains('families')) {
                 _screens.add(
                   FamilyPage(
                     obj: widget.homeObj,
+                    isCustomSection: false,
                   ),
                 );
               } else if (element.contains('staff')) {
                 _screens.add(StaffPage(
                   isFromOcr: false,
+                  isCustomSection: false,
                 ));
               } else if (element.contains('social')) {
                 _screens.add(
@@ -196,18 +198,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 );
               } else if (element.contains('about')) {
                 _screens.add(
-                  AboutPage(),
+                  AboutPage(isCustomSection: false),
                 );
               } else if (element.contains('school')) {
                 _screens.add(
                   SchoolDirectoryPage(
                     isStandardPage: true,
                     isSubmenu: false,
+                    isCustomSection: false,
                   ),
                 );
               } else if (element.contains('resource')) {
                 _screens.add(
-                  ResourcesPage(),
+                  ResourcesPage(isCustomSection: false),
                 );
               }
             }
@@ -523,21 +526,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           }
           _screens.add(SocialNewPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
-          _screens.add(StudentPage());
+          _screens.add(StudentPage(
+            isCustomSection: true,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
           _screens.add(StaffPage(
             customObj: Globals.customSetting![i],
             isFromOcr: false,
+            isCustomSection: true,
           ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
           _screens.add(FamilyPage(
             customObj: Globals.customSetting![i],
+            isCustomSection: true,
           ));
         } else if (Globals.customSetting![i].systemReferenceC ==
             'Directory Org') {
           _screens.add(SchoolDirectoryPage(
             isStandardPage: true,
             isSubmenu: false,
+            isCustomSection: true,
           ));
         } else if (Globals.customSetting![i].systemReferenceC ==
             'Directory Personnel') {
@@ -551,9 +559,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             obj: Globals.customSetting![i],
           ));
         } else if (Globals.customSetting![i].systemReferenceC == 'About') {
-          _screens.add(AboutPage(customObj: Globals.customSetting![i]));
+          _screens.add(AboutPage(
+            customObj: Globals.customSetting![i],
+            isCustomSection: true,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Resources') {
-          _screens.add(ResourcesPage(customObj: Globals.customSetting![i]));
+          _screens.add(ResourcesPage(
+            customObj: Globals.customSetting![i],
+            isCustomSection: true,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Other') {
           if (Globals.customSetting![i].sectionTemplate == 'URL') {
             Globals.urlIndex = _screens.length;

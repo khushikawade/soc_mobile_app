@@ -18,9 +18,11 @@ import '../shared/ui/common_grid_widget.dart';
 
 class ResourcesPage extends StatefulWidget {
   final CustomSetting? customObj;
+  final bool? isCustomSection;
   ResourcesPage({
     Key? key,
     this.customObj,
+    required this.isCustomSection
   }) : super(key: key);
 
   @override
@@ -149,7 +151,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       bgColor: Globals.appSetting.resourcesBannerColorC != null
                           ? Utility.getColorFromHex(
                               Globals.appSetting.resourcesBannerColorC!)
-                          : null,
+                          : Colors.transparent
                     )
                   ];
                 },

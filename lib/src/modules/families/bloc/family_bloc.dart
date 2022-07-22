@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -18,6 +19,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../google_drive/overrides.dart';
 part 'family_event.dart';
 part 'family_state.dart';
 
@@ -88,7 +92,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         if (_localData.isEmpty) {
-        
           yield FamilyLoading();
         } else {
           yield FamiliesSublistSucess(obj: _localData);
@@ -173,6 +176,17 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
         List<CalendarEventList>? _localData = await _localDb.getData();
 
+        //Clear calendar local data to resolve loading issue
+        SharedPreferences clearCalendarCache =
+            await SharedPreferences.getInstance();
+        final clearChacheResult =
+            clearCalendarCache.getBool('delete_local_calendar');
+
+        if (clearChacheResult != true) {
+          _localData.clear();
+          await clearCalendarCache.setBool('delete_local_calendar', true);
+        }
+
         if (_localData.isEmpty) {
           yield FamilyLoading();
         } else {
@@ -205,20 +219,25 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             // futureListobj: futureListMap, pastListobj: pastListMap
             );
       } catch (e) {
-        print(e);
-        String? _objectName =
-            "${Strings.calendarObjectName}${event.calendarId}";
-        LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
-        List<CalendarEventList>? _localData = await _localDb.getData();
+        if (e == 'NO_CONNECTION') {
+          Utility.currentScreenSnackBar("No Internet Connection");
+        } else {
+          print(e);
+          String? _objectName =
+              "${Strings.calendarObjectName}${event.calendarId}";
+          LocalDatabase<CalendarEventList> _localDb =
+              LocalDatabase(_objectName);
+          List<CalendarEventList>? _localData = await _localDb.getData();
 
-        filterFutureAndPastEvents(_localData, currentDate);
-        // futureListobj.whereNot((element) => element.status != "cancelled");
-        sortCalendarEvents(futureListobj!);
-        sortCalendarEvents(pastListobj!);
+          filterFutureAndPastEvents(_localData, currentDate);
+          // futureListobj.whereNot((element) => element.status != "cancelled");
+          sortCalendarEvents(futureListobj!);
+          sortCalendarEvents(pastListobj!);
 
-        yield CalendarListSuccess(
-            futureListobj: mapListObj(futureListobj!),
-            pastListobj: mapListObj(pastListobj!.reversed.toList()));
+          yield CalendarListSuccess(
+              futureListobj: mapListObj(futureListobj!),
+              pastListobj: mapListObj(pastListobj!.reversed.toList()));
+        }
       }
     }
   }
@@ -340,11 +359,11 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://www.googleapis.com/calendar/v3/calendars/$calendarId/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
+            '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/calendar/v3/calendars/$calendarId/events?key=AIzaSyBZ27PUuzJBxZ2BpmMk-wJxLm6WGJK2Z2M'),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        List dataArray = data["items"];
+        List dataArray = data["body"]["items"];
         List<CalendarEventList> data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
