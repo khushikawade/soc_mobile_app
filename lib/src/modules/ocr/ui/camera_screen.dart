@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
@@ -28,7 +29,7 @@ class CameraScreen extends StatefulWidget {
   final scaffoldKey;
   final bool? oneTimeCamera;
   final bool? createdAsPremium;
-  //final HistoryAssessment? obj;
+  final HistoryAssessment? obj;
 
   const CameraScreen(
       {Key? key,
@@ -38,7 +39,8 @@ class CameraScreen extends StatefulWidget {
       this.scaffoldKey,
       required this.isFromHistoryAssessmentScanMore,
       this.oneTimeCamera,
-      this.createdAsPremium})
+      this.createdAsPremium,
+      this.obj})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -210,6 +212,7 @@ class _CameraScreenState extends State<CameraScreen>
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => ResultsSummary(
+                                  obj: widget.obj,
                                       createdAsPremium: widget.createdAsPremium,
                                       historysecondTime:
                                           widget.isFromHistoryAssessmentScanMore
@@ -657,6 +660,7 @@ class _CameraScreenState extends State<CameraScreen>
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SuccessScreen(
+                                            obj: widget.obj,
                                                 createdAsPremium:
                                                     widget.createdAsPremium,
                                                 isFromHistoryAssessmentScanMore:

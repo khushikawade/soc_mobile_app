@@ -1296,7 +1296,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           : 'Scan more button pressed from Result Summary',
                       operationResult: 'Success');
 
-                  if (widget.obj!.isCreatedAsPremium == "true") {
+                  if (widget.obj != null &&
+                      widget.obj!.isCreatedAsPremium == "true") {
                     createdAsPremium = true;
                   }
 
@@ -1304,6 +1305,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                            obj: widget.obj,
                                 createdAsPremium:
                                     widget.assessmentDetailPage == true
                                         ? createdAsPremium

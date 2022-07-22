@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
@@ -25,6 +26,7 @@ class SuccessScreen extends StatefulWidget {
   final bool? isScanMore;
   final bool? isFromHistoryAssessmentScanMore;
   final bool? createdAsPremium;
+  final HistoryAssessment? obj;
   SuccessScreen(
       {Key? key,
       required this.img64,
@@ -32,7 +34,7 @@ class SuccessScreen extends StatefulWidget {
       this.pointPossible,
       this.isScanMore,
       required this.isFromHistoryAssessmentScanMore,
-      this.createdAsPremium})
+      this.createdAsPremium,this.obj})
       : super(key: key);
 
   @override
@@ -232,6 +234,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                obj: widget.obj,
                                     createdAsPremium: widget.createdAsPremium,
                                     isFromHistoryAssessmentScanMore:
                                         widget.isFromHistoryAssessmentScanMore!,
@@ -371,6 +374,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
+                                    obj:  widget.obj,
                                         createdAsPremium:
                                             widget.createdAsPremium,
                                         isFromHistoryAssessmentScanMore: widget
@@ -446,6 +450,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       CameraScreen(
+                                                        obj: widget.obj,
                                                         createdAsPremium: widget
                                                             .createdAsPremium,
                                                         isFromHistoryAssessmentScanMore:
@@ -1373,6 +1378,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
+              obj: widget.obj,
                   createdAsPremium: widget.createdAsPremium,
                   isFromHistoryAssessmentScanMore:
                       widget.isFromHistoryAssessmentScanMore!,
