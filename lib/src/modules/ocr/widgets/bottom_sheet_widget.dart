@@ -278,6 +278,12 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                             if (_formKey.currentState!.validate()) {
                               if (widget.isSubjectScreen!) {
                                 widget.valueChanged!(textFieldControllerOne);
+                                Utility.updateLoges(
+                                  //  accountType: 'Free',
+                                    activityId: '21',
+                                    description:
+                                        'Teacher added custom subject ',
+                                    operationResult: 'Success');
                               } else {
                                 // TODO submit
 
@@ -305,6 +311,12 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                       imgExtension: imgExtension));
                                 } else {
                                   print("save score and name on local db");
+                                  Utility.updateLoges(
+                                    //  accountType: 'Free',
+                                      activityId: '21',
+                                      description:
+                                          'Teacher added custom rubric ',
+                                      operationResult: 'Success');
                                   RubricScoreList.scoringList.add(
                                       CustomRubicModal(
                                           name: textFieldControllerOne.text,

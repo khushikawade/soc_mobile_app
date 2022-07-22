@@ -470,33 +470,37 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       }),
                 ),
                 actions: <Widget>[
-                  FlatButton(
-                    padding: Globals.deviceType != 'phone'
-                        ? EdgeInsets.only(bottom: 10.0, right: 10.0)
-                        : EdgeInsets.all(0),
-                    onPressed: () => Navigator.pop(context, false),
-                    child: TranslationWidget(
-                        message: "No",
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) {
-                          return Text(translatedMessage.toString(),
-                              style: Theme.of(context).textTheme.headline2!);
-                        }),
-                  ),
-                  FlatButton(
-                      padding: Globals.deviceType != 'phone'
-                          ? EdgeInsets.only(bottom: 10.0, right: 10.0)
-                          : EdgeInsets.all(0.0),
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Container(
+                        padding: Globals.deviceType != 'phone'
+                            ? EdgeInsets.only(bottom: 10.0, right: 10.0)
+                            : EdgeInsets.all(0),
+                        child: TranslationWidget(
+                            message: "No",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headline2!);
+                            }),
+                      )),
+                  TextButton(
                       onPressed: () => exit(0),
-                      child: TranslationWidget(
-                          message: "Yes",
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) {
-                            return Text(translatedMessage.toString(),
-                                style: Theme.of(context).textTheme.headline2!);
-                          }))
+                      child: Container(
+                          padding: Globals.deviceType != 'phone'
+                              ? EdgeInsets.only(bottom: 10.0, right: 10.0)
+                              : EdgeInsets.all(0.0),
+                          child: TranslationWidget(
+                              message: "Yes",
+                              fromLanguage: "en",
+                              toLanguage: Globals.selectedLanguage,
+                              builder: (translatedMessage) {
+                                return Text(translatedMessage.toString(),
+                                    style:
+                                        Theme.of(context).textTheme.headline2!);
+                              })))
                 ],
               );
             }));

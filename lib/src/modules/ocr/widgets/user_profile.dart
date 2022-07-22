@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/widgets/warning_popup_model.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -26,6 +27,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
     with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? scaleAnimation;
+  // DateTime currentDateTime = DateTime.now(); //DateTime
+  //   final OcrBloc _ocrBlocLogs = new OcrBloc();
 
   @override
   void initState() {
@@ -134,6 +137,12 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                   onPressed: () {
                     WarningPopupModel();
                     UserGoogleProfile.clearUserProfile();
+                    Utility.updateLoges(
+                        // accountType: 'Free',
+                        activityId: '3',
+                        description: 'User profile logout',
+                        operationResult: 'Success');
+
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => HomePage(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
@@ -24,13 +25,16 @@ class SuccessScreen extends StatefulWidget {
   final String? pointPossible;
   final bool? isScanMore;
   final bool? isFromHistoryAssessmentScanMore;
+  final bool? createdAsPremium;
+  final HistoryAssessment? obj;
   SuccessScreen(
       {Key? key,
       required this.img64,
       required this.imgPath,
       this.pointPossible,
       this.isScanMore,
-      required this.isFromHistoryAssessmentScanMore})
+      required this.isFromHistoryAssessmentScanMore,
+      this.createdAsPremium,this.obj})
       : super(key: key);
 
   @override
@@ -41,7 +45,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
   static const double _KVertcalSpace = 60.0;
   OcrBloc _bloc = OcrBloc();
   OcrBloc _bloc2 = OcrBloc();
-  bool failure = false;
+  //bool failure = false;
+  final ValueNotifier<bool> isSuccessResult = ValueNotifier<bool>(true);
+
   // bool rubricNotDetected = false;
 
   //int? indexColor;
@@ -63,6 +69,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final _formKey2 = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool? valuechange;
+  // DateTime currentDateTime = DateTime.now(); //DateTime
+  // // instance for maintaining logs
+  // final OcrBloc _ocrBlocLogs = new OcrBloc();
 
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   // final ValueNotifier<String> stu = ValueNotifier<String>('');
@@ -78,9 +87,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
 
-  LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
-      LocalDatabase('history_student_info');
-  @override
   void initState() {
     super.initState();
     _bloc.add(FetchTextFromImage(
@@ -105,7 +111,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
             isBackButton: false,
-            isSuccessState: !failure,
+            isSuccessState: isSuccessResult,
             //isFailureState: failure,
             isHomeButtonPopup: true,
             isbackOnSuccess: isBackFromCamera,
@@ -128,20 +134,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       isStudentIdFilled.value.length == 9 &&
                       (isStudentIdFilled.value.startsWith('2') ||
                           isStudentIdFilled.value.startsWith('1'))) {
-                    // else if (_formKey1.currentState!.validate()) {
-                    // if (!isSelected) {
-                    // Utility.showSnackBar(_scaffoldKey,
-                    //     'Please select the earned point', context, null);
-                    // } else {
-                    print(pointScored.value);
-
                     updateDetails(
                         isFromHistoryAssessmentScanMore:
                             widget.isFromHistoryAssessmentScanMore);
 
-                    // if (nameController.text.isNotEmpty &&
-                    //     nameController.text.length >= 3 &&
-                    //     idController.text.isNotEmpty)
                     if (idController.text.isNotEmpty) {
                       _bloc.add(SaveStudentDetails(
                           studentName: nameController.text,
@@ -150,11 +146,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           .substring(widget.imgPath.path.lastIndexOf(".") + 1);
 
                       _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                          isHistoryAssessmentSection:
+                              widget.isFromHistoryAssessmentScanMore,
                           imgBase64: widget.img64,
                           imgExtension: imgExtension,
                           studentId: idController.text));
-                      // }
-                      // _bloc.add(SaveStudentDetails(studentId: '',studentName: ''));
 
                       _navigatetoCameraSection();
                     }
@@ -191,6 +187,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // Future.delayed(Duration(milliseconds: 500));
                   scanFailure.value = 'Success';
                   _performAnimation();
+                  Utility.updateLoges(
+                      //  accountType: 'Free',
+                      activityId: '23',
+                      description: 'Scan Assesment sheet successfully',
+                      operationResult: 'Success');
 
                   widget.pointPossible == '2'
                       ? Globals.pointsEarnedList = [0, 1, 2]
@@ -204,11 +205,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
-
                   pointScored.value = state.grade!;
                   //   reconizeText(pathOfImage);
                   // });
@@ -227,6 +223,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         String imgExtension = widget.imgPath.path.substring(
                             widget.imgPath.path.lastIndexOf(".") + 1);
                         _googleDriveBloc.add(AssessmentImgToAwsBucked(
+                            isHistoryAssessmentSection:
+                                widget.isFromHistoryAssessmentScanMore,
                             imgBase64: widget.img64,
                             imgExtension: imgExtension,
                             studentId: idController.text));
@@ -236,6 +234,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                obj: widget.obj,
+                                    createdAsPremium: widget.createdAsPremium,
                                     isFromHistoryAssessmentScanMore:
                                         widget.isFromHistoryAssessmentScanMore!,
                                     onlyForPicture: false,
@@ -255,14 +255,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     }
                   } else {
                     // setState(() {
-                    failure = true;
+                    isSuccessResult.value = true;
                     // });
                   }
                 } else if (state is FetchTextFromImageFailure) {
                   scanFailure.value = 'Failure';
 
                   // setState(() {
-                  failure = true;
+                  isSuccessResult.value = false;
                   // });
                   widget.pointPossible == '2'
                       ? Globals.pointsEarnedList = [0, 1, 2]
@@ -275,13 +275,28 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     Utility.showSnackBar(_scaffoldKey,
                         'Could Not Detect The Right Score', context, null);
                   }
+
+                  Utility.updateLoges(
+                      // accountType: 'Free',
+                      activityId: '23',
+                      description: state.grade == '' && state.studentId == ''
+                          ? 'Unable to detect Student Id and grade'
+                          : (state.grade == '' && state.studentId != '')
+                              ? 'Unable to detect rubric score'
+                              : (state.grade != '' && state.studentId == '')
+                                  ? 'Unable to detect Student Id '
+                                  : (state.grade != '' &&
+                                          state.studentId != '' &&
+                                          state.studentName == '')
+                                      ? 'Unable to detect Student Name OR Student does not exist in the database'
+                                      : 'Unable to fatch details(Scan Failure)',
+                      operationResult: 'Failure');
+
                   onChange == false
                       ? idController.text = state.studentId ?? ''
                       : state.studentId == ''
                           ? studentId
                           : null;
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
                   onChange == false
                       ? nameController.text =
                           isStudentNameFilled.value = state.studentName ?? ''
@@ -303,18 +318,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // );
                 } else if (state is FetchTextFromImageSuccess) {
                   nameController.text = state.studentName!;
-                  widget.pointPossible == '2'
-                      ? Globals.pointsEarnedList = [0, 1, 2]
-                      : widget.pointPossible == '3'
-                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                          : widget.pointPossible == '4'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                              : Globals.pointsEarnedList.length = 2;
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
                   pointScored.value = state.grade!;
                   // idController.text = state.studentId!;
                   // nameController.text = state.studentName!;
@@ -323,20 +329,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   return successScreen(
                       id: state.studentId!, grade: state.grade!);
                 } else if (state is FetchTextFromImageFailure) {
-                  widget.pointPossible == '2'
-                      ? Globals.pointsEarnedList = [0, 1, 2]
-                      : widget.pointPossible == '3'
-                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                          : widget.pointPossible == '4'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                              : Globals.pointsEarnedList.length = 2;
                   onChange == false
                       ? idController.text = state.studentId ?? ''
                       : state.studentId == ''
                           ? studentId
                           : null;
-                  // idController.selection = TextSelection.fromPosition(
-                  //     TextPosition(offset: idController.text.length));
                   onChange == false
                       ? nameController.text = state.studentName ?? ''
                       : null;
@@ -366,10 +363,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         alignment: Alignment.bottomCenter,
                         child: retryButton(
                           onPressed: () {
+                            Utility.updateLoges(
+                                // accountType: 'Free',
+                                activityId: '9',
+                                description:
+                                    'Scan Failure and teacher retry scan',
+                                operationResult: 'Failure');
+
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
+                                    obj:  widget.obj,
+                                        createdAsPremium:
+                                            widget.createdAsPremium,
                                         isFromHistoryAssessmentScanMore: widget
                                             .isFromHistoryAssessmentScanMore!,
                                         onlyForPicture: false,
@@ -377,6 +384,19 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                         pointPossible: widget.pointPossible,
                                       )),
                             );
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            Navigator.pop(context);
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => CameraScreen(
+                            //             isFromHistoryAssessmentScanMore: widget
+                            //                 .isFromHistoryAssessmentScanMore!,
+                            //             onlyForPicture: false,
+                            //             isScanMore: widget.isScanMore,
+                            //             pointPossible: widget.pointPossible,
+                            //           )),
+                            // );
                           },
                         ))
                     : scanFailure.value == "Success"
@@ -403,6 +423,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                 isFromHistoryAssessmentScanMore:
                                                     widget
                                                         .isFromHistoryAssessmentScanMore);
+                                            Utility.updateLoges(
+                                                //  accountType: 'Free',
+                                                activityId: '10',
+                                                description: 'Next Scan',
+                                                operationResult: 'Success');
+
                                             String imgExtension = widget
                                                 .imgPath.path
                                                 .substring(widget.imgPath.path
@@ -410,6 +436,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                     1);
                                             _googleDriveBloc.add(
                                                 AssessmentImgToAwsBucked(
+                                                    isHistoryAssessmentSection:
+                                                        widget
+                                                            .isFromHistoryAssessmentScanMore,
                                                     imgBase64: widget.img64,
                                                     imgExtension: imgExtension,
                                                     studentId:
@@ -421,6 +450,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       CameraScreen(
+                                                        obj: widget.obj,
+                                                        createdAsPremium: widget
+                                                            .createdAsPremium,
                                                         isFromHistoryAssessmentScanMore:
                                                             widget
                                                                 .isFromHistoryAssessmentScanMore!,
@@ -494,17 +526,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ),
                 isRetryButton.value == true
                     ? retryButton(onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CameraScreen(
-                                    isFromHistoryAssessmentScanMore:
-                                        widget.isFromHistoryAssessmentScanMore!,
-                                    onlyForPicture: false,
-                                    isScanMore: widget.isScanMore,
-                                    pointPossible: widget.pointPossible,
-                                  )),
-                        );
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        Navigator.pop(context);
+
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => CameraScreen(
+                        //             isFromHistoryAssessmentScanMore:
+                        //                 widget.isFromHistoryAssessmentScanMore!,
+                        //             onlyForPicture: false,
+                        //             isScanMore: widget.isScanMore,
+                        //             pointPossible: widget.pointPossible,
+                        //           )),
+                        // );
                       })
                     : Container()
               ],
@@ -720,7 +755,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
             ),
             SpacerWidget(_KVertcalSpace / 4),
             Center(
-                child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade))),
+                child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade),
+                    isSuccessState: false)),
             SpacerWidget(_KVertcalSpace / 2),
             Center(child: imagePreviewWidget()),
             SpacerWidget(_KVertcalSpace / 0.9),
@@ -765,7 +801,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 },
                 validator: (String? value) {
                   isStudentNameFilled.value = value!;
-                  return null;
+                  // return null;
                   // if (value!.isEmpty) {
                   //   return 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name';
                   // } else if (value.length < 3) {
@@ -826,7 +862,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               },
               validator: (String? value) {
                 isStudentIdFilled.value = value!;
-                return null;
+                // return null;
                 // if (value!.isEmpty) {
                 //   return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
                 // } else if (value.length != 9) {
@@ -884,7 +920,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           .withOpacity(0.5))),
             ),
             SpacerWidget(_KVertcalSpace / 4),
-            Center(child: pointsEarnedButton(int.parse(grade))),
+            Center(
+                child:
+                    pointsEarnedButton(int.parse(grade), isSuccessState: true)),
             SpacerWidget(_KVertcalSpace / 2),
             Center(child: imagePreviewWidget()),
             SpacerWidget(_KVertcalSpace / 2.8),
@@ -934,7 +972,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
-  Widget pointsEarnedButton(int grade) {
+  Widget pointsEarnedButton(int grade, {required bool isSuccessState}) {
     return FittedBox(
       child: Container(
           alignment: Alignment.center,
@@ -944,7 +982,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
               ? ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {
-                    return Center(child: pointsButton(index, grade));
+                    return Center(
+                        child: pointsButton(index, grade,
+                            isSuccessState: isSuccessState));
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return SizedBox(
@@ -957,13 +997,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: Globals.pointsEarnedList
                       .map<Widget>((element) => pointsButton(
-                          Globals.pointsEarnedList.indexOf(element), grade))
+                          Globals.pointsEarnedList.indexOf(element), grade,
+                          isSuccessState: true))
                       .toList(),
                 )),
     );
   }
 
-  Widget pointsButton(index, int grade) {
+  Widget pointsButton(index, int grade, {required bool isSuccessState}) {
     isSelected ? indexColor.value = grade : null;
     return ValueListenableBuilder(
         valueListenable: rubricNotDetected,
@@ -973,10 +1014,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
             builder: (BuildContext context, dynamic value, Widget? child) {
               return InkWell(
                   onTap: () {
-                    pointScored.value = index.toString();
-
                     // updateDetails(isUpdateData: true);
-
+                    Utility.updateLoges(
+                        // accountType: 'Free',
+                        activityId: '8',
+                        description:
+                            'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
+                        operationResult: 'Success');
+                    pointScored.value = index.toString();
+                    // if (isSuccessState) {}
                     isSelected = false;
                     rubricNotDetected.value = false;
                     indexColor.value = index;
@@ -1184,8 +1230,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
     // To add the scan more result to the google file existing list
     if (isFromHistoryAssessmentScanMore == true) {
+      LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+          LocalDatabase('history_student_info');
+      @override
       List<StudentAssessmentInfo> historyStudentInfo =
-          await Utility.getStudentInfoList(tableName: 'history_student_info');
+          await _historyStudentInfoDb.getData();
 
       if (historyStudentInfo.length > 0 &&
           historyStudentInfo[0].studentId == "Id") {
@@ -1193,8 +1242,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
       }
 
       if (isUpdateData == true && historyStudentInfo.isNotEmpty) {
-        // final StudentAssessmentInfo studentAssessmentInfo =
-        //     StudentAssessmentInfo();
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade = pointScored.value;
@@ -1207,18 +1254,19 @@ class _SuccessScreenState extends State<SuccessScreen> {
       } else {
         // StudentAssessmentInfo studentAssessmentInfo =
         //         StudentAssessmentInfo();
-        if (historyStudentInfo.isEmpty) {
-          // final StudentAssessmentInfo studentAssessmentInfo =
-          //     StudentAssessmentInfo();
-          studentAssessmentInfo.studentName =
-              nameController.text.isNotEmpty ? nameController.text : "Unknown";
-          studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade = pointScored.value;
-          studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
-          studentAssessmentInfo.assessmentImgPath = widget.imgPath.toString();
-          // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-          await _historyStudentInfoDb.addData(studentAssessmentInfo);
-        } else {
+        // if (historyStudentInfo.isEmpty) {
+        //   // final StudentAssessmentInfo studentAssessmentInfo =
+        //   //     StudentAssessmentInfo();
+        //   studentAssessmentInfo.studentName =
+        //       nameController.text.isNotEmpty ? nameController.text : "Unknown";
+        //   studentAssessmentInfo.studentId = idController.text;
+        //   studentAssessmentInfo.studentGrade = pointScored.value;
+        //   studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
+        //   studentAssessmentInfo.assessmentImgPath = widget.imgPath.toString();
+        //   // studentAssessmentInfo.assessmentName = Globals.assessmentName;
+        //   await _historyStudentInfoDb.addData(studentAssessmentInfo);
+        // } else
+        if (historyStudentInfo.isNotEmpty) {
           List id = [];
           for (int i = 0; i < historyStudentInfo.length; i++) {
             if (!historyStudentInfo.contains(id)) {
@@ -1241,6 +1289,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
+              List list = await _historyStudentInfoDb.getData();
+              print(list);
               await _historyStudentInfoDb.addData(studentAssessmentInfo);
             }
           }
@@ -1300,8 +1350,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
             }
           }
           if (!id.contains(idController.text)) {
-            // StudentAssessmentInfo studentAssessmentInfo =
-            //     StudentAssessmentInfo();
             studentAssessmentInfo.studentName = nameController.text.isNotEmpty
                 ? nameController.text
                 : "Unknown";
@@ -1330,6 +1378,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
+              obj: widget.obj,
+                  createdAsPremium: widget.createdAsPremium,
                   isFromHistoryAssessmentScanMore:
                       widget.isFromHistoryAssessmentScanMore!,
                   onlyForPicture: false,

@@ -1,6 +1,8 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
+import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ class TranslationWidget extends StatefulWidget {
   final String? toLanguage;
   final Widget Function(String translation)? builder;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  var isUserInteraction;
 
   TranslationWidget({
     this.scaffoldKey,
@@ -21,6 +24,7 @@ class TranslationWidget extends StatefulWidget {
     this.fromLanguage,
     @required this.toLanguage,
     @required this.builder,
+    this.isUserInteraction,
     Key? key,
   }) : super(key: key);
 
@@ -42,11 +46,14 @@ class _TranslationWidgetState extends State<TranslationWidget> {
     }
 
     return FutureBuilder(
-      future: TranslationAPI.translate(widget.message!, toLanguageCode),
+      future: TranslationAPI.translate(
+          widget.message!, toLanguageCode, widget.isUserInteraction),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return buildWaiting();
+            return widget.isUserInteraction == true
+                ? Container()
+                : buildWaiting();
           default:
             if (snapshot.hasError) {
               if (Globals.isNetworkError == false) {
@@ -55,7 +62,8 @@ class _TranslationWidgetState extends State<TranslationWidget> {
                   Utility.showSnackBar(
                       Globals.scaffoldKey,
                       'Unable to translate, Please check the Internet connection',
-                      context,null);
+                      context,
+                      null);
                 });
               }
               translation = widget.message!;
@@ -79,4 +87,6 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           ),
         )
       : widget.builder!(translation!);
+
+ 
 }

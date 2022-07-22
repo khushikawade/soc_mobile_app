@@ -22,19 +22,20 @@ class CustomOcrAppBarWidget extends StatefulWidget
       {required Key? key,
       required this.isBackButton,
       this.isTitle,
-      this.isSuccessState,
+      required this.isSuccessState,
       this.isResultScreen,
       this.isHomeButtonPopup,
       this.assessmentDetailPage,
       this.assessmentPage,
       this.actionIcon,
+      this.sessionId,
       this.scaffoldKey,
       this.customBackButton,
       required this.isbackOnSuccess,
       this.isFromResultSection})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
-  bool? isSuccessState;
+  ValueListenable<bool>? isSuccessState;
   bool? isBackButton;
   bool? isTitle;
   bool? isResultScreen;
@@ -44,6 +45,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   Widget? actionIcon;
   Widget? customBackButton;
   ValueListenable<bool>? isbackOnSuccess;
+  String? sessionId;
   bool? isFromResultSection;
 
   final scaffoldKey;
@@ -100,7 +102,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         actions: [
           widget.isFromResultSection == true
               ? Container(
-                  padding: widget.isSuccessState != false
+                  padding: widget.isSuccessState!.value != false
                       ? EdgeInsets.only(right: 10)
                       : EdgeInsets.zero,
                   child:
@@ -151,7 +153,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     )
                   : widget.assessmentDetailPage == null
                       ? Container(
-                          padding: widget.isSuccessState != false
+                          padding: widget.isSuccessState!.value != false
                               ? EdgeInsets.only(right: 10)
                               : EdgeInsets.zero,
                           child:
@@ -181,17 +183,25 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       : Container(),
           widget.assessmentDetailPage == true
               ? Container()
-              : widget.isSuccessState == false || widget.isResultScreen == true
-                  ? widget.actionIcon!
-                  : ValueListenableBuilder(
-                      valueListenable: widget.isbackOnSuccess!,
-                      builder:
-                          (BuildContext context, dynamic value, Widget? child) {
-                        return value == true ? widget.actionIcon! : Container();
-                      }),
+              : ValueListenableBuilder(
+                  valueListenable: widget.isSuccessState!,
+                  builder:
+                      (BuildContext context, dynamic value, Widget? child) {
+                    return widget.isSuccessState!.value == false ||
+                            widget.isResultScreen == true
+                        ? widget.actionIcon!
+                        : ValueListenableBuilder(
+                            valueListenable: widget.isbackOnSuccess!,
+                            builder: (BuildContext context, dynamic value,
+                                Widget? child) {
+                              return value == true
+                                  ? widget.actionIcon!
+                                  : Container();
+                            });
+                  }),
           Container(
             margin: EdgeInsets.all(10),
-            padding: widget.isSuccessState != false
+            padding: widget.isSuccessState!.value != false
                 ? EdgeInsets.only(right: 10, top: 5)
                 : EdgeInsets.zero,
             child: FutureBuilder(
@@ -220,7 +230,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   }
                   return Container(
                     margin: EdgeInsets.all(10),
-                    padding: widget.isSuccessState != false
+                    padding: widget.isSuccessState!.value != false
                         ? EdgeInsets.only(right: 10, top: 5)
                         : EdgeInsets.zero,
                   );
@@ -377,6 +387,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
+    Globals.teacherEmailId = _userInformation[0].userEmail!;
     print("printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }

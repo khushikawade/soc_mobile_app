@@ -40,6 +40,8 @@ class _OpticalCharacterRecognitionPageState
   final classController = TextEditingController();
   final HomeBloc _homeBloc = new HomeBloc();
   final OcrBloc _bloc = new OcrBloc();
+  // instance for maintaining logs
+  final OcrBloc _ocrBlocLogs = new OcrBloc();
   File? myImagePath;
   String pathOfImage = '';
   static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
@@ -50,6 +52,9 @@ class _OpticalCharacterRecognitionPageState
   final ValueNotifier<int> rubricScoreSelectedColor = ValueNotifier<int>(0);
   final ValueNotifier<bool> updateRubricList = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+  DateTime currentDateTime = DateTime.now(); //DateTime
+
+  int myTimeStamp = DateTime.now().microsecondsSinceEpoch;
 
   LocalDatabase<StudentAssessmentInfo> _localDb = LocalDatabase('student_info');
 
@@ -73,6 +78,7 @@ class _OpticalCharacterRecognitionPageState
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            isSuccessState: ValueNotifier<bool>(true),
             isbackOnSuccess: isBackFromCamera,
             key: GlobalKey(),
             isBackButton: false,
@@ -232,6 +238,19 @@ class _OpticalCharacterRecognitionPageState
                 }
               }
               if (state is ErrorState) {
+                if (Globals.sessionId == '') {
+                  Globals.sessionId =
+                      "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+                }
+                _ocrBlocLogs.add(LogUserActivityEvent(
+                    sessionId: Globals.sessionId,
+                    teacherId: Globals.teacherId,
+                    activityId: '1',
+                    accountId: Globals.appSetting.schoolNameC,
+                    accountType: 'Free',
+                    dateTime: currentDateTime.toString(),
+                    description: 'Start Scanning Failed',
+                    operationResult: 'Failed'));
                 if (state.errorMsg == 'Reauthentication is required') {
                   await Utility.refreshAuthenticationToken(
                       isNavigator: true,
@@ -307,7 +326,8 @@ class _OpticalCharacterRecognitionPageState
                 pointPossibleSelectedColor.value = index + 1;
                 //To take the rubric name to result screen and save the same in excel sheet
                 Globals.scoringRubric =
-                    "${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}";
+                    "${RubricScoreList.scoringList[index == 0 ? 0 : index == 1 ? 2 : 4].name} ${RubricScoreList.scoringList[index == 0 ? 0 : index == 1 ? 2 : 4].score}";
+                print(Globals.scoringRubric);
                 if (index == 0) {
                   rubricScoreSelectedColor.value = 0;
                 } else if (index == 1) {
@@ -409,10 +429,10 @@ class _OpticalCharacterRecognitionPageState
                             } else {
                               lastIndex = index;
                               Globals.scoringRubric =
-                                  RubricScoreList.scoringList[index].name;
+                                  '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
                             }
-
-                            print("printing ----> ${Globals.scoringRubric}");
+                            print(Globals.scoringRubric);
+                            // print("printing ----> ${Globals.scoringRubric}");
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
@@ -490,7 +510,8 @@ class _OpticalCharacterRecognitionPageState
       if (lastIndex == null) {
         lastIndex = 0;
       }
-      Globals.scoringRubric = RubricScoreList.scoringList[lastIndex!].name;
+      Globals.scoringRubric =
+          "${RubricScoreList.scoringList[lastIndex!].name}  ${RubricScoreList.scoringList[lastIndex!].score}";
       rubricScoreSelectedColor.value = lastIndex!;
     } else {
       updateRubricList.value = !updateRubricList.value;
@@ -547,35 +568,60 @@ class _OpticalCharacterRecognitionPageState
                 : '4'; //In case of 'None' or 'Custom rubric' selection
     Globals.googleExcelSheetId = "";
     updateLocalDb();
+    if (Globals.sessionId == '') {
+      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+    }
+    _ocrBlocLogs.add(LogUserActivityEvent(
+        sessionId: Globals.sessionId,
+        teacherId: Globals.teacherId,
+        activityId: '1',
+        accountId: Globals.appSetting.schoolNameC,
+        accountType: 'Free',
+        dateTime: currentDateTime.toString(),
+        description: 'Start Scanning',
+        operationResult: 'Success'));
 
     _bloc.add(SaveSubjectListDetails());
+    // print(Globals.scoringRubric);
     // UNCOMMENT Below
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => CameraScreen(
-    //           isFromHistoryAssessmentScanMore: false,
-    //           onlyForPicture: false,
-    //           scaffoldKey: _scaffoldKey,
-    //           isScanMore: false,
-    //           pointPossible: Globals.pointpossible)),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CameraScreen(
+              isFromHistoryAssessmentScanMore: false,
+              onlyForPicture: false,
+              scaffoldKey: _scaffoldKey,
+              isScanMore: false,
+              pointPossible: Globals.pointpossible)),
+    );
     // End
     // // COMMENT Below
-    LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-    List<String> classSuggestions = await _localDb.getData();
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => CreateAssessment(
-                  classSuggestions: classSuggestions,
-                  customGrades: Globals.classList,
-                )));
+    // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+    // List<String> classSuggestions = await _localDb.getData();
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => CreateAssessment(
+    //               classSuggestions: classSuggestions,
+    //               customGrades: Globals.classList,
+    //             )));
     // End
   }
 
   void _beforenavigateOnAssessmentSection() {
     updateLocalDb();
+    if (Globals.sessionId == '') {
+      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+    }
+    _ocrBlocLogs.add(LogUserActivityEvent(
+        sessionId: Globals.sessionId,
+        teacherId: Globals.teacherId,
+        activityId: '4',
+        accountId: Globals.appSetting.schoolNameC,
+        accountType: 'Free',
+        dateTime: currentDateTime.toString(),
+        description: 'Assessment History page for home page',
+        operationResult: 'Success'));
     Navigator.push(
       context,
       MaterialPageRoute(

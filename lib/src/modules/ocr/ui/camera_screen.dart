@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
@@ -12,10 +13,12 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -25,6 +28,8 @@ class CameraScreen extends StatefulWidget {
   final bool isFromHistoryAssessmentScanMore;
   final scaffoldKey;
   final bool? oneTimeCamera;
+  final bool? createdAsPremium;
+  final HistoryAssessment? obj;
 
   const CameraScreen(
       {Key? key,
@@ -33,7 +38,9 @@ class CameraScreen extends StatefulWidget {
       required this.onlyForPicture,
       this.scaffoldKey,
       required this.isFromHistoryAssessmentScanMore,
-      this.oneTimeCamera})
+      this.oneTimeCamera,
+      this.createdAsPremium,
+      this.obj})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -144,7 +151,7 @@ class _CameraScreenState extends State<CameraScreen>
                             )
                           : Container();
                     }
-                    return CircularProgressIndicator(
+                    return CupertinoActivityIndicator(
                       color: Colors.white,
                     );
                   }),
@@ -205,6 +212,8 @@ class _CameraScreenState extends State<CameraScreen>
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => ResultsSummary(
+                                  obj: widget.obj,
+                                      createdAsPremium: widget.createdAsPremium,
                                       historysecondTime:
                                           widget.isFromHistoryAssessmentScanMore
                                               ? true
@@ -223,6 +232,7 @@ class _CameraScreenState extends State<CameraScreen>
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ResultsSummary(
+                                      createdAsPremium: widget.createdAsPremium,
                                       historysecondTime:
                                           widget.isFromHistoryAssessmentScanMore
                                               ? true
@@ -247,6 +257,7 @@ class _CameraScreenState extends State<CameraScreen>
                               scaffoldKey: _scaffoldKey);
 
                           _driveBloc.add(UpdateDocOnDrive(
+                              createdAsPremium: widget.createdAsPremium,
                               assessmentName: Globals.historyAssessmentName,
                               fileId: Globals.historyAssessmentFileId,
                               isLoading: true,
@@ -283,6 +294,12 @@ class _CameraScreenState extends State<CameraScreen>
                           }),
                       onPressed: () async {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        Utility.updateLoges(
+                            // accountType: 'Free',
+                            activityId: '19',
+                            description: 'Assessment scan finished',
+                            operationResult: 'Success');
+
                         List<StudentAssessmentInfo> studentInfoDb =
                             await Utility.getStudentInfoList(
                                 tableName:
@@ -385,6 +402,8 @@ class _CameraScreenState extends State<CameraScreen>
                             // await _historyStudentInfoDb.putAt(0, element);
 
                             _driveBloc.add(UpdateDocOnDrive(
+                                createdAsPremium: widget.createdAsPremium ??
+                                    Globals.isPremiumUser,
                                 assessmentName: Globals.historyAssessmentName,
                                 fileId: Globals.historyAssessmentFileId,
                                 isLoading: true,
@@ -481,6 +500,7 @@ class _CameraScreenState extends State<CameraScreen>
                             await _studentInfoDb.putAt(0, element);
 
                             _driveBloc.add(UpdateDocOnDrive(
+                                createdAsPremium: widget.createdAsPremium,
                                 assessmentName: Globals.assessmentName!,
                                 fileId: Globals.googleExcelSheetId,
                                 isLoading: true,
@@ -544,7 +564,7 @@ class _CameraScreenState extends State<CameraScreen>
                           )
                         : Container();
                   }
-                  return CircularProgressIndicator(
+                  return CupertinoActivityIndicator(
                     color: Colors.white,
                   );
                 })
@@ -619,6 +639,13 @@ class _CameraScreenState extends State<CameraScreen>
                                   if (widget.onlyForPicture) {
                                     Navigator.pop(context, imageFile);
                                   } else {
+                                    LocalDatabase<StudentAssessmentInfo>
+                                        _historyStudentInfoDb =
+                                        LocalDatabase('history_student_info');
+
+                                    List l =
+                                        await _historyStudentInfoDb.getData();
+                                    print(l.length);
                                     if (widget.isFromHistoryAssessmentScanMore ==
                                             true &&
                                         widget.oneTimeCamera == null) {
@@ -626,10 +653,16 @@ class _CameraScreenState extends State<CameraScreen>
                                         ..pop()
                                         ..pop();
                                     }
+                                    List p =
+                                        await _historyStudentInfoDb.getData();
+                                    print(p.length);
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SuccessScreen(
+                                            obj: widget.obj,
+                                                createdAsPremium:
+                                                    widget.createdAsPremium,
                                                 isFromHistoryAssessmentScanMore:
                                                     widget
                                                         .isFromHistoryAssessmentScanMore,
@@ -716,58 +749,73 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Future<void> _showStartDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: TranslationWidget(
-              message: "Images are stored in the Cloud, not on your device",
-              fromLanguage: "en",
-              toLanguage: Globals.selectedLanguage,
-              builder: (translatedMessage) {
-                return Text(translatedMessage.toString(),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline3!.copyWith(
-                        color: Colors.black, fontWeight: FontWeight.bold));
-              }),
-          titleTextStyle: Theme.of(context)
-              .textTheme
-              .headline3!
-              .copyWith(color: Colors.black),
-          actions: [
-            Container(
-              height: 1,
-              width: MediaQuery.of(context).size.height,
-              color: Colors.grey.withOpacity(0.2),
-            ),
-            Center(
-              child: TextButton(
-                child: TranslationWidget(
-                    message: "Ok",
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    bool? showPopUp = pref.getBool("camera_popup");
+
+    return showPopUp == null
+        ? showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                title: TranslationWidget(
+                    message:
+                        "Images are stored in the Cloud, not on your device",
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
                       return Text(translatedMessage.toString(),
-                          style:
-                              Theme.of(context).textTheme.headline5!.copyWith(
-                                    color: AppTheme.kButtonColor,
-                                  ));
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3!
+                              .copyWith(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold));
                     }),
-                onPressed: () {
-                  Globals.iscameraPopup = false;
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ],
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          elevation: 16,
-        );
-      },
-    );
+                titleTextStyle: Theme.of(context)
+                    .textTheme
+                    .headline3!
+                    .copyWith(color: Colors.black),
+                actions: [
+                  Container(
+                    height: 1,
+                    width: MediaQuery.of(context).size.height,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  Center(
+                    child: TextButton(
+                      child: TranslationWidget(
+                          message: "Ok",
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(
+                                      color: AppTheme.kButtonColor,
+                                    ));
+                          }),
+                      onPressed: () async {
+                        Globals.iscameraPopup = false;
+                        SharedPreferences pref =
+                            await SharedPreferences.getInstance();
+                        pref.setBool("camera_popup", false);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                elevation: 16,
+              );
+            },
+          )
+        : null;
   }
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
