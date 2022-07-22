@@ -1305,7 +1305,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
-                            obj: widget.obj,
+                                obj: widget.obj,
                                 createdAsPremium:
                                     widget.assessmentDetailPage == true
                                         ? createdAsPremium

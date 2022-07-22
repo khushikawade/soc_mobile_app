@@ -34,7 +34,8 @@ class SuccessScreen extends StatefulWidget {
       this.pointPossible,
       this.isScanMore,
       required this.isFromHistoryAssessmentScanMore,
-      this.createdAsPremium,this.obj})
+      this.createdAsPremium,
+      this.obj})
       : super(key: key);
 
   @override
@@ -234,7 +235,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
-                                obj: widget.obj,
+                                    obj: widget.obj,
                                     createdAsPremium: widget.createdAsPremium,
                                     isFromHistoryAssessmentScanMore:
                                         widget.isFromHistoryAssessmentScanMore!,
@@ -374,7 +375,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
-                                    obj:  widget.obj,
+                                        obj: widget.obj,
                                         createdAsPremium:
                                             widget.createdAsPremium,
                                         isFromHistoryAssessmentScanMore: widget
@@ -1344,6 +1345,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           List id = [];
           for (int i = 0; i < studentInfo.length; i++) {
             if (!studentInfo.contains(id)) {
+              print('not contaains ----------------->');
               id.add(studentInfo[i].studentId);
             } else {
               print('Record is already exist in the list. Skipping...');
@@ -1364,6 +1366,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 widget.imgPath.path.toString();
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
+              print('added in record ----------------->>>>');
               await _studentInfoDb.addData(studentAssessmentInfo);
             }
           }
@@ -1378,7 +1381,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
-              obj: widget.obj,
+                  obj: widget.obj,
                   createdAsPremium: widget.createdAsPremium,
                   isFromHistoryAssessmentScanMore:
                       widget.isFromHistoryAssessmentScanMore!,
