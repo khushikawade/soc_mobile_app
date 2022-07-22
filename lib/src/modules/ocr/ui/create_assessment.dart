@@ -64,6 +64,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
   //   FocusScope.of(context).requestFocus(FocusNode());
   // }
 
+  ScrollController scrollControlleAssessmentName = new ScrollController();
+  ScrollController scrollControlleClassName = new ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -127,6 +130,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .primaryVariant
                                       .withOpacity(0.3))),
                       textFormField(
+                          scrollController: scrollControlleAssessmentName,
                           isAssessmenttextFormField: true,
                           controller: assessmentController,
                           hintText: 'Assessment Name',
@@ -180,6 +184,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           textFormField(
+                            scrollController: scrollControlleClassName,
                             isAssessmenttextFormField: false,
                             controller: classController,
                             hintText: '1st',
@@ -522,23 +527,26 @@ class _CreateAssessmentState extends State<CreateAssessment>
     );
   }
 
-  Widget textFormField(
-      {required TextEditingController controller,
-      required onSaved,
-      required hintText,
-      required validator,
-      required bool isAssessmenttextFormField}) {
+  Widget textFormField({
+    required TextEditingController controller,
+    required onSaved,
+    required hintText,
+    required validator,
+    required bool isAssessmenttextFormField,
+    required ScrollController scrollController,
+  }) {
     return ValueListenableBuilder(
         valueListenable: classError,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
+          controller.selection = TextSelection.fromPosition(
+              TextPosition(offset: controller.text.length));
           return ValueListenableBuilder(
               valueListenable: assessmentNameError,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return TextFormField(
-                  //
-                  textInputAction: TextInputAction.next,
+                  scrollController: scrollController,
                   autovalidateMode: AutovalidateMode.always,
                   textAlign: TextAlign.start,
                   inputFormatters: <TextInputFormatter>[
