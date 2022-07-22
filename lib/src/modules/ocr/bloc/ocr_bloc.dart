@@ -922,11 +922,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   rubricPickList(rubricScore) {
     if (rubricScore == null) {
       return null;
-    }
-    if (rubricScore == '0-2') {
+    } else if (rubricScore == 'NYS 0-2') {
       return "0,1 or 2";
-    }
-    if (rubricScore == '0-3') {
+    } else if (rubricScore == 'NYS 0-3') {
       return "0,1,2 or 3";
     } else {
       return "0,1,2 or 4";
