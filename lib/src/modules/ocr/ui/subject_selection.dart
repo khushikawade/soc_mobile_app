@@ -13,6 +13,7 @@ import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -446,53 +447,112 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       child: Container(
                         padding: EdgeInsets.all(15),
                         alignment: Alignment.centerLeft,
-                        child: RichText(
-                          text: list[index].standardAndDescriptionC != null &&
-                                  list[index]
-                                          .standardAndDescriptionC!
-                                          .split(' - ')
-                                          .length >
-                                      1
-                              ? TextSpan(
-                                  // Note: Styles for TextSpans must be explicitly defined.
-                                  // Child text spans will inherit styles from parent
-                                  style: Theme.of(context).textTheme.headline2,
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: list[index]
-                                            .standardAndDescriptionC!
-                                            .split(' - ')[0]
+                        child:TranslationWidget(
+                          message: list[index].standardAndDescriptionC ?? '',
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => RichText(
+                            text: translatedMessage != null &&
+                                    translatedMessage
+                                            .toString()
+                                            .split(' - ')
+                                            .length >
+                                        1
+                                ? TextSpan(
+                                    // Note: Styles for TextSpans must be explicitly defined.
+                                    // Child text spans will inherit styles from parent
+                                    style:
+                                        Theme.of(context).textTheme.headline2,
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: translatedMessage
+                                              .toString()
+                                              .split(' - ')[0]
+                                              .replaceAll('Â', '')
+                                              .replaceAll('U+2612', '')
+                                              .replaceAll('⍰', ''), //🖾
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline2!
+                                              .copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              )),
+                                      TextSpan(text: '  '),
+                                      TextSpan(
+                                        text: translatedMessage
+                                            .toString()
+                                            .split(' - ')[1]
                                             .replaceAll('Â', '')
                                             .replaceAll('U+2612', '')
-                                            .replaceAll('⍰', ''), //🖾
+                                            .replaceAll('⍰', ''),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline2!
-                                            .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                    TextSpan(text: '  '),
-                                    TextSpan(
-                                      text: list[index]
-                                          .standardAndDescriptionC!
-                                          .split(' - ')[1]
-                                          .replaceAll('Â', '')
-                                          .replaceAll('U+2612', '')
-                                          .replaceAll('⍰', ''),
-                                      style:
-                                          Theme.of(context).textTheme.headline2,
-                                    ),
-                                  ],
-                                )
-                              : TextSpan(
-                                  style: Theme.of(context).textTheme.headline2,
-                                  children: [
-                                      TextSpan(
-                                          text: list[index]
-                                                  .standardAndDescriptionC ??
-                                              '')
-                                    ]),
+                                            .headline2,
+                                      ),
+                                    ],
+                                  )
+                                : TextSpan(
+                                    style:
+                                        Theme.of(context).textTheme.headline2,
+                                    children: [
+                                        TextSpan(text: translatedMessage)
+                                      ]),
+                          ),
+
+                          // Text(
+                          //     translatedMessage.toString(),
+                          //     style: Theme.of(context).textTheme.bodyText1!),
                         ),
+ 
+                        
+                        
+                        // RichText(
+                        //   text: list[index].standardAndDescriptionC != null &&
+                        //           list[index]
+                        //                   .standardAndDescriptionC!
+                        //                   .split(' - ')
+                        //                   .length >
+                        //               1
+                        //       ? TextSpan(
+                        //           // Note: Styles for TextSpans must be explicitly defined.
+                        //           // Child text spans will inherit styles from parent
+                        //           style: Theme.of(context).textTheme.headline2,
+                        //           children: <TextSpan>[
+                        //             TextSpan(
+                        //                 text: list[index]
+                        //                     .standardAndDescriptionC!
+                        //                     .split(' - ')[0]
+                        //                     .replaceAll('Â', '')
+                        //                     .replaceAll('U+2612', '')
+                        //                     .replaceAll('⍰', ''), //🖾
+                        //                 style: Theme.of(context)
+                        //                     .textTheme
+                        //                     .headline2!
+                        //                     .copyWith(
+                        //                       fontWeight: FontWeight.bold,
+                        //                     )),
+                        //             TextSpan(text: '  '),
+                        //             TextSpan(
+                        //               text: list[index]
+                        //                   .standardAndDescriptionC!
+                        //                   .split(' - ')[1]
+                        //                   .replaceAll('Â', '')
+                        //                   .replaceAll('U+2612', '')
+                        //                   .replaceAll('⍰', ''),
+                        //               style:
+                        //                   Theme.of(context).textTheme.headline2,
+                        //             ),
+                        //           ],
+                        //         )
+                        //       : TextSpan(
+                        //           style: Theme.of(context).textTheme.headline2,
+                        //           children: [
+                        //               TextSpan(
+                        //                   text: list[index]
+                        //                           .standardAndDescriptionC ??
+                        //                       '')
+                        //             ]),
+                        // ),
 
                         //  Utility.textWidget(
                         //     text: HtmlUnescape()
