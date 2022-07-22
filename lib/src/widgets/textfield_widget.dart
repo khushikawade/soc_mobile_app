@@ -28,6 +28,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         }
         return null;
       },
+      textInputAction: TextInputAction.next,
       inputFormatters: <TextInputFormatter>[
         //To capitalize first letter of the textfield
         UpperCaseTextFormatter()

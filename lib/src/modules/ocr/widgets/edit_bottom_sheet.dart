@@ -490,6 +490,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
     return TextFormField(
       keyboardType: keyboardType ?? null,
       maxLength: maxNineDigit ?? null,
+      textInputAction: TextInputAction.next,
       inputFormatters: <TextInputFormatter>[
         //To capitalize first letter of the textfield
         UpperCaseTextFormatter()

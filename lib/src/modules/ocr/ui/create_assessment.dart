@@ -538,6 +538,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return TextFormField(
                   //
+                  textInputAction: TextInputAction.next,
                   autovalidateMode: AutovalidateMode.always,
                   textAlign: TextAlign.start,
                   inputFormatters: <TextInputFormatter>[
