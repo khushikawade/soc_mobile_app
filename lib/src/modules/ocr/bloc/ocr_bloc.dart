@@ -241,7 +241,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
                     recentSubjectlist[j].subjectNameC) {
                   subjectList[i].dateTime = recentSubjectlist[j].dateTime;
                 } else {
-                  if (data[i].dateTime == null) {
+                  // if (data[i].dateTime == null)
+                  // FIX SUBJECT ISSUE
+                  if (subjectList[i].dateTime == null) {
                     //Using old/random date to make sue none of the record contains null date
                     subjectList[i].dateTime = DateTime.parse('2012-02-27');
                   }
@@ -332,8 +334,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         if (event.previouslyAddedListLength != null &&
             event.previouslyAddedListLength! <
                 await Utility.getStudentInfoListLength(
-                    tableName: event.isHistoryAssessmentSection==true?'history_student_info'
-                                              : 'student_info')) {
+                    tableName: event.isHistoryAssessmentSection == true
+                        ? 'history_student_info'
+                        : 'student_info')) {
           // List<StudentAssessmentInfo> _list = Globals.studentInfo!;
           //Removing the previous scanned records to save only latest scanned sheets to the dashboard
           // _list.removeRange(0, event.previouslyAddedListLength!+1); //+1 - To remove title as well
@@ -352,9 +355,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             );
             bool result = await saveResultToDashboard(
                 assessmentId: event.assessmentId!,
-                studentDetails:
-                    await Utility.getStudentInfoList(tableName: event.isHistoryAssessmentSection==true?'history_student_info'
-                                              : 'student_info'),
+                studentDetails: await Utility.getStudentInfoList(
+                    tableName: event.isHistoryAssessmentSection == true
+                        ? 'history_student_info'
+                        : 'student_info'),
                 previousListLength: event.previouslyAddedListLength ?? 0,
                 isHistoryDetailPage: event.isHistoryAssessmentSection);
 
@@ -362,8 +366,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               saveResultToDashboard(
                   assessmentId: event.assessmentId!,
                   studentDetails: await Utility.getStudentInfoList(
-                      tableName: event.isHistoryAssessmentSection==true?'history_student_info'
-                                              : 'student_info'),
+                      tableName: event.isHistoryAssessmentSection == true
+                          ? 'history_student_info'
+                          : 'student_info'),
                   previousListLength: event.previouslyAddedListLength ?? 0,
                   isHistoryDetailPage: event.isHistoryAssessmentSection);
             } else {

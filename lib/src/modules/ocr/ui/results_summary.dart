@@ -1099,6 +1099,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         ));
                                       }
                                     }
+                                  } else {
+                                    onDashboardPressed(
+                                        title: 'Upgrade To Premium',
+                                        message:
+                                            'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
                                   }
                                   // }
                                 } else {

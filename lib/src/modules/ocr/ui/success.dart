@@ -1245,7 +1245,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
       if (isUpdateData == true && historyStudentInfo.isNotEmpty) {
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored.value;
+        studentAssessmentInfo.studentGrade =
+            indexColor.value.toString(); //pointScored.value;
         studentAssessmentInfo.pointpossible = Globals.pointpossible;
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
@@ -1283,7 +1284,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
-            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.studentGrade =
+                indexColor.value.toString(); //pointScored.value;
             studentAssessmentInfo.pointpossible = Globals.pointpossible;
             studentAssessmentInfo.assessmentImgPath =
                 widget.imgPath.path.toString();
@@ -1311,7 +1313,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         //     StudentAssessmentInfo();
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored.value;
+        studentAssessmentInfo.studentGrade =
+            indexColor.value.toString(); //pointScored.value;
         studentAssessmentInfo.pointpossible =
             Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
                 ? Globals.pointpossible
@@ -1331,7 +1334,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentName =
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade = pointScored.value;
+          studentAssessmentInfo.studentGrade =
+              indexColor.value.toString(); //pointScored.value;
           studentAssessmentInfo.pointpossible =
               Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
                   ? Globals.pointpossible
@@ -1356,7 +1360,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
-            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.studentGrade =
+                indexColor.value.toString(); //pointScored.value;
             studentAssessmentInfo.pointpossible =
                 Globals.pointpossible != null ||
                         Globals.pointpossible!.isNotEmpty
