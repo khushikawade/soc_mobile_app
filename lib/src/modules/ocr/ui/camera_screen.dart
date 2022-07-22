@@ -212,7 +212,7 @@ class _CameraScreenState extends State<CameraScreen>
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                                 builder: (context) => ResultsSummary(
-                                  obj: widget.obj,
+                                      obj: widget.obj,
                                       createdAsPremium: widget.createdAsPremium,
                                       historysecondTime:
                                           widget.isFromHistoryAssessmentScanMore
@@ -660,7 +660,7 @@ class _CameraScreenState extends State<CameraScreen>
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SuccessScreen(
-                                            obj: widget.obj,
+                                                obj: widget.obj,
                                                 createdAsPremium:
                                                     widget.createdAsPremium,
                                                 isFromHistoryAssessmentScanMore:

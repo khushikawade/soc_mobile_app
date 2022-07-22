@@ -1254,7 +1254,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
       if (isUpdateData == true && historyStudentInfo.isNotEmpty) {
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored.value;
+        studentAssessmentInfo.studentGrade =
+            indexColor.value.toString(); //pointScored.value;
         studentAssessmentInfo.pointpossible = Globals.pointpossible;
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
@@ -1292,7 +1293,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
-            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.studentGrade =
+                indexColor.value.toString(); //pointScored.value;
             studentAssessmentInfo.pointpossible = Globals.pointpossible;
             studentAssessmentInfo.assessmentImgPath =
                 widget.imgPath.path.toString();
@@ -1320,7 +1322,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         //     StudentAssessmentInfo();
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored.value;
+        studentAssessmentInfo.studentGrade =
+            indexColor.value.toString(); //pointScored.value;
         studentAssessmentInfo.pointpossible =
             Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
                 ? Globals.pointpossible
@@ -1340,7 +1343,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentName =
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade = pointScored.value;
+          studentAssessmentInfo.studentGrade =
+              indexColor.value.toString(); //pointScored.value;
           studentAssessmentInfo.pointpossible =
               Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
                   ? Globals.pointpossible
@@ -1354,6 +1358,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           List id = [];
           for (int i = 0; i < studentInfo.length; i++) {
             if (!studentInfo.contains(id)) {
+              print('not contaains ----------------->');
               id.add(studentInfo[i].studentId);
             } else {
               print('Record is already exist in the list. Skipping...');
@@ -1364,7 +1369,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
-            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.studentGrade =
+                indexColor.value.toString(); //pointScored.value;
             studentAssessmentInfo.pointpossible =
                 Globals.pointpossible != null ||
                         Globals.pointpossible!.isNotEmpty
@@ -1374,6 +1380,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 widget.imgPath.path.toString();
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
+              print('added in record ----------------->>>>');
               await _studentInfoDb.addData(studentAssessmentInfo);
             }
           }
