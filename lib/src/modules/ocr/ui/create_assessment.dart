@@ -15,9 +15,11 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../services/firstLetterUpperCase.dart';
 import '../widgets/suggestion_chip.dart';
 
 class CreateAssessment extends StatefulWidget {
@@ -77,7 +79,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //   FloatingActionButtonLocation.centerFloat,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
-               isSuccessState:ValueNotifier<bool>(true),
+              isSuccessState: ValueNotifier<bool>(true),
               isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: false,
@@ -538,6 +540,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   //
                   autovalidateMode: AutovalidateMode.always,
                   textAlign: TextAlign.start,
+                  inputFormatters: <TextInputFormatter>[
+                    //To capitalize first letter of the textfield
+                    UpperCaseTextFormatter()
+                  ],
                   style: Theme.of(context)
                       .textTheme
                       .headline6!
@@ -747,7 +753,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
       _localDb.addData(e);
     });
     Utility.updateLoges(
-      //  accountType: 'Free',
+        //  accountType: 'Free',
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');

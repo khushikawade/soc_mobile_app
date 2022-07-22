@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/ocr/widgets/animation_button.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/firstLetterUpperCase.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -34,7 +35,8 @@ class SuccessScreen extends StatefulWidget {
       this.pointPossible,
       this.isScanMore,
       required this.isFromHistoryAssessmentScanMore,
-      this.createdAsPremium,this.obj})
+      this.createdAsPremium,
+      this.obj})
       : super(key: key);
 
   @override
@@ -234,7 +236,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
-                                obj: widget.obj,
+                                    obj: widget.obj,
                                     createdAsPremium: widget.createdAsPremium,
                                     isFromHistoryAssessmentScanMore:
                                         widget.isFromHistoryAssessmentScanMore!,
@@ -374,7 +376,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
-                                    obj:  widget.obj,
+                                        obj: widget.obj,
                                         createdAsPremium:
                                             widget.createdAsPremium,
                                         isFromHistoryAssessmentScanMore: widget
@@ -619,6 +621,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 scrollController: scrollControlleName,
                 controller: nameController,
                 hintText: 'Student Name',
+                inputFormatters: <TextInputFormatter>[
+                  //To capitalize first letter of the textfield
+                  UpperCaseTextFormatter()
+                ],
                 // keyboardType: TextInputType.,
                 isFailure: true,
                 // errormsg:
@@ -788,6 +794,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
             textFormField(
                 scrollController: scrollControlleName,
                 controller: nameController,
+                inputFormatters: <TextInputFormatter>[
+                  //To capitalize first letter of the textfield
+                  UpperCaseTextFormatter()
+                ],
                 hintText: 'Student Name',
                 isFailure: false,
                 // errormsg: "Make sure to save the record with student name",
@@ -1378,7 +1388,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
-              obj: widget.obj,
+                  obj: widget.obj,
                   createdAsPremium: widget.createdAsPremium,
                   isFromHistoryAssessmentScanMore:
                       widget.isFromHistoryAssessmentScanMore!,

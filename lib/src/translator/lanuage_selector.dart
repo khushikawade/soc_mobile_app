@@ -80,7 +80,8 @@ class LanguageSelector {
                           Utility.showSnackBar(
                               scaffoldKey,
                               '$selectedLanguage language is already selected',
-                              context,null);
+                              context,
+                              null);
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
