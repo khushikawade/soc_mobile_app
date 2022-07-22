@@ -67,9 +67,11 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
     return Stack(
       children: <Widget>[
         Container(
-          height: MediaQuery.of(context).size.height * 0.22,
+          height: Globals.deviceType == 'phone'
+              ? MediaQuery.of(context).size.height * 0.24
+              : MediaQuery.of(context).size.height * 0.22,
           width: Globals.deviceType == 'phone'
-              ? MediaQuery.of(context).size.width * 0.7
+              ? MediaQuery.of(context).size.width * 0.8
               : MediaQuery.of(context).size.width * 0.5,
           padding:
               EdgeInsets.only(left: 20, top: 45 + 20, right: 20, bottom: 20),
