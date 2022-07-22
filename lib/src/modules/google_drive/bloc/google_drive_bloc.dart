@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
@@ -58,9 +59,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 Globals.googleDriveFolderId!.isNotEmpty) {
               yield GoogleSuccess(assessmentSection: event.assessmentSection);
             }
-          } else if (folderObject.length == 0) {
-            print('No folder found');
-          } else {
+          }
+          // else if (folderObject.length == 0) {
+          //   print('No folder found');
+          // }
+          else {
             // print("Folder Id received : ${folderObject['id']}");
             // print("Folder path received : ${folderObject['webViewLink']}");
 
@@ -106,6 +109,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection")
             : print(e);
+        yield ErrorState();
 
         rethrow;
       } catch (e) {
@@ -303,7 +307,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print(assessmentData);
 //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
-            data: assessmentData, name: event.assessmentName!);
+            data: assessmentData,
+            name: event.assessmentName!,
+            createdAsPremium: event.createdAsPremium);
 
 //Update the created excel file to drive with all the result data
         String uploadresult = await uploadSheetOnDrive(
@@ -527,15 +533,24 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //  int index = RubricScoreList.scoringList.length - 1;
 
         if (imgUrl != "") {
-          LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
-              LocalDatabase('student_info');
+          LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
+              event.isHistoryAssessmentSection == true
+                  ? 'history_student_info'
+                  : 'student_info');
 
           List<StudentAssessmentInfo> studentInfo =
-              await Utility.getStudentInfoList(tableName: 'student_info');
+              await Utility.getStudentInfoList(
+                  tableName: event.isHistoryAssessmentSection == true
+                      ? 'history_student_info'
+                      : 'student_info');
 
           print('Image bucket URL received : $imgUrl');
+          int hhh = 0;
           for (int i = 0; i < studentInfo.length; i++) {
             if (studentInfo[i].studentId == event.studentId) {
+              print(hhh);
+              print(
+                  'gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg');
               print("updateing img url");
               StudentAssessmentInfo e = studentInfo[i];
               e.assessmentImage = imgUrl;
@@ -690,13 +705,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         var data = response.data['body']['files'];
         // print(data);
         print("folder id recived ----->");
-        return data[0];
+        if (data.length == 0) {
+          return data;
+        } else {
+          return data[0];
+        }
+        // return data[0];
         // for (int i = 0; i < data.length; i++) {
         //   if (data[i]['name'] == folderName &&
         //       data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
         //       data[i]["trashed"] == false) {
         //     // print("folder is already exits : ${data[i]['id']}");
-        // return data[i];
+        //    return data[i];
         //   }
         // }
       } else if (response.statusCode == 401 ||
@@ -868,10 +888,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.data['statusCode'] != 500) {
         print("assessment list is received ");
         print(response.data);
-        List<HistoryAssessment>? _list =
+        List<HistoryAssessment> _list =
             response.data['body']['items'] //response.data['body']['items']
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
+        List<AssessmentDetails> assessmentList = await getAssessmentList();
+        for (int i = 0; i < _list.length; i++) {
+          for (int j = 0; j < assessmentList.length; j++) {
+            if (_list[i].fileid == assessmentList[j].googleFileId &&
+                assessmentList[j].googleFileId != '') {
+              _list[i].sessionId = assessmentList[j].sessionId;
+              _list[i].isCreatedAsPremium = assessmentList[j].createdAsPremium;
+            }
+          }
+        }
         return _list == null ? [] : _list;
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
@@ -913,6 +943,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           ? Utility.currentScreenSnackBar("No Internet Connection")
           : print(e);
       throw (e);
+    }
+  }
+
+  Future<List<AssessmentDetails>> getAssessmentList() async {
+    try {
+      final ResponseModel response = await _dbServices.getapiNew(
+          'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"School__c"=\'${Globals.appSetting.schoolNameC}\'',
+          //  'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
+          isGoogleAPI: true);
+      if (response.statusCode == 200) {
+        List<AssessmentDetails> _list = response.data['body']
+            .map<AssessmentDetails>((i) => AssessmentDetails.fromJson(i))
+            .toList();
+        return _list;
+      }
+
+      return [];
+    } catch (e) {
+      throw ('something_went_wrong');
     }
   }
 

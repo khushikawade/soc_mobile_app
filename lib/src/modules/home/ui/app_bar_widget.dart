@@ -88,6 +88,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                           isbuttomsheet: true,
                         )));
             break;
+          case IconsMenu.Permissions:
+            OpenAppsSettings.openAppsSettings(
+                settingsCode: SettingsCode.APP_SETTINGS);
+            break;
         }
         // Utility.setLocked();
       },
@@ -257,12 +261,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 8,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.black87,
+            color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Translate/Traducción/翻译/ترجمة/Traduction",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Globals.themeType == 'Dark'
+                      ? Colors.black87
+                      : Colors.white,
                   fontSize: 18.0,
                 ),
               )
@@ -289,13 +295,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 2,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.black87,
+            color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Accessibility Settings",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
+                  color: Globals.themeType == 'Dark'
+                      ? Colors.black87
+                      : Colors.white,
                 ),
               )
             ]),

@@ -73,6 +73,24 @@ class Globals {
   static List pointsList = [2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
   static int lastindex = 0;
+  static String teacherEmailId = '';
+  static String teacherId = '';
+  static String sessionId = '';
+  static bool isPremiumUser = false;
+
+  // static List subjectDetailsList = [
+  //   'NY-3.OA.1 Interpret Products of whole numbers',
+  //   'NY-3.OA.2  Interpret whole-number quotients of whole numbers.',
+  //   'NY-3.OA.3. Use multiplication and division within 100 to solve word problems…',
+  //   'NY-3.OA.4 Determine unknown whole number in multiplication or division…'
+  // ];
+  // static List nycDetailsList = [
+  //   'N&OBase Ten',
+  //   'Geometry',
+  //   'N&OFractions',
+  //   'Measurement'
+  // ];
+  // static List subjectList = ['Maths', 'Science', 'ELA', '+'];
   static List<String> classList = [
     'K',
     '1',

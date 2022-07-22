@@ -58,6 +58,10 @@ class _StaffPageState extends State<StaffPage> {
   OcrBloc _ocrBloc = new OcrBloc();
   // ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(true);
+  // instance for maintaining logs
+  final OcrBloc _ocrBlocLogs = new OcrBloc();
+  DateTime currentDateTime = DateTime.now(); //DateTime
+  int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
 
   @override
   void initState() {
@@ -123,6 +127,18 @@ class _StaffPageState extends State<StaffPage> {
 
     if (value.toString().contains('authenticationfailure')) {
       Navigator.pop(context, false);
+      // Globals.teacherEmailId = ;
+      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+      DateTime currentDateTime = DateTime.now();
+      _ocrBlocLogs.add(LogUserActivityEvent(
+          sessionId: '',
+          teacherId: Globals.teacherId,
+          activityId: '2',
+          accountId: Globals.appSetting.schoolNameC,
+          accountType: 'Free',
+          dateTime: currentDateTime.toString(),
+          description: 'Authentication Failure',
+          operationResult: 'Failure'));
       Utility.showSnackBar(
           _scaffoldKey,
           'You are not authorized to access the feature. Please use the authorized account.',
@@ -135,6 +151,19 @@ class _StaffPageState extends State<StaffPage> {
       List<UserInformation> _userprofilelocalData =
           await UserGoogleProfile.getUserProfile();
       verifyUserAndGetDriveFolder(_userprofilelocalData);
+      Globals.teacherEmailId =
+          _userprofilelocalData[0].userEmail!.split('@')[0];
+      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+      DateTime currentDateTime = DateTime.now();
+      _ocrBlocLogs.add(LogUserActivityEvent(
+          sessionId: Globals.sessionId,
+          teacherId: Globals.teacherId,
+          activityId: '2',
+          accountId: Globals.appSetting.schoolNameC,
+          accountType: 'Free',
+          dateTime: currentDateTime.toString(),
+          description: 'Google Authentication',
+          operationResult: 'Success'));
       // Push to the grading system
       pushNewScreen(
         context,
@@ -334,6 +363,20 @@ class _StaffPageState extends State<StaffPage> {
                       // List<UserInformation> _userprofilelocalData =
                       //     await UserGoogleProfile.getUserProfile();
                       verifyUserAndGetDriveFolder(_profileData);
+                      Globals.teacherEmailId =
+                          _profileData[0].userEmail!.split('@')[0];
+                      Globals.sessionId =
+                          "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+                      DateTime currentDateTime = DateTime.now();
+                      _ocrBlocLogs.add(LogUserActivityEvent(
+                          sessionId: Globals.sessionId,
+                          teacherId: Globals.teacherId,
+                          activityId: '2',
+                          accountId: Globals.appSetting.schoolNameC,
+                          accountType: 'Free',
+                          dateTime: currentDateTime.toString(),
+                          description: 'Graded+ Accessed(Login)',
+                          operationResult: 'Success'));
                       pushNewScreen(
                         context,
                         screen: StartupPage(

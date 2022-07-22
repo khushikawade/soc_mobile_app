@@ -16,6 +16,7 @@ import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -105,8 +106,8 @@ class _StartupPageState extends State<StartupPage> {
 
   getindexvalue() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
     Globals.splashImageUrl = pref.getString(Strings.SplashUrl);
+    Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
   }
 
   @override
@@ -136,11 +137,22 @@ class _StartupPageState extends State<StartupPage> {
                   fit: BoxFit.cover,
                   //    height: 50,
                 ))
-            : Globals.splashImageUrl != null && Globals.splashImageUrl != " "
+            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
                 ? Padding(
                     padding: const EdgeInsets.all(16),
                     child: CachedNetworkImage(
                       imageUrl: Globals.splashImageUrl!,
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: Text("Loading ...",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(
+                                      fontSize: 24,
+                                      color: Globals.themeType == 'Dark'
+                                          ? Colors.white
+                                          : Colors.black))),
                       fit: BoxFit.cover,
                       errorWidget: (context, url, error) => Icon(
                         Icons.error,

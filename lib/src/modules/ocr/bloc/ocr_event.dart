@@ -94,6 +94,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
   final String? assessmentSheetPublicURL;
   final String? fileId;
   final String? assessmentId;
+  
   SaveAssessmentToDashboard(
       {required this.assessmentName,
       required this.rubricScore,
@@ -107,7 +108,8 @@ class SaveAssessmentToDashboard extends OcrEvent {
       required this.isHistoryAssessmentSection,
       required this.assessmentSheetPublicURL,
       required this.assessmentId,
-      this.fileId});
+      this.fileId,
+     });
 
   @override
   List<Object> get props => [];
@@ -120,8 +122,11 @@ class SaveAndGetAssessmentID extends OcrEvent {
   final String schoolId;
   final String standardId;
   final String fileId;
+  final String sessionId;
   final scaffoldKey;
   final context;
+  final String? teacherContactId;
+  final String? teacherEmail;
 
   SaveAndGetAssessmentID(
       {required this.assessmentName,
@@ -131,7 +136,10 @@ class SaveAndGetAssessmentID extends OcrEvent {
       required this.standardId,
       required this.scaffoldKey,
       required this.context,
-      required this.fileId});
+      required this.sessionId,
+      required this.fileId,
+       required this.teacherContactId,
+      required this.teacherEmail});
 
   @override
   List<Object> get props => [];
@@ -173,4 +181,21 @@ class FetchRecentSearch extends OcrEvent {
   List<Object> get props => [];
 
   //String toString() => 'GlobalSearchEvent { keyword: $base64}';
+}
+class LogUserActivityEvent extends OcrEvent{
+  final String? sessionId;
+  final String? teacherId;
+  final String? activityId;
+  final String? accountId;
+  final String? accountType;
+  final String? dateTime;
+  final String? description;
+  final String? operationResult;
+  // final String? type;
+
+  LogUserActivityEvent(
+      {required this.sessionId, required this.teacherId, required this.activityId, required this.accountId, required this.accountType, required this.dateTime, required this.description, required this.operationResult});
+
+  @override
+  List<Object> get props => [];
 }

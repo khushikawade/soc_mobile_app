@@ -43,7 +43,7 @@ class _FamilyPageState extends State<FamilyPage> {
     //lock screen orientation
     // Utility.setLocked();
     _bloc.add(FamiliesEvent());
-    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
 
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';

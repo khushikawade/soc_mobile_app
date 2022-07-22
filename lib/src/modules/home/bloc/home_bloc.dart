@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../schools_directory/modal/school_directory_list.dart';
 part 'home_event.dart';
@@ -298,6 +299,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.statusCode == 200) {
         final data = response.data['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString(
+            Strings.SplashUrl, data["Splash_Screen__c"] ?? data["App_Logo__c"]);
 
         _backupAppData();
         if (Globals.appSetting.bannerHeightFactor != null) {

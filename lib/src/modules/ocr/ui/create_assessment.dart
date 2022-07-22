@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -76,6 +77,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //   FloatingActionButtonLocation.centerFloat,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+               isSuccessState:ValueNotifier<bool>(true),
               isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: false,
@@ -123,6 +125,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .primaryVariant
                                       .withOpacity(0.3))),
                       textFormField(
+                          isAssessmenttextFormField: true,
                           controller: assessmentController,
                           hintText: 'Assessment Name',
                           validator: (String? value) {
@@ -175,6 +178,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           textFormField(
+                            isAssessmenttextFormField: false,
                             controller: classController,
                             hintText: '1st',
                             onSaved: (String value) {
@@ -218,9 +222,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           //padding: EdgeInsets.only(left: 2.0),
                           child: ChipsFilter(
                               selectedValue: (String value) {
-                                value.isNotEmpty
-                                    ? classController.text = value
-                                    : print("");
+                                if (value.isNotEmpty) {
+                                  classController.text = value;
+                                  classError.value = value;
+                                }
                               },
                               selected:
                                   1, // Select the second filter as default
@@ -430,7 +435,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             // color: Colors.red,
             // width: 100,
             height: Globals.deviceType == 'phone'
-                ? MediaQuery.of(context).size.height * 0.24
+                ? MediaQuery.of(context).size.height * 0.28
                 : MediaQuery.of(context).size.width * 0.25,
             child: GridView.builder(
                 shrinkWrap: true,
@@ -439,7 +444,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     maxCrossAxisExtent: Globals.deviceType == 'phone' ? 50 : 70,
                     childAspectRatio: 5 / 6,
                     crossAxisSpacing: Globals.deviceType == 'phone' ? 15 : 50,
-                    mainAxisSpacing: 10),
+                    mainAxisSpacing: 8),
                 itemCount: widget.customGrades.length,
                 itemBuilder: (BuildContext ctx, index) {
                   return Bouncing(
@@ -519,56 +524,80 @@ class _CreateAssessmentState extends State<CreateAssessment>
       {required TextEditingController controller,
       required onSaved,
       required hintText,
-      required validator}) {
-    return TextFormField(
-      //
-      autovalidateMode: AutovalidateMode.always,
-      textAlign: TextAlign.start,
-      style: Theme.of(context)
-          .textTheme
-          .headline6!
-          .copyWith(fontWeight: FontWeight.bold),
-      controller: controller,
-      cursorColor: Theme.of(context).colorScheme.primaryVariant,
-      decoration: InputDecoration(
-        hintText: hintText,
-        errorText: null,
-        errorMaxLines: 2,
-        hintStyle: Theme.of(context)
-            .textTheme
-            .headline6!
-            .copyWith(fontWeight: FontWeight.bold, color: Colors.grey),
-        fillColor: Colors.transparent,
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: assessmentNameError.value.isEmpty ||
-                    assessmentNameError.value.length < 2 ||
-                    classError.value.isEmpty
-                ? Colors.red
-                : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-          ),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              color: assessmentNameError.value.isEmpty ||
-                      assessmentNameError.value.length < 2 ||
-                      classError.value.isEmpty
-                  ? Colors.red
-                  : Theme.of(context).colorScheme.primaryVariant.withOpacity(
-                      0.5) // Theme.of(context).colorScheme.primaryVariant,
-              ),
-        ),
-        contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-        border: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color:
-                Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
-          ),
-        ),
-      ),
-      onChanged: onSaved,
-      validator: validator,
-    );
+      required validator,
+      required bool isAssessmenttextFormField}) {
+    return ValueListenableBuilder(
+        valueListenable: classError,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return ValueListenableBuilder(
+              valueListenable: assessmentNameError,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return TextFormField(
+                  //
+                  autovalidateMode: AutovalidateMode.always,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6!
+                      .copyWith(fontWeight: FontWeight.bold),
+                  controller: controller,
+                  cursorColor: Theme.of(context).colorScheme.primaryVariant,
+                  decoration: InputDecoration(
+                    hintText: hintText,
+                    errorText: isAssessmenttextFormField == true &&
+                                (controller.text.isEmpty ||
+                                    assessmentNameError.value.length < 2) ||
+                            controller.text.isEmpty
+                        ? ''
+                        : null,
+                    // errorMaxLines: 2,
+                    hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                        fontWeight: FontWeight.bold, color: Colors.grey),
+                    fillColor: Colors.transparent,
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.5)
+                          //  controller.text.isEmpty ||
+                          //         assessmentNameError.value.length < 2 ||
+                          //         classError.value.isEmpty
+                          //     ? Colors.red
+                          //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+                          ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primaryVariant
+                              .withOpacity(0.5)
+                          //  assessmentNameError.value.isEmpty ||
+                          //         assessmentNameError.value.length < 2 ||
+                          //         classError.value.isEmpty
+                          //     ? Colors.red
+                          //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(
+                          //         0.5) // Theme.of(context).colorScheme.primaryVariant,
+                          ),
+                    ),
+                    contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primaryVariant
+                            .withOpacity(0.3),
+                      ),
+                    ),
+                  ),
+                  onChanged: onSaved,
+                  validator: validator,
+                );
+              });
+        });
   }
 
   Widget textActionButton() {
@@ -628,7 +657,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: Container(),
                     listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context,true);
+                        Utility.showLoadingDialog(context, true);
                       }
 
                       if (state is ExcelSheetCreated) {
@@ -717,6 +746,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
     widget.classSuggestions.forEach((String e) {
       _localDb.addData(e);
     });
+    Utility.updateLoges(
+      //  accountType: 'Free',
+        activityId: '11',
+        description: 'Created G-Excel file',
+        operationResult: 'Success');
 
     Navigator.push(
       context,
@@ -744,7 +778,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
               sheetHeight:
                   MediaQuery.of(context).orientation == Orientation.landscape
                       ? MediaQuery.of(context).size.height * 0.82
-                      : MediaQuery.of(context).size.height * 0.40,
+                      : MediaQuery.of(context).size.height * 0.45,
               valueChanged: (controller) async {
                 await updateList(
                   sectionName: controller.text,

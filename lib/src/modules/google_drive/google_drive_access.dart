@@ -1,83 +1,148 @@
 import 'dart:io';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GoogleDriveAccess {
   static Future generateExcelSheetLocally(
-      {required List<StudentAssessmentInfo> data, required String name}) async {
-    print(data);
+      {required List<StudentAssessmentInfo> data,
+      required String name,
+      bool? createdAsPremium}) async {
     try {
       var excel = Excel.createExcel();
       final sheet = excel[excel.getDefaultSheet()!];
       for (int row = 0; row < data.length; row++) {
-        sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
-            .value = data[row].studentId;
+        //  if(row==0){ cellStyle.isBold=true;} //Default is false
+        if (Globals.isPremiumUser == true || createdAsPremium == true) {
+          sheet
+              .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
+              .value = data[row].studentId;
+        }
 
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row))
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex:
+                    Globals.isPremiumUser == true && createdAsPremium == true
+                        ? 1
+                        : 0,
+                rowIndex: row))
             .value = data[row].studentName;
 
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row))
+                .cell(CellIndex.indexByColumnRow(
+                    columnIndex: Globals.isPremiumUser == true &&
+                            createdAsPremium == true
+                        ? 2
+                        : 1,
+                    rowIndex: row))
                 .value =
             data[row].studentGrade != '' ? data[row].studentGrade : '2';
 
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row))
+                .cell(CellIndex.indexByColumnRow(
+                    columnIndex: Globals.isPremiumUser == true &&
+                            createdAsPremium == true
+                        ? 3
+                        : 2,
+                    rowIndex: row))
                 .value =
             data[row].pointpossible != '' ? data[row].pointpossible : '2';
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row))
-                .value =
-            row == 0
-                ? data[row].grade
-                : data[1].grade; //Saving the common data to all the scans
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex:
+                    Globals.isPremiumUser == true && createdAsPremium == true
+                        ? 4
+                        : 3,
+                rowIndex: row))
+            .value = row == 0 ? data[row].grade : data[1].grade;
 
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 5, rowIndex: row))
-                .value =
-            row == 0
-                ? data[row].className
-                : data[1].className; //Saving the common data to all the scans
-
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex:
+                    Globals.isPremiumUser == true && createdAsPremium == true
+                        ? 5
+                        : 4,
+                rowIndex: row))
+            .value = row == 0 ? data[row].className : data[1].className;
+        // sheet
+        //     .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
+        //     .value = data[row].className;
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 6, rowIndex: row))
-                .value =
-            row == 0
-                ? data[row].subject
-                : data[1].subject; //Saving the common data to all the scans
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex:
+                    Globals.isPremiumUser == true && createdAsPremium == true
+                        ? 6
+                        : 5,
+                rowIndex: row))
+            .value = row == 0 ? data[row].subject : data[1].subject;
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
+                .cell(CellIndex.indexByColumnRow(
+                    columnIndex: Globals.isPremiumUser == true &&
+                            createdAsPremium == true
+                        ? 7
+                        : 6,
+                    rowIndex: row))
                 .value =
-            row == 0
-                ? data[row].learningStandard
-                : data[1]
-                    .learningStandard; //Saving the common data to all the scans
+            row == 0 ? data[row].learningStandard : data[1].learningStandard;
         sheet
-                .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
+                .cell(CellIndex.indexByColumnRow(
+                    columnIndex: Globals.isPremiumUser == true &&
+                            createdAsPremium == true
+                        ? 8
+                        : 7,
+                    rowIndex: row))
                 .value =
             row == 0
                 ? data[row].subLearningStandard
                 : data[1].subLearningStandard;
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 9, rowIndex: row))
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex:
+                    Globals.isPremiumUser == true && createdAsPremium == true
+                        ? 9
+                        : 8,
+                rowIndex: row))
             .value = row == 0 ? data[row].scoringRubric : data[1].scoringRubric;
         sheet
                 .cell(CellIndex.indexByColumnRow(
-                    columnIndex: 10, rowIndex: row)) //.isFormula
+                    columnIndex: Globals.isPremiumUser == true &&
+                            createdAsPremium == true
+                        ? 10
+                        : 9,
+                    rowIndex: row)) //.isFormula
                 .value =
             row == 0 ? data[row].customRubricImage : data[1].customRubricImage;
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 11, rowIndex: row))
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex:
+                    Globals.isPremiumUser == true && createdAsPremium == true
+                        ? 11
+                        : 10,
+                rowIndex: row))
             .value = data[row].assessmentImage;
         sheet
-            .cell(CellIndex.indexByColumnRow(columnIndex: 12, rowIndex: row))
-            .value = row ==
-                0
-            ? data[row].questionImgUrl
-            : data[1].questionImgUrl;
+                .cell(CellIndex.indexByColumnRow(
+                    columnIndex: Globals.isPremiumUser == true &&
+                            createdAsPremium == true
+                        ? 12
+                        : 11,
+                    rowIndex: row))
+                .value =
+            row == 0 ? data[row].questionImgUrl : data[1].questionImgUrl;
+        // sheet
+        //     .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
+        //     .value = data[row].isSavedOnDashBoard;
+
+        // if (data[row].subject == "Math" || data[row].subject == "ELA") {
+        //         sheet
+        //             .cell(CellIndex.indexByColumnRow(columnIndex: 7, rowIndex: row))
+        //             .value = data[row].learningStandard;
+        //         sheet
+        //             .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
+        //             .value = data[row].subLearningStandard;
+        //       }
+
       }
 
       var fileBytes = excel.save();
