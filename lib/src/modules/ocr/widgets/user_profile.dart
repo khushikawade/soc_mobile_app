@@ -67,8 +67,10 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
     return Stack(
       children: <Widget>[
         Container(
-          height: MediaQuery.of(context).size.height * 0.25,
-          width: MediaQuery.of(context).size.width * 0.8,
+          height: MediaQuery.of(context).size.height * 0.22,
+          width: Globals.deviceType == 'phone'
+              ? MediaQuery.of(context).size.width * 0.7
+              : MediaQuery.of(context).size.width * 0.5,
           padding:
               EdgeInsets.only(left: 20, top: 45 + 20, right: 20, bottom: 20),
           margin: EdgeInsets.only(top: 50),
@@ -88,32 +90,41 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Utility.textWidget(
-                context: context,
-                text: widget.profileData!.userName!.replaceAll("%20", " "),
-                textTheme: Theme.of(context).textTheme.headline1!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color:
-                          Color(0xff000000) == Theme.of(context).backgroundColor
-                              ? Color(0xffFFFFFF)
-                              : Color(0xff000000),
-                    ),
+              SizedBox(
+                height: Globals.deviceType == 'phone' ? 2 : 10,
+              ),
+              FittedBox(
+                child: Utility.textWidget(
+                  context: context,
+                  text: widget.profileData!.userName!.replaceAll("%20", " "),
+                  textTheme: Theme.of(context).textTheme.headline1!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff000000) ==
+                                Theme.of(context).backgroundColor
+                            ? Color(0xffFFFFFF)
+                            : Color(0xff000000),
+                      ),
+                ),
               ),
               SizedBox(
                 height: 10,
               ),
-              Utility.textWidget(
-                  context: context,
-                  text: widget.profileData!.userEmail!,
-                  textTheme: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        color: Colors.grey.shade500,
-                      )),
+              FittedBox(
+                child: Utility.textWidget(
+                    context: context,
+                    text: widget.profileData!.userEmail!,
+                    textTheme: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Colors.grey.shade500,
+                        )),
+              ),
               SizedBox(
                 height: 22,
               ),
               Container(
-                height: 40,
-                width: MediaQuery.of(context).size.width * 0.4,
+                height: MediaQuery.of(context).size.height * 0.04,
+                width: Globals.deviceType == 'phone'
+                    ? MediaQuery.of(context).size.width * 0.35
+                    : MediaQuery.of(context).size.width * 0.25,
                 child: ElevatedButton(
                   child: TranslationWidget(
                       message: "Sign Out",
@@ -121,13 +132,18 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                       toLanguage: Globals.selectedLanguage,
                       builder: (translatedMessage) {
                         return Text(translatedMessage.toString(),
-                            style:
-                                Theme.of(context).textTheme.subtitle1!.copyWith(
-                                      color: Color(0xff000000) ==
-                                              Theme.of(context).backgroundColor
-                                          ? Color(0xffFFFFFF)
-                                          : Color(0xff000000),
-                                    ));
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(
+                                  fontSize:
+                                      Globals.deviceType == 'phone' ? 18 : 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff000000) ==
+                                          Theme.of(context).backgroundColor
+                                      ? Color(0xffFFFFFF)
+                                      : Color(0xff000000),
+                                ));
                       }),
                   style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -164,10 +180,10 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
             radius: 52,
             child: CircleAvatar(
               backgroundColor: Colors.transparent,
-              radius: 90,
+              radius: 70,
               child: ClipRRect(
                 borderRadius: BorderRadius.all(
-                  Radius.circular(90),
+                  Radius.circular(80),
                 ),
                 child: CachedNetworkImage(
                     fit: BoxFit.cover,
