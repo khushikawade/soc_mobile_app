@@ -34,7 +34,8 @@ class SuccessScreen extends StatefulWidget {
       this.pointPossible,
       this.isScanMore,
       required this.isFromHistoryAssessmentScanMore,
-      this.createdAsPremium,this.obj})
+      this.createdAsPremium,
+      this.obj})
       : super(key: key);
 
   @override
@@ -234,7 +235,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
-                                obj: widget.obj,
+                                    obj: widget.obj,
                                     createdAsPremium: widget.createdAsPremium,
                                     isFromHistoryAssessmentScanMore:
                                         widget.isFromHistoryAssessmentScanMore!,
@@ -374,7 +375,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
-                                    obj:  widget.obj,
+                                        obj: widget.obj,
                                         createdAsPremium:
                                             widget.createdAsPremium,
                                         isFromHistoryAssessmentScanMore: widget
@@ -1244,7 +1245,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
       if (isUpdateData == true && historyStudentInfo.isNotEmpty) {
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored.value;
+        studentAssessmentInfo.studentGrade =
+            indexColor.value.toString(); //pointScored.value;
         studentAssessmentInfo.pointpossible = Globals.pointpossible;
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
@@ -1282,7 +1284,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
-            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.studentGrade =
+                indexColor.value.toString(); //pointScored.value;
             studentAssessmentInfo.pointpossible = Globals.pointpossible;
             studentAssessmentInfo.assessmentImgPath =
                 widget.imgPath.path.toString();
@@ -1310,7 +1313,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         //     StudentAssessmentInfo();
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId = idController.text;
-        studentAssessmentInfo.studentGrade = pointScored.value;
+        studentAssessmentInfo.studentGrade =
+            indexColor.value.toString(); //pointScored.value;
         studentAssessmentInfo.pointpossible =
             Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
                 ? Globals.pointpossible
@@ -1330,7 +1334,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
           studentAssessmentInfo.studentName =
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId = idController.text;
-          studentAssessmentInfo.studentGrade = pointScored.value;
+          studentAssessmentInfo.studentGrade =
+              indexColor.value.toString(); //pointScored.value;
           studentAssessmentInfo.pointpossible =
               Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
                   ? Globals.pointpossible
@@ -1354,7 +1359,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
-            studentAssessmentInfo.studentGrade = pointScored.value;
+            studentAssessmentInfo.studentGrade =
+                indexColor.value.toString(); //pointScored.value;
             studentAssessmentInfo.pointpossible =
                 Globals.pointpossible != null ||
                         Globals.pointpossible!.isNotEmpty
@@ -1378,7 +1384,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
-              obj: widget.obj,
+                  obj: widget.obj,
                   createdAsPremium: widget.createdAsPremium,
                   isFromHistoryAssessmentScanMore:
                       widget.isFromHistoryAssessmentScanMore!,
