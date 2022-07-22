@@ -307,7 +307,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print(assessmentData);
 //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
-            data: assessmentData, name: event.assessmentName! , createdAsPremium: event.createdAsPremium);
+            data: assessmentData,
+            name: event.assessmentName!,
+            createdAsPremium: event.createdAsPremium);
 
 //Update the created excel file to drive with all the result data
         String uploadresult = await uploadSheetOnDrive(
@@ -893,10 +895,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<AssessmentDetails> assessmentList = await getAssessmentList();
         for (int i = 0; i < _list.length; i++) {
           for (int j = 0; j < assessmentList.length; j++) {
-            if (_list[i].fileid == assessmentList[j].googleFileId && assessmentList[j].googleFileId != '') {
+            if (_list[i].fileid == assessmentList[j].googleFileId &&
+                assessmentList[j].googleFileId != '') {
               _list[i].sessionId = assessmentList[j].sessionId;
               _list[i].isCreatedAsPremium = assessmentList[j].createdAsPremium;
-
             }
           }
         }
