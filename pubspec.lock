@@ -284,7 +284,7 @@ packages:
     source: hosted
     version: "1.2.1"
   connectivity_plus_web:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: connectivity_plus_web
       url: "https://pub.dartlang.org"
@@ -871,7 +871,7 @@ packages:
     source: hosted
     version: "1.1.2"
   network_info_plus_web:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: network_info_plus_web
       url: "https://pub.dartlang.org"
@@ -919,6 +919,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  onboarding:
+    dependency: "direct main"
+    description:
+      name: onboarding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   onesignal_flutter:
     dependency: "direct main"
     description:
