@@ -8,6 +8,8 @@ import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+import 'package:Soc/src/modules/ocr/widgets/intro_screen.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -314,14 +316,17 @@ class _StartupPageState extends State<StartupPage> {
     );
   }
 
-  _navigateToOcrSection() {
+  _navigateToOcrSection() async {
+    HiveDbServices _hiveDbServices = HiveDbServices();
+    var isOldUser = await _hiveDbServices.getSingleData('new_user', 'new_user');
+    print(isOldUser);
     print('timer is started to navigate to ocr section==========>');
     Timer(Duration(seconds: 1), () async {
       Navigator.pushReplacement<void, void>(
         context,
         MaterialPageRoute<void>(
           builder: (BuildContext context) =>
-              const OpticalCharacterRecognition(),
+              isOldUser == true ? OpticalCharacterRecognition() : IntoScreens(),
         ),
       );
     });

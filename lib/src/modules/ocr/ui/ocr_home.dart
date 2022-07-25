@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/widgets/intro_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';

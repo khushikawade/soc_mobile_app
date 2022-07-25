@@ -262,10 +262,14 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
       );
 
   Widget _androidWebView() => inAppWebView.InAppWebView(
-        initialUrlRequest: inAppWebView.URLRequest(url: Uri.parse(widget.url)),
+        initialUrlRequest: inAppWebView.URLRequest(
+            url: widget.isiFrame == true
+                ? Uri.dataFromString('${widget.url}', mimeType: 'text/html')
+                : Uri.parse(widget.url)),
         // initialUserScripts: UnmodifiableListView<UserScript>([]),
         // initialOptions: inAppWebView.options,
         // pullToRefreshController: pullToRefreshController,
+
         onWebViewCreated: (controller) {
           // webViewController = controller;
         },
@@ -361,7 +365,11 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                   ), // To manage web page crop issue together with bottom nav bar.
                   child: Stack(
                     children: [
-                      Platform.isAndroid ? _androidWebView() : _iOSWebView(),
+                      Platform.isAndroid &&
+                              widget.isiFrame !=
+                                  true //To support iFrame in android
+                          ? _androidWebView()
+                          : _iOSWebView(),
                       isLoading
                           ? Center(
                               child: CircularProgressIndicator(
@@ -380,7 +388,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         child: Container());
   }
 
-  _getPermission() async {
-    await Permission.storage.request();
-  }
+  // _getPermission() async {
+  //   await Permission.storage.request();
+  // }
 }
