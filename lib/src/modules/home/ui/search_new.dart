@@ -447,7 +447,6 @@ class _SearchPageState extends State<SearchPage> {
               objectName: items[index].objectName,
               objectType: items[index].typeC);
         }
-
       },
       child: Container(
           margin: EdgeInsets.only(

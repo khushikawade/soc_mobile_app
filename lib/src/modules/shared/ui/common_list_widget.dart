@@ -17,15 +17,15 @@ import '../../../widgets/no_data_found_error_widget.dart';
 import '../../schools_directory/ui/schools_directory.dart';
 
 class CommonListWidget extends StatefulWidget {
-  CommonListWidget(
-      {Key? key,
-      required this.data,
-      this.bottomPadding,
-      required this.sectionName,
-      required this.scaffoldKey,
-      this.scrollController,
-      this.connected})
-      : super(key: key);
+  CommonListWidget({
+    Key? key,
+    required this.data,
+    this.bottomPadding,
+    required this.sectionName,
+    required this.scaffoldKey,
+    this.scrollController,
+    this.connected,
+  }) : super(key: key);
 
   final bool? connected;
   final List<SharedList> data;

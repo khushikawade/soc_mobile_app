@@ -31,10 +31,10 @@ class StaffPage extends StatefulWidget {
       this.title,
       this.language,
       this.customObj,
-      required this.isCustomSection, 
+      required this.isCustomSection,
       required this.isFromOcr})
       : super(key: key);
-       final bool? isCustomSection;
+  final bool? isCustomSection;
   final CustomSetting? customObj;
   final String? title;
   final String? language;
@@ -126,7 +126,7 @@ class _StaffPageState extends State<StaffPage> {
     );
 
     if (value.toString().contains('authenticationfailure')) {
-      Navigator.pop(context, false);
+      // Navigator.pop(context, false);
       // Globals.teacherEmailId = ;
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
       DateTime currentDateTime = DateTime.now();
@@ -299,7 +299,7 @@ class _StaffPageState extends State<StaffPage> {
           refresh: (v) {
             setState(() {});
           },
-        ), 
+        ),
         body: NotificationListener<ScrollNotification>(
           onNotification: onNotification,
           child: Globals.appSetting.staffBannerImageC != null &&
@@ -310,12 +310,12 @@ class _StaffPageState extends State<StaffPage> {
                       (BuildContext context, bool innerBoxIsScrolled) {
                     return <Widget>[
                       BannerImageWidget(
-                        imageUrl: Globals.appSetting.staffBannerImageC!,
-                        bgColor: Globals.appSetting.studentBannerColorC != null
-                            ? Utility.getColorFromHex(
-                                Globals.appSetting.studentBannerColorC!)
-                             : Colors.transparent
-                      )
+                          imageUrl: Globals.appSetting.staffBannerImageC!,
+                          bgColor:
+                              Globals.appSetting.studentBannerColorC != null
+                                  ? Utility.getColorFromHex(
+                                      Globals.appSetting.studentBannerColorC!)
+                                  : Colors.transparent)
                     ];
                   },
                   body: _body('body1'),

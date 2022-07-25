@@ -34,6 +34,12 @@ class SharedList {
   String? darkModeIconC;
   @HiveField(14)
   String? isSecure;
+  @HiveField(15)
+  String? submenuBannerImageC;
+  @HiveField(16)
+  String? submenuBannerColorC;
+  @HiveField(17)
+  double? submenuBannerHeightC;
 
   SharedList(
       {
@@ -51,7 +57,11 @@ class SharedList {
       this.sortOrder,
       this.status,
       this.deepLinkC,
-      this.darkModeIconC,this.isSecure});
+      this.darkModeIconC,
+      this.isSecure,
+      this.submenuBannerImageC,
+      this.submenuBannerColorC,
+      this.submenuBannerHeightC});
 
   factory SharedList.fromJson(Map<String, dynamic> json) => SharedList(
       titleC: Utility.utf8convert(json['Title__c'] as String?),
@@ -68,7 +78,12 @@ class SharedList {
       status: json['Active_Status__c'] ?? 'Show',
       deepLinkC: json['Deep_Link__c'] as String?,
       darkModeIconC: json['Dark_Mode_Icon__c'],
-      isSecure: json['Is_Secure__c']);
+      isSecure: json['Is_Secure__c'],
+      submenuBannerImageC: json['Submenu_Banner_Image_URL__c'],
+      submenuBannerColorC: json['Submenu_Banner_Hex_Color__c'],
+      submenuBannerHeightC: double.parse(json['Banner_Height_Factor__c'] != null
+          ? json['Banner_Height_Factor__c'].toString()
+          : "12.0"));
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -86,6 +101,9 @@ class SharedList {
         'Active_Status__c': status,
         'Deep_Link__c': deepLinkC,
         'Dark_Mode_Icon__c': darkModeIconC,
-        'Is_Secure__c':isSecure
+        'Is_Secure__c': isSecure,
+        'Submenu_Banner_Image_URL__c': submenuBannerImageC,
+        'Submenu_Banner_Hex_Color__c': submenuBannerColorC,
+        'Banner_Height_Factor__c': submenuBannerHeightC
       };
 }
