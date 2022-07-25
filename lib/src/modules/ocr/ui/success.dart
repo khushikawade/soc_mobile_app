@@ -1076,7 +1076,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         alignment: Alignment.center,
                         height: //Globals.pointsEarnedList.length>3?
                             MediaQuery.of(context).size.height *
-                                0.08, //:MediaQuery.of(context).size.height*0.2,
+                                0.085, //:MediaQuery.of(context).size.height*0.2,
                         width:
                             //Globals.pointsEarnedList.length>3?
                             MediaQuery.of(context).size.width * 0.17,
