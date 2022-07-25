@@ -337,13 +337,15 @@ class _StaffPageState extends State<StaffPage> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return AnimatedPositioned(
-            bottom: 40.0,
+            bottom: 40,
             right: !isScrolling.value
                 ? 8
                 : (Utility.displayWidth(context) / 2) - 80,
             duration: const Duration(milliseconds: 650),
             curve: Curves.decelerate,
             child: Container(
+              width: !isScrolling.value ? 50 : null,
+              height: !isScrolling.value ? 50 : null,
               // width: !isScrolling.value
               //     ? null
               //     : Globals.deviceType == 'phone'
@@ -386,16 +388,22 @@ class _StaffPageState extends State<StaffPage> {
                       );
                     }
                   },
-                  icon: Icon(Icons.add,
-                      size: Globals.deviceType == 'tablet' ? 30 : null,
-                      color: Theme.of(context).backgroundColor),
-                  label: Utility.textWidget(
-                      text: !isScrolling.value ? '' : 'Assessment',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(color: Theme.of(context).backgroundColor))),
+                  icon: Container(
+                    alignment: Alignment.center,
+                    child: Icon(Icons.add,
+                        size: Globals.deviceType == 'tablet' ? 30 : null,
+                        color: Theme.of(context).backgroundColor),
+                  ),
+                  label: !isScrolling.value
+                      ? Container()
+                      : Utility.textWidget(
+                          text: 'Assessment',
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context).backgroundColor))),
             ),
           );
         });
