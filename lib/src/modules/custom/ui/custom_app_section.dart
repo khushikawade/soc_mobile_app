@@ -65,12 +65,11 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   BannerImageWidget(
-                    imageUrl: widget.customObj.customBannerImageC!,
-                    bgColor: widget.customObj.customBannerColorC != null
-                        ? Utility.getColorFromHex(
-                            widget.customObj.customBannerColorC!)
-                        : Colors.transparent
-                  )
+                      imageUrl: widget.customObj.customBannerImageC!,
+                      bgColor: widget.customObj.customBannerColorC != null
+                          ? Utility.getColorFromHex(
+                              widget.customObj.customBannerColorC!)
+                          : Colors.transparent)
                 ];
               },
               body: _body('body2'),

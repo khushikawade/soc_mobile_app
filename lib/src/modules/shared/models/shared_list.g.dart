@@ -32,13 +32,16 @@ class SharedListAdapter extends TypeAdapter<SharedList> {
       deepLinkC: fields[12] as String?,
       darkModeIconC: fields[13] as String?,
       isSecure: fields[14] as String?,
+      submenuBannerImageC: fields[15] as String?,
+      submenuBannerColorC: fields[16] as String?,
+      submenuBannerHeightC: fields[17] as double?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SharedList obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.titleC)
       ..writeByte(1)
@@ -68,7 +71,13 @@ class SharedListAdapter extends TypeAdapter<SharedList> {
       ..writeByte(13)
       ..write(obj.darkModeIconC)
       ..writeByte(14)
-      ..write(obj.isSecure);
+      ..write(obj.isSecure)
+      ..writeByte(15)
+      ..write(obj.submenuBannerImageC)
+      ..writeByte(16)
+      ..write(obj.submenuBannerColorC)
+      ..writeByte(17)
+      ..write(obj.submenuBannerHeightC);
   }
 
   @override

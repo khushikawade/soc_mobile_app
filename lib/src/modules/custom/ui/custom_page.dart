@@ -164,7 +164,6 @@ class _CustomPagesState extends State<CustomPages> {
             )
           : NoDataFoundErrorWidget(
               isResultNotFoundMsg: false,
-              
               isNews: false,
               isEvents: false,
               connected: true);

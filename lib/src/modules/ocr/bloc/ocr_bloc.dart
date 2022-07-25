@@ -788,12 +788,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (response.statusCode == 200) {
       var res = response.data;
       var data = res["body"];
-      var userType = data["GRADED_Premium__c"];
-      if (userType == "true") {
-        Globals.isPremiumUser = true;
-      } else {
-        Globals.isPremiumUser = false;
-      }
 
       if (data == false) {
         print("this is a new uer now create a user contaact inside database");
@@ -802,11 +796,24 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           await createContactToSalesforce(email: email.toString());
         }
       } else if (data['Assessment_App_User__c'] != 'true') {
+        var userType = data["GRADED_Premium__c"];
+        if (userType == "true") {
+          Globals.isPremiumUser = true;
+        } else {
+          Globals.isPremiumUser = false;
+        }
         print("this is a older user now updating datils in database");
         Globals.teacherId = data['Id'];
         bool result = await updateContactToSalesforce(recordId: data['Id']);
         if (!result) {
           await updateContactToSalesforce(recordId: data['Id']);
+        }
+      } else {
+        var userType = data["GRADED_Premium__c"];
+        if (userType == "true") {
+          Globals.isPremiumUser = true;
+        } else {
+          Globals.isPremiumUser = false;
         }
       }
       Globals.teacherId = data['Id'];
