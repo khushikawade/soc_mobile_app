@@ -447,7 +447,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       child: Container(
                         padding: EdgeInsets.all(15),
                         alignment: Alignment.centerLeft,
-                        child:TranslationWidget(
+                        child: TranslationWidget(
                           message: list[index].standardAndDescriptionC ?? '',
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
@@ -503,9 +503,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           //     translatedMessage.toString(),
                           //     style: Theme.of(context).textTheme.bodyText1!),
                         ),
- 
-                        
-                        
+
                         // RichText(
                         //   text: list[index].standardAndDescriptionC != null &&
                         //           list[index]
@@ -646,7 +644,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       child: Container(),
       builder: (BuildContext context, dynamic value, Widget? child) {
         return Container(
-          padding: EdgeInsets.only(bottom: 50),
+          padding: EdgeInsets.only(bottom: pageIndex.value == 0 ? 0 : 50),
           height: MediaQuery.of(context).orientation == Orientation.portrait
               ? MediaQuery.of(context).size.height * 0.62
               : MediaQuery.of(context).size.width * 0.30,
@@ -860,18 +858,20 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     : Bouncing(
                         child: InkWell(
                           onTap: () {
-                            if (pageIndex.value == 0) {
-                              subjectIndex1.value = index;
-                            }
+                            // if (pageIndex.value == 0) {
+                            //   subjectIndex1.value = index;
+                            // }
                             customRubricBottomSheet();
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
                             decoration: BoxDecoration(
-                              color: (subjectIndex1.value == index &&
-                                      pageIndex.value == 0)
-                                  ? AppTheme.kSelectedColor
-                                  : Colors.grey,
+                              color:
+                                  // (subjectIndex1.value == index &&
+                                  //         pageIndex.value == 0)
+                                  //     ? AppTheme.kSelectedColor
+                                  //     :
+                                  Colors.grey,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8),
                               ),
