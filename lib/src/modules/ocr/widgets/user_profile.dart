@@ -128,25 +128,20 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                     ? MediaQuery.of(context).size.width * 0.35
                     : MediaQuery.of(context).size.width * 0.25,
                 child: ElevatedButton(
-                  child: TranslationWidget(
-                      message: "Sign Out",
-                      fromLanguage: "en",
-                      toLanguage: Globals.selectedLanguage,
-                      builder: (translatedMessage) {
-                        return Text(translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                                  fontSize:
-                                      Globals.deviceType == 'phone' ? 18 : 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff000000) ==
-                                          Theme.of(context).backgroundColor
-                                      ? Color(0xffFFFFFF)
-                                      : Color(0xff000000),
-                                ));
-                      }),
+                  child: FittedBox(
+                      child: Utility.textWidget(
+                          context: context,
+                          text: 'Sign Out',
+                          textTheme:
+                              Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    fontSize:
+                                        Globals.deviceType == 'phone' ? 18 : 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff000000) ==
+                                            Theme.of(context).backgroundColor
+                                        ? Color(0xffFFFFFF)
+                                        : Color(0xff000000),
+                                  ))),
                   style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0),
