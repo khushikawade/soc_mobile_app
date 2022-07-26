@@ -948,7 +948,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     // studentDetails.removeAt(0);
     int initIndex = isHistoryDetailPage == true
         ? previousListLength
-        : previousListLength;// + 1;
+        : previousListLength; // + 1;
     for (int i = initIndex; i < studentDetails.length; i++) {
       //To bypass the titles saving in the dashboard
       if (studentDetails[i].studentId != 'Id') {

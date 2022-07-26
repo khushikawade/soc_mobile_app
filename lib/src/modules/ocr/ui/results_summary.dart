@@ -1063,8 +1063,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         //           savedRecordCount!,
                                         //           historyRecordList.length);
                                         // }
+
                                         else {
-                                          //
                                           _listRecord = historyRecordList;
                                         }
 
