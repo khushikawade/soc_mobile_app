@@ -81,6 +81,23 @@ class _CameraScreenState extends State<CameraScreen>
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
 
   LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+  List<String> classList = [
+    'PK',
+    'K',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '+'
+  ];
 
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
@@ -509,30 +526,40 @@ class _CameraScreenState extends State<CameraScreen>
                           } else {
                             List<String> classSuggestions =
                                 await _localDb.getData();
-
                             LocalDatabase<String> classSectionLocalDb =
                                 LocalDatabase('class_section_list');
 
                             List<String> localSectionList =
                                 await classSectionLocalDb.getData();
-                            if (localSectionList.isEmpty) {
+
+                            // Compares 2 list and update the changes in local database.
+                            bool isClassChanges = false;
+                            for (int i = 0; i < classList.length; i++) {
+                              if (!localSectionList.contains(classList[i])) {
+                                isClassChanges = true;
+                                break;
+                              }
+                            }
+
+                            if (localSectionList.isEmpty || isClassChanges) {
                               print("local db is empty");
-                              Globals.classList.forEach((String e) {
+                              classSectionLocalDb.clear();
+                              classList.forEach((String e) {
                                 classSectionLocalDb.addData(e);
                               });
                             } else {
                               print("local db is not empty");
-                              Globals.classList = [];
-                              Globals.classList.addAll(localSectionList);
-
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CreateAssessment(
-                                        customGrades: Globals.classList,
-                                        classSuggestions: classSuggestions)),
-                              );
+                              classList = [];
+                              classList.addAll(localSectionList);
                             }
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateAssessment(
+                                      customGrades: classList,
+                                      classSuggestions: classSuggestions)),
+                            );
                           }
                         } else {
                           Utility.showSnackBar(
