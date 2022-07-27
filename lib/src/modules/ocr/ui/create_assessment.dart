@@ -771,7 +771,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
       context,
       MaterialPageRoute(
           builder: (context) => SubjectSelection(
-                selectedClass: selectedGrade.value.toString(),
+                selectedClass: widget.customGrades[selectedGrade.value],
               )),
     );
   }

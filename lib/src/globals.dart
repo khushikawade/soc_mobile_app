@@ -91,22 +91,23 @@ class Globals {
   //   'Measurement'
   // ];
   // static List subjectList = ['Maths', 'Science', 'ELA', '+'];
-  static List<String> classList = [
-    'K',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '+'
-  ];
+  // static List<String> classList = [
+  //   'PK',
+  //   'K',
+  //   '1',
+  //   '2',
+  //   '3',
+  //   '4',
+  //   '5',
+  //   '6',
+  //   '7',
+  //   '8',
+  //   '9',
+  //   '10',
+  //   '11',
+  //   '12',
+  //   '+'
+  // ];
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe87a];
   static List ocrResultIconsName = ["Share", "Drive", "History", "Dashboard"];
   // static List finishedList = [
