@@ -117,3 +117,14 @@ class RefreshAuthenticationTokenEvent extends GoogleDriveEvent {
   @override
   List<Object> get props => [];
 }
+
+class GetAssessmentSearchDetails extends GoogleDriveEvent {
+  final String? keyword;
+
+  GetAssessmentSearchDetails({
+    required this.keyword,
+  });
+
+  @override
+  List<Object> get props => [keyword!];
+}

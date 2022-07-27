@@ -609,6 +609,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         yield ErrorState(errorMsg: 'Reauthentication is required');
       }
     }
+
+    if (event is GetAssessmentSearchDetails) {
+      yield GoogleDriveLoading();
+      LocalDatabase<HistoryAssessment> _localDb =
+          LocalDatabase("HistoryAssessment");
+      // await _localDb.clear();
+      List<HistoryAssessment>? _localData = await _localDb.getData();
+      //Sort the list as per the modified date
+      if (_localData.isNotEmpty) {
+        _localData = await listSort(_localData);
+        List<HistoryAssessment> searchList = List.from(_localData.where((e) =>
+            e.title!.toLowerCase().contains(event.keyword!.toLowerCase())));
+        // print('returntin--------------------------');
+        // print(searchList.length);
+        yield GoogleDriveGetSuccess(obj: searchList);
+      } else {
+        yield GoogleDriveGetSuccess(obj: []);
+      }
+    }
   }
 
   void errorThrow(msg) {
