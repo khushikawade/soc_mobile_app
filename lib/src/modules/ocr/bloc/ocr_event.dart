@@ -94,22 +94,22 @@ class SaveAssessmentToDashboard extends OcrEvent {
   final String? assessmentSheetPublicURL;
   final String? fileId;
   final String? assessmentId;
-  
-  SaveAssessmentToDashboard(
-      {required this.assessmentName,
-      required this.rubricScore,
-      required this.subjectId,
-      required this.schoolId,
-      required this.standardId,
-      required this.scaffoldKey,
-      required this.context,
-      this.previouslyAddedListLength,
-      required this.resultList,
-      required this.isHistoryAssessmentSection,
-      required this.assessmentSheetPublicURL,
-      required this.assessmentId,
-      this.fileId,
-     });
+
+  SaveAssessmentToDashboard({
+    required this.assessmentName,
+    required this.rubricScore,
+    required this.subjectId,
+    required this.schoolId,
+    required this.standardId,
+    required this.scaffoldKey,
+    required this.context,
+    this.previouslyAddedListLength,
+    required this.resultList,
+    required this.isHistoryAssessmentSection,
+    required this.assessmentSheetPublicURL,
+    required this.assessmentId,
+    this.fileId,
+  });
 
   @override
   List<Object> get props => [];
@@ -138,7 +138,7 @@ class SaveAndGetAssessmentID extends OcrEvent {
       required this.context,
       required this.sessionId,
       required this.fileId,
-       required this.teacherContactId,
+      required this.teacherContactId,
       required this.teacherEmail});
 
   @override
@@ -182,7 +182,8 @@ class FetchRecentSearch extends OcrEvent {
 
   //String toString() => 'GlobalSearchEvent { keyword: $base64}';
 }
-class LogUserActivityEvent extends OcrEvent{
+
+class LogUserActivityEvent extends OcrEvent {
   final String? sessionId;
   final String? teacherId;
   final String? activityId;
@@ -194,7 +195,14 @@ class LogUserActivityEvent extends OcrEvent{
   // final String? type;
 
   LogUserActivityEvent(
-      {required this.sessionId, required this.teacherId, required this.activityId, required this.accountId, required this.accountType, required this.dateTime, required this.description, required this.operationResult});
+      {required this.sessionId,
+      required this.teacherId,
+      required this.activityId,
+      required this.accountId,
+      required this.accountType,
+      required this.dateTime,
+      required this.description,
+      required this.operationResult});
 
   @override
   List<Object> get props => [];

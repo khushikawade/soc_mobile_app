@@ -618,26 +618,34 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }
 
   void checkForGoogleExcelId() async {
-    if (Globals.googleExcelSheetId!.isEmpty) {
-      await Future.delayed(Duration(milliseconds: 200));
+    try {
       if (Globals.googleExcelSheetId!.isEmpty) {
-        checkForGoogleExcelId();
+        await Future.delayed(Duration(milliseconds: 200));
+        if (Globals.googleExcelSheetId!.isEmpty) {
+          checkForGoogleExcelId();
+        }
+        // await createSheetOnDrive(
+        //     name: Globals.assessmentName,
+        //     folderId: Globals.googleDriveFolderId,
+        //     accessToken: _userprofilelocalData[0].authorizationToken,
+        //     refreshToken: _userprofilelocalData[0].refreshToken);
       }
-      // await createSheetOnDrive(
-      //     name: Globals.assessmentName,
-      //     folderId: Globals.googleDriveFolderId,
-      //     accessToken: _userprofilelocalData[0].authorizationToken,
-      //     refreshToken: _userprofilelocalData[0].refreshToken);
+    } catch (e) {
+      throw (e);
     }
   }
 
   Future<List<HistoryAssessment>> listSort(List<HistoryAssessment> list) async {
-    list.forEach((element) {
-      if (element.modifiedDate != null) {
-        list.sort((a, b) => b.modifiedDate!.compareTo(a.modifiedDate!));
-      }
-    });
-    return list;
+    try {
+      list.forEach((element) {
+        if (element.modifiedDate != null) {
+          list.sort((a, b) => b.modifiedDate!.compareTo(a.modifiedDate!));
+        }
+      });
+      return list;
+    } catch (e) {
+      throw (e);
+    }
   }
 
   Future<String> _createFolderOnDrive(
@@ -738,133 +746,141 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String? folderId,
       String? accessToken,
       String? refreshToken}) async {
-    Map body = {
-      'name': name,
-      'description': 'Assessment \'$name\' result has been generated.',
-      'mimeType': 'application/vnd.google-apps.spreadsheet',
-      'parents': ['$folderId']
-    };
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $accessToken',
-      'Content-Type': 'application/json; charset=UTF-8'
-    };
+    try {
+      Map body = {
+        'name': name,
+        'description': 'Assessment \'$name\' result has been generated.',
+        'mimeType': 'application/vnd.google-apps.spreadsheet',
+        'parents': ['$folderId']
+      };
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json; charset=UTF-8'
+      };
 
-    final ResponseModel response = await _dbServices.postapi(
-        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files',
-        //  'https://www.googleapis.com/drive/v3/files',
-        body: body,
-        headers: headers,
-        isGoogleApi: true);
+      final ResponseModel response = await _dbServices.postapi(
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files',
+          //  'https://www.googleapis.com/drive/v3/files',
+          body: body,
+          headers: headers,
+          isGoogleApi: true);
 
-    if (response.statusCode != 401 &&
-        response.statusCode == 200 &&
-        response.data['statusCode'] != 500) {
-      print("file created successfully : ${response.data['body']['id']}");
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
+        print("file created successfully : ${response.data['body']['id']}");
 
-      String fileId = response.data['body']['id'];
-      Globals.googleExcelSheetId = fileId;
+        String fileId = response.data['body']['id'];
+        Globals.googleExcelSheetId = fileId;
 
-      // bool result =
-      //     await _updateSheetPermission(accessToken!, fileId, refreshToken);
-      // if (!result) {
-      //   await _updateSheetPermission(accessToken, fileId, refreshToken);
-      // }
+        // bool result =
+        //     await _updateSheetPermission(accessToken!, fileId, refreshToken);
+        // if (!result) {
+        //   await _updateSheetPermission(accessToken, fileId, refreshToken);
+        // }
 
-      // bool link = await _getShareableLink(accessToken, fileId, refreshToken);
-      // if (!link) {
-      //   await _getShareableLink(accessToken, fileId, refreshToken);
-      // }
-      return 'Done';
-    } else if ((response.statusCode == 401 ||
-            response.data['statusCode'] == 500) &&
-        _totalRetry < 3) {
-      _totalRetry++;
-      //To regernerate fresh access token
-      var result = await _toRefreshAuthenticationToken(refreshToken!);
-      if (result == true) {
-        List<UserInformation> _userprofilelocalData =
-            await UserGoogleProfile.getUserProfile();
+        // bool link = await _getShareableLink(accessToken, fileId, refreshToken);
+        // if (!link) {
+        //   await _getShareableLink(accessToken, fileId, refreshToken);
+        // }
+        return 'Done';
+      } else if ((response.statusCode == 401 ||
+              response.data['statusCode'] == 500) &&
+          _totalRetry < 3) {
+        _totalRetry++;
+        //To regernerate fresh access token
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        if (result == true) {
+          List<UserInformation> _userprofilelocalData =
+              await UserGoogleProfile.getUserProfile();
 
-        String result = await createSheetOnDrive(
-          name: name!,
-          folderId: folderId,
-          accessToken: _userprofilelocalData[0].authorizationToken,
-          refreshToken: _userprofilelocalData[0].refreshToken,
+          String result = await createSheetOnDrive(
+            name: name!,
+            folderId: folderId,
+            accessToken: _userprofilelocalData[0].authorizationToken,
+            refreshToken: _userprofilelocalData[0].refreshToken,
 
-          //  image: file
-        );
-        return result;
-      } else {
-        return 'Reauthentication is required';
+            //  image: file
+          );
+          return result;
+        } else {
+          return 'Reauthentication is required';
+        }
       }
+      return '';
+    } catch (e) {
+      throw (e);
     }
-    return '';
   }
 
   Future<String> uploadSheetOnDrive(
       File? file, String? id, String? accessToken, String? refreshToken) async {
-    // String accessToken = await Prefs.getToken();
-    String? mimeType = mime(basename(file!.path).toLowerCase());
-    print(mimeType);
-    print(id);
-    print(accessToken);
-    print(file.readAsBytesSync());
-    Map<String, String> headers = {
-      'Authorization': 'Bearer $accessToken',
-      'Content-Type': '$mimeType'
-    };
+    try {
+      // String accessToken = await Prefs.getToken();
+      String? mimeType = mime(basename(file!.path).toLowerCase());
+      print(mimeType);
+      print(id);
+      print(accessToken);
+      print(file.readAsBytesSync());
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': '$mimeType'
+      };
 
-    final ResponseModel response = await _dbServices.patchapi(
-      '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
-      //  "https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media",
-      headers: headers,
-      body: file.readAsBytesSync(),
-    );
-    if (response.statusCode != 401 &&
-        response.statusCode == 200 &&
-        response.data['statusCode'] != 500) {
-      print("upload result data to assessment file completed");
-      return 'Done';
-    } else if ((response.statusCode == 401 ||
-            response.data['statusCode'] == 500) &&
-        _totalRetry < 3) {
-      _totalRetry++;
+      final ResponseModel response = await _dbServices.patchapi(
+        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media',
+        //  "https://www.googleapis.com/upload/drive/v3/files/$id?uploadType=media",
+        headers: headers,
+        body: file.readAsBytesSync(),
+      );
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
+        print("upload result data to assessment file completed");
+        return 'Done';
+      } else if ((response.statusCode == 401 ||
+              response.data['statusCode'] == 500) &&
+          _totalRetry < 3) {
+        _totalRetry++;
 
-      print("errorrrrr-------------> upload on drive");
-      print(response.statusCode);
+        print("errorrrrr-------------> upload on drive");
+        print(response.statusCode);
 
-      //  await _toRefreshAuthenticationToken(refreshToken!);
-      // UpdateDocOnDrive(
-      //     assessmentName: assessmentName,
-      //     fileId: id,
-      //     isLoading: true,
-      //     studentData:
-      //         //list2
-      //         await Utility.getStudentInfoList(tableName: 'student_info'));
-
-      var result = await _toRefreshAuthenticationToken(refreshToken!);
-
-      if (result == true) {
-        List<UserInformation> _userprofilelocalData =
-            await UserGoogleProfile.getUserProfile();
-
-        String uploadresult = await uploadSheetOnDrive(
-            file,
-            id,
-            _userprofilelocalData[0].authorizationToken,
-            _userprofilelocalData[0].refreshToken);
-        return uploadresult;
-
+        //  await _toRefreshAuthenticationToken(refreshToken!);
         // UpdateDocOnDrive(
+        //     assessmentName: assessmentName,
+        //     fileId: id,
         //     isLoading: true,
         //     studentData:
         //         //list2
-        //         Globals.studentInfo!);
-      } else {
-        return 'Reauthentication is required';
+        //         await Utility.getStudentInfoList(tableName: 'student_info'));
+
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+
+        if (result == true) {
+          List<UserInformation> _userprofilelocalData =
+              await UserGoogleProfile.getUserProfile();
+
+          String uploadresult = await uploadSheetOnDrive(
+              file,
+              id,
+              _userprofilelocalData[0].authorizationToken,
+              _userprofilelocalData[0].refreshToken);
+          return uploadresult;
+
+          // UpdateDocOnDrive(
+          //     isLoading: true,
+          //     studentData:
+          //         //list2
+          //         Globals.studentInfo!);
+        } else {
+          return 'Reauthentication is required';
+        }
       }
+      return '';
+    } catch (e) {
+      throw (e);
     }
-    return '';
   }
 
   Future _fetchHistoryAssessment(
@@ -967,130 +983,142 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   _updateSheetPermission(
       String token, String fileId, String? refreshToken) async {
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer $token'
-    };
-    final body = {"role": "reader", "type": "anyone"};
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $token'
+      };
+      final body = {"role": "reader", "type": "anyone"};
 
-    final ResponseModel response = await _dbServices.postapi(
-        // 'https://www.googleapis.com/drive/v3/files/$fileId/permissions',
-        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId/permissions',
-        headers: headers,
-        body: body,
-        isGoogleApi: true);
+      final ResponseModel response = await _dbServices.postapi(
+          // 'https://www.googleapis.com/drive/v3/files/$fileId/permissions',
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId/permissions',
+          headers: headers,
+          body: body,
+          isGoogleApi: true);
 
-    if (response.statusCode != 401 &&
-        response.statusCode == 200 &&
-        response.data['statusCode'] != 500) {
-      print("File permission has been updated");
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
+        print("File permission has been updated");
 
-      return true;
-    }
-    if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
-        _totalRetry < 3) {
-      _totalRetry++;
-
-      bool result = await _toRefreshAuthenticationToken(refreshToken!);
-
-      if (result == true) {
-        List<UserInformation> _userprofilelocalData =
-            await UserGoogleProfile.getUserProfile();
-
-        bool result = _updateSheetPermission(
-            _userprofilelocalData[0].authorizationToken!,
-            fileId,
-            _userprofilelocalData[0].refreshToken);
-        return result;
+        return true;
       }
+      if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
+          _totalRetry < 3) {
+        _totalRetry++;
+
+        bool result = await _toRefreshAuthenticationToken(refreshToken!);
+
+        if (result == true) {
+          List<UserInformation> _userprofilelocalData =
+              await UserGoogleProfile.getUserProfile();
+
+          bool result = _updateSheetPermission(
+              _userprofilelocalData[0].authorizationToken!,
+              fileId,
+              _userprofilelocalData[0].refreshToken);
+          return result;
+        }
+      }
+      return false;
+    } catch (e) {
+      throw (e);
     }
-    return false;
   }
 
   _getShareableLink(
       {required String token,
       required String fileId,
       required String? refreshToken}) async {
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer $token'
-    };
-    final ResponseModel response = await _dbServices.getapiNew(
-        // 'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
-        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
-        headers: headers,
-        isGoogleAPI: true);
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $token'
+      };
+      final ResponseModel response = await _dbServices.getapiNew(
+          // 'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+          headers: headers,
+          isGoogleAPI: true);
 
-    if (response.statusCode != 401 &&
-        response.statusCode == 200 &&
-        response.data['statusCode'] != 500) {
-      bool result = await _updateSheetPermission(token, fileId, refreshToken);
-      if (!result) {
-        await _updateSheetPermission(token, fileId, refreshToken);
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
+        bool result = await _updateSheetPermission(token, fileId, refreshToken);
+        if (!result) {
+          await _updateSheetPermission(token, fileId, refreshToken);
+        }
+        print(
+            " get file link   ----------->${response.data['body']['webViewLink']}");
+        // var data = response.data;
+        return response.data['body']['webViewLink'];
+      } else if ((response.statusCode == 401 ||
+              response.data['statusCode'] == 500) &&
+          _totalRetry < 3) {
+        _totalRetry++;
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        if (result == true) {
+          String link = await _getShareableLink(
+              token: token, fileId: fileId, refreshToken: refreshToken);
+          return link;
+        } else {
+          return 'Reauthentication is required';
+        }
       }
-      print(
-          " get file link   ----------->${response.data['body']['webViewLink']}");
-      // var data = response.data;
-      return response.data['body']['webViewLink'];
-    } else if ((response.statusCode == 401 ||
-            response.data['statusCode'] == 500) &&
-        _totalRetry < 3) {
-      _totalRetry++;
-      var result = await _toRefreshAuthenticationToken(refreshToken!);
-      if (result == true) {
-        String link = await _getShareableLink(
-            token: token, fileId: fileId, refreshToken: refreshToken);
-        return link;
-      } else {
-        return 'Reauthentication is required';
-      }
+      return "";
+    } catch (e) {
+      throw (e);
     }
-    return "";
   }
 
   Future _getAssessmentDetail(
       String? token, String? fileId, String? refreshToken) async {
-    Map<String, String> headers = {
-      'authorization': 'Bearer $token',
-      'Content-Type': 'application/json; charset=UTF-8'
-    };
-    final ResponseModel response = await _dbServices.getapiNew(
-        //   'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
-        '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
-        headers: headers,
-        isGoogleAPI: true);
+    try {
+      Map<String, String> headers = {
+        'authorization': 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8'
+      };
+      final ResponseModel response = await _dbServices.getapiNew(
+          //   'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+          headers: headers,
+          isGoogleAPI: true);
 
-    if (response.statusCode != 401 &&
-        response.statusCode == 200 &&
-        response.data['statusCode'] != 500) {
-      return response.data['body'];
-      // return 'Reauthentication is required';
-      // print('File URL Received :${data['webViewLink']}');
-      // String downloadLink = data['exportLinks'] != null
-      //     ? data['exportLinks'][
-      //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-      //     : '';
-      // return downloadLink;
-    } else if ((response.statusCode == 401 ||
-            response.data['statusCode'] == 500) &&
-        _totalRetry < 3) {
-      _totalRetry++;
-      var result = await _toRefreshAuthenticationToken(refreshToken!);
-      if (result == true) {
-        List<UserInformation> _userprofilelocalData =
-            await UserGoogleProfile.getUserProfile();
+      if (response.statusCode != 401 &&
+          response.statusCode == 200 &&
+          response.data['statusCode'] != 500) {
+        return response.data['body'];
+        // return 'Reauthentication is required';
+        // print('File URL Received :${data['webViewLink']}');
+        // String downloadLink = data['exportLinks'] != null
+        //     ? data['exportLinks'][
+        //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+        //     : '';
+        // return downloadLink;
+      } else if ((response.statusCode == 401 ||
+              response.data['statusCode'] == 500) &&
+          _totalRetry < 3) {
+        _totalRetry++;
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        if (result == true) {
+          List<UserInformation> _userprofilelocalData =
+              await UserGoogleProfile.getUserProfile();
 
-        var fildObject = await _getAssessmentDetail(
-            _userprofilelocalData[0].authorizationToken,
-            fileId,
-            _userprofilelocalData[0].refreshToken);
-        return fildObject;
-        // GetAssessmentDetail(fileId: fileId);
-      } else {
-        return 'Reauthentication is required';
+          var fildObject = await _getAssessmentDetail(
+              _userprofilelocalData[0].authorizationToken,
+              fileId,
+              _userprofilelocalData[0].refreshToken);
+          return fildObject;
+          // GetAssessmentDetail(fileId: fileId);
+        } else {
+          return 'Reauthentication is required';
+        }
       }
+      return "";
+    } catch (e) {
+      throw (e);
     }
-    return "";
   }
 
   Future<String> downloadFile(String url, String fileName, String dir) async {

@@ -329,49 +329,47 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         print("calling save record to Salesforce");
         yield OcrLoading();
-        List<UserInformation> _profileData =
-            await UserGoogleProfile.getUserProfile();
+        // List<UserInformation> _profileData =
+        //     await UserGoogleProfile.getUserProfile();
+        List list = await Utility.getStudentInfoList(tableName: 'student_info');
         if (event.previouslyAddedListLength != null &&
-            event.previouslyAddedListLength! <
-                await Utility.getStudentInfoListLength(
-                    tableName: event.isHistoryAssessmentSection == true
-                        ? 'history_student_info'
-                        : 'student_info')) {
-          // List<StudentAssessmentInfo> _list = Globals.studentInfo!;
+            event.previouslyAddedListLength! < list.length) {
+          List<StudentAssessmentInfo> _list =
+              await Utility.getStudentInfoList(tableName: 'student_info');
+
           //Removing the previous scanned records to save only latest scanned sheets to the dashboard
-          // _list.removeRange(0, event.previouslyAddedListLength!+1); //+1 - To remove title as well
+          _list.removeRange(0,
+              event.previouslyAddedListLength!); //+1 - To remove title as well
 
           if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
-            await _sendEmailToAdmin(
-              assessmentId: event.assessmentId!,
-              name: _profileData[0]
-                  .userName!
-                  .replaceAll("%20", " ")
-                  .replaceAll("20", ""),
-              studentResultDetails: event.resultList,
-              schoolId: event.schoolId,
-              email: _profileData[0].userEmail!,
-              assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-            );
             bool result = await saveResultToDashboard(
                 assessmentId: event.assessmentId!,
-                studentDetails: await Utility.getStudentInfoList(
-                    tableName: event.isHistoryAssessmentSection == true
-                        ? 'history_student_info'
-                        : 'student_info'),
+                studentDetails: _list,
                 previousListLength: event.previouslyAddedListLength ?? 0,
-                isHistoryDetailPage: event.isHistoryAssessmentSection);
+                isHistoryDetailPage: event.isHistoryAssessmentSection,
+                schoolId: event.schoolId,
+                assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
 
             if (!result) {
               saveResultToDashboard(
                   assessmentId: event.assessmentId!,
-                  studentDetails: await Utility.getStudentInfoList(
-                      tableName: event.isHistoryAssessmentSection == true
-                          ? 'history_student_info'
-                          : 'student_info'),
+                  studentDetails: _list,
                   previousListLength: event.previouslyAddedListLength ?? 0,
-                  isHistoryDetailPage: event.isHistoryAssessmentSection);
+                  isHistoryDetailPage: event.isHistoryAssessmentSection,
+                  schoolId: event.schoolId,
+                  assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
             } else {
+              // await _sendEmailToAdmin(
+              //   assessmentId: event.assessmentId!,
+              //   name: _profileData[0]
+              //       .userName!
+              //       .replaceAll("%20", " ")
+              //       .replaceAll("20", ""),
+              //   studentResultDetails: _list,
+              //   schoolId: event.schoolId,
+              //   email: _profileData[0].userEmail!,
+              //   assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+              // );
               //print("result Record is saved on DB");
 
               yield AssessmentSavedSuccessfully();
@@ -422,28 +420,33 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           // }
 
           if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
-            await _sendEmailToAdmin(
-              assessmentId: event.assessmentId!,
-              name: _profileData[0].userName!.replaceAll("%", " "),
-              studentResultDetails: event.resultList,
-              schoolId: event.schoolId,
-              email: _profileData[0].userEmail!,
-              assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-            );
-
             bool result = await saveResultToDashboard(
-                assessmentId: event.assessmentId!,
-                studentDetails: event.resultList,
-                previousListLength: event.previouslyAddedListLength ?? 0,
-                isHistoryDetailPage: event.isHistoryAssessmentSection);
+              assessmentId: event.assessmentId!,
+              studentDetails: event.resultList,
+              previousListLength: event.previouslyAddedListLength ?? 0,
+              isHistoryDetailPage: event.isHistoryAssessmentSection,
+              assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+              schoolId: event.schoolId,
+            );
 
             if (!result) {
               saveResultToDashboard(
-                  assessmentId: event.assessmentId!,
-                  studentDetails: event.resultList,
-                  previousListLength: event.previouslyAddedListLength ?? 0,
-                  isHistoryDetailPage: event.isHistoryAssessmentSection);
+                assessmentId: event.assessmentId!,
+                studentDetails: event.resultList,
+                previousListLength: event.previouslyAddedListLength ?? 0,
+                isHistoryDetailPage: event.isHistoryAssessmentSection,
+                assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+                schoolId: event.schoolId,
+              );
             } else {
+              // await _sendEmailToAdmin(
+              //   assessmentId: event.assessmentId!,
+              //   name: _profileData[0].userName!.replaceAll("%", " "),
+              //   studentResultDetails: event.resultList,
+              //   schoolId: event.schoolId,
+              //   email: _profileData[0].userEmail!,
+              //   assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+              // );
               //print("result Record is saved on DB");
 
               yield AssessmentSavedSuccessfully();
@@ -745,135 +748,152 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<bool> saveStudentToSalesforce(
       {required String studentName, required studentId}) async {
-    Map<String, String> headers = {
-      'Content-Type': 'application/json;charset=UTF-8',
-      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-    };
-    final body = {
-      "DBN__c": "05M194",
-      "First_Name__c": studentName.split(" ")[0],
-      "last_Name__c": studentName.split(" ")[0].length >= 1
-          ? studentName.split(" ")[1]
-          : '',
-      "School__c": Globals.appSetting.schoolNameC,
-      "Student_ID__c": studentId
-    };
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+      final body = {
+        "DBN__c": "05M194",
+        "First_Name__c": studentName.split(" ")[0],
+        "last_Name__c": studentName.split(" ")[0].length >= 1
+            ? studentName.split(" ")[1]
+            : '',
+        "School__c": Globals.appSetting.schoolNameC,
+        "Student_ID__c": studentId
+      };
 
-    final ResponseModel response = await _dbServices.postapi(
-        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Student__c",
-        isGoogleApi: true,
-        body: body,
-        headers: headers);
-    if (response.statusCode == 200) {
-      print("created");
+      final ResponseModel response = await _dbServices.postapi(
+          "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Student__c",
+          isGoogleApi: true,
+          body: body,
+          headers: headers);
+      if (response.statusCode == 200) {
+        print("created");
 
-      return true;
-    } else {
-      return false;
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 
   Future<bool> verifyUserWithDatabase({required String? email}) async {
-    Map<String, String> headers = {
-      'Content-Type': 'application/json;charset=UTF-8',
-      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-    };
-    final body = {"email": email.toString()};
-    final ResponseModel response = await _dbServices.postapi(
-        "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail?objectName=Contact",
-        body: body,
-        headers: headers,
-        isGoogleApi: true);
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+      final body = {"email": email.toString()};
+      final ResponseModel response = await _dbServices.postapi(
+          "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail?objectName=Contact",
+          body: body,
+          headers: headers,
+          isGoogleApi: true);
 
-    if (response.statusCode == 200) {
-      var res = response.data;
-      var data = res["body"];
+      if (response.statusCode == 200) {
+        var res = response.data;
+        var data = res["body"];
 
-      if (data == false) {
-        print("this is a new uer now create a user contaact inside database");
-        bool result = await createContactToSalesforce(email: email.toString());
-        if (!result) {
-          await createContactToSalesforce(email: email.toString());
-        }
-      } else if (data['Assessment_App_User__c'] != 'true') {
-        var userType = data["GRADED_Premium__c"];
-        if (userType == "true") {
-          Globals.isPremiumUser = true;
+        if (data == false) {
+          print("this is a new uer now create a user contaact inside database");
+          bool result =
+              await createContactToSalesforce(email: email.toString());
+          if (!result) {
+            await createContactToSalesforce(email: email.toString());
+          }
+        } else if (data['Assessment_App_User__c'] != 'true') {
+          var userType = data["GRADED_Premium__c"];
+          if (userType == "true") {
+            Globals.isPremiumUser = true;
+          } else {
+            Globals.isPremiumUser = false;
+          }
+          print("this is a older user now updating datils in database");
+          Globals.teacherId = data['Id'];
+          bool result = await updateContactToSalesforce(recordId: data['Id']);
+          if (!result) {
+            await updateContactToSalesforce(recordId: data['Id']);
+          }
         } else {
-          Globals.isPremiumUser = false;
+          var userType = data["GRADED_Premium__c"];
+          if (userType == "true") {
+            Globals.isPremiumUser = true;
+          } else {
+            Globals.isPremiumUser = false;
+          }
         }
-        print("this is a older user now updating datils in database");
         Globals.teacherId = data['Id'];
-        bool result = await updateContactToSalesforce(recordId: data['Id']);
-        if (!result) {
-          await updateContactToSalesforce(recordId: data['Id']);
-        }
+        return true;
+        // return data;
       } else {
-        var userType = data["GRADED_Premium__c"];
-        if (userType == "true") {
-          Globals.isPremiumUser = true;
-        } else {
-          Globals.isPremiumUser = false;
-        }
+        return false;
       }
-      Globals.teacherId = data['Id'];
-      return true;
-      // return data;
-    } else {
-      return false;
+    } catch (e) {
+      throw (e);
     }
   }
 
   Future<bool> createContactToSalesforce({required String? email}) async {
-    print(email!.split("@")[0]);
-    Map<String, String> headers = {
-      'Content-Type': 'application/json;charset=UTF-8',
-      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-    };
-    final body = {
-      "AccountId": "0014W00002uusl7QAA", //Static for graded+ account
-      "RecordTypeId":
-          "0124W0000003GVyQAM", //Static to save in a 'Teacher' catagory list
-      "Assessment_App_User__c": "true",
-      "LastName": email, //.split("@")[0],
-      "Email": email,
-      //UNCOMMENT
-      // "GRADED_user_type__c":
-      //     "Free" //Currently free but will be dynamic later on
-    };
+    try {
+      print(email!.split("@")[0]);
+      Map<String, String> headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+      final body = {
+        "AccountId": "0014W00002uusl7QAA", //Static for graded+ account
+        "RecordTypeId":
+            "0124W0000003GVyQAM", //Static to save in a 'Teacher' catagory list
+        "Assessment_App_User__c": "true",
+        "LastName": email, //.split("@")[0],
+        "Email": email,
+        //UNCOMMENT
+        // "GRADED_user_type__c":
+        //     "Free" //Currently free but will be dynamic later on
+      };
 
-    final ResponseModel response = await _dbServices.postapi(
-        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact",
-        isGoogleApi: true,
-        body: body,
-        headers: headers);
-    if (response.statusCode == 200) {
-      Globals.teacherId = response.data["body"]["id"];
-      print("new user created ---->sucessfully ");
-      return true;
-    } else {
-      return false;
+      final ResponseModel response = await _dbServices.postapi(
+          "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact",
+          isGoogleApi: true,
+          body: body,
+          headers: headers);
+      if (response.statusCode == 200) {
+        Globals.teacherId = response.data["body"]["id"];
+        print("new user created ---->sucessfully ");
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 
   Future<bool> updateContactToSalesforce({required String? recordId}) async {
-    Map<String, String> headers = {
-      'Content-Type': 'application/json;charset=UTF-8',
-      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-    };
-    final body = {
-      "Assessment_App_User__c": "true",
-    };
-    final ResponseModel response = await _dbServices.postapi(
-        "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact/$recordId",
-        isGoogleApi: true,
-        body: body,
-        headers: headers);
-    if (response.statusCode == 200) {
-      print("old user data updated --> sucessfully ");
-      return true;
-    } else {
-      return false;
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+      final body = {
+        "Assessment_App_User__c": "true",
+      };
+      final ResponseModel response = await _dbServices.postapi(
+          "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact/$recordId",
+          isGoogleApi: true,
+          body: body,
+          headers: headers);
+      if (response.statusCode == 200) {
+        print("old user data updated --> sucessfully ");
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -888,41 +908,45 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     required String teacherContactId,
     required String teacherEmail,
   }) async {
-    String currentDate = Utility.getCurrentDate(DateTime.now());
+    try {
+      String currentDate = Utility.getCurrentDate(DateTime.now());
 
-    Map<String, String> headers = {
-      'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
-      'Content-Type': 'application/json'
-    };
+      Map<String, String> headers = {
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
+        'Content-Type': 'application/json'
+      };
 
-    final body = {
-      "Date__c": currentDate,
-      "Name__c": assessmentName,
-      "Rubric__c": rubicScore != '' ? rubicScore : null,
-      "School__c": schoolId,
-      "School_year__c": currentDate.split("-")[0],
-      "Standard__c": standardId != '' ? standardId : null,
-      "Subject__c": subjectId != '' ? subjectId : null,
-      "Google_File_Id": fileId ?? '',
-      "Session_Id": sessionId,
-      "Teacher_Contact_Id": teacherContactId,
-      "Teacher_Email": teacherEmail,
-      "Created_As_Premium": Globals.isPremiumUser.toString()
-    };
-    final ResponseModel response = await _dbServices.postapi(
-      "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
-      isGoogleApi: true,
-      headers: headers,
-      body: body,
-    );
-    if (response.statusCode == 200) {
-      String id = response.data['body']['Assessment_Id'];
+      final body = {
+        "Date__c": currentDate,
+        "Name__c": assessmentName,
+        "Rubric__c": rubicScore != '' ? rubicScore : null,
+        "School__c": schoolId,
+        "School_year__c": currentDate.split("-")[0],
+        "Standard__c": standardId != '' ? standardId : null,
+        "Subject__c": subjectId != '' ? subjectId : null,
+        "Google_File_Id": fileId ?? '',
+        "Session_Id": sessionId,
+        "Teacher_Contact_Id": teacherContactId,
+        "Teacher_Email": teacherEmail,
+        "Created_As_Premium": Globals.isPremiumUser.toString()
+      };
+      final ResponseModel response = await _dbServices.postapi(
+        "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
+        isGoogleApi: true,
+        headers: headers,
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        String id = response.data['body']['Assessment_Id'];
 
-      print("Assessment has been saved successfully : $id");
-      return id;
-    } else {
-      print("not 200 ---> r${response.statusCode}");
-      return "";
+        print("Assessment has been saved successfully : $id");
+        return id;
+      } else {
+        print("not 200 ---> r${response.statusCode}");
+        return "";
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -942,93 +966,136 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String assessmentId,
       required List<StudentAssessmentInfo> studentDetails,
       required previousListLength,
-      required isHistoryDetailPage}) async {
-    List<Map> bodyContent = [];
+      required isHistoryDetailPage,
+      required schoolId,
+      required assessmentSheetPublicURL}) async {
+    try {
+      List<Map> bodyContent = [];
 
-    // studentDetails.removeAt(0);
-    int initIndex = isHistoryDetailPage == true
-        ? previousListLength
-        : previousListLength; // + 1;
-    for (int i = initIndex; i < studentDetails.length; i++) {
-      //To bypass the titles saving in the dashboard
-      if (studentDetails[i].studentId != 'Id') {
-        bodyContent.add(recordtoJson(
-            assessmentId,
-            Utility.getCurrentDate(DateTime.now()),
-            studentDetails[i].studentGrade ?? '',
-            studentDetails[i].studentId ?? '',
-            studentDetails[i].assessmentImage ?? '',
-            studentDetails[i].studentName ?? ''));
+      // studentDetails.removeAt(0);
+      // int initIndex = isHistoryDetailPage == true
+      //     ? previousListLength
+      //     : previousListLength; // + 1;
+      for (int i = 0; i < studentDetails.length; i++) {
+        //To bypass the titles saving in the dashboard
+        if (studentDetails[i].studentId != 'Id') {
+          bodyContent.add(recordtoJson(
+              assessmentId,
+              Utility.getCurrentDate(DateTime.now()),
+              studentDetails[i].studentGrade ?? '',
+              studentDetails[i].studentId ?? '',
+              studentDetails[i].assessmentImage ?? '',
+              studentDetails[i].studentName ?? ''));
+        }
       }
-    }
+      print(bodyContent);
+      final ResponseModel response = await _dbServices.postapi(
+        "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
+        isGoogleApi: true,
+        body: bodyContent,
+      );
+      if (response.statusCode == 200) {
+        // String id = response.data['body']['id'];
+        print("result(s) have been successfully saved to dashboard.");
+        List<UserInformation> _profileData =
+            await UserGoogleProfile.getUserProfile();
+        bool result = await _sendEmailToAdmin(
+          assessmentId: assessmentId,
+          name: _profileData[0]
+              .userName!
+              .replaceAll("%20", " ")
+              .replaceAll("20", ""),
+          studentResultDetails: studentDetails,
+          schoolId: schoolId,
+          email: _profileData[0].userEmail!,
+          assessmentSheetPublicURL: assessmentSheetPublicURL!,
+        );
+        if (!result) {
+          await _sendEmailToAdmin(
+            assessmentId: assessmentId,
+            name: _profileData[0]
+                .userName!
+                .replaceAll("%20", " ")
+                .replaceAll("20", ""),
+            studentResultDetails: studentDetails,
+            schoolId: schoolId,
+            email: _profileData[0].userEmail!,
+            assessmentSheetPublicURL: assessmentSheetPublicURL!,
+          );
+        }
 
-    final ResponseModel response = await _dbServices.postapi(
-      "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
-      isGoogleApi: true,
-      body: bodyContent,
-    );
-    if (response.statusCode == 200) {
-      // String id = response.data['body']['id'];
-      print("result(s) have been successfully saved to dashboard.");
-      return true;
-    } else {
-      return false;
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 
   Map<String, String> recordtoJson(assessmentId, currentDate, pointsEarned,
       studentOsisId, assessmentImageURl, sudentName) {
-    Map<String, String> body = {
-      "Assessment_Id": assessmentId,
-      "Date__c": currentDate.toString(),
-      "Result__c": pointsEarned,
-      "Student__c": studentOsisId, //Scanned from the sheet
-      "Assessment_Image__c": assessmentImageURl,
-      "Student_Name__c": sudentName
-    };
-    return body;
+    try {
+      Map<String, String> body = {
+        "Assessment_Id": assessmentId,
+        "Date__c": currentDate.toString(),
+        "Result__c": pointsEarned,
+        "Student__c": studentOsisId, //Scanned from the sheet
+        "Assessment_Image__c": assessmentImageURl,
+        "Student_Name__c": sudentName
+      };
+      return body;
+    } catch (e) {
+      throw (e);
+    }
   }
 
-  _sendEmailToAdmin(
+  Future<bool> _sendEmailToAdmin(
       {required String schoolId,
       required String name,
       required String email,
       required String assessmentId,
       required String assessmentSheetPublicURL,
       required List<StudentAssessmentInfo> studentResultDetails}) async {
-    List<Map> bodyContent = [];
+    try {
+      List<Map> bodyContent = [];
 
-    // studentDetails.removeAt(0);
-    for (int i = 0; i < studentResultDetails.length; i++) {
-      if (studentResultDetails[i].studentId == "Id") {
-        studentResultDetails.remove(i);
+      // studentDetails.removeAt(0);
+      for (int i = 0; i < studentResultDetails.length; i++) {
+        if (studentResultDetails[i].studentId == "Id") {
+          studentResultDetails.remove(i);
+        }
+        bodyContent.add(recordtoJson(
+            assessmentId,
+            Utility.getCurrentDate(DateTime.now()),
+            studentResultDetails[i].studentGrade ?? '',
+            studentResultDetails[i].studentId ?? '',
+            studentResultDetails[i].assessmentImage ?? '',
+            studentResultDetails[i].studentName ?? ''));
       }
-      bodyContent.add(recordtoJson(
-          assessmentId,
-          Utility.getCurrentDate(DateTime.now()),
-          studentResultDetails[i].studentGrade ?? '',
-          studentResultDetails[i].studentId ?? '',
-          studentResultDetails[i].assessmentImage ?? '',
-          studentResultDetails[i].studentName ?? ''));
-    }
-    final body = {
-      "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
-      "to": "techadmin@solvedconsulting.com, appdevelopersdp7@gmail.com",
-      "subject": "Data Saved To The Dashboard",
-      // "html":
-      "text":
-          '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
-    };
+      final body = {
+        "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
+        "to": "techadmin@solvedconsulting.com, appdevelopersdp7@gmail.com",
+        "subject": "Data Saved To The Dashboard",
+        // "html":
+        "text":
+            '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
+      };
 
-    final ResponseModel response = await _dbServices.postapi(
-      "${OcrOverrides.OCR_API_BASE_URL}sendsmtpEmail",
-      isGoogleApi: true,
-      body: body,
-    );
-    if (response.statusCode == 200) {
-      print("email send successfully");
-    } else {
-      print("email sending fail");
+      final ResponseModel response = await _dbServices.postapi(
+        "${OcrOverrides.OCR_API_BASE_URL}sendsmtpEmail",
+        isGoogleApi: true,
+        body: body,
+      );
+      if (response.statusCode == 200) {
+        print("email send successfully");
+        return true;
+      } else {
+        print("email sending fail");
+        return false;
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -1036,13 +1103,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String grade,
       required String subjectName,
       required String subLearningCode}) async {
-    final ResponseModel response = await _dbServices.getapiNew(
-        "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
-        isGoogleAPI: true);
-    if (response.statusCode == 200) {
-      return response.data['body'].length > 0 ? response.data['body'][0] : '';
-    } else {
-      print("standard api not done");
+    try {
+      final ResponseModel response = await _dbServices.getapiNew(
+          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
+          isGoogleAPI: true);
+      if (response.statusCode == 200) {
+        return response.data['body'].length > 0 ? response.data['body'][0] : '';
+      } else {
+        print("standard api not done");
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 

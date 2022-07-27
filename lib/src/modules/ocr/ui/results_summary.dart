@@ -497,10 +497,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               await _studentInfoDb.putAt(index, element);
                             });
 
-                            assessmentCount.value =
-                                await Utility.getStudentInfoListLength(
-                                    tableName: 'student_info');
+                            List list = await Utility.getStudentInfoList(
+                                tableName: 'student_info');
+                            assessmentCount.value = list.length;
 
+                            Globals.scanMoreStudentInfoLength = list.length;
+                            print(Globals.scanMoreStudentInfoLength);
                             // _driveBloc.add(UpdateDocOnDrive(
                             //   isLoading: false,
                             //     fileId: widget.fileId,
@@ -520,6 +522,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //     'Yay! Data has been successully saved to the dashboard',
                             //     context,
                             //     null);
+
                           } else if (state is OcrErrorReceived) {
                             updateSlidableAction.value = false;
                           }
@@ -957,13 +960,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                           'student_info') -
                                               1;
                                     } else {
+                                      List list =
+                                          await Utility.getStudentInfoList(
+                                              tableName: 'student_info');
                                       if (widget.isScanMore == true &&
                                           widget.assessmentListLenght != null &&
                                           widget.assessmentListLenght! <
-                                              await Utility
-                                                  .getStudentInfoListLength(
-                                                      tableName:
-                                                          'student_info')) {
+                                              list.length) {
+                                        print(
+                                            'if     calling is scanMore -------------------------->');
+                                        print(widget.assessmentListLenght);
                                         _ocrBloc.add(SaveAssessmentToDashboard(
                                             assessmentId: !widget
                                                     .assessmentDetailPage!
@@ -973,7 +979,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                 widget.shareLink,
                                             resultList: await Utility
                                                 .getStudentInfoList(
-                                                    tableName: 'student_info'),
+                                                    tableName: widget
+                                                                .assessmentDetailPage ==
+                                                            true
+                                                        ? 'history_student_info'
+                                                        : 'student_info'),
                                             previouslyAddedListLength:
                                                 widget.assessmentListLenght,
                                             assessmentName:
@@ -989,6 +999,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             isHistoryAssessmentSection:
                                                 widget.assessmentDetailPage!));
                                       } else {
+                                        print(
+                                            'else      calling is noramal -------------------------->');
                                         // Adding the non saved record of dashboard in the list
                                         List<StudentAssessmentInfo>
                                             _listRecord = [];
@@ -1001,70 +1013,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                               historyRecordList.sublist(
                                                   savedRecordCount!,
                                                   historyRecordList.length);
-
-                                          // print(historyRecordList);
-                                          // print(_listRecord);
-                                          // print("_listRecord");
-                                        } //else {
-                                        // Globals.scanMoreStudentInfoLength =
-                                        //     await Utility
-                                        //             .getStudentInfoListLength(
-                                        //                 tableName:
-                                        //                     'student_info') -
-                                        //         1;
-
-                                        // if (widget.isScanMore == true &&
-                                        //     widget.assessmentListLenght !=
-                                        //         null &&
-                                        //     widget.assessmentListLenght! <
-                                        //         await Utility
-                                        //             .getStudentInfoListLength(
-                                        //                 tableName:
-                                        //                     'student_info')) {
-                                        //   _ocrBloc
-                                        //       .add(SaveAssessmentToDashboard(
-                                        //     assessmentId: !widget
-                                        //             .assessmentDetailPage!
-                                        //         ? Globals.currentAssessmentId
-                                        //         : historyAssessmentId ?? '',
-                                        //     assessmentSheetPublicURL:
-                                        //         widget.shareLink,
-                                        //     resultList: await Utility
-                                        //         .getStudentInfoList(
-                                        //             tableName:
-                                        //                 'student_info'),
-                                        //     previouslyAddedListLength:
-                                        //         widget.assessmentListLenght,
-                                        //     assessmentName:
-                                        //         widget.asssessmentName!,
-                                        //     rubricScore:
-                                        //         widget.rubricScore ?? '',
-                                        //     subjectId: widget.subjectId ?? '',
-                                        //     schoolId: Globals.appSetting
-                                        //         .schoolNameC!, //Account Id
-                                        //     standardId:
-                                        //         widget.standardId ?? '',
-                                        //     scaffoldKey: scaffoldKey,
-                                        //     context: context,
-                                        //     isHistoryAssessmentSection:
-                                        //         widget.assessmentDetailPage!,
-                                        //   ));
-                                        // } else {
-                                        // Adding the non saved record of dashboard in the list
-                                        // List<StudentAssessmentInfo>
-                                        //     _listRecord = [];
-
-                                        // if (widget.assessmentDetailPage! &&
-                                        //     savedRecordCount != null &&
-                                        //     historyRecordList.length !=
-                                        //         savedRecordCount!) {
-                                        //   _listRecord =
-                                        //       historyRecordList.sublist(
-                                        //           savedRecordCount!,
-                                        //           historyRecordList.length);
-                                        // }
-
-                                        else {
+                                        } else {
+                                          //
                                           _listRecord = historyRecordList;
                                         }
 
@@ -1106,11 +1056,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
                                   }
                                   // }
-                                } else {
+                                } else if (dashoardState.value == 'Success') {
                                   onDashboardPressed(
-                                      title: 'Upgrade To Premium',
+                                      title: 'Already Saved',
                                       message:
-                                          'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
+                                          'The data has already been saved to the data dashboard.');
                                 }
 
 //Found duplicate in merge
@@ -1814,11 +1764,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Future _method() async {
-    assessmentCount.value =
-        await Utility.getStudentInfoListLength(tableName: 'student_info');
+    List list = await Utility.getStudentInfoList(tableName: 'student_info');
+    assessmentCount.value = list.length;
+
     if (Globals.scanMoreStudentInfoLength != null) {
-      if (await Utility.getStudentInfoListLength(tableName: 'student_info') ==
-          Globals.scanMoreStudentInfoLength) {
+      if (list.length == Globals.scanMoreStudentInfoLength) {
         dashoardState.value = 'Success';
       }
     }
