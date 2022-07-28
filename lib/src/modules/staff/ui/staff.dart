@@ -135,7 +135,7 @@ class _StaffPageState extends State<StaffPage> {
           teacherId: Globals.teacherId,
           activityId: '2',
           accountId: Globals.appSetting.schoolNameC,
-          accountType: 'Free',
+          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
           dateTime: currentDateTime.toString(),
           description: 'Authentication Failure',
           operationResult: 'Failure'));
@@ -160,7 +160,7 @@ class _StaffPageState extends State<StaffPage> {
           teacherId: Globals.teacherId,
           activityId: '2',
           accountId: Globals.appSetting.schoolNameC,
-          accountType: 'Free',
+          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
           dateTime: currentDateTime.toString(),
           description: 'Google Authentication',
           operationResult: 'Success'));
@@ -375,7 +375,7 @@ class _StaffPageState extends State<StaffPage> {
                           teacherId: Globals.teacherId,
                           activityId: '2',
                           accountId: Globals.appSetting.schoolNameC,
-                          accountType: 'Free',
+                          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
                           dateTime: currentDateTime.toString(),
                           description: 'Graded+ Accessed(Login)',
                           operationResult: 'Success'));

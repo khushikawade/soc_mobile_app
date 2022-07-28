@@ -248,7 +248,7 @@ class _OpticalCharacterRecognitionPageState
                     teacherId: Globals.teacherId,
                     activityId: '1',
                     accountId: Globals.appSetting.schoolNameC,
-                    accountType: 'Free',
+                    accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
                     dateTime: currentDateTime.toString(),
                     description: 'Start Scanning Failed',
                     operationResult: 'Failed'));
@@ -579,7 +579,7 @@ class _OpticalCharacterRecognitionPageState
         teacherId: Globals.teacherId,
         activityId: '1',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: 'Free',
+        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
         description: 'Start Scanning',
         operationResult: 'Success'));
@@ -621,7 +621,7 @@ class _OpticalCharacterRecognitionPageState
         teacherId: Globals.teacherId,
         activityId: '4',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: 'Free',
+        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
         description: 'Assessment History page for home page',
         operationResult: 'Success'));

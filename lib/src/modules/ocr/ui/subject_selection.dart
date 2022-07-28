@@ -963,7 +963,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               _uploadSheetOnDriveAndnavigate(
                                   isSkip: true, connected: connected);
                               Utility.updateLoges(
-                                  // accountType: 'Free',
+                                  // ,
                                   activityId: '18',
                                   description: 'Skip subject selection process',
                                   operationResult: 'Success');
@@ -1177,7 +1177,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         if (state is AssessmentIdSuccess) {
                                           Navigator.of(context).pop();
                                           Utility.updateLoges(
-                                              // accountType: 'Free',
+                                              // ,
                                               activityId: '14',
                                               description: 'Save to drive',
                                               operationResult: 'Success');

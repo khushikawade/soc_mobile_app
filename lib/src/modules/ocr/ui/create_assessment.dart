@@ -762,7 +762,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
       _localDb.addData(e);
     });
     Utility.updateLoges(
-        //  accountType: 'Free',
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');

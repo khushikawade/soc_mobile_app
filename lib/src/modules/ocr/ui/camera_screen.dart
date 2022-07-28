@@ -312,7 +312,6 @@ class _CameraScreenState extends State<CameraScreen>
                       onPressed: () async {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         Utility.updateLoges(
-                            // accountType: 'Free',
                             activityId: '19',
                             description: 'Assessment scan finished',
                             operationResult: 'Success');

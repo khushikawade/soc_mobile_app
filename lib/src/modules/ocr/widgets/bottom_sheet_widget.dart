@@ -279,7 +279,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                               if (widget.isSubjectScreen!) {
                                 widget.valueChanged!(textFieldControllerOne);
                                 Utility.updateLoges(
-                                    //  accountType: 'Free',
                                     activityId: '21',
                                     description:
                                         'Teacher added custom subject ',
@@ -312,7 +311,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 } else {
                                   print("save score and name on local db");
                                   Utility.updateLoges(
-                                      //  accountType: 'Free',
                                       activityId: '21',
                                       description:
                                           'Teacher added custom rubric ',
@@ -384,62 +382,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
       ),
     );
   }
-
-  // Widget textFormField(
-  //     {required TextEditingController controller,
-  //     required onSaved,
-  //     required String? msg}) {
-  //   return TextFormField(
-  //     validator: (text) {
-  //       if (text == null || text.isEmpty) {
-  //         return msg;
-  //       }
-  //       return null;
-  //     },
-  //     autofocus: false,
-  //     //
-  //     textAlign: TextAlign.start,
-  //     style: Theme.of(context)
-  //         .textTheme
-  //         .subtitle1!
-  //         .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-  //     controller: controller,
-  //     cursorColor: Theme.of(context).colorScheme.primaryVariant,
-  //     decoration: InputDecoration(
-  //       fillColor: Colors.transparent,
-  //       enabledBorder: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme.kButtonColor,
-  //         ),
-  //       ),
-  //       focusedBorder: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme
-  //               .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
-  //         ),
-  //       ),
-  //       contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-  //       border: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme.kButtonColor,
-  //         ),
-  //       ),
-  //     ),
-  //     onChanged: onSaved,
-  //   );
-  // }
-
-  // _getImage() async {
-  //   final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (image != null) {
-  //     setState(() {
-  //       // isImageEmpty = false;
-  //       imageFile = File(image.path);
-  //     });
-  //   } else {
-  //     //  isImageEmpty = true;
-  //   }
-  // }
 
   showActionsheet(context) {
     showCupertinoModalPopup(

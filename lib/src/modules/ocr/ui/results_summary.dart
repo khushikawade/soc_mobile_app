@@ -185,7 +185,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         Utility.updateLoges(
-                            //accountType: 'Free',
                             activityId: '19',
                             description:
                                 'Teacher Successfully Completed the process and press done ',
@@ -732,7 +731,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       child: InkWell(
                         onTap: () {
                           Utility.updateLoges(
-                              // accountType: 'Free',
                               activityId: '16',
                               sessionId: widget.assessmentDetailPage == true
                                   ? widget.obj!.sessionId
@@ -908,7 +906,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               onPressed: () async {
                                 if (index == 0) {
                                   Utility.updateLoges(
-                                      // accountType: 'Free',
                                       activityId: '13',
                                       sessionId:
                                           widget.assessmentDetailPage == true
@@ -929,7 +926,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     // :
                                     index == 2) {
                                   Utility.updateLoges(
-                                      // accountType: 'Free',
                                       activityId: '15',
                                       description:
                                           'History Assesment button pressed',
@@ -949,6 +945,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   if (Globals.isPremiumUser) {
                                     if (widget.assessmentDetailPage == true &&
                                         widget.createdAsPremium == false) {
+                                      Utility.updateLoges(
+                                          // ,
+                                          activityId: '14',
+                                          description:
+                                              'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
+                                          operationResult: 'Failed');
                                       onDashboardPressed(
                                           title: 'Data Not Saved',
                                           message:
@@ -967,6 +969,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           widget.assessmentListLenght != null &&
                                           widget.assessmentListLenght! <
                                               list.length) {
+                                        Utility.updateLoges(
+                                            // accountType: 'Free',
+                                            activityId: '14',
+                                            description:
+                                                'Save to deshboard pressed in case for scanmore',
+                                            operationResult: 'Success');
                                         print(
                                             'if     calling is scanMore -------------------------->');
                                         print(widget.assessmentListLenght);
@@ -1050,6 +1058,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       }
                                     }
                                   } else {
+                                    Utility.updateLoges(
+                                        // ,
+                                        activityId: '14',
+                                        description:
+                                            'Free User tried to save the data to the dashboard',
+                                        operationResult: 'Failed');
                                     onDashboardPressed(
                                         title: 'Upgrade To Premium',
                                         message:
@@ -1062,37 +1076,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       message:
                                           'The data has already been saved to the data dashboard.');
                                 }
-
-//Found duplicate in merge
-                                // _ocrBloc.add(SaveAssessmentToDashboard(
-                                //     assessmentId:
-                                //         !widget.assessmentDetailPage!
-                                //             ? Globals.currentAssessmentId
-                                //             : historyAssessmentId ?? '',
-                                //     assessmentSheetPublicURL:
-                                //         widget.shareLink,
-                                //     resultList: !widget.assessmentDetailPage!
-                                //         ? await Utility.getStudentInfoList(
-                                //             tableName:
-                                //                 widget.assessmentDetailPage ==
-                                //                         true
-                                //                     ? 'history_student_info'
-                                //                     : 'student_info')
-                                //         : _listRecord,
-                                //     assessmentName: widget.asssessmentName!,
-                                //     rubricScore: !widget.assessmentDetailPage!
-                                //         ? widget.rubricScore ?? ''
-                                //         : sheetrubricScore ?? '',
-                                //     subjectId: widget.subjectId ?? '',
-                                //     schoolId: Globals
-                                //         .appSetting.schoolNameC!, //Account Id
-                                //     standardId: widget.standardId ?? '',
-                                //     scaffoldKey: scaffoldKey,
-                                //     context: context,
-                                //     isHistoryAssessmentSection:
-                                //         widget.assessmentDetailPage!,
-                                //     fileId: widget.fileId ?? ''));
-                                // }
                               }),
                         ),
             ],
@@ -1241,7 +1224,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   // Globals.scanMoreStudentInfoLength =
                   //     Globals.studentInfo!.length;
                   Utility.updateLoges(
-                      //accountType: 'Free',
+                      //,
                       activityId: '22',
                       sessionId: widget.assessmentDetailPage == true
                           ? widget.obj!.sessionId
@@ -1521,7 +1504,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         await Utility.getStudentInfoList(tableName: 'student_info');
     if (edit!) {
       Utility.updateLoges(
-          // accountType: 'Free',
+          // ,
           activityId: '17',
           description: 'Teacher edit the record',
           operationResult: 'Success');

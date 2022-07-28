@@ -151,7 +151,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                     WarningPopupModel();
                     UserGoogleProfile.clearUserProfile();
                     Utility.updateLoges(
-                        // accountType: 'Free',
+                        // ,
                         activityId: '3',
                         description: 'User profile logout',
                         operationResult: 'Success');

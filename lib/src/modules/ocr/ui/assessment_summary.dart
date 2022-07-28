@@ -246,7 +246,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 trailing: GestureDetector(
                   onTap: () {
                     Utility.updateLoges(
-                        // accountType: 'Free',
                         activityId: '13',
                         sessionId: list[index].sessionId != ''
                             ? list[index].sessionId

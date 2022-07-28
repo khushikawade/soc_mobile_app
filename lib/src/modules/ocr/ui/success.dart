@@ -190,7 +190,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   scanFailure.value = 'Success';
                   _performAnimation();
                   Utility.updateLoges(
-                      //  accountType: 'Free',
+                      //  ,
                       activityId: '23',
                       description: 'Scan Assesment sheet successfully',
                       operationResult: 'Success');
@@ -279,7 +279,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   }
 
                   Utility.updateLoges(
-                      // accountType: 'Free',
+                      // ,
                       activityId: '23',
                       description: state.grade == '' && state.studentId == ''
                           ? 'Unable to detect Student Id and grade'
@@ -380,7 +380,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         child: retryButton(
                           onPressed: () {
                             Utility.updateLoges(
-                                // accountType: 'Free',
+                                // ,
                                 activityId: '9',
                                 description:
                                     'Scan Failure and teacher retry scan',
@@ -440,7 +440,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                     widget
                                                         .isFromHistoryAssessmentScanMore);
                                             Utility.updateLoges(
-                                                //  accountType: 'Free',
+                                                //  ,
                                                 activityId: '10',
                                                 description: 'Next Scan',
                                                 operationResult: 'Success');
@@ -1040,7 +1040,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onTap: () {
                     // updateDetails(isUpdateData: true);
                     Utility.updateLoges(
-                        // accountType: 'Free',
+                        // ,
                         activityId: '8',
                         description:
                             'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
