@@ -539,11 +539,13 @@ class _OpticalCharacterRecognitionPageState
   Future updateLocalDb() async {
     //Save user profile to locally
     LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
-
+    print(RubricScoreList.scoringList);
     await _localDb.clear();
-    RubricScoreList.scoringList.forEach((CustomRubicModal e) {
-      _localDb.addData(e);
+
+    RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+      await _localDb.addData(e);
     });
+    // ignore: unnecessary_statements
   }
 
   void _triggerDriveFolderEvent(bool isTriggerdbyAssessmentSection) async {

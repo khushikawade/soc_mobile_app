@@ -218,7 +218,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               customRubicLocalData[event.selectedRubric!].filePath != null &&
               customRubicLocalData[event.selectedRubric!]
                   .filePath!
-                  .path
                   .isNotEmpty) {
             if (customRubicLocalData[event.selectedRubric!].imgUrl != null ||
                 customRubicLocalData[event.selectedRubric!]
@@ -229,14 +228,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                     customRubicLocalData[event.selectedRubric!].imgUrl;
               });
             } else {
-              String imgExtension = customRubicLocalData[event.selectedRubric!]
-                  .filePath!
-                  .path
-                  .substring(customRubicLocalData[event.selectedRubric!]
-                          .filePath!
-                          .path
-                          .lastIndexOf(".") +
-                      1);
+              File assessmentImageFile =
+                  File(customRubicLocalData[event.selectedRubric!].filePath!);
+              String imgExtension = assessmentImageFile.path
+                  .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
 
               String imgUrl = await _uploadImgB64AndGetUrl(
                   imgBase64:

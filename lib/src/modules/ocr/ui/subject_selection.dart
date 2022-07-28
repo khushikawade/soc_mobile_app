@@ -1378,10 +1378,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             rubricImgUrl = _localData[i].imgUrl;
             // rubricScore = null;
           }
-          if (_localData[i].name == Globals.scoringRubric &&
-              _localData[i].customOrStandardRubic != "Custom") {
-            // rubricScore = _localData[i].score;
-          } else {
+          //  else if (_localData[i].name == Globals.scoringRubric &&
+          //         _localData[i].customOrStandardRubic != "Custom") {
+          //       // rubricScore = _localData[i].score;
+          //     }
+          else {
             rubricImgUrl = 'NA';
             // rubricScore = 'NA';
           }

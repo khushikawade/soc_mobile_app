@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
@@ -433,9 +434,31 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               builder: (context, value, _) {
                 if (Globals.hasShowcaseInitialised.value == true)
                   return Container();
-                return Center(
-                    child: _continueShowCaseInstructions(
-                        'Tap anywhere on the screen to continue.'));
+                return
+                    // Container(
+                    //     // margin: EdgeInsets.only(left: 20, right: 20),
+                    //     child: ClipRect(
+                    //   clipBehavior: Clip.antiAliasWithSaveLayer,
+                    //   child: BackdropFilter(
+                    //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                    //     child: Container(
+                    //         margin: EdgeInsets.only(
+                    //           top: MediaQuery.of(context).size.height * 0.1,
+                    //         ),
+                    //         alignment: Alignment.center,
+                    //         height: MediaQuery.of(context).size.height * 0.8,
+                    //         // width: 80,
+                    //         color: Color(0xff000000) !=
+                    //                 Theme.of(context).backgroundColor
+                    //             ? Color(0xffFFFFFF).withOpacity(0.6)
+                    //             : Color(0xff000000).withOpacity(0.6),
+                    //         child: _continueShowCaseInstructions(
+                    //             'Tap anywhere on the screen to continue.')),
+                    //   ),
+                    // ));
+                    Center(
+                        child: _continueShowCaseInstructions(
+                            'Tap anywhere on the screen to continue.'));
               }),
         ],
       ),
@@ -573,9 +596,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             Globals.urlIndex = _screens.length;
             Globals.homeUrl = Globals.customSetting![i].appUrlC;
           }
-          _screens.add(CustomAppSection(
-            customObj: Globals.customSetting![i],
-          ));
+          _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
         } else {
           _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
         }

@@ -1273,7 +1273,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.pointpossible = Globals.pointpossible;
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
-        await _studentInfoDb.putAt(
+
+        await _historyStudentInfoDb.putAt(
             historyStudentInfo.length - 1, studentAssessmentInfo);
         return;
       } else {

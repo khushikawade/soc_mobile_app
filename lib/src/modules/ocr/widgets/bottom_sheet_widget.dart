@@ -279,7 +279,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                               if (widget.isSubjectScreen!) {
                                 widget.valueChanged!(textFieldControllerOne);
                                 Utility.updateLoges(
-                                  //  accountType: 'Free',
+                                    //  accountType: 'Free',
                                     activityId: '21',
                                     description:
                                         'Teacher added custom subject ',
@@ -302,7 +302,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                           name: textFieldControllerOne.text,
                                           score: textFieldController2.text,
                                           imgBase64: imageB64,
-                                          filePath: imageFile,
+                                          filePath: imageFile!.path.toString(),
                                           customOrStandardRubic: "Custom"));
                                   print("calling get img url");
                                   _googleBloc.add(ImageToAwsBucked(
@@ -312,7 +312,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 } else {
                                   print("save score and name on local db");
                                   Utility.updateLoges(
-                                    //  accountType: 'Free',
+                                      //  accountType: 'Free',
                                       activityId: '21',
                                       description:
                                           'Teacher added custom rubric ',

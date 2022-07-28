@@ -22,7 +22,7 @@ class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
       imgBase64: fields[2] as String?,
       imgUrl: fields[3] as String?,
       customOrStandardRubic: fields[4] as String?,
-      filePath: fields[5] as File?,
+      filePath: fields[5] as String?,
     );
   }
 

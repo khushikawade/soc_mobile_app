@@ -40,7 +40,6 @@ class LocalDatabase<T> extends IRepository<T> {
   Future<void> close() async {
     await box!.close();
   }
-  
 
   Future<void> putAt(int index, T object) async {
     if (boxIsClosed) {

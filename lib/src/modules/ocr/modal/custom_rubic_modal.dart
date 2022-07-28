@@ -16,7 +16,7 @@ class CustomRubicModal {
   @HiveField(4)
   String? customOrStandardRubic;
   @HiveField(5)
-  File? filePath;
+  String? filePath;
   CustomRubicModal(
       {this.name,
       this.score,
@@ -32,26 +32,36 @@ class RubricScoreList {
         name: "NYS",
         score: '0-2',
         imgBase64: null,
-        customOrStandardRubic: "Standard"),
+        imgUrl: null,
+        customOrStandardRubic: "Standard",
+        filePath: null),
     CustomRubicModal(
         name: "Custom",
         score: '',
         imgBase64: null,
-        customOrStandardRubic: "Standard"),
+        imgUrl: null,
+        customOrStandardRubic: "Standard",
+        filePath: null),
     CustomRubicModal(
         name: "NYS",
         score: '0-3',
         imgBase64: null,
-        customOrStandardRubic: "Standard"),
+        imgUrl: null,
+        customOrStandardRubic: "Standard",
+        filePath: null),
     CustomRubicModal(
         name: "None",
         score: '',
         imgBase64: null,
-        customOrStandardRubic: "Standard"),
+        imgUrl: null,
+        customOrStandardRubic: "Standard",
+        filePath: null),
     CustomRubicModal(
         name: "NYS",
         score: '0-4',
         imgBase64: null,
-        customOrStandardRubic: "Standard"),
+        imgUrl: null,
+        customOrStandardRubic: "Standard",
+        filePath: null),
   ];
 }
