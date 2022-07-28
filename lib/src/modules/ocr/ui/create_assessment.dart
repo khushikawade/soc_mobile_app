@@ -51,12 +51,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final ImagePicker _picker = ImagePicker();
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
+  final OcrBloc _bloc = new OcrBloc();
 
   final addController = TextEditingController();
   @override
   void initState() {
     // listScrollController.addListener(_scrollListener);
     Globals.googleExcelSheetId = '';
+    _bloc.add(SaveSubjectListDetails());
     super.initState();
   }
 

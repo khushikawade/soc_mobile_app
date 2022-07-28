@@ -11,6 +11,7 @@ import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -586,6 +587,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<List<SubjectDetailList>> fatchLocalSubject(String classNo) async {
     LocalDatabase<SubjectDetailList> _localDb =
         LocalDatabase('Subject_list$classNo');
+        //Clear subject local data to resolve loading issue
+        SharedPreferences clearSubjectCache =
+            await SharedPreferences.getInstance();
+        final clearChacheResult =
+            clearSubjectCache.getBool('Clear_local_Subject');
+
+        if (clearChacheResult != true) {
+          _localDb.clear();
+          await clearSubjectCache.setBool('Clear_local_Subject', true);
+        }
     List<SubjectDetailList>? _localData = await _localDb.getData();
     return _localData;
   }
@@ -603,7 +614,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       LocalDatabase<SubjectDetailList> _localDb =
           LocalDatabase(Strings.ocrSubjectObjectName);
       List<SubjectDetailList>? _localData = await _localDb.getData();
-
+       
       print('Subject Local data length: ${_localData.length}');
       //Common detail list to save all deatails of subject for specific grade. Include : Subject, Learning standard and sub learning standard
       List<SubjectDetailList> subjectDetailList = [];

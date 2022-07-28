@@ -211,7 +211,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         //Sort the events date wise
         sortCalendarEvents(futureListobj!);
         sortCalendarEvents(pastListobj!);
-
+        yield FamilyLoading();
         yield CalendarListSuccess(
             futureListobj:
                 mapListObj(futureListobj!), //Grouping the events by month

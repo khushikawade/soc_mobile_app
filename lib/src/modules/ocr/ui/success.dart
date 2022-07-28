@@ -416,104 +416,132 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           },
                         ))
                     : scanFailure.value == "Success"
-                        ? Align(
-                            alignment: Alignment.bottomCenter,
-                            child:
-                                //  SuccessCustomButton(
-                                //   width: MediaQuery.of(context).size.width * 0.3,
-                                //   animatedWidth:
-                                //       MediaQuery.of(context).size.width * 0.3,
-                                //   // animatedWidth: animatedWidth.value
-                                // )
-                                ValueListenableBuilder(
-                                    valueListenable: animationStart,
-                                    child: Container(),
-                                    builder: (BuildContext context,
-                                        dynamic value, Widget? child) {
-                                      return InkWell(
-                                        onTap: () async {
-                                          if (animationStart.value == true) {
-                                            timer!.cancel();
+                        ? ValueListenableBuilder(
+                            valueListenable: isBackFromCamera,
+                            child: Container(),
+                            builder: (BuildContext context, dynamic value,
+                                Widget? child) {
+                              return isBackFromCamera.value != true
+                                  ? Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child:
+                                          //  SuccessCustomButton(
+                                          //   width: MediaQuery.of(context).size.width * 0.3,
+                                          //   animatedWidth:
+                                          //       MediaQuery.of(context).size.width * 0.3,
+                                          //   // animatedWidth: animatedWidth.value
+                                          // )
+                                          ValueListenableBuilder(
+                                              valueListenable: animationStart,
+                                              child: Container(),
+                                              builder: (BuildContext context,
+                                                  dynamic value,
+                                                  Widget? child) {
+                                                return InkWell(
+                                                  onTap: () async {
+                                                    if (animationStart.value ==
+                                                        true) {
+                                                      timer!.cancel();
 
-                                            updateDetails(
-                                                isFromHistoryAssessmentScanMore:
-                                                    widget
-                                                        .isFromHistoryAssessmentScanMore);
-                                            Utility.updateLoges(
-                                                //  ,
-                                                activityId: '10',
-                                                description: 'Next Scan',
-                                                operationResult: 'Success');
+                                                      updateDetails(
+                                                          isFromHistoryAssessmentScanMore:
+                                                              widget
+                                                                  .isFromHistoryAssessmentScanMore);
+                                                      Utility.updateLoges(
+                                                          //  ,
+                                                          activityId: '10',
+                                                          description:
+                                                              'Next Scan',
+                                                          operationResult:
+                                                              'Success');
 
-                                            String imgExtension = widget
-                                                .imgPath.path
-                                                .substring(widget.imgPath.path
-                                                        .lastIndexOf(".") +
-                                                    1);
-                                            _googleDriveBloc.add(
-                                                AssessmentImgToAwsBucked(
-                                                    isHistoryAssessmentSection:
-                                                        widget
-                                                            .isFromHistoryAssessmentScanMore,
-                                                    imgBase64: widget.img64,
-                                                    imgExtension: imgExtension,
-                                                    studentId:
-                                                        idController.text));
-                                            // }
-                                            // COMMENT below section for enableing the camera
-                                            var result = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CameraScreen(
-                                                        obj: widget.obj,
-                                                        createdAsPremium: widget
-                                                            .createdAsPremium,
-                                                        isFromHistoryAssessmentScanMore:
-                                                            widget
-                                                                .isFromHistoryAssessmentScanMore!,
-                                                        onlyForPicture: false,
-                                                        isScanMore:
-                                                            widget.isScanMore,
-                                                        pointPossible: widget
-                                                            .pointPossible,
-                                                      )),
-                                            );
-                                            if (result == true) {
-                                              isBackFromCamera.value = result;
-                                            }
+                                                      String imgExtension = widget
+                                                          .imgPath.path
+                                                          .substring(widget
+                                                                  .imgPath.path
+                                                                  .lastIndexOf(
+                                                                      ".") +
+                                                              1);
+                                                      _googleDriveBloc.add(
+                                                          AssessmentImgToAwsBucked(
+                                                              isHistoryAssessmentSection:
+                                                                  widget
+                                                                      .isFromHistoryAssessmentScanMore,
+                                                              imgBase64:
+                                                                  widget.img64,
+                                                              imgExtension:
+                                                                  imgExtension,
+                                                              studentId:
+                                                                  idController
+                                                                      .text));
+                                                      // }
+                                                      // COMMENT below section for enableing the camera
+                                                      var result =
+                                                          await Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                CameraScreen(
+                                                                  obj: widget
+                                                                      .obj,
+                                                                  createdAsPremium:
+                                                                      widget
+                                                                          .createdAsPremium,
+                                                                  isFromHistoryAssessmentScanMore:
+                                                                      widget
+                                                                          .isFromHistoryAssessmentScanMore!,
+                                                                  onlyForPicture:
+                                                                      false,
+                                                                  isScanMore: widget
+                                                                      .isScanMore,
+                                                                  pointPossible:
+                                                                      widget
+                                                                          .pointPossible,
+                                                                )),
+                                                      );
+                                                      if (result == true) {
+                                                        isBackFromCamera.value =
+                                                            result;
+                                                      }
 
-                                            // Navigator.pushReplacement(
-                                            //   context,
-                                            //   MaterialPageRoute(
-                                            //       builder: (context) =>
-                                            //           CameraScreen(
-                                            //             isScanMore:
-                                            //                 widget.isScanMore,
-                                            //             pointPossible: widget
-                                            //                 .pointPossible,
-                                            //           )),
-                                            // );
-                                          } else {
-                                            print("Not -------------> move");
-                                          }
-                                        },
-                                        child: SuccessCustomButton(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.4,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.055,
-                                            animationDuration:
-                                                Duration(milliseconds: 4950),
-                                            animationStart:
-                                                animationStart.value),
-                                      );
-                                    }),
-                          )
+                                                      // Navigator.pushReplacement(
+                                                      //   context,
+                                                      //   MaterialPageRoute(
+                                                      //       builder: (context) =>
+                                                      //           CameraScreen(
+                                                      //             isScanMore:
+                                                      //                 widget.isScanMore,
+                                                      //             pointPossible: widget
+                                                      //                 .pointPossible,
+                                                      //           )),
+                                                      // );
+                                                    } else {
+                                                      print(
+                                                          "Not -------------> move");
+                                                    }
+                                                  },
+                                                  child: SuccessCustomButton(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.4,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.055,
+                                                      animationDuration:
+                                                          Duration(
+                                                              milliseconds:
+                                                                  4950),
+                                                      animationStart:
+                                                          animationStart.value),
+                                                );
+                                              }),
+                                    )
+                                  : Container();
+                            })
                         : Container();
               }),
           // retryButton(),
