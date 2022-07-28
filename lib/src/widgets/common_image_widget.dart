@@ -30,6 +30,7 @@ class CommonImageWidget extends StatelessWidget {
             useRootNavigator: false,
               context: context,
               builder: (_) => ImagePopup(
+              
                     // Implemented Dark mode image
                     imageURL: Globals.themeType == 'Dark'
                         ? (darkModeIconUrl == null || darkModeIconUrl == ''

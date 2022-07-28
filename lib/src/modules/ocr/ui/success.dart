@@ -15,6 +15,7 @@ import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -232,6 +233,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             studentId: idController.text));
                         // }
                         // COMMENT below section for enableing the camera
+                       
                         var result = await Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -1010,15 +1012,30 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
+  void showCustomRubricImage() {
+    showDialog(
+        context: context,
+        builder: (_) => ImagePopup(
+              imageURL: '',
+              isOcrPage: true,
+              imageFile: widget.imgPath,
+            ));
+  }
+
   Widget imagePreviewWidget() {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.30,
-      width: MediaQuery.of(context).size.width * 0.58,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(6.52),
-        child: Image.file(
-          widget.imgPath,
-          fit: BoxFit.fill,
+    return InkWell(
+      onTap: () {
+        showCustomRubricImage();
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.30,
+        width: MediaQuery.of(context).size.width * 0.58,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6.52),
+          child: Image.file(
+            widget.imgPath,
+            fit: BoxFit.fill,
+          ),
         ),
       ),
     );
