@@ -80,7 +80,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   child: ShimmerLoading(
                     isLoading: true,
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.3,
                       width: MediaQuery.of(context).size.width * 0.85,
                       color: Colors.white,
                     ),
@@ -93,7 +93,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   child: ShimmerLoading(
                     isLoading: true,
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.3,
                       width: MediaQuery.of(context).size.width * 0.85,
                       color: Colors.white,
                     ),
@@ -151,10 +151,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   onOpen: (link) => _launchURL(link.url),
                   options: LinkifyOptions(humanize: false),
                   linkStyle: TextStyle(color: Colors.blue),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      ,
+                  style: Theme.of(context).textTheme.headline2!,
                   text: translatedMessage.toString());
 
               // Text(

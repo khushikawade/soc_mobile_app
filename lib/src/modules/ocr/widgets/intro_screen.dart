@@ -21,23 +21,23 @@ class _IntoScreensState extends State<IntoScreens> {
     CustomPageModel.customPageModel(
         'STEP 1',
         'Assign students a one-question assessment and have them complete it on any paper handout (blank, notebook, graph, etc.).',
-        'assets/images/ocr_into_image_1.jpg'),
+        'assets/images/onboarding_image1.jpg'),
     CustomPageModel.customPageModel(
         'STEP 2',
         'Ensure students write their name and 9-digit NYCDOE student ID number anywhere on the assessment paper handout. ',
-        'assets/images/ocr_into_image_2.png'),
+        'assets/images/onboarding_image2.png'),
     CustomPageModel.customPageModel(
         'STEP 3',
         'Grade student’s work directly on their paper handout using the selected rubric scale. Be sure to circle the score directly on the student work.',
-        'assets/images/ocr_into_image_3.png'),
+        'assets/images/onboarding_image3.png'),
     CustomPageModel.customPageModel(
         'STEP 4',
-        'Grade student’s work directly on their paper handout using the selected rubric scale. Be sure to circle the score directly on the student work.',
-        'assets/images/ocr_into_image_4-removebg-preview.png'),
+        'Use the GRADED+ "Scan Assessment" feature to take a picture of each student\'s paper. Scans are saved to the Cloud, not your local device.',
+        'assets/images/onboarding_image4.png'),
     CustomPageModel.customPageModel(
         'STEP 5',
-        'Grade student’s work directly on their paper handout using the selected rubric scale. Be sure to circle the score directly on the student work.',
-        'assets/images/ocr_into_image_5-removebg-preview.png')
+        'The GRADED+ image recognition software auto captures the student ID, name and your circled score. Results and image scans are automatically saved in your Google Drive in a Google Sheet. ',
+        'assets/images/onboarding_image5.png')
   ];
 
   static const width = 100.0;
