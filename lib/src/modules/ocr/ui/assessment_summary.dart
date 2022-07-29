@@ -38,6 +38,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   TextEditingController searchAssessmentController = TextEditingController();
 
   final ValueNotifier<bool> isSearch = ValueNotifier<bool>(false);
+  LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+      LocalDatabase('history_student_info');
   @override
   void initState() {
     _driveBloc.add(GetHistoryAssessmentFromDrive());
@@ -196,8 +198,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       children: [
         InkWell(
           onTap: () async {
-            LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
-                LocalDatabase('history_student_info');
             bool createdAsPremium = false;
             if (list[index].isCreatedAsPremium == "true") {
               createdAsPremium = true;

@@ -98,8 +98,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   String? historyAssessmentId;
 
-  ValueNotifier<List<bool>> dashboardWidget =
-      ValueNotifier<List<bool>>([false, false]);
+  // ValueNotifier<List<bool>> dashboardWidget =
+  //     ValueNotifier<List<bool>>([false, false]);
+
+  bool isGoogleSheetStateRecived = false;
 
   @override
   void initState() {
@@ -353,32 +355,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
-                                //    Globals.historyStudentInfo = state.obj;
+                                isGoogleSheetStateRecived = true;
 
-                                print(state.obj.length);
-
-                                // print(
-                                //     "record length ---===========> ${state.obj.length}");
-                                // print(
-                                //     "record length ---===========> $savedRecordCount");
-                                print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
-                                print(savedRecordCount);
-                                dashboardWidget.value[1] = true;
                                 savedRecordCount != null
                                     ? savedRecordCount == state.obj.length
                                         ? dashoardState.value = 'Success'
                                         : dashoardState.value = ''
                                     : print("");
-                                // isAssessmentAlreadySaved =
-                                //     state.obj[0] != null && state.obj[0] != ''
-                                //         ? state.obj[0].isSavedOnDashBoard !=
-                                //                     null &&
-                                //                 state.obj[0]
-                                //                         .isSavedOnDashBoard !=
-                                //                     ''
-                                //             ? state.obj[0].isSavedOnDashBoard
-                                //             : ''.toString()
-                                //         : '';
+
                                 return Column(
                                   children: [
                                     resultTitle(),
@@ -548,74 +532,26 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 state.resultRecordCount == null) {
                               dashoardState.value = '';
                             } else {
-                              dashboardWidget.value[0] = true;
+                              if (isGoogleSheetStateRecived == true) {
+                                List list = await Utility.getStudentInfoList(
+                                    tableName: 'history_student_info');
+
+                                state.resultRecordCount == list.length
+                                    ? dashoardState.value = 'Success'
+                                    : dashoardState.value = '';
+                              }
+                              // dashboardWidget.value[0] = true;
+
                               savedRecordCount = state.resultRecordCount;
                               historyAssessmentId = state.assessmentId;
                             }
                           }
+                          if (state is OcrLoading2) {
+                            dashoardState.value = 'Loading';
+                          }
                         },
                         child: EmptyContainer()),
                   ),
-
-                  // BlocListener(
-                  //     bloc: _ocrBloc,
-                  //     listener: (context, state) async {
-                  //       if (state is OcrLoading2) {
-                  //         dashoardState.value = 'Loading';
-                  //       } else if (state is AssessmentSavedSuccessfully) {
-                  //         dashoardState.value = 'Success';
-
-                  //         if (Globals.studentInfo!.length > 0 &&
-                  //             Globals.studentInfo![0].studentId == 'Id') {
-                  //           Globals.studentInfo!.removeAt(0);
-                  //         }
-
-                  //         //To copy the static content in the sheet
-                  //         Globals.studentInfo!.forEach((element) {
-                  //           element.subject =
-                  //               Globals.studentInfo!.first.subject;
-                  //           element.learningStandard = Globals.studentInfo!
-                  //                       .first.learningStandard ==
-                  //                   null
-                  //               ? "NA"
-                  //               : Globals.studentInfo!.first.learningStandard;
-                  //           element.subLearningStandard = Globals.studentInfo!
-                  //                       .first.subLearningStandard ==
-                  //                   null
-                  //               ? "NA"
-                  //               : Globals
-                  //                   .studentInfo!.first.subLearningStandard;
-                  //           element.scoringRubric = Globals.scoringRubric;
-                  //           element.customRubricImage = Globals
-                  //                   .studentInfo!.first.customRubricImage ??
-                  //               "NA";
-                  //           element.grade = Globals.studentInfo!.first.grade;
-                  //           element.className = Globals.assessmentName!
-                  //               .split("_")[1]; //widget.selectedClass;
-                  //           element.questionImgUrl =
-                  //               Globals.studentInfo!.first.questionImgUrl;
-                  //           if (element.isSavedOnDashBoard == null) {
-                  //             element.isSavedOnDashBoard = true;
-                  //           }
-                  //         });
-                  //         assessmentCount.value = Globals.studentInfo!.length;
-
-                  //         // _driveBloc.add(UpdateDocOnDrive(
-                  //         //   isLoading: false,
-                  //         //     fileId: widget.fileId,
-                  //         //     studentData: Globals.studentInfo!)
-                  //         //     );
-
-                  //         _showSaveDataPopUp();
-
-                  // Utility.showSnackBar(
-                  //     scaffoldKey,
-                  //     'Yay! Data has been successully saved to the dashboard',
-                  //     context,
-                  //     null);
-                  // }
-
-                  // child: Container()),
                 ],
               ),
             ),
@@ -702,23 +638,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         ),
       ),
     );
-    // return Container(
-    //     child: ListTile(
-    //   leading: Utility.textWidget(
-    //       text: 'Student Name',
-    //       context: context,
-    //       textTheme: Theme.of(context)
-    //           .textTheme
-    //           .headline2!
-    //           .copyWith(fontWeight: FontWeight.bold)),
-    //   trailing: Utility.textWidget(
-    //       text: 'Points Earned',
-    //       context: context,
-    //       textTheme: Theme.of(context)
-    //           .textTheme
-    //           .headline2!
-    //           .copyWith(fontWeight: FontWeight.bold)),
-    // ));
   }
 
   Widget _iconButton(int index, List iconName,
@@ -876,41 +795,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         }
                                       },
                                     )
-                                  : widget.assessmentDetailPage == true
-                                      ? ValueListenableBuilder(
-                                          valueListenable: dashboardWidget,
-                                          child: Container(),
-                                          builder: (BuildContext context,
-                                              List<bool> value, Widget? child) {
-                                            return dashboardWidget.value[0] ==
-                                                        true &&
-                                                    dashboardWidget.value[1] ==
-                                                        true
-                                                ? dashoardWidget(index: index)
-                                                : Container(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: 14, top: 8),
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.058,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.058,
-                                                    alignment: Alignment.center,
-                                                    child: Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primaryVariant,
-                                                    )));
-                                          })
-                                      : dashoardWidget(index: index),
+                                  : dashoardWidget(index: index),
                               onPressed: () async {
                                 if (index == 0) {
                                   Utility.updateLoges(
@@ -1447,8 +1332,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           ));
                                 }),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             Navigator.of(context).pop();
+                            if (yesActionText != null) {
+                              await _historyStudentInfoDb.clear();
+                            }
 
                             Navigator.push(
                               context,

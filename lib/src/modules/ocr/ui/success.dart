@@ -233,7 +233,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             studentId: idController.text));
                         // }
                         // COMMENT below section for enableing the camera
-                       
+
                         var result = await Navigator.push(
                           context,
                           MaterialPageRoute(
