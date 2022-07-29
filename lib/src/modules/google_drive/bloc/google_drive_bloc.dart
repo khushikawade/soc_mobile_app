@@ -253,31 +253,32 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               Globals.questionImgFilePath!.path.isNotEmpty &&
               (assessmentData[i].questionImgUrl == null ||
                   assessmentData[i].questionImgUrl == '')) {
-            if (Globals.questionImgUrl != null ||
-                Globals.questionImgUrl!.isEmpty) {
+            if (event.questionImage != ''||
+                event.questionImage.isEmpty) {
               assessmentData.forEach((element) {
-                element.questionImgUrl = Globals.questionImgUrl;
+                element.questionImgUrl = event.questionImage;
               });
-            } else {
-              String imgExtension = Globals.questionImgFilePath!.path.substring(
-                  Globals.questionImgFilePath!.path.lastIndexOf(".") + 1);
-
-              List<int> imageBytes =
-                  Globals.questionImgFilePath!.readAsBytesSync();
-
-              String imageB64 = base64Encode(imageBytes);
-
-              Globals.questionImgUrl = await _uploadImgB64AndGetUrl(
-                  imgBase64: imageB64,
-                  imgExtension: imgExtension,
-                  section: 'rubric-score');
-
-              Globals.questionImgUrl!.isNotEmpty
-                  ? assessmentData.forEach((element) {
-                      element.questionImgUrl = Globals.questionImgUrl;
-                    })
-                  : print("image erooooooooooooooooo");
             }
+            //  else {
+            //   String imgExtension = Globals.questionImgFilePath!.path.substring(
+            //       Globals.questionImgFilePath!.path.lastIndexOf(".") + 1);
+
+            //   List<int> imageBytes =
+            //       Globals.questionImgFilePath!.readAsBytesSync();
+
+            //   String imageB64 = base64Encode(imageBytes);
+
+            //   Globals.questionImgUrl = await _uploadImgB64AndGetUrl(
+            //       imgBase64: imageB64,
+            //       imgExtension: imgExtension,
+            //       section: 'rubric-score');
+
+            //   Globals.questionImgUrl!.isNotEmpty
+            //       ? assessmentData.forEach((element) {
+            //           element.questionImgUrl = Globals.questionImgUrl;
+            //         })
+            //       : print("image erooooooooooooooooo");
+            // }
           }
         }
 
@@ -572,15 +573,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
     if (event is QuestionImgToAwsBucked) {
       try {
-        Globals.questionImgUrl = '';
-        Globals.questionImgUrl = await _uploadImgB64AndGetUrl(
+        yield GoogleDriveLoading();
+      //  Globals.questionImgUrl = '';
+              String  questionImgUrl = await _uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: 'rubric-score');
 
-        Globals.questionImgUrl!.isNotEmpty
+        questionImgUrl.isNotEmpty
             ? print("question image url upload done")
             : print("error uploading question img");
+       yield QuestionImageSuccess(questionImageUrl: questionImgUrl);
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")

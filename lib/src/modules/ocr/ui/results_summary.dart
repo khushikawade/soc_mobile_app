@@ -53,6 +53,7 @@ class ResultsSummary extends StatefulWidget {
   String? shareLink;
   String? asssessmentName;
   bool? historysecondTime;
+  
   final bool? createdAsPremium;
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
@@ -75,6 +76,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   ValueNotifier<bool> isSuccessStateRecived = ValueNotifier<bool>(false);
   String? isAssessmentAlreadySaved = '';
   int? savedRecordCount;
+  String? questionImageUrl;
 
   String? webContentLink;
   String? sheetrubricScore;
@@ -282,6 +284,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                     List<StudentAssessmentInfo>>
                                                 snapshot) {
                                           if (snapshot.hasData) {
+                                            if(snapshot.data!.length != 0){
+                                               questionImageUrl = snapshot.data![0].questionImgUrl;
+                                            }
+                                         
                                             return listView(
                                               snapshot.data!,
                                             );
@@ -310,6 +316,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           scaffoldKey: scaffoldKey);
 
                                       _driveBloc2.add(UpdateDocOnDrive(
+                                        questionImage: questionImageUrl ?? "NA",
+
                                         createdAsPremium: createdAsPremium,
                                         assessmentName: Globals.assessmentName!,
                                         fileId: Globals.googleExcelSheetId,
@@ -378,6 +386,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                     List<StudentAssessmentInfo>>
                                                 snapshot) {
                                           if (snapshot.hasData) {
+                                             if(snapshot.data!.length != 0){
+                                               questionImageUrl = snapshot.data![0].questionImgUrl;
+                                            }
                                             return listView(snapshot.data!);
                                           }
                                           return Container(
@@ -1136,6 +1147,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                            questionImageLink:  questionImageUrl ,
                                 obj: widget.obj,
                                 createdAsPremium:
                                     widget.assessmentDetailPage == true
@@ -1467,6 +1479,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                 Navigator.pop(context);
                 _driveBloc2.add(UpdateDocOnDrive(
+                   questionImage: questionImageUrl ?? "NA",
                   createdAsPremium: Globals.isPremiumUser,
                   assessmentName: Globals.assessmentName!,
                   fileId: Globals.googleExcelSheetId,
@@ -1610,6 +1623,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           );
 
                           _driveBloc2.add(UpdateDocOnDrive(
+                             questionImage: questionImageUrl ?? "NA",
                               createdAsPremium: Globals.isPremiumUser,
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,

@@ -34,15 +34,18 @@ class CreateExcelSheetToDrive extends GoogleDriveEvent {
 class UpdateDocOnDrive extends GoogleDriveEvent {
   final List<StudentAssessmentInfo>? studentData;
   final String? fileId;
-  bool isLoading;
-  bool? isCustomRubricSelcted;
-  int? selectedRubric;
+  final bool isLoading;
+  final bool? isCustomRubricSelcted;
+  final int? selectedRubric;
+  final String questionImage;
+
   final String? assessmentName;
   final bool? createdAsPremium;
   UpdateDocOnDrive(
       {this.studentData,
       required this.fileId,
       required this.isLoading,
+      required this.questionImage,
       this.isCustomRubricSelcted,
       this.selectedRubric,
       required this.assessmentName,

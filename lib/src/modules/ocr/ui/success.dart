@@ -29,12 +29,14 @@ class SuccessScreen extends StatefulWidget {
   final bool? isFromHistoryAssessmentScanMore;
   final bool? createdAsPremium;
   final HistoryAssessment? obj;
+  final String? questionImageUrl;
   SuccessScreen(
       {Key? key,
       required this.img64,
       required this.imgPath,
       this.pointPossible,
       this.isScanMore,
+      this.questionImageUrl,
       required this.isFromHistoryAssessmentScanMore,
       this.createdAsPremium,
       this.obj})
@@ -238,6 +240,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                questionImageLink: widget.questionImageUrl ?? '',
                                     obj: widget.obj,
                                     createdAsPremium: widget.createdAsPremium,
                                     isFromHistoryAssessmentScanMore:
@@ -392,6 +395,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
+                                    questionImageLink: widget.questionImageUrl ?? '',
                                         obj: widget.obj,
                                         createdAsPremium:
                                             widget.createdAsPremium,
@@ -484,6 +488,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 CameraScreen(
+                                                                  questionImageLink: widget.questionImageUrl ?? '',
                                                                   obj: widget
                                                                       .obj,
                                                                   createdAsPremium:
@@ -1455,6 +1460,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
+              questionImageLink: widget.questionImageUrl ?? '',
                   obj: widget.obj,
                   createdAsPremium: widget.createdAsPremium,
                   isFromHistoryAssessmentScanMore:

@@ -29,6 +29,7 @@ class CameraScreen extends StatefulWidget {
   final scaffoldKey;
   final bool? oneTimeCamera;
   final bool? createdAsPremium;
+  final String? questionImageLink;
   final HistoryAssessment? obj;
 
   const CameraScreen(
@@ -36,6 +37,7 @@ class CameraScreen extends StatefulWidget {
       required this.pointPossible,
       required this.isScanMore,
       required this.onlyForPicture,
+      this.questionImageLink,
       this.scaffoldKey,
       required this.isFromHistoryAssessmentScanMore,
       this.oneTimeCamera,
@@ -274,6 +276,7 @@ class _CameraScreenState extends State<CameraScreen>
                               scaffoldKey: _scaffoldKey);
 
                           _driveBloc.add(UpdateDocOnDrive(
+                            questionImage: widget.questionImageLink ?? 'NA',
                               createdAsPremium: widget.createdAsPremium,
                               assessmentName: Globals.historyAssessmentName,
                               fileId: Globals.historyAssessmentFileId,
@@ -418,6 +421,7 @@ class _CameraScreenState extends State<CameraScreen>
                             // await _historyStudentInfoDb.putAt(0, element);
 
                             _driveBloc.add(UpdateDocOnDrive(
+                              questionImage: widget.questionImageLink ?? 'NA',
                                 createdAsPremium: widget.createdAsPremium ??
                                     Globals.isPremiumUser,
                                 assessmentName: Globals.historyAssessmentName,
@@ -516,6 +520,7 @@ class _CameraScreenState extends State<CameraScreen>
                             await _studentInfoDb.putAt(0, element);
 
                             _driveBloc.add(UpdateDocOnDrive(
+                              questionImage: widget.questionImageLink ?? 'NA',
                                 createdAsPremium: widget.createdAsPremium,
                                 assessmentName: Globals.assessmentName!,
                                 fileId: Globals.googleExcelSheetId,
@@ -686,6 +691,8 @@ class _CameraScreenState extends State<CameraScreen>
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SuccessScreen(
+                                            questionImageUrl: widget.questionImageLink,
+
                                                 obj: widget.obj,
                                                 createdAsPremium:
                                                     widget.createdAsPremium,

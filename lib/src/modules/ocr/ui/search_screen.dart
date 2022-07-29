@@ -22,8 +22,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SearchScreenPage extends StatefulWidget {
   final String? keyword;
   final String? grade;
+  final String? questionImage;
 
-  SearchScreenPage({Key? key, this.keyword, this.grade}) : super(key: key);
+  SearchScreenPage({Key? key, this.keyword, this.grade,required this.questionImage}) : super(key: key);
 
   @override
   State<SearchScreenPage> createState() => _SearchScreenPageState();
@@ -40,6 +41,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   static const double _KVertcalSpace = 60.0;
   OcrBloc _ocrBloc = OcrBloc();
   OcrBloc _ocrBloc2 = OcrBloc();
+  String? standardId;
+   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _debouncer = Debouncer(milliseconds: 10);
   List<SubjectDetailList> searchList = [];
   int standerdLearningLength = 0;
@@ -74,10 +77,10 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
-             isSuccessState:ValueNotifier<bool>(true),
+            isSuccessState: ValueNotifier<bool>(true),
             isBackButton: true,
             isbackOnSuccess: isBackFromCamera,
-            key: GlobalKey(),
+            key: _scaffoldKey,
           ),
 
           //  AppBar(
@@ -356,6 +359,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   SubjectSelection(
+                                                    questionimageUrl: widget.questionImage ?? 'NA',
                                                     selectedClass: widget.grade,
                                                     isSearchPage: true,
                                                     domainNameC:
@@ -371,7 +375,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                         learningStandard =
                                             list[index].domainNameC;
                                         subLearningStandard =
-                                            list[index].descriptionC;
+                                            list[index].standardAndDescriptionC!.split(' - ')[0];
+                                        standardId = list[index].id;
                                         addToRecentList(
                                             type: 'nycSub',
                                             obj: list[index],
@@ -569,12 +574,13 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       //   element.customRubricImage = rubricImgUrl ?? "NA";
                       //   element.grade = widget.grade;
                       // });
+                      
 
                       StudentAssessmentInfo element = studentInfodblist[0];
                       element.subject = widget.keyword;
                       element.learningStandard =
-                          learningStandard == null ? "NA" : learningStandard;
-                      element.subLearningStandard = subLearningStandard == null
+                          learningStandard == null ||  learningStandard == '' ? "NA" : learningStandard;
+                      element.subLearningStandard = subLearningStandard == null || learningStandard == ''
                           ? "NA"
                           : subLearningStandard;
                       element.scoringRubric = Globals.scoringRubric;
@@ -584,6 +590,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       await _studentInfoDb.putAt(0, element);
 
                       _googleDriveBloc.add(UpdateDocOnDrive(
+                         questionImage: widget.questionImage == ''? 'NA' :   widget.questionImage ?? 'NA',
                           createdAsPremium: Globals.isPremiumUser,
                           assessmentName: Globals.assessmentName!,
                           fileId: Globals.googleExcelSheetId,
@@ -592,19 +599,108 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               //list2
                               await Utility.getStudentInfoList(
                                   tableName: 'student_info')));
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ResultsSummary(
-                                  shareLink: Globals.shareableLink,
-                                  asssessmentName: Globals.assessmentName,
-                                  assessmentDetailPage: false,
-                                )),
-                      );
+                    
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => ResultsSummary(
+                      //             shareLink: Globals.shareableLink,
+                      //             asssessmentName: Globals.assessmentName,
+                      //             assessmentDetailPage: false,
+                      //           )),
+                      // );
                     },
                     label: Row(
                       children: [
+                        BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                            bloc: _googleDriveBloc,
+                            child: Container(),
+                            listener: (context, state) async {
+                              if (state is GoogleDriveLoading) {
+                                Utility.showLoadingDialog(context, true);
+                              }
+                              if (state is GoogleSuccess) {
+                                Globals.currentAssessmentId = '';
+                                _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
+                                  assessmentQueImage: widget.questionImage ?? 'NA',
+                                    assessmentName: Globals.assessmentName ??
+                                        'Assessment Name',
+                                    rubricScore: Globals.scoringRubric ?? '2',
+                                    subjectName: widget.keyword ??
+                                        '', //Student Id will not be there in case of custom subject
+                                    domainName: learningStandard ?? '',
+                                    subDomainName: subLearningStandard ?? '',
+                                    grade: widget.grade ?? '',
+                                    schoolId:
+                                        Globals.appSetting.schoolNameC ?? '',
+                                    standardId: standardId ?? '',
+                                    scaffoldKey: _scaffoldKey,
+                                    context: context,
+                                    fileId: Globals.googleExcelSheetId ??
+                                        'Excel Id not found',
+                                    sessionId: Globals.sessionId,
+                                    teacherContactId: Globals.teacherId,
+                                    teacherEmail: Globals.teacherEmailId));
+                              }
+                              if (state is ErrorState) {
+                                if (state.errorMsg ==
+                                    'Reauthentication is required') {
+                                  await Utility.refreshAuthenticationToken(
+                                      isNavigator: true,
+                                      errorMsg: state.errorMsg!,
+                                      context: context,
+                                      scaffoldKey: _scaffoldKey);
+
+                                  _googleDriveBloc.add(
+                                    UpdateDocOnDrive(
+                                      questionImage: widget.questionImage == ''? 'NA' :   widget.questionImage ?? 'NA',
+                                      createdAsPremium: Globals.isPremiumUser,
+                                      assessmentName: Globals.assessmentName,
+                                      fileId: Globals.googleExcelSheetId,
+                                      isLoading: true,
+                                      studentData:
+                                          //list2
+                                          await Utility.getStudentInfoList(
+                                              tableName: 'student_info'),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.of(context).pop();
+                                  Utility.currentScreenSnackBar(
+                                      "Something Went Wrong. Please Try Again.");
+                                }
+                              }
+                            }),
+                        BlocListener<OcrBloc, OcrState>(
+                            bloc: _ocrBloc,
+                            child: Container(),
+                            listener: (context, state) {
+                              if (state is OcrLoading) {
+                                //Utility.showLoadingDialog(context);
+                              }
+                              if (state is AssessmentIdSuccess) {
+                                Navigator.of(context).pop();
+                                Utility.updateLoges(
+                                    // ,
+                                    activityId: '14',
+                                    description: 'Save to drive',
+                                    operationResult: 'Success');
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ResultsSummary(
+                                            fileId: Globals.googleExcelSheetId,
+                                           // subjectId:  ?? '',
+                                            standardId: standardId ?? '',
+                                            asssessmentName:
+                                                Globals.assessmentName,
+                                            shareLink: '',
+                                            assessmentDetailPage: false,
+                                          )),
+                                );
+                              }
+                            }),
                         Utility.textWidget(
                             text: 'Save to drive',
                             context: context,

@@ -29,13 +29,15 @@ class SubjectSelection extends StatefulWidget {
   final String? domainNameC;
   final String? searchClass;
   final String? selectedSubject;
+  final String? questionimageUrl;
   SubjectSelection(
       {Key? key,
       required this.selectedClass,
       this.isSearchPage,
       this.domainNameC,
       this.searchClass,
-      this.selectedSubject})
+      this.selectedSubject,
+      required this.questionimageUrl})
       : super(key: key);
 
   @override
@@ -82,6 +84,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   @override
   initState() {
     if (widget.isSearchPage == true) {
+      isSkipButton.value = true;
       _ocrBloc.add(FatchSubjectDetails(
           type: 'nycSub',
           keyword: widget.domainNameC,
@@ -128,15 +131,21 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     FocusManager.instance.primaryFocus?.unfocus();
                     if (pageIndex.value == 1) {
                       // isSkipButton.value = false;
+                      learningStandard = '';
                       isSkipButton.value = false;
-                      subjectIndex1.value = 0;
+                      // subjectIndex1.value = -1;
+                      nycIndex1.value = -1;
                       isSubmitButton.value = false;
                       _ocrBloc.add(FatchSubjectDetails(
                           type: 'subject', keyword: widget.selectedClass));
                     } else if (pageIndex.value == 2) {
                       // isSkipButton.value = false;
+                      nycSubIndex1.value = -1;
+                      learningStandard = '';
+                      subLearningStandard = '';
                       isSubmitButton.value = false;
-                      nycIndex1.value = 0;
+                      isSkipButton.value = true;
+                      // nycIndex1.value = -1;
                       if (widget.isSearchPage == true) {
                         //   FatchSubjectDetails(type: 'nyc', keyword: keyword));
                         Navigator.pop(context);
@@ -182,6 +191,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 SearchScreenPage(
+                                                  questionImage:
+                                                      widget.questionimageUrl ??
+                                                          '',
                                                   keyword: keyword,
                                                   grade: widget.selectedClass,
                                                 )),
@@ -243,6 +255,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 SearchScreenPage(
+                                                  questionImage:
+                                                      widget.questionimageUrl ??
+                                                          '',
                                                   keyword: keyword,
                                                   grade: widget.selectedClass,
                                                 )),
@@ -423,6 +438,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     onTap: () {
                       subLearningStandard =
                           list[index].standardAndDescriptionC!.split(' - ')[0];
+                      standardId = list[index].id ?? '';
                       if (pageIndex.value == 2) {
                         nycSubIndex1.value = index;
                         if (nycSubIndex1.value != -1) {
@@ -678,7 +694,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               isSkipButton.value = true;
                               subject = list[index].subjectNameC ?? '';
                               subjectId = list[index].subjectC ?? '';
-                              standardId = list[index].id ?? '';
+                              // standardId = list[index].id ?? '';
 
                               subjectIndex1.value = index;
 
@@ -688,6 +704,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   subject != null)) {
                                 isSubmitButton.value = true;
                               } else {
+                                isSkipButton.value = true;
                                 isSubmitButton.value = false;
                               }
 
@@ -982,17 +999,26 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         Globals.currentAssessmentId = '';
                                         _ocrBloc.add(
                                             SaveAssessmentToDashboardAndGetId(
+                                                assessmentQueImage:
+                                                    widget.questionimageUrl ??
+                                                        '',
                                                 assessmentName:
                                                     Globals.assessmentName ??
                                                         'Assessment Name',
                                                 rubricScore:
                                                     Globals.scoringRubric ??
                                                         '2',
-                                                subjectId: subjectId ??
+                                                subjectName: subject ??
                                                     '', //Student Id will not be there in case of custom subject
+                                                domainName:
+                                                    learningStandard ?? '',
+                                                subDomainName:
+                                                    subLearningStandard ?? '',
                                                 schoolId: Globals.appSetting
                                                         .schoolNameC ??
                                                     '',
+                                                grade:
+                                                    widget.selectedClass ?? '',
                                                 standardId: standardId ?? '',
                                                 scaffoldKey: _scaffoldKey,
                                                 context: context,
@@ -1017,6 +1043,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                           _googleDriveBloc.add(
                                             UpdateDocOnDrive(
+                                                questionImage: widget
+                                                            .questionimageUrl ==
+                                                        ''
+                                                    ? 'NA'
+                                                    : widget.questionimageUrl ??
+                                                        'NA',
                                                 createdAsPremium:
                                                     Globals.isPremiumUser,
                                                 assessmentName:
@@ -1115,14 +1147,27 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           Globals.currentAssessmentId = '';
                                           _ocrBloc.add(
                                               SaveAssessmentToDashboardAndGetId(
+                                                  assessmentQueImage:
+                                                      widget.questionimageUrl ??
+                                                          '',
                                                   assessmentName:
                                                       Globals.assessmentName ??
                                                           'Assessment Name',
                                                   rubricScore:
                                                       Globals.scoringRubric ??
                                                           '2',
-                                                  subjectId: subjectId ??
-                                                      '', //Student Id will not be there in case of custom subject
+                                                  subjectName: widget.isSearchPage == true
+                                                      ? widget.selectedSubject ??
+                                                          ''
+                                                      : subject ??
+                                                          '', //Student Id will not be there in case of custom subject
+                                                  domainName: widget.isSearchPage == true
+                                                      ? widget.domainNameC ?? ''
+                                                      : learningStandard ?? '',
+                                                  subDomainName:
+                                                      subLearningStandard ?? '',
+                                                  grade: widget.selectedClass ??
+                                                      '',
                                                   schoolId: Globals.appSetting
                                                           .schoolNameC ??
                                                       '',
@@ -1133,10 +1178,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                           .googleExcelSheetId ??
                                                       'Excel Id not found',
                                                   sessionId: Globals.sessionId,
-                                                  teacherContactId:
-                                                      Globals.teacherId,
-                                                  teacherEmail:
-                                                      Globals.teacherEmailId));
+                                                  teacherContactId: Globals.teacherId,
+                                                  teacherEmail: Globals.teacherEmailId));
                                         }
                                         if (state is ErrorState) {
                                           if (state.errorMsg ==
@@ -1150,6 +1193,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                             _googleDriveBloc.add(
                                               UpdateDocOnDrive(
+                                                questionImage: widget
+                                                            .questionimageUrl ==
+                                                        ''
+                                                    ? 'NA'
+                                                    : widget.questionimageUrl ??
+                                                        'NA',
                                                 createdAsPremium:
                                                     Globals.isPremiumUser,
                                                 assessmentName:
@@ -1456,22 +1505,30 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
         element.subject = subject;
         element.learningStandard =
-            learningStandard == null ? "NA" : learningStandard;
+            learningStandard == null || learningStandard == ''
+                ? "NA"
+                : learningStandard;
         element.subLearningStandard =
-            subLearningStandard == null ? "NA" : subLearningStandard;
+            subLearningStandard == null || subLearningStandard == ''
+                ? "NA"
+                : subLearningStandard;
         element.scoringRubric = Globals.scoringRubric;
         element.className = Globals.assessmentName!.split("_")[1];
         element.customRubricImage = rubricImgUrl ?? "NA";
         element.grade = widget.selectedClass;
         element.questionImgUrl =
-            Globals.questionImgUrl != null && Globals.questionImgUrl!.isNotEmpty
-                ? Globals.questionImgUrl
-                : "NA";
+            widget.questionimageUrl == '' ? "NA" : widget.questionimageUrl;
+        // Globals.questionImgUrl != null && Globals.questionImgUrl!.isNotEmpty
+        //     ? Globals.questionImgUrl
+        //     : "NA";
 
         await _studentInfoDb.putAt(0, element);
 
         _googleDriveBloc.add(
           UpdateDocOnDrive(
+              questionImage: widget.questionimageUrl == ''
+                  ? 'NA'
+                  : widget.questionimageUrl ?? 'NA',
               createdAsPremium: Globals.isPremiumUser,
               assessmentName: Globals.assessmentName,
               fileId: Globals.googleExcelSheetId,

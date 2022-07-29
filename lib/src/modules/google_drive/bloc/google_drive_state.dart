@@ -33,6 +33,19 @@ class GoogleDriveGetSuccess extends GoogleDriveState {
   List<Object> get props => [obj!];
 }
 
+class QuestionImageSuccess extends GoogleDriveState {
+  final String? questionImageUrl;
+
+  QuestionImageSuccess({required this.questionImageUrl});
+
+  QuestionImageSuccess copyWith({final questionImageUrl}) {
+    return QuestionImageSuccess(questionImageUrl: questionImageUrl ?? this.questionImageUrl);
+  }
+
+  @override
+  List<Object> get props => [questionImageUrl!];
+}
+
 // class GoogleNoAssessment extends GoogleDriveState {
 //   @override
 //   List<Object> get props => [];

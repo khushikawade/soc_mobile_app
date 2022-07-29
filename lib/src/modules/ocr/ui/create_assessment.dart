@@ -40,6 +40,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
   // int selectedGrade.value = 0;
   final _formKey = GlobalKey<FormState>();
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+  // To update image to s3 bucket
+  GoogleDriveBloc _googleDriveBloc2 = new GoogleDriveBloc();
   // final ScrollController listScrollController = ScrollController();
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
@@ -633,16 +635,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 if (assessmentNameError.value.isNotEmpty &&
                     assessmentNameError.value.length > 2 &&
                     classError.value.isNotEmpty) {
-                  if (imageFile != null && imageFile!.path.isNotEmpty) {
-                    String imgExtension = imageFile!.path
-                        .substring(imageFile!.path.lastIndexOf(".") + 1);
-                    List<int> imageBytes = imageFile!.readAsBytesSync();
-                    String imageB64 = base64Encode(imageBytes);
-                    Globals.questionImgFilePath = imageFile;
-
-                    _googleDriveBloc.add(QuestionImgToAwsBucked(
-                        imgBase64: imageB64, imgExtension: imgExtension));
-                  }
                   Globals.assessmentName =
                       "${assessmentController.text}_${classController.text}";
                   //Create excel sheet if not created already for current assessment
@@ -651,8 +643,17 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     _googleDriveBloc.add(CreateExcelSheetToDrive(
                         name:
                             "${assessmentController.text}_${classController.text}"));
+                  } else if (imageFile != null && imageFile!.path.isNotEmpty) {
+                    String imgExtension = imageFile!.path
+                        .substring(imageFile!.path.lastIndexOf(".") + 1);
+                    List<int> imageBytes = imageFile!.readAsBytesSync();
+                    String imageB64 = base64Encode(imageBytes);
+                    Globals.questionImgFilePath = imageFile;
+
+                    _googleDriveBloc2.add(QuestionImgToAwsBucked(
+                        imgBase64: imageB64, imgExtension: imgExtension));
                   } else {
-                    _navigateToSubjectSection();
+                    _navigateToSubjectSection('');
                   }
 
                   // : Navigator.push(
@@ -679,7 +680,20 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
                       if (state is ExcelSheetCreated) {
                         Navigator.of(context).pop();
-                        _navigateToSubjectSection();
+
+                        // to update question image to aws s3 bucket and get the link
+                        if (imageFile != null && imageFile!.path.isNotEmpty) {
+                          String imgExtension = imageFile!.path
+                              .substring(imageFile!.path.lastIndexOf(".") + 1);
+                          List<int> imageBytes = imageFile!.readAsBytesSync();
+                          String imageB64 = base64Encode(imageBytes);
+                          Globals.questionImgFilePath = imageFile;
+
+                          _googleDriveBloc2.add(QuestionImgToAwsBucked(
+                              imgBase64: imageB64, imgExtension: imgExtension));
+                        } else {
+                          _navigateToSubjectSection('');
+                        }
                       }
                       if (state is ErrorState) {
                         if (state.errorMsg == 'Reauthentication is required') {
@@ -697,6 +711,40 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           Utility.currentScreenSnackBar(
                               "Something Went Wrong. Please Try Again.");
                         }
+                        // Navigator.of(context).pop();
+                        // Utility.currentScreenSnackBar(
+                        //     "Something Went Wrong. Please Try Again.");
+                      }
+                    }),
+                BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                    bloc: _googleDriveBloc2,
+                    child: Container(),
+                    listener: (context, state) async {
+                      if (state is GoogleDriveLoading) {
+                        Utility.showLoadingDialog(context, true);
+                      }
+
+                      if (state is QuestionImageSuccess) {
+                        Navigator.of(context).pop();
+
+                        _navigateToSubjectSection(state.questionImageUrl);
+                      }
+                      if (state is ErrorState) {
+                        // if (state.errorMsg == 'Reauthentication is required') {
+                        //   await Utility.refreshAuthenticationToken(
+                        //       isNavigator: true,
+                        //       errorMsg: state.errorMsg!,
+                        //       context: context,
+                        //       scaffoldKey: scaffoldKey);
+
+                        //   _googleDriveBloc.add(CreateExcelSheetToDrive(
+                        //       name:
+                        //           "${assessmentController.text}_${classController.text}"));
+                        // } else {
+                        Navigator.of(context).pop();
+                        Utility.currentScreenSnackBar(
+                            "Something Went Wrong. Please Try Again.");
+                        // }
                         // Navigator.of(context).pop();
                         // Utility.currentScreenSnackBar(
                         //     "Something Went Wrong. Please Try Again.");
@@ -746,7 +794,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     // }
   }
 
-  void _navigateToSubjectSection() async {
+  void _navigateToSubjectSection(String? questionImageUrl) async {
     for (int i = 0; i < widget.classSuggestions.length; i++) {
       classController.text == widget.classSuggestions[i]
           ? widget.classSuggestions.removeAt(i)
@@ -772,6 +820,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
       context,
       MaterialPageRoute(
           builder: (context) => SubjectSelection(
+                questionimageUrl: questionImageUrl ?? '',
                 selectedClass: widget.customGrades[selectedGrade.value],
               )),
     );

@@ -478,15 +478,19 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is SaveAssessmentToDashboardAndGetId) {
       yield OcrLoading();
       String dashboardId = await saveAssessmentToDatabase(
+          assessmentQueImage: event.assessmentQueImage,
           fileId: event.fileId,
           assessmentName: event.assessmentName,
           rubicScore: await rubricPickList(event.rubricScore),
-          subjectId: event.subjectId,
+          subjectName: event.subjectName,
+          grade: event.grade,
+          domainName: event.domainName,
+          subDomainName: event.subDomainName,
           schoolId: event.schoolId,
           standardId: event.standardId,
           sessionId: event.sessionId,
-          teacherContactId: event.teacherContactId!,
-          teacherEmail: event.teacherEmail!);
+          teacherContactId: event.teacherContactId,
+          teacherEmail: event.teacherEmail);
 
       if (dashboardId.isNotEmpty) {
         Globals.currentAssessmentId = dashboardId;
@@ -911,13 +915,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<String> saveAssessmentToDatabase({
     required String? assessmentName,
     required String? rubicScore,
-    required String? subjectId,
+    required String? subjectName,
+    required String? grade,
+    required String? domainName,
+    required String? subDomainName,
     required String? schoolId,
     required String? standardId,
     required String? fileId,
     required String sessionId,
     required String teacherContactId,
     required String teacherEmail,
+    required String assessmentQueImage,
   }) async {
     try {
       String currentDate = Utility.getCurrentDate(DateTime.now());
@@ -934,12 +942,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "School__c": schoolId,
         "School_year__c": currentDate.split("-")[0],
         "Standard__c": standardId != '' ? standardId : null,
-        "Subject__c": subjectId != '' ? subjectId : null,
+        "Subject__c": subjectName,
+        "Grade__c": grade,
+        "Domain__c": domainName,
+        "Sub_Domain__c": subDomainName,
         "Google_File_Id": fileId ?? '',
         "Session_Id": sessionId,
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
-        "Created_As_Premium": Globals.isPremiumUser.toString()
+        "Created_As_Premium": Globals.isPremiumUser.toString(),
+        "Assessment_Que_Image__c": assessmentQueImage
       };
       final ResponseModel response = await _dbServices.postapi(
         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
@@ -1086,7 +1098,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
       final body = {
         "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
-        "to": "techadmin@solvedconsulting.com, appdevelopersdp7@gmail.com",
+        "to": "techadmin@solvedconsulting.com", //, appdevelopersdp7@gmail.com",
         "subject": "Data Saved To The Dashboard",
         // "html":
         "text":

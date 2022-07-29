@@ -59,7 +59,7 @@ class _OpticalCharacterRecognitionPageState
 
   @override
   void initState() {
-    Globals.questionImgUrl = '';
+   // Globals.questionImgUrl = '';
     Globals.questionImgFilePath = null;
     Utility.setLocked();
     _homeBloc.add(FetchStandardNavigationBar());

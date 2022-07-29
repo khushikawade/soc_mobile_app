@@ -118,28 +118,36 @@ class SaveAssessmentToDashboard extends OcrEvent {
 class SaveAssessmentToDashboardAndGetId extends OcrEvent {
   final String assessmentName;
   final String rubricScore;
-  final String subjectId;
+  final String subjectName;
+  final String subDomainName;
+  final String domainName;
+  final String grade;
   final String schoolId;
   final String standardId;
   final String fileId;
   final String sessionId;
   final scaffoldKey;
   final context;
-  final String? teacherContactId;
-  final String? teacherEmail;
+  final String teacherContactId;
+  final String teacherEmail;
+  final String assessmentQueImage;
 
   SaveAssessmentToDashboardAndGetId(
       {required this.assessmentName,
       required this.rubricScore,
-      required this.subjectId,
+      required this.subjectName,
+      required this.grade,
       required this.schoolId,
       required this.standardId,
+      required this.domainName,
+      required this.subDomainName,
       required this.scaffoldKey,
       required this.context,
       required this.sessionId,
       required this.fileId,
       required this.teacherContactId,
-      required this.teacherEmail});
+      required this.teacherEmail,
+      required this.assessmentQueImage});
 
   @override
   List<Object> get props => [];
