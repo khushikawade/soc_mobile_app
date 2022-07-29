@@ -518,7 +518,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         yield OcrLoading2();
         List object;
         object = await _getTheDashBoardStatus(fileId: event.fileId);
-
+        // await Future.delayed(Duration(seconds: 10));
         if (object[1] != '') {
           yield AssessmentDashboardStatus(
               resultRecordCount: object[0], assessmentId: object[1]);
@@ -1193,6 +1193,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       if (response.statusCode == 200) {
         var data = response.data["body"];
         if (data.length > 0) {
+          print('dddddddddddddddddddddddddddddddddddddddddddddddddd');
           print(
               "--------->printing length in saved on dashboard ${data.length}");
           return data.length;

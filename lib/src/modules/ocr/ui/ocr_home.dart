@@ -57,8 +57,6 @@ class _OpticalCharacterRecognitionPageState
 
   int myTimeStamp = DateTime.now().microsecondsSinceEpoch;
 
-  LocalDatabase<StudentAssessmentInfo> _localDb = LocalDatabase('student_info');
-
   @override
   void initState() {
     Globals.questionImgUrl = '';
@@ -127,14 +125,7 @@ class _OpticalCharacterRecognitionPageState
                                       tittle: '',
                                       isbuttomsheet: false,
                                       language: Globals.selectedLanguage,
-                                    )
-                                // OcrPdfViewer(
-                                //       url: Overrides.rubric_Score_PDF_URL,
-                                //       tittle: "information",
-                                //       isbuttomsheet: true,
-                                //       language: Globals.selectedLanguage,
-                                //     )
-                                ));
+                                    )));
                       },
                       icon: Icon(
                         info,
@@ -153,18 +144,6 @@ class _OpticalCharacterRecognitionPageState
                         ? MediaQuery.of(context).size.height * 0.6
                         : MediaQuery.of(context).size.height * 0.47,
                     child: scoringRubric()),
-                // Container(
-                //   child: BlocListener<HomeBloc, HomeState>(
-                //       bloc: _homeBloc,
-                //       listener: (context, state) async {
-                //         if (state is BottomNavigationBarSuccess) {
-                //           AppTheme.setDynamicTheme(Globals.appSetting, context);
-                //           Globals.appSetting = AppSetting.fromJson(state.obj);
-                //           setState(() {});
-                //         }
-                //       },
-                //       child: EmptyContainer()),
-                // ),
               ],
             ),
           ),
@@ -195,8 +174,12 @@ class _OpticalCharacterRecognitionPageState
                     } else {
                       //Utility.showLoadingDialog(context);
                       // Globals.studentInfo!.clear();
-
+                      LocalDatabase<StudentAssessmentInfo> _localDb =
+                          LocalDatabase('student_info');
                       await _localDb.clear();
+
+                      //clears scan more list
+                      Globals.scanMoreStudentInfoLength = null;
 
                       if (Globals.googleDriveFolderId!.isEmpty) {
                         _triggerDriveFolderEvent(false);
