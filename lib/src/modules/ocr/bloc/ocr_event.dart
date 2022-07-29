@@ -85,7 +85,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
   final String rubricScore;
   final String subjectId;
   final String schoolId;
-  final String standardId;
+  // final String standardId;
   final int? previouslyAddedListLength;
   final scaffoldKey;
   final context;
@@ -100,7 +100,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
     required this.rubricScore,
     required this.subjectId,
     required this.schoolId,
-    required this.standardId,
+    // required this.standardId,
     required this.scaffoldKey,
     required this.context,
     this.previouslyAddedListLength,
@@ -115,7 +115,7 @@ class SaveAssessmentToDashboard extends OcrEvent {
   List<Object> get props => [];
 }
 
-class SaveAndGetAssessmentID extends OcrEvent {
+class SaveAssessmentToDashboardAndGetId extends OcrEvent {
   final String assessmentName;
   final String rubricScore;
   final String subjectId;
@@ -128,7 +128,7 @@ class SaveAndGetAssessmentID extends OcrEvent {
   final String? teacherContactId;
   final String? teacherEmail;
 
-  SaveAndGetAssessmentID(
+  SaveAssessmentToDashboardAndGetId(
       {required this.assessmentName,
       required this.rubricScore,
       required this.subjectId,

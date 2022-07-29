@@ -980,27 +980,30 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       }
                                       if (state is GoogleSuccess) {
                                         Globals.currentAssessmentId = '';
-                                        _ocrBloc.add(SaveAndGetAssessmentID(
-                                            assessmentName:
-                                                Globals.assessmentName ??
-                                                    'Assessment Name',
-                                            rubricScore:
-                                                Globals.scoringRubric ?? '2',
-                                            subjectId: subjectId ??
-                                                '', //Student Id will not be there in case of custom subject
-                                            schoolId: Globals
-                                                    .appSetting.schoolNameC ??
-                                                '',
-                                            standardId: standardId ?? '',
-                                            scaffoldKey: _scaffoldKey,
-                                            context: context,
-                                            fileId:
-                                                Globals.googleExcelSheetId ??
+                                        _ocrBloc.add(
+                                            SaveAssessmentToDashboardAndGetId(
+                                                assessmentName:
+                                                    Globals.assessmentName ??
+                                                        'Assessment Name',
+                                                rubricScore:
+                                                    Globals.scoringRubric ??
+                                                        '2',
+                                                subjectId: subjectId ??
+                                                    '', //Student Id will not be there in case of custom subject
+                                                schoolId: Globals.appSetting
+                                                        .schoolNameC ??
+                                                    '',
+                                                standardId: standardId ?? '',
+                                                scaffoldKey: _scaffoldKey,
+                                                context: context,
+                                                fileId: Globals
+                                                        .googleExcelSheetId ??
                                                     'Excel Id not found',
-                                            sessionId: Globals.sessionId,
-                                            teacherContactId: Globals.teacherId,
-                                            teacherEmail:
-                                                Globals.teacherEmailId));
+                                                sessionId: Globals.sessionId,
+                                                teacherContactId:
+                                                    Globals.teacherId,
+                                                teacherEmail:
+                                                    Globals.teacherEmailId));
                                       }
                                       if (state is ErrorState) {
                                         if (state.errorMsg ==
@@ -1110,28 +1113,30 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         }
                                         if (state is GoogleSuccess) {
                                           Globals.currentAssessmentId = '';
-                                          _ocrBloc.add(SaveAndGetAssessmentID(
-                                              assessmentName:
-                                                  Globals.assessmentName ??
-                                                      'Assessment Name',
-                                              rubricScore:
-                                                  Globals.scoringRubric ?? '2',
-                                              subjectId: subjectId ??
-                                                  '', //Student Id will not be there in case of custom subject
-                                              schoolId: Globals
-                                                      .appSetting.schoolNameC ??
-                                                  '',
-                                              standardId: standardId ?? '',
-                                              scaffoldKey: _scaffoldKey,
-                                              context: context,
-                                              fileId:
-                                                  Globals.googleExcelSheetId ??
+                                          _ocrBloc.add(
+                                              SaveAssessmentToDashboardAndGetId(
+                                                  assessmentName:
+                                                      Globals.assessmentName ??
+                                                          'Assessment Name',
+                                                  rubricScore:
+                                                      Globals.scoringRubric ??
+                                                          '2',
+                                                  subjectId: subjectId ??
+                                                      '', //Student Id will not be there in case of custom subject
+                                                  schoolId: Globals.appSetting
+                                                          .schoolNameC ??
+                                                      '',
+                                                  standardId: standardId ?? '',
+                                                  scaffoldKey: _scaffoldKey,
+                                                  context: context,
+                                                  fileId: Globals
+                                                          .googleExcelSheetId ??
                                                       'Excel Id not found',
-                                              sessionId: Globals.sessionId,
-                                              teacherContactId:
-                                                  Globals.teacherId,
-                                              teacherEmail:
-                                                  Globals.teacherEmailId));
+                                                  sessionId: Globals.sessionId,
+                                                  teacherContactId:
+                                                      Globals.teacherId,
+                                                  teacherEmail:
+                                                      Globals.teacherEmailId));
                                         }
                                         if (state is ErrorState) {
                                           if (state.errorMsg ==

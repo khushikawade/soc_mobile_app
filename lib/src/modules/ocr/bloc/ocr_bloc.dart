@@ -386,6 +386,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             throw ('something went wrong');
           }
         } else {
+          //Using for history assessment details page
           String subjectId;
           String standardId;
           var standardObject;
@@ -403,8 +404,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
                 ? standardObject['Subject__c']
                 : '';
           } else {
-            standardId = event.standardId;
-            subjectId = event.subjectId;
+            // Not in use now
+            // standardId = event.standardId;
+            // subjectId = event.subjectId;
           }
           //TO DO
           // if (event.isHistoryAssessmentSection == true) {
@@ -473,9 +475,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         throw (e);
       }
     }
-    if (event is SaveAndGetAssessmentID) {
+    if (event is SaveAssessmentToDashboardAndGetId) {
       yield OcrLoading();
-      String dashboardId = await saveAssessmentToDashboard(
+      String dashboardId = await saveAssessmentToDatabase(
           fileId: event.fileId,
           assessmentName: event.assessmentName,
           rubicScore: await rubricPickList(event.rubricScore),
@@ -587,16 +589,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<List<SubjectDetailList>> fatchLocalSubject(String classNo) async {
     LocalDatabase<SubjectDetailList> _localDb =
         LocalDatabase('Subject_list$classNo');
-        //Clear subject local data to resolve loading issue
-        SharedPreferences clearSubjectCache =
-            await SharedPreferences.getInstance();
-        final clearChacheResult =
-            clearSubjectCache.getBool('Clear_local_Subject');
+    //Clear subject local data to resolve loading issue
+    SharedPreferences clearSubjectCache = await SharedPreferences.getInstance();
+    final clearChacheResult = clearSubjectCache.getBool('Clear_local_Subject');
 
-        if (clearChacheResult != true) {
-          _localDb.clear();
-          await clearSubjectCache.setBool('Clear_local_Subject', true);
-        }
+    if (clearChacheResult != true) {
+      _localDb.clear();
+      await clearSubjectCache.setBool('Clear_local_Subject', true);
+    }
     List<SubjectDetailList>? _localData = await _localDb.getData();
     return _localData;
   }
@@ -614,7 +614,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       LocalDatabase<SubjectDetailList> _localDb =
           LocalDatabase(Strings.ocrSubjectObjectName);
       List<SubjectDetailList>? _localData = await _localDb.getData();
-       
+
       print('Subject Local data length: ${_localData.length}');
       //Common detail list to save all deatails of subject for specific grade. Include : Subject, Learning standard and sub learning standard
       List<SubjectDetailList> subjectDetailList = [];
@@ -908,7 +908,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<String> saveAssessmentToDashboard({
+  Future<String> saveAssessmentToDatabase({
     required String? assessmentName,
     required String? rubicScore,
     required String? subjectId,

@@ -1009,7 +1009,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             subjectId: widget.subjectId ?? '',
                                             schoolId: Globals.appSetting
                                                 .schoolNameC!, //Account Id
-                                            standardId: widget.standardId ?? '',
+                                            // standardId: widget.standardId ?? '',
                                             scaffoldKey: scaffoldKey,
                                             context: context,
                                             isHistoryAssessmentSection:
@@ -1056,7 +1056,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           subjectId: widget.subjectId ?? '',
                                           schoolId: Globals.appSetting
                                               .schoolNameC!, //Account Id
-                                          standardId: widget.standardId ?? '',
+                                          // standardId: widget.standardId ?? '',
                                           scaffoldKey: scaffoldKey,
                                           context: context,
                                           isHistoryAssessmentSection:
