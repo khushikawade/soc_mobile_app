@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
+import '../../../services/local_database/local_db.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
 // import 'package:Soc/src/modules/ocr/ui/ocr_background_widget.dart';
@@ -193,12 +195,14 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     return Column(
       children: [
         InkWell(
-          onTap: () {
+          onTap: () async {
+            LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+                LocalDatabase('history_student_info');
             bool createdAsPremium = false;
             if (list[index].isCreatedAsPremium == "true") {
               createdAsPremium = true;
             }
-
+            await _historyStudentInfoDb.clear();
             Navigator.push(
               context,
               MaterialPageRoute(

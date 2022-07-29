@@ -16,6 +16,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -96,6 +97,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       LocalDatabase('history_student_info');
 
   String? historyAssessmentId;
+
+  ValueNotifier<List<bool>> dashboardWidget =
+      ValueNotifier<List<bool>>([false, false]);
 
   @override
   void initState() {
@@ -232,12 +236,23 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       AsyncSnapshot<List<StudentAssessmentInfo>>
                                           snapshot) {
                                     if (snapshot.hasData) {
-                                      return Text('${snapshot.data!.length}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3);
+                                      return snapshot.data!.length == 0
+                                          ? CupertinoActivityIndicator(
+                                              color: Colors.white,
+                                            )
+                                          : Text('${snapshot.data!.length}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline3);
                                     }
-                                    return CircularProgressIndicator();
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return CupertinoActivityIndicator(
+                                        color: Colors.white,
+                                      );
+                                    }
+
+                                    return Container();
                                   });
                             }),
                       ],
@@ -346,6 +361,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 //     "record length ---===========> ${state.obj.length}");
                                 // print(
                                 //     "record length ---===========> $savedRecordCount");
+                                print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+                                print(savedRecordCount);
+                                dashboardWidget.value[1] = true;
                                 savedRecordCount != null
                                     ? savedRecordCount == state.obj.length
                                         ? dashoardState.value = 'Success'
@@ -530,6 +548,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 state.resultRecordCount == null) {
                               dashoardState.value = '';
                             } else {
+                              dashboardWidget.value[0] = true;
                               savedRecordCount = state.resultRecordCount;
                               historyAssessmentId = state.assessmentId;
                             }
@@ -857,52 +876,41 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         }
                                       },
                                     )
-                                  : Icon(
-                                      IconData(
-                                          (widget.assessmentDetailPage!
-                                                      ? index == 2
-                                                      : index == 3) &&
-                                                  dashoardState.value ==
-                                                      'Success'
-                                              ? 0xe877
-                                              : iconsList[index],
-                                          fontFamily: Overrides.kFontFam,
-                                          fontPackage: Overrides.kFontPkg),
-                                      size: (widget.assessmentDetailPage!
-                                                  ? index == 2
-                                                  : index == 3) &&
-                                              dashoardState.value == ''
-                                          ? Globals.deviceType == 'phone'
-                                              ? 38
-                                              : 55
-                                          : Globals.deviceType == 'phone'
-                                              ? 32
-                                              : 48,
-                                      color: (widget.assessmentDetailPage! &&
-                                                  index == 2 &&
-                                                  isAssessmentAlreadySaved ==
-                                                      'YES') ||
-                                              (widget.assessmentDetailPage! &&
-                                                  index == 2 &&
-                                                  dashoardState.value ==
-                                                      'Success')
-                                          ? Colors.green
-                                          : index == 2 ||
-                                                  (index == 3 &&
-                                                      dashoardState.value == '')
-                                              ? Theme.of(context)
-                                                          .backgroundColor ==
-                                                      Color(0xff000000)
-                                                  ? Colors.white
-                                                  : Colors.black
-                                              : (widget.assessmentDetailPage!
-                                                          ? index == 2
-                                                          : index == 3) &&
-                                                      dashoardState.value ==
-                                                          'Success'
-                                                  ? Colors.green
-                                                  : AppTheme.kButtonColor,
-                                    ),
+                                  : widget.assessmentDetailPage == true
+                                      ? ValueListenableBuilder(
+                                          valueListenable: dashboardWidget,
+                                          child: Container(),
+                                          builder: (BuildContext context,
+                                              List<bool> value, Widget? child) {
+                                            return dashboardWidget.value[0] ==
+                                                        true &&
+                                                    dashboardWidget.value[1] ==
+                                                        true
+                                                ? dashoardWidget(index: index)
+                                                : Container(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 14, top: 8),
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.058,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.058,
+                                                    alignment: Alignment.center,
+                                                    child: Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .primaryVariant,
+                                                    )));
+                                          })
+                                      : dashoardWidget(index: index),
                               onPressed: () async {
                                 if (index == 0) {
                                   Utility.updateLoges(
@@ -1760,5 +1768,40 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   void _futurMethod() async {
     _listCount.value =
         await Utility.getStudentInfoListLength(tableName: 'student_info');
+  }
+
+  Widget dashoardWidget({required int index}) {
+    return Icon(
+      IconData(
+          (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+                  dashoardState.value == 'Success'
+              ? 0xe877
+              : iconsList[index],
+          fontFamily: Overrides.kFontFam,
+          fontPackage: Overrides.kFontPkg),
+      size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+              dashoardState.value == ''
+          ? Globals.deviceType == 'phone'
+              ? 38
+              : 55
+          : Globals.deviceType == 'phone'
+              ? 32
+              : 48,
+      color: (widget.assessmentDetailPage! &&
+                  index == 2 &&
+                  isAssessmentAlreadySaved == 'YES') ||
+              (widget.assessmentDetailPage! &&
+                  index == 2 &&
+                  dashoardState.value == 'Success')
+          ? Colors.green
+          : index == 2 || (index == 3 && dashoardState.value == '')
+              ? Theme.of(context).backgroundColor == Color(0xff000000)
+                  ? Colors.white
+                  : Colors.black
+              : (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+                      dashoardState.value == 'Success'
+                  ? Colors.green
+                  : AppTheme.kButtonColor,
+    );
   }
 }

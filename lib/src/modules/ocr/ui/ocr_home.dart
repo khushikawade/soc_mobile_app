@@ -248,7 +248,8 @@ class _OpticalCharacterRecognitionPageState
                     teacherId: Globals.teacherId,
                     activityId: '1',
                     accountId: Globals.appSetting.schoolNameC,
-                    accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+                    accountType:
+                        Globals.isPremiumUser == true ? "Premium" : "Free",
                     dateTime: currentDateTime.toString(),
                     description: 'Start Scanning Failed',
                     operationResult: 'Failed'));
