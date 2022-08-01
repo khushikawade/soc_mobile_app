@@ -639,7 +639,10 @@ class Utility {
       UserInformation userInformation = await checkUserProfile(value);
 
       if (userInformation.userName != null) {
-        await userVerificationPopUp(context, userInformation);
+        await userVerificationPopUp(
+          context,
+          userInformation,
+        );
 
         bool value = isOldUser!;
         isOldUser = false;
@@ -661,11 +664,10 @@ class Utility {
         refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
 
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-
     List<UserInformation> _profileData = await _localDb.getData();
 
     if (_profileData[0].userEmail == _userInformation.userEmail) {
-      //Save user profile to locally
+      //Save existing user profile locally to store latest details and refreshToken
       await _localDb.clear();
       await _localDb.addData(_userInformation);
       await _localDb.close();
@@ -677,7 +679,10 @@ class Utility {
   }
 
   static userVerificationPopUp(
-      BuildContext context, UserInformation newUserInfo) {
+      BuildContext context, UserInformation newUserInfo) async {
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    List<UserInformation> _existingProfileData = await _localDb.getData();
+
     return showDialog(
         context: context,
         builder: (context) =>
@@ -700,7 +705,7 @@ class Utility {
                             ? MediaQuery.of(context).size.width / 2
                             : MediaQuery.of(context).size.height / 2,
                     child: TranslationWidget(
-                        message: "Confirm exit",
+                        message: "Different Account!",
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
@@ -714,7 +719,7 @@ class Utility {
                 ),
                 content: TranslationWidget(
                     message:
-                        "Do you want to exit? You will lose all the scanned assesment sheets.",
+                        "The existing user account is '$_existingProfileData', and you are trying to log in with another account '$newUserInfo'. You might lose the scanned assessments if not yet saved to google drive. \nWould you like to continue with $newUserInfo ?",
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {

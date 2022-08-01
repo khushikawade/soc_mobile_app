@@ -253,8 +253,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               Globals.questionImgFilePath!.path.isNotEmpty &&
               (assessmentData[i].questionImgUrl == null ||
                   assessmentData[i].questionImgUrl == '')) {
-            if (event.questionImage != ''||
-                event.questionImage.isEmpty) {
+            if (event.questionImage != '' || event.questionImage.isEmpty) {
               assessmentData.forEach((element) {
                 element.questionImgUrl = event.questionImage;
               });
@@ -574,8 +573,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is QuestionImgToAwsBucked) {
       try {
         yield GoogleDriveLoading();
-      //  Globals.questionImgUrl = '';
-              String  questionImgUrl = await _uploadImgB64AndGetUrl(
+        //  Globals.questionImgUrl = '';
+        String questionImgUrl = await _uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: 'rubric-score');
@@ -583,7 +582,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         questionImgUrl.isNotEmpty
             ? print("question image url upload done")
             : print("error uploading question img");
-       yield QuestionImageSuccess(questionImageUrl: questionImgUrl);
+        yield QuestionImageSuccess(questionImageUrl: questionImgUrl);
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")
