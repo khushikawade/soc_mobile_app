@@ -65,7 +65,7 @@ Future<String> getDeviceInfo() async {
 
 getDeviceType() async {
   if (Platform.isAndroid) {
-    final data = (MediaQueryData.fromWindow(WidgetsBinding.instance.window));
+    final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
     Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
   } else if (Platform.isIOS) {
     final deviceType = await getDeviceInfo();
@@ -79,7 +79,7 @@ disableDarkMode() async {
     Globals.disableDarkMode =
         await _hivedb.getSingleData('disableDarkMode', 'darkMode');
     // print('-------------------dark mode disable----------------------');
-    // print(Globals.disableDarkMode);
+   print(Globals.disableDarkMode);
 
   } catch (e) {}
 }

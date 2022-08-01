@@ -13,6 +13,7 @@ import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -187,8 +188,15 @@ class _StartupPageState extends State<StartupPage> {
                 listener: (context, state) async {
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
-
+                    
                     Globals.appSetting = AppSetting.fromJson(state.obj);
+                    if(Globals.appSetting.disableDarkMode == true){
+                    AdaptiveTheme.of(context).setLight();
+                     Globals.disableDarkMode = true;
+                    }else {
+                      AdaptiveTheme.of(context).setSystem();
+                      Globals.disableDarkMode = false;
+                    }
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString(
