@@ -47,7 +47,7 @@ class GoogleDriveAccess {
                         : 2,
                     rowIndex: row))
                 .value =
-            data[row].pointpossible != '' ? data[row].pointpossible : '2';
+            row == 0 ? data[row].pointpossible : data[1].pointpossible ?? '2';
         sheet
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:

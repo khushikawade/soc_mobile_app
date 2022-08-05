@@ -207,7 +207,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               context,
               MaterialPageRoute(
                   builder: (context) => ResultsSummary(
-
                         createdAsPremium: createdAsPremium,
                         obj: list[index],
                         asssessmentName: list[index].title!,

@@ -1125,7 +1125,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             child: FloatingActionButton.extended(
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
-                onPressed: () {
+                onPressed: () async {
                   // Globals.scanMoreStudentInfoLength =
                   //     Globals.studentInfo!.length;
                   Utility.updateLoges(
@@ -1143,11 +1143,33 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       widget.obj!.isCreatedAsPremium == "true") {
                     createdAsPremium = true;
                   }
+                  String pointPossiable = await _getPointPossiable(
+                      tableName: widget.assessmentDetailPage == true
+                          ? 'history_student_info'
+                          : 'student_info');
 
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+<<<<<<< HEAD
+                              questionImageLink: questionImageUrl,
+                              obj: widget.obj,
+                              createdAsPremium:
+                                  widget.assessmentDetailPage == true
+                                      ? createdAsPremium
+                                      : Globals.isPremiumUser,
+                              oneTimeCamera: widget.assessmentDetailPage!,
+                              isFromHistoryAssessmentScanMore:
+                                  widget.assessmentDetailPage!,
+                              onlyForPicture: false,
+                              isScanMore: true,
+                              // lastStudentInfoLenght: Globals.studentInfo!.length,
+                              pointPossible: pointPossiable != null &&
+                                      pointPossiable.isNotEmpty
+                                  ? pointPossiable
+                                  : '2')));
+=======
                                 questionImageLink: questionImageUrl,
                                 obj: widget.obj,
                                 createdAsPremium:
@@ -1162,6 +1184,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 // lastStudentInfoLenght: Globals.studentInfo!.length,
                                 pointPossible: Globals.pointpossible ?? '2',
                               )));
+>>>>>>> graded_plus_main
                 },
                 icon: Icon(
                     IconData(0xe875,
@@ -1706,5 +1729,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ? Colors.green
                   : AppTheme.kButtonColor,
     );
+  }
+
+  Future<String> _getPointPossiable({required String tableName}) async {
+    List<StudentAssessmentInfo> sudentInfo =
+        await Utility.getStudentInfoList(tableName: tableName);
+    return sudentInfo.first.pointpossible!;
   }
 }

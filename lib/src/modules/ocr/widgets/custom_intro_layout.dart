@@ -165,7 +165,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
           child: InkWell(
             borderRadius: defaultSkipButtonBorderRadius,
             onTap: () async {
-              if (action == 'Start') {
+              if (action != 'Skip') {
                 await _hiveDbServices.addSingleData(
                     'new_user', 'new_user', true);
                 Navigator.pushReplacement<void, void>(
