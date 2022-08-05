@@ -67,7 +67,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   // int? assessmentCount;
   ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
-  final ValueNotifier<bool> updateSlidableAction = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> disableSlidableAction = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> editStudentDetailSuccess =
+      ValueNotifier<bool>(false);
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
   int? assessmentListLenght;
@@ -267,36 +269,34 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       ? Column(
                           children: [
                             resultTitle(),
-                            Builder(builder: (context) {
-                              return ValueListenableBuilder(
-                                  valueListenable: assessmentCount,
-                                  builder: (BuildContext context, int listCount,
-                                      Widget? child) {
-                                    return FutureBuilder(
-                                        future: Utility.getStudentInfoList(
-                                            tableName:
-                                                widget.assessmentDetailPage ==
-                                                        true
-                                                    ? 'history_student_info'
-                                                    : 'student_info'),
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot<
-                                                    List<StudentAssessmentInfo>>
-                                                snapshot) {
-                                          if (snapshot.hasData) {
-                                            if (snapshot.data!.length != 0) {
-                                              questionImageUrl = snapshot
-                                                  .data![0].questionImgUrl;
-                                            }
-
-                                            return listView(
-                                              snapshot.data!,
-                                            );
+                            ValueListenableBuilder(
+                                valueListenable: assessmentCount,
+                                builder: (BuildContext context, int listCount,
+                                    Widget? child) {
+                                  return FutureBuilder(
+                                      future: Utility.getStudentInfoList(
+                                          tableName:
+                                              widget.assessmentDetailPage ==
+                                                      true
+                                                  ? 'history_student_info'
+                                                  : 'student_info'),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<
+                                                  List<StudentAssessmentInfo>>
+                                              snapshot) {
+                                        if (snapshot.hasData) {
+                                          if (snapshot.data!.length != 0) {
+                                            questionImageUrl = snapshot
+                                                .data![0].questionImgUrl;
                                           }
-                                          return CircularProgressIndicator();
-                                        });
-                                  });
-                            }),
+
+                                          return listView(
+                                            snapshot.data!,
+                                          );
+                                        }
+                                        return CircularProgressIndicator();
+                                      });
+                                }),
                             BlocListener<GoogleDriveBloc, GoogleDriveState>(
                                 bloc: _driveBloc2,
                                 child: Container(),
@@ -490,7 +490,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             dashoardState.value = 'Loading';
                           } else if (state is AssessmentSavedSuccessfully) {
                             //To update slidable action buttons : Enable/Disable
-                            updateSlidableAction.value = true;
+                            disableSlidableAction.value = true;
 
                             dashoardState.value = 'Success';
                             List<StudentAssessmentInfo> studentInfo =
@@ -537,7 +537,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //     null);
 
                           } else if (state is OcrErrorReceived) {
-                            updateSlidableAction.value = false;
+                            disableSlidableAction.value = false;
                           }
                           if (state is AssessmentDashboardStatus) {
                             if (state.assessmentId == null &&
@@ -990,7 +990,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   Widget listView(List<StudentAssessmentInfo> _list) {
     return ValueListenableBuilder<bool>(
-        valueListenable: updateSlidableAction,
+        valueListenable: disableSlidableAction,
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
@@ -1021,6 +1021,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           // An action can be bigger than the others.
 
                           onPressed: (i) {
+                            //To reset the value listener
+                            disableSlidableAction.value = false;
+
                             print(i);
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, true)
@@ -1037,6 +1040,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         ),
                         SlidableAction(
                           onPressed: (i) {
+                            //To reset the value listener
+                            disableSlidableAction.value = false;
+
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, false)
                                 : Utility.currentScreenSnackBar(
@@ -1423,9 +1429,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           activityId: '17',
           description: 'Teacher edit the record',
           operationResult: 'Success');
+
       editingStudentNameController.text = studentInfo[index].studentName!;
       editingStudentIdController.text = studentInfo[index].studentId!;
       editingStudentScoreController.text = studentInfo[index].studentGrade!;
+
       editBottomSheet(
           controllerOne: editingStudentNameController,
           controllerTwo: editingStudentIdController,
@@ -1481,10 +1489,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 studentInfo.studentGrade = score.text;
                 _studentInfoDb.putAt(index, studentInfo);
                 assessmentCount.value = _list.length;
+
                 _futurMethod();
                 _method();
+                disableSlidableAction.value = true;
 
                 Navigator.pop(context);
+
                 _driveBloc2.add(UpdateDocOnDrive(
                   questionImage: questionImageUrl ?? "NA",
                   createdAsPremium: Globals.isPremiumUser,

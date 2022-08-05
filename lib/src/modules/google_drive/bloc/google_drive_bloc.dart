@@ -374,7 +374,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           } else {
             _list.forEach((element) {
               print(element.label['trashed']);
-              if (element.label['trashed'] != true) {
+              if (element.label['trashed'] != true &&
+                  (element.description == "Graded+" ||
+                      element.description ==
+                          'Assessment \'${element.title}\' result has been generated.')) {
                 assessmentList.add(element);
               }
             });
@@ -407,7 +410,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             : throw (e);
       }
     }
-    if (event is UpdateHistoryAssessmentFromDrive) {
+    if (event is UpdateHistoryAssessmentToDrive) {
       try {} catch (e) {}
     }
     if (event is GetAssessmentDetail) {
@@ -417,8 +420,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         var fildObject;
-        print('11111111111111111111111111');
-
         fildObject = await _getAssessmentDetail(
             _userprofilelocalData[0].authorizationToken,
             event.fileId,
@@ -768,7 +769,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     try {
       Map body = {
         'name': name,
-        'description': 'Assessment \'$name\' result has been generated.',
+        // 'description': 'Assessment \'$name\' result has been generated.',
+        'description': 'Graded+',
         'mimeType': 'application/vnd.google-apps.spreadsheet',
         'parents': ['$folderId']
       };

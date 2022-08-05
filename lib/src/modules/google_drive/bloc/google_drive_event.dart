@@ -61,9 +61,9 @@ class GetHistoryAssessmentFromDrive extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
-class UpdateHistoryAssessmentFromDrive extends GoogleDriveEvent {
+class UpdateHistoryAssessmentToDrive extends GoogleDriveEvent {
   final List<HistoryAssessment> obj;
-  UpdateHistoryAssessmentFromDrive({required this.obj});
+  UpdateHistoryAssessmentToDrive({required this.obj});
 
   @override
   List<Object> get props => [];
