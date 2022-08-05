@@ -1152,7 +1152,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
-<<<<<<< HEAD
                               questionImageLink: questionImageUrl,
                               obj: widget.obj,
                               createdAsPremium:
@@ -1169,22 +1168,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       pointPossiable.isNotEmpty
                                   ? pointPossiable
                                   : '2')));
-=======
-                                questionImageLink: questionImageUrl,
-                                obj: widget.obj,
-                                createdAsPremium:
-                                    widget.assessmentDetailPage == true
-                                        ? createdAsPremium
-                                        : Globals.isPremiumUser,
-                                oneTimeCamera: widget.assessmentDetailPage!,
-                                isFromHistoryAssessmentScanMore:
-                                    widget.assessmentDetailPage!,
-                                onlyForPicture: false,
-                                isScanMore: true,
-                                // lastStudentInfoLenght: Globals.studentInfo!.length,
-                                pointPossible: Globals.pointpossible ?? '2',
-                              )));
->>>>>>> graded_plus_main
                 },
                 icon: Icon(
                     IconData(0xe875,
