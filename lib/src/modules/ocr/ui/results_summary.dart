@@ -242,8 +242,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     if (snapshot.hasData) {
                                       return snapshot.data!.length == 0
                                           ? CupertinoActivityIndicator(
-                                              color: Colors.white,
-                                            )
+                                              //  color: Colors.white,
+                                              )
                                           : Text('${snapshot.data!.length}',
                                               style: Theme.of(context)
                                                   .textTheme
@@ -252,8 +252,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
                                       return CupertinoActivityIndicator(
-                                        color: Colors.white,
-                                      );
+                                          //color: Colors.white,
+                                          );
                                     }
 
                                     return Container();
@@ -1125,7 +1125,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             child: FloatingActionButton.extended(
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
-                onPressed: () {
+                onPressed: () async {
                   // Globals.scanMoreStudentInfoLength =
                   //     Globals.studentInfo!.length;
                   Utility.updateLoges(
@@ -1143,25 +1143,31 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       widget.obj!.isCreatedAsPremium == "true") {
                     createdAsPremium = true;
                   }
+                  String pointPossiable = await _getPointPossiable(
+                      tableName: widget.assessmentDetailPage == true
+                          ? 'history_student_info'
+                          : 'student_info');
 
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
-                                questionImageLink: questionImageUrl,
-                                obj: widget.obj,
-                                createdAsPremium:
-                                    widget.assessmentDetailPage == true
-                                        ? createdAsPremium
-                                        : Globals.isPremiumUser,
-                                oneTimeCamera: widget.assessmentDetailPage!,
-                                isFromHistoryAssessmentScanMore:
-                                    widget.assessmentDetailPage!,
-                                onlyForPicture: false,
-                                isScanMore: true,
-                                // lastStudentInfoLenght: Globals.studentInfo!.length,
-                                pointPossible: Globals.pointpossible ?? '2',
-                              )));
+                              questionImageLink: questionImageUrl,
+                              obj: widget.obj,
+                              createdAsPremium:
+                                  widget.assessmentDetailPage == true
+                                      ? createdAsPremium
+                                      : Globals.isPremiumUser,
+                              oneTimeCamera: widget.assessmentDetailPage!,
+                              isFromHistoryAssessmentScanMore:
+                                  widget.assessmentDetailPage!,
+                              onlyForPicture: false,
+                              isScanMore: true,
+                              // lastStudentInfoLenght: Globals.studentInfo!.length,
+                              pointPossible: pointPossiable != null &&
+                                      pointPossiable.isNotEmpty
+                                  ? pointPossiable
+                                  : '2')));
                 },
                 icon: Icon(
                     IconData(0xe875,
@@ -1706,5 +1712,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ? Colors.green
                   : AppTheme.kButtonColor,
     );
+  }
+
+  Future<String> _getPointPossiable({required String tableName}) async {
+    List<StudentAssessmentInfo> sudentInfo =
+        await Utility.getStudentInfoList(tableName: tableName);
+    return sudentInfo.first.pointpossible!;
   }
 }

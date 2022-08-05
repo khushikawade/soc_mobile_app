@@ -111,7 +111,7 @@ class _CameraScreenState extends State<CameraScreen>
   void initState() {
     Wakelock.enable();
     Globals.iscameraPopup
-        ? WidgetsBinding.instance
+        ? WidgetsBinding.instance!
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
 
@@ -171,8 +171,9 @@ class _CameraScreenState extends State<CameraScreen>
                           : Container();
                     }
                     return CupertinoActivityIndicator(
-                      color: Colors.white,
-                    );
+
+                        // color: Colors.white,
+                        );
                   }),
 
               //        Globals.studentInfo!.length > 0
@@ -596,8 +597,8 @@ class _CameraScreenState extends State<CameraScreen>
                         : Container();
                   }
                   return CupertinoActivityIndicator(
-                    color: Colors.white,
-                  );
+                      //  color: Colors.white,
+                      );
                 })
 
             // Globals.studentInfo!.length == 0

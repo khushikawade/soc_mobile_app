@@ -407,6 +407,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             : throw (e);
       }
     }
+    if (event is UpdateHistoryAssessmentFromDrive) {
+      try {} catch (e) {}
+    }
     if (event is GetAssessmentDetail) {
       try {
         yield GoogleDriveLoading2();

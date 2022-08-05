@@ -240,7 +240,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
-                                questionImageLink: widget.questionImageUrl ?? '',
+                                    questionImageLink:
+                                        widget.questionImageUrl ?? '',
                                     obj: widget.obj,
                                     createdAsPremium: widget.createdAsPremium,
                                     isFromHistoryAssessmentScanMore:
@@ -395,7 +396,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => CameraScreen(
-                                    questionImageLink: widget.questionImageUrl ?? '',
+                                        questionImageLink:
+                                            widget.questionImageUrl ?? '',
                                         obj: widget.obj,
                                         createdAsPremium:
                                             widget.createdAsPremium,
@@ -488,7 +490,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                         MaterialPageRoute(
                                                             builder: (context) =>
                                                                 CameraScreen(
-                                                                  questionImageLink: widget.questionImageUrl ?? '',
+                                                                  questionImageLink:
+                                                                      widget.questionImageUrl ??
+                                                                          '',
                                                                   obj: widget
                                                                       .obj,
                                                                   createdAsPremium:
@@ -1320,7 +1324,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.studentId = idController.text;
         studentAssessmentInfo.studentGrade =
             indexColor.value.toString(); //pointScored.value;
-        studentAssessmentInfo.pointpossible = Globals.pointpossible;
+        // studentAssessmentInfo.pointpossible = Globals.pointpossible;
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
 
@@ -1360,7 +1364,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             studentAssessmentInfo.studentId = idController.text;
             studentAssessmentInfo.studentGrade =
                 indexColor.value.toString(); //pointScored.value;
-            studentAssessmentInfo.pointpossible = Globals.pointpossible;
+            // studentAssessmentInfo.pointpossible = Globals.pointpossible;
             studentAssessmentInfo.assessmentImgPath =
                 widget.imgPath.path.toString();
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
@@ -1460,7 +1464,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
-              questionImageLink: widget.questionImageUrl ?? '',
+                  questionImageLink: widget.questionImageUrl ?? '',
                   obj: widget.obj,
                   createdAsPremium: widget.createdAsPremium,
                   isFromHistoryAssessmentScanMore:
