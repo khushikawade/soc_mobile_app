@@ -536,6 +536,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             disableSlidableAction.value = true;
 
                             dashoardState.value = 'Success';
+                           Utility.updateLoges(
+                                            // accountType: 'Free',
+                                            activityId: '14',
+                                            description:
+                                                'Save to deshboard success',
+                                            operationResult: 'Success');
                             List<StudentAssessmentInfo> studentInfo =
                                 await Utility.getStudentInfoList(
                                     tableName:
