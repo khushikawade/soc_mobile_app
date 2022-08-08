@@ -152,9 +152,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           builder: (BuildContext context, dynamic value,
                               Widget? child) {
                             return Container(
-                              padding: assessmentNameError.value.isEmpty
-                                  ? EdgeInsets.only(top: 8)
-                                  : null,
                               alignment: Alignment.centerLeft,
                               child: TranslationWidget(
                                   message: assessmentNameError.value.isEmpty
@@ -205,9 +202,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               builder: (BuildContext context, dynamic value,
                                   Widget? child) {
                                 return Container(
-                                  padding: classError.value.isEmpty
-                                      ? EdgeInsets.only(top: 8)
-                                      : null,
                                   alignment: Alignment.centerLeft,
                                   child: TranslationWidget(
                                       message: classError.value.isEmpty
@@ -226,7 +220,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         ],
                       ),
                       if (widget.classSuggestions.length > 0)
-                        SpacerWidget(_KVertcalSpace / 15),
+                        SpacerWidget(_KVertcalSpace / 8),
                       if (widget.classSuggestions.length > 0)
                         Container(
                           height: 30,

@@ -464,6 +464,11 @@ class Utility {
 
     ScaffoldMessenger.of(context!).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        backgroundColor:
+            Globals.themeType == 'Dark' ? Colors.white : Colors.black,
         content: TranslationWidget(
             message: text,
             fromLanguage: "en",
@@ -473,6 +478,7 @@ class Utility {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.background,
+                    // Theme.of(context).colorScheme.background,
                     fontWeight: FontWeight.w600,
                   ));
             })));
