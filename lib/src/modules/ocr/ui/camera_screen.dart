@@ -113,7 +113,7 @@ class _CameraScreenState extends State<CameraScreen>
   void initState() {
     // Wakelock.enable();
     Globals.iscameraPopup
-        ? WidgetsBinding.instance!
+        ? WidgetsBinding.instance
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
 
