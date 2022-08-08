@@ -1458,8 +1458,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
     }
   }
 
-  void _navigatetoCameraSection() {
-    Navigator.push(
+  Future<void> _navigatetoCameraSection() async {
+     var result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
@@ -1473,6 +1473,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   pointPossible: widget.pointPossible,
                   flash: widget.isFlashOn,
                 )));
+       if (result == true) {
+                          isBackFromCamera.value = result;
+                        }          
   }
 
   void _performAnimation() {
