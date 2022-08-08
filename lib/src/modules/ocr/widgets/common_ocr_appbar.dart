@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -29,6 +30,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.assessmentPage,
       this.actionIcon,
       this.sessionId,
+      this.isOcrHome,
       this.scaffoldKey,
       this.customBackButton,
       required this.isbackOnSuccess,
@@ -38,6 +40,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   ValueListenable<bool>? isSuccessState;
   bool? isBackButton;
   bool? isTitle;
+  bool? isOcrHome;
   bool? isResultScreen;
   bool? isHomeButtonPopup;
   bool? assessmentDetailPage;
@@ -100,6 +103,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           ),
         ),
         actions: [
+          
+          
+
           widget.isFromResultSection == true
               ? Container(
                   padding: widget.isSuccessState!.value != false
@@ -128,7 +134,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       color: AppTheme.kButtonColor,
                       size: 30,
                     ),
-                  ))
+                  ),)
               : widget.assessmentPage == true
                   ? GestureDetector(
                       onTap: () {
@@ -153,9 +159,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     )
                   : widget.assessmentDetailPage == null
                       ? Container(
-                          padding: widget.isSuccessState!.value != false
-                              ? EdgeInsets.only(right: 10)
-                              : EdgeInsets.zero,
+                          // padding: widget.isSuccessState!.value != false
+                          //     ? EdgeInsets.only(right: 10)
+                          //     : EdgeInsets.zero,
                           child:
                               //widget.actionIcon,
                               IconButton(
@@ -199,6 +205,21 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   : Container();
                             });
                   }),
+            widget.isOcrHome == true ? 
+           Padding(
+             padding: const EdgeInsets.only(top: 2),
+             child: IconButton(onPressed: () async {
+                var result = await  Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => CustomIntroWidget(
+                                        
+                                      )),
+                              );
+                  Navigator.pop(context);            
+              
+             }, icon: Icon(Icons.help,size: 32,color: AppTheme.kButtonColor,)),
+           )
+           :Container(),      
           Container(
             margin: EdgeInsets.all(10),
             padding: widget.isSuccessState!.value != false

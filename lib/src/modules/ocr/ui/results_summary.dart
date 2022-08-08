@@ -762,7 +762,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //     null);
                           },
                           child: Container(
-                              padding: EdgeInsets.only(bottom: 14, top: 8),
+                              padding: EdgeInsets.only(bottom: 14, top: 10),
                               height:
                                   MediaQuery.of(context).size.height * 0.058,
                               width: MediaQuery.of(context).size.width * 0.058,
@@ -810,7 +810,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                                         return Container(
                                             padding: EdgeInsets.only(
-                                                bottom: 14, top: 8),
+                                                bottom: 14, top: 10),
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height *

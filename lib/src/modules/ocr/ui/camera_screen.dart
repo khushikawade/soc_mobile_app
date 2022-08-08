@@ -320,7 +320,9 @@ class _CameraScreenState extends State<CameraScreen>
                           }),
                       onPressed: () async {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                        await controller!.setFlashMode(FlashMode.off);
+                        try {
+                          await controller!.setFlashMode(FlashMode.off);
+                        } catch (e) {}
                         Utility.updateLoges(
                             activityId: '19',
                             description: 'Assessment scan finished',
@@ -652,6 +654,10 @@ class _CameraScreenState extends State<CameraScreen>
                               padding: EdgeInsets.all(3),
                               child: InkWell(
                                 onTap: () async {
+                                  try {
+                                    await controller!
+                                        .setFlashMode(FlashMode.off);
+                                  } catch (e) {}
                                   HapticFeedback.vibrate();
                                   XFile? rawImage = await takePicture();
                                   File imageFile = File(rawImage!.path);
@@ -717,13 +723,15 @@ class _CameraScreenState extends State<CameraScreen>
                                     );
 
                                     if (flashOn == true) {
-                                      await controller!
-                                          .setFlashMode(FlashMode.torch);
+                                      try {
+                                        await controller!
+                                            .setFlashMode(FlashMode.torch);
+                                      } catch (e) {}
                                     }
                                   }
-                                  try {
-                                    controller!.setFlashMode(FlashMode.off);
-                                  } catch (e) {}
+                                  // try {
+                                  //   controller!.setFlashMode(FlashMode.off);
+                                  // } catch (e) {}
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
@@ -780,8 +788,10 @@ class _CameraScreenState extends State<CameraScreen>
     if (mounted) {
       setState(() async {
         _isCameraInitialized = controller!.value.isInitialized;
-        await controller!
-            .setFlashMode(widget.flash ? FlashMode.torch : FlashMode.off);
+        try {
+          await controller!
+              .setFlashMode(widget.flash ? FlashMode.torch : FlashMode.off);
+        } catch (e) {}
       });
     }
   }

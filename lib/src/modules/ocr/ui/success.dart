@@ -1227,8 +1227,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           .headline6!
                           .copyWith(
                               fontWeight: FontWeight.bold, color: Colors.grey),
-                      errorText: controller.text.isEmpty ? errormsg : null,
-                      errorMaxLines: 2,
+                      // errorText: controller.text.isEmpty ? errormsg : null,
+                      // errorMaxLines: 2,
                       contentPadding: EdgeInsets.only(top: 10, bottom: 10),
                       fillColor: Colors.transparent,
                       enabledBorder: UnderlineInputBorder(

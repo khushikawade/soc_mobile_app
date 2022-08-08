@@ -70,6 +70,7 @@ class _OpticalCharacterRecognitionPageState
 
   @override
   Widget build(BuildContext context) {
+
     return Stack(
       children: [
         CommonBackGroundImgWidget(),
@@ -77,6 +78,7 @@ class _OpticalCharacterRecognitionPageState
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            isOcrHome: true,
             isSuccessState: ValueNotifier<bool>(true),
             isbackOnSuccess: isBackFromCamera,
             key: GlobalKey(),
