@@ -397,7 +397,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         barrierDismissible: true,
         context: context,
         builder: (context) {
-          return CustomDialogBox(profileData: userInformation);
+          return CustomDialogBox(
+            profileData: userInformation,
+            isUserInfoPop: true,
+          );
         });
   }
 }

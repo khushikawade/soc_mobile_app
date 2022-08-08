@@ -30,6 +30,7 @@ class SuccessScreen extends StatefulWidget {
   final bool? createdAsPremium;
   final HistoryAssessment? obj;
   final String? questionImageUrl;
+  final bool isFlashOn;
   SuccessScreen(
       {Key? key,
       required this.img64,
@@ -39,7 +40,8 @@ class SuccessScreen extends StatefulWidget {
       this.questionImageUrl,
       required this.isFromHistoryAssessmentScanMore,
       this.createdAsPremium,
-      this.obj})
+      this.obj,
+      required this.isFlashOn})
       : super(key: key);
 
   @override
@@ -249,6 +251,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
+                                    flash: widget.isFlashOn,
                                   )),
                         );
                         if (result == true) {
@@ -392,24 +395,24 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     'Scan Failure and teacher retry scan',
                                 operationResult: 'Failure');
 
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CameraScreen(
-                                        questionImageLink:
-                                            widget.questionImageUrl ?? '',
-                                        obj: widget.obj,
-                                        createdAsPremium:
-                                            widget.createdAsPremium,
-                                        isFromHistoryAssessmentScanMore: widget
-                                            .isFromHistoryAssessmentScanMore!,
-                                        onlyForPicture: false,
-                                        isScanMore: widget.isScanMore,
-                                        pointPossible: widget.pointPossible,
-                                      )),
-                            );
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => CameraScreen(
+                            //             questionImageLink:
+                            //                 widget.questionImageUrl ?? '',
+                            //             obj: widget.obj,
+                            //             createdAsPremium:
+                            //                 widget.createdAsPremium,
+                            //             isFromHistoryAssessmentScanMore: widget
+                            //                 .isFromHistoryAssessmentScanMore!,
+                            //             onlyForPicture: false,
+                            //             isScanMore: widget.isScanMore,
+                            //             pointPossible: widget.pointPossible,
+                            //           )),
+                            // );
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            Navigator.pop(context);
+                            Navigator.of(context).pop(widget.isFlashOn);
                             // Navigator.pushReplacement(
                             //   context,
                             //   MaterialPageRoute(
@@ -508,6 +511,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                                   pointPossible:
                                                                       widget
                                                                           .pointPossible,
+                                                                  flash: widget
+                                                                      .isFlashOn,
                                                                 )),
                                                       );
                                                       if (result == true) {
@@ -582,7 +587,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 isRetryButton.value == true
                     ? retryButton(onPressed: () {
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        Navigator.pop(context);
+                        Navigator.of(context).pop(widget.isFlashOn);
 
                         // Navigator.pushReplacement(
                         //   context,
@@ -1472,6 +1477,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onlyForPicture: false,
                   isScanMore: widget.isScanMore,
                   pointPossible: widget.pointPossible,
+                  flash: widget.isFlashOn,
                 )));
   }
 

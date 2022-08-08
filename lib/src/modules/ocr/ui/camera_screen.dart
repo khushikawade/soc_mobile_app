@@ -19,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wakelock/wakelock.dart';
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
@@ -31,8 +30,8 @@ class CameraScreen extends StatefulWidget {
   final bool? createdAsPremium;
   final String? questionImageLink;
   final HistoryAssessment? obj;
-
-  const CameraScreen(
+  bool flash;
+  CameraScreen(
       {Key? key,
       required this.pointPossible,
       required this.isScanMore,
@@ -42,7 +41,8 @@ class CameraScreen extends StatefulWidget {
       required this.isFromHistoryAssessmentScanMore,
       this.oneTimeCamera,
       this.createdAsPremium,
-      this.obj})
+      this.obj,
+      required this.flash})
       : super(key: key);
   @override
   _CameraScreenState createState() => _CameraScreenState();
@@ -63,9 +63,11 @@ class _CameraScreenState extends State<CameraScreen>
     }
 
     if (state == AppLifecycleState.inactive) {
+      print(' inside     AppLifecycleState.inactive');
       // Free up memory when camera not active
-      cameraController.dispose();
+      //   cameraController.dispose();
     } else if (state == AppLifecycleState.resumed) {
+      print(' inside    AppLifecycleState.resumed');
       // Reinitialize the camera with same properties
       onNewCameraSelected(cameraController.description);
     }
@@ -73,8 +75,8 @@ class _CameraScreenState extends State<CameraScreen>
 
   CameraController? controller;
   bool _isCameraInitialized = false;
-  bool isflashOff = true;
-  bool flash = false;
+  //bool isflashOff = true;
+  // bool flash = false;
   FlashMode? _currentFlashMode;
   int? scanMoreAssesmentList;
 
@@ -109,7 +111,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   void initState() {
-    Wakelock.enable();
+    // Wakelock.enable();
     Globals.iscameraPopup
         ? WidgetsBinding.instance
             .addPostFrameCallback((_) => _showStartDialog())
@@ -123,12 +125,13 @@ class _CameraScreenState extends State<CameraScreen>
 
     onNewCameraSelected(cameras[0]);
     // _checkPermission();
+
     super.initState();
   }
 
   @override
   void dispose() {
-    Wakelock.disable();
+    // Wakelock.disable();
     controller?.dispose();
     super.dispose();
   }
@@ -197,16 +200,16 @@ class _CameraScreenState extends State<CameraScreen>
               IconButton(
                   onPressed: () async {
                     setState(() {
-                      flash = !flash;
-                      isflashOff = !isflashOff;
+                      widget.flash = !widget.flash;
+                      // isflashOff = !isflashOff;
                     });
                     try {
                       await controller!.setFlashMode(
-                          flash ? FlashMode.torch : FlashMode.off);
+                          widget.flash ? FlashMode.torch : FlashMode.off);
                     } catch (e) {}
                   },
                   icon: Icon(
-                    isflashOff == true ? Icons.flash_off : Icons.flash_on,
+                    widget.flash == false ? Icons.flash_off : Icons.flash_on,
                     color: Colors.white,
                     size: 30,
                   )),
@@ -317,6 +320,7 @@ class _CameraScreenState extends State<CameraScreen>
                           }),
                       onPressed: () async {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        await controller!.setFlashMode(FlashMode.off);
                         Utility.updateLoges(
                             activityId: '19',
                             description: 'Assessment scan finished',
@@ -689,7 +693,7 @@ class _CameraScreenState extends State<CameraScreen>
                                     List p =
                                         await _historyStudentInfoDb.getData();
                                     print(p.length);
-                                    Navigator.push(
+                                    var flashOn = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => SuccessScreen(
@@ -706,8 +710,16 @@ class _CameraScreenState extends State<CameraScreen>
                                                 imgPath: imageFile,
                                                 pointPossible:
                                                     widget.pointPossible,
+                                                isFlashOn: widget.flash == false
+                                                    ? false
+                                                    : true,
                                               )),
                                     );
+
+                                    if (flashOn == true) {
+                                      await controller!
+                                          .setFlashMode(FlashMode.torch);
+                                    }
                                   }
                                   try {
                                     controller!.setFlashMode(FlashMode.off);
@@ -745,6 +757,7 @@ class _CameraScreenState extends State<CameraScreen>
     await previousCameraController?.dispose();
     // _currentFlashMode = controller!.value.flashMode;
     // Replace with the new controller
+
     if (mounted) {
       setState(() {
         controller = cameraController;
@@ -765,8 +778,10 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Update the Boolean
     if (mounted) {
-      setState(() {
+      setState(() async {
         _isCameraInitialized = controller!.value.isInitialized;
+        await controller!
+            .setFlashMode(widget.flash ? FlashMode.torch : FlashMode.off);
       });
     }
   }

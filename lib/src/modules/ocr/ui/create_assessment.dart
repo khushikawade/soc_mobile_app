@@ -774,10 +774,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
-              isFromHistoryAssessmentScanMore: false,
-              onlyForPicture: true,
-              isScanMore: false,
-              pointPossible: '')),
+                isFromHistoryAssessmentScanMore: false,
+                onlyForPicture: true,
+                isScanMore: false,
+                pointPossible: '',
+                flash: false,
+              )),
     );
     if (photo != null) {
       imageFile = photo;

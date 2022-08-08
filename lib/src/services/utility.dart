@@ -394,7 +394,11 @@ class Utility {
   }
 
   static Widget textWidget(
-      {required String text, textTheme, required context, textAlign}) {
+      {required String text,
+      textTheme,
+      required context,
+      textAlign,
+      maxLines}) {
     return TranslationWidget(
       message: text,
       toLanguage: Globals.selectedLanguage,
@@ -402,6 +406,8 @@ class Utility {
       builder: (translatedMessage) => Text(
         translatedMessage.toString(),
         textAlign: textAlign ?? null,
+        maxLines: maxLines ?? null,
+        overflow: maxLines != null ? TextOverflow.ellipsis : null,
         style: textTheme != null
             ? textTheme
             : Theme.of(context).textTheme.headline6!.copyWith(

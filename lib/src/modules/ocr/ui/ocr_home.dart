@@ -45,7 +45,7 @@ class _OpticalCharacterRecognitionPageState
   final OcrBloc _ocrBlocLogs = new OcrBloc();
   File? myImagePath;
   String pathOfImage = '';
-  static const IconData info = IconData(0xe33c, fontFamily: 'MaterialIcons');
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   int? lastIndex;
@@ -59,7 +59,7 @@ class _OpticalCharacterRecognitionPageState
 
   @override
   void initState() {
-   // Globals.questionImgUrl = '';
+    // Globals.questionImgUrl = '';
     Globals.questionImgFilePath = null;
     Utility.setLocked();
     _homeBloc.add(FetchStandardNavigationBar());
@@ -128,7 +128,7 @@ class _OpticalCharacterRecognitionPageState
                                     )));
                       },
                       icon: Icon(
-                        info,
+                        Icons.info,
                         size: Globals.deviceType == 'tablet' ? 35 : null,
                         color: Color(0xff000000) !=
                                 Theme.of(context).backgroundColor
@@ -412,6 +412,18 @@ class _OpticalCharacterRecognitionPageState
                                 "Custom") {
                               customRubricBottomSheet();
                             } else {
+                              if (index == 0) {
+                                pointPossibleSelectedColor.value = 1;
+                              } else if (index == 2) {
+                                pointPossibleSelectedColor.value = 2;
+                              } else if (index == 4) {
+                                pointPossibleSelectedColor.value = 3;
+                              } else if (RubricScoreList
+                                      .scoringList[index].name ==
+                                  "None") {
+                                pointPossibleSelectedColor.value = 0;
+                              }
+
                               lastIndex = index;
                               Globals.scoringRubric =
                                   '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
@@ -575,11 +587,13 @@ class _OpticalCharacterRecognitionPageState
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
-              isFromHistoryAssessmentScanMore: false,
-              onlyForPicture: false,
-              scaffoldKey: _scaffoldKey,
-              isScanMore: false,
-              pointPossible: Globals.pointpossible)),
+                isFromHistoryAssessmentScanMore: false,
+                onlyForPicture: false,
+                scaffoldKey: _scaffoldKey,
+                isScanMore: false,
+                pointPossible: Globals.pointpossible,
+                flash: false,
+              )),
     );
     // End
     // // COMMENT Below

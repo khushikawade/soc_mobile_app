@@ -428,7 +428,9 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
               isFromHistoryAssessmentScanMore: false,
               onlyForPicture: true,
               isScanMore: false,
-              pointPossible: '')),
+              pointPossible: '',
+              flash: false,
+              )),
     );
     if (photo != null) {
       setState(() {
