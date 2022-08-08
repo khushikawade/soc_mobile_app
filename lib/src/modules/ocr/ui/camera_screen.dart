@@ -200,8 +200,10 @@ class _CameraScreenState extends State<CameraScreen>
                       flash = !flash;
                       isflashOff = !isflashOff;
                     });
-                    await controller!
-                        .setFlashMode(flash ? FlashMode.torch : FlashMode.off);
+                    try {
+                      await controller!.setFlashMode(
+                          flash ? FlashMode.torch : FlashMode.off);
+                    } catch (e) {}
                   },
                   icon: Icon(
                     isflashOff == true ? Icons.flash_off : Icons.flash_on,
@@ -666,7 +668,6 @@ class _CameraScreenState extends State<CameraScreen>
                                     '${directory.path}/$currentUnix.$fileFormat',
                                   );
                                   print(widget.pointPossible);
-                                  await controller!.setFlashMode(FlashMode.off);
 
                                   if (widget.onlyForPicture) {
                                     Navigator.pop(context, imageFile);
@@ -708,6 +709,9 @@ class _CameraScreenState extends State<CameraScreen>
                                               )),
                                     );
                                   }
+                                  try {
+                                    controller!.setFlashMode(FlashMode.off);
+                                  } catch (e) {}
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
