@@ -394,7 +394,11 @@ class Utility {
   }
 
   static Widget textWidget(
-      {required String text, textTheme, required context, textAlign}) {
+      {required String text,
+      textTheme,
+      required context,
+      textAlign,
+      maxLines}) {
     return TranslationWidget(
       message: text,
       toLanguage: Globals.selectedLanguage,
@@ -402,6 +406,8 @@ class Utility {
       builder: (translatedMessage) => Text(
         translatedMessage.toString(),
         textAlign: textAlign ?? null,
+        maxLines: maxLines ?? null,
+        overflow: maxLines != null ? TextOverflow.ellipsis : null,
         style: textTheme != null
             ? textTheme
             : Theme.of(context).textTheme.headline6!.copyWith(
@@ -458,6 +464,11 @@ class Utility {
 
     ScaffoldMessenger.of(context!).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        backgroundColor:
+            Globals.themeType == 'Dark' ? Colors.white : Colors.black,
         content: TranslationWidget(
             message: text,
             fromLanguage: "en",
@@ -467,6 +478,7 @@ class Utility {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.background,
+                    // Theme.of(context).colorScheme.background,
                     fontWeight: FontWeight.w600,
                   ));
             })));

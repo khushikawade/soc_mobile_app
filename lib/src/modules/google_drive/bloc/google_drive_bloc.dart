@@ -474,7 +474,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             print("Assessment file URL not found1");
             //Return empty list
             yield AssessmentDetailSuccess(
-                obj: _list, webContentLink: fildObject['webViewLink']);
+                obj: [], webContentLink: fildObject['webViewLink']);
           }
         } else if (fildObject == 'Reauthentication is required') {
           print('0000000000000000000000000000000000000000000');
@@ -494,9 +494,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             : print(e);
         rethrow;
       } catch (e) {
-        e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
-            : errorThrow('Error caught while parsing the file.');
+        // e == 'NO_CONNECTION'
+        //     ? Utility.currentScreenSnackBar("No Internet Connection")
+        //     : errorThrow('Unable to open the blank file');
+        if (e == 'NO_CONNECTION') {
+          Utility.currentScreenSnackBar("No Internet Connection");
+        } else {
+          print('Unable to open the blank file');
+          yield AssessmentDetailSuccess(obj: [], webContentLink: null);
+        }
         //print(e);
         throw (e);
       }

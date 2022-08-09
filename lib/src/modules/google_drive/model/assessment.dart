@@ -1,3 +1,4 @@
+import 'package:Soc/src/services/utility.dart';
 import 'package:hive/hive.dart';
 part 'assessment.g.dart';
 
@@ -28,11 +29,13 @@ class HistoryAssessment {
       this.label,
       this.webContentLink,
       this.createdDate,
-      this.modifiedDate,this.sessionId,this.isCreatedAsPremium});
+      this.modifiedDate,
+      this.sessionId,
+      this.isCreatedAsPremium});
 
   factory HistoryAssessment.fromJson(Map<String, dynamic> json) =>
       HistoryAssessment(
-        title: json['title'] as String?,
+        title: Utility.utf8convert(json['title'] as String?),
         description: json['description'] as String?,
         fileid: json['id'] as String?,
         label: json['labels'],

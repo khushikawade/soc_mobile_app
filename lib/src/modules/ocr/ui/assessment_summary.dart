@@ -243,7 +243,11 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                             "MM/dd/yy")
                         : ""),
                 title: Utility.textWidget(
-                    text: list[index].title!.split('.')[0],
+                    text: list[index].title == null
+                        ? '  AsssessmentName'
+                        // : list[index].title!.length > 20
+                        //     ? '${list[index].title!.substring(0, 20)}' + '...'
+                        : list[index].title!,
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline2),
                 // subtitle:

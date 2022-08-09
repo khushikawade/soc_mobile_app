@@ -13,6 +13,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
+import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -104,6 +105,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           ? MediaQuery.of(context).size.height
                           : MediaQuery.of(context).size.width,
                   child: ListView(
+
                     padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).size.height * 0.2),
                     // controller: listScrollController,
@@ -152,6 +154,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           builder: (BuildContext context, dynamic value,
                               Widget? child) {
                             return Container(
+                            //  color: Colors.amber,   
+
+
                               padding: assessmentNameError.value.isEmpty
                                   ? EdgeInsets.only(top: 8)
                                   : null,
@@ -205,9 +210,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               builder: (BuildContext context, dynamic value,
                                   Widget? child) {
                                 return Container(
-                                  padding: classError.value.isEmpty
-                                      ? EdgeInsets.only(top: 8)
-                                      : null,
                                   alignment: Alignment.centerLeft,
                                   child: TranslationWidget(
                                       message: classError.value.isEmpty
@@ -226,7 +228,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         ],
                       ),
                       if (widget.classSuggestions.length > 0)
-                        SpacerWidget(_KVertcalSpace / 15),
+                        SpacerWidget(_KVertcalSpace / 8),
                       if (widget.classSuggestions.length > 0)
                         Container(
                           height: 30,
@@ -268,20 +270,20 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .colorScheme
                                       .primaryVariant
                                       .withOpacity(0.3))),
-                      SpacerWidget(_KVertcalSpace / 3),
-                      scoringButton(),
                       SpacerWidget(_KVertcalSpace / 4),
-                      Utility.textWidget(
-                          context: context,
-                          text: 'Scan Assessment (Optional)',
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant
-                                      .withOpacity(0.3))),
+                      scoringButton(),
+                   SpacerWidget(_KVertcalSpace / 3),
+                      // Utility.textWidget(
+                      //     context: context,
+                      //     text: 'Scan Assessment (Optional)',
+                      //     textTheme: Theme.of(context)
+                      //         .textTheme
+                      //         .headline2!
+                      //         .copyWith(
+                      //             color: Theme.of(context)
+                      //                 .colorScheme
+                      //                 .primaryVariant
+                      //                 .withOpacity(0.3))),
                       // SpacerWidget(_KVertcalSpace / 3),
                       Row(
                         children: [
@@ -289,71 +291,184 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               valueListenable: isimageFilePicked,
                               builder: (BuildContext context, dynamic value,
                                   Widget? child) {
-                                return Padding(
-                                    padding: const EdgeInsets.only(left: 4.0),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _cameraImage(context);
-                                      },
-                                      child: Container(
-                                          height: 50,
-                                          child: Row(
-                                            children: [
-                                              Utility.textWidget(
-                                                context: context,
-                                                text: isimageFilePicked.value !=
-                                                        true
-                                                    ? 'Scan Assessment'
-                                                    : 'Assessment Selected',
-                                                textTheme: TextStyle(
-                                                    color: isimageFilePicked
-                                                                .value !=
-                                                            true
-                                                        ? Color(0xff000000) ==
-                                                                Theme.of(
-                                                                        context)
-                                                                    .backgroundColor
-                                                            ? Color(0xffFFFFFF)
-                                                            : Color(0xff000000)
-                                                        : AppTheme
-                                                            .kSelectedColor,
-                                                    fontSize:
-                                                        Globals.deviceType ==
-                                                                'phone'
-                                                            ? 14
-                                                            : 20),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 5.0),
-                                                child: Icon(
-                                                  isimageFilePicked.value !=
-                                                          true
-                                                      ? Icons.add_a_photo
-                                                      : Icons.check,
-                                                  color: isimageFilePicked
-                                                              .value !=
-                                                          true
-                                                      ? Color(0xff000000) ==
-                                                              Theme.of(context)
-                                                                  .backgroundColor
-                                                          ? Color(0xffFFFFFF)
-                                                          : Color(0xff000000)
-                                                      : AppTheme.kSelectedColor,
-                                                  size: Globals.deviceType ==
+                                return Container(
+                                   // height: 80,
+                                    child: 
+                                    
+                                     Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                       Row(children: [
+                                         Utility.textWidget(
+                                          context: context,
+                                          text: isimageFilePicked.value !=
+                                                  true
+                                              ? 'Scan Assessment (Optional)'
+                                              : 'Assessment Selected',
+                                          textTheme: TextStyle(
+                                              color: isimageFilePicked
+                                                          .value !=
+                                                      true
+                                                  ? Color(0xff000000) ==
+                                                          Theme.of(
+                                                                  context)
+                                                              .backgroundColor
+                                                      ? Color(0xffFFFFFF)
+                                                      : Color(0xff000000)
+                                                  : AppTheme
+                                                      .kSelectedColor,
+                                              fontSize:
+                                                  Globals.deviceType ==
                                                           'phone'
-                                                      ? 18
-                                                      : 22,
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                    ));
+                                                      ? 16
+                                                      : 22),
+                                        ),
+                                      
+                                        isimageFilePicked.value ==
+                                                  true ?
+                                        IconButton(
+                                            onPressed: (){
+                                          
+                                                     _cameraImage(context);
+
+                                             
+                                           
+                                            },
+                                            icon: Icon(
+                                              
+                                                Icons.replay_outlined ,
+                                                // : Icons.image_sharp,
+                                                size: Globals.deviceType ==
+                                                    'phone'
+                                                ? 20
+                                                : 25,
+                                            ), 
+                                            
+                                            color: isimageFilePicked
+                                                        .value !=
+                                                    true
+                                                ? Color(0xff000000) ==
+                                                        Theme.of(context)
+                                                            .backgroundColor
+                                                    ? Color(0xffFFFFFF)
+                                                    : Color(0xff000000)
+                                                : AppTheme.kSelectedColor,
+                                            
+                                          ): Container(),
+
+
+                                        ],),
+                                          SpacerWidget(_KVertcalSpace / 8),
+                                       
+                                        CircleAvatar(
+                                        //  foregroundColor:  Colors.red,
+                                        backgroundImage: isimageFilePicked
+                                                        .value ==
+                                                    true  ?FileImage(imageFile!) : null,
+                                       backgroundColor: AppTheme.kButtonColor,
+                                         radius: 30,
+                                          child: IconButton(
+                                            onPressed: (){
+                                             if(isimageFilePicked.value !=
+                                                    true){
+                                                     _cameraImage(context);
+
+                                             }else{
+                                               showQuestionImage();
+
+                                             }
+                                           
+                                            },
+                                            icon: Icon(
+                                              isimageFilePicked.value !=
+                                                    true
+                                                ? 
+                                                Icons.add : Icons.check,
+                                                // : Icons.image_sharp,
+                                                size: Globals.deviceType ==
+                                                    'phone'
+                                                ? 25
+                                                : 30,
+                                            ), 
+                                            
+                                            color: isimageFilePicked
+                                                        .value !=
+                                                    true
+                                                ? Color(0xff000000) ==
+                                                        Theme.of(context)
+                                                            .backgroundColor
+                                                    ? Color(0xffFFFFFF)
+                                                    : Color(0xff000000)
+                                                : AppTheme.kSelectedColor,
+                                            
+                                          ),
+                                        ),
+                                        
+                                         
+                                       //  isimageFilePicked.value == true ? Padding(
+                                       //    padding: const EdgeInsets.only(
+                                       //        left: 5.0),
+                                       //    child: TextButton(
+                                       //      onPressed: (){
+                                       //         showQuestionImage();
+
+                                       //      },
+                                       //      child:  Text('View Question Image')
+                                       //     //  Icon(
+                                       //     //    // isimageFilePicked.value !=
+                                       //     //    //       true
+                                       //     //    //   ? 
+                                       //     //      Icons.image,
+                                       //     //      // : Icons.image_sharp,
+                                       //     //      size: Globals.deviceType ==
+                                       //     //          'phone'
+                                       //     //      ? 25
+                                       //     //      : 30,
+                                       //     //  ), 
+                                            
+                                       //     //  color: isimageFilePicked
+                                       //     //              .value !=
+                                       //     //          true
+                                       //     //      ? Color(0xff000000) ==
+                                       //     //              Theme.of(context)
+                                       //     //                  .backgroundColor
+                                       //     //          ? Color(0xffFFFFFF)
+                                       //     //          : Color(0xff000000)
+                                       //     //      : AppTheme.kSelectedColor,
+                                            
+                                       //    ),
+                                       //  ): Container()
+                                        // Padding(
+                                        //   padding: const EdgeInsets.only(
+                                        //       left: 5.0),
+                                        //   child: Icon(
+                                        //     isimageFilePicked.value !=
+                                        //             true
+                                        //         ? Icons.
+                                        //         : Icons.check,
+                                        //     color: isimageFilePicked
+                                        //                 .value !=
+                                        //             true
+                                        //         ? Color(0xff000000) ==
+                                        //                 Theme.of(context)
+                                        //                     .backgroundColor
+                                        //             ? Color(0xffFFFFFF)
+                                        //             : Color(0xff000000)
+                                        //         : AppTheme.kSelectedColor,
+                                        //     size: Globals.deviceType ==
+                                        //             'phone'
+                                        //         ? 25
+                                        //         : 30,
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                    );
                               }),
                         ],
                       ),
 
-                      SpacerWidget(_KVertcalSpace),
+                   //   SpacerWidget(_KVertcalSpace),
                       // GestureDetector(
                       //   onTap: () {
                       //     _cameraImage(context);
@@ -411,9 +526,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       // ),
 
                       //To scroll the screen in case of keyboard appears
-                      Padding(
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom))
+                      // Padding(
+                      //     padding: EdgeInsets.only(
+                      //         bottom: MediaQuery.of(context).viewInsets.bottom))
                     ],
                   ),
                 ),
@@ -423,6 +538,15 @@ class _CreateAssessmentState extends State<CreateAssessment>
         ],
       ),
     );
+  }
+   void showQuestionImage() {
+    showDialog(
+        context: context,
+        builder: (_) => ImagePopup(
+              imageURL: '',
+              isOcrPage: true,
+              imageFile: imageFile,
+            ));
   }
 
   Widget textwidget({required String text, required dynamic textTheme}) {
@@ -443,19 +567,20 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
-            // color: Colors.red,
+          //  color: Colors.red,
             // width: 100,
-            height: Globals.deviceType == 'phone'
-                ? MediaQuery.of(context).size.height * 0.28
-                : MediaQuery.of(context).size.width * 0.25,
+            // height: Globals.deviceType == 'phone'
+            //     ? MediaQuery.of(context).size.height * 0.28
+            //     : MediaQuery.of(context).size.width * 0.25,
             child: GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: Globals.deviceType == 'phone' ? 50 : 70,
                     childAspectRatio: 5 / 6,
                     crossAxisSpacing: Globals.deviceType == 'phone' ? 15 : 50,
-                    mainAxisSpacing: 8),
+                    mainAxisSpacing: 5),
                 itemCount: widget.customGrades.length,
                 itemBuilder: (BuildContext ctx, index) {
                   return Bouncing(
@@ -549,71 +674,74 @@ class _CreateAssessmentState extends State<CreateAssessment>
               valueListenable: assessmentNameError,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                return TextFormField(
-                  scrollController: scrollController,
-                  autovalidateMode: AutovalidateMode.always,
-                  textAlign: TextAlign.start,
-                  inputFormatters: <TextInputFormatter>[
-                    //To capitalize first letter of the textfield
-                    UpperCaseTextFormatter()
-                  ],
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(fontWeight: FontWeight.bold),
-                  controller: controller,
-                  cursorColor: Theme.of(context).colorScheme.primaryVariant,
-                  decoration: InputDecoration(
-                    hintText: hintText,
-                    errorText: isAssessmenttextFormField == true &&
-                                (controller.text.isEmpty ||
-                                    assessmentNameError.value.length < 2) ||
-                            controller.text.isEmpty
-                        ? ''
-                        : null,
-                    // errorMaxLines: 2,
-                    hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
-                        fontWeight: FontWeight.bold, color: Colors.grey),
-                    fillColor: Colors.transparent,
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
+                return Container(
+                //  color: Colors.blue,
+                  child: TextFormField(
+                    scrollController: scrollController,
+                    autovalidateMode: AutovalidateMode.always,
+                    textAlign: TextAlign.start,
+                    inputFormatters: <TextInputFormatter>[
+                      //To capitalize first letter of the textfield
+                      UpperCaseTextFormatter()
+                    ],
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold),
+                    controller: controller,
+                    cursorColor: Theme.of(context).colorScheme.primaryVariant,
+                    decoration: InputDecoration(
+                      hintText: hintText,
+                      // errorText: isAssessmenttextFormField == true &&
+                      //             (controller.text.isEmpty ||
+                      //                 assessmentNameError.value.length < 2) ||
+                      //         controller.text.isEmpty
+                      //     ? ''
+                      //     : null,
+                      // errorMaxLines: 2,
+                      hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                          fontWeight: FontWeight.bold, color: Colors.grey),
+                      fillColor: Colors.transparent,
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primaryVariant
+                                .withOpacity(0.5)
+                            //  controller.text.isEmpty ||
+                            //         assessmentNameError.value.length < 2 ||
+                            //         classError.value.isEmpty
+                            //     ? Colors.red
+                            //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
+                            ),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primaryVariant
+                                .withOpacity(0.5)
+                            //  assessmentNameError.value.isEmpty ||
+                            //         assessmentNameError.value.length < 2 ||
+                            //         classError.value.isEmpty
+                            //     ? Colors.red
+                            //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(
+                            //         0.5) // Theme.of(context).colorScheme.primaryVariant,
+                            ),
+                      ),
+                      contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(
                           color: Theme.of(context)
                               .colorScheme
                               .primaryVariant
-                              .withOpacity(0.5)
-                          //  controller.text.isEmpty ||
-                          //         assessmentNameError.value.length < 2 ||
-                          //         classError.value.isEmpty
-                          //     ? Colors.red
-                          //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-                          ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primaryVariant
-                              .withOpacity(0.5)
-                          //  assessmentNameError.value.isEmpty ||
-                          //         assessmentNameError.value.length < 2 ||
-                          //         classError.value.isEmpty
-                          //     ? Colors.red
-                          //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(
-                          //         0.5) // Theme.of(context).colorScheme.primaryVariant,
-                          ),
-                    ),
-                    contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-                    border: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primaryVariant
-                            .withOpacity(0.3),
+                              .withOpacity(0.3),
+                        ),
                       ),
                     ),
+                    onChanged: onSaved,
+                    validator: validator,
                   ),
-                  onChanged: onSaved,
-                  validator: validator,
                 );
               });
         });
@@ -774,17 +902,21 @@ class _CreateAssessmentState extends State<CreateAssessment>
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
-              isFromHistoryAssessmentScanMore: false,
-              onlyForPicture: true,
-              isScanMore: false,
-              pointPossible: '')),
+                isFromHistoryAssessmentScanMore: false,
+                onlyForPicture: true,
+                isScanMore: false,
+                pointPossible: '',
+                flash: false,
+              )),
     );
     if (photo != null) {
       imageFile = photo;
-      isimageFilePicked.value = true;
-    } else {
       isimageFilePicked.value = false;
-    }
+      isimageFilePicked.value = true;
+    } 
+    // else {
+    //   isimageFilePicked.value = false;
+    // }
     // final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
     // if (photo != null) {
     //   imageFile = File(photo.path);

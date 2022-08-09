@@ -9,7 +9,6 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
-import 'package:Soc/src/modules/ocr/widgets/intro_screen.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/shared_preference.dart';
@@ -19,7 +18,6 @@ import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
@@ -56,12 +54,12 @@ class _StartupPageState extends State<StartupPage> {
       //      _driveBloc.add(RefreshAuthenticationTokenEvent());
 
     } else {
-      getindicatorValue();
-      appversion();
+      getIndicatorValue();
+      appVersion();
       initPlatformState(context);
       _bloc.add(FetchStandardNavigationBar());
       _newsBloc.add(NewsCountLength());
-      getindexvalue();
+      getIndexValue();
       _showcase();
       if (Platform.isAndroid) {
         Globals.isAndroid = true;
@@ -103,11 +101,11 @@ class _StartupPageState extends State<StartupPage> {
     });
   }
 
-  void appversion() async {
+  void appVersion() async {
     Globals.packageInfo = await PackageInfo.fromPlatform();
   }
 
-  getindexvalue() async {
+  getIndexValue() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     Globals.splashImageUrl = pref.getString(Strings.SplashUrl);
     Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
@@ -119,7 +117,7 @@ class _StartupPageState extends State<StartupPage> {
     super.dispose();
   }
 
-  getindicatorValue() async {
+  getIndicatorValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.getBool("enableIndicator") == null
         ? prefs.setBool("enableIndicator", false)
@@ -328,10 +326,11 @@ class _StartupPageState extends State<StartupPage> {
       Navigator.pushReplacement<void, void>(
         context,
         MaterialPageRoute<void>(
-            builder: (BuildContext context) => OpticalCharacterRecognition()
-            //   isOldUser == true
-            // ? OpticalCharacterRecognition()
-            // : CustomIntroWidget(),
+            builder: (BuildContext context) => 
+            //OpticalCharacterRecognition()
+            isOldUser == true
+                ? OpticalCharacterRecognition()
+                : CustomIntroWidget(),
             ),
       );
     });

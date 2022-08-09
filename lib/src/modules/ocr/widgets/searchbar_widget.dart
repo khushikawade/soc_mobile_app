@@ -38,6 +38,7 @@ class SearchBar extends StatelessWidget {
             toLanguage: Globals.selectedLanguage,
             builder: (translatedMessage) {
               return TextFormField(
+                autofocus: isSearchPage == true? true: false,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primaryVariant),
                 //  focusNode: myFocusNode,

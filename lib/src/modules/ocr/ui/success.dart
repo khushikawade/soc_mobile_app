@@ -30,6 +30,7 @@ class SuccessScreen extends StatefulWidget {
   final bool? createdAsPremium;
   final HistoryAssessment? obj;
   final String? questionImageUrl;
+  final bool isFlashOn;
   SuccessScreen(
       {Key? key,
       required this.img64,
@@ -39,7 +40,8 @@ class SuccessScreen extends StatefulWidget {
       this.questionImageUrl,
       required this.isFromHistoryAssessmentScanMore,
       this.createdAsPremium,
-      this.obj})
+      this.obj,
+      required this.isFlashOn})
       : super(key: key);
 
   @override
@@ -249,6 +251,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
+                                    flash: widget.isFlashOn,
                                   )),
                         );
                         if (result == true) {
@@ -392,24 +395,24 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     'Scan Failure and teacher retry scan',
                                 operationResult: 'Failure');
 
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CameraScreen(
-                                        questionImageLink:
-                                            widget.questionImageUrl ?? '',
-                                        obj: widget.obj,
-                                        createdAsPremium:
-                                            widget.createdAsPremium,
-                                        isFromHistoryAssessmentScanMore: widget
-                                            .isFromHistoryAssessmentScanMore!,
-                                        onlyForPicture: false,
-                                        isScanMore: widget.isScanMore,
-                                        pointPossible: widget.pointPossible,
-                                      )),
-                            );
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => CameraScreen(
+                            //             questionImageLink:
+                            //                 widget.questionImageUrl ?? '',
+                            //             obj: widget.obj,
+                            //             createdAsPremium:
+                            //                 widget.createdAsPremium,
+                            //             isFromHistoryAssessmentScanMore: widget
+                            //                 .isFromHistoryAssessmentScanMore!,
+                            //             onlyForPicture: false,
+                            //             isScanMore: widget.isScanMore,
+                            //             pointPossible: widget.pointPossible,
+                            //           )),
+                            // );
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            Navigator.pop(context);
+                            Navigator.of(context).pop(widget.isFlashOn);
                             // Navigator.pushReplacement(
                             //   context,
                             //   MaterialPageRoute(
@@ -508,6 +511,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                                   pointPossible:
                                                                       widget
                                                                           .pointPossible,
+                                                                  flash: widget
+                                                                      .isFlashOn,
                                                                 )),
                                                       );
                                                       if (result == true) {
@@ -582,7 +587,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 isRetryButton.value == true
                     ? retryButton(onPressed: () {
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        Navigator.pop(context);
+                        Navigator.of(context).pop(widget.isFlashOn);
 
                         // Navigator.pushReplacement(
                         //   context,
@@ -704,10 +709,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
                   return Container(
-                    padding: isStudentNameFilled.value.isNotEmpty ||
-                            nameController.text.length < 3
-                        ? EdgeInsets.only(top: 8)
-                        : null,
+                    // padding: null,
                     alignment: Alignment.centerLeft,
                     child: TranslationWidget(
                         message: isStudentNameFilled.value == ""
@@ -737,67 +739,72 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .colorScheme
                         .primaryVariant
                         .withOpacity(0.5))),
-            textFormField(
-                scrollController: scrollControllerId,
-                controller: idController,
-                keyboardType: TextInputType.number,
-                hintText: 'Student ID',
-                isFailure: true,
-                // errormsg:
-                //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-                onSaved: (String value) {
-                  isStudentIdFilled.value = value;
-                  _formKey1.currentState!.validate();
-                  // updateDetails(isUpdateData: true);
-                  studentId = idController.text;
-                  if (idController.text.length == 9 &&
-                      (idController.text[0] == '2' ||
-                          idController.text[0] == '1')) {
-                    _bloc2.add(FetchStudentDetails(ossId: idController.text));
-                  }
-                  onChange = true;
-                },
-                validator: (String? value) {
-                  isStudentIdFilled.value = value!;
-                  return (!isStudentIdFilled.value.startsWith('2') &&
-                              !isStudentIdFilled.value.startsWith('1')) ||
-                          isStudentIdFilled.value.length < 9
-                      ? ''
-                      : null;
-                },
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  // FilteringTextInputFormatter.allow(
-                  //     RegExp("[0-9]")),
-                ],
-                maxNineDigit: true),
+
             ValueListenableBuilder(
                 valueListenable: isStudentIdFilled,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
-                  return Container(
-                    padding: isStudentIdFilled.value.isEmpty ||
-                            idController.text.length < 9
-                        ? EdgeInsets.only(top: 0)
-                        : null,
-                    alignment: Alignment.centerLeft,
-                    child: TranslationWidget(
-                        message: isStudentIdFilled.value == ""
-                            ? 'Student ID is required'
-                            : isStudentIdFilled.value.length != 9
-                                ? 'Student ID Must Have 9 Digits Number'
-                                : !isStudentIdFilled.value.startsWith('2') &&
-                                        !isStudentIdFilled.value.startsWith('1')
-                                    ? 'Student ID Must Starts Either With \'2\' Or \'1\''
-                                    : '',
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) {
-                          return Text(
-                            translatedMessage,
-                            style: TextStyle(color: Colors.red),
-                          );
-                        }),
+                  return Wrap(
+                    children: [
+                      textFormField(
+                          scrollController: scrollControllerId,
+                          controller: idController,
+                          keyboardType: TextInputType.number,
+                          hintText: 'Student ID',
+                          isFailure: true,
+                          // errormsg:
+                          //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+                          onSaved: (String value) {
+                            isStudentIdFilled.value = value;
+                            _formKey1.currentState!.validate();
+                            // updateDetails(isUpdateData: true);
+                            studentId = idController.text;
+                            if (idController.text.length == 9 &&
+                                (idController.text[0] == '2' ||
+                                    idController.text[0] == '1')) {
+                              _bloc2.add(FetchStudentDetails(
+                                  ossId: idController.text));
+                            }
+                            onChange = true;
+                          },
+                          validator: (String? value) {
+                            isStudentIdFilled.value = value!;
+                            return (!isStudentIdFilled.value.startsWith('2') &&
+                                        !isStudentIdFilled.value
+                                            .startsWith('1')) ||
+                                    isStudentIdFilled.value.length < 9
+                                ? ''
+                                : null;
+                          },
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            // FilteringTextInputFormatter.allow(
+                            //     RegExp("[0-9]")),
+                          ],
+                          maxNineDigit: true),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: TranslationWidget(
+                            message: isStudentIdFilled.value == ""
+                                ? 'Student ID is required'
+                                : isStudentIdFilled.value.length != 9
+                                    ? 'Student ID Must Have 9 Digits Number'
+                                    : !isStudentIdFilled.value
+                                                .startsWith('2') &&
+                                            !isStudentIdFilled.value
+                                                .startsWith('1')
+                                        ? 'Student ID Must Starts Either With \'2\' Or \'1\''
+                                        : '',
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(
+                                translatedMessage,
+                                style: TextStyle(color: Colors.red),
+                              );
+                            }),
+                      ),
+                    ],
                   );
                 }),
             SpacerWidget(_KVertcalSpace / 2),
@@ -878,10 +885,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
                   return Container(
-                    padding: isStudentNameFilled.value.isNotEmpty ||
-                            nameController.text.length < 3
-                        ? EdgeInsets.only(top: 8)
-                        : null,
                     alignment: Alignment.centerLeft,
                     child: TranslationWidget(
                         message: isStudentNameFilled.value == ""
@@ -947,10 +950,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
                   return Container(
-                    padding: isStudentIdFilled.value.isEmpty ||
-                            idController.text.length < 9
-                        ? EdgeInsets.only(top: 0)
-                        : null,
                     alignment: Alignment.centerLeft,
                     child: TranslationWidget(
                         message: isStudentIdFilled.value == ""
@@ -1228,8 +1227,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           .headline6!
                           .copyWith(
                               fontWeight: FontWeight.bold, color: Colors.grey),
-                      errorText: controller.text.isEmpty ? errormsg : null,
-                      errorMaxLines: 2,
+                      // errorText: controller.text.isEmpty ? errormsg : null,
+                      // errorMaxLines: 2,
                       contentPadding: EdgeInsets.only(top: 10, bottom: 10),
                       fillColor: Colors.transparent,
                       enabledBorder: UnderlineInputBorder(
@@ -1459,8 +1458,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
     }
   }
 
-  void _navigatetoCameraSection() {
-    Navigator.push(
+  Future<void> _navigatetoCameraSection() async {
+     var result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
@@ -1472,7 +1471,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onlyForPicture: false,
                   isScanMore: widget.isScanMore,
                   pointPossible: widget.pointPossible,
+                  flash: widget.isFlashOn,
                 )));
+       if (result == true) {
+                          isBackFromCamera.value = result;
+                        }          
   }
 
   void _performAnimation() {

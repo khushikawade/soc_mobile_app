@@ -9,11 +9,13 @@ import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -76,6 +78,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   ValueNotifier<int> assessmentCount = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isSuccessStateRecived = ValueNotifier<bool>(false);
+  ValueNotifier<bool> infoIconValue = ValueNotifier<bool>(false);
   String? isAssessmentAlreadySaved = '';
   int? savedRecordCount;
   String? questionImageUrl;
@@ -264,7 +267,46 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       ],
                     ),
                   ),
-                  SpacerWidget(_KVertcalSpace / 3),
+                  // SpacerWidget(_KVertcalSpace / 5),
+                  ValueListenableBuilder(
+                      valueListenable: infoIconValue,
+                      child: Container(),
+                      builder:
+                          (BuildContext context, bool value, Widget? child) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: 20,
+                          ),
+                          child: infoIconValue.value == true ||
+                                  widget.assessmentDetailPage != true
+                              ? ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.84,
+                                    child: Utility.textWidget(
+                                        text: widget.asssessmentName == null
+                                            ? 'Asssessment Name'
+                                            //     //     // : widget.asssessmentName!.length > 20
+                                            //     //     //     ? '${widget.asssessmentName!.substring(0, 20)}' +
+                                            //     //     //         '...'
+                                            : widget.asssessmentName!,
+                                        context: context,
+                                        maxLines: 2,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .headline2!
+                                            .copyWith(
+                                                // fontWeight: FontWeight.bold,
+                                                )),
+                                  ),
+                                  trailing: Container(
+                                      padding: EdgeInsets.only(left: 5),
+                                      child: infoWidget()))
+                              : Container(),
+                        );
+                      }),
+                  // SpacerWidget(_KVertcalSpace / 5),
                   !widget.assessmentDetailPage!
                       ? Column(
                           children: [
@@ -457,6 +499,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     state.obj.first.scoringRubric;
                                 webContentLink = state.webContentLink;
                                 isSuccessStateRecived.value = true;
+                                infoIconValue.value = true;
                                 historyRecordList = state.obj;
 
                                 assessmentCount.value = state.obj.length;
@@ -493,6 +536,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             disableSlidableAction.value = true;
 
                             dashoardState.value = 'Success';
+                           Utility.updateLoges(
+                                            // accountType: 'Free',
+                                            activityId: '14',
+                                            description:
+                                                'Save to deshboard success',
+                                            operationResult: 'Success');
                             List<StudentAssessmentInfo> studentInfo =
                                 await Utility.getStudentInfoList(
                                     tableName:
@@ -610,7 +659,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5.0),
           child: Container(
-            height: 60.0,
+            height: 50.0,
             margin: const EdgeInsets.only(
                 bottom: 6.0), //Same as `blurRadius` i guess
             decoration: BoxDecoration(
@@ -719,7 +768,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //     null);
                           },
                           child: Container(
-                              padding: EdgeInsets.only(bottom: 14, top: 8),
+                              padding: EdgeInsets.only(bottom: 14, top: 10),
                               height:
                                   MediaQuery.of(context).size.height * 0.058,
                               width: MediaQuery.of(context).size.width * 0.058,
@@ -767,7 +816,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                                         return Container(
                                             padding: EdgeInsets.only(
-                                                bottom: 14, top: 8),
+                                                bottom: 14, top: 10),
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height *
@@ -1088,6 +1137,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
                 ),
             child: ListTile(
+              onTap: (() => showDialog(
+                  useRootNavigator: false,
+                  context: context,
+                  builder: (_) =>
+                      ImagePopup(imageURL: _list[index].assessmentImage!))),
               visualDensity: VisualDensity(horizontal: 0, vertical: 0),
               // contentPadding:
               //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
@@ -1158,6 +1212,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                              flash: false,
                               questionImageLink: questionImageUrl,
                               obj: widget.obj,
                               createdAsPremium:
@@ -1469,7 +1524,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               textFieldControllerthree: controllerThree,
               textFieldControllerOne: controllerOne,
               textFieldControllerTwo: controllerTwo,
-              sheetHeight: MediaQuery.of(context).size.height / 2.0,
+              sheetHeight: MediaQuery.of(context).size.height * 0.6,
               title: 'Edit Student Details',
               isImageField: false,
               textFieldTitleOne: 'Student Name',
@@ -1722,6 +1777,44 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       dashoardState.value == 'Success'
                   ? Colors.green
                   : AppTheme.kButtonColor,
+    );
+  }
+
+  void _showPopUp({required StudentAssessmentInfo studentAssessmentInfo}) {
+    showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return CustomDialogBox(
+            title: widget.asssessmentName == null
+                ? 'Asssessment Name'
+                : widget.asssessmentName!,
+            height: MediaQuery.of(context).size.height * 0.53,
+            // width: MediaQuery.of(context).size.width * 0.,
+            studentAssessmentInfo: studentAssessmentInfo,
+            profileData: null,
+            isUserInfoPop: false,
+          );
+        });
+  }
+
+  Widget infoWidget() {
+    return IconButton(
+      padding: EdgeInsets.only(top: 2),
+      onPressed: () async {
+        List<StudentAssessmentInfo> list = await Utility.getStudentInfoList(
+            tableName: widget.assessmentDetailPage == true
+                ? 'history_student_info'
+                : 'student_info');
+        _showPopUp(studentAssessmentInfo: list.first);
+      },
+      icon: Icon(
+        Icons.info,
+        size: Globals.deviceType == 'tablet' ? 35 : null,
+        color: Color(0xff000000) != Theme.of(context).backgroundColor
+            ? Color(0xff111C20)
+            : Color(0xffF7F8F9), //Colors.grey.shade400,
+      ),
     );
   }
 

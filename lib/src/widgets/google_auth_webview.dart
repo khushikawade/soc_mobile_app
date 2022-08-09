@@ -50,6 +50,15 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    //To clear the account session from the web browser
+    Globals.webViewController1!.clearCache();
+    final cookieManager = CookieManager();
+    cookieManager.clearCookies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return widget.isCustomMainPageWebView == true
         ? _webViewWidget()
@@ -92,13 +101,11 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                   ), // To manage web page crop issue together with bottom nav bar.
                   child: Stack(
                     children: [
-                      WebView(
+                      new WebView(
                         userAgent: 'random',
-                        zoomEnabled: 
-                        widget.zoomEnabled == null
+                        zoomEnabled: widget.zoomEnabled == null
                             ? true
                             : widget.zoomEnabled!,
-                            
                         initialCookies: [],
                         backgroundColor: Theme.of(context).backgroundColor,
                         onProgress: (progress) {
@@ -115,7 +122,6 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                                     mimeType: 'text/html')
                                 .toString()
                             : '${widget.url}',
-                          
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated:
                             (WebViewController webViewController) {
@@ -130,7 +136,8 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                           // widget.callBackFunction(request.url);
                           print("Changed URL::::::");
                           print(request.url);
-                          if (request.url.toString().contains('success')){//(request.url.toString().contains('displayName')) {
+                          if (request.url.toString().contains('success')) {
+                            //(request.url.toString().contains('displayName')) {
                             Navigator.pop(context, request.url);
                           }
                           return NavigationDecision.navigate;
