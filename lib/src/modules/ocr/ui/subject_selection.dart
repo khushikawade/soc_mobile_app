@@ -452,7 +452,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           isSkipButton.value = false;
                         }
                       }
-                      print(subLearningStandard);
+                      //print(subLearningStandard);
                     },
                     child: AnimatedContainer(
                       padding: EdgeInsets.only(bottom: 5),
@@ -690,7 +690,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         child: InkWell(
                           onTap: () async {
                             if (page != 1) {
-                              print("INSIDE ON TAPPPPPPPPPPPPPPPPPPPPP");
+                              //print("INSIDE ON TAPPPPPPPPPPPPPPPPPPPPP");
                             }
 
                             searchController.clear();

@@ -160,17 +160,17 @@ class GoogleDriveAccess {
         ..writeAsBytesSync(fileBytes!);
       // });
       // }
-      print("Excel file done");
+      //print("Excel file done");
       return file;
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
   static Future excelToJson(String file) async {
     var bytes = File(file).readAsBytesSync();
     var excel = Excel.decodeBytes(bytes);
-    print(excel);
+    //print(excel);
     int i = 0;
     List<dynamic> keys = <dynamic>[];
     List<Map<String, dynamic>> json = <Map<String, dynamic>>[];
@@ -214,7 +214,7 @@ class GoogleDriveAccess {
         return true;
       }
     } catch (e) {
-      print(e);
+      //print(e);
       throw (e);
       // Error in getting access to the file.
     }

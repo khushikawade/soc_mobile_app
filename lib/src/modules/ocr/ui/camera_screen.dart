@@ -55,7 +55,7 @@ class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print("inside applifecycle");
+    //print("inside applifecycle");
     final CameraController? cameraController = controller;
 
     // App state changed before we got the chance to initialize.
@@ -64,11 +64,11 @@ class _CameraScreenState extends State<CameraScreen>
     }
 
     if (state == AppLifecycleState.inactive) {
-      print(' inside     AppLifecycleState.inactive');
+      //print(' inside     AppLifecycleState.inactive');
       // Free up memory when camera not active
       //   cameraController.dispose();
     } else if (state == AppLifecycleState.resumed) {
-      print(' inside    AppLifecycleState.resumed');
+      //print(' inside    AppLifecycleState.resumed');
       // Reinitialize the camera with same properties
       onNewCameraSelected(cameraController.description);
     }
@@ -556,13 +556,13 @@ class _CameraScreenState extends State<CameraScreen>
                             }
 
                             if (localSectionList.isEmpty || isClassChanges) {
-                              print("local db is empty");
+                              //print("local db is empty");
                               classSectionLocalDb.clear();
                               classList.forEach((String e) {
                                 classSectionLocalDb.addData(e);
                               });
                             } else {
-                              print("local db is not empty");
+                              //print("local db is not empty");
                               classList = [];
                               classList.addAll(localSectionList);
                             }
@@ -678,7 +678,7 @@ class _CameraScreenState extends State<CameraScreen>
                                   await imageFile.copy(
                                     '${directory.path}/$currentUnix.$fileFormat',
                                   );
-                                  print(widget.pointPossible);
+                                  //print(widget.pointPossible);
 
                                   if (widget.onlyForPicture) {
                                     Navigator.pop(context, imageFile);
@@ -689,7 +689,7 @@ class _CameraScreenState extends State<CameraScreen>
 
                                     List l =
                                         await _historyStudentInfoDb.getData();
-                                    print(l.length);
+                                    //print(l.length);
                                     if (widget.isFromHistoryAssessmentScanMore ==
                                             true &&
                                         widget.oneTimeCamera == null) {
@@ -699,7 +699,7 @@ class _CameraScreenState extends State<CameraScreen>
                                     }
                                     List p =
                                         await _historyStudentInfoDb.getData();
-                                    print(p.length);
+                                    //print(p.length);
                                     var flashOn = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -782,7 +782,7 @@ class _CameraScreenState extends State<CameraScreen>
     try {
       await cameraController.initialize();
     } on CameraException catch (e) {
-      print('Error initializing camera: $e');
+      //print('Error initializing camera: $e');
     }
 
     // Update the Boolean
@@ -807,7 +807,7 @@ class _CameraScreenState extends State<CameraScreen>
       XFile file = await cameraController.takePicture();
       return file;
     } on CameraException catch (e) {
-      print('Error occured while taking picture: $e');
+      //print('Error occured while taking picture: $e');
       return null;
     }
   }

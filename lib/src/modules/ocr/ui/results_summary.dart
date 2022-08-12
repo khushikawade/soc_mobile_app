@@ -128,7 +128,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
       iconsList = [0xe876, 0xe871, 0xe87a];
       iconsName = ["Share", "Drive", "Dashboard"];
-      _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
+      _driveBloc
+          .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
       _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
     } else {
       if (widget.isScanMore != true) {
@@ -219,9 +220,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               isResultScreen: true,
             ),
             body: Container(
-              //     padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.40),
@@ -495,8 +496,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         tableName: 'history_student_info') ==
                                     0) {
                                   state.obj.forEach((e) async {
-                                    print(
-                                        'ffffffffffffffffffffffffffffffffffff');
+                                    //print(
+                                    // 'ffffffffffffffffffffffffffffffffffff');
                                     await _historyStudentInfoDb.addData(e);
                                   });
                                 }
@@ -519,8 +520,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     context: context,
                                     scaffoldKey: scaffoldKey);
 
-                                _driveBloc.add(
-                                    GetAssessmentDetail(fileId: widget.fileId));
+                                _driveBloc.add(GetAssessmentDetail(
+                                    fileId: widget.fileId, nextPageUrl: ''));
                               } else {
                                 Navigator.of(context).pop();
                                 Utility.currentScreenSnackBar(
@@ -569,7 +570,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             assessmentCount.value = list.length;
 
                             Globals.scanMoreStudentInfoLength = list.length;
-                            print(Globals.scanMoreStudentInfoLength);
+                            //print(Globals.scanMoreStudentInfoLength);
                             // _driveBloc.add(UpdateDocOnDrive(
                             //   isLoading: false,
                             //     fileId: widget.fileId,
@@ -934,9 +935,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             description:
                                                 'Save to deshboard pressed in case for scanmore',
                                             operationResult: 'Success');
-                                        print(
-                                            'if     calling is scanMore -------------------------->');
-                                        print(widget.assessmentListLenght);
+                                        //print(
+                                        // 'if     calling is scanMore -------------------------->');
+                                        //print(widget.assessmentListLenght);
                                         _ocrBloc.add(SaveAssessmentToDashboard(
                                             assessmentId: !widget
                                                     .assessmentDetailPage!
@@ -966,8 +967,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             isHistoryAssessmentSection:
                                                 widget.assessmentDetailPage!));
                                       } else {
-                                        print(
-                                            'else      calling is noramal -------------------------->');
+                                        //print(
+                                        // 'else      calling is noramal -------------------------->');
                                         // Adding the non saved record of dashboard in the list
                                         List<StudentAssessmentInfo>
                                             _listRecord = [];
@@ -1048,10 +1049,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
-            // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height *
+                    0.08), //For bottom padding from FAB
             height: widget.assessmentDetailPage!
                 ? (MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.height * 0.4 //55
+                    ? MediaQuery.of(context).size.height * 0.55
                     : MediaQuery.of(context).size.height * 0.45)
                 : (MediaQuery.of(context).orientation == Orientation.portrait
                     ? MediaQuery.of(context).size.height * 0.57
@@ -1078,7 +1081,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //To reset the value listener
                             disableSlidableAction.value = false;
 
-                            print(i);
+                            //print(i);
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, true)
                                 : Utility.currentScreenSnackBar(
@@ -1159,6 +1162,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             _list[index].studentName == null
                         ? 'Unknown'
                         : _list[index].studentName!,
+                    maxLines: 2,
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline2!),
               ),

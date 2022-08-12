@@ -74,7 +74,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _appSettingDb.addData(_appSetting);
         await _appSettingDb.close();
       } catch (e) {
-        print(e);
+        //print(e);
         // Should not break incase of any issue, it will just return the local data.
         // Fetching the School data from the Local database instead.
         LocalDatabase<AppSetting> _appSettingDb =
@@ -150,7 +150,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 'School_Directory_App__c');
             _listGlobal.addAll(_list6);
           }
-          print(_listGlobal.length);
+          //print(_listGlobal.length);
           yield GlobalSearchSuccess(
             obj: _listGlobal,
           );
@@ -172,7 +172,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         for (int i = 0; i < _localDb.length; i++) {
           if (event.recordId == _localDb[i].id) {
             result = true;
-            print("return from local db ============>");
+            //print("return from local db ============>");
             if (event.isFromRecent == false) {
               yield EmptyState();
             }
@@ -192,7 +192,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           yield RefrenceSearchLoading();
         }
 
-        print('calling api ===================>');
+        //print('calling api ===================>');
         dynamic recordObject = await getrecordByID_API(
             event.recordId, event.objectName, event.recordType!);
 
@@ -201,7 +201,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           idReferenceList.add(_localDb[i].id);
           if (_localDb[i].id.toString() == recordObject.id.toString()) {
             // recordDetailList[i] = recordObject;
-            print('updating local db =============>');
+            //print('updating local db =============>');
             await HiveDbServices()
                 .updateListData(Strings.hiveReferenceLogName, i, recordObject);
           }
@@ -209,11 +209,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         if (!idReferenceList.contains(recordObject.id)) {
           deleteRecentSearchItem(Strings.hiveReferenceLogName);
-          print('adding in local db===============>');
+          //print('adding in local db===============>');
           addRecordDetailtoLocalDb(recordObject);
         }
         if (!result && event.isFromRecent != true) {
-          print('returning new state====================>');
+          //print('returning new state====================>');
           yield RecordDetailSuccess(
               isRecentRecod: false,
               recordObject: recordObject,
@@ -245,9 +245,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             getRecordByID_localDatabase(
                 Strings.schoolDirectoryObjectName, event.recordId);
           }
-          print('inside catch ===============>');
+          //print('inside catch ===============>');
           if (!result) {
-            print('retrunig from catch ');
+            //print('retrunig from catch ');
             yield RecordDetailSuccess(
                 isRecentRecod: false,
                 recordObject: recordObject,
@@ -343,7 +343,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       return listSearch;
     } catch (e) {
-      print(e);
+      //print(e);
       throw Exception('Something went wrong');
     }
   }
@@ -363,7 +363,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       return object;
     } catch (e) {
-      print(e);
+      //print(e);
       throw Exception('Something went wrong');
     }
   }
@@ -496,7 +496,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // _socialBloc.add(FetchSocialActionCount(isDetailPage: false));
       _socialBloc.add(SocialPageEvent(action: 'initial'));
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -553,12 +553,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   //   try {
   //     _localDb.clear();
   //     log.forEach((dynamic e) {
-  //       print("local database");
+  //       //print("local database");
   //       _localDb.addData(e);
   //     });
   //   } catch (e) {
-  //     print(e);
-  //     print("inside catch");
+  //     //print(e);
+  //     //print("inside catch");
   //   }
 
   //   //_localDb.close();

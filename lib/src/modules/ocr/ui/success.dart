@@ -531,10 +531,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                       //                 .pointPossible,
                                                       //           )),
                                                       // );
-                                                    } else {
-                                                      print(
-                                                          "Not -------------> move");
                                                     }
+                                                    // else {
+                                                    //   print(
+                                                    //       "Not -------------> move");
+                                                    // }
                                                   },
                                                   child: SuccessCustomButton(
                                                       width:
@@ -673,7 +674,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             //                 ValueListenableBuilder(
             // valueListenable: isStudentNameFilled,
             // builder: (BuildContext context, dynamic value, Widget? child) {
-            //   print(isStudentNameFilled.value);
+            //   //print(isStudentNameFilled.value);
             //   return
             textFormField(
                 scrollController: scrollControlleName,
@@ -1351,7 +1352,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             if (!historyStudentInfo.contains(id)) {
               id.add(historyStudentInfo[i].studentId);
             } else {
-              print('Record is already exist in the list. Skipping...');
+              //print('Record is already exist in the list. Skipping...');
             }
           }
           if (!id.contains(idController.text)) {
@@ -1370,7 +1371,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
               List list = await _historyStudentInfoDb.getData();
-              print(list);
+              //print(list);
               await _historyStudentInfoDb.addData(studentAssessmentInfo);
             }
           }
@@ -1426,10 +1427,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
           List id = [];
           for (int i = 0; i < studentInfo.length; i++) {
             if (!studentInfo.contains(id)) {
-              print('not contaains ----------------->');
+              //print('not contaains ----------------->');
               id.add(studentInfo[i].studentId);
             } else {
-              print('Record is already exist in the list. Skipping...');
+              //print('Record is already exist in the list. Skipping...');
             }
           }
           if (!id.contains(idController.text)) {
@@ -1448,7 +1449,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 widget.imgPath.path.toString();
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
-              print('added in record ----------------->>>>');
+              //print('added in record ----------------->>>>');
               await _studentInfoDb.addData(studentAssessmentInfo);
             }
           }

@@ -71,7 +71,18 @@ class UpdateHistoryAssessmentToDrive extends GoogleDriveEvent {
 
 class GetAssessmentDetail extends GoogleDriveEvent {
   final String? fileId;
-  GetAssessmentDetail({this.fileId});
+  final String nextPageUrl;
+  GetAssessmentDetail({this.fileId, required this.nextPageUrl});
+
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateHistoryAssessmentFromDrive extends GoogleDriveEvent {
+  final List<HistoryAssessment> obj;
+  final String nextPageUrl;
+  UpdateHistoryAssessmentFromDrive(
+      {required this.obj, required this.nextPageUrl});
 
   @override
   List<Object> get props => [];

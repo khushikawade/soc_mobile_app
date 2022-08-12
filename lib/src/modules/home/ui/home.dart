@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget _bottomIcon(title, iconData, section) {
-    //  print(title);
+    //  //print(title);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,

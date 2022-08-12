@@ -73,7 +73,7 @@
 
 //   _scrollListener() async {
 //     // if (_scrollController.position.atEdge) {
-//     print(_scrollController.position.pixels);
+//     //print(_scrollController.position.pixels);
 //     bool isTop = _scrollController.position.pixels < 150;
 //     if (isTop) {
 //       if (isScrolling.value == false) return;
@@ -126,7 +126,7 @@
 //           //   create: (context) => SubjectRepository(),
 //           //     child: (value),
 //           // ) async {
-//           //   // print(value);
+//           //   // //print(value);
 //           //   if (value.toString().contains('displayName')) {
 //           //     value = value.split('?')[1];
 //           //     //Save user profile
@@ -168,7 +168,7 @@
 //     //             hideShare: true,
 //     //             zoomEnabled: false,
 //     //             callBackFunction: (value) async {
-//     //               // print(value);
+//     //               // //print(value);
 //     //               if (value.toString().contains('displayName')) {
 //     //                 value = value.split('?')[1];
 //     //                 //Save user profile

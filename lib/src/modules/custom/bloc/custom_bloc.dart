@@ -211,7 +211,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
             // futureListobj: futureListMap, pastListobj: pastListMap
             );
       } catch (e) {
-        print(e);
+        //print(e);
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);

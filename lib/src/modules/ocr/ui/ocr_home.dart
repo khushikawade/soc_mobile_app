@@ -9,7 +9,6 @@ import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/widgets/intro_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -24,7 +23,6 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -319,7 +317,7 @@ class _OpticalCharacterRecognitionPageState
                 //To take the rubric name to result screen and save the same in excel sheet
                 Globals.scoringRubric =
                     "${RubricScoreList.scoringList[index == 0 ? 0 : index == 1 ? 2 : 4].name} ${RubricScoreList.scoringList[index == 0 ? 0 : index == 1 ? 2 : 4].score}";
-                print(Globals.scoringRubric);
+                //print(Globals.scoringRubric);
                 if (index == 0) {
                   rubricScoreSelectedColor.value = 0;
                 } else if (index == 1) {
@@ -407,8 +405,8 @@ class _OpticalCharacterRecognitionPageState
                       itemBuilder: (BuildContext ctx, index) {
                         return InkWell(
                           onLongPress: () {
-                            print(
-                                'Rubric image : ${RubricScoreList.scoringList[index].imgUrl}');
+                            //print(
+                            // 'Rubric image : ${RubricScoreList.scoringList[index].imgUrl}');
                             showCustomRubricImage(
                                 RubricScoreList.scoringList[index]);
                           },
@@ -437,8 +435,8 @@ class _OpticalCharacterRecognitionPageState
                               Globals.scoringRubric =
                                   '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
                             }
-                            print(Globals.scoringRubric);
-                            // print("printing ----> ${Globals.scoringRubric}");
+                            //print(Globals.scoringRubric);
+                            // //print("//printing ----> ${Globals.scoringRubric}");
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
@@ -544,7 +542,7 @@ class _OpticalCharacterRecognitionPageState
   Future updateLocalDb() async {
     //Save user profile to locally
     LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
-    print(RubricScoreList.scoringList);
+    //print(RubricScoreList.scoringList);
     await _localDb.clear();
 
     RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
@@ -596,7 +594,7 @@ class _OpticalCharacterRecognitionPageState
         operationResult: 'Success'));
 
     _bloc.add(SaveSubjectListDetails());
-    // print(Globals.scoringRubric);
+    // //print(Globals.scoringRubric);
     // UNCOMMENT Below
     Navigator.push(
       context,

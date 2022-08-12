@@ -232,7 +232,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           list.add(state.obj![i]);
                         }
                       }
-                      print(searchList[0].standardAndDescriptionC);
+                      //print(searchList[0].standardAndDescriptionC);
                       searchList.insertAll(0, list);
                       standerdLearningLength = list.length;
                       listLength.value = searchList.length;

@@ -286,12 +286,12 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                               } else {
                                 // TODO submit
 
-                                print("calling submit");
+                                //print("calling submit");
                                 if (imageFile != null) {
                                   String imgExtension = imageFile!.path
                                       .substring(
                                           imageFile!.path.lastIndexOf(".") + 1);
-                                  print('Image Extension : $imgExtension');
+                                  //print('Image Extension : $imgExtension');
                                   List<int> imageBytes =
                                       imageFile!.readAsBytesSync();
                                   String imageB64 = base64Encode(imageBytes);
@@ -303,13 +303,13 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                           imgBase64: imageB64,
                                           filePath: imageFile!.path.toString(),
                                           customOrStandardRubic: "Custom"));
-                                  print("calling get img url");
+                                  //print("calling get img url");
                                   _googleBloc.add(ImageToAwsBucked(
                                       imgBase64: RubricScoreList
                                           .scoringList.last.imgBase64,
                                       imgExtension: imgExtension));
                                 } else {
-                                  print("save score and name on local db");
+                                  //print("save score and name on local db");
                                   Utility.updateLoges(
                                       activityId: '21',
                                       description:
@@ -335,7 +335,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                             //   if (imageFile != null) {
                             //     imageBytes = imageFile!.readAsBytesSync();
                             //     String imageB64 = base64Encode(imageBytes);
-                            //     print("image64 is recived --------->$imageB64");
+                            //     //print("image64 is recived --------->$imageB64");
                             //     RubricScoreList.scoringList.add(CustomRubicModal(
                             //         name: nameController.text,
                             //         score: customScoreController.text,
@@ -356,7 +356,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                             //     context,
                             //   );
                             // } else {
-                            //   print("error");
+                            //   //print("error");
                             // }
                           },
                           label: Row(
@@ -425,11 +425,11 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
-              isFromHistoryAssessmentScanMore: false,
-              onlyForPicture: true,
-              isScanMore: false,
-              pointPossible: '',
-              flash: false,
+                isFromHistoryAssessmentScanMore: false,
+                onlyForPicture: true,
+                isScanMore: false,
+                pointPossible: '',
+                flash: false,
               )),
     );
     if (photo != null) {
