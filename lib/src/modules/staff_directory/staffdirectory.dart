@@ -72,6 +72,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     Globals.callsnackbar = true;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget listItem(list, obj, index) {
     return GestureDetector(
       onTap: () async {

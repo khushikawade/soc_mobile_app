@@ -326,12 +326,12 @@ class _StartupPageState extends State<StartupPage> {
       Navigator.pushReplacement<void, void>(
         context,
         MaterialPageRoute<void>(
-            builder: (BuildContext context) => 
-            //OpticalCharacterRecognition()
-            isOldUser == true
-                ? OpticalCharacterRecognition()
-                : CustomIntroWidget(),
-            ),
+          builder: (BuildContext context) =>
+              //OpticalCharacterRecognition()
+              isOldUser == true
+                  ? OpticalCharacterRecognition()
+                  : CustomIntroWidget(),
+        ),
       );
     });
   }

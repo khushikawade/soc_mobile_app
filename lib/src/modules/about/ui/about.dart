@@ -41,6 +41,12 @@ class _AboutPageState extends State<AboutPage> {
     _bloc.add(AboutStaffDirectoryEvent());
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));

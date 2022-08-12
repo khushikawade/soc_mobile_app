@@ -288,6 +288,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               studentName: "Name",
               studentGrade: "Points Earned",
               pointpossible: "Point Possible",
+              questionImgUrl: "Assessment Question Img",
               grade: "Grade",
               className: "Class Name",
               subject: "Subject",
@@ -296,7 +297,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               scoringRubric: "Scoring Rubric",
               customRubricImage: "Custom Rubric Image",
               assessmentImage: "Assessment Image",
-              questionImgUrl: "Assessment Question Img",
             ));
 
         print(assessmentData);

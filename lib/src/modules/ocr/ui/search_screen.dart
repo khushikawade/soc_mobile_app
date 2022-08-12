@@ -24,7 +24,9 @@ class SearchScreenPage extends StatefulWidget {
   final String? grade;
   final String? questionImage;
 
-  SearchScreenPage({Key? key, this.keyword, this.grade,required this.questionImage}) : super(key: key);
+  SearchScreenPage(
+      {Key? key, this.keyword, this.grade, required this.questionImage})
+      : super(key: key);
 
   @override
   State<SearchScreenPage> createState() => _SearchScreenPageState();
@@ -42,7 +44,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   OcrBloc _ocrBloc = OcrBloc();
   OcrBloc _ocrBloc2 = OcrBloc();
   String? standardId;
-   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _debouncer = Debouncer(milliseconds: 10);
   List<SubjectDetailList> searchList = [];
   int standerdLearningLength = 0;
@@ -53,6 +55,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +69,12 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
         subjectName: widget.keyword,
         // isSearchPage: true,
         className: widget.grade));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -359,7 +368,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   SubjectSelection(
-                                                    questionimageUrl: widget.questionImage ?? 'NA',
+                                                    questionimageUrl:
+                                                        widget.questionImage ??
+                                                            'NA',
                                                     selectedClass: widget.grade,
                                                     isSearchPage: true,
                                                     domainNameC:
@@ -374,8 +385,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                       } else {
                                         learningStandard =
                                             list[index].domainNameC;
-                                        subLearningStandard =
-                                            list[index].standardAndDescriptionC!.split(' - ')[0];
+                                        subLearningStandard = list[index]
+                                            .standardAndDescriptionC!
+                                            .split(' - ')[0];
                                         standardId = list[index].id;
                                         addToRecentList(
                                             type: 'nycSub',
@@ -574,15 +586,17 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       //   element.customRubricImage = rubricImgUrl ?? "NA";
                       //   element.grade = widget.grade;
                       // });
-                      
 
                       StudentAssessmentInfo element = studentInfodblist[0];
                       element.subject = widget.keyword;
                       element.learningStandard =
-                          learningStandard == null ||  learningStandard == '' ? "NA" : learningStandard;
-                      element.subLearningStandard = subLearningStandard == null || learningStandard == ''
-                          ? "NA"
-                          : subLearningStandard;
+                          learningStandard == null || learningStandard == ''
+                              ? "NA"
+                              : learningStandard;
+                      element.subLearningStandard =
+                          subLearningStandard == null || learningStandard == ''
+                              ? "NA"
+                              : subLearningStandard;
                       element.scoringRubric = Globals.scoringRubric;
                       element.customRubricImage = rubricImgUrl ?? "NA";
                       element.grade = widget.grade;
@@ -590,7 +604,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       await _studentInfoDb.putAt(0, element);
 
                       _googleDriveBloc.add(UpdateDocOnDrive(
-                         questionImage: widget.questionImage == ''? 'NA' :   widget.questionImage ?? 'NA',
+                          questionImage: widget.questionImage == ''
+                              ? 'NA'
+                              : widget.questionImage ?? 'NA',
                           createdAsPremium: Globals.isPremiumUser,
                           assessmentName: Globals.assessmentName!,
                           fileId: Globals.googleExcelSheetId,
@@ -599,7 +615,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               //list2
                               await Utility.getStudentInfoList(
                                   tableName: 'student_info')));
-                    
+
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
@@ -622,7 +638,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               if (state is GoogleSuccess) {
                                 Globals.currentAssessmentId = '';
                                 _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
-                                  assessmentQueImage: widget.questionImage ?? 'NA',
+                                    assessmentQueImage:
+                                        widget.questionImage ?? 'NA',
                                     assessmentName: Globals.assessmentName ??
                                         'Assessment Name',
                                     rubricScore: Globals.scoringRubric ?? '2',
@@ -653,7 +670,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
 
                                   _googleDriveBloc.add(
                                     UpdateDocOnDrive(
-                                      questionImage: widget.questionImage == ''? 'NA' :   widget.questionImage ?? 'NA',
+                                      questionImage: widget.questionImage == ''
+                                          ? 'NA'
+                                          : widget.questionImage ?? 'NA',
                                       createdAsPremium: Globals.isPremiumUser,
                                       assessmentName: Globals.assessmentName,
                                       fileId: Globals.googleExcelSheetId,
@@ -691,7 +710,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                   MaterialPageRoute(
                                       builder: (context) => ResultsSummary(
                                             fileId: Globals.googleExcelSheetId,
-                                           // subjectId:  ?? '',
+                                            // subjectId:  ?? '',
                                             standardId: standardId ?? '',
                                             asssessmentName:
                                                 Globals.assessmentName,

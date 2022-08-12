@@ -151,6 +151,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   _scrollListener() async {
     bool isTop = _scrollController.position.pixels < 150;
     if (isTop) {
@@ -215,7 +221,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             body: Container(
               //     padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.40),
@@ -536,12 +542,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             disableSlidableAction.value = true;
 
                             dashoardState.value = 'Success';
-                           Utility.updateLoges(
-                                            // accountType: 'Free',
-                                            activityId: '14',
-                                            description:
-                                                'Save to deshboard success',
-                                            operationResult: 'Success');
+                            Utility.updateLoges(
+                                // accountType: 'Free',
+                                activityId: '14',
+                                description: 'Save to deshboard success',
+                                operationResult: 'Success');
                             List<StudentAssessmentInfo> studentInfo =
                                 await Utility.getStudentInfoList(
                                     tableName:
@@ -1046,7 +1051,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
             height: widget.assessmentDetailPage!
                 ? (MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.height * 0.57
+                    ? MediaQuery.of(context).size.height * 0.4 //55
                     : MediaQuery.of(context).size.height * 0.45)
                 : (MediaQuery.of(context).orientation == Orientation.portrait
                     ? MediaQuery.of(context).size.height * 0.57
@@ -1147,14 +1152,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
               leading:
                   // Text('Unknown'),
-
-                  Utility.textWidget(
-                      text: _list[index].studentName == '' ||
-                              _list[index].studentName == null
-                          ? 'Unknown'
-                          : _list[index].studentName!,
-                      context: context,
-                      textTheme: Theme.of(context).textTheme.headline2!),
+                  Container(
+                width: MediaQuery.of(context).size.height * 0.37,
+                child: Utility.textWidget(
+                    text: _list[index].studentName == '' ||
+                            _list[index].studentName == null
+                        ? 'Unknown'
+                        : _list[index].studentName!,
+                    context: context,
+                    textTheme: Theme.of(context).textTheme.headline2!),
+              ),
 
               trailing:
                   // Text(_list[index].pointpossible!),
@@ -1496,13 +1503,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           index: index);
     } else {
       //  Globals.studentInfo!.length > 2
-      studentInfo.length > 1
-          ? _deletePopUP(
-              //    studentName: Globals.studentInfo![index].studentName!,
-              studentName: studentInfo[index].studentName!,
-              index: index)
-          : Utility.currentScreenSnackBar(
-              "Action Not Performed. Result List Cannot Be Empty.");
+      if (studentInfo.length > 1) {
+        _deletePopUP(
+            //    studentName: Globals.studentInfo![index].studentName!,
+            studentName: studentInfo[index].studentName!,
+            index: index);
+      } else {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        Utility.currentScreenSnackBar(
+            "Action Not Performed. Result List Cannot Be Empty.");
+      }
     }
   }
 

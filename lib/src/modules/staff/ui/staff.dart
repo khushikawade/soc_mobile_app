@@ -76,6 +76,11 @@ class _StaffPageState extends State<StaffPage> {
     _getLocalDb();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
   //   ScrollController get innerController {
   //   return globalKey.currentState!.innerController;
   // }

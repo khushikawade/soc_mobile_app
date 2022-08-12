@@ -1,8 +1,6 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
-import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:Soc/src/translator/translator_api.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -87,6 +85,4 @@ class _TranslationWidgetState extends State<TranslationWidget> {
           ),
         )
       : widget.builder!(translation!);
-
- 
 }

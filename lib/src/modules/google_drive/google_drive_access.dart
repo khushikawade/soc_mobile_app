@@ -48,14 +48,16 @@ class GoogleDriveAccess {
                     rowIndex: row))
                 .value =
             row == 0 ? data[row].pointpossible : data[1].pointpossible ?? '2';
+
         sheet
-            .cell(CellIndex.indexByColumnRow(
-                columnIndex:
-                    Globals.isPremiumUser == true && createdAsPremium == true
+                .cell(CellIndex.indexByColumnRow(
+                    columnIndex: Globals.isPremiumUser == true &&
+                            createdAsPremium == true
                         ? 4
                         : 3,
-                rowIndex: row))
-            .value = row == 0 ? data[row].grade : data[1].grade;
+                    rowIndex: row))
+                .value =
+            row == 0 ? data[row].questionImgUrl : data[1].questionImgUrl;
 
         sheet
             .cell(CellIndex.indexByColumnRow(
@@ -63,6 +65,15 @@ class GoogleDriveAccess {
                     Globals.isPremiumUser == true && createdAsPremium == true
                         ? 5
                         : 4,
+                rowIndex: row))
+            .value = row == 0 ? data[row].grade : data[1].grade;
+
+        sheet
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex:
+                    Globals.isPremiumUser == true && createdAsPremium == true
+                        ? 6
+                        : 5,
                 rowIndex: row))
             .value = row == 0 ? data[row].className : data[1].className;
         // sheet
@@ -72,25 +83,27 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:
                     Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 6
-                        : 5,
-                rowIndex: row))
-            .value = row == 0 ? data[row].subject : data[1].subject;
-        sheet
-                .cell(CellIndex.indexByColumnRow(
-                    columnIndex: Globals.isPremiumUser == true &&
-                            createdAsPremium == true
                         ? 7
                         : 6,
-                    rowIndex: row))
-                .value =
-            row == 0 ? data[row].learningStandard : data[1].learningStandard;
+                rowIndex: row))
+            .value = row == 0 ? data[row].subject : data[1].subject;
+
         sheet
                 .cell(CellIndex.indexByColumnRow(
                     columnIndex: Globals.isPremiumUser == true &&
                             createdAsPremium == true
                         ? 8
                         : 7,
+                    rowIndex: row))
+                .value =
+            row == 0 ? data[row].learningStandard : data[1].learningStandard;
+
+        sheet
+                .cell(CellIndex.indexByColumnRow(
+                    columnIndex: Globals.isPremiumUser == true &&
+                            createdAsPremium == true
+                        ? 9
+                        : 8,
                     rowIndex: row))
                 .value =
             row == 0
@@ -100,36 +113,30 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:
                     Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 9
-                        : 8,
+                        ? 10
+                        : 9,
                 rowIndex: row))
             .value = row == 0 ? data[row].scoringRubric : data[1].scoringRubric;
+
         sheet
                 .cell(CellIndex.indexByColumnRow(
                     columnIndex: Globals.isPremiumUser == true &&
                             createdAsPremium == true
-                        ? 10
-                        : 9,
+                        ? 11
+                        : 10,
                     rowIndex: row)) //.isFormula
                 .value =
             row == 0 ? data[row].customRubricImage : data[1].customRubricImage;
+
         sheet
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:
                     Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 11
-                        : 10,
-                rowIndex: row))
-            .value = data[row].assessmentImage;
-        sheet
-                .cell(CellIndex.indexByColumnRow(
-                    columnIndex: Globals.isPremiumUser == true &&
-                            createdAsPremium == true
                         ? 12
                         : 11,
-                    rowIndex: row))
-                .value =
-            row == 0 ? data[row].questionImgUrl : data[1].questionImgUrl;
+                rowIndex: row))
+            .value = data[row].assessmentImage;
+
         // sheet
         //     .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
         //     .value = data[row].isSavedOnDashBoard;

@@ -19,14 +19,16 @@ class SchoolDirectoryPage extends StatefulWidget {
   final bool? isStandardPage;
   final bool? isSubmenu;
   final String? title;
-   final bool? isCustomSection;
+  final bool? isCustomSection;
 
   const SchoolDirectoryPage(
       {Key? key,
       this.obj,
       required this.isStandardPage,
       this.isSubmenu,
-      this.title, required,  required this.isCustomSection})
+      this.title,
+      required,
+      required this.isCustomSection})
       : super(key: key);
 
   @override
@@ -51,85 +53,11 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
         isSubMenu: widget.isSubmenu));
   }
 
-  // Widget _buildnewsHeading(SchoolDirectoryList obj) {
-  //   return Container(
-  //       alignment: Alignment.centerLeft,
-  //       child: Globals.selectedLanguage != null &&
-  //               Globals.selectedLanguage != "English" &&
-  //               Globals.selectedLanguage != ""
-  //           ? TranslationWidget(
-  //               message: obj.titleC ?? "",
-  //               fromLanguage: "en",
-  //               toLanguage: Globals.selectedLanguage,
-  //               builder: (translatedMessage) => Text(
-  //                 translatedMessage.toString(),
-  //                 style: Theme.of(context).textTheme.bodyText2!,
-  //               ),
-  //             )
-  //           : Text(
-  //               obj.titleC ?? "",
-  //               overflow: TextOverflow.ellipsis,
-  //               maxLines: 2,
-  //               style: Theme.of(context).textTheme.headline4!,
-  //             ));
-  // }
-
-  // Widget _buildList(SchoolDirectoryList obj, int index) {
-  //   return Container(
-  //     padding: EdgeInsets.symmetric(
-  //       horizontal: _kLabelSpacing,
-  //       vertical: _kLabelSpacing / 2,
-  //     ),
-  //     color: (index % 2 == 0)
-  //         ? Theme.of(context).colorScheme.background
-  //         : Theme.of(context).colorScheme.secondary,
-  //     child: InkWell(
-  //       onTap: () async {
-  //         //free screen orientation
-  //         //  Utility.setFree();
-  //         await Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (context) => SchoolDetailPage(obj: obj)));
-  //         //Utility.setLocked();
-  //       },
-  //       child: Row(
-  //         children: <Widget>[
-  //           Container(
-  //               alignment: Alignment.center,
-  //               width: Globals.deviceType == "phone"
-  //                   ? _kIconSize * 1.4
-  //                   : _kIconSize * 2,
-  //               height: Globals.deviceType == "phone"
-  //                   ? _kIconSize * 1.5
-  //                   : _kIconSize * 2,
-  //               child: ClipRRect(
-  //                   child: CommonImageWidget(
-  //                 darkModeIconUrl: obj.darkModeIconC,
-  //                 height: Globals.deviceType == "phone"
-  //                     ? _kIconSize * 1.4
-  //                     : _kIconSize * 2,
-  //                 width: Globals.deviceType == "phone"
-  //                     ? _kIconSize * 1.4
-  //                     : _kIconSize * 2,
-  //                 iconUrl: obj.imageUrlC ??
-  //                     Globals.splashImageUrl ??
-  //                     Globals.appSetting.appLogoC,
-  //                 fitMethod: BoxFit.cover,
-  //               ))),
-  //           SizedBox(
-  //             width: _kLabelSpacing / 2,
-  //           ),
-  //           Expanded(
-  //             child: Container(
-  //               child: _buildnewsHeading(obj),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   Widget _body(String key) => Container(
         child: RefreshIndicator(
@@ -153,12 +81,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                 } else if (!connected) {
                   iserrorstate = true;
                 }
-                return
-                    // connected ?
-                    Stack(
-                  // mainAxisSize: MainAxisSize.max,
-                  // mainAxisAlignment: MainAxisAlignment.start,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
+                return Stack(
                   children: [
                     BlocBuilder<SchoolDirectoryBloc, SchoolDirectoryState>(
                         bloc: bloc,
@@ -177,26 +100,6 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                             return CommonSchoolDirectoryWidget(
                               data: state.obj!,
                             );
-                            // state.obj!.length > 0
-                            //     ? ListView.builder(
-                            //         key: ValueKey(key),
-                            //         padding: EdgeInsets.only(
-                            //             bottom: AppTheme.klistPadding),
-                            //         scrollDirection: Axis.vertical,
-                            //         itemCount: state.obj!.length,
-                            //         itemBuilder:
-                            //             (BuildContext context, int index) {
-                            //           return _buildList(
-                            //               state.obj![index], index);
-                            //         },
-                            //       )
-                            //     : NoDataFoundErrorWidget(
-                            //         isCalendarPageOrientationLandscape: false,
-                            //         isResultNotFoundMsg: false,
-                            //         isNews: false,
-                            //         isEvents: false,
-                            //         connected: connected,
-                            //       );
                           } else if (state is SchoolDirectoryErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);
                           } else {
@@ -223,8 +126,6 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                     ),
                   ],
                 );
-                // : NoInternetErrorWidget(
-                //     connected: connected, issplashscreen: false);
               },
               child: Container()),
           onRefresh: refreshPage,
@@ -250,7 +151,8 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                     language: Globals.selectedLanguage,
                   )
                 : null),
-        body: widget.isCustomSection==false&&widget.isSubmenu == true &&
+        body: widget.isCustomSection == false &&
+                widget.isSubmenu == true &&
                 Globals.appSetting.schoolBannerImageC != null &&
                 Globals.appSetting.schoolBannerImageC != "" &&
                 widget.isSubmenu != true

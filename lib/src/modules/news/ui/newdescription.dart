@@ -45,6 +45,12 @@ class _NewdescriptionState extends State<Newdescription> {
     Globals.callsnackbar = true;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   void _launchURL(obj) async {
     if (!obj.toString().contains('http')) {
       await Utility.launchUrlOnExternalBrowser(obj);

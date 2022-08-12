@@ -1197,8 +1197,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
               valueListenable: isStudentNameFilled,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                controller.selection = TextSelection.fromPosition(
-                    TextPosition(offset: controller.text.length));
+                // controller.selection = TextSelection.fromPosition(
+                //     TextPosition(offset: controller.text.length));
                 return TextFormField(
                     scrollController: scrollController,
                     maxLength: maxNineDigit == true ? 9 : null,
@@ -1459,7 +1459,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Future<void> _navigatetoCameraSection() async {
-     var result = await Navigator.push(
+    var result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
@@ -1473,9 +1473,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   pointPossible: widget.pointPossible,
                   flash: widget.isFlashOn,
                 )));
-       if (result == true) {
-                          isBackFromCamera.value = result;
-                        }          
+    if (result == true) {
+      isBackFromCamera.value = result;
+    }
   }
 
   void _performAnimation() {

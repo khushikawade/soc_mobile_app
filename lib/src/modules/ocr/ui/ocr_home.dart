@@ -69,8 +69,13 @@ class _OpticalCharacterRecognitionPageState
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         CommonBackGroundImgWidget(),
@@ -411,7 +416,9 @@ class _OpticalCharacterRecognitionPageState
                             rubricScoreSelectedColor.value = index;
 
                             if (RubricScoreList.scoringList[index].name ==
-                                "Custom") {
+                                    "Custom" &&
+                                rubricScoreSelectedColor.value == 1) {
+                              // To make sure, custom name not mismatches the options
                               customRubricBottomSheet();
                             } else {
                               if (index == 0) {
@@ -560,13 +567,19 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnCameraSection() async {
-    Globals.pointpossible = rubricScoreSelectedColor.value == 0
+    Globals.pointpossible = rubricScoreSelectedColor.value == 0 //NYS 0-2
         ? '2'
-        : rubricScoreSelectedColor.value == 2
+        : rubricScoreSelectedColor.value == 2 //NYS 0-3
             ? '3'
-            : rubricScoreSelectedColor.value == 4
-                ? '4'
-                : '4'; //In case of 'None' or 'Custom rubric' selection
+            : rubricScoreSelectedColor.value == 4 //None
+                ? '2'
+                : rubricScoreSelectedColor.value == 4 //NYS 0-4
+                    ? '4'
+                    : rubricScoreSelectedColor.value > 4 //Custom selection
+                        ? (pointPossibleSelectedColor.value + 1)
+                            .toString() //+1 is added for 'index+1' to get right point possible
+                        : '2'; //In case of 'None' or 'Custom rubric' selection
+
     Globals.googleExcelSheetId = "";
     updateLocalDb();
     if (Globals.sessionId == '') {

@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wakelock/wakelock.dart';
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
@@ -111,7 +112,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   void initState() {
-    // Wakelock.enable();
+    Wakelock.enable();
     Globals.iscameraPopup
         ? WidgetsBinding.instance
             .addPostFrameCallback((_) => _showStartDialog())
@@ -131,7 +132,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   void dispose() {
-    // Wakelock.disable();
+    Wakelock.disable();
     controller?.dispose();
     super.dispose();
   }
@@ -205,7 +206,7 @@ class _CameraScreenState extends State<CameraScreen>
                     });
                     try {
                       await controller!.setFlashMode(
-                          widget.flash ? FlashMode.torch : FlashMode.off);
+                          widget.flash ? FlashMode.always : FlashMode.off);
                     } catch (e) {}
                   },
                   icon: Icon(
@@ -655,8 +656,8 @@ class _CameraScreenState extends State<CameraScreen>
                               child: InkWell(
                                 onTap: () async {
                                   try {
-                                    await controller!
-                                        .setFlashMode(FlashMode.off);
+                                    // await controller!
+                                    //     .setFlashMode(FlashMode.off);
                                   } catch (e) {}
                                   HapticFeedback.vibrate();
                                   XFile? rawImage = await takePicture();
@@ -725,7 +726,7 @@ class _CameraScreenState extends State<CameraScreen>
                                     if (flashOn == true) {
                                       try {
                                         await controller!
-                                            .setFlashMode(FlashMode.torch);
+                                            .setFlashMode(FlashMode.always);
                                       } catch (e) {}
                                     }
                                   }
@@ -790,7 +791,7 @@ class _CameraScreenState extends State<CameraScreen>
         _isCameraInitialized = controller!.value.isInitialized;
         try {
           await controller!
-              .setFlashMode(widget.flash ? FlashMode.torch : FlashMode.off);
+              .setFlashMode(widget.flash ? FlashMode.always : FlashMode.off);
         } catch (e) {}
       });
     }

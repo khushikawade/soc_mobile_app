@@ -55,6 +55,12 @@ class _FamilyPageState extends State<FamilyPage> {
     }
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));

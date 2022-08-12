@@ -39,6 +39,12 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
     Globals.callsnackbar = true;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget description(list) {
     return Padding(
       padding: const EdgeInsets.symmetric(

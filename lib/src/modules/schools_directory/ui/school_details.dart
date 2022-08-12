@@ -56,6 +56,12 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
     }
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget _buildIcon() {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
