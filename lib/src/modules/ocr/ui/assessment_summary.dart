@@ -198,23 +198,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  final kInnerDecoration = BoxDecoration(
-    color: Colors.white,
-    // border: Border.all(color: Colors.white),
-    borderRadius: BorderRadius.circular(32),
-  );
-
-  final kGradientBoxDecoration = BoxDecoration(
-    gradient: LinearGradient(colors: [
-      AppTheme.kButtonColor,
-      AppTheme.kSelectedColor,
-    ]),
-    // border: Border.all(
-    //   color: AppTheme.kButtonColor,
-    // ),
-    borderRadius: BorderRadius.circular(32),
-  );
-
   Widget listView(List<HistoryAssessment> _list, bool isLoading) {
     return Container(
       height: MediaQuery.of(context).orientation == Orientation.portrait
@@ -234,7 +217,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                       child: Center(
                         child: Platform.isIOS
                             ? CupertinoActivityIndicator(
-                                color: Theme.of(context).colorScheme.onPrimary,
+                                color: AppTheme.kButtonbackColor,
                               )
                             : Container(
                                 margin: EdgeInsets.only(bottom: 15),
@@ -255,6 +238,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
 
   Widget allCaughtUp() {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
           Row(children: [
@@ -262,7 +246,10 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               child: Container(
                   margin: const EdgeInsets.only(left: 20.0, right: 10.0),
                   child: Divider(
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Colors.white
+                        : Colors.black,
                     height: 40,
                   )),
             ),
@@ -286,16 +273,37 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     },
                     child: Icon(Icons.done, color: AppTheme.kButtonColor),
                   ),
-                  decoration: kInnerDecoration,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Color(0xff111C20)
+                        : Color(0xffF7F8F9),
+
+                    // Theme.of(context).colorScheme.background ==
+                    //     Color(0xff000000)
+                    // ? Color(0xffF7F8F9)
+                    // : Color(0xff162429),
+                    // border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(32),
+                  ),
                 ),
               ),
-              decoration: kGradientBoxDecoration,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  AppTheme.kButtonColor,
+                  AppTheme.kSelectedColor,
+                ]),
+                borderRadius: BorderRadius.circular(32),
+              ),
             ),
             Expanded(
               child: Container(
                   margin: const EdgeInsets.only(left: 10.0, right: 20.0),
                   child: Divider(
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Colors.white
+                        : Colors.black,
                     height: 40,
                   )),
             ),
@@ -312,7 +320,10 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         'All Assessments Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
-                        color: Colors.black, //AppTheme.kButtonColor,
+                        color: Theme.of(context).colorScheme.background ==
+                                Color(0xff000000)
+                            ? Colors.white
+                            : Colors.black, //AppTheme.kButtonColor,
                         fontWeight: FontWeight.bold)),
                 SpacerWidget(10),
                 Utility.textWidget(
