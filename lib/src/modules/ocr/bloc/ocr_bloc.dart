@@ -180,8 +180,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")
-            : //print(e);
-            throw (e);
+            : print(e);
+        throw (e);
       }
     }
 
@@ -201,8 +201,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")
-            : //print(e);
-            throw (e);
+            : print(e);
+        throw (e);
       }
     }
 
@@ -316,8 +316,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")
-            : //print(e);
-            throw (e);
+            : print(e);
+        throw (e);
       }
     }
 
@@ -438,8 +438,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")
-            : //print(e);
-            throw (e);
+            : print(e);
+        throw (e);
       }
     }
     if (event is SaveAssessmentToDashboardAndGetId) {

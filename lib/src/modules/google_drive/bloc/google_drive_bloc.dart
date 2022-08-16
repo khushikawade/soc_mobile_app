@@ -620,8 +620,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")
-            : //print(e);
-            throw (e);
+            : print(e);
+        throw (e);
       }
     }
     if (event is QuestionImgToAwsBucked) {
@@ -640,8 +640,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")
-            : //print(e);
-            throw (e);
+            : print(e);
+        throw (e);
       }
     }
     if (event is GetShareLink) {
@@ -1019,8 +1019,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     } catch (e) {
       e == 'NO_CONNECTION'
           ? Utility.currentScreenSnackBar("No Internet Connection")
-          : //print(e);
-          throw (e);
+          : print(e);
+      throw (e);
     }
   }
 
