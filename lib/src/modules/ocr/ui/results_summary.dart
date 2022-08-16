@@ -276,7 +276,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ),
                   // SpacerWidget(_KVertcalSpace / 5),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.05,
+                    height: MediaQuery.of(context).size.height * 0.07,
                     child: ValueListenableBuilder(
                       valueListenable: infoIconValue,
                       builder:
@@ -294,12 +294,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     width: MediaQuery.of(context).size.width *
                                         0.75,
                                     child: Utility.textWidget(
-                                        text: widget.asssessmentName == null
-                                            ? 'Asssessment Name'
-                                            //     //     // : widget.asssessmentName!.length > 20
-                                            //     //     //     ? '${widget.asssessmentName!.substring(0, 20)}' +
-                                            //     //     //         '...'
-                                            : widget.asssessmentName!,
+                                        text:
+                                            // 'hykhyptjpotp]iotgjhoityhjoiyjhieorgjhnklrtnhkgjnkljgbhjrkbthn;rtnjlrnhlrdnhrjhnrjkhnkrljnjklrnrihnrtihn',
+                                            widget.asssessmentName == null
+                                                ? 'Asssessment Name'
+                                                //     //     // : widget.asssessmentName!.length > 20
+                                                //     //     //     ? '${widget.asssessmentName!.substring(0, 20)}' +
+                                                //     //     //         '...'
+                                                : widget.asssessmentName!,
                                         context: context,
                                         maxLines: 2,
                                         textAlign: TextAlign.left,
