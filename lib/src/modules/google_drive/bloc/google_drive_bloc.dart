@@ -333,8 +333,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       } catch (e) {
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection")
-            : //print(e);
-            throw (e);
+            : print(e);
+        throw (e);
       }
     }
 
@@ -379,12 +379,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
             //Sort the list as per the modified date
             assessmentList = await listSort(assessmentList);
-            assessmentList.length > 0
-                ? await _localDb.clear()
-                : //print("");
-                assessmentList.forEach((HistoryAssessment e) {
-                    _localDb.addData(e);
-                  });
+            assessmentList.length > 0 ? await _localDb.clear() : print("");
+            assessmentList.forEach((HistoryAssessment e) {
+              _localDb.addData(e);
+            });
 
             yield GoogleDriveGetSuccess(
                 obj: assessmentList, nextPageLink: pair[1]);
