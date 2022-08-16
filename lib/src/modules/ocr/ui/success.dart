@@ -251,7 +251,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
-                                    flash: widget.isFlashOn,
+                                    isFlashOn:
+                                        ValueNotifier<bool>(widget.isFlashOn),
                                   )),
                         );
                         if (result == true) {
@@ -511,8 +512,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                                   pointPossible:
                                                                       widget
                                                                           .pointPossible,
-                                                                  flash: widget
-                                                                      .isFlashOn,
+                                                                  isFlashOn: ValueNotifier<
+                                                                          bool>(
+                                                                      widget
+                                                                          .isFlashOn),
                                                                 )),
                                                       );
                                                       if (result == true) {
@@ -1472,7 +1475,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onlyForPicture: false,
                   isScanMore: widget.isScanMore,
                   pointPossible: widget.pointPossible,
-                  flash: widget.isFlashOn,
+                  isFlashOn: ValueNotifier<bool>(widget.isFlashOn),
                 )));
     if (result == true) {
       isBackFromCamera.value = result;

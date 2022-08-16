@@ -217,21 +217,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             hintText: '1st',
                             onSaved: (String value) {
                               classError.value = value;
-
-                              //To insert the value in the middle of the text
-                              // String beforeCursorPosition1 = classController
-                              //     .selection
-                              //     .textBefore(classController.text);
-
-                              // String afterCursorPosition1 = classController
-                              //     .selection
-                              //     .textAfter(classController.text);
-
-                              // String result = beforeCursorPosition1 +
-                              //     value +
-                              //     afterCursorPosition1;
-
-                              // classError.value = result;
                             },
                             validator: (String? value) {
                               return null;
@@ -278,20 +263,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               filters: widget.classSuggestions),
                         ),
 
-                      // if (widget.classSuggestions.length > 0)
-                      //   SpacerWidget(_KVertcalSpace / 4),
-                      // if (widget.classSuggestions.length > 0)
-                      //   Wrap(
-                      //     children: List<Widget>.generate(
-                      //       widget.classSuggestions.length,
-                      //       (int index) {
-                      //         return _suggestionClips(
-                      //             index: index,
-                      //             classSuggestions: widget.classSuggestions);
-                      //       },
-                      //     ).toList(),
-                      //   ),
-
                       SpacerWidget(_KVertcalSpace / 2),
                       highlightText(
                           text: 'Select Grade',
@@ -306,18 +277,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       SpacerWidget(_KVertcalSpace / 4),
                       scoringButton(),
                       SpacerWidget(_KVertcalSpace / 3),
-                      // Utility.textWidget(
-                      //     context: context,
-                      //     text: 'Scan Assessment (Optional)',
-                      //     textTheme: Theme.of(context)
-                      //         .textTheme
-                      //         .headline2!
-                      //         .copyWith(
-                      //             color: Theme.of(context)
-                      //                 .colorScheme
-                      //                 .primaryVariant
-                      //                 .withOpacity(0.3))),
-                      // SpacerWidget(_KVertcalSpace / 3),
+
                       Row(
                         children: [
                           ValueListenableBuilder(
@@ -380,7 +340,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                         ],
                                       ),
                                       SpacerWidget(_KVertcalSpace / 8),
-
                                       CircleAvatar(
                                         //  foregroundColor:  Colors.red,
                                         backgroundImage:
@@ -416,131 +375,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                               : AppTheme.kSelectedColor,
                                         ),
                                       ),
-
-                                      //  isimageFilePicked.value == true ? Padding(
-                                      //    padding: const EdgeInsets.only(
-                                      //        left: 5.0),
-                                      //    child: TextButton(
-                                      //      onPressed: (){
-                                      //         showQuestionImage();
-
-                                      //      },
-                                      //      child:  Text('View Question Image')
-                                      //     //  Icon(
-                                      //     //    // isimageFilePicked.value !=
-                                      //     //    //       true
-                                      //     //    //   ?
-                                      //     //      Icons.image,
-                                      //     //      // : Icons.image_sharp,
-                                      //     //      size: Globals.deviceType ==
-                                      //     //          'phone'
-                                      //     //      ? 25
-                                      //     //      : 30,
-                                      //     //  ),
-
-                                      //     //  color: isimageFilePicked
-                                      //     //              .value !=
-                                      //     //          true
-                                      //     //      ? Color(0xff000000) ==
-                                      //     //              Theme.of(context)
-                                      //     //                  .backgroundColor
-                                      //     //          ? Color(0xffFFFFFF)
-                                      //     //          : Color(0xff000000)
-                                      //     //      : AppTheme.kSelectedColor,
-
-                                      //    ),
-                                      //  ): Container()
-                                      // Padding(
-                                      //   padding: const EdgeInsets.only(
-                                      //       left: 5.0),
-                                      //   child: Icon(
-                                      //     isimageFilePicked.value !=
-                                      //             true
-                                      //         ? Icons.
-                                      //         : Icons.check,
-                                      //     color: isimageFilePicked
-                                      //                 .value !=
-                                      //             true
-                                      //         ? Color(0xff000000) ==
-                                      //                 Theme.of(context)
-                                      //                     .backgroundColor
-                                      //             ? Color(0xffFFFFFF)
-                                      //             : Color(0xff000000)
-                                      //         : AppTheme.kSelectedColor,
-                                      //     size: Globals.deviceType ==
-                                      //             'phone'
-                                      //         ? 25
-                                      //         : 30,
-                                      //   ),
-                                      // ),
                                     ],
                                   ),
                                 );
                               }),
                         ],
                       ),
-
-                      //   SpacerWidget(_KVertcalSpace),
-                      // GestureDetector(
-                      //   onTap: () {
-                      //     _cameraImage(context);
-                      //   },
-                      //   child:
-                      //    Container(
-                      //       margin: EdgeInsets.only(
-                      //           bottom:
-                      //               MediaQuery.of(context).size.height * 0.15),
-                      //       decoration: BoxDecoration(
-                      //           color: Colors.grey.shade200,
-                      //           border: Border.all(
-                      //               width: 2, color: AppTheme.kButtonColor),
-                      //           borderRadius:
-                      //               BorderRadius.all(Radius.circular(10.0))),
-                      //       height: 150,
-                      //       width: MediaQuery.of(context).size.width,
-                      //       child:
-                      //           // imageFile != null
-                      //           //     ?
-                      //           ValueListenableBuilder(
-                      //               valueListenable: isimageFilePicked,
-                      //               child: Container(),
-                      //               builder: (BuildContext context,
-                      //                   dynamic value, Widget? child) {
-                      //                 return isimageFilePicked.value == true
-                      //                     ? ClipRRect(
-                      //                         borderRadius:
-                      //                             BorderRadius.circular(10),
-                      //                         child: Image.file(
-                      //                           imageFile!,
-                      //                           fit: BoxFit.contain,
-                      //                         ),
-                      //                       )
-                      //                     : Container(
-                      //                         child: Center(
-                      //                           child: Icon(
-                      //                             Icons.add_a_photo,
-                      //                             color: AppTheme.kButtonColor
-                      //                                 .withOpacity(1.0),
-                      //                           ),
-                      //                         ),
-                      //                       );
-                      //               })
-                      //       // : Container(
-                      //       //     child: Center(
-                      //       //       child: Icon(
-                      //       //         Icons.add_a_photo,
-                      //       //         color: AppTheme.kButtonColor
-                      //       //             .withOpacity(1.0),
-                      //       //       ),
-                      //       //     ),
-                      //       //   ),
-                      //       ),
-                      // ),
-
-                      //To scroll the screen in case of keyboard appears
-                      // Padding(
-                      //     padding: EdgeInsets.only(
-                      //         bottom: MediaQuery.of(context).viewInsets.bottom))
                     ],
                   ),
                 ),
@@ -580,11 +420,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
-            //  color: Colors.red,
-            // width: 100,
-            // height: Globals.deviceType == 'phone'
-            //     ? MediaQuery.of(context).size.height * 0.28
-            //     : MediaQuery.of(context).size.width * 0.25,
             child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -799,16 +634,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   } else {
                     _navigateToSubjectSection('');
                   }
-
-                  // : Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) => SubjectSelection(
-                  //                     selectedClass:
-                  //                         selectedGrade.value.toString(),
-                  //                   )),
-                  //         );
-
                 }
               }
             },
@@ -855,9 +680,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           Utility.currentScreenSnackBar(
                               "Something Went Wrong. Please Try Again.");
                         }
-                        // Navigator.of(context).pop();
-                        // Utility.currentScreenSnackBar(
-                        //     "Something Went Wrong. Please Try Again.");
                       }
                     }),
                 BlocListener<GoogleDriveBloc, GoogleDriveState>(
@@ -874,24 +696,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         _navigateToSubjectSection(state.questionImageUrl);
                       }
                       if (state is ErrorState) {
-                        // if (state.errorMsg == 'Reauthentication is required') {
-                        //   await Utility.refreshAuthenticationToken(
-                        //       isNavigator: true,
-                        //       errorMsg: state.errorMsg!,
-                        //       context: context,
-                        //       scaffoldKey: scaffoldKey);
-
-                        //   _googleDriveBloc.add(CreateExcelSheetToDrive(
-                        //       name:
-                        //           "${assessmentController.text}_${classController.text}"));
-                        // } else {
                         Navigator.of(context).pop();
                         Utility.currentScreenSnackBar(
                             "Something Went Wrong. Please Try Again.");
-                        // }
-                        // Navigator.of(context).pop();
-                        // Utility.currentScreenSnackBar(
-                        //     "Something Went Wrong. Please Try Again.");
                       }
                     }),
                 textwidget(
@@ -922,7 +729,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 onlyForPicture: true,
                 isScanMore: false,
                 pointPossible: '',
-                flash: false,
+                isFlashOn: ValueNotifier<bool>(false),
               )),
     );
     if (photo != null) {
@@ -930,16 +737,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
       isimageFilePicked.value = false;
       isimageFilePicked.value = true;
     }
-    // else {
-    //   isimageFilePicked.value = false;
-    // }
-    // final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    // if (photo != null) {
-    //   imageFile = File(photo.path);
-    //   isimageFilePicked.value = true;
-    // } else {
-    //   isimageFilePicked.value = false;
-    // }
   }
 
   void _navigateToSubjectSection(String? questionImageUrl) async {

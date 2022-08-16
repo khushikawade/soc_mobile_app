@@ -1226,7 +1226,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
-                              flash: false,
+                              isFlashOn: ValueNotifier<bool>(false),
                               questionImageLink: questionImageUrl,
                               obj: widget.obj,
                               createdAsPremium:

@@ -599,14 +599,16 @@ class _OpticalCharacterRecognitionPageState
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CameraScreen(
-                isFromHistoryAssessmentScanMore: false,
-                onlyForPicture: false,
-                scaffoldKey: _scaffoldKey,
-                isScanMore: false,
-                pointPossible: Globals.pointpossible,
-                flash: false,
-              )),
+        builder: (context) => CameraScreen(
+          isFromHistoryAssessmentScanMore: false,
+          onlyForPicture: false,
+          scaffoldKey: _scaffoldKey,
+          isScanMore: false,
+          pointPossible: Globals.pointpossible,
+          isFlashOn: ValueNotifier<bool>(false),
+        ),
+        // settings: RouteSettings(name: "/home")
+      ),
     );
     // End
     // // COMMENT Below

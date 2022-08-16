@@ -429,7 +429,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 onlyForPicture: true,
                 isScanMore: false,
                 pointPossible: '',
-                flash: false,
+                isFlashOn: ValueNotifier<bool>(false),
               )),
     );
     if (photo != null) {
