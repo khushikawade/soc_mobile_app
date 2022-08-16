@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -92,11 +94,17 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                             color: AppTheme.kButtonColor,
                           ));
                 }),
-            onPressed: () {
+            onPressed: () async {
               if (widget.isAccessDenied == true) {
                 //To pop 2 times to navigate back to the home screen in case of camera access denied
                 int count = 0;
-                Navigator.of(context).popUntil((_) => count++ >= 2);
+                Navigator.of(context).popUntil((_) {
+                  if (Platform.isAndroid) {
+                    return count++ >= 3;
+                  } else {
+                    return count++ >= 2;
+                  }
+                });
 
                 //To open the app setting for permission access
                 OpenAppsSettings.openAppsSettings(
