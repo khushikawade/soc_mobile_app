@@ -74,7 +74,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         StudentDetails data = await fetchStudentDetails(event.ossId);
         yield SuccessStudentDetails(
             studentName: "${data.firstNameC} ${data.lastNameC}");
-        //print('SuccessStudentDetails : $data');
       } catch (e) {
         //print(e);
       }
@@ -124,7 +123,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               }
             }
           }
-          //print(list.length);
           yield SearchSubjectDetailsSuccess(
             obj: list,
           );
@@ -144,7 +142,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               list.add(data[i]);
             }
           }
-          //print(list.length);
           yield OcrLoading();
           yield SearchSubjectDetailsSuccess(
             obj: list,
@@ -158,7 +155,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               list.add(data[i]);
             }
           }
-          //print(list.length);
           yield OcrLoading();
           yield SearchSubjectDetailsSuccess(
             obj: list,
@@ -191,7 +187,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is VerifyUserWithDatabase) {
       try {
-        //print("calling api to verifyUserWithDatabase");
         //  var data =
         bool result =
             await verifyUserWithDatabase(email: event.email.toString());
@@ -328,7 +323,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is SaveAssessmentToDashboard) {
       try {
-        //print("calling save record to Salesforce");
         yield OcrLoading();
         // List<UserInformation> _profileData =
         //     await UserGoogleProfile.getUserProfile();
@@ -403,24 +397,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             subjectId = standardObject != null && standardObject != ''
                 ? standardObject['Subject__c']
                 : '';
-          } else {
-            // Not in use now
-            // standardId = event.standardId;
-            // subjectId = event.subjectId;
           }
-          //TO DO
-          // if (event.isHistoryAssessmentSection == true) {
-          //   String dashboardId = await saveAssessmentToDashboard(
-          //     fileId: event.fileId,
-          //     assessmentName: event.assessmentName,
-          //     rubicScore: await rubricPickList(event.rubricScore),
-          //     subjectId: subjectId,
-          //     schoolId: event.schoolId,
-          //     standardId: standardId,
-          //   );
-
-          //   Globals.currentAssessmentId = dashboardId;
-          // }
 
           if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
             bool result = await saveResultToDashboard(
@@ -442,16 +419,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
                 schoolId: event.schoolId,
               );
             } else {
-              // await _sendEmailToAdmin(
-              //   assessmentId: event.assessmentId!,
-              //   name: _profileData[0].userName!.replaceAll("%", " "),
-              //   studentResultDetails: event.resultList,
-              //   schoolId: event.schoolId,
-              //   email: _profileData[0].userEmail!,
-              //   assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-              // );
-              ////print("result Record is saved on DB");
-
               yield AssessmentSavedSuccessfully();
             }
           } else {
@@ -500,7 +467,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is LogUserActivityEvent) {
       //yield OcrLoading();
       try {
-        //print('Session ID : ${event.sessionId}');
         var body = {
           "Session_Id": "${event.sessionId}",
           "Teacher_Id": "${event.teacherId}",
@@ -549,9 +515,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         isGoogleApi: true,
       );
 
-      if (response.statusCode == 200) {
-        //print("######### Logs updated Successfully ###########");
-      }
+      if (response.statusCode == 200) {}
     } catch (e) {
       throw Exception("Something went wrong");
     }
@@ -619,7 +583,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           LocalDatabase(Strings.ocrSubjectObjectName);
       List<SubjectDetailList>? _localData = await _localDb.getData();
 
-      //print('Subject Local data length: ${_localData.length}');
       //Common detail list to save all deatails of subject for specific grade. Include : Subject, Learning standard and sub learning standard
       List<SubjectDetailList> subjectDetailList = [];
 
@@ -755,8 +718,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         return ['', '', ''];
       }
     } catch (e) {
-      //print(
-      // '------------------------------------error-----------------------------------');
       print(e);
     }
   }
@@ -784,8 +745,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           body: body,
           headers: headers);
       if (response.statusCode == 200) {
-        //print("created");
-
         return true;
       } else {
         return false;
@@ -813,7 +772,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         var data = res["body"];
 
         if (data == false) {
-          //print("this is a new uer now create a user contaact inside database");
           bool result =
               await createContactToSalesforce(email: email.toString());
           if (!result) {
@@ -826,7 +784,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           } else {
             Globals.isPremiumUser = false;
           }
-          //print("this is a older user now updating datils in database");
+
           Globals.teacherId = data['Id'];
           bool result = await updateContactToSalesforce(recordId: data['Id']);
           if (!result) {
@@ -853,7 +811,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<bool> createContactToSalesforce({required String? email}) async {
     try {
-      //print(email!.split("@")[0]);
       Map<String, String> headers = {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -877,7 +834,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           headers: headers);
       if (response.statusCode == 200) {
         Globals.teacherId = response.data["body"]["id"];
-        //print("new user created ---->sucessfully ");
+
         return true;
       } else {
         return false;
@@ -902,7 +859,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           body: body,
           headers: headers);
       if (response.statusCode == 200) {
-        //print("old user data updated --> sucessfully ");
         return true;
       } else {
         return false;
@@ -966,6 +922,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         return id;
       } else {
         //print("not 200 ---> r${response.statusCode}");
+
         return "";
       }
     } catch (e) {
@@ -1011,7 +968,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               studentDetails[i].studentName ?? ''));
         }
       }
-      //print(bodyContent);
       final ResponseModel response = await _dbServices.postapi(
         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
         isGoogleApi: true,
@@ -1019,7 +975,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       );
       if (response.statusCode == 200) {
         // String id = response.data['body']['id'];
-        //print("result(s) have been successfully saved to dashboard.");
+
         List<UserInformation> _profileData =
             await UserGoogleProfile.getUserProfile();
         bool result = await _sendEmailToAdmin(
@@ -1115,6 +1071,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         return true;
       } else {
         //print("email sending fail");
+
         return false;
       }
     } catch (e) {
@@ -1132,8 +1089,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           isGoogleAPI: true);
       if (response.statusCode == 200) {
         return response.data['body'].length > 0 ? response.data['body'][0] : '';
-      } else {
-        //print("standard api not done");
       }
     } catch (e) {
       throw (e);
@@ -1165,7 +1120,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
       if (response.statusCode == 200) {
         StudentDetails res = StudentDetails.fromJson(response.data['body']);
-        //print('fetchStudentDetails : $res');
+
         return res;
       } else {
         throw ('something_went_wrong');
@@ -1205,9 +1160,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       if (response.statusCode == 200) {
         var data = response.data["body"];
         if (data.length > 0) {
-          //print('dddddddddddddddddddddddddddddddddddddddddddddddddd');
-          //print(
-          // "--------->//printing length in saved on dashboard ${data.length}");
           return data.length;
         }
       }

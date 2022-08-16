@@ -275,9 +275,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     ),
                   ),
                   // SpacerWidget(_KVertcalSpace / 5),
-                  ValueListenableBuilder(
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    child: ValueListenableBuilder(
                       valueListenable: infoIconValue,
-                      child: Container(),
                       builder:
                           (BuildContext context, bool value, Widget? child) {
                         return Padding(
@@ -289,8 +290,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               ? ListTile(
                                   contentPadding: EdgeInsets.zero,
                                   leading: Container(
+                                    alignment: Alignment.centerLeft,
                                     width: MediaQuery.of(context).size.width *
-                                        0.84,
+                                        0.75,
                                     child: Utility.textWidget(
                                         text: widget.asssessmentName == null
                                             ? 'Asssessment Name'
@@ -300,6 +302,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             : widget.asssessmentName!,
                                         context: context,
                                         maxLines: 2,
+                                        textAlign: TextAlign.left,
                                         textTheme: Theme.of(context)
                                             .textTheme
                                             .headline2!
@@ -312,7 +315,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       child: infoWidget()))
                               : Container(),
                         );
-                      }),
+                      },
+                      child: Container(),
+                    ),
+                  ),
                   // SpacerWidget(_KVertcalSpace / 5),
                   !widget.assessmentDetailPage!
                       ? Column(
@@ -660,48 +666,45 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   Widget resultTitle() {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5.0),
-          child: Container(
-            height: 50.0,
-            margin: const EdgeInsets.only(
-                bottom: 6.0), //Same as `blurRadius` i guess
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0),
-              color: Theme.of(context).backgroundColor == Color(0xff000000)
-                  ? Color(0xff162429)
-                  : Color(0xffF7F8F9),
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.5), //Colors.grey,
-                  // Theme.of(context).backgroundColor == Color(0xff000000)
-                  //     ? Color(0xff162429)
-                  //     : Color(0xffE9ECEE),
-                  offset: Offset(0.0, 1.0), //(x,y)
-                  blurRadius: 6.0,
-                ),
-              ],
-            ),
-            child: Container(
-                child: ListTile(
-              leading: Utility.textWidget(
-                  text: 'Student Name',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(fontWeight: FontWeight.bold)),
-              trailing: Utility.textWidget(
-                  text: 'Points Earned',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(fontWeight: FontWeight.bold)),
-            )),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5.0),
+        child: Container(
+          height: 50.0,
+          margin:
+              const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: Theme.of(context).backgroundColor == Color(0xff000000)
+                ? Color(0xff162429)
+                : Color(0xffF7F8F9),
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.5), //Colors.grey,
+                // Theme.of(context).backgroundColor == Color(0xff000000)
+                //     ? Color(0xff162429)
+                //     : Color(0xffE9ECEE),
+                offset: Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
           ),
+          child: Container(
+              child: ListTile(
+            leading: Utility.textWidget(
+                text: 'Student Name',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.bold)),
+            trailing: Utility.textWidget(
+                text: 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.bold)),
+          )),
         ),
       ),
     );

@@ -25,6 +25,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart';
+import 'modules/ocr/widgets/custom_intro_layout.dart';
 
 class StartupPage extends StatefulWidget {
   bool? isOcrSection;
@@ -328,6 +329,7 @@ class _StartupPageState extends State<StartupPage> {
         MaterialPageRoute<void>(
           builder: (BuildContext context) =>
               //OpticalCharacterRecognition()
+
               isOldUser == true
                   ? OpticalCharacterRecognition()
                   : CustomIntroWidget(),

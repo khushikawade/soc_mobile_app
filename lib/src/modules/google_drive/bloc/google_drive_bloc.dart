@@ -41,8 +41,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         var folderObject;
         // Globals.authorizationToken = event.token;
-        //print(event.token);
-        //print(event.folderName);
+
         if (event.isFromOcrHome!) {
           yield GoogleDriveLoading();
         }
@@ -57,6 +56,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
             //print("Folder created successfully");
+
             if (event.isFromOcrHome! &&
                 Globals.googleDriveFolderId!.isNotEmpty) {
               yield GoogleSuccess(assessmentSection: event.assessmentSection);
@@ -84,7 +84,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           //print('Authentication required');
           var result = await _toRefreshAuthenticationToken(event.refreshtoken!);
-          //print(result);
+
           if (result == true) {
             List<UserInformation> _userprofilelocalData =
                 await UserGoogleProfile.getUserProfile();
@@ -141,15 +141,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           //  image: file
         );
         if (result == '') {
-          //print(
-          // "Failed to create. Trying to create the excel sheet again : ${event.name!}");
-
           CreateExcelSheetToDrive(name: event.name);
         } else if (result == 'Reauthentication is required') {
           yield ErrorState(errorMsg: 'Reauthentication is required');
         } else {
-          //print("Excel sheet created successfully : ${event.name!}");
-
           yield ExcelSheetCreated(obj: result);
         }
       } on SocketException catch (e) {
@@ -191,8 +186,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           // Checking for 'Assessment Sheets Image' to get URL for specific index if not exist
           if (assessmentData[i].assessmentImage == null ||
               assessmentData[i].assessmentImage == '') {
-            //print("assessment  img is empty index ------$i");
-
             String imgExtension = assessmentData[i]
                 .assessmentImgPath!
                 .substring(
@@ -244,8 +237,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 assessmentData.forEach((element) {
                   element.customRubricImage = imgUrl;
                 });
-              } else {
-                //print("image errrrrrrrrrrrrror");
               }
             }
           }
@@ -301,7 +292,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               assessmentImage: "Assessment Image",
             ));
 
-        //print(assessmentData);
 //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
             data: assessmentData,
@@ -379,7 +369,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             yield ErrorState(errorMsg: 'Reauthentication is required');
           } else {
             _list.forEach((element) {
-              //print(element.label['trashed']);
               if (element.label['trashed'] != true &&
                   (element.description == "Graded+" ||
                       element.description ==
@@ -483,18 +472,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             _userprofilelocalData[0].authorizationToken,
             event.fileId,
             _userprofilelocalData[0].refreshToken);
-        // //print('-----------------------${fildObject}---------------------');
 
         if (fildObject != '' &&
             fildObject != null &&
             fildObject != 'Reauthentication is required' &&
             fildObject['exportLinks'] != null) {
-          // //print("detail assessment link is received");
           String file = await downloadFile(
               fildObject['exportLinks'][
                   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
               event.fileId!,
               (await getApplicationDocumentsDirectory()).path);
+
           // //print("assessment downloaded");
 
           if (file != "") {
@@ -502,11 +490,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //  List<StudentAssessmentInfo>
             _list = await GoogleDriveAccess.excelToJson(file);
             // //print("assessment data is converted into json ");
+
             bool deleted = await GoogleDriveAccess.deleteFile(File(file));
             if (!deleted) {
               GoogleDriveAccess.deleteFile(File(file));
             }
-            // //print("local assessment file is deleted");
             // if (_list.length > 0) {
             //   yield AssessmentDetailSuccess(obj: _list);
             // } else {
@@ -526,11 +514,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //         subLearningStandard: "Sub Learning Standard",
             //         scoringRubric: "Scoring Rubric"));
             // }
+
             //print("//printing length----------->${_list.length}");
             yield AssessmentDetailSuccess(
                 obj: _list, webContentLink: fildObject['webViewLink']);
           } else {
             //print("Assessment file URL not found1");
+
             //Return empty list
             yield AssessmentDetailSuccess(
                 obj: [], webContentLink: fildObject['webViewLink']);
@@ -578,15 +568,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 imgBase64: event.imgBase64,
                 imgExtension: event.imgExtension,
                 section: 'rubric-score');
+
         //print(RubricScoreList.scoringList);
         //print("//printing imag url : $imgUrl");
       } catch (e) {
         //print("image upload error");
+
       }
     }
     if (event is AssessmentImgToAwsBucked) {
       try {
-        //print("calling img to awsBucked");
         String imgUrl = await _uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
@@ -613,14 +604,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               //print(
               // 'gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg');
               //print("updateing img url");
+
               StudentAssessmentInfo e = studentInfo[i];
               e.assessmentImage = imgUrl;
 
               await _studentInfoDb.putAt(i, e);
             }
           }
-        } else {
-          //print("imgage is empty");
         }
 
         // //print("//printing imag url : $imgUrl");
@@ -752,7 +742,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
         //  String id = response.data['id'];
-        //print("Folder created successfully : ${response.data['body']['id']}");
+
         return Globals.googleDriveFolderId = response.data['body']['id'];
       }
       return "";
@@ -793,8 +783,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
         var data = response.data['body']['files'];
-        // //print(data);
-        //print("folder id recived ----->");
+
         if (data.length == 0) {
           return data;
         } else {
@@ -811,13 +800,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // }
       } else if (response.statusCode == 401 ||
           response.data['statusCode'] == 500) {
-        //print("Invalid credentials");
-
         return response.statusCode == 401 ? response.statusCode : 500;
       }
       return "";
     } catch (e) {
-      //print("inside catch");
       throw (e);
     }
   }
@@ -851,8 +837,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        //print("file created successfully : ${response.data['body']['id']}");
-
         String fileId = response.data['body']['id'];
         Globals.googleExcelSheetId = fileId;
 
@@ -919,24 +903,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        //print("upload result data to assessment file completed");
         return 'Done';
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
         _totalRetry++;
-
-        //print("errorrrrr-------------> upload on drive");
-        //print(response.statusCode);
-
-        //  await _toRefreshAuthenticationToken(refreshToken!);
-        // UpdateDocOnDrive(
-        //     assessmentName: assessmentName,
-        //     fileId: id,
-        //     isLoading: true,
-        //     studentData:
-        //         //list2
-        //         await Utility.getStudentInfoList(tableName: 'student_info'));
 
         var result = await _toRefreshAuthenticationToken(refreshToken!);
 
@@ -950,12 +921,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userprofilelocalData[0].authorizationToken,
               _userprofilelocalData[0].refreshToken);
           return uploadresult;
-
-          // UpdateDocOnDrive(
-          //     isLoading: true,
-          //     studentData:
-          //         //list2
-          //         Globals.studentInfo!);
         } else {
           return 'Reauthentication is required';
         }
@@ -972,8 +937,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       bool? isPagination,
       String? nextPageUrl}) async {
     try {
-      //print(token);
-      //print(folderId);
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
@@ -1005,6 +968,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList()
             : response.data['body']['items'] //response.data['body']['items']
+
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
         List<AssessmentDetails> assessmentList = await getAssessmentList();
@@ -1022,8 +986,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
         _totalRetry++;
-
-        //print('Authentication required');
 
         List<UserInformation> userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
@@ -1102,8 +1064,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        //print("File permission has been updated");
-
         return true;
       }
       if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
@@ -1151,8 +1111,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (!result) {
           await _updateSheetPermission(token, fileId, refreshToken);
         }
-        //print(
-        // " get file link   ----------->${response.data['body']['webViewLink']}");
+
         // var data = response.data;
         return response.data['body']['webViewLink'];
       } else if ((response.statusCode == 401 ||
@@ -1225,15 +1184,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   Future<String> downloadFile(String url, String fileName, String dir) async {
     try {
-      // Dio dio = Dio();
-      // var imageDownloadPath = '$dir/$fileName';
-      // await dio.download(url, imageDownloadPath,
-      //     onReceiveProgress: (rec, total) {
-      //   //print("Rec: $rec , Total: $total");
-      //   //print(((rec / total) * 100).toStringAsFixed(0) + "%");
-      // });
-      // return imageDownloadPath;
-
       HttpClient httpClient = new HttpClient();
       File file;
       String filePath = '';
@@ -1243,18 +1193,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       var request = await httpClient.getUrl(Uri.parse(myUrl));
       var response = await request.close();
       if (response.statusCode == 200) {
-        //print('File download success');
         var bytes = await consolidateHttpClientResponseBytes(response);
         filePath = '$dir/$fileName';
         file = File(filePath);
         await file.writeAsBytes(bytes, flush: true);
         return filePath;
       }
+
       //print('Unable to download the file');
       return "";
     } catch (e) {
       //print("download exception");
-      //print(e);
+      print(e);
       throw (e);
     }
   }
@@ -1272,7 +1222,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         var newToken = response.data['body']; //["access_token"]
         //!=null?response.data['body']["access_token"]:response.data['body']["error"];
         if (newToken["access_token"] != null) {
-          //print("New access token received : ${newToken["access_token"]}");
           List<UserInformation> _userprofilelocalData =
               await UserGoogleProfile.getUserProfile();
 
@@ -1282,14 +1231,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               profilePicture: _userprofilelocalData[0].profilePicture,
               refreshToken: _userprofilelocalData[0].refreshToken,
               authorizationToken: newToken["access_token"]);
-          //print("now updating the token on local db");
+
           // await UserGoogleProfile.updateUserProfileIntoDB(updatedObj);
 
           await UserGoogleProfile.updateUserProfile(updatedObj);
 
           //  await HiveDbServices().updateListData('user_profile', 0, updatedObj);
 
-          //print("token is updated ");
           return true;
         } else {
           return false;
@@ -1300,7 +1248,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
     } catch (e) {
       //print(" errrrror  ");
-      //print(e);
+      print(e);
       throw (e);
     }
   }
@@ -1318,7 +1266,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     // Map<String, String> headers = {
     //   'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
     // };
-    //print("calling api ");
+
     final ResponseModel response = await _dbServices.postapi(
         "${OcrOverrides.OCR_API_BASE_URL}/uploadImage",
         body: body,
@@ -1328,14 +1276,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (response.statusCode != 401 &&
         response.statusCode == 200 &&
         response.data['statusCode'] != 500) {
-      //print("url is recived");
       return response.data['body']['Location'];
     } else if ((response.statusCode == 401 ||
             response.data['statusCode'] == 500) &&
         _totalRetry < 3) {
-      //print(response.statusCode);
-      //print("url is not recived,Retrying...");
-
       _totalRetry++;
       await _uploadImgB64AndGetUrl(
           imgBase64: imgBase64, imgExtension: imgExtension, section: section);

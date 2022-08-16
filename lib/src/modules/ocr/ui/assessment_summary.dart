@@ -13,6 +13,7 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
 import '../../../services/local_database/local_db.dart';
@@ -49,7 +50,15 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   void initState() {
     _controller = new ScrollController()..addListener(_scrollListener);
     _driveBloc.add(GetHistoryAssessmentFromDrive());
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      refreshPage(isFromPullToRefresh: false);
+    });
+
+    // _driveBloc.add(GetHistoryAssessmentFromDrive());
+
     // _controller = new ScrollController()..addListener(_scrollListener);
+
     super.initState();
   }
 
@@ -62,139 +71,141 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      color: AppTheme.kButtonColor,
-      key: refreshKey,
-      onRefresh: refreshPage,
-      child: Stack(
-        children: [
-          CommonBackGroundImgWidget(),
-          WillPopScope(
-            onWillPop: () async {
-              return false;
-            },
-            child: Scaffold(
-              key: _scaffoldKey,
-              backgroundColor: Colors.transparent,
-              appBar: CustomOcrAppBarWidget(
-                isSuccessState: ValueNotifier<bool>(true),
-                isbackOnSuccess: isBackFromCamera,
-                key: GlobalKey(),
-                isBackButton: widget.isFromHomeSection,
-                assessmentDetailPage: true,
-                assessmentPage: true,
-                scaffoldKey: _scaffoldKey,
-                isFromResultSection:
-                    widget.isFromHomeSection == false ? true : null,
-              ),
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  SpacerWidget(_KVertcalSpace / 4),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Utility.textWidget(
-                      text: 'Assessment History',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  SpacerWidget(_KVertcalSpace / 3),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width / 30),
-                    child: SearchBar(
-                      isSearchPage: false,
-                      isSubLearningPage: false,
-                      controller: searchAssessmentController,
-                      onSaved: (String value) {
-                        if (value != null && value.isNotEmpty) {
-                          isSearch.value = true;
-
-                          //Calling local search only
-                          _driveBloc2
-                              .add(GetAssessmentSearchDetails(keyword: value));
-                        }
-                      },
-                      onTap: () {
-                        // //print('taped');
-                      },
-                    ),
-                  ),
-                  SpacerWidget(_KVertcalSpace / 5),
-                  ValueListenableBuilder(
-                      valueListenable: isSearch,
-                      builder:
-                          (BuildContext context, bool value, Widget? child) {
-                        return BlocConsumer(
-                          bloc: isSearch.value == false
-                              ? _driveBloc
-                              : _driveBloc2,
-                          builder:
-                              (BuildContext context, GoogleDriveState state) {
-                            if (state is GoogleDriveGetSuccess) {
-                              nextPageUrl = state.nextPageLink;
-                              bool isloading = true;
-                              if (state.nextPageLink == '') {
-                                isloading = false;
-                              }
-                              // bool isloading
-                              lastAssessmentHistoryListbj = state.obj;
-                              return state.obj.length > 0
-                                  ? Expanded(
-                                      child: listView(state.obj, isloading))
-                                  : Expanded(
-                                      child: NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: true,
-                                          isNews: false,
-                                          isEvents: false),
-                                    );
-                            } else if (state is GoogleDriveLoading) {
-                              return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                child: Center(
-                                    child: CircularProgressIndicator(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant,
-                                )),
-                              );
-                            }
-
-                            return Container();
-                          },
-                          listener: (BuildContext contxt,
-                              GoogleDriveState state) async {
-                            if (state is ErrorState) {
-                              if (state.errorMsg ==
-                                  'Reauthentication is required') {
-                                await Utility.refreshAuthenticationToken(
-                                    isNavigator: false,
-                                    errorMsg: state.errorMsg!,
-                                    context: context,
-                                    scaffoldKey: _scaffoldKey);
-
-                                _driveBloc.add(GetHistoryAssessmentFromDrive());
-                              } else {
-                                Navigator.of(context).pop();
-                                Utility.currentScreenSnackBar(
-                                    "Something Went Wrong. Please Try Again.");
-                              }
-                            }
-                          },
-                        );
-                      }),
-                ],
-              ),
+    return Stack(
+      children: [
+        CommonBackGroundImgWidget(),
+        WillPopScope(
+          onWillPop: () async {
+            return false;
+          },
+          child: Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: Colors.transparent,
+            appBar: CustomOcrAppBarWidget(
+              isSuccessState: ValueNotifier<bool>(true),
+              isbackOnSuccess: isBackFromCamera,
+              key: GlobalKey(),
+              isBackButton: widget.isFromHomeSection,
+              assessmentDetailPage: true,
+              assessmentPage: true,
+              scaffoldKey: _scaffoldKey,
+              isFromResultSection:
+                  widget.isFromHomeSection == false ? true : null,
             ),
-          )
-        ],
-      ),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SpacerWidget(_KVertcalSpace / 4),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Utility.textWidget(
+                    text: 'Assessment History',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SpacerWidget(_KVertcalSpace / 3),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width / 30),
+                  child: SearchBar(
+                    isSearchPage: false,
+                    isSubLearningPage: false,
+                    controller: searchAssessmentController,
+                    onSaved: (String value) {
+                      if (value != null && value.isNotEmpty) {
+                        isSearch.value = true;
+
+                        //Calling local search only
+                        _driveBloc2
+                            .add(GetAssessmentSearchDetails(keyword: value));
+                      }
+                    },
+                    onTap: () {
+                      // print('taped');
+                    },
+                  ),
+                ),
+                SpacerWidget(_KVertcalSpace / 5),
+                Expanded(
+                  child: RefreshIndicator(
+                    color: AppTheme.kButtonColor,
+                    key: refreshKey,
+                    onRefresh: () => refreshPage(isFromPullToRefresh: true),
+                    child: ValueListenableBuilder(
+                        valueListenable: isSearch,
+                        builder:
+                            (BuildContext context, bool value, Widget? child) {
+                          return BlocConsumer(
+                            bloc: isSearch.value == false
+                                ? _driveBloc
+                                : _driveBloc2,
+                            builder:
+                                (BuildContext context, GoogleDriveState state) {
+                              if (state is GoogleDriveGetSuccess) {
+                                nextPageUrl = state.nextPageLink;
+                                bool isloading = true;
+                                if (state.nextPageLink == '') {
+                                  isloading = false;
+                                }
+                                // bool isloading
+                                lastAssessmentHistoryListbj = state.obj;
+                                return state.obj.length > 0
+                                    ? listView(state.obj, isloading)
+                                    : Expanded(
+                                        child: NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: true,
+                                            isNews: false,
+                                            isEvents: false),
+                                      );
+                              } else if (state is GoogleDriveLoading) {
+                                return Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  )),
+                                );
+                              }
+
+                              return Container();
+                            },
+                            listener: (BuildContext contxt,
+                                GoogleDriveState state) async {
+                              if (state is ErrorState) {
+                                if (state.errorMsg ==
+                                    'Reauthentication is required') {
+                                  await Utility.refreshAuthenticationToken(
+                                      isNavigator: false,
+                                      errorMsg: state.errorMsg!,
+                                      context: context,
+                                      scaffoldKey: _scaffoldKey);
+
+                                  _driveBloc
+                                      .add(GetHistoryAssessmentFromDrive());
+                                } else {
+                                  Navigator.of(context).pop();
+                                  Utility.currentScreenSnackBar(
+                                      "Something Went Wrong. Please Try Again.");
+                                }
+                              }
+                            },
+                          );
+                        }),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 
@@ -410,10 +421,12 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         description:
                             'Teacher tap on Share Button on assessment summery page',
                         operationResult: 'Success');
-                    list[index].webContentLink != null &&
-                            list[index].webContentLink != ''
-                        ? Share.share(list[index].webContentLink!)
-                        : print("no web link $index");
+
+                    if (list[index].webContentLink != null &&
+                        list[index].webContentLink != '') {
+                      Share.share(list[index].webContentLink!);
+                    }
+                    // : print("no web link $index");
                   },
                   child: Icon(
                     IconData(Globals.ocrResultIcons[0],
@@ -432,10 +445,12 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     );
   }
 
-  Future refreshPage() async {
+  Future refreshPage({required bool isFromPullToRefresh}) async {
     refreshKey.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 1));
-    _driveBloc.add(GetHistoryAssessmentFromDrive());
+    await Future.delayed(Duration(seconds: 2));
+    if (isFromPullToRefresh == true) {
+      _driveBloc.add(GetHistoryAssessmentFromDrive());
+    }
   }
 
   _scrollListener() {
