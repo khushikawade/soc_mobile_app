@@ -1141,7 +1141,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 20,
                             vertical:
-                                20), //horizontal: Globals.pointsEarnedList.length>3?20:30
+                                15), //horizontal: Globals.pointsEarnedList.length>3?20:30
                         decoration: BoxDecoration(
                           color: Color(0xff000000) !=
                                   Theme.of(context).backgroundColor
