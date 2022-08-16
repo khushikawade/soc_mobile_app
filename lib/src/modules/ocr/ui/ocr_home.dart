@@ -23,6 +23,7 @@ import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
 import 'assessment_summary.dart';
 import 'camera_screen.dart';
+import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -569,14 +570,14 @@ class _OpticalCharacterRecognitionPageState
         ? '2'
         : rubricScoreSelectedColor.value == 2 //NYS 0-3
             ? '3'
-            : rubricScoreSelectedColor.value == 4 //None
-                ? '2'
-                : rubricScoreSelectedColor.value == 4 //NYS 0-4
-                    ? '4'
-                    : rubricScoreSelectedColor.value > 4 //Custom selection
-                        ? (pointPossibleSelectedColor.value + 1)
-                            .toString() //+1 is added for 'index+1' to get right point possible
-                        : '2'; //In case of 'None' or 'Custom rubric' selection
+            // : rubricScoreSelectedColor.value == 3 //None
+            //     ? (pointPossibleSelectedColor.value + 2).toString() //
+            : rubricScoreSelectedColor.value == 4 //NYS 0-4
+                ? '4'
+                : rubricScoreSelectedColor.value > 4 //Custom selection
+                    ? (pointPossibleSelectedColor.value + 1)
+                        .toString() //+1 is added for 'index+1' to get right point possible
+                    : '2'; //In case of 'None' or 'Custom rubric' selection
 
     Globals.googleExcelSheetId = "";
     updateLocalDb();
@@ -619,7 +620,7 @@ class _OpticalCharacterRecognitionPageState
     //     MaterialPageRoute(
     //         builder: (context) => CreateAssessment(
     //               classSuggestions: classSuggestions,
-    //               customGrades: Globals.classList,
+    //               customGrades: [], //Globals.classList,
     //             )));
     // End
   }
