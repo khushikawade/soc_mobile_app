@@ -141,63 +141,74 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         builder:
                             (BuildContext context, bool value, Widget? child) {
                           return BlocConsumer(
-                            bloc: isSearch.value == false
-                                ? _driveBloc
-                                : _driveBloc2,
-                            builder:
-                                (BuildContext context, GoogleDriveState state) {
-                              if (state is GoogleDriveGetSuccess) {
-                                nextPageUrl = state.nextPageLink;
-                                bool isloading = true;
-                                if (state.nextPageLink == '') {
-                                  isloading = false;
+                              bloc: isSearch.value == false
+                                  ? _driveBloc
+                                  : _driveBloc2,
+                              builder: (BuildContext context,
+                                  GoogleDriveState state) {
+                                if (state is GoogleDriveGetSuccess) {
+                                  nextPageUrl = state.nextPageLink;
+                                  bool isloading = true;
+                                  if (state.nextPageLink == '' &&
+                                      state.nextPageLink == null) {
+                                    isloading = false;
+                                  }
+                                  // bool isloading
+                                  lastAssessmentHistoryListbj = state.obj;
+                                  return state.obj.length > 0
+                                      ? listView(state.obj, isloading)
+                                      : Expanded(
+                                          child: NoDataFoundErrorWidget(
+                                              isResultNotFoundMsg: true,
+                                              isNews: false,
+                                              isEvents: false),
+                                        );
+                                } else if (state is GoogleDriveLoading) {
+                                  return Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.7,
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    )),
+                                  );
                                 }
-                                // bool isloading
-                                lastAssessmentHistoryListbj = state.obj;
-                                return state.obj.length > 0
-                                    ? listView(state.obj, isloading)
-                                    : Expanded(
-                                        child: NoDataFoundErrorWidget(
-                                            isResultNotFoundMsg: true,
-                                            isNews: false,
-                                            isEvents: false),
-                                      );
-                              } else if (state is GoogleDriveLoading) {
-                                return Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.7,
-                                  child: Center(
-                                      child: CircularProgressIndicator(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                  )),
-                                );
-                              }
 
-                              return Container();
-                            },
-                            listener: (BuildContext contxt,
-                                GoogleDriveState state) async {
-                              if (state is ErrorState) {
-                                if (state.errorMsg ==
-                                    'Reauthentication is required') {
-                                  await Utility.refreshAuthenticationToken(
-                                      isNavigator: false,
-                                      errorMsg: state.errorMsg!,
-                                      context: context,
-                                      scaffoldKey: _scaffoldKey);
+                                return Container();
+                              },
+                              listener: (BuildContext contxt,
+                                  GoogleDriveState state) async {
+                                if (state is ErrorState) {
+                                  if (state.errorMsg ==
+                                      'Reauthentication is required') {
+                                    await Utility.refreshAuthenticationToken(
+                                        isNavigator: false,
+                                        errorMsg: state.errorMsg!,
+                                        context: context,
+                                        scaffoldKey: _scaffoldKey);
 
-                                  _driveBloc
-                                      .add(GetHistoryAssessmentFromDrive());
-                                } else {
-                                  Navigator.of(context).pop();
-                                  Utility.currentScreenSnackBar(
-                                      "Something Went Wrong. Please Try Again.");
+                                    _driveBloc
+                                        .add(GetHistoryAssessmentFromDrive());
+                                  } else {
+                                    Navigator.of(context).pop();
+                                    Utility.currentScreenSnackBar(
+                                        "Something Went Wrong. Please Try Again.");
+                                  }
+                                } else if (state is GoogleDriveLoading) {
+                                  Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.7,
+                                    child: Center(
+                                        child: CircularProgressIndicator(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    )),
+                                  );
                                 }
-                              }
-                            },
-                          );
+                              });
                         }),
                   ),
                 ),
