@@ -91,57 +91,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
             isbackOnSuccess: isBackFromCamera,
             key: _scaffoldKey,
           ),
-
-          //  AppBar(
-          //   automaticallyImplyLeading: false,
-          //   backgroundColor: Colors.transparent,
-          //   // Color(0xff000000) != Theme.of(context).backgroundColor
-          //   //     ? Color.fromRGBO(0, 0, 0, 0.1)
-          //   //     : Color.fromRGBO(255, 255, 255, 0.16),
-          //   //leadingWidth: 0,
-          //   title: Container(
-          //    // padding: EdgeInsets.symmetric(horizontal: 20),
-          //     child: SearchBar(
-          //       isSearchPage: true,
-          //       controller: searchController,
-          //       onSaved: (value) {
-          //         if (searchController.text.isEmpty) {
-          //           _ocrBloc.add(FatchSubjectDetails(
-          //               type: 'nycSub',
-          //               keyword: widget.keyword,
-          //               isSearchPage: true,
-          //               grade: widget.grade));
-          //           _ocrBloc2.add(FatchSubjectDetails(
-          //               type: 'nyc',
-          //               keyword: widget.keyword,
-          //               isSearchPage: true,
-          //               grade: widget.grade));
-          //         } else {
-          //           _debouncer.run(() async {
-          //             _ocrBloc.add(SearchSubjectDetails(
-          //                 searchKeyword: searchController.text,
-          //                 type: 'nycSub',
-          //                 keyword: widget.keyword,
-          //                 isSearchPage: true,
-          //                 grade: widget.grade));
-          //             _ocrBloc2.add(SearchSubjectDetails(
-          //               searchKeyword: searchController.text,
-          //               type: 'nyc',
-          //               keyword: widget.keyword,
-          //               isSearchPage: true,
-          //               grade: widget.grade,
-          //             ));
-          //             setState(() {});
-          //           });
-          //         }
-          //       },
-          //     ),
-
-          //     // searchBarWidget(
-
-          //     // ),
-          //   ),
-          // ),
           body: Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: ListView(
@@ -415,7 +364,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                       child: Container(
                                         padding: EdgeInsets.all(15),
                                         alignment: Alignment.centerLeft,
-
                                         child: index < standerdLearningLength
                                             ? Utility.textWidget(
                                                 text: list[index].domainNameC!,
@@ -477,12 +425,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                                     '')
                                                           ]),
                                               ),
-
-                                        //  Utility.textWidget(
-                                        //     text: HtmlUnescape()
-                                        //         .convert(list[index].standardAndDescriptionC!),
-                                        //     textTheme: Theme.of(context).textTheme.headline2,
-                                        //     context: context),
                                         decoration: BoxDecoration(
                                             color: Color(0xff000000) !=
                                                     Theme.of(context)
@@ -548,44 +490,11 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           // rubricScore = 'NA';
                         }
                       }
-                      //List<StudentAssessmentInfo> list = Globals.studentInfo!;
-                      // List<StudentAssessmentInfo> list2 = [];
-                      // Globals.studentInfo!.clear();
 
                       //Adding blank fields to the list : Static data
                       List<StudentAssessmentInfo> studentInfodblist =
                           await Utility.getStudentInfoList(
                               tableName: 'student_info');
-
-                      // studentInfodblist.asMap().forEach((index, element) async {
-                      //   StudentAssessmentInfo element =
-                      //       studentInfodblist[index];
-                      //   element.subject = widget.keyword;
-                      //   element.learningStandard =
-                      //       learningStandard == null ? "NA" : learningStandard;
-                      //   element.subLearningStandard =
-                      //       subLearningStandard == null
-                      //           ? "NA"
-                      //           : subLearningStandard;
-                      //   element.scoringRubric = Globals.scoringRubric;
-                      //   element.customRubricImage = rubricImgUrl ?? "NA";
-                      //   element.grade = widget.grade;
-
-                      //   await _studentInfoDb.putAt(index, element);
-
-                      // });
-                      // Globals.studentInfo!.forEach((element) {
-                      //   element.subject = widget.keyword;
-                      //   element.learningStandard =
-                      //       learningStandard == null ? "NA" : learningStandard;
-                      //   element.subLearningStandard =
-                      //       subLearningStandard == null
-                      //           ? "NA"
-                      //           : subLearningStandard;
-                      //   element.scoringRubric = Globals.scoringRubric;
-                      //   element.customRubricImage = rubricImgUrl ?? "NA";
-                      //   element.grade = widget.grade;
-                      // });
 
                       StudentAssessmentInfo element = studentInfodblist[0];
                       element.subject = widget.keyword;
@@ -600,6 +509,10 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       element.scoringRubric = Globals.scoringRubric;
                       element.customRubricImage = rubricImgUrl ?? "NA";
                       element.grade = widget.grade;
+                      element.className = Globals.assessmentName!.split("_")[1];
+                      element.questionImgUrl = widget.questionImage == ''
+                          ? "NA"
+                          : widget.questionImage;
 
                       await _studentInfoDb.putAt(0, element);
 
@@ -615,16 +528,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               //list2
                               await Utility.getStudentInfoList(
                                   tableName: 'student_info')));
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => ResultsSummary(
-                      //             shareLink: Globals.shareableLink,
-                      //             asssessmentName: Globals.assessmentName,
-                      //             assessmentDetailPage: false,
-                      //           )),
-                      // );
                     },
                     label: Row(
                       children: [

@@ -1333,93 +1333,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     }
   }
 
-  // showBottomSheet() {
-  //   showMaterialModalBottomSheet(
-  //     backgroundColor: Colors.transparent,
-  //     animationCurve: Curves.easeOutQuart,
-  //     elevation: 10,
-  //     context: context,
-  //     builder: (context) => SingleChildScrollView(
-  //       controller: ModalScrollController.of(context),
-  //       child: Container(
-  //         height: MediaQuery.of(context).size.height * 0.7,
-  //         decoration: BoxDecoration(
-  //           color: Colors.white,
-  //           borderRadius: BorderRadius.circular(15),
-  //         ),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Container(
-  //               height: 60,
-  //               decoration: BoxDecoration(
-  //                   color: AppTheme.kButtonColor,
-  //                   border: Border.symmetric(horizontal: BorderSide.none),
-  //                   borderRadius: BorderRadius.only(
-  //                       topRight: Radius.circular(15),
-  //                       topLeft: Radius.circular(15))),
-  //             ),
-  //             SizedBox(
-  //               height: 30,
-  //             ),
-  //             Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 20),
-  //               child: Utility.textWidget(
-  //                   context: context,
-  //                   text: 'Add Subject',
-  //                   textTheme: Theme.of(context)
-  //                       .textTheme
-  //                       .headline1!
-  //                       .copyWith(color: Colors.black)),
-  //             ),
-  //             Container(
-  //               padding: EdgeInsets.symmetric(horizontal: 20),
-  //               child: TextFieldWidget(
-  //                   msg: "Subject Is Already Exist",
-  //                   controller: addController,
-  //                   onSaved: (String value) {}),
-  //             ),
-  //             SizedBox(
-  //               height: 80,
-  //             ),
-  //             Container(
-  //               //padding: EdgeInsets.symmetric(horizontal: 20,),
-  //               child: FloatingActionButton.extended(
-  //                   backgroundColor: AppTheme.kButtonColor
-  //                       .withOpacity(nycSubIndex1.value == null ? 0.5 : 1.0),
-  //                   onPressed: () async {
-  //                     await updateList(
-  //                         subjectName: addController.text,
-  //                         classNo: widget.selectedClass!);
-  //                     _ocrBloc.add(FatchSubjectDetails(
-  //                         type: 'subject', keyword: widget.selectedClass));
-
-  //                     // await fatchList(classNo: widget.selectedClass!);
-  //                     Navigator.pop(context, false);
-  //                   },
-  //                   label: Row(
-  //                     children: [
-  //                       Utility.textWidget(
-  //                           text: 'Submit',
-  //                           context: context,
-  //                           textTheme: Theme.of(context)
-  //                               .textTheme
-  //                               .headline2!
-  //                               .copyWith(
-  //                                   color: Theme.of(context).backgroundColor)),
-  //                     ],
-  //                   )),
-  //             ),
-  //             SizedBox(
-  //               height: 80,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   void _uploadSheetOnDriveAndnavigate(
       {required bool isSkip, required bool connected}) async {
     {
@@ -1448,61 +1361,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           }
         }
 
-        //TODO : REMOVE THIS AND ADD COMMON FIELDS IN EXCEL MODEL (SAME IN CASE OF SCAN MORE AT CAMERA SCREEN)
-        //Adding blank fields to the list : Static data
-        // Globals.studentInfo!.forEach((element) {
-        //   element.subject = subject;
-        //   element.learningStandard =
-        //       learningStandard == null ? "NA" : learningStandard;
-        //   element.subLearningStandard =
-        //       subLearningStandard == null ? "NA" : subLearningStandard;
-        //   element.scoringRubric = Globals.scoringRubric;
-        //   element.className = Globals.assessmentName!.split("_")[1];
-        //   element.customRubricImage = rubricImgUrl ?? "NA";
-        //   element.grade = widget.selectedClass;
-        //   element.questionImgUrl = Globals.questionImgUrl != null &&
-        //           Globals.questionImgUrl!.isNotEmpty
-        //       ? Globals.questionImgUrl
-        //       : "NA";
-        // });
-
-        // studentInfodblist.asMap().forEach((index, element) async {
-        //   StudentAssessmentInfo element = studentInfodblist[index];
-
-        //   element.subject = subject;
-        //   element.learningStandard =
-        //       learningStandard == null ? "NA" : learningStandard;
-        //   element.subLearningStandard =
-        //       subLearningStandard == null ? "NA" : subLearningStandard;
-        //   element.scoringRubric = Globals.scoringRubric;
-        //   element.className = Globals.assessmentName!.split("_")[1];
-        //   element.customRubricImage = rubricImgUrl ?? "NA";
-        //   element.grade = widget.selectedClass;
-        //   element.questionImgUrl = Globals.questionImgUrl != null &&
-        //           Globals.questionImgUrl!.isNotEmpty
-        //       ? Globals.questionImgUrl
-        //       : "NA";
-
-        //   await _studentInfoDb.putAt(index, element);
-        // });
-
-        // studentInfodblist.forEach((element) async {
-        //   element.subject = subject;
-        //   element.learningStandard =
-        //       learningStandard == null ? "NA" : learningStandard;
-        //   element.subLearningStandard =
-        //       subLearningStandard == null ? "NA" : subLearningStandard;
-        //   element.scoringRubric = Globals.scoringRubric;
-        //   element.className = Globals.assessmentName!.split("_")[1];
-        //   element.customRubricImage = rubricImgUrl ?? "NA";
-        //   element.grade = widget.selectedClass;
-        //   element.questionImgUrl = Globals.questionImgUrl != null &&
-        //           Globals.questionImgUrl!.isNotEmpty
-        //       ? Globals.questionImgUrl
-        //       : "NA";
-        //   await _studentInfoDb.addData(element);
-        // });
-
         List<StudentAssessmentInfo> studentInfodblist =
             await Utility.getStudentInfoList(tableName: 'student_info');
 
@@ -1524,9 +1382,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         element.grade = widget.selectedClass;
         element.questionImgUrl =
             widget.questionimageUrl == '' ? "NA" : widget.questionimageUrl;
-        // Globals.questionImgUrl != null && Globals.questionImgUrl!.isNotEmpty
-        //     ? Globals.questionImgUrl
-        //     : "NA";
 
         await _studentInfoDb.putAt(0, element);
 

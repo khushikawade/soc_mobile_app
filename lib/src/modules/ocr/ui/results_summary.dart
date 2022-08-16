@@ -276,7 +276,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ),
                   // SpacerWidget(_KVertcalSpace / 5),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.07,
+                    height: MediaQuery.of(context).size.height * 0.09,
                     child: ValueListenableBuilder(
                       valueListenable: infoIconValue,
                       builder:
@@ -1068,7 +1068,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               //padding:widget.assessmentDetailPage==true? EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.06):null,
               controller: _scrollController,
               shrinkWrap: true,
-              padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+              padding: EdgeInsets.only(bottom: 25), //AppTheme.klistPadding),
               scrollDirection: Axis.vertical,
               itemCount: _list.length, // Globals.gradeList.length,
               itemBuilder: (BuildContext context, int index) {
