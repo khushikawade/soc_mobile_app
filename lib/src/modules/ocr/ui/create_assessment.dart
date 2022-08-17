@@ -65,6 +65,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
   // _scrollListener() {
   //   FocusScope.of(context).requestFocus(FocusNode());
   // }
@@ -105,7 +110,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           ? MediaQuery.of(context).size.height
                           : MediaQuery.of(context).size.width,
                   child: ListView(
-
                     padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).size.height * 0.2),
                     // controller: listScrollController,
@@ -145,6 +149,21 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           },
                           onSaved: (String value) {
                             assessmentNameError.value = value;
+
+                            //To insert the value in the middle of the text
+                            // String beforeCursorPosition = assessmentController
+                            //     .selection
+                            //     .textBefore(assessmentController.text);
+
+                            // String afterCursorPosition = assessmentController
+                            //     .selection
+                            //     .textAfter(assessmentController.text);
+
+                            // String result = beforeCursorPosition +
+                            //     value +
+                            //     afterCursorPosition;
+
+                            // assessmentNameError.value = result;
                           }),
 
                       //Used to tramslate the error message
@@ -154,8 +173,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           builder: (BuildContext context, dynamic value,
                               Widget? child) {
                             return Container(
-                            //  color: Colors.amber,   
-
+                              //  color: Colors.amber,
 
                               padding: assessmentNameError.value.isEmpty
                                   ? EdgeInsets.only(top: 8)
@@ -245,20 +263,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               filters: widget.classSuggestions),
                         ),
 
-                      // if (widget.classSuggestions.length > 0)
-                      //   SpacerWidget(_KVertcalSpace / 4),
-                      // if (widget.classSuggestions.length > 0)
-                      //   Wrap(
-                      //     children: List<Widget>.generate(
-                      //       widget.classSuggestions.length,
-                      //       (int index) {
-                      //         return _suggestionClips(
-                      //             index: index,
-                      //             classSuggestions: widget.classSuggestions);
-                      //       },
-                      //     ).toList(),
-                      //   ),
-
                       SpacerWidget(_KVertcalSpace / 2),
                       highlightText(
                           text: 'Select Grade',
@@ -272,19 +276,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       .withOpacity(0.3))),
                       SpacerWidget(_KVertcalSpace / 4),
                       scoringButton(),
-                   SpacerWidget(_KVertcalSpace / 3),
-                      // Utility.textWidget(
-                      //     context: context,
-                      //     text: 'Scan Assessment (Optional)',
-                      //     textTheme: Theme.of(context)
-                      //         .textTheme
-                      //         .headline2!
-                      //         .copyWith(
-                      //             color: Theme.of(context)
-                      //                 .colorScheme
-                      //                 .primaryVariant
-                      //                 .withOpacity(0.3))),
-                      // SpacerWidget(_KVertcalSpace / 3),
+                      SpacerWidget(_KVertcalSpace / 3),
+
                       Row(
                         children: [
                           ValueListenableBuilder(
@@ -292,243 +285,102 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               builder: (BuildContext context, dynamic value,
                                   Widget? child) {
                                 return Container(
-                                   // height: 80,
-                                    child: 
-                                    
-                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                       Row(children: [
-                                         Utility.textWidget(
-                                          context: context,
-                                          text: isimageFilePicked.value !=
-                                                  true
-                                              ? 'Scan Assessment (Optional)'
-                                              : 'Assessment Selected',
-                                          textTheme: TextStyle(
-                                              color: isimageFilePicked
-                                                          .value !=
-                                                      true
-                                                  ? Color(0xff000000) ==
-                                                          Theme.of(
-                                                                  context)
-                                                              .backgroundColor
-                                                      ? Color(0xffFFFFFF)
-                                                      : Color(0xff000000)
-                                                  : AppTheme
-                                                      .kSelectedColor,
-                                              fontSize:
-                                                  Globals.deviceType ==
-                                                          'phone'
-                                                      ? 16
-                                                      : 22),
-                                        ),
-                                      
-                                        isimageFilePicked.value ==
-                                                  true ?
-                                        IconButton(
-                                            onPressed: (){
-                                          
-                                                     _cameraImage(context);
-
-                                             
-                                           
-                                            },
-                                            icon: Icon(
-                                              
-                                                Icons.replay_outlined ,
-                                                // : Icons.image_sharp,
-                                                size: Globals.deviceType ==
-                                                    'phone'
-                                                ? 20
-                                                : 25,
-                                            ), 
-                                            
-                                            color: isimageFilePicked
-                                                        .value !=
+                                  // height: 80,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Utility.textWidget(
+                                            context: context,
+                                            text: isimageFilePicked.value !=
                                                     true
-                                                ? Color(0xff000000) ==
-                                                        Theme.of(context)
-                                                            .backgroundColor
-                                                    ? Color(0xffFFFFFF)
-                                                    : Color(0xff000000)
-                                                : AppTheme.kSelectedColor,
-                                            
-                                          ): Container(),
-
-
-                                        ],),
-                                          SpacerWidget(_KVertcalSpace / 8),
-                                       
-                                        CircleAvatar(
+                                                ? 'Scan Assessment (Optional)'
+                                                : 'Assessment Selected',
+                                            textTheme: TextStyle(
+                                                color: isimageFilePicked
+                                                            .value !=
+                                                        true
+                                                    ? Color(0xff000000) ==
+                                                            Theme.of(context)
+                                                                .backgroundColor
+                                                        ? Color(0xffFFFFFF)
+                                                        : Color(0xff000000)
+                                                    : AppTheme.kSelectedColor,
+                                                fontSize: Globals.deviceType ==
+                                                        'phone'
+                                                    ? 16
+                                                    : 22),
+                                          ),
+                                          isimageFilePicked.value == true
+                                              ? IconButton(
+                                                  onPressed: () {
+                                                    _cameraImage(context);
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.replay_outlined,
+                                                    // : Icons.image_sharp,
+                                                    size: Globals.deviceType ==
+                                                            'phone'
+                                                        ? 20
+                                                        : 25,
+                                                  ),
+                                                  color: isimageFilePicked
+                                                              .value !=
+                                                          true
+                                                      ? Color(0xff000000) ==
+                                                              Theme.of(context)
+                                                                  .backgroundColor
+                                                          ? Color(0xffFFFFFF)
+                                                          : Color(0xff000000)
+                                                      : AppTheme.kSelectedColor,
+                                                )
+                                              : Container(),
+                                        ],
+                                      ),
+                                      SpacerWidget(_KVertcalSpace / 8),
+                                      CircleAvatar(
                                         //  foregroundColor:  Colors.red,
-                                        backgroundImage: isimageFilePicked
-                                                        .value ==
-                                                    true  ?FileImage(imageFile!) : null,
-                                       backgroundColor: AppTheme.kButtonColor,
-                                         radius: 30,
-                                          child: IconButton(
-                                            onPressed: (){
-                                             if(isimageFilePicked.value !=
-                                                    true){
-                                                     _cameraImage(context);
-
-                                             }else{
-                                               showQuestionImage();
-
-                                             }
-                                           
-                                            },
-                                            icon: Icon(
-                                              isimageFilePicked.value !=
-                                                    true
-                                                ? 
-                                                Icons.add : Icons.check,
-                                                // : Icons.image_sharp,
-                                                size: Globals.deviceType ==
-                                                    'phone'
+                                        backgroundImage:
+                                            isimageFilePicked.value == true
+                                                ? FileImage(imageFile!)
+                                                : null,
+                                        backgroundColor: AppTheme.kButtonColor,
+                                        radius: 30,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            if (isimageFilePicked.value !=
+                                                true) {
+                                              _cameraImage(context);
+                                            } else {
+                                              showQuestionImage();
+                                            }
+                                          },
+                                          icon: Icon(
+                                            isimageFilePicked.value != true
+                                                ? Icons.add
+                                                : Icons.check,
+                                            // : Icons.image_sharp,
+                                            size: Globals.deviceType == 'phone'
                                                 ? 25
                                                 : 30,
-                                            ), 
-                                            
-                                            color: isimageFilePicked
-                                                        .value !=
-                                                    true
-                                                ? Color(0xff000000) ==
-                                                        Theme.of(context)
-                                                            .backgroundColor
-                                                    ? Color(0xffFFFFFF)
-                                                    : Color(0xff000000)
-                                                : AppTheme.kSelectedColor,
-                                            
                                           ),
+                                          color: isimageFilePicked.value != true
+                                              ? Color(0xff000000) ==
+                                                      Theme.of(context)
+                                                          .backgroundColor
+                                                  ? Color(0xffFFFFFF)
+                                                  : Color(0xff000000)
+                                              : AppTheme.kSelectedColor,
                                         ),
-                                        
-                                         
-                                       //  isimageFilePicked.value == true ? Padding(
-                                       //    padding: const EdgeInsets.only(
-                                       //        left: 5.0),
-                                       //    child: TextButton(
-                                       //      onPressed: (){
-                                       //         showQuestionImage();
-
-                                       //      },
-                                       //      child:  Text('View Question Image')
-                                       //     //  Icon(
-                                       //     //    // isimageFilePicked.value !=
-                                       //     //    //       true
-                                       //     //    //   ? 
-                                       //     //      Icons.image,
-                                       //     //      // : Icons.image_sharp,
-                                       //     //      size: Globals.deviceType ==
-                                       //     //          'phone'
-                                       //     //      ? 25
-                                       //     //      : 30,
-                                       //     //  ), 
-                                            
-                                       //     //  color: isimageFilePicked
-                                       //     //              .value !=
-                                       //     //          true
-                                       //     //      ? Color(0xff000000) ==
-                                       //     //              Theme.of(context)
-                                       //     //                  .backgroundColor
-                                       //     //          ? Color(0xffFFFFFF)
-                                       //     //          : Color(0xff000000)
-                                       //     //      : AppTheme.kSelectedColor,
-                                            
-                                       //    ),
-                                       //  ): Container()
-                                        // Padding(
-                                        //   padding: const EdgeInsets.only(
-                                        //       left: 5.0),
-                                        //   child: Icon(
-                                        //     isimageFilePicked.value !=
-                                        //             true
-                                        //         ? Icons.
-                                        //         : Icons.check,
-                                        //     color: isimageFilePicked
-                                        //                 .value !=
-                                        //             true
-                                        //         ? Color(0xff000000) ==
-                                        //                 Theme.of(context)
-                                        //                     .backgroundColor
-                                        //             ? Color(0xffFFFFFF)
-                                        //             : Color(0xff000000)
-                                        //         : AppTheme.kSelectedColor,
-                                        //     size: Globals.deviceType ==
-                                        //             'phone'
-                                        //         ? 25
-                                        //         : 30,
-                                        //   ),
-                                        // ),
-                                      ],
-                                    ),
-                                    );
+                                      ),
+                                    ],
+                                  ),
+                                );
                               }),
                         ],
                       ),
-
-                   //   SpacerWidget(_KVertcalSpace),
-                      // GestureDetector(
-                      //   onTap: () {
-                      //     _cameraImage(context);
-                      //   },
-                      //   child:
-                      //    Container(
-                      //       margin: EdgeInsets.only(
-                      //           bottom:
-                      //               MediaQuery.of(context).size.height * 0.15),
-                      //       decoration: BoxDecoration(
-                      //           color: Colors.grey.shade200,
-                      //           border: Border.all(
-                      //               width: 2, color: AppTheme.kButtonColor),
-                      //           borderRadius:
-                      //               BorderRadius.all(Radius.circular(10.0))),
-                      //       height: 150,
-                      //       width: MediaQuery.of(context).size.width,
-                      //       child:
-                      //           // imageFile != null
-                      //           //     ?
-                      //           ValueListenableBuilder(
-                      //               valueListenable: isimageFilePicked,
-                      //               child: Container(),
-                      //               builder: (BuildContext context,
-                      //                   dynamic value, Widget? child) {
-                      //                 return isimageFilePicked.value == true
-                      //                     ? ClipRRect(
-                      //                         borderRadius:
-                      //                             BorderRadius.circular(10),
-                      //                         child: Image.file(
-                      //                           imageFile!,
-                      //                           fit: BoxFit.contain,
-                      //                         ),
-                      //                       )
-                      //                     : Container(
-                      //                         child: Center(
-                      //                           child: Icon(
-                      //                             Icons.add_a_photo,
-                      //                             color: AppTheme.kButtonColor
-                      //                                 .withOpacity(1.0),
-                      //                           ),
-                      //                         ),
-                      //                       );
-                      //               })
-                      //       // : Container(
-                      //       //     child: Center(
-                      //       //       child: Icon(
-                      //       //         Icons.add_a_photo,
-                      //       //         color: AppTheme.kButtonColor
-                      //       //             .withOpacity(1.0),
-                      //       //       ),
-                      //       //     ),
-                      //       //   ),
-                      //       ),
-                      // ),
-
-                      //To scroll the screen in case of keyboard appears
-                      // Padding(
-                      //     padding: EdgeInsets.only(
-                      //         bottom: MediaQuery.of(context).viewInsets.bottom))
                     ],
                   ),
                 ),
@@ -539,7 +391,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
       ),
     );
   }
-   void showQuestionImage() {
+
+  void showQuestionImage() {
     showDialog(
         context: context,
         builder: (_) => ImagePopup(
@@ -567,13 +420,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
-          //  color: Colors.red,
-            // width: 100,
-            // height: Globals.deviceType == 'phone'
-            //     ? MediaQuery.of(context).size.height * 0.28
-            //     : MediaQuery.of(context).size.width * 0.25,
             child: GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
+                physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 // physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -668,14 +516,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
         valueListenable: classError,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
-          controller.selection = TextSelection.fromPosition(
-              TextPosition(offset: controller.text.length));
+          // controller.selection = TextSelection.fromPosition(
+          //     TextPosition(offset: controller.text.length));
           return ValueListenableBuilder(
               valueListenable: assessmentNameError,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
-                //  color: Colors.blue,
+                  //  color: Colors.blue,
                   child: TextFormField(
                     scrollController: scrollController,
                     autovalidateMode: AutovalidateMode.always,
@@ -699,8 +547,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       //     ? ''
                       //     : null,
                       // errorMaxLines: 2,
-                      hintStyle: Theme.of(context).textTheme.headline6!.copyWith(
-                          fontWeight: FontWeight.bold, color: Colors.grey),
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(
+                              fontWeight: FontWeight.bold, color: Colors.grey),
                       fillColor: Colors.transparent,
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
@@ -783,16 +634,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   } else {
                     _navigateToSubjectSection('');
                   }
-
-                  // : Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) => SubjectSelection(
-                  //                     selectedClass:
-                  //                         selectedGrade.value.toString(),
-                  //                   )),
-                  //         );
-
                 }
               }
             },
@@ -839,9 +680,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           Utility.currentScreenSnackBar(
                               "Something Went Wrong. Please Try Again.");
                         }
-                        // Navigator.of(context).pop();
-                        // Utility.currentScreenSnackBar(
-                        //     "Something Went Wrong. Please Try Again.");
                       }
                     }),
                 BlocListener<GoogleDriveBloc, GoogleDriveState>(
@@ -858,24 +696,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         _navigateToSubjectSection(state.questionImageUrl);
                       }
                       if (state is ErrorState) {
-                        // if (state.errorMsg == 'Reauthentication is required') {
-                        //   await Utility.refreshAuthenticationToken(
-                        //       isNavigator: true,
-                        //       errorMsg: state.errorMsg!,
-                        //       context: context,
-                        //       scaffoldKey: scaffoldKey);
-
-                        //   _googleDriveBloc.add(CreateExcelSheetToDrive(
-                        //       name:
-                        //           "${assessmentController.text}_${classController.text}"));
-                        // } else {
                         Navigator.of(context).pop();
                         Utility.currentScreenSnackBar(
                             "Something Went Wrong. Please Try Again.");
-                        // }
-                        // Navigator.of(context).pop();
-                        // Utility.currentScreenSnackBar(
-                        //     "Something Went Wrong. Please Try Again.");
                       }
                     }),
                 textwidget(
@@ -906,24 +729,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 onlyForPicture: true,
                 isScanMore: false,
                 pointPossible: '',
-                flash: false,
+                isFlashOn: ValueNotifier<bool>(false),
               )),
     );
     if (photo != null) {
       imageFile = photo;
       isimageFilePicked.value = false;
       isimageFilePicked.value = true;
-    } 
-    // else {
-    //   isimageFilePicked.value = false;
-    // }
-    // final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    // if (photo != null) {
-    //   imageFile = File(photo.path);
-    //   isimageFilePicked.value = true;
-    // } else {
-    //   isimageFilePicked.value = false;
-    // }
+    }
   }
 
   void _navigateToSubjectSection(String? questionImageUrl) async {

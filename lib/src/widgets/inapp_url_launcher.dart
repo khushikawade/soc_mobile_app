@@ -125,7 +125,7 @@
 //                         },
 //                         navigationDelegate: (NavigationRequest request) {
 //                           // widget.callBackFunction(request.url);
-//                           print(request);
+//                           //print(request);
 //                           return NavigationDecision.navigate;
 //                         },
 //                       ),
@@ -256,7 +256,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         },
         navigationDelegate: (NavigationRequest request) {
           // widget.callBackFunction(request.url);
-          print(request);
+          //print(request);
           return NavigationDecision.navigate;
         },
       );
@@ -321,7 +321,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
           // });
         },
         onProgressChanged: (controller, progress) {
-          print(progress);
+          //print(progress);
           if (progress >= 65) {
             if (isLoading == false) return;
             setState(() {
@@ -336,7 +336,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
           // });
         },
         onConsoleMessage: (controller, consoleMessage) {
-          print(consoleMessage);
+          //print(consoleMessage);
         },
       );
 

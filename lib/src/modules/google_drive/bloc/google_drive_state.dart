@@ -21,16 +21,18 @@ class GoogleDriveLoading2 extends GoogleDriveState {
 
 // ignore: must_be_immutable
 class GoogleDriveGetSuccess extends GoogleDriveState {
-  final List<HistoryAssessment>? obj;
+  final List<HistoryAssessment> obj;
+  final String? nextPageLink;
 
-  GoogleDriveGetSuccess({this.obj});
+
+  GoogleDriveGetSuccess({required this.obj,this.nextPageLink});
 
   GoogleDriveGetSuccess copyWith({final obj}) {
     return GoogleDriveGetSuccess(obj: obj ?? this.obj);
   }
 
   @override
-  List<Object> get props => [obj!];
+  List<Object> get props => [obj];
 }
 
 class QuestionImageSuccess extends GoogleDriveState {
@@ -39,7 +41,8 @@ class QuestionImageSuccess extends GoogleDriveState {
   QuestionImageSuccess({required this.questionImageUrl});
 
   QuestionImageSuccess copyWith({final questionImageUrl}) {
-    return QuestionImageSuccess(questionImageUrl: questionImageUrl ?? this.questionImageUrl);
+    return QuestionImageSuccess(
+        questionImageUrl: questionImageUrl ?? this.questionImageUrl);
   }
 
   @override

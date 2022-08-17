@@ -738,7 +738,7 @@ class _SearchPageState extends State<SearchPage> {
     LocalDatabase<dynamic>? _localDb =
         LocalDatabase(Strings.hiveReferenceLogName);
     log.forEach((dynamic e) {
-      // print("local database");
+      // //print("local database");
       _localDb.addData(e);
     });
     _localDb.close();
@@ -811,7 +811,7 @@ class _SearchPageState extends State<SearchPage> {
                       child: BlocListener<HomeBloc, HomeState>(
                           bloc: _homeBloc2,
                           listener: (context, state) async {
-                            // print(state);
+                            // //print(state);
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);

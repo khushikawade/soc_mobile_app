@@ -125,7 +125,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           obj: newList,
         );
       } catch (e) {
-        print("inside catch");
+        //print("inside catch");
         // Fetching from the local database instead.
         String? _objectName = "${Strings.socialObjectName}";
         LocalDatabase<Item> _localDb = LocalDatabase(_objectName);

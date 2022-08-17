@@ -70,7 +70,7 @@ class DbServices {
   //     final response = await httpClient.get(Uri.parse(api), headers: headers);
 
   //     if (response.statusCode == 200) {
-  //       print(response.body);
+  //       //print(response.body);
   //       final data = json.decode(response.body);
   //       return ResponseModel(statusCode: response.statusCode, data: data);
   //     } else {

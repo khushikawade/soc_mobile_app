@@ -222,7 +222,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         if (e == 'NO_CONNECTION') {
           Utility.currentScreenSnackBar("No Internet Connection");
         } else {
-          print(e);
+          //print(e);
           String? _objectName =
               "${Strings.calendarObjectName}${event.calendarId}";
           LocalDatabase<CalendarEventList> _localDb =
@@ -367,7 +367,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         List<CalendarEventList> data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
-        // print(data1);
+        // //print(data1);
         return data1.map((i) {
           var datetime = i.start != null
               ? (i.start.toString().contains('dateTime')

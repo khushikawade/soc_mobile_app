@@ -24,7 +24,9 @@ class SearchScreenPage extends StatefulWidget {
   final String? grade;
   final String? questionImage;
 
-  SearchScreenPage({Key? key, this.keyword, this.grade,required this.questionImage}) : super(key: key);
+  SearchScreenPage(
+      {Key? key, this.keyword, this.grade, required this.questionImage})
+      : super(key: key);
 
   @override
   State<SearchScreenPage> createState() => _SearchScreenPageState();
@@ -42,7 +44,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   OcrBloc _ocrBloc = OcrBloc();
   OcrBloc _ocrBloc2 = OcrBloc();
   String? standardId;
-   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _debouncer = Debouncer(milliseconds: 10);
   List<SubjectDetailList> searchList = [];
   int standerdLearningLength = 0;
@@ -53,6 +55,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
+
   @override
   void initState() {
     super.initState();
@@ -69,6 +72,12 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -82,57 +91,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
             isbackOnSuccess: isBackFromCamera,
             key: _scaffoldKey,
           ),
-
-          //  AppBar(
-          //   automaticallyImplyLeading: false,
-          //   backgroundColor: Colors.transparent,
-          //   // Color(0xff000000) != Theme.of(context).backgroundColor
-          //   //     ? Color.fromRGBO(0, 0, 0, 0.1)
-          //   //     : Color.fromRGBO(255, 255, 255, 0.16),
-          //   //leadingWidth: 0,
-          //   title: Container(
-          //    // padding: EdgeInsets.symmetric(horizontal: 20),
-          //     child: SearchBar(
-          //       isSearchPage: true,
-          //       controller: searchController,
-          //       onSaved: (value) {
-          //         if (searchController.text.isEmpty) {
-          //           _ocrBloc.add(FatchSubjectDetails(
-          //               type: 'nycSub',
-          //               keyword: widget.keyword,
-          //               isSearchPage: true,
-          //               grade: widget.grade));
-          //           _ocrBloc2.add(FatchSubjectDetails(
-          //               type: 'nyc',
-          //               keyword: widget.keyword,
-          //               isSearchPage: true,
-          //               grade: widget.grade));
-          //         } else {
-          //           _debouncer.run(() async {
-          //             _ocrBloc.add(SearchSubjectDetails(
-          //                 searchKeyword: searchController.text,
-          //                 type: 'nycSub',
-          //                 keyword: widget.keyword,
-          //                 isSearchPage: true,
-          //                 grade: widget.grade));
-          //             _ocrBloc2.add(SearchSubjectDetails(
-          //               searchKeyword: searchController.text,
-          //               type: 'nyc',
-          //               keyword: widget.keyword,
-          //               isSearchPage: true,
-          //               grade: widget.grade,
-          //             ));
-          //             setState(() {});
-          //           });
-          //         }
-          //       },
-          //     ),
-
-          //     // searchBarWidget(
-
-          //     // ),
-          //   ),
-          // ),
           body: Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: ListView(
@@ -223,7 +181,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           list.add(state.obj![i]);
                         }
                       }
-                      print(searchList[0].standardAndDescriptionC);
+                      //print(searchList[0].standardAndDescriptionC);
                       searchList.insertAll(0, list);
                       standerdLearningLength = list.length;
                       listLength.value = searchList.length;
@@ -359,7 +317,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   SubjectSelection(
-                                                    questionimageUrl: widget.questionImage ?? 'NA',
+                                                    questionimageUrl:
+                                                        widget.questionImage ??
+                                                            'NA',
                                                     selectedClass: widget.grade,
                                                     isSearchPage: true,
                                                     domainNameC:
@@ -374,8 +334,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                       } else {
                                         learningStandard =
                                             list[index].domainNameC;
-                                        subLearningStandard =
-                                            list[index].standardAndDescriptionC!.split(' - ')[0];
+                                        subLearningStandard = list[index]
+                                            .standardAndDescriptionC!
+                                            .split(' - ')[0];
                                         standardId = list[index].id;
                                         addToRecentList(
                                             type: 'nycSub',
@@ -403,7 +364,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                       child: Container(
                                         padding: EdgeInsets.all(15),
                                         alignment: Alignment.centerLeft,
-
                                         child: index < standerdLearningLength
                                             ? Utility.textWidget(
                                                 text: list[index].domainNameC!,
@@ -465,12 +425,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                                     '')
                                                           ]),
                                               ),
-
-                                        //  Utility.textWidget(
-                                        //     text: HtmlUnescape()
-                                        //         .convert(list[index].standardAndDescriptionC!),
-                                        //     textTheme: Theme.of(context).textTheme.headline2,
-                                        //     context: context),
                                         decoration: BoxDecoration(
                                             color: Color(0xff000000) !=
                                                     Theme.of(context)
@@ -536,61 +490,36 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           // rubricScore = 'NA';
                         }
                       }
-                      //List<StudentAssessmentInfo> list = Globals.studentInfo!;
-                      // List<StudentAssessmentInfo> list2 = [];
-                      // Globals.studentInfo!.clear();
 
                       //Adding blank fields to the list : Static data
                       List<StudentAssessmentInfo> studentInfodblist =
                           await Utility.getStudentInfoList(
                               tableName: 'student_info');
 
-                      // studentInfodblist.asMap().forEach((index, element) async {
-                      //   StudentAssessmentInfo element =
-                      //       studentInfodblist[index];
-                      //   element.subject = widget.keyword;
-                      //   element.learningStandard =
-                      //       learningStandard == null ? "NA" : learningStandard;
-                      //   element.subLearningStandard =
-                      //       subLearningStandard == null
-                      //           ? "NA"
-                      //           : subLearningStandard;
-                      //   element.scoringRubric = Globals.scoringRubric;
-                      //   element.customRubricImage = rubricImgUrl ?? "NA";
-                      //   element.grade = widget.grade;
-
-                      //   await _studentInfoDb.putAt(index, element);
-
-                      // });
-                      // Globals.studentInfo!.forEach((element) {
-                      //   element.subject = widget.keyword;
-                      //   element.learningStandard =
-                      //       learningStandard == null ? "NA" : learningStandard;
-                      //   element.subLearningStandard =
-                      //       subLearningStandard == null
-                      //           ? "NA"
-                      //           : subLearningStandard;
-                      //   element.scoringRubric = Globals.scoringRubric;
-                      //   element.customRubricImage = rubricImgUrl ?? "NA";
-                      //   element.grade = widget.grade;
-                      // });
-                      
-
                       StudentAssessmentInfo element = studentInfodblist[0];
                       element.subject = widget.keyword;
                       element.learningStandard =
-                          learningStandard == null ||  learningStandard == '' ? "NA" : learningStandard;
-                      element.subLearningStandard = subLearningStandard == null || learningStandard == ''
-                          ? "NA"
-                          : subLearningStandard;
+                          learningStandard == null || learningStandard == ''
+                              ? "NA"
+                              : learningStandard;
+                      element.subLearningStandard =
+                          subLearningStandard == null || learningStandard == ''
+                              ? "NA"
+                              : subLearningStandard;
                       element.scoringRubric = Globals.scoringRubric;
                       element.customRubricImage = rubricImgUrl ?? "NA";
                       element.grade = widget.grade;
+                      element.className = Globals.assessmentName!.split("_")[1];
+                      element.questionImgUrl = widget.questionImage == ''
+                          ? "NA"
+                          : widget.questionImage;
 
                       await _studentInfoDb.putAt(0, element);
 
                       _googleDriveBloc.add(UpdateDocOnDrive(
-                         questionImage: widget.questionImage == ''? 'NA' :   widget.questionImage ?? 'NA',
+                          questionImage: widget.questionImage == ''
+                              ? 'NA'
+                              : widget.questionImage ?? 'NA',
                           createdAsPremium: Globals.isPremiumUser,
                           assessmentName: Globals.assessmentName!,
                           fileId: Globals.googleExcelSheetId,
@@ -599,16 +528,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               //list2
                               await Utility.getStudentInfoList(
                                   tableName: 'student_info')));
-                    
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //       builder: (context) => ResultsSummary(
-                      //             shareLink: Globals.shareableLink,
-                      //             asssessmentName: Globals.assessmentName,
-                      //             assessmentDetailPage: false,
-                      //           )),
-                      // );
                     },
                     label: Row(
                       children: [
@@ -622,7 +541,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               if (state is GoogleSuccess) {
                                 Globals.currentAssessmentId = '';
                                 _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
-                                  assessmentQueImage: widget.questionImage ?? 'NA',
+                                    assessmentQueImage:
+                                        widget.questionImage ?? 'NA',
                                     assessmentName: Globals.assessmentName ??
                                         'Assessment Name',
                                     rubricScore: Globals.scoringRubric ?? '2',
@@ -653,7 +573,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
 
                                   _googleDriveBloc.add(
                                     UpdateDocOnDrive(
-                                      questionImage: widget.questionImage == ''? 'NA' :   widget.questionImage ?? 'NA',
+                                      questionImage: widget.questionImage == ''
+                                          ? 'NA'
+                                          : widget.questionImage ?? 'NA',
                                       createdAsPremium: Globals.isPremiumUser,
                                       assessmentName: Globals.assessmentName,
                                       fileId: Globals.googleExcelSheetId,
@@ -691,7 +613,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                   MaterialPageRoute(
                                       builder: (context) => ResultsSummary(
                                             fileId: Globals.googleExcelSheetId,
-                                           // subjectId:  ?? '',
+                                            // subjectId:  ?? '',
                                             standardId: standardId ?? '',
                                             asssessmentName:
                                                 Globals.assessmentName,

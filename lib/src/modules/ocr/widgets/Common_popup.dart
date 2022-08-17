@@ -1,22 +1,27 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-
+import 'package:open_apps_settings/open_apps_settings.dart';
+import 'package:open_apps_settings/settings_enum.dart';
 import '../../../services/utility.dart';
 
 class CommonPopupWidget extends StatefulWidget {
-  final Orientation orientation;
-  final BuildContext context;
-  final String message;
-  final String title;
+  final Orientation? orientation;
+  final BuildContext? context;
+  final String? message;
+  final String? title;
+  final bool? isAccessDenied;
   CommonPopupWidget(
       {Key? key,
       required this.orientation,
       required this.context,
       required this.message,
-      required this.title})
+      required this.title,
+      this.isAccessDenied})
       : super(key: key);
 
   @override
@@ -70,13 +75,6 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                     .headline2!
                     .copyWith(color: Colors.black),
                 text: translatedMessage.toString());
-
-            // Text(translatedMessage.toString(),
-            //     textAlign: TextAlign.center,
-            //     style: Theme.of(context)
-            //         .textTheme
-            //         .headline2!
-            //         .copyWith(color: Colors.black));
           }),
       actions: <Widget>[
         Container(
@@ -96,55 +94,28 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                             color: AppTheme.kButtonColor,
                           ));
                 }),
-            onPressed: () {
-              //Globals.iscameraPopup = false;
-              Navigator.pop(context, false);
+            onPressed: () async {
+              if (widget.isAccessDenied == true) {
+                //To pop 2 times to navigate back to the home screen in case of camera access denied
+                int count = 0;
+                Navigator.of(context).popUntil((_) {
+                  if (Platform.isAndroid) {
+                    return count++ >= 3;
+                  } else {
+                    return count++ >= 2;
+                  }
+                });
+
+                //To open the app setting for permission access
+                OpenAppsSettings.openAppsSettings(
+                    settingsCode: SettingsCode.APP_SETTINGS);
+              } else {
+                //Globals.iscameraPopup = false;
+                Navigator.pop(context, false);
+              }
             },
           ),
         ),
-
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //   children: [
-        //     TextButton(
-        //       child: TranslationWidget(
-        //           message: "ok",
-        //           fromLanguage: "en",
-        //           toLanguage: Globals.selectedLanguage,
-        //           builder: (translatedMessage) {
-        //             return Text(translatedMessage.toString(),
-        //                 style: Theme.of(context).textTheme.headline5!.copyWith(
-        //                       color: AppTheme.kButtonColor,
-        //                     ));
-        //           }),
-        //       onPressed: () {
-        //         //Globals.iscameraPopup = false;
-        //         Navigator.pop(context, false);
-        //       },
-        //     ),
-        //     TextButton(
-        //       child: TranslationWidget(
-        //           message: "Yes ",
-        //           fromLanguage: "en",
-        //           toLanguage: Globals.selectedLanguage,
-        //           builder: (translatedMessage) {
-        //             return Text(translatedMessage.toString(),
-        //                 style: Theme.of(context).textTheme.headline5!.copyWith(
-        //                       color: Colors.red,
-        //                     ));
-        //           }),
-        //       onPressed: () {
-        //         //Globals.iscameraPopup = false;
-        //         Navigator.of(context).pushAndRemoveUntil(
-        //             MaterialPageRoute(
-        //                 builder: (context) => HomePage(
-        //                       isFromOcrSection: true,
-        //                     )),
-        //             (_) => false);
-        //       },
-        //     ),
-        //   ],
-        // )
       ],
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );

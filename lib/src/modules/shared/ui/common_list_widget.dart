@@ -45,7 +45,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
-      // print(queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter);
+      // //print(queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter);
       await Navigator.push(
           context,
           MaterialPageRoute(

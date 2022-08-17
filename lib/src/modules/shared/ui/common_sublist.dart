@@ -62,6 +62,12 @@ class _SubListPageState extends State<SubListPage> {
     }
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   _body(bool connected) => RefreshIndicator(
         key: refreshKey,
         onRefresh: refreshPage,

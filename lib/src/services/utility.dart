@@ -458,13 +458,15 @@ class Utility {
   //   }
   // }
 
-  static void currentScreenSnackBar(String text) {
+  static void currentScreenSnackBar(
+    String text,
+  ) {
     //Use to show snackbar at any current screen
     BuildContext? context = Globals.navigatorKey.currentContext;
 
     ScaffoldMessenger.of(context!).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
+        // behavior: SnackBarBehavior.floating, //Not showing the snackbar in case of FTB
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10))),
         backgroundColor:

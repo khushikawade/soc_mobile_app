@@ -38,7 +38,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
         _localData.forEach((element) {
           if (element.completedAtTimestamp != null) {
-            
             _localData.sort((a, b) =>
                 b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
           }
@@ -200,7 +199,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
         yield ActionCountSuccess(obj: newList);
       } catch (e) {
-        print(e);
+        //print(e);
         // yield NewsErrorReceived(err: e);
         String? _objectName = "news_action";
         // String? _objectName = "${Strings.newsObjectName}";
@@ -260,7 +259,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (e.toString().contains("Failed host lookup")) {
         throw ("No Internet Connection.");
       } else {
-        print(e);
+        //print(e);
         throw (e);
       }
     }

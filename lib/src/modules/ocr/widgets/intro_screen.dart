@@ -131,10 +131,10 @@
 //                 index = pageIndex;
 //               },
 //               footerBuilder: (context, dragDistance, pagesLength, setIndex) {
-//                 print('draggggggggggggggggggggggggggggg');
+//                 //print('draggggggggggggggggggggggggggggg');
 
-//                 print(dragDistance);
-//                 print(setIndex);
+//                 //print(dragDistance);
+//                 //print(setIndex);
 //                 return DecoratedBox(
 //                   decoration: BoxDecoration(
 //                     color: Colors.transparent,

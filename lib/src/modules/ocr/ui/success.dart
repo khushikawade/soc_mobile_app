@@ -251,7 +251,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     onlyForPicture: false,
                                     isScanMore: widget.isScanMore,
                                     pointPossible: widget.pointPossible,
-                                    flash: widget.isFlashOn,
+                                    isFlashOn:
+                                        ValueNotifier<bool>(widget.isFlashOn),
                                   )),
                         );
                         if (result == true) {
@@ -511,8 +512,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                                   pointPossible:
                                                                       widget
                                                                           .pointPossible,
-                                                                  flash: widget
-                                                                      .isFlashOn,
+                                                                  isFlashOn: ValueNotifier<
+                                                                          bool>(
+                                                                      widget
+                                                                          .isFlashOn),
                                                                 )),
                                                       );
                                                       if (result == true) {
@@ -531,10 +534,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                                       //                 .pointPossible,
                                                       //           )),
                                                       // );
-                                                    } else {
-                                                      print(
-                                                          "Not -------------> move");
                                                     }
+                                                    // else {
+                                                    //   print(
+                                                    //       "Not -------------> move");
+                                                    // }
                                                   },
                                                   child: SuccessCustomButton(
                                                       width:
@@ -673,7 +677,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             //                 ValueListenableBuilder(
             // valueListenable: isStudentNameFilled,
             // builder: (BuildContext context, dynamic value, Widget? child) {
-            //   print(isStudentNameFilled.value);
+            //   //print(isStudentNameFilled.value);
             //   return
             textFormField(
                 scrollController: scrollControlleName,
@@ -1137,7 +1141,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 20,
                             vertical:
-                                20), //horizontal: Globals.pointsEarnedList.length>3?20:30
+                                15), //horizontal: Globals.pointsEarnedList.length>3?20:30
                         decoration: BoxDecoration(
                           color: Color(0xff000000) !=
                                   Theme.of(context).backgroundColor
@@ -1197,8 +1201,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
               valueListenable: isStudentNameFilled,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                controller.selection = TextSelection.fromPosition(
-                    TextPosition(offset: controller.text.length));
+                // controller.selection = TextSelection.fromPosition(
+                //     TextPosition(offset: controller.text.length));
                 return TextFormField(
                     scrollController: scrollController,
                     maxLength: maxNineDigit == true ? 9 : null,
@@ -1351,7 +1355,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             if (!historyStudentInfo.contains(id)) {
               id.add(historyStudentInfo[i].studentId);
             } else {
-              print('Record is already exist in the list. Skipping...');
+              //print('Record is already exist in the list. Skipping...');
             }
           }
           if (!id.contains(idController.text)) {
@@ -1370,7 +1374,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
               List list = await _historyStudentInfoDb.getData();
-              print(list);
+              //print(list);
               await _historyStudentInfoDb.addData(studentAssessmentInfo);
             }
           }
@@ -1426,10 +1430,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
           List id = [];
           for (int i = 0; i < studentInfo.length; i++) {
             if (!studentInfo.contains(id)) {
-              print('not contaains ----------------->');
+              //print('not contaains ----------------->');
               id.add(studentInfo[i].studentId);
             } else {
-              print('Record is already exist in the list. Skipping...');
+              //print('Record is already exist in the list. Skipping...');
             }
           }
           if (!id.contains(idController.text)) {
@@ -1448,7 +1452,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 widget.imgPath.path.toString();
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
-              print('added in record ----------------->>>>');
+              //print('added in record ----------------->>>>');
               await _studentInfoDb.addData(studentAssessmentInfo);
             }
           }
@@ -1459,7 +1463,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Future<void> _navigatetoCameraSection() async {
-     var result = await Navigator.push(
+    var result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
@@ -1471,11 +1475,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   onlyForPicture: false,
                   isScanMore: widget.isScanMore,
                   pointPossible: widget.pointPossible,
-                  flash: widget.isFlashOn,
+                  isFlashOn: ValueNotifier<bool>(widget.isFlashOn),
                 )));
-       if (result == true) {
-                          isBackFromCamera.value = result;
-                        }          
+    if (result == true) {
+      isBackFromCamera.value = result;
+    }
   }
 
   void _performAnimation() {

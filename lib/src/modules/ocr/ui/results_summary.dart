@@ -128,7 +128,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
       iconsList = [0xe876, 0xe871, 0xe87a];
       iconsName = ["Share", "Drive", "Dashboard"];
-      _driveBloc.add(GetAssessmentDetail(fileId: widget.fileId));
+      _driveBloc
+          .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
       _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
     } else {
       if (widget.isScanMore != true) {
@@ -149,6 +150,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     // }
     _scrollController.addListener(_scrollListener);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   _scrollListener() async {
@@ -213,7 +220,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               isResultScreen: true,
             ),
             body: Container(
-              //     padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -268,9 +275,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     ),
                   ),
                   // SpacerWidget(_KVertcalSpace / 5),
-                  ValueListenableBuilder(
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.09,
+                    child: ValueListenableBuilder(
                       valueListenable: infoIconValue,
-                      child: Container(),
                       builder:
                           (BuildContext context, bool value, Widget? child) {
                         return Padding(
@@ -282,17 +290,21 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               ? ListTile(
                                   contentPadding: EdgeInsets.zero,
                                   leading: Container(
+                                    alignment: Alignment.centerLeft,
                                     width: MediaQuery.of(context).size.width *
-                                        0.84,
+                                        0.75,
                                     child: Utility.textWidget(
-                                        text: widget.asssessmentName == null
-                                            ? 'Asssessment Name'
-                                            //     //     // : widget.asssessmentName!.length > 20
-                                            //     //     //     ? '${widget.asssessmentName!.substring(0, 20)}' +
-                                            //     //     //         '...'
-                                            : widget.asssessmentName!,
+                                        text:
+                                            // 'hykhyptjpotp]iotgjhoityhjoiyjhieorgjhnklrtnhkgjnkljgbhjrkbthn;rtnjlrnhlrdnhrjhnrjkhnkrljnjklrnrihnrtihn',
+                                            widget.asssessmentName == null
+                                                ? 'Asssessment Name'
+                                                //     //     // : widget.asssessmentName!.length > 20
+                                                //     //     //     ? '${widget.asssessmentName!.substring(0, 20)}' +
+                                                //     //     //         '...'
+                                                : widget.asssessmentName!,
                                         context: context,
                                         maxLines: 2,
+                                        textAlign: TextAlign.left,
                                         textTheme: Theme.of(context)
                                             .textTheme
                                             .headline2!
@@ -305,7 +317,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       child: infoWidget()))
                               : Container(),
                         );
-                      }),
+                      },
+                      child: Container(),
+                    ),
+                  ),
                   // SpacerWidget(_KVertcalSpace / 5),
                   !widget.assessmentDetailPage!
                       ? Column(
@@ -489,8 +504,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         tableName: 'history_student_info') ==
                                     0) {
                                   state.obj.forEach((e) async {
-                                    print(
-                                        'ffffffffffffffffffffffffffffffffffff');
+                                    //print(
+                                    // 'ffffffffffffffffffffffffffffffffffff');
                                     await _historyStudentInfoDb.addData(e);
                                   });
                                 }
@@ -513,8 +528,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     context: context,
                                     scaffoldKey: scaffoldKey);
 
-                                _driveBloc.add(
-                                    GetAssessmentDetail(fileId: widget.fileId));
+                                _driveBloc.add(GetAssessmentDetail(
+                                    fileId: widget.fileId, nextPageUrl: ''));
                               } else {
                                 Navigator.of(context).pop();
                                 Utility.currentScreenSnackBar(
@@ -536,12 +551,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             disableSlidableAction.value = true;
 
                             dashoardState.value = 'Success';
-                           Utility.updateLoges(
-                                            // accountType: 'Free',
-                                            activityId: '14',
-                                            description:
-                                                'Save to deshboard success',
-                                            operationResult: 'Success');
+                            Utility.updateLoges(
+                                // accountType: 'Free',
+                                activityId: '14',
+                                description: 'Save to deshboard success',
+                                operationResult: 'Success');
                             List<StudentAssessmentInfo> studentInfo =
                                 await Utility.getStudentInfoList(
                                     tableName:
@@ -564,7 +578,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             assessmentCount.value = list.length;
 
                             Globals.scanMoreStudentInfoLength = list.length;
-                            print(Globals.scanMoreStudentInfoLength);
+                            //print(Globals.scanMoreStudentInfoLength);
                             // _driveBloc.add(UpdateDocOnDrive(
                             //   isLoading: false,
                             //     fileId: widget.fileId,
@@ -654,48 +668,45 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   Widget resultTitle() {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5.0),
-          child: Container(
-            height: 50.0,
-            margin: const EdgeInsets.only(
-                bottom: 6.0), //Same as `blurRadius` i guess
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0),
-              color: Theme.of(context).backgroundColor == Color(0xff000000)
-                  ? Color(0xff162429)
-                  : Color(0xffF7F8F9),
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.5), //Colors.grey,
-                  // Theme.of(context).backgroundColor == Color(0xff000000)
-                  //     ? Color(0xff162429)
-                  //     : Color(0xffE9ECEE),
-                  offset: Offset(0.0, 1.0), //(x,y)
-                  blurRadius: 6.0,
-                ),
-              ],
-            ),
-            child: Container(
-                child: ListTile(
-              leading: Utility.textWidget(
-                  text: 'Student Name',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(fontWeight: FontWeight.bold)),
-              trailing: Utility.textWidget(
-                  text: 'Points Earned',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(fontWeight: FontWeight.bold)),
-            )),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5.0),
+        child: Container(
+          height: 50.0,
+          margin:
+              const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: Theme.of(context).backgroundColor == Color(0xff000000)
+                ? Color(0xff162429)
+                : Color(0xffF7F8F9),
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(0, 0, 0, 0.5), //Colors.grey,
+                // Theme.of(context).backgroundColor == Color(0xff000000)
+                //     ? Color(0xff162429)
+                //     : Color(0xffE9ECEE),
+                offset: Offset(0.0, 1.0), //(x,y)
+                blurRadius: 6.0,
+              ),
+            ],
           ),
+          child: Container(
+              child: ListTile(
+            leading: Utility.textWidget(
+                text: 'Student Name',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.bold)),
+            trailing: Utility.textWidget(
+                text: 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline2!
+                    .copyWith(fontWeight: FontWeight.bold)),
+          )),
         ),
       ),
     );
@@ -929,9 +940,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             description:
                                                 'Save to deshboard pressed in case for scanmore',
                                             operationResult: 'Success');
-                                        print(
-                                            'if     calling is scanMore -------------------------->');
-                                        print(widget.assessmentListLenght);
+                                        //print(
+                                        // 'if     calling is scanMore -------------------------->');
+                                        //print(widget.assessmentListLenght);
                                         _ocrBloc.add(SaveAssessmentToDashboard(
                                             assessmentId: !widget
                                                     .assessmentDetailPage!
@@ -961,8 +972,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             isHistoryAssessmentSection:
                                                 widget.assessmentDetailPage!));
                                       } else {
-                                        print(
-                                            'else      calling is noramal -------------------------->');
+                                        //print(
+                                        // 'else      calling is noramal -------------------------->');
                                         // Adding the non saved record of dashboard in the list
                                         List<StudentAssessmentInfo>
                                             _listRecord = [];
@@ -1043,10 +1054,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return Container(
-            // padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.08),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height *
+                    0.08), //For bottom padding from FAB
             height: widget.assessmentDetailPage!
                 ? (MediaQuery.of(context).orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.height * 0.57
+                    ? MediaQuery.of(context).size.height * 0.55
                     : MediaQuery.of(context).size.height * 0.45)
                 : (MediaQuery.of(context).orientation == Orientation.portrait
                     ? MediaQuery.of(context).size.height * 0.57
@@ -1055,7 +1068,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               //padding:widget.assessmentDetailPage==true? EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.06):null,
               controller: _scrollController,
               shrinkWrap: true,
-              padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+              padding: EdgeInsets.only(bottom: 25), //AppTheme.klistPadding),
               scrollDirection: Axis.vertical,
               itemCount: _list.length, // Globals.gradeList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -1073,7 +1086,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             //To reset the value listener
                             disableSlidableAction.value = false;
 
-                            print(i);
+                            //print(i);
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, true)
                                 : Utility.currentScreenSnackBar(
@@ -1147,14 +1160,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
               leading:
                   // Text('Unknown'),
-
-                  Utility.textWidget(
-                      text: _list[index].studentName == '' ||
-                              _list[index].studentName == null
-                          ? 'Unknown'
-                          : _list[index].studentName!,
-                      context: context,
-                      textTheme: Theme.of(context).textTheme.headline2!),
+                  Container(
+                width: MediaQuery.of(context).size.height * 0.37,
+                child: Utility.textWidget(
+                    text: _list[index].studentName == '' ||
+                            _list[index].studentName == null
+                        ? 'Unknown'
+                        : _list[index].studentName!,
+                    maxLines: 2,
+                    context: context,
+                    textTheme: Theme.of(context).textTheme.headline2!),
+              ),
 
               trailing:
                   // Text(_list[index].pointpossible!),
@@ -1212,7 +1228,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
-                              flash: false,
+                              isFlashOn: ValueNotifier<bool>(false),
                               questionImageLink: questionImageUrl,
                               obj: widget.obj,
                               createdAsPremium:
@@ -1496,13 +1512,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           index: index);
     } else {
       //  Globals.studentInfo!.length > 2
-      studentInfo.length > 1
-          ? _deletePopUP(
-              //    studentName: Globals.studentInfo![index].studentName!,
-              studentName: studentInfo[index].studentName!,
-              index: index)
-          : Utility.currentScreenSnackBar(
-              "Action Not Performed. Result List Cannot Be Empty.");
+      if (studentInfo.length > 1) {
+        _deletePopUP(
+            //    studentName: Globals.studentInfo![index].studentName!,
+            studentName: studentInfo[index].studentName!,
+            index: index);
+      } else {
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+        Utility.currentScreenSnackBar(
+            "Action Not Performed. Result List Cannot Be Empty.");
+      }
     }
   }
 

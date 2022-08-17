@@ -55,7 +55,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           obj: list,
         );
       } catch (e) {
-        print(e);
+        //print(e);
         // yield ErrorInStaffLoading(err: e);
         LocalDatabase<SharedList> _localDb =
             LocalDatabase(Strings.staffObjectName);

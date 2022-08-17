@@ -57,6 +57,12 @@ class _EventPageState extends State<EventPage>
     _eventBloc.add(CalendarListEvent(widget.calendarId));
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget _buildTabs(
     state,
     bool? currentOrientation,

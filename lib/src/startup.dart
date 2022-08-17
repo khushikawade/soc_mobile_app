@@ -25,6 +25,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart';
+import 'modules/ocr/widgets/custom_intro_layout.dart';
 
 class StartupPage extends StatefulWidget {
   bool? isOcrSection;
@@ -50,7 +51,7 @@ class _StartupPageState extends State<StartupPage> {
     // _onNotificationTap();
     if (widget.isOcrSection!) {
       _navigateToOcrSection();
-      // print("calling refresh token update event ======================.");
+      // //print("calling refresh token update event ======================.");
       //      _driveBloc.add(RefreshAuthenticationTokenEvent());
 
     } else {
@@ -184,12 +185,12 @@ class _StartupPageState extends State<StartupPage> {
 //                    },
 //                    listener: (BuildContext contxt, GoogleDriveState state) {
 //                      if (state is RefreshAuthenticationTokenSuccessState) {
-//                        print(
+//                        //print(
 //                            'refresh success recived state recived on screen ==========>');
 //                        _navigateToOcrSection();
 //                      }
 //                      if (state is ErrorState) {
-//                        print(
+//                        //print(
 //                            'refresh error state recived on screen re-calling refresh token event from startup page ==========>');
 //                        _driveBloc.add(RefreshAuthenticationTokenEvent());
 
@@ -320,18 +321,19 @@ class _StartupPageState extends State<StartupPage> {
 
     var isOldUser = await _hiveDbServices.getSingleData('new_user', 'new_user');
 
-    print(isOldUser);
-    print('timer is started to navigate to ocr section==========>');
+    //print(isOldUser);
+    //print('timer is started to navigate to ocr section==========>');
     Timer(Duration(seconds: 1), () async {
       Navigator.pushReplacement<void, void>(
         context,
         MaterialPageRoute<void>(
-            builder: (BuildContext context) => 
-            //OpticalCharacterRecognition()
-            isOldUser == true
-                ? OpticalCharacterRecognition()
-                : CustomIntroWidget(),
-            ),
+          builder: (BuildContext context) =>
+              //OpticalCharacterRecognition()
+
+              isOldUser == true
+                  ? OpticalCharacterRecognition()
+                  : CustomIntroWidget(),
+        ),
       );
     });
   }

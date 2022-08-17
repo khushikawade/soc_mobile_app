@@ -76,6 +76,11 @@ class _StaffPageState extends State<StaffPage> {
     _getLocalDb();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
   //   ScrollController get innerController {
   //   return globalKey.currentState!.innerController;
   // }
@@ -429,14 +434,14 @@ class _StaffPageState extends State<StaffPage> {
     List<CustomRubicModal> _localData = await _localDb.getData();
 
     if (_localData.isEmpty) {
-      print('updating rubric into local db');
-      print("local db is empty");
+      //print('updating rubric into local db');
+      //print("local db is empty");
       RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
         await _localDb.addData(e);
       });
       await _localDb.close();
     } else {
-      print("local db is not empty");
+      //print("local db is not empty");
       RubricScoreList.scoringList = [];
       RubricScoreList.scoringList.addAll(_localData);
       // _localDb.close()

@@ -19,11 +19,8 @@ import '../shared/ui/common_grid_widget.dart';
 class ResourcesPage extends StatefulWidget {
   final CustomSetting? customObj;
   final bool? isCustomSection;
-  ResourcesPage({
-    Key? key,
-    this.customObj,
-    required this.isCustomSection
-  }) : super(key: key);
+  ResourcesPage({Key? key, this.customObj, required this.isCustomSection})
+      : super(key: key);
 
   @override
   _ResourcesPageState createState() => _ResourcesPageState();
@@ -41,6 +38,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
     // Utility.setLocked();
     super.initState();
     _bloc.add(ResourcesListEvent());
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   Future refreshPage() async {
@@ -147,12 +150,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     BannerImageWidget(
-                      imageUrl: Globals.appSetting.resourcesBannerImageC!,
-                      bgColor: Globals.appSetting.resourcesBannerColorC != null
-                          ? Utility.getColorFromHex(
-                              Globals.appSetting.resourcesBannerColorC!)
-                          : Colors.transparent
-                    )
+                        imageUrl: Globals.appSetting.resourcesBannerImageC!,
+                        bgColor:
+                            Globals.appSetting.resourcesBannerColorC != null
+                                ? Utility.getColorFromHex(
+                                    Globals.appSetting.resourcesBannerColorC!)
+                                : Colors.transparent)
                   ];
                 },
                 body: _body('body1'))

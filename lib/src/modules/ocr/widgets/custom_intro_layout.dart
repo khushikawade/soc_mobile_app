@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_content_modal.dart';
@@ -6,9 +8,12 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:onboarding/onboarding.dart';
 import '../../../services/local_database/hive_db_services.dart';
+import '../../../services/utility.dart';
 import '../../../translator/translation_widget.dart';
+import '../../../widgets/shimmer_loading_widget.dart';
 
 class CustomIntroWidget extends StatefulWidget {
   const CustomIntroWidget({Key? key}) : super(key: key);

@@ -213,8 +213,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
 
   Widget _buildGrid(
       List<SharedList> list, List<SharedList> subList, String key) {
-    print(
-        "inside heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeellllll custom sectionnnnnnnnnn");
+    //print(
+    // "inside heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeellllll custom sectionnnnnnnnnn");
     return list.length > 0
         ? GridView.count(
             shrinkWrap: true,

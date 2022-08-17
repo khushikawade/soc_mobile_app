@@ -12,11 +12,11 @@ class UserGoogleProfile {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
     if (_userInformation.isNotEmpty) {
-      print(_userInformation[0].authorizationToken);
-      print(_userInformation[0].profilePicture);
-      print(_userInformation[0].refreshToken);
-      print(_userInformation[0].userEmail);
-      print(_userInformation[0].userName);
+      //print(_userInformation[0].authorizationToken);
+      //print(_userInformation[0].profilePicture);
+      //print(_userInformation[0].refreshToken);
+      //print(_userInformation[0].userEmail);
+      //print(_userInformation[0].userName);
     }
     await _localDb.close();
     return _userInformation;

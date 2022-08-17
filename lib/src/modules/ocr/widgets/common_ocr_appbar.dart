@@ -103,9 +103,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
           ),
         ),
         actions: [
-          
-          
-
           widget.isFromResultSection == true
               ? Container(
                   padding: widget.isSuccessState!.value != false
@@ -134,12 +131,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       color: AppTheme.kButtonColor,
                       size: 30,
                     ),
-                  ),)
+                  ),
+                )
               : widget.assessmentPage == true
                   ? GestureDetector(
                       onTap: () {
-                        print(
-                            'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                        //print(
+                        // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
                         Globals.googleDriveFolderPath != null
                             ? Utility.launchUrlOnExternalBrowser(
                                 Globals.googleDriveFolderPath!)
@@ -165,27 +163,27 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                           child:
                               //widget.actionIcon,
                               IconButton(
-                            onPressed: () {
-                              if (widget.isHomeButtonPopup == true) {
-                                _onHomePressed();
-                              } else {
-                                Utility.setFree();
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) => HomePage(
-                                              isFromOcrSection: true,
-                                            )),
-                                    (_) => false);
-                              }
-                            },
-                            icon: Icon(
-                              IconData(0xe874,
-                                  fontFamily: Overrides.kFontFam,
-                                  fontPackage: Overrides.kFontPkg),
-                              color: AppTheme.kButtonColor,
-                              size: 30,
-                            ),
-                          ))
+                          onPressed: () {
+                            if (widget.isHomeButtonPopup == true) {
+                              _onHomePressed();
+                            } else {
+                              Utility.setFree();
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage(
+                                            isFromOcrSection: true,
+                                          )),
+                                  (_) => false);
+                            }
+                          },
+                          icon: Icon(
+                            IconData(0xe874,
+                                fontFamily: Overrides.kFontFam,
+                                fontPackage: Overrides.kFontPkg),
+                            color: AppTheme.kButtonColor,
+                            size: 30,
+                          ),
+                        ))
                       : Container(),
           widget.assessmentDetailPage == true
               ? Container()
@@ -205,21 +203,24 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   : Container();
                             });
                   }),
-            widget.isOcrHome == true ? 
-           Padding(
-             padding: const EdgeInsets.only(top: 2),
-             child: IconButton(onPressed: () async {
-                var result = await  Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => CustomIntroWidget(
-                                        
-                                      )),
-                              );
-                  Navigator.pop(context);            
-              
-             }, icon: Icon(Icons.help,size: 32,color: AppTheme.kButtonColor,)),
-           )
-           :Container(),      
+          widget.isOcrHome == true
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: IconButton(
+                      onPressed: () async {
+                        var result = await Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => CustomIntroWidget()),
+                        );
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.help,
+                        size: 32,
+                        color: AppTheme.kButtonColor,
+                      )),
+                )
+              : Container(),
           Container(
             margin: EdgeInsets.all(10),
             padding: widget.isSuccessState!.value != false
@@ -236,7 +237,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       child: GestureDetector(
                         onTap: () {
                           _showPopUp(snapshot.data!);
-                          print("profile url");
+                          //print("profile url");
                         },
                         child: CachedNetworkImage(
                           // height: 30,
@@ -409,7 +410,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     List<UserInformation> _userInformation = await _localDb.getData();
     Globals.teacherEmailId = _userInformation[0].userEmail!;
-    print("printing _userInformation length : ${_userInformation[0]}");
+    //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
 
