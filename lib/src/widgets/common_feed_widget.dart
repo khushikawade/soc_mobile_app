@@ -171,7 +171,8 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
         obj.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj);
       return;
-    } // Checking here for zoom/google_meet/docs/forms app URLs to open these specific URLs Externally(In browser/Related App if installed already)
+    }
+    // Checking here for zoom/google_meet/docs/forms app URLs to open these specific URLs Externally(In browser/Related App if installed already)
     else if (obj.toString().contains("zoom.us") ||
         obj.toString().contains("meet.google.com") ||
         obj.toString().contains("docs.google.com") ||
