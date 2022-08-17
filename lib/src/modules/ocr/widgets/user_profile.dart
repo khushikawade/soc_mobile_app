@@ -229,6 +229,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
       Utility.textWidget(
           text: widget.title!,
           context: context,
+          maxLines: 2,
           textAlign: TextAlign.center,
           textTheme: Theme.of(context)
               .textTheme
