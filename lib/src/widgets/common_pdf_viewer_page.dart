@@ -6,7 +6,6 @@ import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-
 import '../modules/ocr/widgets/common_ocr_appbar.dart';
 
 // ignore: must_be_immutable
@@ -84,7 +83,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
-       isSuccessState:ValueNotifier<bool>(true),
+      isSuccessState: ValueNotifier<bool>(true),
       isbackOnSuccess: widget.isBackFromCamera,
       key: GlobalKey(),
       isBackButton: true,
