@@ -115,12 +115,15 @@ class _StaffPageState extends State<StaffPage> {
       context,
       screen: GoogleAuthWebview(
         title: title!,
-        url: Globals.appSetting.authenticationURL ??
-            '' + //Overrides.secureLoginURL +
-                '?' +
-                Globals.appSetting.appLogoC +
-                '?' +
-                themeColor.toString().split('0xff')[1].split(')')[0],
+        url: (Globals.appSetting.authenticationURL != null &&
+                        Globals.appSetting.authenticationURL != ''
+                    ? Globals.appSetting.authenticationURL
+                    : 'https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/secure-login/auth')
+                .toString() + //Overrides.secureLoginURL +
+            '?' +
+            Globals.appSetting.appLogoC +
+            '?' +
+            themeColor.toString().split('0xff')[1].split(')')[0],
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
