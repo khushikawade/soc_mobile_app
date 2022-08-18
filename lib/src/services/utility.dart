@@ -389,8 +389,12 @@ class Utility {
   }
 
   static String utf8convert(String? text) {
-    List<int> bytes = text.toString().codeUnits;
-    return utf8.decode(bytes);
+    try {
+      List<int> bytes = text.toString().codeUnits;
+      return utf8.decode(bytes);
+    } catch (e) {
+      return text!;
+    }
   }
 
   static Widget textWidget(

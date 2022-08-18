@@ -347,7 +347,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //Sort the list as per the modified date
         _localData = await listSort(_localData);
 
-        if (_localData.isNotEmpty) {
+        if (_localData.isNotEmpty && event.searchKeywork == "") {
           yield GoogleDriveGetSuccess(obj: _localData);
         } else {
           yield GoogleDriveLoading();
@@ -359,11 +359,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         if (Globals.googleDriveFolderId != null) {
           List pair = await _fetchHistoryAssessment(
-            token: _userprofilelocalData[0].authorizationToken,
-            isPagination: false,
-            folderId: Globals.googleDriveFolderId,
-          );
-          List<HistoryAssessment>? _list = pair[0];
+              token: _userprofilelocalData[0].authorizationToken,
+              isPagination: false,
+              folderId: Globals.googleDriveFolderId,
+              searchKey: event.searchKeywork ?? "");
+          List<HistoryAssessment>? _list =
+              pair != null && pair.length > 0 ? pair[0] : [];
 
           if (_list == null) {
             yield ErrorState(errorMsg: 'Reauthentication is required');
@@ -379,13 +380,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
             //Sort the list as per the modified date
             assessmentList = await listSort(assessmentList);
-            assessmentList.length > 0 ? await _localDb.clear() : print("");
+
+            assessmentList != null && assessmentList.length > 0
+                ? await _localDb.clear()
+                : print("");
+
             assessmentList.forEach((HistoryAssessment e) {
               _localDb.addData(e);
             });
 
             yield GoogleDriveGetSuccess(
-                obj: assessmentList, nextPageLink: pair[1]);
+                obj: assessmentList,
+                nextPageLink: pair != null && pair.length > 1 ? pair[1] : '');
           }
         } else {
           GetDriveFolderIdEvent(
@@ -420,8 +426,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               token: _userprofilelocalData[0].authorizationToken,
               folderId: Globals.googleDriveFolderId,
               isPagination: true,
-              nextPageUrl: event.nextPageUrl);
-          List<HistoryAssessment>? _list = pair[0];
+              nextPageUrl: event.nextPageUrl,
+              searchKey: "");
+          List<HistoryAssessment>? _list =
+              pair != null && pair.length > 0 ? pair[0] : [];
           // //print('updatedList');
           // //print(
           //     "---------------------------------------------------------------listLength----------------------${_list!.length}");
@@ -441,7 +449,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             updatedAssessmentList.addAll(assessmentList);
             yield ShareLinkRecived(shareLink: '');
             yield GoogleDriveGetSuccess(
-                obj: updatedAssessmentList, nextPageLink: pair[1]);
+                obj: updatedAssessmentList,
+                nextPageLink: pair != null && pair.length > 1 ? pair[1] : '');
           }
         } else {
           GetDriveFolderIdEvent(
@@ -933,16 +942,34 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       {String? token,
       String? folderId,
       bool? isPagination,
-      String? nextPageUrl}) async {
+      String? nextPageUrl,
+      String? searchKey}) async {
     try {
       Map<String, String> headers = {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
+      // print(Uri.encodeFull(
+      //     "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents" +
+      //                 //     searchKey! !=
+      //                 // null &&
+      //                 searchKey! !=
+      //             ""
+      //         ? " and title contains $searchKey"
+      //         : ""));
+      String query =
+          '(mimeType = \'application/vnd.google-apps.spreadsheet\' and \'$folderId\'+in+parents and title contains \'${searchKey}\')';
       final ResponseModel response = await _dbServices.getapiNew(
           isPagination == true
               ? "$nextPageUrl"
-              : "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents",
+              : searchKey == ""
+                  ? "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents" //List Call
+                  :
+                  //     searchKey! !=
+                  // null &&
+
+                  "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
+                      Uri.encodeFull(query), //Search call
           headers: headers,
           isGoogleAPI: true);
 
@@ -955,20 +982,28 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         try {
           updatedNextUrlLink = isPagination == true
               ? response.data["nextLink"]
-              : response.data['body']["nextLink"];
+              :
+              // searchKey == ""
+              //     ?
+              response.data['body']["nextLink"];
+          // : response.data["nextLink"];
         } catch (e) {
           updatedNextUrlLink = '';
         }
         //print(updatedNextUrlLink);
         // nextPageToken = response.data['body']["nextPageToken"];
+        // print("Before mapping");
         List<HistoryAssessment> _list = isPagination == true
             ? response.data['items']
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList()
-            : response.data['body']['items'] //response.data['body']['items']
-
+            : //searchKey == ""
+            //     ?
+            response.data['body']['items']
+                // : response.data["items"]
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
+        // print("After mapping");
         List<AssessmentDetails> assessmentList = await getAssessmentList();
         for (int i = 0; i < _list.length; i++) {
           for (int j = 0; j < assessmentList.length; j++) {
@@ -998,7 +1033,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               token: _userprofilelocalData[0].authorizationToken,
               folderId: Globals.googleDriveFolderId,
               isPagination: isPagination,
-              nextPageUrl: nextPageUrl);
+              nextPageUrl: nextPageUrl,
+              searchKey: searchKey ?? "");
           // List<HistoryAssessment>? _list = pair[0];
 
           return pair;

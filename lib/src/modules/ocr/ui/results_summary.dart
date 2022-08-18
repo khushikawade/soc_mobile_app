@@ -46,7 +46,8 @@ class ResultsSummary extends StatefulWidget {
   }) : super(key: key);
   final bool? assessmentDetailPage;
   String? fileId;
-  final HistoryAssessment? obj;
+  // final HistoryAssessment? obj;
+  final obj;
   final String? subjectId;
   final String? standardId;
   final String? rubricScore;
@@ -227,7 +228,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.40),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.only(
+                        left: 5,
+                        right: 20), //EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -282,9 +285,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       builder:
                           (BuildContext context, bool value, Widget? child) {
                         return Padding(
-                          padding: EdgeInsets.only(
-                            left: 20,
-                          ),
+                          padding: EdgeInsets.only(left: 5), //EdgeInsets.only(
+                          //   left: 20,
+                          // ),
                           child: infoIconValue.value == true ||
                                   widget.assessmentDetailPage != true
                               ? ListTile(

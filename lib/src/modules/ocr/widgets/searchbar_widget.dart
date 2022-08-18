@@ -11,13 +11,15 @@ class SearchBar extends StatelessWidget {
   final onTap;
   final bool? isSearchPage;
   final bool? isSubLearningPage;
+  final bool? readOnly;
   const SearchBar(
       {Key? key,
       required this.controller,
       required this.onSaved,
       this.onTap,
       this.isSearchPage,
-      this.isSubLearningPage})
+      this.isSubLearningPage,
+      required this.readOnly})
       : super(key: key);
 
   @override
@@ -38,7 +40,8 @@ class SearchBar extends StatelessWidget {
             toLanguage: Globals.selectedLanguage,
             builder: (translatedMessage) {
               return TextFormField(
-                autofocus: isSearchPage == true? true: false,
+                readOnly: readOnly ?? false,
+                autofocus: isSearchPage == true ? true : false,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primaryVariant),
                 //  focusNode: myFocusNode,

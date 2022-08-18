@@ -101,6 +101,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                   // padding: EdgeInsets.symmetric(horizontal: 20),
                   child: SearchBar(
                     isSearchPage: true,
+                    readOnly: false,
                     controller: searchController,
                     onSaved: (value) {
                       if (searchController.text.isEmpty) {

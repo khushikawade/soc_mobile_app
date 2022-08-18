@@ -187,6 +187,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               : SearchBar(
                                   isSubLearningPage:
                                       pageIndex.value == 2 ? true : false,
+                                  readOnly: false,
                                   onTap: () {
                                     if (pageIndex.value == 1) {
                                       FocusManager.instance.primaryFocus
