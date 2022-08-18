@@ -416,8 +416,16 @@ class AppTheme {
 
   static setDynamicTheme(AppSetting appSetting, BuildContext context) {
     Color _primaryColor = Utility.getColorFromHex(appSetting.primaryColorC!);
+
+    Color _darkmodePrimaryColor = Utility.getColorFromHex(
+        appSetting.darkmodeIconColor != null &&
+                appSetting.darkmodeIconColor != ''
+            ? appSetting.darkmodeIconColor!
+            : appSetting.primaryColorC!);
+
     Color _secondaryColor =
         Utility.getColorFromHex(appSetting.secondaryColorC!);
+
     Color _backgroundColor =
         Utility.getColorFromHex(appSetting.backgroundColorC!);
     Color _fontColor = appSetting.fontColorC != null
@@ -435,13 +443,13 @@ class AppTheme {
               //Primary color
               primaryColor: _primaryColor,
               colorScheme: ColorScheme.light(
-                  onPrimary: _primaryColor,
-                  primary: _primaryColor,
-                  secondary: _secondaryColor,
-                  background: _backgroundColor,
-                  primaryVariant: _fontColor,
-                  //tertiary: kbackgroudColorlight
-                  ),
+                onPrimary: _primaryColor,
+                primary: _primaryColor,
+                secondary: _secondaryColor,
+                background: _backgroundColor,
+                primaryVariant: _fontColor,
+                //tertiary: kbackgroudColorlight
+              ),
               //Background color
               backgroundColor: _backgroundColor,
               scaffoldBackgroundColor: _backgroundColor,
@@ -608,7 +616,7 @@ class AppTheme {
             ),
         dark: AdaptiveTheme.of(context).lightTheme.copyWith(
               //Primary color
-              primaryColor: _primaryColor,
+              primaryColor: _darkmodePrimaryColor,
               colorScheme: ColorScheme.light(
                   onPrimary: Colors.white,
                   primary: Colors.black,
@@ -618,7 +626,7 @@ class AppTheme {
               //Background color
               backgroundColor: _darkBackgroundColor,
               scaffoldBackgroundColor: _darkBackgroundColor,
-              accentColor: _primaryColor,
+              accentColor: _darkmodePrimaryColor,
               // textButtonTheme: Theme.of(context).,
               // dialogBackgroundColor: Colors.grey,
               dialogTheme: DialogTheme(
@@ -626,29 +634,30 @@ class AppTheme {
                 contentTextStyle: TextStyle(color: Colors.white),
               ),
               textSelectionTheme: TextSelectionThemeData(
-                selectionColor: _primaryColor,
+                selectionColor: _darkmodePrimaryColor,
                 selectionHandleColor: Colors.white,
               ),
 
               textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all(_primaryColor)),
+                    foregroundColor:
+                        MaterialStateProperty.all(_darkmodePrimaryColor)),
               ),
               appBarTheme: AppBarTheme(
                 titleTextStyle: TextStyle(
-                    color: _primaryColor,
+                    color: _darkmodePrimaryColor,
                     fontSize: Globals.deviceType == "phone"
                         ? kTitleFontSize
                         : kTitleFontSize + kSize),
                 color: _darkBackgroundColor,
-                foregroundColor: _primaryColor,
+                foregroundColor: _darkmodePrimaryColor,
                 centerTitle: true,
                 iconTheme: IconThemeData(
-                  color: _primaryColor,
+                  color: _darkmodePrimaryColor,
                 ),
               ),
               iconTheme: IconThemeData(
-                color: _primaryColor,
+                color: _darkmodePrimaryColor,
               ),
 
               inputDecorationTheme: InputDecorationTheme(
@@ -685,8 +694,8 @@ class AppTheme {
                         fontWeight: FontWeight.w500,
                         color: _backgroundColor,
                       )),
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(_primaryColor),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          _darkmodePrimaryColor),
                       minimumSize:
                           MaterialStateProperty.all<Size>(Size.fromHeight(56)),
                       shape: MaterialStateProperty.all<OutlinedBorder>(

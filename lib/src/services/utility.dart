@@ -158,8 +158,10 @@ class Utility {
               )),
         ),
       ),
-      backgroundColor:
-          Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
+      backgroundColor: Globals.themeType == 'Dark'
+          ? Colors.white
+          : Colors
+              .black, //Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
       padding: EdgeInsets.only(
         left: 16,
       ),
@@ -272,22 +274,22 @@ class Utility {
     return convertedData;
   }
 
-  static convertDateFormat2(date) {
-    try {
-      String dateNew = date;
-      final string = dateNew.toString();
-      final formatter = DateFormat('yyyy-MM-dd');
-      final dateTime = formatter.parse(string);
+  // static convertDateFormat2(date) {
+  //   try {
+  //     String dateNew = date;
+  //     final string = dateNew.toString();
+  //     final formatter = DateFormat('yyyy-MM-dd');
+  //     final dateTime = formatter.parse(string);
 
-      final DateFormat formatNew = DateFormat('MM/dd/yyyy');
+  //     final DateFormat formatNew = DateFormat('dd/MMM/yyyy');
 
-      final String formatted = formatNew.format(dateTime);
+  //     final String formatted = formatNew.format(dateTime);
 
-      return formatted;
-    } catch (e) {
-      print(e);
-    }
-  }
+  //     return formatted.replaceAll('/', ' ');
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   static generateUniqueId(date) {
     try {

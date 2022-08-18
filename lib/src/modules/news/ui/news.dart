@@ -121,6 +121,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             //   Utility.setLocked();
             if (result == true) {
               _countBloc.add(FetchActionCountList(isDetailPage: true));
+              // setState(() {});
             }
           }
         },
@@ -209,18 +210,18 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
               } else {
                 return Container(
-                  alignment: Alignment.centerLeft,
-                  child: ShimmerLoading(
-                      isLoading: true,
-                      child: UserActionBasic(
-                          title: Globals.notificationList[index].headings['en'],
-                          description:
-                              Globals.notificationList[index].contents['en'],
-                          imageUrl: Globals.notificationList[index].image,
-                          obj: Globals.notificationList[index],
-                          page: "news",
-                          isLoading: isCountLoading)),
-                );
+                    alignment: Alignment.centerLeft,
+                    child: ShimmerLoading(
+                        isLoading: true,
+                        child: UserActionBasic(
+                            title:
+                                Globals.notificationList[index].headings['en'],
+                            description:
+                                Globals.notificationList[index].contents['en'],
+                            imageUrl: Globals.notificationList[index].image,
+                            obj: Globals.notificationList[index],
+                            page: "news",
+                            isLoading: isCountLoading)));
               }
             }),
       ],
