@@ -262,24 +262,35 @@ class _OpticalCharacterRecognitionPageState
 
               }
             }),
-        GestureDetector(
-          onTap: () async {
-            if (Globals.googleDriveFolderId!.isEmpty) {
-              _triggerDriveFolderEvent(true);
-            } else {
-              _beforenavigateOnAssessmentSection();
-            }
-          },
-          child: Container(
-              padding: EdgeInsets.only(top: 10),
-              // color: Colors.red,
-              child: Utility.textWidget(
-                  text: 'Assessment History',
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                        decoration: TextDecoration.underline,
-                      ))),
-        )
+        OfflineBuilder(
+            child: Container(),
+            connectivityBuilder: (BuildContext context,
+                ConnectivityResult connectivity, Widget child) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              return GestureDetector(
+                onTap: () async {
+                  if (!connected) {
+                    Utility.currentScreenSnackBar("No Internet Connection");
+                    return;
+                  }
+                  if (Globals.googleDriveFolderId!.isEmpty) {
+                    _triggerDriveFolderEvent(true);
+                  } else {
+                    _beforenavigateOnAssessmentSection();
+                  }
+                },
+                child: Container(
+                    padding: EdgeInsets.only(top: 10),
+                    // color: Colors.red,
+                    child: Utility.textWidget(
+                        text: 'Assessment History',
+                        context: context,
+                        textTheme:
+                            Theme.of(context).textTheme.headline2!.copyWith(
+                                  decoration: TextDecoration.underline,
+                                ))),
+              );
+            }),
       ],
     );
   }

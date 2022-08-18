@@ -187,6 +187,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               : SearchBar(
                                   isSubLearningPage:
                                       pageIndex.value == 2 ? true : false,
+                                  readOnly: false,
                                   onTap: () {
                                     if (pageIndex.value == 1) {
                                       FocusManager.instance.primaryFocus
@@ -1349,6 +1350,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           if (_localData[i].customOrStandardRubic == "Custom" &&
               _localData[i].name == Globals.scoringRubric!.split(" ")[0]) {
             rubricImgUrl = _localData[i].imgUrl;
+            break;
             // rubricScore = null;
           }
           //  else if (_localData[i].name == Globals.scoringRubric &&

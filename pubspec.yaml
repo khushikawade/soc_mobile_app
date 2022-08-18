@@ -31,7 +31,6 @@ dependencies:
   flutter_bloc: ^7.0.1
   http: ^0.13.4
   equatable: ^2.0.3
-  # webview_flutter: ^2.5.0
   webview_flutter: ^3.0.4
   modal_bottom_sheet: ^2.0.0
   cached_network_image: ^3.0.0
@@ -48,10 +47,8 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   html: ^0.15.0
   flutter_html: ^2.2.1
-  # flutter_html: ^2.1.5
   flutter_linkify: ^5.0.2
-  # advance_pdf_viewer: 2.0.0
-  flutter_pdfview: ^1.2.3
+  flutter_pdfview:
   hive: ^2.0.4
   hive_generator: ^1.1.0
   build_runner: ^2.0.6
@@ -62,7 +59,6 @@ dependencies:
   persistent_bottom_nav_bar: ^4.0.2
   flutter_oss_licenses: ^1.0.1
   shimmer: ^2.0.0
-  # adaptive_theme: ^2.2.0
   adaptive_theme: ^2.3.1
   flutter_offline: ^2.0.0
   flutter_svg: ^0.23.0+1
@@ -76,7 +72,6 @@ dependencies:
       ref: onfinished_callback
   photo_view: ^0.13.0
   speech_bubble: ^0.0.9
-  # firebase_analytics: ^8.3.3
   invert_colors: ^0.0.4
   path_provider: ^2.0.8
   new_version: ^0.2.3 #^0.2.3
@@ -84,16 +79,21 @@ dependencies:
   back_button_interceptor: ^5.0.2
   auto_orientation: ^2.2.1
   camera: 0.10.0+1 #^0.9.4+16
-  mime_type: ^1.0.0
+  mime_type: ^1.0.0 #Used in excel file generation
   excel:
-  flutter_typeahead: ^3.1.0
-  wakelock: ^0.6.1+2
-  flutter_slidable: ^1.3.0
-  onboarding: ^3.1.0
-  connectivity_plus_web: ^1.2.2
-  network_info_plus_web: ^1.0.1
-  flutter_inappwebview: ^5.4.3+7
-  carousel_slider: ^4.1.1
+  wakelock: ^0.6.1+2 #To stay device awake
+  flutter_slidable: ^1.3.0 #To make record slidable
+  flutter_inappwebview: ^5.4.3+7 #New webview plugin for android
+  carousel_slider: ^4.1.1 #Used on onboarding screens of Graded+
+
+  #advance_pdf_viewer: 2.0.0
+  #flutter_html: ^2.1.5
+  #webview_flutter: ^2.5.0
+  #firebase_analytics: ^8.3.3
+  #flutter_typeahead: ^3.1.0
+  #onboarding: ^3.1.0
+  #connectivity_plus_web: ^1.2.2
+  #network_info_plus_web: ^1.0.1
 
 dev_dependencies:
   flutter_test:

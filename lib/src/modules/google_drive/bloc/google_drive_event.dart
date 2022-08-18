@@ -55,8 +55,9 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
 }
 
 class GetHistoryAssessmentFromDrive extends GoogleDriveEvent {
-  GetHistoryAssessmentFromDrive();
+  final String? searchKeywork;
 
+  GetHistoryAssessmentFromDrive({this.searchKeywork});
   @override
   List<Object> get props => [];
 }

@@ -3,6 +3,7 @@ import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
+import 'package:Soc/src/modules/google_drive/model/recent_google_file.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
@@ -56,7 +57,8 @@ void main() async {
       ..registerAdapter(HistoryAssessmentAdapter())
       ..registerAdapter(CustomRubicModalAdapter())
       ..registerAdapter(TranslationModalAdapter())
-      ..registerAdapter(StudentAssessmentInfoAdapter());
+      ..registerAdapter(StudentAssessmentInfoAdapter())
+      ..registerAdapter(RecentGoogleFileSearchAdapter());
   }
   clearTheme();
   await disableDarkMode();

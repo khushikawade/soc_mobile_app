@@ -468,14 +468,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //yield OcrLoading();
       try {
         var body = {
-          "Session_Id": "${event.sessionId}",
-          "Teacher_Id": "${event.teacherId}",
-          "Activity_Id": "${event.activityId}",
-          "Account_Id": "${event.accountId}",
-          "Account_Type": "${event.accountType}",
-          "Date_Time": "${event.dateTime}",
-          "Description": "${event.description}",
-          "Operation_Result": "${event.operationResult}"
+          "Session_Id": "${event.sessionId ?? ''}",
+          "Teacher_Id": "${event.teacherId ?? ''}",
+          "Activity_Id": "${event.activityId ?? ''}",
+          "Account_Id": "${event.accountId ?? ''}",
+          "Account_Type": "${event.accountType ?? ''}",
+          "Date_Time": "${event.dateTime ?? ''}",
+          "Description": "${event.description ?? ''}",
+          "Operation_Result": "${event.operationResult ?? ''}"
         };
         await activityLog(body: body);
       } catch (e) {
@@ -909,6 +909,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Created_As_Premium": Globals.isPremiumUser.toString(),
         "Assessment_Que_Image__c": assessmentQueImage
       };
+
       final ResponseModel response = await _dbServices.postapi(
         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
         isGoogleApi: true,

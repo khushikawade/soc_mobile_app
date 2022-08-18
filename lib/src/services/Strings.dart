@@ -1,5 +1,6 @@
 class Strings {
   static final String hiveLogName = "recent_items";
+  static final String googleRecentSearch = "google_file_recent_search";
   static final String SplashUrl = "SPLASHURL";
   static final String deviceType = "Device";
   static final String bottomNavigation = "NAVIGATIONBARINDEX";

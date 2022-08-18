@@ -101,6 +101,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                   // padding: EdgeInsets.symmetric(horizontal: 20),
                   child: SearchBar(
                     isSearchPage: true,
+                    readOnly: false,
                     controller: searchController,
                     onSaved: (value) {
                       if (searchController.text.isEmpty) {
@@ -480,12 +481,14 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                         if (_localData[i].customOrStandardRubic == "Custom" &&
                             _localData[i].name == Globals.scoringRubric) {
                           rubricImgUrl = _localData[i].imgUrl;
+                          break;
                           // rubricScore = null;
                         }
-                        if (_localData[i].name == Globals.scoringRubric &&
-                            _localData[i].customOrStandardRubic != "Custom") {
-                          // rubricScore = _localData[i].score;
-                        } else {
+                        // if (_localData[i].name == Globals.scoringRubric &&
+                        //     _localData[i].customOrStandardRubic == "Custom") {
+                        //   // rubricScore = _localData[i].score;
+                        // }
+                         else {
                           rubricImgUrl = 'NA';
                           // rubricScore = 'NA';
                         }

@@ -46,7 +46,8 @@ class ResultsSummary extends StatefulWidget {
   }) : super(key: key);
   final bool? assessmentDetailPage;
   String? fileId;
-  final HistoryAssessment? obj;
+  // final HistoryAssessment? obj;
+  final obj;
   final String? subjectId;
   final String? standardId;
   final String? rubricScore;
@@ -227,17 +228,24 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 children: [
                   SpacerWidget(_KVertcalSpace * 0.40),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.only(
+                        left: 5,
+                        right: 20), //EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Utility.textWidget(
-                            text: 'Results Summary',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(fontWeight: FontWeight.bold)),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Utility.textWidget(
+                              text: 'Results Summary',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(fontWeight: FontWeight.bold)),
+                        ),
                         ValueListenableBuilder(
                             valueListenable: assessmentCount,
                             builder: (BuildContext context, int value,
@@ -282,9 +290,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       builder:
                           (BuildContext context, bool value, Widget? child) {
                         return Padding(
-                          padding: EdgeInsets.only(
-                            left: 20,
-                          ),
+                          padding: EdgeInsets.only(left: 5), //EdgeInsets.only(
+                          //   left: 20,
+                          // ),
                           child: infoIconValue.value == true ||
                                   widget.assessmentDetailPage != true
                               ? ListTile(
@@ -420,13 +428,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
-                                isGoogleSheetStateRecived = true;
+                                // isGoogleSheetStateRecived = true;
 
-                                savedRecordCount != null
-                                    ? savedRecordCount == state.obj.length
-                                        ? dashoardState.value = 'Success'
-                                        : dashoardState.value = ''
-                                    : print("");
+                                // savedRecordCount != null
+                                //     ? savedRecordCount == state.obj.length
+                                //         ? dashoardState.value = 'Success'
+                                //         : dashoardState.value = ''
+                                //     : print("");
 
                                 return Column(
                                   children: [
@@ -509,6 +517,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     await _historyStudentInfoDb.addData(e);
                                   });
                                 }
+
+                                isGoogleSheetStateRecived = true;
+
+                                savedRecordCount != null
+                                    ? savedRecordCount == state.obj.length
+                                        ? dashoardState.value = 'Success'
+                                        : dashoardState.value = ''
+                                    : print("");
 
                                 sheetrubricScore =
                                     state.obj.first.scoringRubric;
@@ -916,7 +932,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           description:
                                               'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
                                           operationResult: 'Failed');
-                                      onDashboardPressed(
+                                      popupModal(
                                           title: 'Data Not Saved',
                                           message:
                                               'Oops! You cannot save the assessment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the assessment.');
@@ -1029,14 +1045,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         description:
                                             'Free User tried to save the data to the dashboard',
                                         operationResult: 'Failed');
-                                    onDashboardPressed(
+                                    popupModal(
                                         title: 'Upgrade To Premium',
                                         message:
                                             'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
                                   }
                                   // }
                                 } else if (dashoardState.value == 'Success') {
-                                  onDashboardPressed(
+                                  popupModal(
                                       title: 'Already Saved',
                                       message:
                                           'The data has already been saved to the data dashboard.');
@@ -1081,11 +1097,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       children: [
                         SlidableAction(
                           // An action can be bigger than the others.
-
+          
                           onPressed: (i) {
                             //To reset the value listener
                             disableSlidableAction.value = false;
-
+          
                             //print(i);
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, true)
@@ -1104,7 +1120,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           onPressed: (i) {
                             //To reset the value listener
                             disableSlidableAction.value = false;
-
+          
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, false)
                                 : Utility.currentScreenSnackBar(
@@ -1204,6 +1220,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 onPressed: () async {
                   // Globals.scanMoreStudentInfoLength =
                   //     Globals.studentInfo!.length;
+                  if ((widget.assessmentDetailPage == true) &&
+                      ((widget.createdAsPremium == true &&
+                              Globals.isPremiumUser != true) ||
+                          (widget.createdAsPremium == false &&
+                              Globals.isPremiumUser == true))) {
+                    popupModal(title: 'Alert!', message: Globals.isPremiumUser == true ?'Oops! You are currently a "Premium" user. You cannot update the assessment that you created as a "Free" user. You can start with a fresh scan as a Premium user.':'Opps! You are currently a "Free" user. You cannot update the assessment that you created as a "Premium" user. If you still want to edit this assessment then please upgrade to Premium. You can still create new assessments as Free user.');
+                    return;
+                  }
+
                   Utility.updateLoges(
                       //,
                       activityId: '22',
@@ -1735,7 +1760,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             }));
   }
 
-  onDashboardPressed({required String message, required String? title}) {
+  popupModal({required String message, required String? title}) {
     return showDialog(
         context: context,
         builder: (context) =>

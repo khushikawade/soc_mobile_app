@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/ocr/ui/google_file_search.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
@@ -31,7 +32,7 @@ class AssessmentSummary extends StatefulWidget {
 class _AssessmentSummaryState extends State<AssessmentSummary> {
   static const double _KVertcalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
-  GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
+  // GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<HistoryAssessment> lastHistoryAssess = [];
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -51,7 +52,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     _controller = new ScrollController()..addListener(_scrollListener);
     _driveBloc.add(GetHistoryAssessmentFromDrive());
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       refreshPage(isFromPullToRefresh: false);
     });
 
@@ -115,17 +116,23 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   child: SearchBar(
                     isSearchPage: false,
                     isSubLearningPage: false,
+                    readOnly: true,
                     controller: searchAssessmentController,
                     onSaved: (String value) {
-                      if (value != null && value.isNotEmpty) {
-                        isSearch.value = true;
+                      // if (value != null && value.isNotEmpty) {
+                      //   isSearch.value = true;
 
-                        //Calling local search only
-                        _driveBloc2
-                            .add(GetAssessmentSearchDetails(keyword: value));
-                      }
+                      //Calling local search only
+                      // _driveBloc2
+                      //     .add(GetAssessmentSearchDetails(keyword: value));
+                      // }
                     },
                     onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => GoogleFileSearchPage()),
+                      );
                       // print('taped');
                     },
                   ),
@@ -141,15 +148,18 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         builder:
                             (BuildContext context, bool value, Widget? child) {
                           return BlocConsumer(
-                              bloc: isSearch.value == false
-                                  ? _driveBloc
-                                  : _driveBloc2,
+                              bloc:
+                                  // isSearch.value == false
+                                  // ?
+                                  _driveBloc,
+
+                              // : _driveBloc2,
                               builder: (BuildContext context,
                                   GoogleDriveState state) {
                                 if (state is GoogleDriveGetSuccess) {
                                   nextPageUrl = state.nextPageLink;
                                   bool isloading = true;
-                                  if (state.nextPageLink == '' &&
+                                  if (state.nextPageLink == '' ||
                                       state.nextPageLink == null) {
                                     isloading = false;
                                   }
