@@ -112,6 +112,8 @@ class AppSetting {
   String? authenticationURL;
   @HiveField(53)
   String? enableGraded;
+  @HiveField(54)
+  String? darkmodeIconColor;
 
   AppSetting(
       {this.attributes,
@@ -167,7 +169,8 @@ class AppSetting {
       this.isCustomApp,
       this.disableDarkMode,
       this.authenticationURL,
-      this.enableGraded});
+      this.enableGraded,
+      this.darkmodeIconColor});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
         attributes: json['attributes'] == null
@@ -247,6 +250,7 @@ class AppSetting {
                 : false as bool?,
         authenticationURL: json['Authentication_URL__c'] as String?,
         enableGraded: json['Enable_GradEd__c'] as String?,
+        darkmodeIconColor: json['Dark_Mode_Icon_Color__c'] as String?
       );
 
   Map<String, dynamic> toJson() => {
@@ -303,7 +307,8 @@ class AppSetting {
         'Needs_Custom_App__c': isCustomApp,
         'Disable_Dark_Mode__c': disableDarkMode,
         'Authentication_URL__c': authenticationURL,
-        'Enable_GradEd': enableGraded
+        'Enable_GradEd': enableGraded,
+        'Dark_Mode_Icon_Color__c': darkmodeIconColor
       };
 
   AppSetting copyWith(
@@ -359,7 +364,7 @@ class AppSetting {
       bool? isCustomApp,
       bool? disableDarkMode,
       String? authenticationURL,
-      String? enableGraded}) {
+      String? enableGraded,String? darkmodeIconColor, }) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -417,6 +422,7 @@ class AppSetting {
         isCustomApp: isCustomApp ?? this.isCustomApp,
         disableDarkMode: disableDarkMode ?? this.disableDarkMode,
         authenticationURL: authenticationURL ?? this.authenticationURL,
-        enableGraded: enableGraded ?? this.enableGraded);
+        enableGraded: enableGraded ?? this.enableGraded,
+        darkmodeIconColor: darkmodeIconColor ?? this.darkmodeIconColor);
   }
 }

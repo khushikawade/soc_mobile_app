@@ -71,13 +71,14 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       disableDarkMode: fields[51] as bool?,
       authenticationURL: fields[52] as String?,
       enableGraded: fields[53] as String?,
+      darkmodeIconColor: fields[54] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppSetting obj) {
     writer
-      ..writeByte(54)
+      ..writeByte(55)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -185,7 +186,9 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       ..writeByte(52)
       ..write(obj.authenticationURL)
       ..writeByte(53)
-      ..write(obj.enableGraded);
+      ..write(obj.enableGraded)
+      ..writeByte(54)
+      ..write(obj.darkmodeIconColor);
   }
 
   @override
