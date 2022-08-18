@@ -481,12 +481,14 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                         if (_localData[i].customOrStandardRubic == "Custom" &&
                             _localData[i].name == Globals.scoringRubric) {
                           rubricImgUrl = _localData[i].imgUrl;
+                          break;
                           // rubricScore = null;
                         }
-                        if (_localData[i].name == Globals.scoringRubric &&
-                            _localData[i].customOrStandardRubic != "Custom") {
-                          // rubricScore = _localData[i].score;
-                        } else {
+                        // if (_localData[i].name == Globals.scoringRubric &&
+                        //     _localData[i].customOrStandardRubic == "Custom") {
+                        //   // rubricScore = _localData[i].score;
+                        // }
+                         else {
                           rubricImgUrl = 'NA';
                           // rubricScore = 'NA';
                         }

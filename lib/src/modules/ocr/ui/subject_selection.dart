@@ -1350,6 +1350,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           if (_localData[i].customOrStandardRubic == "Custom" &&
               _localData[i].name == Globals.scoringRubric!.split(" ")[0]) {
             rubricImgUrl = _localData[i].imgUrl;
+            break;
             // rubricScore = null;
           }
           //  else if (_localData[i].name == Globals.scoringRubric &&

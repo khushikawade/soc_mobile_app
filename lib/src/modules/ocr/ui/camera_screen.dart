@@ -125,9 +125,9 @@ class _CameraScreenState extends State<CameraScreen>
   void initState() {
     // widget.isFlashOn!.value = widget.isFlashOn;
     Wakelock.enable();
-    
+
     Globals.iscameraPopup
-        ? WidgetsBinding.instance
+        ? WidgetsBinding.instance!
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
     SystemChrome.setEnabledSystemUIOverlays([]);
