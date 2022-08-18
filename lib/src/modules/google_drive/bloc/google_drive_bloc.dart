@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart';
+
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
@@ -299,24 +300,35 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             createdAsPremium: event.createdAsPremium);
 
 //Update the created excel file to drive with all the result data
-        String uploadresult = await uploadSheetOnDrive(
+        String excelSheetId = await uploadSheetOnDrive(
             file,
             event.fileId == null ? Globals.googleExcelSheetId : event.fileId,
             _userprofilelocalData[0].authorizationToken,
             _userprofilelocalData[0].refreshToken);
 
-        if (uploadresult.isEmpty) {
+        if (excelSheetId.isEmpty) {
           // await _toRefreshAuthenticationToken(
           //     _userprofilelocalData[0].refreshToken!);
 
-          await uploadSheetOnDrive(
+          String excelSheetId = await uploadSheetOnDrive(
               file,
               Globals.googleExcelSheetId,
               _userprofilelocalData[0].authorizationToken,
               _userprofilelocalData[0].refreshToken);
-        } else if (uploadresult == 'Reauthentication is required') {
+          // function to update property of excel sheet
+          _updateFieldExcelSheet(
+              assessmentData: assessmentData,
+              excelId: excelSheetId,
+              token: _userprofilelocalData[0].authorizationToken!);
+        } else if (excelSheetId == 'Reauthentication is required') {
           yield ErrorState(errorMsg: 'Reauthentication is required');
         } else {
+          // function to update property of excel sheet
+          _updateFieldExcelSheet(
+              assessmentData: assessmentData,
+              excelId: excelSheetId,
+              token: _userprofilelocalData[0].authorizationToken!);
+
           if (event.isLoading) {
             yield GoogleSuccess();
           }
@@ -413,8 +425,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             : throw (e);
       }
     }
-
-    //hsadjkhfajkshfadjkshfdjsfsabhjkfbsjkcbasbcjdsabcjabdsjcabsjcbadhsbadsbadhis
 
     if (event is UpdateHistoryAssessmentFromDrive) {
       try {
@@ -701,14 +711,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     try {
       if (Globals.googleExcelSheetId!.isEmpty) {
         await Future.delayed(Duration(milliseconds: 200));
-        if (Globals.googleExcelSheetId!.isEmpty) {
-          checkForGoogleExcelId();
-        }
-        // await createSheetOnDrive(
-        //     name: Globals.assessmentName,
-        //     folderId: Globals.googleDriveFolderId,
-        //     accessToken: _userprofilelocalData[0].authorizationToken,
-        //     refreshToken: _userprofilelocalData[0].refreshToken);
+        // if (Globals.googleExcelSheetId!.isEmpty) {
+        checkForGoogleExcelId();
+        // }
       }
     } catch (e) {
       throw (e);
@@ -911,7 +916,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        return 'Done';
+        //print("upload result data to assessment file completed");
+        print(response.data['body']['id']);
+
+        return response.data['body']['id'];
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
@@ -937,6 +945,171 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     } catch (e) {
       throw (e);
     }
+  }
+
+  //To get sheet gridId From excel sheet id
+  Future<int> _getSheetid({
+    required String token,
+    required String excelId,
+  }) async {
+    try {
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $token'
+      };
+
+      final ResponseModel response = await _dbServices.getapiNew(
+          "https://sheets.googleapis.com/v4/spreadsheets/$excelId",
+          headers: headers,
+          isGoogleAPI: true);
+      if (response.statusCode == 200) {
+        return response.data["sheets"][0]['properties']['sheetId'];
+      }
+      return 1;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  // function to update property of excel sheet
+  Future<void> _updateFieldExcelSheet(
+      {required String token,
+      required String excelId,
+      //required int sheetID,
+      required List<StudentAssessmentInfo> assessmentData}) async {
+    try {
+      //To get sheetId From excel sheet id
+      int sheetID = await _getSheetid(excelId: excelId, token: token);
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer $token'
+      };
+
+      List data = [];
+      //To make title bold in the excel sheet
+      data.add(_updateFieldExcelSheetRequestBody(
+          isHyperLink: false,
+          startRowIndex: 0,
+          endRowIndex: 1,
+          startColumnIndex: 0,
+          endColumnIndex: 26,
+          sheetId: sheetID));
+
+      // To make assessment question image url hyperlinked //Same for all students
+      if (assessmentData[1].questionImgUrl != 'NA') {
+        data.add(_updateFieldExcelSheetRequestBody(
+            isHyperLink: true,
+            startRowIndex: 1,
+            endRowIndex: assessmentData.length,
+            startColumnIndex: assessmentData[1].studentId == null ||
+                    assessmentData[1].studentId == '' ||
+                    Globals.isPremiumUser == false
+                ? 3
+                : 4,
+            endColumnIndex: assessmentData[1].studentId == null ||
+                    assessmentData[1].studentId == '' ||
+                    Globals.isPremiumUser == false
+                ? 4
+                : 5,
+            sheetId: sheetID,
+            imageLink: assessmentData[1].questionImgUrl));
+      }
+
+      // To make custom rubric image url hyperlinked //Same for all students
+      if (assessmentData[1].customRubricImage != 'NA') {
+        data.add(_updateFieldExcelSheetRequestBody(
+            isHyperLink: true,
+            startRowIndex: 1,
+            endRowIndex: assessmentData.length,
+            startColumnIndex: assessmentData[1].studentId == null ||
+                    assessmentData[1].studentId == '' ||
+                    Globals.isPremiumUser == false
+                ? 10
+                : 11,
+            endColumnIndex: assessmentData[1].studentId == null ||
+                    assessmentData[1].studentId == '' ||
+                    Globals.isPremiumUser == false
+                ? 11
+                : 12,
+            sheetId: sheetID,
+            imageLink: assessmentData[1].customRubricImage));
+      }
+
+      // To make student assesment sheet image url hyperlinked  //Used loop to manage multiple student sheets
+      for (int i = 1; i < assessmentData.length; i++) {
+        data.add(_updateFieldExcelSheetRequestBody(
+            isHyperLink: true,
+            startRowIndex: i,
+            endRowIndex: i + 1,
+            startColumnIndex: assessmentData[1].studentId == null ||
+                    assessmentData[1].studentId == '' ||
+                    Globals.isPremiumUser == false
+                ? 11
+                : 12,
+            endColumnIndex: assessmentData[1].studentId == null ||
+                    assessmentData[1].studentId == '' ||
+                    Globals.isPremiumUser == false
+                ? 12
+                : 13,
+            sheetId: sheetID,
+            imageLink: assessmentData[i].assessmentImage));
+      }
+
+      Map<String, dynamic> body = {
+        "requests": data,
+        "includeSpreadsheetInResponse": true,
+        "responseIncludeGridData": true
+      };
+      if (sheetID != 1 && sheetID != 0) {
+        final ResponseModel response = await _dbServices.postapi(
+            "https://sheets.googleapis.com/v4/spreadsheets/$excelId:batchUpdate",
+            headers: headers,
+            isGoogleApi: true,
+            body: body);
+        if (response.statusCode == '200') {}
+      } else {
+        print('Excel file grid if not found');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Object _updateFieldExcelSheetRequestBody(
+      {required bool isHyperLink,
+      required int sheetId,
+      required int startRowIndex,
+      required int endRowIndex,
+      required int startColumnIndex,
+      required int endColumnIndex,
+      String? imageLink}) {
+    var updateDetail = {
+      "repeatCell": {
+        "range": {
+          "sheetId": sheetId,
+          "startRowIndex": startRowIndex,
+          "endRowIndex": endRowIndex,
+          "startColumnIndex": startColumnIndex,
+          "endColumnIndex": endColumnIndex
+        },
+        "cell": isHyperLink
+            ? {
+                "userEnteredValue": {
+                  "formulaValue": "=HYPERLINK(\"$imageLink\",\"$imageLink\")"
+                }
+              }
+            : {
+                "userEnteredFormat": {
+                  "horizontalAlignment": "LEFT",
+                  "textFormat": {"fontSize": 11, "bold": true}
+                }
+              },
+        "fields": isHyperLink
+            ? "*"
+            : "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)"
+      }
+    };
+    return updateDetail;
   }
 
   Future _fetchHistoryAssessment(

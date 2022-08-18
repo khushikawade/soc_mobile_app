@@ -28,5 +28,5 @@ class Overrides {
   // static const String secureLoginURL =
   //     'https://bb76-111-118-246-106.in.ngrok.io/';
   static String SCHOOL_ID =
-      'a1f4W000007DR8nQAG'; //'a1f4W000007DQaNQAW'; //'a1f7h000000Eq1sAAC'; // 'a1f7h00000178w9AAA'; //Bears :'a1f4W000007DR8nQAG';
+      'a1f4W000007DQaNQAW'; //'a1f7h000000Eq1sAAC'; // 'a1f7h00000178w9AAA'; //Bears :'a1f4W000007DR8nQAG';
 }
