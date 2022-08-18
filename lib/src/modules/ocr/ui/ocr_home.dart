@@ -262,8 +262,19 @@ class _OpticalCharacterRecognitionPageState
 
               }
             }),
+
+        OfflineBuilder(
+          child: Container(),
+            connectivityBuilder: (BuildContext context,
+                ConnectivityResult connectivity, Widget child) {
+              final bool connected = connectivity != ConnectivityResult.none;
+              return 
         GestureDetector(
           onTap: () async {
+            if(!connected){
+ Utility.currentScreenSnackBar("No Internet Connection");
+ return;
+            }
             if (Globals.googleDriveFolderId!.isEmpty) {
               _triggerDriveFolderEvent(true);
             } else {
@@ -279,7 +290,8 @@ class _OpticalCharacterRecognitionPageState
                   textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                         decoration: TextDecoration.underline,
                       ))),
-        )
+        );}),    
+
       ],
     );
   }
