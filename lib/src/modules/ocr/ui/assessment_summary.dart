@@ -159,8 +159,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                 if (state is GoogleDriveGetSuccess) {
                                   nextPageUrl = state.nextPageLink;
                                   bool isloading = true;
-                                  if (state.nextPageLink == '' ||
-                                      state.nextPageLink == null) {
+                                  if (state.nextPageLink == '') {
                                     isloading = false;
                                   }
                                   // bool isloading
