@@ -21,6 +21,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   SocialBloc() : super(SocialInitial());
   SocialState get initialState => SocialInitial();
   final DbServices _dbServices = DbServices();
+  int _totalRetry = 0;
 
   @override
   Stream<SocialState> mapEventToState(
@@ -34,11 +35,9 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         List<Item> _localData = await _localDb.getData();
 
         if (_localData.isEmpty) {
-          yield Loading();
-        } else if (event.action!.contains("returnBack")) {
-          yield SocialReload(obj: _localData);
+          yield Loading(); //Circular loader for whole content loading (Social + Interactions)
         } else {
-          yield SocialDataSucess(obj: _localData);
+          yield SocialReload(obj: _localData);
         }
         // Local database end.
 
@@ -55,13 +54,14 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Action count list
-
+        print('calling count api -------------->');
         List<ActionCountList> listActioncount = await fetchSocialActionCount();
 
+        print('count data recived count api -------------->');
         List<Item> newList = [];
         newList.clear();
         if (listActioncount.length == 0) {
-          newList.addAll(list);
+          newList.addAll(list); //Add 0 counts to all the post
         } else {
           for (int i = 0; i < list.length; i++) {
             for (int j = 0; j < listActioncount.length; j++) {
@@ -112,17 +112,18 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Syncing to local database
-
-        await _localDb.clear();
-        newList.forEach((Item e) {
-          _localDb.addData(e);
-        });
+        if (listActioncount.length != 0) {
+          await _localDb.clear();
+          newList.forEach((Item e) {
+            _localDb.addData(e);
+          });
+        }
 
         // Syncing end.
-        yield Loading();
+        yield Loading(); //To mimic the state
 
         yield SocialDataSucess(
-          obj: newList,
+          obj: listActioncount.length == 0 ? _localData : newList,
         );
       } catch (e) {
         //print("inside catch");
@@ -139,7 +140,19 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
     if (event is SocialAction) {
       try {
+        String? _objectName = "${Strings.socialObjectName}";
+        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
+        List<Item> _localData = await _localDb.getData();
         yield Loading();
+        if (_localData.isNotEmpty) {
+          for (int i = 0; i < _localData.length; i++) {
+            if (_localData[i].guid['\$t'] == event.id) {
+              Item obj = _localData[i];
+              // print(_localData[i].likeCount);
+              _localDb.putAt(i, obj);
+            }
+          }
+        }
 
         var data = await addSocailAction({
           "Notification_Id__c": event.id! + Overrides.SCHOOL_ID,
@@ -214,7 +227,16 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             .map<ActionCountList>((i) => ActionCountList.fromJson(i))
             .toList();
       } else {
-        throw ('something_went_wrong');
+        if (_totalRetry < 3) {
+          print('retrrrrrrrrrrrrrrrrrry');
+          _totalRetry++;
+          return await fetchSocialActionCount();
+        } else {
+          print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+          Utility.currentScreenSnackBar(
+              "Unable to fetch the user Interactions. Please try to refresh the content.");
+          return [];
+        }
       }
     } catch (e) {
       throw (e);
