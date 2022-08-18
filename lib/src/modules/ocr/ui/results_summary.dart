@@ -234,13 +234,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Utility.textWidget(
-                            text: 'Results Summary',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(fontWeight: FontWeight.bold)),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Utility.textWidget(
+                              text: 'Results Summary',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(fontWeight: FontWeight.bold)),
+                        ),
                         ValueListenableBuilder(
                             valueListenable: assessmentCount,
                             builder: (BuildContext context, int value,
@@ -423,13 +428,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
-                                isGoogleSheetStateRecived = true;
+                                // isGoogleSheetStateRecived = true;
 
-                                savedRecordCount != null
-                                    ? savedRecordCount == state.obj.length
-                                        ? dashoardState.value = 'Success'
-                                        : dashoardState.value = ''
-                                    : print("");
+                                // savedRecordCount != null
+                                //     ? savedRecordCount == state.obj.length
+                                //         ? dashoardState.value = 'Success'
+                                //         : dashoardState.value = ''
+                                //     : print("");
 
                                 return Column(
                                   children: [
@@ -512,6 +517,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     await _historyStudentInfoDb.addData(e);
                                   });
                                 }
+
+                                isGoogleSheetStateRecived = true;
+
+                                savedRecordCount != null
+                                    ? savedRecordCount == state.obj.length
+                                        ? dashoardState.value = 'Success'
+                                        : dashoardState.value = ''
+                                    : print("");
 
                                 sheetrubricScore =
                                     state.obj.first.scoringRubric;
