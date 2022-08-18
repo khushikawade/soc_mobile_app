@@ -158,8 +158,10 @@ class Utility {
               )),
         ),
       ),
-      backgroundColor:
-          Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
+      backgroundColor: Globals.themeType == 'Dark'
+          ? Colors.white
+          : Colors
+              .black, //Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
       padding: EdgeInsets.only(
         left: 16,
       ),
