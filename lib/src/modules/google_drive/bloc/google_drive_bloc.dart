@@ -347,7 +347,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //Sort the list as per the modified date
         _localData = await listSort(_localData);
 
-        if (_localData.isNotEmpty && event.searchKeywork == "") {
+        if (_localData.isNotEmpty &&
+            (event.searchKeywork == "" || event.searchKeywork == null)) {
           yield GoogleDriveGetSuccess(obj: _localData);
         } else {
           yield GoogleDriveLoading();
