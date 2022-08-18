@@ -1161,7 +1161,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               leading:
                   // Text('Unknown'),
                   Container(
-                width: MediaQuery.of(context).size.height * 0.37,
+                width: MediaQuery.of(context).size.width * 0.6,
                 child: Utility.textWidget(
                     text: _list[index].studentName == '' ||
                             _list[index].studentName == null
