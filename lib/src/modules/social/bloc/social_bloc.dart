@@ -54,10 +54,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Action count list
-        print('calling count api -------------->');
         List<ActionCountList> listActioncount = await fetchSocialActionCount();
 
-        print('count data recived count api -------------->');
         List<Item> newList = [];
         newList.clear();
         if (listActioncount.length == 0) {
@@ -228,13 +226,13 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             .toList();
       } else {
         if (_totalRetry < 3) {
-          print('retrrrrrrrrrrrrrrrrrry');
+          // print('retrrrrrrrrrrrrrrrrrry');
           _totalRetry++;
           return await fetchSocialActionCount();
         } else {
-          print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
-          Utility.currentScreenSnackBar(
-              "Unable to fetch the user Interactions. Please try to refresh the content.");
+          // print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+          // Utility.currentScreenSnackBar(
+          //     "Unable to fetch the user Interactions. Please try to refresh the content.");
           return [];
         }
       }
