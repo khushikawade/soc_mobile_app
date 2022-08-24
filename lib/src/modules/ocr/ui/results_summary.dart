@@ -1097,11 +1097,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       children: [
                         SlidableAction(
                           // An action can be bigger than the others.
-          
+
                           onPressed: (i) {
                             //To reset the value listener
                             disableSlidableAction.value = false;
-          
+
                             //print(i);
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, true)
@@ -1120,7 +1120,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           onPressed: (i) {
                             //To reset the value listener
                             disableSlidableAction.value = false;
-          
+
                             _list[index].isSavedOnDashBoard == null
                                 ? performEditAndDelete(context, index, false)
                                 : Utility.currentScreenSnackBar(
@@ -1225,7 +1225,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               Globals.isPremiumUser != true) ||
                           (widget.createdAsPremium == false &&
                               Globals.isPremiumUser == true))) {
-                    popupModal(title: 'Alert!', message: Globals.isPremiumUser == true ?'Oops! You are currently a "Premium" user. You cannot update the assessment that you created as a "Free" user. You can start with a fresh scan as a Premium user.':'Opps! You are currently a "Free" user. You cannot update the assessment that you created as a "Premium" user. If you still want to edit this assessment then please upgrade to Premium. You can still create new assessments as Free user.');
+                    popupModal(
+                        title: 'Alert!',
+                        message: Globals.isPremiumUser == true
+                            ? 'Oops! You are currently a "Premium" user. You cannot update the assessment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
+                            : 'Opps! You are currently a "Free" user. You cannot update the assessment that you created as a "Premium" user. If you still want to edit this assessment then please upgrade to Premium. You can still create new assessments as Free user.');
                     return;
                   }
 
@@ -1523,7 +1527,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       Utility.updateLoges(
           // ,
           activityId: '17',
-          description: 'Teacher edit the record',
+          description: 'Teacher edited the record',
           operationResult: 'Success');
 
       editingStudentNameController.text = studentInfo[index].studentName!;
@@ -1729,6 +1733,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           //   context,
                           // );
                           _studentInfoDb.deleteAt(index);
+
+                          Utility.updateLoges(
+                              activityId: '17',
+                              description:
+                                  'Teacher Deleted the record successfully',
+                              operationResult: 'Success');
+
                           List _list = await Utility.getStudentInfoList(
                               tableName: 'student_info');
                           assessmentCount.value = _list.length;

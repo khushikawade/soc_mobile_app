@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
-import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -16,7 +15,6 @@ import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:share/share.dart';
 import '../translator/language_list.dart';
-import 'package:Soc/src/widgets/debouncer.dart';
 
 class ActionInteractionButtonWidget extends StatefulWidget {
   ActionInteractionButtonWidget({
@@ -58,7 +56,7 @@ class _ActionInteractionButtonWidgetState
   bool _isDownloadingFile = false;
   var f = NumberFormat.compact();
 
-  final _debouncer = Debouncer(milliseconds: 1000);
+  // final _debouncer = Debouncer(milliseconds: 1000);
 
   @override
   void initState() {
@@ -193,20 +191,20 @@ class _ActionInteractionButtonWidgetState
                     toLanguageCode: toLanguageCode,
                     translatedText: TranslationAPI.translate(
                         Globals.iconsName[index], toLanguageCode, true));
-                _debouncer.run(() async {
-                  if (connected) {
-                    if (index == 3) {
-                      await _shareNews();
-                    }
-                    countIncrement(index, scaffoldKey);
-                  } else {
-                    Utility.showSnackBar(
-                        scaffoldKey,
-                        'Make sure you have a proper Internet connection',
-                        context,
-                        null);
+                // _debouncer.run(() async {
+                if (connected) {
+                  if (index == 3) {
+                    await _shareNews();
                   }
-                });
+                  return countIncrement(index, scaffoldKey);
+                } else {
+                  Utility.showSnackBar(
+                      scaffoldKey,
+                      'Make sure you have a proper Internet connection',
+                      context,
+                      null);
+                }
+                // });
               }
             },
             size: 20,
