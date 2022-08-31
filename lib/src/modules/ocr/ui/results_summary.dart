@@ -1729,6 +1729,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           List<StudentAssessmentInfo> _list =
                               await Utility.getStudentInfoList(
                                   tableName: 'student_info');
+
+                          //To save the 0th index value to next index in case of 0th index deletion
                           if (index == 0) {
                             StudentAssessmentInfo obj = _list[1];
                             obj.className = _list[0].className;
