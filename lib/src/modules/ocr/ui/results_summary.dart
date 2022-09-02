@@ -1726,12 +1726,25 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       ));
                             }),
                         onPressed: () async {
-                          // Globals.studentInfo!.removeAt(index);
-                          // assessmentCount.value = Globals.studentInfo!.length;
-                          // sudentRecordList.value = Globals.studentInfo!;
-                          // Navigator.pop(
-                          //   context,
-                          // );
+                          List<StudentAssessmentInfo> _list =
+                              await Utility.getStudentInfoList(
+                                  tableName: 'student_info');
+
+                          //To save the 0th index value to next index in case of 0th index deletion
+                          if (index == 0) {
+                            StudentAssessmentInfo obj = _list[1];
+                            obj.className = _list[0].className;
+                            obj.subject = _list[0].subject;
+                            obj.studentGrade = _list[0].studentGrade;
+                            obj.learningStandard = _list[0].learningStandard;
+                            obj.subLearningStandard =
+                                _list[0].subLearningStandard;
+                            obj.scoringRubric = _list[0].scoringRubric;
+                            obj.customRubricImage = _list[0].customRubricImage;
+                            obj.grade = _list[0].grade;
+                            obj.questionImgUrl = _list[0].questionImgUrl;
+                            _studentInfoDb.putAt(0, obj);
+                          }
                           _studentInfoDb.deleteAt(index);
 
                           Utility.updateLoges(
@@ -1740,9 +1753,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   'Teacher Deleted the record successfully',
                               operationResult: 'Success');
 
-                          List _list = await Utility.getStudentInfoList(
-                              tableName: 'student_info');
-                          assessmentCount.value = _list.length;
+                          // List _list = await Utility.getStudentInfoList(
+                          //     tableName: 'student_info');
+                          assessmentCount.value = _list.length - 1;
                           _futurMethod();
                           _method();
                           // sudentRecordList.value = Globals.studentInfo!;

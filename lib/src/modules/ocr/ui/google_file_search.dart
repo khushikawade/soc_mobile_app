@@ -18,8 +18,6 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:share/share.dart';
 import '../../../services/utility.dart';
 import '../../google_drive/model/recent_google_file.dart';
-import '../widgets/common_ocr_appbar.dart';
-import '../widgets/ocr_background_widget.dart';
 
 class GoogleFileSearchPage extends StatefulWidget {
   GoogleFileSearchPage({
@@ -29,7 +27,8 @@ class GoogleFileSearchPage extends StatefulWidget {
   _GoogleFileSearchPageState createState() => _GoogleFileSearchPageState();
 }
 
-class _GoogleFileSearchPageState extends State<GoogleFileSearchPage> {
+class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
+    with WidgetsBindingObserver {
   bool issuggestionList = false;
   static const double _kLabelSpacing = 20.0;
   static const double _kMargin = 16.0;
@@ -45,6 +44,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage> {
   List<dynamic> searchList = [];
   String? searchId;
   dynamic recordObject;
+  ValueNotifier<bool> updateTheUi = ValueNotifier<bool>(false);
 
   onItemChanged(String? searchKey) {
     // issuggestionList = true;
@@ -58,7 +58,8 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage> {
         // _homeBloc.add(GlobalSearchEvent(keyword: value));
         googleBloc
             .add(GetHistoryAssessmentFromDrive(searchKeywork: searchKey!));
-        setState(() {});
+        updateTheUi.value = !updateTheUi.value;
+        // setState(() {});
       });
     }
     // });
@@ -67,6 +68,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     print('Google Search Page');
     _setLocked();
     Globals.callsnackbar = true;
@@ -76,7 +78,15 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage> {
   @override
   dispose() {
     _setFree();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
   }
 
   getListLength() async {
@@ -147,11 +157,15 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage> {
                       ? null
                       : InkWell(
                           onTap: () {
-                            setState(() {
-                              _controller.clear();
-                              issuggestionList = false;
-                              FocusScope.of(context).requestFocus(FocusNode());
-                            });
+                            // setState(() {
+                            //   _controller.clear();
+                            //   issuggestionList = false;
+                            //   FocusScope.of(context).requestFocus(FocusNode());
+                            // });
+                            _controller.clear();
+                            issuggestionList = false;
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            updateTheUi.value = !updateTheUi.value;
                           },
                           child: Icon(
                             Icons.clear,
@@ -535,25 +549,13 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CommonBackGroundImgWidget(),
-        Scaffold(
-            backgroundColor: Colors.transparent,
-            key: _scaffoldKey,
-            resizeToAvoidBottomInset: true,
-            appBar: CustomOcrAppBarWidget(
-                isSuccessState: ValueNotifier<bool>(true),
-                isbackOnSuccess: ValueNotifier<bool>(false),
-                key: GlobalKey(),
-                isBackButton: true,
-                assessmentDetailPage: true,
-                assessmentPage: true,
-                scaffoldKey: _scaffoldKey,
-                isFromResultSection:
-                    null //widget.isFromHomeSection == false ? true : null,
-                ),
-            body: OfflineBuilder(
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: ValueListenableBuilder(
+          valueListenable: updateTheUi,
+          child: Container(),
+          builder: (BuildContext context, dynamic value, Widget? child) {
+            return OfflineBuilder(
                 connectivityBuilder: (
                   BuildContext context,
                   ConnectivityResult connectivity,
@@ -609,8 +611,8 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage> {
                     ]),
                   );
                 },
-                child: Container())),
-      ],
+                child: Container());
+          }),
     );
   }
 

@@ -640,6 +640,8 @@ class _CameraScreenState extends State<CameraScreen>
     // }
     try {
       await cameraController.initialize();
+      await cameraController.lockCaptureOrientation();
+
       await Future.wait(<Future<Object?>>[
         // The exposure mode is currently not supported on the web.
         ...!kIsWeb
