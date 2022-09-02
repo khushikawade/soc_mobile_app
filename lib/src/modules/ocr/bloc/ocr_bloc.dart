@@ -736,7 +736,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             ? studentName.split(" ")[1]
             : '',
         "School__c": Globals.appSetting.schoolNameC,
-        "Student_ID__c": studentId
+        "Student_ID__c": studentId,
+        "Teacher_added__c": true
       };
 
       final ResponseModel response = await _dbServices.postapi(
