@@ -1,0 +1,4 @@
+#Fri Sep 09 16:55:47 IST 2022
+base.0=C\:\\nikhar\\flutter soc project chrome os\\soc_mobile_app_chrome_os\\flutter_calendar_view-master\\example\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
