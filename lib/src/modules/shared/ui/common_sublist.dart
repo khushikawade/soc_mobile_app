@@ -20,6 +20,7 @@ class SubListPage extends StatefulWidget {
   final bool isbuttomsheet;
   final String appBarTitle;
   final String? language;
+  
 
   SubListPage({
     Key? key,
@@ -45,6 +46,7 @@ class _SubListPageState extends State<SubListPage> {
   bool? iserrorstate = false;
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  final ScrollController _scrollController =ScrollController();
 
   @override
   void initState() {
@@ -92,6 +94,7 @@ class _SubListPageState extends State<SubListPage> {
                                 ));
                           } else if (state is FamiliesSublistSucess) {
                             return CommonListWidget(
+                               scrollController: _scrollController,
                                 scaffoldKey: _scaffoldKey,
                                 connected: connected,
                                 data: state.obj!,
@@ -119,6 +122,7 @@ class _SubListPageState extends State<SubListPage> {
                                     ));
                               } else if (state is StaffSubListSucess) {
                                 return CommonListWidget(
+                                  scrollController: _scrollController,
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,
                                     data: state.obj!,
@@ -148,6 +152,7 @@ class _SubListPageState extends State<SubListPage> {
                                         ));
                                   } else if (state is ResourcesSubListSucess) {
                                     return CommonListWidget(
+                                      scrollController: _scrollController,
                                         scaffoldKey: _scaffoldKey,
                                         connected: connected,
                                         data: state.obj!,
@@ -178,6 +183,7 @@ class _SubListPageState extends State<SubListPage> {
                                             ));
                                       } else if (state is AboutSublistSucess) {
                                         return CommonListWidget(
+                                          scrollController: _scrollController,
                                             scaffoldKey: _scaffoldKey,
                                             connected: connected,
                                             data: state.obj!,
@@ -206,6 +212,7 @@ class _SubListPageState extends State<SubListPage> {
                                           } else if (state
                                               is CustomSublistSuccess) {
                                             return CommonListWidget(
+                                              scrollController:_scrollController ,
                                               scaffoldKey: _scaffoldKey,
                                               connected: connected,
                                               data: state.obj!,
@@ -231,6 +238,9 @@ class _SubListPageState extends State<SubListPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: CustomAppBarWidget(
+          onTap: (){
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           isSearch: true,
           isShare: false,
           appBarTitle: widget.appBarTitle,

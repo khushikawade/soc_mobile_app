@@ -56,6 +56,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? iserrorstate = false;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -74,7 +75,6 @@ class _StaffDirectoryState extends State<StaffDirectory> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -227,6 +227,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
     return Scaffold(
         appBar: widget.isSubmenu == true
             ? CustomAppBarWidget(
+                onTap: () {
+                  Utility.scrollToTop(scrollController: _scrollController);
+                },
                 marginLeft: 30,
                 appBarTitle: widget.appBarTitle,
                 isSearch: true,
@@ -238,6 +241,9 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               )
             : widget.isSubmenu == false
                 ? AppBarWidget(
+                    onTap: () {
+                      Utility.scrollToTop(scrollController: _scrollController);
+                    },
                     marginLeft: 30,
                     refresh: (v) {
                       setState(() {});
@@ -294,6 +300,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                             } else if (state is SDDataSucess) {
                               return state.obj != null && state.obj!.length > 0
                                   ? ListView.builder(
+                                      controller: _scrollController,
                                       shrinkWrap: true,
                                       scrollDirection: Axis.vertical,
                                       itemCount: state.obj!.length,

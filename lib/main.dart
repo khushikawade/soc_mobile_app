@@ -82,7 +82,7 @@ Future<String> getDeviceInfo() async {
 
 getDeviceType() async {
   if (Platform.isAndroid) {
-    final data = (MediaQueryData.fromWindow(WidgetsBinding.instance!.window));
+    final data = (MediaQueryData.fromWindow(WidgetsBinding.instance.window));
     Globals.deviceType = data.size.shortestSide < 600 ? 'phone' : 'tablet';
   } else if (Platform.isIOS) {
     final deviceType = await getDeviceInfo();

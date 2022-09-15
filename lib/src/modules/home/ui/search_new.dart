@@ -58,6 +58,7 @@ class _SearchPageState extends State<SearchPage> {
   List<dynamic> searchList = [];
   String? searchId;
   dynamic recordObject;
+  final ScrollController _scrollController = ScrollController();
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -399,6 +400,7 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
+                      controller: _scrollController,
                       padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
                       scrollDirection: Axis.vertical,
                       itemCount:
@@ -525,6 +527,7 @@ class _SearchPageState extends State<SearchPage> {
             return searchList.length > 0
                 ? Expanded(
                     child: ListView(
+                    controller: _scrollController,
                     shrinkWrap: true,
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
@@ -761,8 +764,13 @@ class _SearchPageState extends State<SearchPage> {
             // color: Colors.blue,
             child: Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: AppLogoWidget(
-                marginLeft: 0,
+              child: GestureDetector(
+                onTap: () {
+                  Utility.scrollToTop(scrollController: _scrollController);
+                },
+                child: AppLogoWidget(
+                  marginLeft: 0,
+                ),
               ),
             ),
           ),

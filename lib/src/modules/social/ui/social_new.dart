@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
@@ -32,6 +33,8 @@ class _SocialNewPageState extends State<SocialNewPage> {
   bool? iserrorstate = false;
   SocialBloc bloc = SocialBloc();
   bool? isCountLoading = true;
+  final Globals globals = Globals();
+  final ScrollController _scrollController = ScrollController();
 
   void initState() {
     super.initState();
@@ -53,6 +56,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
 
   Widget makeList(obj, reLoad) {
     return ListView.builder(
+      controller: _scrollController,
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemCount: obj.length,
@@ -209,6 +213,9 @@ class _SocialNewPageState extends State<SocialNewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});

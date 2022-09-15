@@ -55,6 +55,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -86,6 +87,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
+            onTap: () {
+              Utility.scrollToTop(scrollController: _scrollController);
+            },
             isSuccessState: ValueNotifier<bool>(true),
             isBackButton: true,
             isbackOnSuccess: isBackFromCamera,
@@ -254,6 +258,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           : MediaQuery.of(context).size.width * 0.8,
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: ListView.separated(
+                        controller: _scrollController,
                         itemCount: list.length,
                         itemBuilder: (BuildContext ctx, index) {
                           return Column(
@@ -488,7 +493,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                         //     _localData[i].customOrStandardRubic == "Custom") {
                         //   // rubricScore = _localData[i].score;
                         // }
-                         else {
+                        else {
                           rubricImgUrl = 'NA';
                           // rubricScore = 'NA';
                         }

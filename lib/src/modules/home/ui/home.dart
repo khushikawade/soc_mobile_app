@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
@@ -144,7 +143,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     // initialIndex:
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _checkNewVersion();
   }
 
@@ -159,7 +158,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

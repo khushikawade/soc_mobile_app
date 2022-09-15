@@ -68,7 +68,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
   // int? assessmentCount;
-  ScrollController _scrollController = new ScrollController();
+  //ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
   final ValueNotifier<bool> disableSlidableAction = ValueNotifier<bool>(false);
   final ValueNotifier<bool> editStudentDetailSuccess =
@@ -110,6 +110,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   //     ValueNotifier<List<bool>>([false, false]);
 
   bool isGoogleSheetStateRecived = false;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -155,6 +156,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(() {
+      _scrollListener();
+    });
     // TODO: implement dispose
     super.dispose();
   }
@@ -181,6 +185,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             key: scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              onTap: () {
+                Utility.scrollToTop(scrollController: _scrollController);
+              },
               isSuccessState: ValueNotifier<bool>(true),
               isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),

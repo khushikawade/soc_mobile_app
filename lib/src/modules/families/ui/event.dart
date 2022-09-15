@@ -46,6 +46,7 @@ class _EventPageState extends State<EventPage>
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final refreshKey1 = GlobalKey<RefreshIndicatorState>();
   bool? iserrorstate = false;
+  final ScrollController _scrollController = ScrollController();
   // String? lastMonth;
 
   @override
@@ -186,6 +187,7 @@ class _EventPageState extends State<EventPage>
 
   buildTabBody(eventsList) {
     return ListView.builder(
+        controller: _scrollController,
         scrollDirection: Axis.vertical,
         padding: !Platform.isAndroid
             ? EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1)
@@ -205,6 +207,9 @@ class _EventPageState extends State<EventPage>
         appBar: widget.isAppBar == false
             ? null
             : CustomAppBarWidget(
+                onTap: () {
+                  Utility.scrollToTop(scrollController: _scrollController);
+                },
                 marginLeft: 30,
                 appBarTitle: widget.appBarTitle!,
                 isSearch: true,

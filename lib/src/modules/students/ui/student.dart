@@ -40,6 +40,7 @@ class _StudentPageState extends State<StudentPage> {
   bool? iserrorstate = false;
 
   StudentBloc _bloc = StudentBloc();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -94,6 +95,7 @@ class _StudentPageState extends State<StudentPage> {
       List<StudentApp> list, List<StudentApp> subList, String key) {
     return list.length > 0
         ? GridView.count(
+            controller: _scrollController,
             key: ValueKey(key),
             padding: const EdgeInsets.only(
                 bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
@@ -374,6 +376,9 @@ class _StudentPageState extends State<StudentPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});

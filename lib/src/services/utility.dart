@@ -882,4 +882,16 @@ class Utility {
 
     return _studentInfoListDb.length;
   }
+
+  static void scrollToTop({required ScrollController scrollController}) {
+    //scrollController.jumpTo(1);
+    scrollController.animateTo(scrollController.positions.first.minScrollExtent,
+        duration: const Duration(milliseconds: 400), curve: Curves.linear);
+    // await Future.delayed(const Duration(milliseconds: 300));
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   Globals.scrollController.animateTo(
+    //       Globals.scrollController.position.minScrollExtent,
+    //       duration: const Duration(milliseconds: 400),
+    //       curve: Curves.fastOutSlowIn);
+  }
 }
