@@ -42,6 +42,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final HomeBloc _homeBloc = new HomeBloc();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -98,6 +99,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                                 ));
                           } else if (state is SchoolDirectoryDataSucess) {
                             return CommonSchoolDirectoryWidget(
+                              scrollController: _scrollController,
                               data: state.obj!,
                             );
                           } else if (state is SchoolDirectoryErrorLoading) {
@@ -136,6 +138,9 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     return Scaffold(
         appBar: widget.isStandardPage == true
             ? AppBarWidget(
+                onTap: () {
+                  Utility.scrollToTop(scrollController: _scrollController);
+                },
                 marginLeft: 30,
                 refresh: (v) {
                   setState(() {});

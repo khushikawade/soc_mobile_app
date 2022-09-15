@@ -62,6 +62,7 @@ class _StaffPageState extends State<StaffPage> {
   final OcrBloc _ocrBlocLogs = new OcrBloc();
   DateTime currentDateTime = DateTime.now(); //DateTime
   int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -253,13 +254,14 @@ class _StaffPageState extends State<StaffPage> {
                                     widget.customObj!.sectionTemplate ==
                                         "Grid Menu"
                                 ? CommonGridWidget(
+                                  scrollController: _scrollController,
                                     scaffoldKey: _scaffoldKey,
                                     bottomPadding: 60,
                                     connected: connected,
                                     data: state.obj!,
                                     sectionName: "staff")
                                 : CommonListWidget(
-                                    // scrollController: _scrollController,
+                                     scrollController: _scrollController,
                                     bottomPadding: 80,
                                     key: ValueKey(key),
                                     scaffoldKey: _scaffoldKey,
@@ -303,6 +305,9 @@ class _StaffPageState extends State<StaffPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});

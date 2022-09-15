@@ -23,7 +23,7 @@ class CommonListWidget extends StatefulWidget {
     this.bottomPadding,
     required this.sectionName,
     required this.scaffoldKey,
-    this.scrollController,
+    required this.scrollController,
     this.connected,
   }) : super(key: key);
 
@@ -33,6 +33,7 @@ class CommonListWidget extends StatefulWidget {
   final String sectionName;
   final double? bottomPadding;
   final ScrollController? scrollController;
+  // ;
 
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
@@ -270,6 +271,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
     return widget.data.length > 0
         ? ListView.builder(
             controller: widget.scrollController,
+            //  controller: widget.scrollController,
             shrinkWrap: true,
             padding: EdgeInsets.only(
                 bottom: widget.bottomPadding ?? AppTheme.klistPadding),

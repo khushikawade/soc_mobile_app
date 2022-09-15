@@ -47,13 +47,14 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   final ValueNotifier<bool> isCallPaginationApi = ValueNotifier<bool>(false);
   LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
       LocalDatabase('history_student_info');
-  late ScrollController _controller;
+  ScrollController _scrollController = ScrollController();
+//  late ScrollController _controller;
   @override
   void initState() {
-    _controller = new ScrollController()..addListener(_scrollListener);
+    _scrollController = ScrollController()..addListener(_scrollListener);
     _driveBloc.add(GetHistoryAssessmentFromDrive());
 
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       refreshPage(isFromPullToRefresh: false);
     });
 
@@ -66,7 +67,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
 
   @override
   void dispose() {
-    _controller.removeListener(_scrollListener);
+  _scrollController.removeListener(_scrollListener);
 
     super.dispose();
   }
@@ -84,6 +85,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              onTap: () {
+                Utility.scrollToTop(scrollController: _scrollController);
+              },
               isSuccessState: ValueNotifier<bool>(true),
               isbackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
@@ -236,7 +240,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
           ? MediaQuery.of(context).size.height * 0.792
           : MediaQuery.of(context).size.height * 0.45,
       child: ListView.builder(
-        controller: _controller,
+        controller: _scrollController,
         shrinkWrap: true,
         // padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
@@ -476,7 +480,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
 
   _scrollListener() {
     ////print(_controller.position.extentAfter);
-    if (_controller.position.atEdge &&
+    if (_scrollController.position.atEdge &&
         nextPageUrl != '' &&
         nextPageUrl != null) {
       _driveBloc.add(UpdateHistoryAssessmentFromDrive(

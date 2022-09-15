@@ -35,6 +35,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   CustomBloc _bloc = CustomBloc();
   HomeBloc _homeBloc = HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -59,6 +60,9 @@ class _CustomAppSectionState extends State<CustomAppSection> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBarWidget(
+        onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
         marginLeft: 30,
         refresh: (v) {
           setState(() {});
@@ -116,6 +120,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is CustomDataSucess) {
                             return CustomPages(
+                              scrollController: _scrollController,
                               customList: state.obj,
                               customObj: widget.customObj,
                             );

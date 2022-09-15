@@ -32,6 +32,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -94,11 +95,13 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                     widget.customObj!.sectionTemplate ==
                                         "Grid Menu"
                                 ? CommonGridWidget(
+                                  scrollController: _scrollController,
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,
                                     data: state.obj!,
                                     sectionName: "resources")
                                 : CommonListWidget(
+                                  scrollController: _scrollController,
                                     key: ValueKey(key),
                                     scaffoldKey: _scaffoldKey,
                                     data: state.obj!,
@@ -138,6 +141,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});

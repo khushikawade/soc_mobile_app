@@ -24,12 +24,14 @@ class CommonGridWidget extends StatefulWidget {
   final bool? connected;
   final scaffoldKey;
   final double? bottomPadding;
+  final ScrollController? scrollController;
 
   CommonGridWidget(
       {Key? key,
       required this.data,
       required this.sectionName,
       required this.scaffoldKey,
+      required this.scrollController,
       this.bottomPadding,
       this.connected})
       : super(key: key);
@@ -217,6 +219,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
     // "inside heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeellllll custom sectionnnnnnnnnn");
     return list.length > 0
         ? GridView.count(
+            controller: widget.scrollController,
             shrinkWrap: true,
             key: ValueKey(key),
             padding: const EdgeInsets.only(

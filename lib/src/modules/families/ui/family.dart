@@ -41,6 +41,7 @@ class _FamilyPageState extends State<FamilyPage> {
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
   bool? isCustomApp;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -48,7 +49,7 @@ class _FamilyPageState extends State<FamilyPage> {
     //lock screen orientation
     // Utility.setLocked();
     _bloc.add(FamiliesEvent());
-    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
 
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
@@ -57,7 +58,7 @@ class _FamilyPageState extends State<FamilyPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    
     super.dispose();
   }
 
@@ -109,11 +110,13 @@ class _FamilyPageState extends State<FamilyPage> {
                                       widget.customObj!.sectionTemplate ==
                                           "Grid Menu"
                                   ? CommonGridWidget(
+                                    scrollController: _scrollController,
                                       scaffoldKey: _scaffoldKey,
                                       connected: connected,
                                       data: state.obj!,
                                       sectionName: "family")
                                   : CommonListWidget(
+                                    scrollController: _scrollController,
                                       key: ValueKey(key),
                                       scaffoldKey: _scaffoldKey,
                                       connected: connected,
@@ -156,6 +159,9 @@ class _FamilyPageState extends State<FamilyPage> {
         //backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});

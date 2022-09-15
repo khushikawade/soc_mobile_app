@@ -34,6 +34,7 @@ class _AboutPageState extends State<AboutPage> {
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
   List<String?> department = [];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -92,11 +93,13 @@ class _AboutPageState extends State<AboutPage> {
                                     widget.customObj!.sectionTemplate ==
                                         "Grid Menu"
                                 ? CommonGridWidget(
+                                  scrollController: _scrollController,
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,
                                     data: state.obj!,
                                     sectionName: "about")
                                 : CommonListWidget(
+                                  scrollController: _scrollController,
                                     key: ValueKey(key),
                                     scaffoldKey: _scaffoldKey,
                                     connected: connected,
@@ -136,6 +139,9 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});
