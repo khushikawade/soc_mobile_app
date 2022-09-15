@@ -61,7 +61,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
 
   _launchURL(StudentApp obj) async {
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
-        obj.deepLinkC == 'YES') {
+        obj.deepLinkC == 'YES'  ) {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
       await Navigator.push(
@@ -133,7 +133,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                           : Utility.showSnackBar(
                                               widget.scaffoldKey,
                                               "No URL available",
-                                              context);
+                                              context,40);
                                     },
                                     child: Column(
                                       children: [

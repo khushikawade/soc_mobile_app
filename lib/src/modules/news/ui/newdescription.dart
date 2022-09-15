@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
+import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -45,14 +46,22 @@ class _NewdescriptionState extends State<Newdescription> {
     Globals.callsnackbar = true;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   void _launchURL(obj) async {
     if (!obj.toString().contains('http')) {
       await Utility.launchUrlOnExternalBrowser(obj);
       return;
     }
-    if (obj.toString().contains(
-            "zoom.us") || // Checking here for zoom/google meet app URLs to open these specific URLs Externally(In browser/Related App if installed already)
-        obj.toString().contains("meet.google.com")) {
+    // Checking here for zoom/google_meet/docs/forms app URLs to open these specific URLs Externally(In browser/Related App if installed already)
+    if (obj.toString().contains("zoom.us") ||
+        obj.toString().contains("meet.google.com") ||
+        obj.toString().contains("docs.google.com") ||
+        obj.toString().contains("forms.gle")) {
       await Utility.launchUrlOnExternalBrowser(obj);
     } else if (obj.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj);

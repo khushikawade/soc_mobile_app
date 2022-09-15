@@ -44,6 +44,12 @@ class _CustomPagesState extends State<CustomPages> {
     // Utility.setLocked();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
@@ -154,37 +160,29 @@ class _CustomPagesState extends State<CustomPages> {
         obj.sectionTemplate == "HTML/RTF" ||
         obj.sectionTemplate == "RTF/HTML") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
-          ? Expanded(
-              child: AboutusPage(
-                htmlText: obj.rtfHTMLC.toString(),
-                isbuttomsheet: true,
-                ishtml: true,
-                isAppBar: false,
-                language: Globals.selectedLanguage,
-                appbarTitle: '',
-              ),
+          ? AboutusPage(
+              htmlText: obj.rtfHTMLC.toString(),
+              isbuttomsheet: true,
+              ishtml: true,
+              isAppBar: false,
+              language: Globals.selectedLanguage,
+              appbarTitle: '',
             )
           : NoDataFoundErrorWidget(
               isResultNotFoundMsg: false,
               isNews: false,
               isEvents: false,
               connected: true);
-    } else if (obj.sectionTemplate == "Embed iFrame") {
+    } else if (obj.sectionTemplate == "Embedded iFrame") {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
-          ? Expanded(
-              child: InAppUrlLauncer(
-                isiFrame: true,
-                title: obj.sectionTitleC!,
-                url: obj.appUrlC,
-                isbuttomsheet: true,
-                language: Globals.selectedLanguage,
-              ),
-
-              // child: HomeInAppUrlLauncher(
-              //   isiFrame: true,
-              //   url: obj.rtfHTMLC.toString(),
-              //   language: Globals.selectedLanguage,
-              // ),
+          ? InAppUrlLauncer(
+              hideAppbar: true,
+              isiFrame: true,
+              title: obj.sectionTitleC!,
+              url: obj.rtfHTMLC,
+              // obj.appUrlC,
+              isbuttomsheet: false,
+              language: Globals.selectedLanguage,
             )
           : NoDataFoundErrorWidget(
               isResultNotFoundMsg: false,
@@ -196,6 +194,7 @@ class _CustomPagesState extends State<CustomPages> {
       return obj.pdfURL != null && obj.pdfURL != ""
           ? Expanded(
               child: CommonPdfViewerPage(
+                isOCRFeature: false,
                 tittle: '',
                 isHomePage: true,
                 url: obj.pdfURL,
@@ -238,6 +237,7 @@ class _CustomPagesState extends State<CustomPages> {
         obj: widget.customObj,
         isStandardPage: null, //To omit the appbar
         isSubmenu: false,
+        isCustomSection: true,
       );
     } else if (obj.sectionTemplate == "Personnel Directory") {
       return StaffDirectory(

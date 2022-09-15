@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/socialwebview.dart';
@@ -22,15 +23,14 @@ class SocialDescription extends StatelessWidget {
 
   String? language;
   int? index;
+  
   // final List? icons;
   // final List? iconsName;
-  SocialDescription({
-    required this.object,
-    this.language,
-    this.index,
-    // required this.iconsName,
-    // required this.icons
-  });
+  SocialDescription(
+      {required this.object, this.language, this.index,
+      // required this.iconsName,
+      // required this.icons
+      });
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   // static const double _kIconSize = 45.0;
@@ -316,7 +316,7 @@ class SocialDescription extends StatelessWidget {
   }
 
   _buildActionCount(BuildContext context) {
-    return UserActionBasic(
+    return ActionInteractionButtonWidget(
       page: "social",
 
       obj: object,
@@ -341,6 +341,9 @@ class SocialDescription extends StatelessWidget {
           : "",
       // icons: icons,
       // iconsName: iconsName,
+      // onChange: (Item obj) {
+      //   onChange!(obj);
+      // },
     );
   }
 

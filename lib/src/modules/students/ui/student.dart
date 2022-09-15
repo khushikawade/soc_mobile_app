@@ -24,8 +24,10 @@ import 'package:marquee/marquee.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
+  final bool? isCustomSection;
 
-  StudentPage({Key? key, this.homeObj}) : super(key: key);
+  StudentPage({Key? key, this.homeObj, required this.isCustomSection})
+      : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }
 
@@ -43,6 +45,12 @@ class _StudentPageState extends State<StudentPage> {
   void initState() {
     super.initState();
     _bloc.add(StudentPageEvent());
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   _launchURL(StudentApp obj, subList) async {
@@ -77,7 +85,7 @@ class _StudentPageState extends State<StudentPage> {
       //lock screen orientation
 
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+      Utility.showSnackBar(_scaffoldKey, "No URL available", context, null);
     }
     //  Utility.setLocked();
   }
@@ -371,7 +379,8 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body: Globals.appSetting.studentBannerImageC != null &&
+        body: widget.isCustomSection == false &&
+                Globals.appSetting.studentBannerImageC != null &&
                 Globals.appSetting.studentBannerImageC != ""
             ? NestedScrollView(
 

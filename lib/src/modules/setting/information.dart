@@ -49,6 +49,12 @@ class _InformationPageState extends State<InformationPage> {
     Globals.callsnackbar = true;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget _buildContent1() {
     String? htmlData;
     if (Globals.appSetting.appInformationC.toString().contains("src=") ==
@@ -128,7 +134,6 @@ class _InformationPageState extends State<InformationPage> {
         appBar: CustomAppBarWidget(
           isSearch: false,
           isShare: false,
-          
           appBarTitle: widget.appbarTitle,
           ishtmlpage: widget.ishtml,
           sharedpopBodytext: Globals.appSetting.appInformationC!

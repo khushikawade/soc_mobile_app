@@ -1,7 +1,6 @@
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/custom/ui/custom_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import '../../home/ui/app_bar_widget.dart';
 import '../model/custom_setting.dart';
 
 class CustomAppSection extends StatefulWidget {
@@ -42,6 +42,12 @@ class _CustomAppSectionState extends State<CustomAppSection> {
     _bloc.add(CustomEvents(id: widget.customObj.id));
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
@@ -65,12 +71,11 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   BannerImageWidget(
-                    imageUrl: widget.customObj.customBannerImageC!,
-                    bgColor: widget.customObj.customBannerImageC != null
-                        ? Utility.getColorFromHex(
-                            widget.customObj.customBannerImageC!)
-                        : null,
-                  )
+                      imageUrl: widget.customObj.customBannerImageC!,
+                      bgColor: widget.customObj.customBannerColorC != null
+                          ? Utility.getColorFromHex(
+                              widget.customObj.customBannerColorC!)
+                          : Colors.transparent)
                 ];
               },
               body: _body('body2'),

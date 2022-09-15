@@ -35,6 +35,12 @@ class _LicenceinfoState extends State<Licenceinfo> {
     Globals.callsnackbar = true;
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget _buildList(
     list,
     int index,

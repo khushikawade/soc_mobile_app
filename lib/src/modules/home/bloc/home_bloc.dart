@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:core';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../schools_directory/modal/school_directory_list.dart';
 part 'home_event.dart';
@@ -73,7 +74,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _appSettingDb.addData(_appSetting);
         await _appSettingDb.close();
       } catch (e) {
-        print(e);
+        //print(e);
         // Should not break incase of any issue, it will just return the local data.
         // Fetching the School data from the Local database instead.
         LocalDatabase<AppSetting> _appSettingDb =
@@ -149,7 +150,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 'School_Directory_App__c');
             _listGlobal.addAll(_list6);
           }
-          print(_listGlobal.length);
+          //print(_listGlobal.length);
           yield GlobalSearchSuccess(
             obj: _listGlobal,
           );
@@ -162,8 +163,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 //ReferenceGlobalSearchREvent
 
     if (event is GetRecordByID) {
+      bool result = false;
       try {
-        bool result = false;
         //ge
         List<dynamic> _localDb =
             await getRecentSearchListData(Strings.hiveReferenceLogName);
@@ -171,11 +172,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         for (int i = 0; i < _localDb.length; i++) {
           if (event.recordId == _localDb[i].id) {
             result = true;
-            yield RecordDetailSuccess(
-                isRecentRecod: true,
-                recordObject: _localDb[i],
-                objectName: event.objectName,
-                objectType: event.recordType);
+            //print("return from local db ============>");
+            if (event.isFromRecent == false) {
+              yield EmptyState();
+            }
+            if (event.isFromRecent != true) {
+              yield RecordDetailSuccess(
+                  isRecentRecod: true,
+                  recordObject: _localDb[i],
+                  objectName: event.objectName,
+                  objectType: event.recordType);
+            }
+
             break;
           }
         }
@@ -184,6 +192,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           yield RefrenceSearchLoading();
         }
 
+        //print('calling api ===================>');
         dynamic recordObject = await getrecordByID_API(
             event.recordId, event.objectName, event.recordType!);
 
@@ -192,6 +201,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           idReferenceList.add(_localDb[i].id);
           if (_localDb[i].id.toString() == recordObject.id.toString()) {
             // recordDetailList[i] = recordObject;
+            //print('updating local db =============>');
             await HiveDbServices()
                 .updateListData(Strings.hiveReferenceLogName, i, recordObject);
           }
@@ -199,14 +209,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         if (!idReferenceList.contains(recordObject.id)) {
           deleteRecentSearchItem(Strings.hiveReferenceLogName);
+          //print('adding in local db===============>');
           addRecordDetailtoLocalDb(recordObject);
         }
-
-        yield RecordDetailSuccess(
-            isRecentRecod: false,
-            recordObject: recordObject,
-            objectName: event.objectName,
-            objectType: event.recordType);
+        if (!result && event.isFromRecent != true) {
+          //print('returning new state====================>');
+          yield RecordDetailSuccess(
+              isRecentRecod: false,
+              recordObject: recordObject,
+              objectName: event.objectName,
+              objectType: event.recordType);
+        }
       } catch (e) {
         if (event.recordId!.isNotEmpty &&
             event.objectName!.isNotEmpty &&
@@ -232,12 +245,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             getRecordByID_localDatabase(
                 Strings.schoolDirectoryObjectName, event.recordId);
           }
-
-          yield RecordDetailSuccess(
-              isRecentRecod: false,
-              recordObject: recordObject,
-              objectName: event.objectName,
-              objectType: event.recordType);
+          //print('inside catch ===============>');
+          if (!result) {
+            //print('retrunig from catch ');
+            yield RecordDetailSuccess(
+                isRecentRecod: false,
+                recordObject: recordObject,
+                objectName: event.objectName,
+                objectType: event.recordType);
+          }
         }
 
         // yield HomeErrorReceived(err: e);
@@ -283,6 +299,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (response.statusCode == 200) {
         final data = response.data['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString(
+            Strings.SplashUrl, data["Splash_Screen__c"] ?? data["App_Logo__c"]);
 
         _backupAppData();
         if (Globals.appSetting.bannerHeightFactor != null) {
@@ -324,7 +343,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       return listSearch;
     } catch (e) {
-      print(e);
+      //print(e);
       throw Exception('Something went wrong');
     }
   }
@@ -344,7 +363,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       return object;
     } catch (e) {
-      print(e);
+      //print(e);
       throw Exception('Something went wrong');
     }
   }
@@ -477,7 +496,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       // _socialBloc.add(FetchSocialActionCount(isDetailPage: false));
       _socialBloc.add(SocialPageEvent(action: 'initial'));
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -534,12 +553,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   //   try {
   //     _localDb.clear();
   //     log.forEach((dynamic e) {
-  //       print("local database");
+  //       //print("local database");
   //       _localDb.addData(e);
   //     });
   //   } catch (e) {
-  //     print(e);
-  //     print("inside catch");
+  //     //print(e);
+  //     //print("inside catch");
   //   }
 
   //   //_localDb.close();

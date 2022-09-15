@@ -52,7 +52,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     Orientation currentOrientation = MediaQuery.of(context).orientation;
     final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
-      color:  Globals.themeType != 'Dark'
+      color: Globals.themeType != 'Dark'
           ? Theme.of(context).backgroundColor
           : Theme.of(context).colorScheme.secondary,
       shape: RoundedRectangleBorder(
@@ -64,7 +64,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         size: Globals.deviceType == "phone" ? 20 : 28,
       ),
       onSelected: (value) async {
-     //   Utility.setFree();
+        //   Utility.setFree();
         switch (value) {
           case IconsMenu.Information:
             Globals.appSetting.appInformationC != null
@@ -76,12 +76,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                               isbuttomsheet: true,
                               ishtml: true,
                             )))
-                            
                 : Utility.showSnackBar(
-                    scaffoldKey, 'No Information Available', context);
+                    scaffoldKey, 'No Information Available', context, null);
             break;
           case IconsMenu.Setting:
-          await  Navigator.push(
+            await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => SettingPage(
@@ -94,7 +93,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 settingsCode: SettingsCode.APP_SETTINGS);
             break;
         }
-       // Utility.setLocked();
+        // Utility.setLocked();
       },
       itemBuilder: (context) => IconsMenu.items
           .map((item) => PopupMenuItem<IconMenu>(
@@ -262,12 +261,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 8,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.black87,
+            color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Translate/Traducción/翻译/ترجمة/Traduction",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Globals.themeType == 'Dark'
+                      ? Colors.black87
+                      : Colors.white,
                   fontSize: 18.0,
                 ),
               )
@@ -294,13 +295,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 2,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.black87,
+            color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Accessibility Settings",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
+                  color: Globals.themeType == 'Dark'
+                      ? Colors.black87
+                      : Colors.white,
                 ),
               )
             ]),

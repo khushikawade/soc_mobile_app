@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/action_button_basic.dart';
+import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -40,6 +38,12 @@ class _SocialNewPageState extends State<SocialNewPage> {
     bloc.add(SocialPageEvent(action: "initial"));
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
@@ -70,7 +74,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
       color: Theme.of(context).colorScheme.background,
       child: InkWell(
         onTap: () async {
-          bool result = await Navigator.push(
+          bool result = await await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
@@ -87,7 +91,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                         language: Globals.selectedLanguage,
                       )));
           if (result == true) {
-            bloc.add(SocialPageEvent(action: "returnBack"));
+            setState(() {});
           }
         },
         child: CommonFeedWidget(
@@ -120,9 +124,12 @@ class _SocialNewPageState extends State<SocialNewPage> {
   }
 
   Widget actionButton(List<Item> list, obj, int index, bool reLoad) {
+    // print('ACTION BUTTON ON SOCAIL SCTION ------------------>');
+    // print(list[index].likeCount);
+    // print(obj.likeCount);
     // ignore: unnecessary_null_comparison
     return reLoad == false
-        ? UserActionBasic(
+        ? ActionInteractionButtonWidget(
             page: "social",
             obj: list[index],
             isLoading: false,
@@ -145,7 +152,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
             alignment: Alignment.centerLeft,
             child: ShimmerLoading(
                 isLoading: true,
-                child: UserActionBasic(
+                child: ActionInteractionButtonWidget(
                   title: list[index].title['__cdata'],
                   description: list[index].description['__cdata'],
                   imageUrl: list[index].enclosure,
@@ -233,6 +240,9 @@ class _SocialNewPageState extends State<SocialNewPage> {
                     BlocBuilder<SocialBloc, SocialState>(
                         bloc: bloc,
                         builder: (BuildContext context, SocialState state) {
+                          // print(state);
+                          // print('ppppppppppppppppppppppppp');
+
                           if (state is SocialDataSucess) {
                             // _countSocialBloc.add(FetchSocialActionCount());
                             return state.obj != null && state.obj!.length > 0
@@ -258,7 +268,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                                   );
                           } else if (state is SocialReload) {
                             return state.obj != null && state.obj!.length > 0
-                                ? Expanded(child: makeList(state.obj, true))
+                                ? Expanded(child: makeList(state.obj, false))
                                 : Expanded(
                                     child: NoDataFoundErrorWidget(
                                       isResultNotFoundMsg: true,

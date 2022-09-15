@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-
   CustomAppBarWidget({
     Key? key,
     required this.isSearch,
@@ -61,10 +60,9 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
               toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) => Text(
                 translatedMessage.toString(),
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontWeight: FontWeight.w400,color: Theme.of(context).primaryColor),
+                style: Theme.of(context).textTheme.headline2!.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: Theme.of(context).primaryColor),
                 textAlign: TextAlign.center,
               ),
             ),

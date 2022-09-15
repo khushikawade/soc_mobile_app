@@ -27,7 +27,7 @@ class CommonImageWidget extends StatelessWidget {
       onTap: () {
         if (isOnTap == true) {
           showDialog(
-            useRootNavigator: false,
+              useRootNavigator: false,
               context: context,
               builder: (_) => ImagePopup(
                     // Implemented Dark mode image

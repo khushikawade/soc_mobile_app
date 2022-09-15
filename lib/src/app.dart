@@ -1,4 +1,3 @@
-import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -35,7 +34,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     }
     var window = WidgetsBinding.instance!.window;
     window.onPlatformBrightnessChanged = () {
-      WidgetsBinding.instance?.handlePlatformBrightnessChanged();
+      WidgetsBinding.instance!.handlePlatformBrightnessChanged();
       // This callback is called every time the brightness changes.
       var brightness = window.platformBrightness;
 
@@ -97,20 +96,23 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           ? AdaptiveThemeMode.light
           : AdaptiveThemeMode.system,
       builder: (theme, darkTheme) => MaterialApp(
+        navigatorKey: Globals.navigatorKey,
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: Globals.rootScaffoldMessengerKey,
         title: 'Solved',
         theme: theme,
         darkTheme: darkTheme,
-        // home: StartupPage(),
-        home: SchoolIDLogin(),
+        home: StartupPage(
+          isOcrSection: false,
+        ),
+        // home: SchoolIDLogin(),
       ),
     );
   }
+}
 
   // clearTheme() async {
   //   final prefs = await SharedPreferences.getInstance();
   //   await prefs.remove(AdaptiveTheme.prefKey);
   //   // AdaptiveTheme.of(context).persist();
   // }
-}

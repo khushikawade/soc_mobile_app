@@ -80,7 +80,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   child: ShimmerLoading(
                     isLoading: true,
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.3,
                       width: MediaQuery.of(context).size.width * 0.85,
                       color: Colors.white,
                     ),
@@ -93,7 +93,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   child: ShimmerLoading(
                     isLoading: true,
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.3,
                       width: MediaQuery.of(context).size.width * 0.85,
                       color: Colors.white,
                     ),
@@ -151,10 +151,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   onOpen: (link) => _launchURL(link.url),
                   options: LinkifyOptions(humanize: false),
                   linkStyle: TextStyle(color: Colors.blue),
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      ,
+                  style: Theme.of(context).textTheme.headline2!,
                   text: translatedMessage.toString());
 
               // Text(
@@ -174,9 +171,12 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
         obj.toString().split(":")[0] == 'http') {
       await Utility.launchUrlOnExternalBrowser(obj);
       return;
-    } else if (obj.toString().contains(
-            "zoom.us") || // Checking here for zoom/google meet app URLs to open these specific URLs Externally(In browser/Related App if installed already)
-        obj.toString().contains("meet.google.com")) {
+    }
+    // Checking here for zoom/google_meet/docs/forms app URLs to open these specific URLs Externally(In browser/Related App if installed already)
+    else if (obj.toString().contains("zoom.us") ||
+        obj.toString().contains("meet.google.com") ||
+        obj.toString().contains("docs.google.com") ||
+        obj.toString().contains("forms.gle")) {
       await Utility.launchUrlOnExternalBrowser(obj);
     } else {
       Navigator.push(

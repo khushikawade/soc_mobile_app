@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -86,7 +86,8 @@ class NoInternetErrorWidget extends StatelessWidget {
                   fit: BoxFit.cover,
                 )),
             SpacerWidget(12),
-            Text("No Internet", style: Theme.of(context).textTheme.bodyText1!),
+            Text("No Internet Connection",
+                style: Theme.of(context).textTheme.bodyText1!),
             onRefresh != null
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,

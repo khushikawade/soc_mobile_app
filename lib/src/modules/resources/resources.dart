@@ -1,6 +1,5 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,14 +13,14 @@ import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 import '../custom/model/custom_setting.dart';
+import '../home/ui/app_bar_widget.dart';
 import '../shared/ui/common_grid_widget.dart';
 
 class ResourcesPage extends StatefulWidget {
   final CustomSetting? customObj;
-  ResourcesPage({
-    Key? key,
-    this.customObj,
-  }) : super(key: key);
+  final bool? isCustomSection;
+  ResourcesPage({Key? key, this.customObj, required this.isCustomSection})
+      : super(key: key);
 
   @override
   _ResourcesPageState createState() => _ResourcesPageState();
@@ -39,6 +38,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
     // Utility.setLocked();
     super.initState();
     _bloc.add(ResourcesListEvent());
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   Future refreshPage() async {
@@ -145,12 +150,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
                     BannerImageWidget(
-                      imageUrl: Globals.appSetting.resourcesBannerImageC!,
-                      bgColor: Globals.appSetting.resourcesBannerColorC != null
-                          ? Utility.getColorFromHex(
-                              Globals.appSetting.resourcesBannerColorC!)
-                          : null,
-                    )
+                        imageUrl: Globals.appSetting.resourcesBannerImageC!,
+                        bgColor:
+                            Globals.appSetting.resourcesBannerColorC != null
+                                ? Utility.getColorFromHex(
+                                    Globals.appSetting.resourcesBannerColorC!)
+                                : Colors.transparent)
                   ];
                 },
                 body: _body('body1'))

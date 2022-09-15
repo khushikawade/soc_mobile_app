@@ -14,6 +14,8 @@ class SearchLoading extends HomeState {}
 
 class RefrenceSearchLoading extends HomeState {}
 
+class EmptyState extends HomeState {}
+
 class BottomNavigationBarSuccess extends HomeState {
   final obj;
   BottomNavigationBarSuccess({this.obj});
@@ -66,4 +68,7 @@ class RecordDetailSuccess extends HomeState {
       isRecentRecod: isRecentRecod ?? this.isRecentRecod,
     );
   }
+
+  @override
+  List<Object> get props => [];
 }

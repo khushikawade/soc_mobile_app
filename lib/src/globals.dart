@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:flutter/material.dart';
@@ -66,5 +67,34 @@ class Globals {
   static String? homeUrl;
   static PersistentTabController? controller;
   static bool? disableDarkMode;
+  static int? staffIndex;
 
+  //OCR Feature Globals
+  static List pointsList = [2, 3, 4];
+  static List pointsEarnedList = [0, 1, 2];
+  static int lastindex = 0;
+  static String teacherEmailId = '';
+  static String teacherId = '';
+  static String sessionId = '';
+  static bool isPremiumUser = false;
+  static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe87a];
+  static List ocrResultIconsName = ["Share", "Drive", "History", "Dashboard"];
+  static List gradeList = [];
+  static bool iscameraPopup = true;
+  static String? googleDriveFolderId;
+  static String? googleDriveFolderPath;
+  static String? googleExcelSheetId;
+  static String? shareableLink;
+  static String? pointpossible = '2';
+  static String? assessmentName;
+  static int? scanMoreStudentInfoLength;
+  static String currentAssessmentId = '';
+  static final ValueNotifier<String> updateStudentName =
+      ValueNotifier<String>('');
+  static String? scoringRubric;
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static String? questionImgUrl;
+  static File? questionImgFilePath;
+  static String? historyAssessmentName = '';
+  static String? historyAssessmentFileId = '';
 }

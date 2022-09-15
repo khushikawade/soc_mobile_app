@@ -7,7 +7,7 @@ import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:http/http.dart' as http;
 import 'package:Soc/src/modules/news/model/notification_list.dart';
@@ -104,8 +104,14 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         );
       } catch (e) {
         if (e.toString().contains('NO_CONNECTION')) {
-          Utility.showSnackBar(event.scaffoldKey,
-              'Make sure you have a proper Internet connection', event.context);
+          Utility.showSnackBar(
+              event.scaffoldKey,
+              'Make sure you have a proper Internet connection',
+              event.context,
+              null);
+        } else {
+          Utility.showSnackBar(
+              event.scaffoldKey, 'Something went wrong', event.context, null);
         }
         yield NewsErrorReceived(err: e);
       }
@@ -193,7 +199,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
         yield ActionCountSuccess(obj: newList);
       } catch (e) {
-        print(e);
+        //print(e);
         // yield NewsErrorReceived(err: e);
         String? _objectName = "news_action";
         // String? _objectName = "${Strings.newsObjectName}";
@@ -253,7 +259,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (e.toString().contains("Failed host lookup")) {
         throw ("No Internet Connection.");
       } else {
-        print(e);
+        //print(e);
         throw (e);
       }
     }
@@ -261,7 +267,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postapimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);
 

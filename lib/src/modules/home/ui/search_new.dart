@@ -48,6 +48,7 @@ class _SearchPageState extends State<SearchPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final HomeBloc _homeBloc = new HomeBloc();
+  final HomeBloc _homeBloc2 = new HomeBloc();
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
 //  HomeBloc _searchBloc = new HomeBloc();
@@ -90,12 +91,30 @@ class _SearchPageState extends State<SearchPage> {
     return listItem;
   }
 
+  // getReferenceListData() async {
+  //   List listItem =
+  //       await HiveDbServices().getRecordObject(Strings.hiveReferenceLogName);
+  //   return listItem;
+  // }
+
   deleteItem(String localDatalogName) async {
     int itemcount = await HiveDbServices().getListLength(localDatalogName);
     if (itemcount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);
     }
   }
+
+  // cleanList() async {
+  //   await HiveDbServices().clearAll(Strings.hiveReferenceLogName);
+  // }
+
+  // deleteItemReference() async {
+  //   int itemcount =
+  //       await HiveDbServices().getListLength(Strings.hiveReferenceLogName);
+  //   if (itemcount > 5) {
+  //     await HiveDbServices().deleteData(Strings.hiveReferenceLogName, 0);
+  //   }
+  // }
 
   Future<void> _route(
       {required obj,
@@ -115,8 +134,26 @@ class _SearchPageState extends State<SearchPage> {
                         appBarTitle: obj.titleC!,
                         language: Globals.selectedLanguage!,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
-    } else if (objectType == "Form" && objectName == 'Staff_Directory_App__c') {
+          : Utility.showSnackBar(
+              _scaffoldKey, "No data available", context, null);
+    }
+
+    // if (obj.typeC == "Contact" &&  obj.titleC != null) {
+
+    //        await Navigator.push(
+    //           context,
+    //           MaterialPageRoute(
+    //               builder: (BuildContext context) => ContactPage(
+    //                     obj: Globals.appSetting,
+    //                     //  Globals.homeObject,
+    //                     isbuttomsheet: true,
+    //                     appBarTitle: obj.titleC!,
+    //                     language: Globals.selectedLanguage!,
+    //                   )));
+
+    // }
+
+    else if (objectType == "Form" && objectName == 'Staff_Directory_App__c') {
       List<dynamic> newObj = [];
       newObj.add(obj);
       await Navigator.push(
@@ -158,6 +195,7 @@ class _SearchPageState extends State<SearchPage> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => StaffDirectory(
+                    isSubmenu: true, //Since back button is required
                     isCustom: false,
                     staffDirectoryCategoryId: obj.id,
                     isAbout: true,
@@ -166,10 +204,27 @@ class _SearchPageState extends State<SearchPage> {
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
-    } else if (objectType == "URL") {
+    }
+    // else if (obj.deepLink != null) {
+    //   if (obj.deepLink == 'NO') {
+    //     Navigator.push(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (BuildContext context) => InAppUrlLauncer(
+    //                   title: obj.titleC!,
+    //                   url: obj.appURLC!,
+    //                   isbuttomsheet: true,
+    //                   language: Globals.selectedLanguage,
+    //                 )));
+    //   } else {
+    //     await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
+    //   }
+    // }
+    else if (objectType == "URL") {
       obj.appUrlC != null
           ? await _launchURL(obj, objectName)
-          : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+          : Utility.showSnackBar(
+              _scaffoldKey, "No link available", context, null);
     } else if (objectType == "RTF_HTML" ||
         objectType == "RFT_HTML" ||
         objectType == "HTML/RTF" ||
@@ -185,7 +240,8 @@ class _SearchPageState extends State<SearchPage> {
                         ishtml: true,
                         appbarTitle: obj.titleC!,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+          : Utility.showSnackBar(
+              _scaffoldKey, "No data available", context, null);
       // _setLocked();
     } else if (objectType == "PDF URL" || objectType == "PDF") {
       obj.pdfURL != null
@@ -198,8 +254,10 @@ class _SearchPageState extends State<SearchPage> {
                         tittle: obj.titleC,
                         isbuttomsheet: true,
                         language: Globals.selectedLanguage,
+                        isOCRFeature: false,
                       )))
-          : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+          : Utility.showSnackBar(
+              _scaffoldKey, "No pdf available", context, null);
       // _setLocked();
     } else if (objectType == "Calendar/Events") {
       obj.calendarId != null && obj.calendarId != ""
@@ -213,7 +271,7 @@ class _SearchPageState extends State<SearchPage> {
                         calendarId: obj.calendarId.toString(),
                       )))
           : Utility.showSnackBar(
-              _scaffoldKey, "No calendar/events available", context);
+              _scaffoldKey, "No calendar/events available", context, null);
     } else if (objectType == "Sub-Menu") {
       await Navigator.push(
           context,
@@ -237,7 +295,7 @@ class _SearchPageState extends State<SearchPage> {
                   )));
     } else {
       Utility.showSnackBar(
-          _scaffoldKey, "No data available for this record", context);
+          _scaffoldKey, "No data available for this record", context, null);
     }
     _setLocked();
   }
@@ -250,7 +308,7 @@ class _SearchPageState extends State<SearchPage> {
       } else if (obj.appUrlC != null && obj.appUrlC != "URL__c") {
         await Utility.launchUrlOnExternalBrowser(obj.appUrlC);
       } else {
-        Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+        Utility.showSnackBar(_scaffoldKey, "No URL available", context, null);
       }
     } else if (
         //obj.urlC != null ||
@@ -266,7 +324,7 @@ class _SearchPageState extends State<SearchPage> {
                   )));
       // _setLocked();
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+      Utility.showSnackBar(_scaffoldKey, "No URL available", context, null);
     }
   }
 
@@ -377,9 +435,8 @@ class _SearchPageState extends State<SearchPage> {
             new List.from(recentDetailDbList.reversed);
 
         //To call the latest data silently.
-        _homeBloc.add(GetRecordByID(
-            //  isRecentRecord: true,
-            // title: data.titleC,
+        _homeBloc2.add(GetRecordByID(
+            isFromRecent: true,
             recordType: items[index].typeC,
             recordId: items[index].id,
             objectName: items[index].objectName));
@@ -511,10 +568,8 @@ class _SearchPageState extends State<SearchPage> {
                                               .primaryVariant)),
                             ),
                             onTap: () async {
-                              //  _route(data);
-                              _homeBloc.add(GetRecordByID(
-                                  // isRecentRecord: false,
-                                  // title: data.titleC,
+                              _homeBloc2.add(GetRecordByID(
+                                  isFromRecent: false,
                                   recordType: data.typeC,
                                   recordId: data.id,
                                   objectName: data.objectName));
@@ -527,20 +582,15 @@ class _SearchPageState extends State<SearchPage> {
                                 idList.add(itemListData[i].id);
                               }
 
-                              if (idList.contains(data.id)) {
-                              } else {
-                                //TODO : Improve the recent item, Add only required keys
+                              if (!idList.contains(data.id)) {
                                 if (data != null) {
                                   deleteItem(Strings.hiveLogName);
+
                                   final recentitem = Recent(
                                       1,
                                       data.titleC,
                                       data.appIconUrlC,
                                       data.id,
-<<<<<<< HEAD
-                                      data.objectName,
-                                      data.typeC,
-=======
                                       data.name,
                                       data.objectName,
                                       data.rtfHTMLC,
@@ -563,7 +613,6 @@ class _SearchPageState extends State<SearchPage> {
                                       data.descriptionC,
                                       data.latitude,
                                       data.longitude,
->>>>>>> 18df4ad4cdfae0a1e47e0a12a0811d330d58f22e
                                       data.darkModeIconC);
                                   addtoDataBase(recentitem);
                                 }
@@ -594,13 +643,15 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
             ));
-<<<<<<< HEAD
-          } else {
-=======
           }
-      
+          // else if (state is RefrenceSearchLoading) {
+          //   return
+
+          //   // return CircularProgressIndicator(
+          //   //   color: Colors.red,
+          //   // );
+          // }
           else {
->>>>>>> 18df4ad4cdfae0a1e47e0a12a0811d330d58f22e
             return Container(height: 0);
           }
         });
@@ -687,7 +738,7 @@ class _SearchPageState extends State<SearchPage> {
     LocalDatabase<dynamic>? _localDb =
         LocalDatabase(Strings.hiveReferenceLogName);
     log.forEach((dynamic e) {
-      print("local database");
+      // //print("local database");
       _localDb.addData(e);
     });
     _localDb.close();
@@ -758,8 +809,9 @@ class _SearchPageState extends State<SearchPage> {
                       height: 0,
                       width: 0,
                       child: BlocListener<HomeBloc, HomeState>(
-                          bloc: _homeBloc,
+                          bloc: _homeBloc2,
                           listener: (context, state) async {
+                            // //print(state);
                             if (state is BottomNavigationBarSuccess) {
                               AppTheme.setDynamicTheme(
                                   Globals.appSetting, context);
@@ -783,18 +835,15 @@ class _SearchPageState extends State<SearchPage> {
                                     obj: state.recordObject,
                                     objectType: state.objectType!,
                                     objectName: state.objectName!);
-<<<<<<< HEAD
-=======
-
->>>>>>> 18df4ad4cdfae0a1e47e0a12a0811d330d58f22e
                               } else {
                                 Utility.showSnackBar(
                                     _scaffoldKey,
                                     "please make sure you have a proper internet connection",
-                                    context);
+                                    context,
+                                    null);
                               }
                             } else if (state is RefrenceSearchLoading) {
-                              return showLoadingDialog(context);
+                              return Utility.showLoadingDialog(context, false);
                             } else if (state is HomeErrorReceived) {}
                           },
                           child: EmptyContainer()),
@@ -828,33 +877,245 @@ class _SearchPageState extends State<SearchPage> {
     ]);
   }
 
-  Future<void> showLoadingDialog(BuildContext context) async {
-    return showDialog<void>(
-        useRootNavigator: false,
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return new WillPopScope(
-              onWillPop: () async => false,
-              child: SimpleDialog(
-                  backgroundColor: Colors.black54,
-                  children: <Widget>[
-                    Center(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 30,
-                            ),
-                            CircularProgressIndicator(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                          ]),
-                    )
-                  ]));
-        });
-  }
+  // Future<void> showLoadingDialog(BuildContext context) async {
+  //   return showDialog<void>(
+  //       useRootNavigator: false,
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (BuildContext context) {
+  //         return new WillPopScope(
+  //             onWillPop: () async => false,
+  //             child: SimpleDialog(
+  //                 backgroundColor: Colors.black54,
+  //                 children: <Widget>[
+  //                   Center(
+  //                     child: Row(
+  //                         mainAxisAlignment: MainAxisAlignment.center,
+  //                         children: [
+  //                           SizedBox(
+  //                             width: 30,
+  //                           ),
+  //                           CircularProgressIndicator(
+  //                             color: Theme.of(context).primaryColor,
+  //                           ),
+  //                           SizedBox(
+  //                             width: 20,
+  //                           ),
+  //                         ]),
+  //                   )
+  //                 ]));
+  //       });
+  // }
 }
+
+// Future<void> _route(
+//     {required SearchList obj, required String objectName}) async {
+//   if (obj.typeC == "Sub-Menu") {
+//     await Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (BuildContext context) => SubListPage(
+//                   obj: obj,
+//                   module: obj.name.toString().contains("FAN")
+//                       ? "family"
+//                       : obj.name.toString().contains("SA")
+//                           ? "staff"
+//                           : obj.name.toString().contains("ABT")
+//                               ? "about"
+//                               : obj.name.toString().contains("RES")
+//                                   ? "resources"
+//                                   : obj.name.toString().contains("CAM")
+//                                       ? "Custom"
+//                                       : "",
+//                   isbuttomsheet: true,
+//                   appBarTitle: obj.titleC!,
+//                   language: Globals.selectedLanguage,
+//                 )));
+//   }
+
+//   if (objectName == 'Families_App__c') {
+//     if (obj.typeC == "Contact") {
+//       obj.titleC != null
+//           ? await Navigator.push(
+//               context,
+//               MaterialPageRoute(
+//                   builder: (BuildContext context) => ContactPage(
+//                         obj: Globals.appSetting,
+//                         //  Globals.homeObject,
+//                         isbuttomsheet: true,
+//                         appBarTitle: obj.titleC!,
+//                         language: Globals.selectedLanguage!,
+//                       )))
+//           : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+//     } else if (obj.typeC == "Form" &&
+//         obj.objectName == 'Staff_Directory_App__c') {
+//       List<SDlist> newObj = [];
+//       //To manage the list type in a correct way
+//       newObj.add(SDlist(
+//           descriptionC: obj.descriptionC,
+//           designation: obj.titleC,
+//           emailC: obj.emailC,
+//           id: obj.id,
+//           imageUrlC: obj.appIconUrlC,
+//           name: obj.name,
+//           phoneC: obj.phoneC,
+//           sortOrderC: obj.sortOrder,
+//           status: obj.statusC));
+//       await Navigator.push(
+//           context,
+//           MaterialPageRoute(
+//               builder: (BuildContext context) => SliderWidget(
+//                     obj: newObj,
+//                     currentIndex: 0,
+//                     issocialpage: false,
+//                     isAboutSDPage: true,
+//                     isNewsPage: false,
+//                     // iseventpage: false,
+//                     date: "",
+//                     isbuttomsheet: true,
+//                     language: Globals.selectedLanguage,
+//                   )));
+//     } else if (obj.typeC == "URL") {
+//       obj.urlC != null
+//           ? await _launchURL(obj)
+//           : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+//     }
+//   }
+
+//   obj.typeC != null && obj.typeC != '' ? _setFree() : _setLocked();
+
+//   if (obj.typeC == "Contact" && obj.titleC != null) {
+//     await Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (BuildContext context) => ContactPage(
+//                   obj: Globals.appSetting,
+//                   //  Globals.homeObject,
+//                   isbuttomsheet: true,
+//                   appBarTitle: obj.titleC!,
+//                   language: Globals.selectedLanguage!,
+//                 )));
+//   } else if (obj.typeC == "Form") {
+//     await Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (BuildContext context) => StaffDirectory(
+//                   isCustom: false,
+//                   staffDirectoryCategoryId: null,
+//                   isAbout: true,
+//                   appBarTitle: obj.titleC!,
+//                   obj: obj,
+//                   isbuttomsheet: true,
+//                   language: Globals.selectedLanguage,
+//                 )));
+//   } else if (obj.typeC == "SchoolDirectoryApp") {
+//     await Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (BuildContext context) => SchoolDetailPage(
+//                   obj: obj,
+//                 )));
+//   } else if (obj.typeC == "Staff_Directory") {
+//     await Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (BuildContext context) => StaffDirectory(
+//                   isCustom: false,
+//                   staffDirectoryCategoryId: obj.id,
+//                   isAbout: true,
+//                   appBarTitle: obj.titleC!,
+//                   obj: obj,
+//                   isbuttomsheet: true,
+//                   language: Globals.selectedLanguage,
+//                 )));
+//   }
+//   // else if (obj.deepLink != null) {
+//   //   if (obj.deepLink == 'NO') {
+//   //     Navigator.push(
+//   //         context,
+//   //         MaterialPageRoute(
+//   //             builder: (BuildContext context) => InAppUrlLauncer(
+//   //                   title: obj.titleC!,
+//   //                   url: obj.appURLC!,
+//   //                   isbuttomsheet: true,
+//   //                   language: Globals.selectedLanguage,
+//   //                 )));
+//   //   } else {
+//   //     await Utility.launchUrlOnExternalBrowser(obj.appURLC!);
+//   //   }
+//   // }
+//   else if (obj.typeC == "URL") {
+//     obj.urlC != null
+//         ? await _launchURL(obj)
+//         : Utility.showSnackBar(_scaffoldKey, "No link available", context);
+//   } else if (obj.typeC == "RTF_HTML" ||
+//       obj.typeC == "RFT_HTML" ||
+//       obj.typeC == "HTML/RTF" ||
+//       obj.typeC == "RTF/HTML") {
+//     obj.rtfHTMLC != null
+//         ? await Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//                 builder: (BuildContext context) => AboutusPage(
+//                       htmlText: obj.rtfHTMLC.toString(),
+//                       language: Globals.selectedLanguage,
+//                       isbuttomsheet: true,
+//                       ishtml: true,
+//                       appbarTitle: obj.titleC!,
+//                     )))
+//         : Utility.showSnackBar(_scaffoldKey, "No data available", context);
+//     // _setLocked();
+//   } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
+//     obj.pdfURL != null
+//         ? await Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//                 builder: (BuildContext context) => CommonPdfViewerPage(
+//                       isHomePage: false,
+//                       url: obj.pdfURL,
+//                       tittle: obj.titleC,
+//                       isbuttomsheet: true,
+//                       language: Globals.selectedLanguage,
+//                     )))
+//         : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
+//     // _setLocked();
+//   } else if (obj.typeC == "Calendar/Events") {
+//     obj.calendarId != null && obj.calendarId != ""
+//         ? await Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//                 builder: (BuildContext context) => EventPage(
+//                       isbuttomsheet: true,
+//                       appBarTitle: obj.titleC,
+//                       language: Globals.selectedLanguage,
+//                       calendarId: obj.calendarId.toString(),
+//                     )))
+//         : Utility.showSnackBar(
+//             _scaffoldKey, "No calendar/events available", context);
+//   } else if (obj.typeC == "Sub-Menu") {
+//     await Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (BuildContext context) => SubListPage(
+//                   obj: obj,
+//                   module: obj.name.toString().contains("FAN")
+//                       ? "family"
+//                       : obj.name.toString().contains("SA")
+//                           ? "staff"
+//                           : obj.name.toString().contains("ABT")
+//                               ? "about"
+//                               : obj.name.toString().contains("RES")
+//                                   ? "resources"
+//                                   : obj.name.toString().contains("CAM")
+//                                       ? "Custom"
+//                                       : "",
+//                   isbuttomsheet: true,
+//                   appBarTitle: obj.titleC!,
+//                   language: Globals.selectedLanguage,
+//                 )));
+//   } else {
+//     Utility.showSnackBar(
+//         _scaffoldKey, "No data available for this record", context);
+//   }
+//   _setLocked();
+// }

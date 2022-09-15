@@ -57,6 +57,12 @@ class _EventPageState extends State<EventPage>
     _eventBloc.add(CalendarListEvent(widget.calendarId));
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget _buildTabs(
     state,
     bool? currentOrientation,
@@ -315,21 +321,31 @@ class _EventPageState extends State<EventPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      Utility.convertDateFormat2(i.start
-                                  .toString()
-                                  .contains('dateTime')
-                              ? i.start['dateTime'].toString().substring(0, 10)
-                              : i.start['date'].toString().substring(0, 10)) +
+                      //Utility.convertDateFormat2(
+                      Utility.convertTimestampToDateFormat(
+                              DateTime.parse(
+                                  i.start.toString().contains('dateTime')
+                                      ? i.start['dateTime']
+                                          .toString()
+                                          .substring(0, 10)
+                                      : i.start['date']
+                                          .toString()
+                                          .substring(0, 10)),
+                              'dd MMM yyyy') +
                           " - " +
-                          Utility.convertDateFormat2(i.end
-                                  .toString()
-                                  .contains('dateTime')
-                              ? i.end['dateTime'].toString().substring(0, 10)
-                              : i.end['date'].toString().substring(0, 10)),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(fontWeight: FontWeight.normal, height: 1.5),
+                          //Utility.convertDateFormat2
+                          Utility.convertTimestampToDateFormat(
+                              DateTime.parse((i.end
+                                      .toString()
+                                      .contains('dateTime')
+                                  ? i.end['dateTime']
+                                      .toString()
+                                      .substring(0, 10)
+                                  : i.end['date'].toString().substring(0, 10))),
+                              'dd MMM yyyy'),
+                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                            fontWeight: FontWeight.normal,
+                          ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.25,
@@ -359,9 +375,14 @@ class _EventPageState extends State<EventPage>
                                         buildEvent(i),
                                       );
                                     },
-                                    icon: Icon(IconData(0xe850,
+                                    icon: Icon(
+                                      IconData(
+                                        0xe850,
                                         fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg))),
+                                        fontPackage: Overrides.kFontPkg,
+                                      ),
+                                      color: Colors.red,
+                                    )),
                               )),
                           Container(
                               height: Globals.deviceType == 'phone' ? 35 : 45,
@@ -378,9 +399,12 @@ class _EventPageState extends State<EventPage>
                                           i.htmlLink.toString(),
                                           i.summary.toString());
                                     },
-                                    icon: Icon(IconData(0xe829,
-                                        fontFamily: Overrides.kFontFam,
-                                        fontPackage: Overrides.kFontPkg))),
+                                    icon: Icon(
+                                      IconData(0xe829,
+                                          fontFamily: Overrides.kFontFam,
+                                          fontPackage: Overrides.kFontPkg),
+                                      color: Colors.red,
+                                    )),
                               )),
                         ],
                       ),

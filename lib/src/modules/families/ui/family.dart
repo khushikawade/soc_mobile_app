@@ -1,5 +1,4 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,13 +13,21 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import '../../../widgets/empty_container_widget.dart';
 import '../../custom/model/custom_setting.dart';
+import '../../home/ui/app_bar_widget.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class FamilyPage extends StatefulWidget {
   final obj;
   final searchObj;
   final CustomSetting? customObj;
-  FamilyPage({Key? key, this.obj, this.searchObj, this.customObj})
+  final bool? isCustomSection;
+
+  FamilyPage(
+      {Key? key,
+      this.obj,
+      this.searchObj,
+      this.customObj,
+      required this.isCustomSection})
       : super(key: key);
 
   @override
@@ -46,6 +53,12 @@ class _FamilyPageState extends State<FamilyPage> {
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   Future refreshPage() async {
@@ -161,8 +174,7 @@ class _FamilyPageState extends State<FamilyPage> {
                                 Globals.appSetting.familyBannerColorC != null
                                     ? Utility.getColorFromHex(
                                         Globals.appSetting.familyBannerColorC!)
-                                    : null,
-                          )
+                                    : Colors.transparent)
                         : SliverAppBar(),
                   ];
                 },

@@ -37,20 +37,22 @@ class GlobalSearchEventOffline extends HomeEvent {
 }
 
 class GetRecordByID extends HomeEvent {
+  final bool? isFromRecent;
   final String? recordType;
   final String? recordId;
   final String? objectName;
- //bool? isRecentRecord;
+  //bool? isRecentRecord;
   GetRecordByID(
       {@required this.recordId,
       required this.objectName,
       required this.recordType,
-    //  required this.isRecentRecord
+      required this.isFromRecent
+      //  required this.isRecentRecord
       });
 
   @override
-  List<Object> get props =>
-      [recordId!, objectName!, recordType!, // isRecentRecord!
+  List<Object> get props => [
+        recordId!, objectName!, recordType!, // isRecentRecord!
       ];
 
   @override

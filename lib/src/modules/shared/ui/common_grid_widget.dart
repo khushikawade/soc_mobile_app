@@ -23,11 +23,14 @@ class CommonGridWidget extends StatefulWidget {
   final String sectionName;
   final bool? connected;
   final scaffoldKey;
+  final double? bottomPadding;
+
   CommonGridWidget(
       {Key? key,
       required this.data,
       required this.sectionName,
       required this.scaffoldKey,
+      this.bottomPadding,
       this.connected})
       : super(key: key);
   @override
@@ -71,7 +74,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
       obj.appUrlC != null && obj.appUrlC != ""
           ? _launchURL(obj)
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No link available", context);
+              widget.scaffoldKey, "No link available", context, null);
     } else if (obj.typeC == "Form") {
       Navigator.push(
           context,
@@ -100,8 +103,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         language: Globals.selectedLanguage,
                         calendarId: obj.calendarId.toString(),
                       )))
-          : Utility.showSnackBar(
-              widget.scaffoldKey, "No calendar/events available", context);
+          : Utility.showSnackBar(widget.scaffoldKey,
+              "No calendar/events available", context, null);
     } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -118,7 +121,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context);
+              widget.scaffoldKey, "No data available", context, null);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
           ? Navigator.push(
@@ -132,13 +135,14 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context);
+              widget.scaffoldKey, "No data available", context, null);
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
+                        isOCRFeature: false,
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
@@ -146,7 +150,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No pdf available", context);
+              widget.scaffoldKey, "No pdf available", context, null);
     } else if (obj.typeC == "Sub-Menu") {
       return subListDialog(obj);
     } else if (obj.typeC == "Staff_Directory") {
@@ -176,9 +180,11 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         : false,
                     obj: obj,
                     isStandardPage: false,
+                    isCustomSection: false, //Since its a record here
                   )));
     } else {
-      Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
+      Utility.showSnackBar(
+          widget.scaffoldKey, "No data available", context, null);
     }
   }
 
@@ -207,8 +213,8 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
 
   Widget _buildGrid(
       List<SharedList> list, List<SharedList> subList, String key) {
-    print(
-        "inside heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeellllll custom sectionnnnnnnnnn");
+    //print(
+    // "inside heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeellllll custom sectionnnnnnnnnn");
     return list.length > 0
         ? GridView.count(
             shrinkWrap: true,
@@ -406,7 +412,9 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
   Widget build(BuildContext context) {
     return widget.data.length > 0
         ? Container(
-            padding: EdgeInsets.symmetric(horizontal: 5),
+            // padding: EdgeInsets.symmetric(horizontal: 5),
+            padding: EdgeInsets.only(
+                left: 5, right: 5, bottom: widget.bottomPadding ?? 0.0),
             child: _buildGrid(widget.data, widget.data, "key"))
         : Container(
             child: NoDataFoundErrorWidget(

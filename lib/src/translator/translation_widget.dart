@@ -13,6 +13,7 @@ class TranslationWidget extends StatefulWidget {
   final String? toLanguage;
   final Widget Function(String translation)? builder;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  var isUserInteraction;
 
   TranslationWidget({
     this.scaffoldKey,
@@ -21,6 +22,7 @@ class TranslationWidget extends StatefulWidget {
     this.fromLanguage,
     @required this.toLanguage,
     @required this.builder,
+    this.isUserInteraction,
     Key? key,
   }) : super(key: key);
 
@@ -42,11 +44,14 @@ class _TranslationWidgetState extends State<TranslationWidget> {
     }
 
     return FutureBuilder(
-      future: TranslationAPI.translate(widget.message!, toLanguageCode),
+      future: TranslationAPI.translate(
+          widget.message!, toLanguageCode, widget.isUserInteraction),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return buildWaiting();
+            return widget.isUserInteraction == true
+                ? Container()
+                : buildWaiting();
           default:
             if (snapshot.hasError) {
               if (Globals.isNetworkError == false) {
@@ -55,7 +60,8 @@ class _TranslationWidgetState extends State<TranslationWidget> {
                   Utility.showSnackBar(
                       Globals.scaffoldKey,
                       'Unable to translate, Please check the Internet connection',
-                      context);
+                      context,
+                      null);
                 });
               }
               translation = widget.message!;

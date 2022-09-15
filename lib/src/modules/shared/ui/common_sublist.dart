@@ -10,6 +10,8 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import '../../../services/utility.dart';
+import '../../../widgets/banner_image_widget.dart';
 
 class SubListPage extends StatefulWidget {
   final obj;
@@ -19,15 +21,15 @@ class SubListPage extends StatefulWidget {
   final String appBarTitle;
   final String? language;
 
-  SubListPage(
-      {Key? key,
-      required this.obj,
-      this.recordId,
-      required this.module,
-      required this.isbuttomsheet,
-      required this.appBarTitle,
-      required this.language})
-      : super(key: key);
+  SubListPage({
+    Key? key,
+    required this.obj,
+    this.recordId,
+    required this.module,
+    required this.isbuttomsheet,
+    required this.appBarTitle,
+    required this.language,
+  }) : super(key: key);
   @override
   _SubListPageState createState() => _SubListPageState();
 }
@@ -58,6 +60,12 @@ class _SubListPageState extends State<SubListPage> {
     } else if (widget.module == "Custom") {
       _customBloc.add(CustomSublistEvent(id: widget.obj.id));
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   _body(bool connected) => RefreshIndicator(
@@ -246,7 +254,30 @@ class _SubListPageState extends State<SubListPage> {
                 iserrorstate = true;
               }
 
-              return _body(connected);
+              //return _body(connected);
+              return widget.obj.submenuBannerImageC != null &&
+                      widget.obj.submenuBannerImageC != ''
+                  ? NestedScrollView(
+                      // floatHeaderSlivers: true,
+                      headerSliverBuilder:
+                          (BuildContext context, bool innerBoxIsScrolled) {
+                        return <Widget>[
+                          widget.obj.submenuBannerImageC != null
+                              ? BannerImageWidget(
+                                  bannerHeight: widget.obj.submenuBannerHeightC,
+                                  imageUrl: widget.obj.submenuBannerImageC!,
+                                  bgColor:
+                                      widget.obj.submenuBannerColorC != null
+                                          ? Utility.getColorFromHex(
+                                              widget.obj.submenuBannerColorC!)
+                                          : Colors.transparent)
+                              : SliverAppBar(
+                                  automaticallyImplyLeading: false,
+                                ),
+                        ];
+                      },
+                      body: _body(connected))
+                  : _body(connected);
             },
             child: Container()));
   }

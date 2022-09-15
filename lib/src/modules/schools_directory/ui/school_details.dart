@@ -56,6 +56,12 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
     }
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget _buildIcon() {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
@@ -341,20 +347,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                       }
                     },
                     child: EmptyContainer()),
-              ),
-              Container(
-                child: BlocListener<HomeBloc, HomeState>(
-                  bloc: homebloc,
-                  listener: (context, state) async {
-                    if (state is BottomNavigationBarSuccess) {
-                      AppTheme.setDynamicTheme(Globals.appSetting, context);
-
-                      Globals.appSetting = AppSetting.fromJson(state.obj);
-                      setState(() {});
-                    }
-                  },
-                  child: EmptyContainer(),
-                ),
               ),
             ],
           ),

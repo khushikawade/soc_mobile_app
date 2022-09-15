@@ -83,7 +83,6 @@ class _CustomIconModeState extends State<CustomIconMode> {
                   )),
             ));
   }
-
 }
 
 // black to white

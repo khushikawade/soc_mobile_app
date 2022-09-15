@@ -1,14 +1,19 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/device_info_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
@@ -17,12 +22,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart';
+import 'modules/ocr/widgets/custom_intro_layout.dart';
 
 class StartupPage extends StatefulWidget {
+  bool? isOcrSection;
+  StartupPage({required this.isOcrSection});
   @override
   _StartupPageState createState() => new _StartupPageState();
 }
@@ -33,7 +40,7 @@ class _StartupPageState extends State<StartupPage> {
   final HomeBloc _bloc = new HomeBloc();
 
   final NewsBloc _newsBloc = new NewsBloc();
-
+  GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   AndroidDeviceInfo? androidInfo;
   IosDeviceInfo? ios;
   bool? isnetworkisuue = false;
@@ -42,18 +49,24 @@ class _StartupPageState extends State<StartupPage> {
   void initState() {
     super.initState();
     // _onNotificationTap();
+    if (widget.isOcrSection!) {
+      _navigateToOcrSection();
+      // //print("calling refresh token update event ======================.");
+      //      _driveBloc.add(RefreshAuthenticationTokenEvent());
 
-    getindicatorValue();
-    appversion();
-    initPlatformState(context);
-    _bloc.add(FetchStandardNavigationBar());
-    _newsBloc.add(NewsCountLength());
-    getindexvalue();
-    _showcase();
-    if (Platform.isAndroid) {
-      Globals.isAndroid = true;
-    } else if (Platform.isIOS) {
-      Globals.isAndroid = false;
+    } else {
+      getIndicatorValue();
+      appVersion();
+      initPlatformState(context);
+      _bloc.add(FetchStandardNavigationBar());
+      _newsBloc.add(NewsCountLength());
+      getIndexValue();
+      _showcase();
+      if (Platform.isAndroid) {
+        Globals.isAndroid = true;
+      } else if (Platform.isIOS) {
+        Globals.isAndroid = false;
+      }
     }
   }
 
@@ -89,14 +102,14 @@ class _StartupPageState extends State<StartupPage> {
     });
   }
 
-  void appversion() async {
+  void appVersion() async {
     Globals.packageInfo = await PackageInfo.fromPlatform();
   }
 
-  getindexvalue() async {
+  getIndexValue() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
     Globals.splashImageUrl = pref.getString(Strings.SplashUrl);
+    Globals.homeIndex = pref.getInt(Strings.bottomNavigation);
   }
 
   @override
@@ -105,7 +118,7 @@ class _StartupPageState extends State<StartupPage> {
     super.dispose();
   }
 
-  getindicatorValue() async {
+  getIndicatorValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.getBool("enableIndicator") == null
         ? prefs.setBool("enableIndicator", false)
@@ -116,131 +129,179 @@ class _StartupPageState extends State<StartupPage> {
 
   Widget _buildSplashScreen() {
     return Center(
-        child: Globals.splashImageUrl != null && Globals.splashImageUrl != " "
+        child: widget.isOcrSection!
             ? Padding(
                 padding: const EdgeInsets.all(16),
-                child: CachedNetworkImage(
-                  imageUrl: Globals.splashImageUrl!,
+                child: Image.asset(
+                  Globals.themeType == 'Dark'
+                      ? 'assets/images/graded+_light.png'
+                      : 'assets/images/graded+_dark.png',
                   fit: BoxFit.cover,
-                  errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                  ),
-                ),
-              )
-            : Text("Loading ...",
-                style: Theme.of(context).textTheme.headline1!.copyWith(
-                    fontSize: 24,
-                    color: Globals.themeType == 'Dark'
-                        ? Colors.white
-                        : Colors.black)));
+                  //    height: 50,
+                ))
+            : Globals.splashImageUrl != null && Globals.splashImageUrl != ""
+                ? Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: CachedNetworkImage(
+                      imageUrl: Globals.splashImageUrl!,
+                      placeholder: (context, url) => Container(
+                          alignment: Alignment.center,
+                          child: Text("Loading ...",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1!
+                                  .copyWith(
+                                      fontSize: 24,
+                                      color: Globals.themeType == 'Dark'
+                                          ? Colors.white
+                                          : Colors.black))),
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Icon(
+                        Icons.error,
+                      ),
+                    ),
+                  )
+                : Text("Loading ...",
+                    style: Theme.of(context).textTheme.headline1!.copyWith(
+                        fontSize: 24,
+                        color: Globals.themeType == 'Dark'
+                            ? Colors.white
+                            : Colors.black)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // backgroundColor:
-        //     Globals.themeType == 'Dark' ? Colors.black : Colors.white,
-        backgroundColor: Colors.white,
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            BlocBuilder<HomeBloc, HomeState>(
-                bloc: _bloc,
-                builder: (BuildContext contxt, HomeState state) {
-                  if (state is HomeLoading) {
-                    return _buildSplashScreen();
-                  } else if (state is HomeErrorReceived) {
-                    return Container(
-                      child: state.err != 'NO_CONNECTION'
-                          ? ListView(
-                              children: [ErrorMsgWidget()],
-                            )
-                          : SafeArea(
-                              child: NoInternetErrorWidget(
-                                connected: false,
-                                issplashscreen: false,
-                                onRefresh: () {
-                                  _bloc.add(FetchStandardNavigationBar());
-                                },
-                              ),
-                            ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
-            BlocListener<HomeBloc, HomeState>(
-                bloc: _bloc,
-                child: Container(),
-                listener: (BuildContext contxt, HomeState state) {
-                  if (state is HomeErrorReceived) {
-                    setState(() {
-                      flag = false;
-                    });
-                  }
-                }),
-            Container(
-              height: 0,
-              width: 0,
-              child: BlocListener<HomeBloc, HomeState>(
-                bloc: _bloc,
-                listener: (context, state) async {
-                  if (state is BottomNavigationBarSuccess) {
-                    AppTheme.setDynamicTheme(Globals.appSetting, context);
+        backgroundColor:
+            Globals.themeType == 'Dark' ? Colors.black : Colors.white,
+        //  backgroundColor: Colors.white,
+        body: widget.isOcrSection!
+            ? Stack(fit: StackFit.expand, children: [_buildSplashScreen()])
+//  ? Stack(fit: StackFit.expand, children: [
+//                  BlocConsumer(
+//                    bloc: _driveBloc,
+//                    builder: (BuildContext contxt, GoogleDriveState state) {
+//                      return _buildSplashScreen();
+//                    },
+//                    listener: (BuildContext contxt, GoogleDriveState state) {
+//                      if (state is RefreshAuthenticationTokenSuccessState) {
+//                        //print(
+//                            'refresh success recived state recived on screen ==========>');
+//                        _navigateToOcrSection();
+//                      }
+//                      if (state is ErrorState) {
+//                        //print(
+//                            'refresh error state recived on screen re-calling refresh token event from startup page ==========>');
+//                        _driveBloc.add(RefreshAuthenticationTokenEvent());
 
-                    Globals.appSetting = AppSetting.fromJson(state.obj);
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setString(
-                        Strings.SplashUrl,
-                        state.obj["Splash_Screen__c"] ??
-                            state.obj["App_Logo__c"]);
-                    await Future.delayed(Duration(milliseconds: 200));
-                    state.obj != null
-                        ? Navigator.of(context)
-                            .pushReplacement(_createRoute(state.obj))
-                        : NoDataFoundErrorWidget(
-                            isResultNotFoundMsg: false,
-                            isNews: false,
-                            isEvents: false,
+//                        Utility.currentScreenSnackBar(
+//                            "check your connection and try again ");
+//                      }
+//                    },
+//                  ),
+//                  _buildSplashScreen()
+//                ])
+
+            : Stack(
+                fit: StackFit.expand,
+                children: [
+                  BlocBuilder<HomeBloc, HomeState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, HomeState state) {
+                        if (state is HomeLoading) {
+                          return _buildSplashScreen();
+                        } else if (state is HomeErrorReceived) {
+                          return Container(
+                            child: state.err != 'NO_CONNECTION'
+                                ? ListView(
+                                    children: [ErrorMsgWidget()],
+                                  )
+                                : SafeArea(
+                                    child: NoInternetErrorWidget(
+                                      connected: false,
+                                      issplashscreen: false,
+                                      onRefresh: () {
+                                        _bloc.add(FetchStandardNavigationBar());
+                                      },
+                                    ),
+                                  ),
                           );
-                  } else if (state is HomeErrorReceived) {
-                    ErrorMsgWidget();
-                  }
-                },
-                child: Container(),
-              ),
-            ),
-            Container(
-              height: 0,
-              width: 0,
-              child: BlocListener<NewsBloc, NewsState>(
-                bloc: _newsBloc,
-                listener: (context, state) async {
-                  if (state is NewsCountLenghtSuccess) {
-                    // SharedPreferences prefs =
-                    //     await SharedPreferences.getInstance();
-                    // SharedPreferences intPrefs =
-                    //     await SharedPreferences.getInstance();
-                    String? _objectName = "${Strings.newsObjectName}";
-                    LocalDatabase<NotificationList> _localDb =
-                        LocalDatabase(_objectName);
-                    List<NotificationList> _localData =
-                        await _localDb.getData();
+                        } else {
+                          return Container();
+                        }
+                      }),
+                  BlocListener<HomeBloc, HomeState>(
+                      bloc: _bloc,
+                      child: Container(),
+                      listener: (BuildContext contxt, HomeState state) {
+                        if (state is HomeErrorReceived) {
+                          setState(() {
+                            flag = false;
+                          });
+                        }
+                      }),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<HomeBloc, HomeState>(
+                      bloc: _bloc,
+                      listener: (context, state) async {
+                        if (state is BottomNavigationBarSuccess) {
+                          AppTheme.setDynamicTheme(Globals.appSetting, context);
 
-                    if (_localData.length < state.obj!.length &&
-                        _localData.isNotEmpty) {
-                      // intPrefs.setInt("totalCount", Globals.notiCount!);
-                      // prefs.setBool("enableIndicator", true);
-                      Globals.indicator.value = true;
-                    }
-                  }
-                },
-                child: Container(),
-              ),
-            ),
-          ],
-        ));
+                          Globals.appSetting = AppSetting.fromJson(state.obj);
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setString(
+                              Strings.SplashUrl,
+                              state.obj["Splash_Screen__c"] ??
+                                  state.obj["App_Logo__c"]);
+                          await Future.delayed(Duration(milliseconds: 200));
+                          state.obj != null
+                              ? Navigator.of(context)
+                                  .pushReplacement(_createRoute(state.obj))
+                              : NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: false,
+                                );
+                        } else if (state is HomeErrorReceived) {
+                          ErrorMsgWidget();
+                        }
+                      },
+                      child: Container(),
+                    ),
+                  ),
+                  Container(
+                    height: 0,
+                    width: 0,
+                    child: BlocListener<NewsBloc, NewsState>(
+                      bloc: _newsBloc,
+                      listener: (context, state) async {
+                        if (state is NewsCountLenghtSuccess) {
+                          // SharedPreferences prefs =
+                          //     await SharedPreferences.getInstance();
+                          // SharedPreferences intPrefs =
+                          //     await SharedPreferences.getInstance();
+                          String? _objectName = "${Strings.newsObjectName}";
+                          LocalDatabase<NotificationList> _localDb =
+                              LocalDatabase(_objectName);
+                          List<NotificationList> _localData =
+                              await _localDb.getData();
+
+                          if (_localData.length < state.obj!.length &&
+                              _localData.isNotEmpty) {
+                            // intPrefs.setInt("totalCount", Globals.notiCount!);
+                            // prefs.setBool("enableIndicator", true);
+                            Globals.indicator.value = true;
+                          }
+                        }
+                      },
+                      child: Container(),
+                    ),
+                  ),
+                ],
+              ));
   }
 
   Route _createRoute(obj) {
@@ -253,5 +314,27 @@ class _StartupPageState extends State<StartupPage> {
         return child;
       },
     );
+  }
+
+  _navigateToOcrSection() async {
+    HiveDbServices _hiveDbServices = HiveDbServices();
+
+    var isOldUser = await _hiveDbServices.getSingleData('new_user', 'new_user');
+
+    //print(isOldUser);
+    //print('timer is started to navigate to ocr section==========>');
+    Timer(Duration(seconds: 1), () async {
+      Navigator.pushReplacement<void, void>(
+        context,
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) =>
+              //OpticalCharacterRecognition()
+
+              isOldUser == true
+                  ? OpticalCharacterRecognition()
+                  : CustomIntroWidget(),
+        ),
+      );
+    });
   }
 }
