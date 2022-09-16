@@ -33,7 +33,9 @@ class _CustomIconModeState extends State<CustomIconMode> {
   Widget build(BuildContext context) {
     return Container(
       child: ClipRRect(
-          child: Globals.themeType == 'Dark'
+          child:  Globals.disableDarkMode == true ? cachedNetworkImage(widget.iconUrl):
+          
+          Globals.themeType == 'Dark'
               ? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''
                   ? InvertColors(
                       child: cachedNetworkImage(widget.iconUrl),

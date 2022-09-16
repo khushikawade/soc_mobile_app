@@ -16,13 +16,13 @@
       },
       {
         "name": "camera_avfoundation",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/camera_avfoundation-0.9.8+4/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/camera_avfoundation-0.9.8+5/",
         "native_build": true,
         "dependencies": []
       },
       {
         "name": "connectivity_plus",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus-2.3.6+1/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus-2.3.7/",
         "native_build": true,
         "dependencies": []
       },
@@ -34,7 +34,7 @@
       },
       {
         "name": "flutter_downloader",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.8.2/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.8.3+2/",
         "native_build": true,
         "dependencies": []
       },
@@ -58,7 +58,7 @@
       },
       {
         "name": "image_picker_ios",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_ios-0.8.5+6/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_ios-0.8.6/",
         "native_build": true,
         "dependencies": []
       },
@@ -142,7 +142,7 @@
       },
       {
         "name": "webview_flutter_wkwebview",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.9.3/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.9.4/",
         "native_build": true,
         "dependencies": []
       }
@@ -162,7 +162,7 @@
       },
       {
         "name": "camera_android",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/camera_android-0.10.0+1/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/camera_android-0.10.0+2/",
         "native_build": true,
         "dependencies": [
           "flutter_plugin_android_lifecycle"
@@ -170,7 +170,7 @@
       },
       {
         "name": "connectivity_plus",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus-2.3.6+1/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus-2.3.7/",
         "native_build": true,
         "dependencies": []
       },
@@ -182,7 +182,7 @@
       },
       {
         "name": "flutter_downloader",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.8.2/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.8.3+2/",
         "native_build": true,
         "dependencies": []
       },
@@ -206,7 +206,7 @@
       },
       {
         "name": "google_maps_flutter_android",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter_android-2.1.10/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter_android-2.3.0/",
         "native_build": true,
         "dependencies": [
           "flutter_plugin_android_lifecycle"
@@ -214,7 +214,7 @@
       },
       {
         "name": "image_picker_android",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_android-0.8.5+2/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_android-0.8.5+3/",
         "native_build": true,
         "dependencies": [
           "flutter_plugin_android_lifecycle"
@@ -246,7 +246,7 @@
       },
       {
         "name": "path_provider_android",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.19/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.20/",
         "native_build": true,
         "dependencies": []
       },
@@ -264,7 +264,7 @@
       },
       {
         "name": "shared_preferences_android",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_android-2.0.12/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_android-2.0.13/",
         "native_build": true,
         "dependencies": []
       },
@@ -282,7 +282,7 @@
       },
       {
         "name": "url_launcher_android",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_android-6.0.17/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_android-6.0.19/",
         "native_build": true,
         "dependencies": []
       },
@@ -300,7 +300,7 @@
       },
       {
         "name": "webview_flutter_android",
-        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_android-2.9.5/",
+        "path": "/Users/apple/Documents/Setups/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_android-2.10.1/",
         "native_build": true,
         "dependencies": []
       }
@@ -828,6 +828,6 @@
       "dependencies": []
     }
   ],
-  "date_created": "2022-09-15 16:18:17.625417",
+  "date_created": "2022-09-16 10:54:22.730258",
   "version": "3.0.5"
 }

@@ -77,66 +77,24 @@ class Globals {
   static String teacherId = '';
   static String sessionId = '';
   static bool isPremiumUser = false;
-
-  // static List subjectDetailsList = [
-  //   'NY-3.OA.1 Interpret Products of whole numbers',
-  //   'NY-3.OA.2  Interpret whole-number quotients of whole numbers.',
-  //   'NY-3.OA.3. Use multiplication and division within 100 to solve word problems…',
-  //   'NY-3.OA.4 Determine unknown whole number in multiplication or division…'
-  // ];
-  // static List nycDetailsList = [
-  //   'N&OBase Ten',
-  //   'Geometry',
-  //   'N&OFractions',
-  //   'Measurement'
-  // ];
-  // static List subjectList = ['Maths', 'Science', 'ELA', '+'];
-  // static List<String> classList = [
-  //   'PK',
-  //   'K',
-  //   '1',
-  //   '2',
-  //   '3',
-  //   '4',
-  //   '5',
-  //   '6',
-  //   '7',
-  //   '8',
-  //   '9',
-  //   '10',
-  //   '11',
-  //   '12',
-  //   '+'
-  // ];
   static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe87a];
   static List ocrResultIconsName = ["Share", "Drive", "History", "Dashboard"];
-  // static List finishedList = [
-  //   "Scan another assessment",
-  //   "View all assessment results"
-  // ];
   static List gradeList = [];
   static bool iscameraPopup = true;
   static String? googleDriveFolderId;
   static String? googleDriveFolderPath;
   static String? googleExcelSheetId;
-  // static String? authorizationToken;
-//  static late List<StudentAssessmentInfo>? studentInfo = [];
   static String? shareableLink;
   static String? pointpossible = '2';
   static String? assessmentName;
   static int? scanMoreStudentInfoLength;
   static String currentAssessmentId = '';
-  // static final nameController = TextEditingController();
   static final ValueNotifier<String> updateStudentName =
       ValueNotifier<String>('');
   static String? scoringRubric;
-  // static late List<CustomRubicModal>? customRubicDetail = [];
-  // static LocalDatabase<UserInformation> localUserInfo = LocalDatabase('user_profile');
-  // static List<UserInformation> userprofilelocalData = [];
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static String? questionImgUrl;
   static File? questionImgFilePath;
-//  static late List<StudentAssessmentInfo>? historyStudentInfo = [];
   static String? historyAssessmentName = '';
   static String? historyAssessmentFileId = '';
 }

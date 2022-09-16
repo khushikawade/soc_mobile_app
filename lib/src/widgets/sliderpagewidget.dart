@@ -73,6 +73,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
+    
     if (isDeviceBackButton == true) {
       isDeviceBackButton = false;
       // bool isNewsPage =
