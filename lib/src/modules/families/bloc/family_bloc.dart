@@ -245,9 +245,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   filterFutureAndPastEvents(List<CalendarEventList> eventList, currentDate) {
     futureListobj!.clear();
     pastListobj!.clear();
-
-    for (int i = 0; i < eventList.length; i++) {
-      try {
+    try {
+      for (int i = 0; i < eventList.length; i++) {
+        //if (eventList[i].start != null) {
         var temp = eventList[i].start.toString().contains('dateTime')
             ? eventList[i].start['dateTime'].toString().substring(0, 10)
             : eventList[i].start['date'].toString().substring(0, 10);
@@ -256,9 +256,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         } else {
           futureListobj!.add(eventList[i]);
         }
-      } catch (e) {
-        throw (e);
+        //   }
       }
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -367,6 +368,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         List<CalendarEventList> data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
+        data1.removeWhere((element) => element.start == null);
         // //print(data1);
         return data1.map((i) {
           var datetime = i.start != null
