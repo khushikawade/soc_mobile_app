@@ -238,59 +238,62 @@ class _StaffPageState extends State<StaffPage> {
               return
                   // connected?
                   Container(
-                child: Column(mainAxisSize: MainAxisSize.max, children: [
-                  Expanded(
-                    child: BlocBuilder<StaffBloc, StaffState>(
-                        bloc: _bloc,
-                        builder: (BuildContext contxt, StaffState state) {
-                          if (state is StaffInitial || state is StaffLoading) {
-                            return Center(
-                                child: CircularProgressIndicator(
-                              color:
-                                  Theme.of(context).colorScheme.primaryVariant,
-                            ));
-                          } else if (state is StaffDataSucess) {
-                            return widget.customObj != null &&
-                                    widget.customObj!.sectionTemplate ==
-                                        "Grid Menu"
-                                ? CommonGridWidget(
-                                  scrollController: _scrollController,
-                                    scaffoldKey: _scaffoldKey,
-                                    bottomPadding: 60,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: "staff")
-                                : CommonListWidget(
-                                     scrollController: _scrollController,
-                                    bottomPadding: 80,
-                                    key: ValueKey(key),
-                                    scaffoldKey: _scaffoldKey,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: "staff");
-                          } else if (state is ErrorInStaffLoading) {
-                            return ListView(children: [ErrorMsgWidget()]);
-                          } else {
-                            return ErrorMsgWidget();
-                          }
-                        }),
-                  ),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            Globals.appSetting = AppSetting.fromJson(state.obj);
-                            setState(() {});
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                ]),
+                child: ListView(shrinkWrap: true,
+                    //   mainAxisSize: MainAxisSize.max,
+                    children: [
+                      BlocBuilder<StaffBloc, StaffState>(
+                          bloc: _bloc,
+                          builder: (BuildContext contxt, StaffState state) {
+                            if (state is StaffInitial ||
+                                state is StaffLoading) {
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ));
+                            } else if (state is StaffDataSucess) {
+                              return widget.customObj != null &&
+                                      widget.customObj!.sectionTemplate ==
+                                          "Grid Menu"
+                                  ? CommonGridWidget(
+                                      scrollController: _scrollController,
+                                      scaffoldKey: _scaffoldKey,
+                                      bottomPadding: 60,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "staff")
+                                  : CommonListWidget(
+                                      scrollController: _scrollController,
+                                      bottomPadding: 80,
+                                      key: ValueKey(key),
+                                      scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "staff");
+                            } else if (state is ErrorInStaffLoading) {
+                              return ListView(children: [ErrorMsgWidget()]);
+                            } else {
+                              return ErrorMsgWidget();
+                            }
+                          }),
+                      Container(
+                        height: 0,
+                        width: 0,
+                        child: BlocListener<HomeBloc, HomeState>(
+                            bloc: _homeBloc,
+                            listener: (context, state) async {
+                              if (state is BottomNavigationBarSuccess) {
+                                AppTheme.setDynamicTheme(
+                                    Globals.appSetting, context);
+                                Globals.appSetting =
+                                    AppSetting.fromJson(state.obj);
+                                setState(() {});
+                              }
+                            },
+                            child: EmptyContainer()),
+                      ),
+                    ]),
               );
             },
             child: Container()),
@@ -318,6 +321,7 @@ class _StaffPageState extends State<StaffPage> {
           child: Globals.appSetting.staffBannerImageC != null &&
                   Globals.appSetting.staffBannerImageC != ''
               ? NestedScrollView(
+                  controller: _scrollController,
                   //  key: globalKey,
                   headerSliverBuilder:
                       (BuildContext context, bool innerBoxIsScrolled) {
