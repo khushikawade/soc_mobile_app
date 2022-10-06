@@ -1,3 +1,4 @@
+import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,6 @@ class App extends StatefulWidget {
 class _AppState extends State<App> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
- 
 
   @override
   initState() {
@@ -104,7 +104,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         home: StartupPage(
           isOcrSection: false,
         ),
-        // home: SchoolIDLogin(),
+       // home: SchoolIDLogin(),
       ),
     );
   }
