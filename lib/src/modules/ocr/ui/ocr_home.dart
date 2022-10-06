@@ -591,6 +591,7 @@ class _OpticalCharacterRecognitionPageState
                     : '2'; //In case of 'None' or 'Custom rubric' selection
 
     Globals.googleExcelSheetId = "";
+     //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
     updateLocalDb();
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";

@@ -408,15 +408,18 @@ class _StaffPageState extends State<StaffPage> {
                     }
                   },
                   icon: Container(
-                    alignment: Alignment.center,
-                    child: Icon(Icons.add,
-                        size: Globals.deviceType == 'tablet' ? 30 : null,
-                        color: Theme.of(context).backgroundColor),
+                    padding: EdgeInsets.only(left: !isScrolling.value ? 4 : 0),
+                    //alignment: Alignment.center,
+                    child: Center(
+                      child: Icon(Icons.add,
+                          size: Globals.deviceType == 'tablet' ? 30 : null,
+                          color: Theme.of(context).backgroundColor),
+                    ),
                   ),
                   label: !isScrolling.value
                       ? Container()
                       : Utility.textWidget(
-                          text: 'Assessment',
+                          text: 'Assignment',
                           context: context,
                           textTheme: Theme.of(context)
                               .textTheme
