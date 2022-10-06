@@ -1,5 +1,5 @@
+import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -16,7 +16,6 @@ class App extends StatefulWidget {
 class _AppState extends State<App> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  HiveDbServices _hiveDbServices = HiveDbServices();
 
   @override
   initState() {
@@ -24,7 +23,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     // getTheme();
     // clearLocalDataBase();
 
-    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
 
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
@@ -32,9 +31,9 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Globals.disableDarkMode != true) {
       Globals.themeType = 'Light';
     }
-    var window = WidgetsBinding.instance!.window;
+    var window = WidgetsBinding.instance.window;
     window.onPlatformBrightnessChanged = () {
-      WidgetsBinding.instance!.handlePlatformBrightnessChanged();
+      WidgetsBinding.instance.handlePlatformBrightnessChanged();
       // This callback is called every time the brightness changes.
       var brightness = window.platformBrightness;
 
@@ -45,7 +44,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         Globals.themeType = 'Light';
       }
     };
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -58,7 +57,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   void dispose() {
     // Remove the observer
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
@@ -67,7 +66,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     // These are the callbacks
     switch (state) {
       case AppLifecycleState.resumed:
-        var brightness = SchedulerBinding.instance!.window.platformBrightness;
+        var brightness = SchedulerBinding.instance.window.platformBrightness;
         if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
           Globals.themeType = 'Dark';
         }
@@ -105,7 +104,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         home: StartupPage(
           isOcrSection: false,
         ),
-        // home: SchoolIDLogin(),
+       // home: SchoolIDLogin(),
       ),
     );
   }

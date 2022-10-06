@@ -32,6 +32,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -73,44 +74,44 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
               return
                   // connected ?
-                  Column(
-                mainAxisSize: MainAxisSize.max,
+                  ListView(
+                // mainAxisSize: MainAxisSize.max,
                 children: [
-                  Expanded(
-                    child: BlocBuilder<ResourcesBloc, ResourcesState>(
-                        bloc: _bloc,
-                        builder: (BuildContext contxt, ResourcesState state) {
-                          if (state is ResourcesInitial ||
-                              state is ResourcesLoading) {
-                            return Container(
-                                alignment: Alignment.center,
-                                child: CircularProgressIndicator(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant,
-                                ));
-                          } else if (state is ResourcesDataSucess) {
-                            return widget.customObj != null &&
-                                    widget.customObj!.sectionTemplate ==
-                                        "Grid Menu"
-                                ? CommonGridWidget(
-                                    scaffoldKey: _scaffoldKey,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: "resources")
-                                : CommonListWidget(
-                                    key: ValueKey(key),
-                                    scaffoldKey: _scaffoldKey,
-                                    data: state.obj!,
-                                    connected: connected,
-                                    sectionName: "resources");
-                          } else if (state is ResourcesErrorLoading) {
-                            return ListView(children: [ErrorMsgWidget()]);
-                          } else {
-                            return Container();
-                          }
-                        }),
-                  ),
+                  BlocBuilder<ResourcesBloc, ResourcesState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, ResourcesState state) {
+                        if (state is ResourcesInitial ||
+                            state is ResourcesLoading) {
+                          return Container(
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ));
+                        } else if (state is ResourcesDataSucess) {
+                          return widget.customObj != null &&
+                                  widget.customObj!.sectionTemplate ==
+                                      "Grid Menu"
+                              ? CommonGridWidget(
+                                  scrollController: _scrollController,
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: "resources")
+                              : CommonListWidget(
+                                  scrollController: _scrollController,
+                                  key: ValueKey(key),
+                                  scaffoldKey: _scaffoldKey,
+                                  data: state.obj!,
+                                  connected: connected,
+                                  sectionName: "resources");
+                        } else if (state is ResourcesErrorLoading) {
+                          return ListView(children: [ErrorMsgWidget()]);
+                        } else {
+                          return Container();
+                        }
+                      }),
                   Container(
                     height: 0,
                     width: 0,
@@ -138,6 +139,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});
@@ -146,6 +150,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
         body: Globals.appSetting.resourcesBannerImageC != null &&
                 Globals.appSetting.resourcesBannerImageC != ""
             ? NestedScrollView(
+                controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[

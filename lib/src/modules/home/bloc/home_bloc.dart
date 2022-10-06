@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'dart:core';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
@@ -21,6 +21,7 @@ import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -502,6 +503,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   saveDarkModeField(AppSetting _appSetting) {
     if (_appSetting.disableDarkMode == true) {
+     
       HiveDbServices _hivedb = HiveDbServices();
       _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
     } else {

@@ -41,6 +41,7 @@ class _FamilyPageState extends State<FamilyPage> {
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
   bool? isCustomApp;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -48,7 +49,7 @@ class _FamilyPageState extends State<FamilyPage> {
     //lock screen orientation
     // Utility.setLocked();
     _bloc.add(FamiliesEvent());
-    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
 
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
@@ -57,7 +58,6 @@ class _FamilyPageState extends State<FamilyPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -89,43 +89,43 @@ class _FamilyPageState extends State<FamilyPage> {
 
                 return
                     // connected?
-                    Column(
-                  mainAxisSize: MainAxisSize.max,
+                    ListView(
+                  shrinkWrap: true,
+                  //  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Expanded(
-                      child: BlocBuilder<FamilyBloc, FamilyState>(
-                          bloc: _bloc,
-                          builder: (BuildContext contxt, FamilyState state) {
-                            if (state is FamilyInitial ||
-                                state is FamilyLoading) {
-                              return Center(
-                                  child: CircularProgressIndicator(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryVariant,
-                              ));
-                            } else if (state is FamiliesDataSucess) {
-                              return widget.customObj != null &&
-                                      widget.customObj!.sectionTemplate ==
-                                          "Grid Menu"
-                                  ? CommonGridWidget(
-                                      scaffoldKey: _scaffoldKey,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "family")
-                                  : CommonListWidget(
-                                      key: ValueKey(key),
-                                      scaffoldKey: _scaffoldKey,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "family");
-                            } else if (state is ErrorLoading) {
-                              return ListView(children: [ErrorMsgWidget()]);
-                            } else {
-                              return Container();
-                            }
-                          }),
-                    ),
+                    BlocBuilder<FamilyBloc, FamilyState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, FamilyState state) {
+                          if (state is FamilyInitial ||
+                              state is FamilyLoading) {
+                            return Center(
+                                child: CircularProgressIndicator(
+                              color:
+                                  Theme.of(context).colorScheme.primaryVariant,
+                            ));
+                          } else if (state is FamiliesDataSucess) {
+                            return widget.customObj != null &&
+                                    widget.customObj!.sectionTemplate ==
+                                        "Grid Menu"
+                                ? CommonGridWidget(
+                                    scrollController: _scrollController,
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "family")
+                                : CommonListWidget(
+                                    scrollController: _scrollController,
+                                    key: ValueKey(key),
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "family");
+                          } else if (state is ErrorLoading) {
+                            return ListView(children: [ErrorMsgWidget()]);
+                          } else {
+                            return Container();
+                          }
+                        }),
                     Container(
                       height: 0,
                       width: 0,
@@ -156,6 +156,9 @@ class _FamilyPageState extends State<FamilyPage> {
         //backgroundColor: Theme.of(context).backgroundColor,
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});
@@ -164,6 +167,10 @@ class _FamilyPageState extends State<FamilyPage> {
         body: Globals.appSetting.familyBannerImageC != null &&
                 Globals.appSetting.familyBannerImageC != ''
             ? NestedScrollView(
+
+                // floatHeaderSlivers: true,
+                controller: _scrollController,
+                floatHeaderSlivers: true,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[

@@ -34,6 +34,7 @@ class _AboutPageState extends State<AboutPage> {
   HomeBloc _homeBloc = HomeBloc();
   bool? iserrorstate = false;
   List<String?> department = [];
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -72,43 +73,43 @@ class _AboutPageState extends State<AboutPage> {
                 iserrorstate = true;
               }
 
-              return Column(
-                mainAxisSize: MainAxisSize.max,
+              return ListView(
+                //  mainAxisSize: MainAxisSize.max,
                 children: [
-                  Expanded(
-                    child: BlocBuilder<AboutBloc, AboutState>(
-                        bloc: _bloc,
-                        builder: (BuildContext contxt, AboutState state) {
-                          if (state is AboutInitial || state is AboutLoading) {
-                            return Container(
-                                alignment: Alignment.center,
-                                child: CircularProgressIndicator(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant,
-                                ));
-                          } else if (state is AboutDataSucess) {
-                            return widget.customObj != null &&
-                                    widget.customObj!.sectionTemplate ==
-                                        "Grid Menu"
-                                ? CommonGridWidget(
-                                    scaffoldKey: _scaffoldKey,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: "about")
-                                : CommonListWidget(
-                                    key: ValueKey(key),
-                                    scaffoldKey: _scaffoldKey,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: 'about');
-                          } else if (state is ErrorLoading) {
-                            return ListView(children: [ErrorMsgWidget()]);
-                          } else {
-                            return Container();
-                          }
-                        }),
-                  ),
+                  BlocBuilder<AboutBloc, AboutState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, AboutState state) {
+                        if (state is AboutInitial || state is AboutLoading) {
+                          return Container(
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ));
+                        } else if (state is AboutDataSucess) {
+                          return widget.customObj != null &&
+                                  widget.customObj!.sectionTemplate ==
+                                      "Grid Menu"
+                              ? CommonGridWidget(
+                                  scrollController: _scrollController,
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: "about")
+                              : CommonListWidget(
+                                  scrollController: _scrollController,
+                                  key: ValueKey(key),
+                                  scaffoldKey: _scaffoldKey,
+                                  connected: connected,
+                                  data: state.obj!,
+                                  sectionName: 'about');
+                        } else if (state is ErrorLoading) {
+                          return ListView(children: [ErrorMsgWidget()]);
+                        } else {
+                          return Container();
+                        }
+                      }),
                   Container(
                     height: 0,
                     width: 0,
@@ -136,6 +137,9 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});
@@ -144,6 +148,7 @@ class _AboutPageState extends State<AboutPage> {
         body: Globals.appSetting.aboutBannerImageC != null &&
                 Globals.appSetting.aboutBannerImageC != ""
             ? NestedScrollView(
+                controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[

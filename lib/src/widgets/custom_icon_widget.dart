@@ -39,7 +39,8 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
 
   Widget cachedNetworkImage() {
     return CachedNetworkImage(
-        imageUrl: Globals.themeType == 'Dark'
+        imageUrl: Globals.disableDarkMode == true ? widget.iconUrl! :
+         Globals.themeType == 'Dark'
             ? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''
                 ? widget.iconUrl!
                 : widget.darkModeIconUrl!)

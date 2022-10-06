@@ -13,6 +13,7 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
@@ -35,13 +36,15 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   bool? showClosebutton;
 
   final GlobalKey _bshowcase = GlobalKey();
-  final GlobalKey _openSettingShowCaseKey = GlobalKey();
 
+  final GlobalKey _openSettingShowCaseKey = GlobalKey();
+ final VoidCallback? onTap;
   AppBarWidget(
       {Key? key,
       required this.refresh,
       required this.marginLeft,
       this.hideAccessibilityButton,
+      this.onTap,
       this.showClosebutton})
       : super(key: key);
 
@@ -173,8 +176,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
               ],
             ),
           ),
-          title: AppLogoWidget(
-            marginLeft: marginLeft,
+          title: GestureDetector(
+            // splashFactory: NoSplash.splashFactory,
+            onTap: onTap, 
+            // splashColor: Theme.of(context).backgroundColor,
+            // focusColor: Theme.of(context).backgroundColor,
+            child: AppLogoWidget(
+              marginLeft: marginLeft,
+            ),
           ),
           actions: <Widget>[
             SearchButtonWidget(

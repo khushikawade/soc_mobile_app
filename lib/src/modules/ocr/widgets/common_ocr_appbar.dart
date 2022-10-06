@@ -33,6 +33,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.isOcrHome,
       this.scaffoldKey,
       this.customBackButton,
+      this.onTap,
       required this.isbackOnSuccess,
       this.isFromResultSection})
       : preferredSize = Size.fromHeight(60.0),
@@ -50,6 +51,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   ValueListenable<bool>? isbackOnSuccess;
   String? sessionId;
   bool? isFromResultSection;
+  final VoidCallback? onTap;
 
   final scaffoldKey;
 
@@ -102,6 +104,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
             ],
           ),
         ),
+        title: GestureDetector(
+            onTap: widget.onTap,
+            child: Container(
+              width: 70,
+              height: 40,
+              color: Colors.transparent,
+            )),
         actions: [
           widget.isFromResultSection == true
               ? Container(

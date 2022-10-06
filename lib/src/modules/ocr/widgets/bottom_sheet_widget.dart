@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -323,41 +324,12 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 }
 
                                 widget.update!(true);
+
                                 Navigator.pop(
                                   context,
                                 );
                               }
                             }
-
-                            // if (nameController.text.isNotEmpty &&
-                            //     customScoreController.text.isNotEmpty) {
-                            //   List<int> imageBytes;
-                            //   if (imageFile != null) {
-                            //     imageBytes = imageFile!.readAsBytesSync();
-                            //     String imageB64 = base64Encode(imageBytes);
-                            //     //print("image64 is recived --------->$imageB64");
-                            //     RubricScoreList.scoringList.add(CustomRubicModal(
-                            //         name: nameController.text,
-                            //         score: customScoreController.text,
-                            //         imgBase64: imageB64,
-                            //         customOrStandardRubic: "Custom"));
-
-                            //     _googleBloc.add(ImageToAwsBucked(
-                            //         imgBase64: RubricScoreList.scoringList.last.imgBase64));
-                            //   } else {
-                            //     RubricScoreList.scoringList.add(CustomRubicModal(
-                            //         name: nameController.text,
-                            //         score: customScoreController.text,
-                            //         customOrStandardRubic: "Custom"));
-                            //   }
-
-                            //   widget.update(true);
-                            //   Navigator.pop(
-                            //     context,
-                            //   );
-                            // } else {
-                            //   //print("error");
-                            // }
                           },
                           label: Row(
                             children: [

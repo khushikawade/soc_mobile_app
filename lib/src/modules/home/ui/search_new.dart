@@ -45,7 +45,7 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kLabelSpacing = 20.0;
   static const double _kMargin = 16.0;
   final _controller = TextEditingController();
-  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  // final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final HomeBloc _homeBloc = new HomeBloc();
   final HomeBloc _homeBloc2 = new HomeBloc();
@@ -58,6 +58,7 @@ class _SearchPageState extends State<SearchPage> {
   List<dynamic> searchList = [];
   String? searchId;
   dynamic recordObject;
+  final ScrollController _scrollController = ScrollController();
 
   onItemChanged(String value) {
     issuggestionList = true;
@@ -399,6 +400,7 @@ class _SearchPageState extends State<SearchPage> {
             return snapshot.data != null && snapshot.data.length > 0
                 ? Expanded(
                     child: ListView.builder(
+                      controller: _scrollController,
                       padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
                       scrollDirection: Axis.vertical,
                       itemCount:
@@ -525,6 +527,7 @@ class _SearchPageState extends State<SearchPage> {
             return searchList.length > 0
                 ? Expanded(
                     child: ListView(
+                    controller: _scrollController,
                     shrinkWrap: true,
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
@@ -750,27 +753,34 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        resizeToAvoidBottomInset: true,
-        appBar: new AppBar(
-          elevation: 0.0,
-          leading: BackButtonWidget(),
-          centerTitle: true,
-          title: // SizedBox(width: 100.0, height: 60.0, child:
-              Container(
-            // color: Colors.blue,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 20),
+      key: _scaffoldKey,
+      resizeToAvoidBottomInset: true,
+      appBar: new AppBar(
+        elevation: 0.0,
+        leading: BackButtonWidget(),
+        centerTitle: true,
+        title: // SizedBox(width: 100.0, height: 60.0, child:
+            Container(
+          // color: Colors.blue,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: () {
+                Utility.scrollToTop(scrollController: _scrollController);
+              },
               child: AppLogoWidget(
                 marginLeft: 0,
               ),
             ),
           ),
-          // )
         ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
+        // )
+      ),
+      body:
+          // RefreshIndicator(
+          //   key: refreshKey,
+          //   child:
+          OfflineBuilder(
               connectivityBuilder: (
                 BuildContext context,
                 ConnectivityResult connectivity,
@@ -852,14 +862,15 @@ class _SearchPageState extends State<SearchPage> {
                 );
               },
               child: Container()),
-          onRefresh: refreshPage,
-        ));
+      //   onRefresh: refreshPage,
+      // )
+    );
   }
 
-  Future refreshPage() async {
-    refreshKey.currentState?.show(atTop: false);
-    _homeBloc.add(FetchStandardNavigationBar());
-  }
+  // Future refreshPage() async {
+  //   refreshKey.currentState?.show(atTop: false);
+  //   _homeBloc.add(FetchStandardNavigationBar());
+  // }
 
   Future _setFree() async {
     await SystemChrome.setPreferredOrientations([

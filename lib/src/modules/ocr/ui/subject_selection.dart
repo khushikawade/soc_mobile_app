@@ -80,6 +80,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       LocalDatabase('recent_option_subject');
   LocalDatabase<SubjectDetailList> learningRecentOptionDB =
       LocalDatabase('recent_option_learning_standard');
+  final ScrollController _scrollController = ScrollController();
 
   @override
   initState() {
@@ -119,6 +120,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
+                onTap: () {
+                  Utility.scrollToTop(scrollController: _scrollController);
+                },
                 isSuccessState: ValueNotifier<bool>(true),
                 isbackOnSuccess: isBackFromCamera,
                 //key: null,
@@ -435,6 +439,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               : MediaQuery.of(context).size.height * 0.7,
           width: MediaQuery.of(context).size.width * 0.9,
           child: ListView.separated(
+            controller: _scrollController,
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).size.height * 0.03),
             itemCount: list.length,
@@ -673,6 +678,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               : MediaQuery.of(context).size.width * 0.30,
           width: MediaQuery.of(context).size.width * 0.9,
           child: GridView.builder(
+              controller: _scrollController,
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height * 0.09),
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

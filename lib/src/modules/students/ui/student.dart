@@ -40,10 +40,12 @@ class _StudentPageState extends State<StudentPage> {
   bool? iserrorstate = false;
 
   StudentBloc _bloc = StudentBloc();
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    //_scrollController = ScrollController()..addListener(_scrollListener);
     _bloc.add(StudentPageEvent());
   }
 
@@ -52,6 +54,13 @@ class _StudentPageState extends State<StudentPage> {
     // TODO: implement dispose
     super.dispose();
   }
+
+  // _scrollListener() {
+  //   ////print(_controller.position.extentAfter);
+  //   if (_scrollController.position.hasPixels) {
+  //     refreshPage();
+  //   }
+  // }
 
   _launchURL(StudentApp obj, subList) async {
     if (obj.appUrlC != null) {
@@ -94,6 +103,8 @@ class _StudentPageState extends State<StudentPage> {
       List<StudentApp> list, List<StudentApp> subList, String key) {
     return list.length > 0
         ? GridView.count(
+            shrinkWrap: true,
+            controller: _scrollController,
             key: ValueKey(key),
             padding: const EdgeInsets.only(
                 bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
@@ -284,6 +295,7 @@ class _StudentPageState extends State<StudentPage> {
             // connected: connected,
           );
   }
+  //sfjhjjsfdjkfjdjsdjdjjhksfdssfjkdjdjkjsdsjkdkdjsdjkjkjsdjhkjsdjkjsdjkjfjhfdhjhfjnbfjnnnmnccnmbxzfjksldaqpwoieruyt;adjkjhkhdfghvbsd
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
@@ -312,57 +324,62 @@ class _StudentPageState extends State<StudentPage> {
               iserrorstate = true;
             }
 
-            return new Stack(fit: StackFit.expand, children: [
-              // connected
-              //     ?
-              BlocBuilder<StudentBloc, StudentState>(
-                  bloc: _bloc,
-                  builder: (BuildContext contxt, StudentState state) {
-                    if (state is StudentInitial || state is Loading) {
-                      return Center(
-                          child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                      ));
-                    } else if (state is StudentDataSucess) {
-                      return state.obj != null && state.obj!.length > 0
-                          ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 5),
-                              child:
-                                  _buildGrid(state.obj!, state.subFolder!, key))
-                          :
-                          // ListView(children: [
-                          NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: false,
-                              connected: connected,
-                            );
-                      // ]);
-                    } else if (state is StudentError) {
-                      return ListView(children: [ErrorMsgWidget()]);
-                    }
-                    return Container();
-                  }),
-              Container(
-                child: BlocListener<HomeBloc, HomeState>(
-                    bloc: _homeBloc,
-                    listener: (context, state) async {
-                      if (state is BottomNavigationBarSuccess) {
-                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+            return ListView(
 
-                        Globals.appSetting = AppSetting.fromJson(state.obj);
-                        setState(() {});
-                      } else if (state is HomeErrorReceived) {
-                        Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: Text("Unable to load the data")),
-                        );
-                      }
-                    },
-                    child: EmptyContainer()),
-              ),
-            ]);
+                //fit: StackFit.expand,
+                children: [
+                  // connected
+                  //     ?
+                  BlocBuilder<StudentBloc, StudentState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, StudentState state) {
+                        if (state is StudentInitial || state is Loading) {
+                          return Center(
+                              child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          ));
+                        } else if (state is StudentDataSucess) {
+                          return state.obj != null && state.obj!.length > 0
+                              ? Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  child: _buildGrid(
+                                      state.obj!, state.subFolder!, key))
+                              :
+                              // ListView(children: [
+                              NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: false,
+                                  connected: connected,
+                                );
+                          // ]);
+                        } else if (state is StudentError) {
+                          return ListView(children: [ErrorMsgWidget()]);
+                        }
+                        return Container();
+                      }),
+                  Container(
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+
+                            Globals.appSetting = AppSetting.fromJson(state.obj);
+                            setState(() {});
+                          } else if (state is HomeErrorReceived) {
+                            Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Center(
+                                  child: Text("Unable to load the data")),
+                            );
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ]);
           },
           child: Container()),
       onRefresh: refreshPage,
@@ -374,6 +391,9 @@ class _StudentPageState extends State<StudentPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});
@@ -383,8 +403,7 @@ class _StudentPageState extends State<StudentPage> {
                 Globals.appSetting.studentBannerImageC != null &&
                 Globals.appSetting.studentBannerImageC != ""
             ? NestedScrollView(
-
-                // controller: _scrollController,
+                controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[

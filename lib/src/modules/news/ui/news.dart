@@ -39,6 +39,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   bool? isCountLoading = true;
   bool? isActionAPICalled = false;
   bool? result;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     Globals.isNewTap = false;
     Globals.indicator.value = false;
   }
@@ -231,6 +232,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildList(List<NotificationList> obj) {
     return Expanded(
       child: ListView.builder(
+        controller: _scrollController,
         shrinkWrap: true,
         padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
@@ -246,6 +248,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBarWidget(
+        onTap: () {
+          Utility.scrollToTop(scrollController: _scrollController);
+        },
         marginLeft: 30,
         refresh: (v) {
           setState(() {});

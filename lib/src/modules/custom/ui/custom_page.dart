@@ -24,8 +24,14 @@ import '../../shared/ui/common_grid_widget.dart';
 class CustomPages extends StatefulWidget {
   final List<SharedList>? customList;
   final CustomSetting? customObj;
+  final ScrollController? scrollController;
 
-  CustomPages({Key? key, this.customList, this.customObj}) : super(key: key);
+  CustomPages(
+      {Key? key,
+      this.customList,
+      this.customObj,
+      required this.scrollController})
+      : super(key: key);
 
   @override
   _CustomPagesState createState() => _CustomPagesState();
@@ -119,12 +125,14 @@ class _CustomPagesState extends State<CustomPages> {
   Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
     if (obj.sectionTemplate == 'List Menu') {
       return CommonListWidget(
+          scrollController: widget.scrollController,
           scaffoldKey: _scaffoldKey,
           connected: connected,
           data: list,
           sectionName: "Custom");
     } else if (obj.sectionTemplate == 'Grid Menu') {
       return CommonGridWidget(
+          scrollController: widget.scrollController,
           scaffoldKey: _scaffoldKey,
           connected: connected,
           data: list,

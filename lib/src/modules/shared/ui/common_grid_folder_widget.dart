@@ -523,7 +523,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                               //   decelerationDuration:
                               //       Duration(milliseconds: 500),
                               //   decelerationCurve: Curves.easeOut,
-                          
+
                               // ),
                               )
                           : MediaQuery.of(context).orientation ==

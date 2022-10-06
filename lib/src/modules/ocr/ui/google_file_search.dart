@@ -20,9 +20,9 @@ import '../../../services/utility.dart';
 import '../../google_drive/model/recent_google_file.dart';
 
 class GoogleFileSearchPage extends StatefulWidget {
-  GoogleFileSearchPage({
-    Key? key,
-  }) : super(key: key);
+  final ScrollController? scrollController;
+  GoogleFileSearchPage({Key? key, required this.scrollController})
+      : super(key: key);
   @override
   _GoogleFileSearchPageState createState() => _GoogleFileSearchPageState();
 }
@@ -33,7 +33,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   static const double _kLabelSpacing = 20.0;
   static const double _kMargin = 16.0;
   final _controller = TextEditingController();
-  final refreshKey = GlobalKey<RefreshIndicatorState>();
+ // final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final GoogleDriveBloc googleBloc = new GoogleDriveBloc();
   FocusNode myFocusNode = new FocusNode();
@@ -189,6 +189,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
           return snapshot.data != null && snapshot.data.length > 0
               ? Expanded(
                   child: ListView.builder(
+                    controller: widget.scrollController,
                     padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
                     scrollDirection: Axis.vertical,
                     itemCount:
@@ -344,6 +345,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
             return searchList.length > 0
                 ? Expanded(
                     child: ListView(
+                    controller: widget.scrollController,
                     shrinkWrap: true,
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
