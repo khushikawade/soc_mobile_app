@@ -23,7 +23,7 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
   @override
   void initState() {
     super.initState();
-    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
 
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
@@ -39,12 +39,14 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
 
   Widget cachedNetworkImage() {
     return CachedNetworkImage(
-        imageUrl: Globals.disableDarkMode == true ? widget.iconUrl! :
-         Globals.themeType == 'Dark'
-            ? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''
-                ? widget.iconUrl!
-                : widget.darkModeIconUrl!)
-            : widget.iconUrl!,
+        imageUrl: Globals.disableDarkMode == true
+            ? widget.iconUrl!
+            : Globals.themeType == 'Dark'
+                ? (widget.darkModeIconUrl == null ||
+                        widget.darkModeIconUrl == ''
+                    ? widget.iconUrl!
+                    : widget.darkModeIconUrl!)
+                : widget.iconUrl!,
         height: Globals.deviceType == "phone"
             ? AppTheme.kIconSize
             : AppTheme.kTabIconSize,

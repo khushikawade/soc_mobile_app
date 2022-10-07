@@ -374,8 +374,10 @@ class _StaffPageState extends State<StaffPage> {
                   onPressed: () async {
                     // Globals.localUserInfo.clear(); // COMMENT
                     Globals.lastindex = Globals.controller!.index;
+
                     List<UserInformation> _profileData =
                         await UserGoogleProfile.getUserProfile();
+
                     if (_profileData.isEmpty) {
                       await _launchURL('Google Authentication');
                     } else {

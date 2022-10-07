@@ -16,6 +16,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
   bool? isEvents;
   double? marginTop;
   bool? connected;
+  bool? isScheduleFound;
   NoDataFoundErrorWidget(
       {Key? key,
       required this.isResultNotFoundMsg,
@@ -24,7 +25,9 @@ class NoDataFoundErrorWidget extends StatelessWidget {
       this.isCalendarPageOrientationLandscape,
       required this.isEvents,
       this.isSearchpage,
-      this.marginTop,this.isOcrSearch})
+      this.marginTop,
+      this.isScheduleFound,
+      this.isOcrSearch})
       : super(key: key);
 
   Widget build(BuildContext context) {
@@ -70,7 +73,11 @@ class NoDataFoundErrorWidget extends StatelessWidget {
                               ? "No Event Found"
                               : isResultNotFoundMsg
                                   ? "No result found"
-                                  : isOcrSearch == true ? "No recent search" :"No data found",
+                                  : isOcrSearch == true
+                                      ? "No recent search"
+                                      : isScheduleFound == true
+                                          ? "Schedule not found"
+                                          : "No data found",
                       toLanguage: Globals.selectedLanguage,
                       fromLanguage: "en",
                       builder: (translatedMessage) => Text(
