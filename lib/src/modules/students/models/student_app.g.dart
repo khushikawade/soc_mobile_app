@@ -28,13 +28,14 @@ class StudentAppAdapter extends TypeAdapter<StudentApp> {
       status: fields[8] as dynamic,
       isFolder: fields[9] as dynamic,
       darkModeIconC: fields[10] as String?,
+      typeC: fields[11] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentApp obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.titleC)
       ..writeByte(1)
@@ -56,7 +57,9 @@ class StudentAppAdapter extends TypeAdapter<StudentApp> {
       ..writeByte(9)
       ..write(obj.isFolder)
       ..writeByte(10)
-      ..write(obj.darkModeIconC);
+      ..write(obj.darkModeIconC)
+      ..writeByte(11)
+      ..write(obj.typeC);
   }
 
   @override

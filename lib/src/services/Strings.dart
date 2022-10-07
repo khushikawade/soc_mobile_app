@@ -34,4 +34,6 @@ class Strings {
 //Using in Graded+
   static final String googleDrive = 'google_drive';
   static final String ocrSubjectObjectName = 'ocr_subject_details';
+  static final String scheduleObjectDetails = 'schedule_object_details';
+    static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
 }

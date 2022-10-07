@@ -13,6 +13,7 @@ import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
@@ -29,6 +30,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/modules/google_drive/model/assessment.dart';
+import 'src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'src/services/local_database/hive_db_services.dart';
 
 void main() async {
@@ -58,6 +60,8 @@ void main() async {
       ..registerAdapter(CustomRubicModalAdapter())
       ..registerAdapter(TranslationModalAdapter())
       ..registerAdapter(StudentAssessmentInfoAdapter())
+      ..registerAdapter(ScheduleAdapter())
+      ..registerAdapter(BlackoutDateAdapter())
       ..registerAdapter(RecentGoogleFileSearchAdapter());
   }
   clearTheme();
