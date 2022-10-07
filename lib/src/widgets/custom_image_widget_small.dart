@@ -20,7 +20,7 @@ class _CustomIconModeState extends State<CustomIconMode> {
   @override
   void initState() {
     super.initState();
-    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
 
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
@@ -33,15 +33,16 @@ class _CustomIconModeState extends State<CustomIconMode> {
   Widget build(BuildContext context) {
     return Container(
       child: ClipRRect(
-          child:  Globals.disableDarkMode == true ? cachedNetworkImage(widget.iconUrl):
-          
-          Globals.themeType == 'Dark'
-              ? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''
-                  ? InvertColors(
-                      child: cachedNetworkImage(widget.iconUrl),
-                    )
-                  : cachedNetworkImage(widget.darkModeIconUrl))
-              : cachedNetworkImage(widget.iconUrl)),
+          child: Globals.disableDarkMode == true
+              ? cachedNetworkImage(widget.iconUrl)
+              : Globals.themeType == 'Dark'
+                  ? (widget.darkModeIconUrl == null ||
+                          widget.darkModeIconUrl == ''
+                      ? InvertColors(
+                          child: cachedNetworkImage(widget.iconUrl),
+                        )
+                      : cachedNetworkImage(widget.darkModeIconUrl))
+                  : cachedNetworkImage(widget.iconUrl)),
     );
   }
 
