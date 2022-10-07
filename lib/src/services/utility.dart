@@ -5,9 +5,13 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
+import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:calendar_view/calendar_view.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +23,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import '../modules/google_drive/model/user_profile.dart';
 import '../modules/ocr/modal/user_info.dart';
+import '../modules/schedule/bloc/calender_bloc.dart';
 import 'local_database/local_db.dart';
 
 class Utility {
@@ -87,25 +92,20 @@ class Utility {
     }
   }
 
-  // static selectDate(context, callback) {
-  //   showModalBottomSheet(
-  //       context: context,
-  //       builder: (BuildContext builder) {
-  //         return Container(
-  //             height: MediaQuery.of(context).copyWith().size.height / 3,
-  //             child: CupertinoDatePicker(
-  //               initialDateTime: DateTime.now(),
-  //               onDateTimeChanged: (DateTime newdate) {
-  //                 callback(newdate);
-  //               },
-  //               use24hFormat: true,
-  //               maximumDate: new DateTime.now(),
-  //               minimumYear: 1980,
-  //               maximumYear: new DateTime.now().year,
-  //               minuteInterval: 1,
-  //               mode: CupertinoDatePickerMode.date,
-  //             ));
-  //       });
+  // static DateTime changeDateTimeFormat(DateTime timestamp, String format) {
+  //   try {
+  //     // final String date = DateFormat(format).format(timestamp);
+  //     final DateFormat formatter = DateFormat(format);
+  //     final String date = formatter.format(timestamp);
+  //     final DateTime newDate = DateTime.parse(date);
+  //     // print(newDate);
+  //     return newDate;
+  //   } catch (e) {
+  //     final DateFormat formatter = DateFormat(format);
+  //     final String date = formatter.format(DateTime.now());
+  //     final DateTime newDate = DateTime.parse(date);
+  //     return newDate;
+  //   }
   // }
 
   static bool compareArrays(List array1, List array2) {
@@ -827,7 +827,7 @@ class Utility {
         context: context!, errorMsg: errorMsg!, scaffoldKey: scaffoldKey!);
 
     if (isNavigator == true) {
-      print('+++++++++++++++++++++++++++++++++++++');
+      // print('+++++++++++++++++++++++++++++++++++++');
       Navigator.pop(context, false);
     }
     return true;
@@ -883,15 +883,45 @@ class Utility {
     return _studentInfoListDb.length;
   }
 
+  static List<DateTime> getDaysInBetween(DateTime startDate, DateTime endDate) {
+    List<DateTime> days = [];
+    for (int i = 0; i <= endDate.difference(startDate).inDays; i++) {
+      days.add(startDate.add(Duration(days: i)));
+    }
+    return days;
+  }
+
+  static bool? isBetween(
+    DateTime date,
+    DateTime fromDateTime,
+    DateTime toDateTime,
+  ) {
+    if (date != null) {
+      final isAfter = isAfterOrEqualTo(fromDateTime, date) ?? false;
+      final isBefore = isBeforeOrEqualTo(toDateTime, date) ?? false;
+      return isAfter && isBefore;
+    }
+    return null;
+  }
+
+  static bool? isAfterOrEqualTo(DateTime dateTime, DateTime date) {
+    if (date != null) {
+      final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
+      return isAtSameMomentAs | date.isAfter(dateTime);
+    }
+    return null;
+  }
+
+  static bool? isBeforeOrEqualTo(DateTime dateTime, DateTime date) {
+    if (date != null) {
+      final isAtSameMomentAs = dateTime.isAtSameMomentAs(date);
+      return isAtSameMomentAs | date.isBefore(dateTime);
+    }
+    return null;
+  }
+
   static void scrollToTop({required ScrollController scrollController}) {
-    //scrollController.jumpTo(1);
     scrollController.animateTo(scrollController.positions.first.minScrollExtent,
         duration: const Duration(milliseconds: 400), curve: Curves.linear);
-    // await Future.delayed(const Duration(milliseconds: 300));
-    // SchedulerBinding.instance.addPostFrameCallback((_) {
-    //   Globals.scrollController.animateTo(
-    //       Globals.scrollController.position.minScrollExtent,
-    //       duration: const Duration(milliseconds: 400),
-    //       curve: Curves.fastOutSlowIn);
   }
 }

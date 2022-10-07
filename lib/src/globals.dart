@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:calendar_view/calendar_view.dart';
+// import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -97,4 +99,6 @@ class Globals {
   static File? questionImgFilePath;
   static String? historyAssessmentName = '';
   static String? historyAssessmentFileId = '';
+  static late TabController tabController;
+//  static EventController scheduleController = EventController();
 }

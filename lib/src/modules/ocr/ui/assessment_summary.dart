@@ -54,7 +54,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     _scrollController = ScrollController()..addListener(_scrollListener);
     _driveBloc.add(GetHistoryAssessmentFromDrive());
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
       refreshPage(isFromPullToRefresh: false);
     });
 

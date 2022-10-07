@@ -98,6 +98,10 @@ class AppTheme {
 
   //Hyperlink / External Link Style
 
+// schedle section colors
+  static const Color kDarkModeIconColor = kButtonbackColor;
+  static const Color kLightModeIconColor = Color(0xFFF3457D5);
+
   static final linkStyle = TextStyle(
     decoration: TextDecoration.underline,
     decorationColor: Colors.blue,
