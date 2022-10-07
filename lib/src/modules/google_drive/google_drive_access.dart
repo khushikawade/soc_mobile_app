@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GoogleDriveAccess {
@@ -168,7 +169,9 @@ class GoogleDriveAccess {
   }
 
   static Future excelToJson(String file) async {
-    var bytes = File(file).readAsBytesSync();
+    ByteData data = await rootBundle.load(file);
+    var bytes = data.buffer.asUint8List(
+        data.offsetInBytes, data.lengthInBytes); //File(file).readAsBytesSync();
     var excel = Excel.decodeBytes(bytes);
     //print(excel);
     int i = 0;
