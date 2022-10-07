@@ -3,9 +3,9 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
-import 'package:Soc/src/modules/ocr/ui/assessment_summary.dart';
+import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
-import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
+import 'package:Soc/src/modules/ocr/widgets/common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -266,6 +266,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   builder: (BuildContext context,
                                       AsyncSnapshot<List<StudentAssessmentInfo>>
                                           snapshot) {
+                                    print(snapshot.connectionState);
                                     if (snapshot.hasData) {
                                       return snapshot.data!.length == 0
                                           ? CupertinoActivityIndicator(

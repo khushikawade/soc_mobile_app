@@ -513,32 +513,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             if (!deleted) {
               GoogleDriveAccess.deleteFile(File(file));
             }
-            // if (_list.length > 0) {
-            //   yield AssessmentDetailSuccess(obj: _list);
-            // } else {
-            //   yield GoogleNoAssessment();
-            // }
-            // if (!_list.contains('Id')) {
-            // _list.insert(
-            //     0,
-            //     StudentAssessmentInfo(
-            //         studentId: "Id",
-            //         studentName: "Name",
-            //         studentGrade: "Points Earned",
-            //         pointpossible: "Point Possible",
-            //         grade: "Grade",
-            //         subject: "Subject",
-            //         learningStandard: "Learning Standard",
-            //         subLearningStandard: "Sub Learning Standard",
-            //         scoringRubric: "Scoring Rubric"));
-            // }
 
-            //print("//printing length----------->${_list.length}");
             yield AssessmentDetailSuccess(
                 obj: _list, webContentLink: fildObject['webViewLink']);
           } else {
-            //print("Assessment file URL not found1");
-
             //Return empty list
             yield AssessmentDetailSuccess(
                 obj: [], webContentLink: fildObject['webViewLink']);
@@ -559,16 +537,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             : print(e);
         rethrow;
       } catch (e) {
-        // e == 'NO_CONNECTION'
-        //     ? Utility.currentScreenSnackBar("No Internet Connection")
-        //     : errorThrow('Unable to open the blank file');
         if (e == 'NO_CONNECTION') {
           Utility.currentScreenSnackBar("No Internet Connection");
         } else {
           yield AssessmentDetailSuccess(obj: [], webContentLink: null);
         }
-        ////print(e);
-        throw (e);
+        print(e);
+        // throw (e);
       }
     }
 
@@ -578,20 +553,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: 'rubric-score');
-        //  int index = RubricScoreList.scoringList.length - 1;
-        //   //print(RubricScoreList.scoringList);
+
         imgUrl != ""
             ? RubricScoreList.scoringList.last.imgUrl = imgUrl
             : _uploadImgB64AndGetUrl(
                 imgBase64: event.imgBase64,
                 imgExtension: event.imgExtension,
                 section: 'rubric-score');
-
-        //print(RubricScoreList.scoringList);
-        //print("//printing imag url : $imgUrl");
       } catch (e) {
-        //print("image upload error");
-
+        throw e;
       }
     }
     if (event is AssessmentImgToAwsBucked) {

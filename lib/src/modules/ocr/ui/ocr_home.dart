@@ -21,7 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
-import 'assessment_summary.dart';
+import 'list_assessment_summary.dart';
 import 'camera_screen.dart';
 import 'create_assessment.dart';
 
@@ -591,7 +591,7 @@ class _OpticalCharacterRecognitionPageState
                     : '2'; //In case of 'None' or 'Custom rubric' selection
 
     Globals.googleExcelSheetId = "";
-     //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+    //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
     updateLocalDb();
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
