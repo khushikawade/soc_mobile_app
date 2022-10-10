@@ -122,146 +122,152 @@ class LanguageSelector {
             return StatefulBuilder(builder: (BuildContext context,
                 StateSetter setState /*You can rename this!*/) {
               return new OrientationBuilder(builder: (context, orientation) {
-                return SafeArea(
-                    child: Container(
-                  color: Theme.of(context).colorScheme.secondary,
-                  height: orientation == Orientation.landscape
-                      ? MediaQuery.of(context).size.height * 0.82
-                      : MediaQuery.of(context).size.height * 0.60,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          FocusScope.of(context).requestFocus(FocusNode());
-                        },
-                        icon: Icon(
-                          Icons.clear,
-                          size: Globals.deviceType == "phone" ? 28 : 36,
-                        ),
-                      ),
-                      Center(
-                        child: TranslationWidget(
-                            message: "Select language",
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) {
-                              return Text(
-                                translatedMessage.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6!
-                                    .copyWith(
-                                      fontSize: Globals.deviceType == "phone"
-                                          ? AppTheme.kBottomSheetTitleSize
-                                          : AppTheme.kBottomSheetTitleSize *
-                                              1.3,
-                                    ),
-                              );
-                            }),
-                      ),
-                      SpacerWidget(_kLabelSpacing * 1.5),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: _kLabelSpacing / 1.5),
-                        child: SizedBox(
-                          height: 51,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 1,
-                            child: TranslationWidget(
-                                message: 'Search',
-                                fromLanguage: "en",
-                                toLanguage: Globals.selectedLanguage,
-                                builder: (translatedMessage) {
-                                  return TextFormField(
-                                      focusNode: myFocusNode,
-                                      controller: _controller,
-                                      cursorColor: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                      decoration: InputDecoration(
-                                        hintText: translatedMessage.toString(),
-                                        filled: true,
-                                        fillColor: Theme.of(context)
-                                            .colorScheme
-                                            .background,
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(30.0)),
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              width: 2),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(30.0)),
-                                          borderSide: BorderSide(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              width: 2),
-                                        ),
-                                        prefixIcon: Icon(
-                                          const IconData(0xe805,
-                                              fontFamily: Overrides.kFontFam,
-                                              fontPackage: Overrides.kFontPkg),
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant,
-                                          size: Globals.deviceType == "phone"
-                                              ? 20
-                                              : 28,
-                                        ),
-                                        suffixIcon: _controller.text.isEmpty
-                                            ? null
-                                            : InkWell(
-                                                onTap: () {
-                                                  _controller.clear();
-                                                  issuggestionList = false;
-                                                  FocusScope.of(context)
-                                                      .requestFocus(
-                                                          FocusNode());
-                                                  setState(() {});
-                                                },
-                                                child: Icon(
-                                                  Icons.clear,
-                                                  size: Globals.deviceType ==
-                                                          "phone"
-                                                      ? 20
-                                                      : 28,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primaryVariant,
-                                                ),
-                                              ),
-                                      ),
-                                      onChanged: (value) {
-                                        onItemChanged(value, setState);
-                                      });
-                                }),
+                return Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom / 2),
+                  child: SafeArea(
+                      child: Container(
+                    color: Theme.of(context).colorScheme.secondary,
+                    height: orientation == Orientation.landscape
+                        ? MediaQuery.of(context).size.height * 0.82
+                        : MediaQuery.of(context).size.height * 0.60,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          },
+                          icon: Icon(
+                            Icons.clear,
+                            size: Globals.deviceType == "phone" ? 28 : 36,
                           ),
                         ),
-                      ),
-                      issuggestionList!
-                          ? _buildsuggestiontlist(context, onLanguageChanged)
-                          : Container(
-                              height: 0,
+                        Center(
+                          child: TranslationWidget(
+                              message: "Select language",
+                              fromLanguage: "en",
+                              toLanguage: Globals.selectedLanguage,
+                              builder: (translatedMessage) {
+                                return Text(
+                                  translatedMessage.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(
+                                        fontSize: Globals.deviceType == "phone"
+                                            ? AppTheme.kBottomSheetTitleSize
+                                            : AppTheme.kBottomSheetTitleSize *
+                                                1.3,
+                                      ),
+                                );
+                              }),
+                        ),
+                        SpacerWidget(_kLabelSpacing * 1.5),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: _kLabelSpacing / 1.5),
+                          child: SizedBox(
+                            height: 51,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: TranslationWidget(
+                                  message: 'Search',
+                                  fromLanguage: "en",
+                                  toLanguage: Globals.selectedLanguage,
+                                  builder: (translatedMessage) {
+                                    return TextFormField(
+                                        focusNode: myFocusNode,
+                                        controller: _controller,
+                                        cursorColor: Theme.of(context)
+                                            .colorScheme
+                                            .primaryVariant,
+                                        decoration: InputDecoration(
+                                          hintText:
+                                              translatedMessage.toString(),
+                                          filled: true,
+                                          fillColor: Theme.of(context)
+                                              .colorScheme
+                                              .background,
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30.0)),
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                                width: 2),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30.0)),
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                                width: 2),
+                                          ),
+                                          prefixIcon: Icon(
+                                            const IconData(0xe805,
+                                                fontFamily: Overrides.kFontFam,
+                                                fontPackage:
+                                                    Overrides.kFontPkg),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                            size: Globals.deviceType == "phone"
+                                                ? 20
+                                                : 28,
+                                          ),
+                                          suffixIcon: _controller.text.isEmpty
+                                              ? null
+                                              : InkWell(
+                                                  onTap: () {
+                                                    _controller.clear();
+                                                    issuggestionList = false;
+                                                    FocusScope.of(context)
+                                                        .requestFocus(
+                                                            FocusNode());
+                                                    setState(() {});
+                                                  },
+                                                  child: Icon(
+                                                    Icons.clear,
+                                                    size: Globals.deviceType ==
+                                                            "phone"
+                                                        ? 20
+                                                        : 28,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primaryVariant,
+                                                  ),
+                                                ),
+                                        ),
+                                        onChanged: (value) {
+                                          onItemChanged(value, setState);
+                                        });
+                                  }),
                             ),
-                      issuggestionList!
-                          ? Container(
-                              height: 0,
-                            )
-                          : Expanded(
-                              child: _buildLanguagesList(
-                                  context, onLanguageChanged),
-                            ),
-                    ],
-                  ),
-                ));
+                          ),
+                        ),
+                        issuggestionList!
+                            ? _buildsuggestiontlist(context, onLanguageChanged)
+                            : Container(
+                                height: 0,
+                              ),
+                        issuggestionList!
+                            ? Container(
+                                height: 0,
+                              )
+                            : Expanded(
+                                child: _buildLanguagesList(
+                                    context, onLanguageChanged),
+                              ),
+                      ],
+                    ),
+                  )),
+                );
               });
             });
           }

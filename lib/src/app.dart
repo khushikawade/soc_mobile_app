@@ -108,18 +108,12 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           title: 'Solved',
           theme: theme,
           darkTheme: darkTheme,
-          home: StartupPage(
-            isOcrSection: false,
-          ),
+          home: StartupPage(isOcrSection: true //Standalone app
+              //false,  /For standard app
+              ),
           // home: SchoolIDLogin(),
         ),
       ),
     );
   }
 }
-
-  // clearTheme() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.remove(AdaptiveTheme.prefKey);
-  //   // AdaptiveTheme.of(context).persist();
-  // }

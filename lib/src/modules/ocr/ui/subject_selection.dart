@@ -25,11 +25,13 @@ import '../widgets/bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
   final String? selectedClass;
+
   final bool? isSearchPage;
   final String? domainNameC;
   final String? searchClass;
   final String? selectedSubject;
   final String? questionimageUrl;
+  final bool? isCommonCore;
   SubjectSelection(
       {Key? key,
       required this.selectedClass,
@@ -37,7 +39,8 @@ class SubjectSelection extends StatefulWidget {
       this.domainNameC,
       this.searchClass,
       this.selectedSubject,
-      required this.questionimageUrl})
+      required this.questionimageUrl,
+      this.isCommonCore})
       : super(key: key);
 
   @override
@@ -48,7 +51,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   static const double _KVertcalSpace = 60.0;
   final searchController = TextEditingController();
   final addController = TextEditingController();
-
   String? keyword;
   String? keywordSub;
   OcrBloc _ocrBloc = OcrBloc();
@@ -87,13 +89,16 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     if (widget.isSearchPage == true) {
       isSkipButton.value = true;
       _ocrBloc.add(FatchSubjectDetails(
+          isCommonCore: widget.isCommonCore ?? false,
           type: 'nycSub',
           keyword: widget.domainNameC,
           grade: widget.searchClass,
           subjectSelected: widget.selectedSubject));
     } else {
-      _ocrBloc.add(
-          FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
+      _ocrBloc.add(FatchSubjectDetails(
+          isCommonCore: widget.isCommonCore ?? false,
+          type: 'subject',
+          keyword: widget.selectedClass));
     }
 
     super.initState();
@@ -147,7 +152,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       nycIndex1.value = -1;
                       isSubmitButton.value = false;
                       _ocrBloc.add(FatchSubjectDetails(
-                          type: 'subject', keyword: widget.selectedClass));
+                          isCommonCore: widget.isCommonCore ?? false,
+                          type: 'subject',
+                          keyword: widget.selectedClass));
                     } else if (pageIndex.value == 2) {
                       // isSkipButton.value = false;
                       nycSubIndex1.value = -1;
@@ -160,8 +167,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         //   FatchSubjectDetails(type: 'nyc', keyword: keyword));
                         Navigator.pop(context);
                       } else {
-                        _ocrBloc.add(
-                            FatchSubjectDetails(type: 'nyc', keyword: keyword));
+                        _ocrBloc.add(FatchSubjectDetails(
+                            isCommonCore: widget.isCommonCore ?? false,
+                            type: 'nyc',
+                            keyword: keyword));
                       }
                     } else {
                       Navigator.pop(context);
@@ -189,6 +198,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           return pageIndex.value == 0
                               ? Container()
                               : SearchBar(
+                                  isCommonCore: widget.isCommonCore,
                                   isSubLearningPage:
                                       pageIndex.value == 2 ? true : false,
                                   readOnly: false,
@@ -202,6 +212,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 SearchScreenPage(
+                                                  isCommonCore:
+                                                      widget.isCommonCore,
                                                   questionImage:
                                                       widget.questionimageUrl ??
                                                           '',
@@ -216,6 +228,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     if (searchController.text.isEmpty &&
                                         pageIndex.value != 1) {
                                       _ocrBloc.add(FatchSubjectDetails(
+                                          isCommonCore:
+                                              widget.isCommonCore ?? false,
                                           type: pageIndex.value == 0
                                               ? 'subject'
                                               : pageIndex.value == 1
@@ -240,6 +254,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                             : null;
 
                                         _ocrBloc.add(SearchSubjectDetails(
+                                           isCommonCore: widget.isCommonCore ?? false,
                                             searchKeyword:
                                                 searchController.text,
                                             type: pageIndex.value == 0
@@ -412,7 +427,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         return Utility.textWidget(
             text: pageIndex.value == 0
                 ? 'Subject'
-                : 'NY Next Generation Learning Standard',
+                : widget.isCommonCore == true
+                    ? 'Common Core'
+                    : 'NY Next Generation Learning Standard',
             context: context);
       },
       child: Container(),
@@ -682,11 +699,22 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height * 0.09),
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: Globals.deviceType == 'phone' ? 180 : 400,
-                  childAspectRatio:
-                      Globals.deviceType == 'phone' ? 5 / 3 : 5 / 1.5,
-                  crossAxisSpacing: Globals.deviceType == 'phone' ? 15 : 20,
-                  mainAxisSpacing: 15),
+                  maxCrossAxisExtent: Globals.deviceType == 'phone'
+                      ? (pageIndex.value == 1)
+                          ? 220
+                          : 180
+                      : 400,
+                  childAspectRatio: Globals.deviceType == 'phone'
+                      ? (pageIndex.value == 1 && widget.isCommonCore == true)
+                          ? 7 / 6
+                          : 5 / 3
+                      : 5 / 1.5,
+                  crossAxisSpacing: Globals.deviceType == 'phone'
+                      ? (pageIndex.value == 1)
+                          ? 10
+                          : 15
+                      : 20,
+                  mainAxisSpacing: pageIndex.value == 1 ? 15 : 15),
               itemCount: page == 1 ? list.length : list.length + 1,
               itemBuilder: (BuildContext ctx, index) {
                 return page == 1 || (page == 0 && index < list.length)
@@ -712,7 +740,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               subjectIndex1.value = index;
 
                               if ((subject != 'Math' &&
-                                  subject != 'Science' &&
+                                  //subject != 'Science' &&
                                   subject != 'ELA' &&
                                   subject != null)) {
                                 isSubmitButton.value = true;
@@ -725,7 +753,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   !isSubmitButton.value) {
                                 keyword = list[index].subjectNameC;
                                 _ocrBloc.add(FatchSubjectDetails(
-                                    type: 'nyc', keyword: keyword));
+                                    isCommonCore: widget.isCommonCore ?? false,
+                                    type: 'nyc',
+                                    keyword: keyword));
                               }
                               //To manage the recent subject list
                               List<SubjectDetailList> recentlUsedList =
@@ -776,7 +806,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               if (index < list.length) {
                                 keywordSub = list[index].domainNameC;
                                 _ocrBloc.add(FatchSubjectDetails(
-                                    type: 'nycSub', keyword: keywordSub));
+                                    isCommonCore: widget.isCommonCore ?? false,
+                                    type: 'nycSub',
+                                    keyword: keywordSub));
                               }
                               //To manage the recent learning standard list
                               List<SubjectDetailList> learningrecentList =
@@ -960,7 +992,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           await updateList(
               subjectName: controller.text, classNo: widget.selectedClass!);
           _ocrBloc.add(FatchSubjectDetails(
-              type: 'subject', keyword: widget.selectedClass));
+              isCommonCore: widget.isCommonCore ?? false,
+              type: 'subject',
+              keyword: widget.selectedClass));
 
           controller.clear();
           Navigator.pop(context, false);
@@ -990,13 +1024,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             backgroundColor:
                                 AppTheme.kButtonColor.withOpacity(1.0),
                             onPressed: () async {
-                              _uploadSheetOnDriveAndnavigate(
-                                  isSkip: true, connected: connected);
                               Utility.updateLoges(
                                   // ,
                                   activityId: '18',
                                   description: 'Skip subject selection process',
                                   operationResult: 'Success');
+                              _uploadSheetOnDriveAndnavigate(
+                                  isSkip: true, connected: connected);
                             },
                             label: Row(
                               children: [
@@ -1080,7 +1114,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         } else {
                                           Navigator.of(context).pop();
                                           Utility.currentScreenSnackBar(
-                                              "Something Went Wrong. Please Try Again.");
+                                              "Something Went Wrong. Please Try Again.",
+                                              null);
                                         }
                                       }
                                     }),
@@ -1230,7 +1265,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           } else {
                                             Navigator.of(context).pop();
                                             Utility.currentScreenSnackBar(
-                                                "Something Went Wrong. Please Try Again.");
+                                                "Something Went Wrong. Please Try Again.",
+                                                null);
                                           }
                                         }
                                       }),
@@ -1309,8 +1345,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   Future<void> updateList(
       {required String subjectName, required String classNo}) async {
-    LocalDatabase<SubjectDetailList> _localDb =
-        LocalDatabase('Subject_list$classNo');
+    LocalDatabase<SubjectDetailList> _localDb = LocalDatabase(
+        widget.isCommonCore == true
+            ? 'Subject_list_Common_core$classNo'
+            : 'Subject_list$classNo');
     List<SubjectDetailList>? _localData = await _localDb.getData();
 
     if (!_localData.contains(subjectName) && subjectName != '') {
@@ -1330,7 +1368,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   Future<void> searchList(
       {required String searchKeyword, required String classNo}) async {
-    LocalDatabase<String> _localDb = LocalDatabase('Subject_list$classNo');
+    LocalDatabase<String> _localDb = LocalDatabase(widget.isCommonCore == true
+        ? 'Subject_list_Common_core$classNo'
+        : 'Subject_list$classNo');
     List<String>? _localData = await _localDb.getData();
     userAddedSubjectList = [];
     for (int i = 0; i < _localData.length; i++) {
@@ -1344,7 +1384,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       {required bool isSkip, required bool connected}) async {
     {
       if (!connected) {
-        Utility.currentScreenSnackBar("No Internet Connection");
+        Utility.currentScreenSnackBar("No Internet Connection", null);
       } else {
         LocalDatabase<CustomRubicModal> _localDb =
             LocalDatabase('custom_rubic');

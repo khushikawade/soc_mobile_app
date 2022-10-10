@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -23,9 +24,10 @@ class SearchScreenPage extends StatefulWidget {
   final String? keyword;
   final String? grade;
   final String? questionImage;
+  final bool? isCommonCore;
 
   SearchScreenPage(
-      {Key? key, this.keyword, this.grade, required this.questionImage})
+      {Key? key, this.keyword, this.grade, required this.questionImage,this.isCommonCore})
       : super(key: key);
 
   @override
@@ -104,6 +106,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                 Container(
                   // padding: EdgeInsets.symmetric(horizontal: 20),
                   child: SearchBar(
+                    isCommonCore: widget.isCommonCore,
                     isSearchPage: true,
                     readOnly: false,
                     controller: searchController,
@@ -122,12 +125,15 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       } else {
                         _debouncer.run(() async {
                           _ocrBloc.add(SearchSubjectDetails(
+                             isCommonCore: widget.isCommonCore ?? false,
+
                               searchKeyword: searchController.text,
                               type: 'nycSub',
                               keyword: widget.keyword,
                               isSearchPage: true,
                               grade: widget.grade));
                           _ocrBloc2.add(SearchSubjectDetails(
+                             isCommonCore: widget.isCommonCore ?? false,
                             searchKeyword: searchController.text,
                             type: 'nyc',
                             keyword: widget.keyword,
@@ -281,7 +287,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                     ? Container(
                                         padding: EdgeInsets.only(bottom: 10),
                                         child: Utility.textWidget(
-                                            text: 'Learning Standard',
+                                            text: Overrides.STANDALONE_GRADED_APP == true
+                                                ? 'Common Core'
+                                                : 'Learning Standard',
                                             context: context,
                                             textTheme: Theme.of(context)
                                                 .textTheme
@@ -289,21 +297,19 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                 .copyWith(
                                                     fontWeight:
                                                         FontWeight.bold)))
-                                    : (index == standerdLearningLength &&
-                                            list.length != 0
+                                    : (index == standerdLearningLength && list.length != 0
                                         ? Container(
                                             padding:
                                                 EdgeInsets.only(bottom: 10),
                                             child: Utility.textWidget(
-                                                text:
-                                                    'NY Next Generation Learning Standard',
+                                                text: Overrides.STANDALONE_GRADED_APP == true
+                                                    ? 'Common Core'
+                                                    : 'NY Next Generation Learning Standard',
                                                 context: context,
                                                 textTheme: Theme.of(context)
                                                     .textTheme
                                                     .headline1!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold)))
+                                                    .copyWith(fontWeight: FontWeight.bold)))
                                         : Container()),
                                 Bouncing(
                                   child: InkWell(
@@ -597,7 +603,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                 } else {
                                   Navigator.of(context).pop();
                                   Utility.currentScreenSnackBar(
-                                      "Something Went Wrong. Please Try Again.");
+                                      "Something Went Wrong. Please Try Again.", null);
                                 }
                               }
                             }),

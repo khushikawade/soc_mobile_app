@@ -9,6 +9,7 @@ class SearchBar extends StatelessWidget {
   final TextEditingController controller;
   final onSaved;
   final onTap;
+  final bool? isCommonCore;
   final bool? isSearchPage;
   final bool? isSubLearningPage;
   final bool? readOnly;
@@ -18,6 +19,7 @@ class SearchBar extends StatelessWidget {
       required this.onSaved,
       this.onTap,
       this.isSearchPage,
+      this.isCommonCore,
       this.isSubLearningPage,
       required this.readOnly})
       : super(key: key);
@@ -32,9 +34,13 @@ class SearchBar extends StatelessWidget {
         //      vertical: _kLabelSpacing / 3, horizontal: _kLabelSpacing / 2),
         child: TranslationWidget(
             message: isSearchPage == true
-                ? 'Search Learning Standard and NY Next Generation Learning Standard '
+                ? isCommonCore == true
+                    ? 'Common Core'
+                    : 'Search Learning Standard and NY Next Generation Learning Standard '
                 : isSubLearningPage == true
-                    ? 'Search NY Next Generation Learning Standard'
+                    ? isCommonCore == true
+                        ? 'Common Core'
+                        : 'Search NY Next Generation Learning Standard'
                     : 'Search',
             fromLanguage: "en",
             toLanguage: Globals.selectedLanguage,
@@ -88,18 +94,18 @@ class SearchBar extends StatelessWidget {
                     color: Color(0xffAAAAAA),
                     size: Globals.deviceType == "phone" ? 18 : 16,
                   ),
-                  // suffixIcon: controller.text.isEmpty
-                  //     ? null
-                  //     : InkWell(
-                  //         onTap: () {
-                  //           controller.clear();
-                  //         },
-                  //         child: Icon(
-                  //           Icons.clear,
-                  //           color: Theme.of(context).colorScheme.primaryVariant,
-                  //           size: Globals.deviceType == "phone" ? 20 : 28,
-                  //         ),
-                  //       ),
+                  suffixIcon: controller.text.isEmpty
+                      ? null
+                      : InkWell(
+                          onTap: () {
+                            controller.clear();
+                          },
+                          child: Icon(
+                            Icons.clear,
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                            size: Globals.deviceType == "phone" ? 20 : 28,
+                          ),
+                        ),
                 ),
                 onChanged: onSaved,
                 onTap: onTap,

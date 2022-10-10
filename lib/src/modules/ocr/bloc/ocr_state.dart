@@ -14,6 +14,8 @@ class OcrLoading2 extends OcrState {}
 
 class SearchLoading extends OcrState {}
 
+class SaveSubjectListDetailsSuccess extends OcrState {}
+
 class FetchTextFromImageSuccess extends OcrState {
   final String? studentId;
   final String? grade;
@@ -192,11 +194,11 @@ class AssessmentIdSuccess extends OcrState {
 class AssessmentDashboardStatus extends OcrState {
   int? resultRecordCount;
   String? assessmentId;
-  AssessmentDashboardStatus({ this.resultRecordCount,required this.assessmentId});
+  AssessmentDashboardStatus(
+      {this.resultRecordCount, required this.assessmentId});
   AssessmentDashboardStatus copyWith(
       {final obj, final recordCount, final assessmentId}) {
     return AssessmentDashboardStatus(
-       
         resultRecordCount: recordCount ?? this.resultRecordCount,
         assessmentId: assessmentId ?? this.assessmentId);
   }

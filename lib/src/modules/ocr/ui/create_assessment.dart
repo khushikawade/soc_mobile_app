@@ -1,13 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/modules/ocr/ui/individual_subject_page.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -19,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../services/firstLetterUpperCase.dart';
 import '../widgets/suggestion_chip.dart';
 
@@ -51,7 +55,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final ValueNotifier<String> classError = ValueNotifier<String>('');
 
   File? imageFile;
-  final ImagePicker _picker = ImagePicker();
+
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
   final OcrBloc _bloc = new OcrBloc();
@@ -59,6 +63,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final addController = TextEditingController();
   @override
   void initState() {
+    updateClassName();
+    //   wd
     // listScrollController.addListener(_scrollListener);
     Globals.googleExcelSheetId = '';
     _bloc.add(SaveSubjectListDetails());
@@ -67,7 +73,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
   // _scrollListener() {
@@ -211,6 +216,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           textFormField(
+                            readOnly: true,
                             scrollController: scrollControlleClassName,
                             isAssessmenttextFormField: false,
                             controller: classController,
@@ -228,6 +234,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               builder: (BuildContext context, dynamic value,
                                   Widget? child) {
                                 return Container(
+                                  padding: classError.value.isEmpty
+                                      ? EdgeInsets.only(top: 8)
+                                      : null,
                                   alignment: Alignment.centerLeft,
                                   child: TranslationWidget(
                                       message: classError.value.isEmpty
@@ -432,50 +441,57 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 itemCount: widget.customGrades.length,
                 itemBuilder: (BuildContext ctx, index) {
                   return Bouncing(
-                    onPress: () {
-                      widget.customGrades[index] == '+'
-                          ? _addSectionBottomSheet()
-                          : selectedGrade.value = index;
-                    },
-                    child: Transform.scale(
-                      scale: 1, //_scale!,
-                      child: AnimatedContainer(
-                        duration: Duration(microseconds: 10),
-                        padding: EdgeInsets.only(bottom: 5),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: selectedGrade.value == index
-                              ? AppTheme.kSelectedColor
-                              : Colors.grey,
-                        ),
-                        child: new Container(
+                    // onPress: () {
+                    //   // widget.customGrades[index] == '+'
+                    //   //     ? _addSectionBottomSheet()
+                    //   //     : selectedGrade.value = index;
+                    // },
+                    child: InkWell(
+                      onTap: () {
+                        widget.customGrades[index] == '+'
+                            ? _addSectionBottomSheet()
+                            : selectedGrade.value = index;
+                      },
+                      child: Transform.scale(
+                        scale: 1, //_scale!,
+                        child: AnimatedContainer(
+                          duration: Duration(microseconds: 10),
+                          padding: EdgeInsets.only(bottom: 5),
                           decoration: BoxDecoration(
-                              color: Color(0xff000000) !=
-                                      Theme.of(context).backgroundColor
-                                  ? Color(0xffF7F8F9)
-                                  : Color(0xff111C20),
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: selectedGrade.value == index
-                                    ? AppTheme.kSelectedColor
-                                    : Colors.grey,
-                              )),
-                          child: Center(
-                            child: FittedBox(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 5.0, right: 5.0),
-                                child: textwidget(
-                                  text: widget.customGrades[index],
-                                  textTheme: Theme.of(context)
-                                      .textTheme
-                                      .headline1!
-                                      .copyWith(
-                                          color: selectedGrade.value == index
-                                              ? AppTheme.kSelectedColor
-                                              : Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant),
+                            shape: BoxShape.circle,
+                            color: selectedGrade.value == index
+                                ? AppTheme.kSelectedColor
+                                : Colors.grey,
+                          ),
+                          child: new Container(
+                            decoration: BoxDecoration(
+                                color: Color(0xff000000) !=
+                                        Theme.of(context).backgroundColor
+                                    ? Color(0xffF7F8F9)
+                                    : Color(0xff111C20),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: selectedGrade.value == index
+                                      ? AppTheme.kSelectedColor
+                                      : Colors.grey,
+                                )),
+                            child: Center(
+                              child: FittedBox(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 5.0, right: 5.0),
+                                  child: textwidget(
+                                    text: widget.customGrades[index],
+                                    textTheme: Theme.of(context)
+                                        .textTheme
+                                        .headline1!
+                                        .copyWith(
+                                            color: selectedGrade.value == index
+                                                ? AppTheme.kSelectedColor
+                                                : Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryVariant),
+                                  ),
                                 ),
                               ),
                             ),
@@ -506,6 +522,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
   Widget textFormField({
     required TextEditingController controller,
+    bool? readOnly,
     required onSaved,
     required hintText,
     required validator,
@@ -525,6 +542,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 return Container(
                   //  color: Colors.blue,
                   child: TextFormField(
+                    readOnly: readOnly ?? false,
                     scrollController: scrollController,
                     autovalidateMode: AutovalidateMode.always,
                     textAlign: TextAlign.start,
@@ -608,7 +626,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             onPressed: () async {
               FocusScope.of(context).requestFocus(FocusNode());
               if (!connected) {
-                Utility.currentScreenSnackBar("No Internet Connection");
+                Utility.currentScreenSnackBar("No Internet Connection", null);
               } else {
                 // if (_formKey.currentState!.validate()) {
                 if (assessmentNameError.value.isNotEmpty &&
@@ -678,7 +696,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         } else {
                           Navigator.of(context).pop();
                           Utility.currentScreenSnackBar(
-                              "Something Went Wrong. Please Try Again.");
+                              "Something Went Wrong. Please Try Again.", null);
                         }
                       }
                     }),
@@ -698,7 +716,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       if (state is ErrorState) {
                         Navigator.of(context).pop();
                         Utility.currentScreenSnackBar(
-                            "Something Went Wrong. Please Try Again.");
+                            "Something Went Wrong. Please Try Again.", null);
                       }
                     }),
                 textwidget(
@@ -764,10 +782,15 @@ class _CreateAssessmentState extends State<CreateAssessment>
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => SubjectSelection(
-                questionimageUrl: questionImageUrl ?? '',
-                selectedClass: widget.customGrades[selectedGrade.value],
-              )),
+          builder: (context) => Overrides.STANDALONE_GRADED_APP == true
+              ? IndividualSubjectPage(
+                  questionimageUrl: questionImageUrl ?? '',
+                  selectedClass: widget.customGrades[selectedGrade.value],
+                )
+              : SubjectSelection(
+                  questionimageUrl: questionImageUrl ?? '',
+                  selectedClass: widget.customGrades[selectedGrade.value],
+                )),
     );
   }
 
@@ -819,5 +842,27 @@ class _CreateAssessmentState extends State<CreateAssessment>
     widget.customGrades.forEach((String e) {
       _localDb.addData(e);
     });
+  }
+
+  updateClassName() async {
+    LocalDatabase<GoogleClassroomCourses> _localDb =
+        LocalDatabase(Strings.googleClassroomCoursesList);
+
+    List<GoogleClassroomCourses> _localData = await _localDb.getData();
+    List<StudentAssessmentInfo> studentInfo =
+        await Utility.getStudentInfoList(tableName: 'student_info');
+
+    if (studentInfo.isNotEmpty) {
+      for (var i = 0; i < _localData.length; i++) {
+        for (var j = 0; j < _localData[i].studentList!.length; j++) {
+          if (studentInfo[0].studentId ==
+              _localData[i].studentList![j]['profile']['emailAddress']) {
+            classController.text = _localData[i].name!;
+            classError.value = _localData[i].name!;
+            break;
+          }
+        }
+      }
+    }
   }
 }

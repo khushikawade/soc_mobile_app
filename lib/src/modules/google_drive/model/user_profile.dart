@@ -18,13 +18,17 @@ class UserGoogleProfile {
       //print(_userInformation[0].userEmail);
       //print(_userInformation[0].userName);
     }
-    await _localDb.close();
+  //  await _localDb.close();
     return _userInformation;
   }
 
   static Future<void> clearUserProfile() async {
-    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    await _localDb.clear();
+    try {
+      LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+      await _localDb.clear();
+    } catch (e) {
+      return;
+    }
   }
 
   static Future<void> updateUserProfile(_userInformation) async {

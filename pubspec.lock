@@ -49,6 +49,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "2.8.2"
   auto_orientation:
     dependency: "direct main"
@@ -57,6 +58,9 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
+=======
+    version: "2.9.0"
+>>>>>>> 831fcdd77442cbd374eafb41cb12ffe135cb2b74
   back_button_interceptor:
     dependency: "direct main"
     description:
@@ -298,7 +302,7 @@ packages:
     source: hosted
     version: "1.2.1"
   connectivity_plus_web:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: connectivity_plus_web
       url: "https://pub.dartlang.org"
@@ -491,27 +495,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.4.3+7"
-  flutter_keyboard_visibility:
-    dependency: transitive
-    description:
-      name: flutter_keyboard_visibility
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.3.0"
-  flutter_keyboard_visibility_platform_interface:
-    dependency: transitive
-    description:
-      name: flutter_keyboard_visibility_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
-  flutter_keyboard_visibility_web:
-    dependency: transitive
-    description:
-      name: flutter_keyboard_visibility_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -592,13 +575,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_typeahead:
-    dependency: "direct main"
-    description:
-      name: flutter_typeahead
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.2.7"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -772,13 +748,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  jiffy:
-    dependency: "direct main"
-    description:
-      name: jiffy
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.0.0"
   js:
     dependency: transitive
     description:
@@ -1039,7 +1008,7 @@ packages:
     source: hosted
     version: "0.2.1"
   path_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
@@ -1192,6 +1161,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.5"
+  scrollable_positioned_list:
+    dependency: "direct main"
+    description:
+      name: scrollable_positioned_list
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.3"
   share:
     dependency: "direct main"
     description:
@@ -1350,7 +1326,14 @@ packages:
       name: string_scanner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
+  string_similarity:
+    dependency: "direct main"
+    description:
+      name: string_similarity
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   synchronized:
     dependency: transitive
     description:
