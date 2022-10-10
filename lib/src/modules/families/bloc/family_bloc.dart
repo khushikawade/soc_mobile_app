@@ -220,7 +220,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
             );
       } catch (e) {
         if (e == 'NO_CONNECTION') {
-          Utility.currentScreenSnackBar("No Internet Connection");
+          Utility.currentScreenSnackBar("No Internet Connection", null);
         } else {
           //print(e);
           String? _objectName =

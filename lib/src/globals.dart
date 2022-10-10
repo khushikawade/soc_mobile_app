@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:calendar_view/calendar_view.dart';
 // import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class Globals {
   static int? newsIndex;
   static Locale? myLocale;
   static int? notiCount;
-  static String? selectedLanguage;
+  static String? selectedLanguage = 'en';
   static String? appLogo;
   static bool? isnetworkexception = false;
   static ValueNotifier<bool> indicator = ValueNotifier<bool>(false);
@@ -79,11 +80,52 @@ class Globals {
   static String teacherId = '';
   static String sessionId = '';
   static bool isPremiumUser = false;
-  static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe87a];
-  static List ocrResultIconsName = ["Share", "Drive", "History", "Dashboard"];
+
+  // static List subjectDetailsList = [
+  //   'NY-3.OA.1 Interpret Products of whole numbers',
+  //   'NY-3.OA.2  Interpret whole-number quotients of whole numbers.',
+  //   'NY-3.OA.3. Use multiplication and division within 100 to solve word problems…',
+  //   'NY-3.OA.4 Determine unknown whole number in multiplication or division…'
+  // ];
+  // static List nycDetailsList = [
+  //   'N&OBase Ten',
+  //   'Geometry',
+  //   'N&OFractions',
+  //   'Measurement'
+  // ];
+  // static List subjectList = ['Maths', 'Science', 'ELA', '+'];
+  // static List<String> classList = [
+  //   'PK',
+  //   'K',
+  //   '1',
+  //   '2',
+  //   '3',
+  //   '4',
+  //   '5',
+  //   '6',
+  //   '7',
+  //   '8',
+  //   '9',
+  //   '10',
+  //   '11',
+  //   '12',
+  //   '+'
+  // ];
+  static List ocrResultIcons = Overrides.STANDALONE_GRADED_APP == true
+      ? [0xe876, 0xe871, 0xe873, 0xe803]
+      : [0xe876, 0xe871, 0xe873, 0xe87a];
+  static List ocrResultIconsName = Overrides.STANDALONE_GRADED_APP == true
+      ? ["Share", "Drive", "History", "Sheet"]
+      : ["Share", "Drive", "History", "Dashboard"];
+  // static List finishedList = [
+  //   "Scan another assessment",
+  //   "View all assessment results"
+  // ];
+  // static List ocrResultIcons = [0xe876, 0xe871, 0xe873, 0xe87a];
+  // static List ocrResultIconsName = ["Share", "Drive", "History", "Dashboard"];
   static List gradeList = [];
   static bool iscameraPopup = true;
-  static String? googleDriveFolderId;
+  static String? googleDriveFolderId = '';
   static String? googleDriveFolderPath;
   static String? googleExcelSheetId;
   static String? shareableLink;

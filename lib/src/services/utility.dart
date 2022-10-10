@@ -134,43 +134,6 @@ class Utility {
     return true;
   }
 
-  static void showSnackBar(_scaffoldKey, msg, context, height) {
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Container(
-        alignment: Alignment.centerLeft,
-        height: height ?? 40,
-        child: TranslationWidget(
-          message: msg,
-          fromLanguage: "en",
-          toLanguage: Globals.selectedLanguage,
-          builder: (translatedMessage) => Text(translatedMessage,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.background,
-                fontWeight: FontWeight.w600,
-              )),
-        ),
-      ),
-      backgroundColor: Globals.themeType == 'Dark'
-          ? Colors.white
-          : Colors
-              .black, //Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
-      padding: EdgeInsets.only(
-        left: 16,
-      ),
-      margin: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          bottom: MediaQuery.of(context).size.height * 0.08),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10))),
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: 3),
-    ));
-  }
-
   static void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
   }
@@ -459,32 +422,101 @@ class Utility {
   //   }
   // }
 
-  static void currentScreenSnackBar(
-    String text,
-  ) {
-    //Use to show snackbar at any current screen
-    BuildContext? context = Globals.navigatorKey.currentContext;
+  static void showSnackBar(_scaffoldKey, msg, context, height) {
+    try {
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
-    ScaffoldMessenger.of(context!).removeCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        // behavior: SnackBarBehavior.floating, //Not showing the snackbar in case of FTB
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))),
-        backgroundColor:
-            Globals.themeType == 'Dark' ? Colors.white : Colors.black,
-        content: TranslationWidget(
-            message: text,
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Container(
+          alignment: Alignment.centerLeft,
+          height: height ?? 40,
+          child: TranslationWidget(
+            message: msg,
             fromLanguage: "en",
             toLanguage: Globals.selectedLanguage,
-            builder: (translatedMessage) {
-              return Text(translatedMessage.toString(),
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.background,
-                    // Theme.of(context).colorScheme.background,
-                    fontWeight: FontWeight.w600,
-                  ));
-            })));
+            builder: (translatedMessage) => Text(translatedMessage,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.background,
+                  fontWeight: FontWeight.w600,
+                )),
+          ),
+        ),
+        backgroundColor: Globals.themeType == 'Dark'
+            ? Colors.white
+            : Colors
+                .black, //Theme.of(context).colorScheme.primaryVariant.withOpacity(0.8),
+        padding: EdgeInsets.only(
+          left: 16,
+        ),
+        margin: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: MediaQuery.of(context).size.height * 0.08),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 3),
+      ));
+    } catch (e) {
+      print(e);
+      print("error");
+    }
+  }
+
+  static bool? currentScreenSnackBar(String msg, height,
+      {double? marginFromBottom}) {
+    //Use to show snackbar at any current screen
+    BuildContext? context = Globals.navigatorKey.currentContext;
+    ScaffoldMessenger.of(context!).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      // margin: EdgeInsets.only(
+      //     bottom: marginFromBottom != null ? marginFromBottom : 0),
+      padding: EdgeInsets.only(
+        left: 16,
+      ),
+      margin: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: marginFromBottom == null
+              ? MediaQuery.of(context).size.height * 0.08
+              : marginFromBottom),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10))),
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 3),
+      backgroundColor:
+          Globals.themeType == 'Dark' ? Colors.white : Colors.black,
+      content: Container(
+        alignment: Alignment.centerLeft,
+        height: height ?? 40,
+        child: TranslationWidget(
+          message: msg,
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) => Text(translatedMessage,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.background,
+                fontWeight: FontWeight.w600,
+              )),
+        ),
+      ),
+      //  TranslationWidget(
+      //     message: text,
+      //     fromLanguage: "en",
+      //     toLanguage: Globals.selectedLanguage,
+      //     builder: (translatedMessage) {
+      //       return Text(translatedMessage.toString(),
+      //           textAlign: TextAlign.left,
+      //           style: TextStyle(
+      //             color: Theme.of(context).colorScheme.background,
+      //             // Theme.of(context).colorScheme.background,
+      //             fontWeight: FontWeight.w600,
+      //           ));
+      //     })
+    ));
+    return true;
   }
 
   static Future<bool> checkUserConnection() async {
@@ -545,7 +577,7 @@ class Utility {
                           : Color(0xffF7F8F9), //Colors.black54,
                   children: <Widget>[
                     Container(
-                      height: Globals.deviceType == 'phone' ? 70 : 100,
+                      height: Globals.deviceType == 'phone' ? 80 : 100,
                       width: Globals.deviceType == 'phone'
                           ? MediaQuery.of(context).size.width * 0.4
                           : MediaQuery.of(context).size.width * 0.5,
@@ -620,18 +652,19 @@ class Utility {
         : Color(0xffFFFFFF);
     //  Navigator.of(context).pop();
 
-    Utility.currentScreenSnackBar(errorMsg);
+    Utility.currentScreenSnackBar(errorMsg, null);
 
     var value = await pushNewScreen(
       context,
       screen: GoogleAuthWebview(
         title: 'Google Authentication',
-        url: Globals.appSetting.authenticationURL ??
-            '' + //Overrides.secureLoginURL +
-                '?' +
-                Globals.appSetting.appLogoC +
-                '?' +
-                themeColor.toString().split('0xff')[1].split(')')[0],
+        url: //'https://88f5-111-118-246-106.in.ngrok.io/',
+            Globals.appSetting.authenticationURL ??
+                '' + //Overrides.secureLoginURL +
+                    '?' +
+                    Globals.appSetting.appLogoC +
+                    '?' +
+                    themeColor.toString().split('0xff')[1].split(')')[0],
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
@@ -822,7 +855,6 @@ class Utility {
         context: context!, errorMsg: errorMsg!, scaffoldKey: scaffoldKey!);
 
     if (isNavigator == true) {
-      // print('+++++++++++++++++++++++++++++++++++++');
       Navigator.pop(context, false);
     }
     return true;

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/overrides.dart';
 
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -58,6 +59,8 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
   // final formKey = new GlobalKey<FormState>();
   final _formKey = GlobalKey<FormState>();
   final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
+  RegExp regex = new RegExp(
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
 
   @override
   Widget build(BuildContext context) {
@@ -195,11 +198,27 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: _textFiled(
                                           whichContoller: 2,
-                                          keyboardType: TextInputType.number,
-                                          maxNineDigit: 9,
-                                          msg: "field is required ",
+                                          keyboardType:
+                                              Overrides.STANDALONE_GRADED_APP ==
+                                                      true
+                                                  ? null
+                                                  : TextInputType.number,
+                                          maxNineDigit:
+                                              Overrides.STANDALONE_GRADED_APP ==
+                                                      true
+                                                  ? null
+                                                  : 9,
+                                          msg:
+                                              Overrides.STANDALONE_GRADED_APP ==
+                                                      true
+                                                  ? 'enter a valid Email'
+                                                  : "field is required ",
                                           controller:
                                               widget.textFieldControllerTwo)),
+                                  if (Overrides.STANDALONE_GRADED_APP == true)
+                                    SizedBox(
+                                      height: 20,
+                                    )
                                 ]),
                           )
                         : Container(),
@@ -491,17 +510,27 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
       keyboardType: keyboardType ?? null,
       maxLength: maxNineDigit ?? null,
       textInputAction: TextInputAction.next,
-      inputFormatters: <TextInputFormatter>[
-        //To capitalize first letter of the textfield
-        UpperCaseTextFormatter()
-      ],
+      inputFormatters: keyboardType == null
+          ? <TextInputFormatter>[]
+          : <TextInputFormatter>[
+              //To capitalize first letter of the textfield
+              UpperCaseTextFormatter()
+            ],
 
       validator: (text) {
         if (text == null || text.isEmpty) {
           return msg;
         } else {
-          if (text.length != 9 && whichContoller == 2) {
-            return msg;
+          if (whichContoller == 2) {
+            if (Overrides.STANDALONE_GRADED_APP == true &&
+                !regex.hasMatch(text)) {
+              return msg;
+            } else if (Overrides.STANDALONE_GRADED_APP != true &&
+                text.length != 9) {
+              return msg;
+            } else {
+              return null;
+            }
           } else if (text.length != 1 && whichContoller == 3) {
             return msg;
           }

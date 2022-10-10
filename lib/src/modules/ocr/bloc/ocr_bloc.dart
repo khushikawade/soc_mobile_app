@@ -1,21 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:string_similarity/string_similarity.dart';
 part 'ocr_event.dart';
 part 'ocr_state.dart';
 
@@ -36,20 +40,39 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
-        List data = await procressAssessmentSheet(
-            base64: event.base64, pointPossible: event.pointPossible);
-        if (data[0] != '' && data[1] != '' && data[2] != '') {
-          yield FetchTextFromImageSuccess(
-              studentId: data[1],
-              grade: data[0].toString().length == 1 ? data[0] : '2',
-              studentName: data[2]);
+        if (Overrides.STANDALONE_GRADED_APP) {
+          List resultList = await Future.wait([
+            emailDetectionApi(base64: event.base64),
+            procressAssessmentSheet(
+                base64: event.base64, pointPossible: event.pointPossible)
+          ]);
+          String email = resultList[0][0];
+          String name = resultList[0][1];
+          String grade = resultList[1][0];
+          if (email != '' && name != '' && grade != '') {
+            yield FetchTextFromImageSuccess(
+                studentId: email, grade: grade, studentName: name);
+          } else {
+            yield FetchTextFromImageFailure(
+                studentId: email, grade: grade, studentName: name);
+          }
         } else {
-          yield FetchTextFromImageFailure(
-              studentId: data[1],
-              grade: data[0].toString().length == 1 && data[0].toString() != 'S'
-                  ? data[0]
-                  : '',
-              studentName: data[2]);
+          List data = await procressAssessmentSheet(
+              base64: event.base64, pointPossible: event.pointPossible);
+          if (data[0] != '' && data[1] != '' && data[2] != '') {
+            yield FetchTextFromImageSuccess(
+                studentId: data[1],
+                grade: data[0].toString().length == 1 ? data[0] : '2',
+                studentName: data[2]);
+          } else {
+            yield FetchTextFromImageFailure(
+                studentId: data[1],
+                grade:
+                    data[0].toString().length == 1 && data[0].toString() != 'S'
+                        ? data[0]
+                        : '',
+                studentName: data[2]);
+          }
         }
       } catch (e) {
         yield FetchTextFromImageFailure(
@@ -95,8 +118,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           subjectList.addAll(data);
 
           //Custom subjects
-          List<SubjectDetailList> list =
-              await fatchLocalSubject(event.keyword!);
+          List<SubjectDetailList> list = await fatchLocalSubject(event.keyword!,
+              isCommonCore: event.isCommonCore);
           subjectList.addAll(list);
 
           //Sorting the list based on subject name
@@ -174,12 +197,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             studentName: event.studentName, studentId: event.studentId);
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         throw (e);
       }
@@ -195,12 +218,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         throw (e);
       }
@@ -222,8 +245,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           List<SubjectDetailList> subjectList = [];
           subjectList.addAll(data);
 
-          List<SubjectDetailList> list =
-              await fatchLocalSubject(event.keyword!);
+          List<SubjectDetailList> list = await fatchLocalSubject(event.keyword!,
+              isCommonCore: event.isCommonCore);
           subjectList.addAll(list);
           yield OcrLoading();
 
@@ -307,16 +330,42 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
     if (event is SaveSubjectListDetails) {
       try {
-        bool result = await saveSubjectListDetails();
+        yield OcrLoading();
+        LocalDatabase<SubjectDetailList> _localDb =
+            LocalDatabase(Strings.ocrSubjectObjectName);
+        List<SubjectDetailList> list = await _localDb.getData();
+        if (list.isNotEmpty &&
+            event.isCommonCore == true &&
+            !list[1].name!.contains('NY')) {
+          yield SaveSubjectListDetailsSuccess();
+        } else if (list.isNotEmpty &&
+            event.isCommonCore != true &&
+            list[1].name!.contains('NY')) {
+          yield SaveSubjectListDetailsSuccess();
+        }
+
+        List<SubjectDetailList> _list =
+            await saveSubjectListDetails(isCommonCore: event.isCommonCore);
+
+        await _localDb.clear();
+
+        _list.forEach((SubjectDetailList e) {
+          //To decode the special characters
+          utf8.decode(utf8.encode(_localDb.addData(e).toString()));
+        });
+
+        yield SaveSubjectListDetailsSuccess();
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
+        yield OcrErrorReceived();
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
+        yield OcrErrorReceived();
         throw (e);
       }
     }
@@ -432,12 +481,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         throw (e);
       }
@@ -521,12 +570,16 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> saveSubjectListDetails() async {
+  Future<List<SubjectDetailList>> saveSubjectListDetails(
+      {bool? isCommonCore}) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApiNew(
+          Uri.encodeFull(
               //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
               // ),
-              'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
+              isCommonCore == true
+                  ? 'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c/filterRecords/"Standards_Set__c" = \'Common Core Math\' OR "Standards_Set__c" = \'Common Core ELA\''
+                  : 'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
           isGoogleAPI: true,
           headers: {"Content-type": "application/json; charset=utf-8"});
 
@@ -536,16 +589,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
                 .map<SubjectDetailList>((i) => SubjectDetailList.fromJson(i))
                 .toList();
         ////print(_list);
-        LocalDatabase<SubjectDetailList> _localDb =
-            LocalDatabase(Strings.ocrSubjectObjectName);
-        await _localDb.clear();
 
-        _list.forEach((SubjectDetailList e) {
-          //To decode the special characters
-          utf8.decode(utf8.encode(_localDb.addData(e).toString()));
-        });
         // _list.removeWhere((SubjectList element) => element.status == 'Hide');
-        return true;
+        return _list;
       } else {
         throw ('something_went_wrong');
       }
@@ -554,9 +600,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<List<SubjectDetailList>> fatchLocalSubject(String classNo) async {
-    LocalDatabase<SubjectDetailList> _localDb =
-        LocalDatabase('Subject_list$classNo');
+  Future<List<SubjectDetailList>> fatchLocalSubject(String classNo,
+      {required bool isCommonCore}) async {
+    LocalDatabase<SubjectDetailList> _localDb = LocalDatabase(
+        isCommonCore == true
+            ? 'Subject_list_Common_core$classNo'
+            : 'Subject_list$classNo');
     //Clear subject local data to resolve loading issue
     SharedPreferences clearSubjectCache = await SharedPreferences.getInstance();
     final clearChacheResult = clearSubjectCache.getBool('Clear_local_Subject');
@@ -1086,7 +1135,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       required String subjectName,
       required String subLearningCode}) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
           isGoogleAPI: true);
       if (response.statusCode == 200) {
@@ -1116,7 +1165,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future fetchStudentDetails(ossId) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Student__c/studentOsis/$ossId",
           isGoogleAPI: true);
 
@@ -1134,7 +1183,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<List> _getTheDashBoardStatus({required String fileId}) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
           isGoogleAPI: true);
       if (response.statusCode == 200) {
@@ -1156,7 +1205,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<int> _getAssessmentRecord({required String assessmentId}) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Result__c/\"Assessment_Id\"='$assessmentId'",
           isGoogleAPI: true);
       if (response.statusCode == 200) {
@@ -1185,5 +1234,173 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } catch (e) {
       throw (e);
     }
+  }
+
+  Future<List> emailDetectionApi({required String base64}) async {
+    try {
+      final ResponseModel response = await _dbServices.postapi(
+        Uri.encodeFull(
+            'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'),
+        body: {
+          "requests": [
+            {
+              "image": {"content": base64.toString()},
+              "features": [
+                {"type": "DOCUMENT_TEXT_DETECTION"}
+              ]
+            }
+          ]
+        },
+        isGoogleApi: true,
+      );
+      if (response.statusCode == 200) {
+        // print(response.data);
+        String data =
+            response.data["responses"][0]["textAnnotations"][0]["description"];
+        print(data);
+        List nameAndemail = await checkEmailInsideRoster(respoanceText: data);
+        return [nameAndemail[0], nameAndemail[1]];
+      } else {
+        print(response.statusCode);
+        return ['', ''];
+      }
+    } catch (e) {
+      print(e);
+      throw (e);
+    }
+  }
+
+  Future<List> checkEmailInsideRoster({required String respoanceText}) async {
+    try {
+      LocalDatabase<GoogleClassroomCourses> _localDb =
+          LocalDatabase(Strings.googleClassroomCoursesList);
+
+      List<GoogleClassroomCourses>? _localData = await _localDb.getData();
+      List<String> studentEmailList = [];
+      for (var i = 0; i < _localData.length; i++) {
+        for (var j = 0; j < _localData[i].studentList!.length; j++) {
+          studentEmailList
+              .add(_localData[i].studentList![j]['profile']['emailAddress']);
+        }
+      }
+      // List<String> studentList = [
+      //   "test@gmail.com",
+      //   "appdevelopersdp7@gmail.com",
+      //   "rupeshparmar@gmail.com",
+      //   "techadmin@solvedconsulting.com"
+      // ];
+      List<String> respoanceTextList = respoanceText.split(' ');
+      String pattern =
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+      RegExp regex = new RegExp(pattern);
+      List result = extractEmailsFromString(respoanceText);
+
+      List<String> emails = [];
+
+      for (int i = 0; i < result.length; i++) {
+        String extra = result[i];
+        result.removeAt(i);
+        result.insert(i, extra.split('@')[0]);
+
+        var match = StringSimilarity.findBestMatch(
+            result[i], studentEmailList); // result[i].bestMatch(studentList);
+        print("--------------------------match-----------------------");
+        print(match);
+        emails.add("${match.bestMatch.target!}_${match.bestMatch.rating}");
+        // return match.bestMatch.target!;
+
+      }
+      String newresult = emails.isNotEmpty ? emails[0].split('_')[0] : '';
+      double confidence =
+          emails.isNotEmpty ? double.parse(emails[0].split('_')[1]) : 0;
+
+      for (int i = 1; i < emails.length; i++) {
+        if (confidence < double.parse(emails[i].split('_')[1])) {
+          newresult = emails.isNotEmpty ? emails[i].split('_')[0] : '';
+        }
+      }
+      String studentName = '';
+      for (var i = 0; i < _localData.length; i++) {
+        for (var j = 0; j < _localData[i].studentList!.length; j++) {
+          if (newresult ==
+              _localData[i].studentList![j]['profile']['emailAddress']) {
+            studentName =
+                _localData[i].studentList![j]['profile']['name']['fullName'];
+          }
+        }
+      }
+
+      return [newresult, studentName];
+
+      // if (result.isNotEmpty) {
+      //   return result[0];
+      // } else {
+      //   for (int j = 0; j < respoanceTextList.length; j++) {
+      //     if (regex.hasMatch(respoanceTextList[j]) &&
+      //         studentList.contains(respoanceTextList[j])) {
+      //       return respoanceTextList[j];
+      //     } else {
+      //       for (var i = 0; i < studentList.length; i++) {
+      //         if (studentList[i].contains(respoanceTextList[j])) {
+      //           return studentList[i];
+      //         }
+      //       }
+      //     }
+
+      //     //}
+
+      //   }
+      // }
+
+      return ['', ''];
+    } catch (e) {
+      return ['', ''];
+    }
+  }
+
+  List<String> extractEmailsFromString(String string) {
+    //String newString = string.replaceAll(RegExp(r"\s+"), '');
+    // newString
+
+    List<String> respoanceTextList = string.split(' ');
+    string = '';
+    for (int i = 0; i < respoanceTextList.length; i++) {
+      //  string = '';
+      if (respoanceTextList[i].toString().contains('@')) {
+        string = '$string${respoanceTextList[i].toString()}';
+      } else {
+        string = "$string ${respoanceTextList[i].toString()}";
+      }
+    }
+
+    final emailPattern = RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b',
+        caseSensitive: false, multiLine: true);
+    string = string.replaceAll(",", "");
+    final matches = emailPattern.allMatches(string);
+    final List<String> emails = [];
+    if (matches != null) {
+      for (final Match match in matches) {
+        emails.add(string.substring(match.start, match.end));
+      }
+    }
+    if (emails.isEmpty) {
+      List<String> respoanceTextList = string.split(' ');
+      for (var i = 0; i < respoanceTextList.length; i++) {
+        if (respoanceTextList[i].contains('@')) {
+          emails.add(respoanceTextList[i]);
+        }
+      }
+
+      // final test = RegExp('@',
+      //   caseSensitive: false, multiLine: true);
+      //   final data = test.allMatches(string);
+      // for (final Match match in data) {
+      //   emails.add(string.substring(match.start, match.end));
+
+      // }
+
+    }
+
+    return emails;
   }
 }

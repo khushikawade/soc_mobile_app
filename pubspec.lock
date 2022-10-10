@@ -758,6 +758,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
+  localstorage:
+    dependency: transitive
+    description:
+      name: localstorage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0+1"
   logging:
     dependency: transitive
     description:
@@ -1143,6 +1150,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.5"
+  scrollable_positioned_list:
+    dependency: "direct main"
+    description:
+      name: scrollable_positioned_list
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.3"
   share:
     dependency: "direct main"
     description:
@@ -1232,6 +1246,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  social_embed_webview:
+    dependency: "direct main"
+    description:
+      name: social_embed_webview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2"
   source_gen:
     dependency: transitive
     description:
@@ -1302,6 +1323,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
+  string_similarity:
+    dependency: "direct main"
+    description:
+      name: string_similarity
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   synchronized:
     dependency: transitive
     description:

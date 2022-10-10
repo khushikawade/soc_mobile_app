@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
@@ -22,7 +21,7 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
 
 class AssessmentSummary extends StatefulWidget {
-  bool isFromHomeSection;
+  final bool isFromHomeSection;
   AssessmentSummary({Key? key, required this.isFromHomeSection})
       : super(key: key);
   @override
@@ -53,6 +52,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     _scrollController = ScrollController()..addListener(_scrollListener);
     _driveBloc.add(GetHistoryAssessmentFromDrive());
 
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   refreshPage(isFromPullToRefresh: false);
+    // });
     SchedulerBinding.instance.addPostFrameCallback((_) {
       refreshPage(isFromPullToRefresh: false);
     });
@@ -207,7 +209,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                   } else {
                                     Navigator.of(context).pop();
                                     Utility.currentScreenSnackBar(
-                                        "Something Went Wrong. Please Try Again.");
+                                        "Something Went Wrong. Please Try Again.",
+                                        null);
                                   }
                                 } else if (state is GoogleDriveLoading) {
                                   Container(

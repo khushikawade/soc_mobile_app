@@ -19,6 +19,7 @@ class VerifyUserWithDatabase extends OcrEvent {
 }
 
 class FatchSubjectDetails extends OcrEvent {
+  final bool isCommonCore;
   final String? type;
   final String? keyword;
   final String? grade;
@@ -27,6 +28,7 @@ class FatchSubjectDetails extends OcrEvent {
   FatchSubjectDetails(
       {required this.type,
       required this.keyword,
+      required this.isCommonCore,
       this.isSearchPage,
       this.grade,
       this.subjectSelected});
@@ -45,6 +47,7 @@ class SaveStudentDetails extends OcrEvent {
 }
 
 class SearchSubjectDetails extends OcrEvent {
+  final bool isCommonCore;
   final String? type;
   final String? keyword;
   final String? searchKeyword;
@@ -54,6 +57,7 @@ class SearchSubjectDetails extends OcrEvent {
   SearchSubjectDetails(
       {required this.type,
       required this.keyword,
+      required this.isCommonCore,
       required this.searchKeyword,
       this.isSearchPage,
       this.grade,
@@ -64,6 +68,10 @@ class SearchSubjectDetails extends OcrEvent {
 }
 
 class SaveSubjectListDetails extends OcrEvent {
+  final bool? isCommonCore;
+
+  SaveSubjectListDetails({this.isCommonCore});
+
   @override
   List<Object> get props => [];
 }

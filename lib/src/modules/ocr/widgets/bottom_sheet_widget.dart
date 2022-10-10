@@ -104,14 +104,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                           fontSize: Globals.deviceType == "phone"
                               ? AppTheme.kBottomSheetTitleSize
                               : AppTheme.kBottomSheetTitleSize * 1.3,
-                        )
-                    // textTheme: Theme.of(context)
-                    //     .textTheme
-                    //     .headline3!
-                    //     .copyWith(
-                    //         color: Colors.black,
-                    //         fontWeight: FontWeight.bold)
-                    ),
+                        )),
               ),
             ),
             Form(
@@ -253,17 +246,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                                 ),
                                               ),
                                             ),
-
-                                      //  imageFile != null
-                                      //     ? Image.file(
-                                      //         imageFile!,
-                                      //         fit: BoxFit.fitWidth,
-                                      //       )
-                                      //     : Container(
-                                      //         child: Center(
-                                      //           child: Icon(Icons.add_a_photo),
-                                      //         ),
-                                      //       ),
                                     ),
                                   ),
                                 ),
@@ -412,17 +394,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     } else {
       Navigator.pop(context);
     }
-
-    // final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    // if (photo != null) {
-    //   setState(() {
-    //     imageFile = File(photo.path);
-
-    //     Navigator.pop(context);
-    //   });
-    // } else {
-    //   Navigator.pop(context);
-    // }
   }
 
   _imgFromGallery(BuildContext context) async {
