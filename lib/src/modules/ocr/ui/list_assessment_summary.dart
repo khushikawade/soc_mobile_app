@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
-import 'package:Soc/src/modules/ocr/ui/google_file_search.dart';
 import 'package:Soc/src/modules/ocr/ui/google_search.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -67,7 +66,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
 
   @override
   void dispose() {
-  _scrollController.removeListener(_scrollListener);
+    _scrollController.removeListener(_scrollListener);
 
     super.dispose();
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -90,6 +91,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                           appbarTitle: '',
                           isbuttomsheet: true,
                         )));
+
             break;
           case IconsMenu.Permissions:
             OpenAppsSettings.openAppsSettings(
@@ -172,7 +174,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 hideAccessibilityButton == true
                     ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
                     Container()
-                    : _openSettingsButton(context)
+                    : _openSettingsButton(context),
               ],
             ),
           ),

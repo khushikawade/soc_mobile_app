@@ -14,6 +14,7 @@ import '../modal/student_assessment_info_modal.dart';
 class CustomDialogBox extends StatefulWidget {
   final UserInformation? profileData;
   final bool? isUserInfoPop;
+  final VoidCallback? onSignOut;
   final StudentAssessmentInfo? studentAssessmentInfo;
   final String? title;
   final double? height;
@@ -21,6 +22,7 @@ class CustomDialogBox extends StatefulWidget {
   const CustomDialogBox(
       {Key? key,
       this.profileData,
+      this.onSignOut,
       required this.isUserInfoPop,
       this.studentAssessmentInfo,
       this.title,
@@ -41,6 +43,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
 
   @override
   void initState() {
+    super.initState();
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 0));
     scaleAnimation = CurvedAnimation(
@@ -171,6 +174,10 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                             ),
                             primary: AppTheme.kSelectedColor),
                         onPressed: () {
+                          if (widget.onSignOut != null) {
+                            widget.onSignOut!();
+                            return;
+                          }
                           WarningPopupModel();
                           UserGoogleProfile.clearUserProfile();
                           Utility.updateLoges(

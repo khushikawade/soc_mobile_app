@@ -2,6 +2,9 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
+import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/schedule/ui/day_view.dart';
+import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
@@ -15,12 +18,16 @@ import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:marquee/marquee.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+
+import '../../../services/local_database/local_db.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
@@ -63,6 +70,45 @@ class _StudentPageState extends State<StudentPage> {
   // }
 
   _launchURL(StudentApp obj, subList) async {
+    // Schedule Start
+    // if (obj.titleC != null && obj.titleC!.toLowerCase().contains('schedule')) {
+    if (obj.typeC != null && obj.typeC == 'Schedule') {
+      LocalDatabase<UserInformation> _localDb =
+          LocalDatabase('student_profile');
+      List<UserInformation> _userInformation = await _localDb.getData();
+
+      if (_userInformation.isEmpty) {
+        UserInformation result = await _launchLoginUrl('Student Login');
+
+        if (result.userName != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DayViewPage(
+                      date: ValueNotifier(DateTime.now()),
+                      studentProfile: result,
+                      blackoutDateList: [],
+                      schedulesList: [],
+                    )),
+          );
+        }
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DayViewPage(
+                    date: ValueNotifier(DateTime.now()),
+                    studentProfile: _userInformation[0],
+                    blackoutDateList: [],
+                    schedulesList: [],
+                  )),
+        );
+      }
+
+      return;
+    }
+    // Schedule Ends
+
     if (obj.appUrlC != null) {
       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
         showDialog(
@@ -423,7 +469,61 @@ class _StudentPageState extends State<StudentPage> {
             : _body('body2'));
   }
 
-  // void methodInStudentSection() {
-  //   setState(() {});
-  // }
+  Future<UserInformation> _launchLoginUrl(String? title) async {
+    var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
+        ? Color(0xff000000)
+        : Color(0xffFFFFFF);
+
+    var value = await pushNewScreen(
+      context,
+      screen: GoogleAuthWebview(
+        title: title!,
+        url:
+            'https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/student-login/auth',
+        isbuttomsheet: true,
+        language: Globals.selectedLanguage,
+        hideAppbar: false,
+        hideShare: true,
+        zoomEnabled: false,
+      ),
+      withNavBar: false,
+    );
+
+    if (value.toString().contains('authenticationfailure')) {
+      // Navigator.pop(context, false);
+      Utility.showSnackBar(
+          _scaffoldKey,
+          'You are not authorized to access the feature. Please use the authorized account.',
+          context,
+          50.0);
+
+      return UserInformation(userName: null);
+    } else if (value.toString().contains('success')) {
+      value = value.split('?')[1] ?? '';
+      UserInformation _studentProfile = await saveUserProfile(value);
+      return _studentProfile;
+      // _calenderBloc.add(CalenderPageEvent(email: _studentProfile.userEmail!));
+      // loggedIn = true;
+
+    }
+    return UserInformation(userName: null);
+  }
+
+  Future<UserInformation> saveUserProfile(String profileData) async {
+    List<String> profile = profileData.split('+');
+    UserInformation _userInformation = UserInformation(
+        userName: profile[0].toString().split('=')[1],
+        userEmail: profile[1].toString().split('=')[1],
+        profilePicture: profile[2].toString().split('=')[1],
+        authorizationToken:
+            profile[3].toString().split('=')[1].replaceAll('#', ''),
+        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+
+    //Save user profile to locally
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('student_profile');
+    print(_userInformation);
+    await _localDb.addData(_userInformation);
+    await _localDb.close();
+    return _userInformation;
+  }
 }
