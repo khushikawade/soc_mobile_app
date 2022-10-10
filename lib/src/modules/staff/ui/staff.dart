@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/startup.dart';
@@ -310,7 +311,7 @@ class _StaffPageState extends State<StaffPage> {
                       pushNewScreen(
                         context,
                         screen: StartupPage(
-                          isOcrSection: true,
+                          isOcrSection: Overrides.STANDALONE_GRADED_APP,
                         ),
                         withNavBar: false,
                       );
