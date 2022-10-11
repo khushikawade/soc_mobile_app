@@ -11,6 +11,8 @@ import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -950,5 +952,33 @@ class Utility {
   static void scrollToTop({required ScrollController scrollController}) {
     scrollController.animateTo(scrollController.positions.first.minScrollExtent,
         duration: const Duration(milliseconds: 400), curve: Curves.linear);
+  }
+
+  static Future<String> getUserlocation() async {
+    try {
+      // Position? userLocation;
+
+      LocationPermission permission = await Geolocator.requestPermission();
+
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.low,
+          // forceAndroidLocationManager: true,
+          timeLimit: Duration(seconds: 3));
+
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+      String currentStateName = '';
+
+      Placemark place = placemarks[0];
+
+      currentStateName = "${place.administrativeArea}";
+      // print(
+      //     "currentStateName=============================================================================");
+      // print(currentStateName);
+      return currentStateName;
+    } catch (e) {
+      print(e);
+      return '';
+    }
   }
 }

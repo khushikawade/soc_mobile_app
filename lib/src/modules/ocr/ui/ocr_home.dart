@@ -609,7 +609,7 @@ class _OpticalCharacterRecognitionPageState
         description: 'Start Scanning',
         operationResult: 'Success'));
 
-    _bloc.add(SaveSubjectListDetails());
+  //  _bloc.add(SaveSubjectListDetails());
     // //print(Globals.scoringRubric);
     // UNCOMMENT Below
     Navigator.push(

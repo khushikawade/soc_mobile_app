@@ -6,7 +6,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
-import 'package:Soc/src/modules/ocr/ui/individual_subject_page.dart';
+import 'package:Soc/src/modules/ocr/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -24,6 +24,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/firstLetterUpperCase.dart';
 import '../widgets/suggestion_chip.dart';
 
@@ -67,7 +69,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     //   wd
     // listScrollController.addListener(_scrollListener);
     Globals.googleExcelSheetId = '';
-    _bloc.add(SaveSubjectListDetails());
+    //_bloc.add(SaveSubjectListDetails());
     super.initState();
   }
 
@@ -216,7 +218,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           textFormField(
-                            readOnly: true,
+                            readOnly: Overrides.STANDALONE_GRADED_APP, // true,
                             scrollController: scrollControlleClassName,
                             isAssessmenttextFormField: false,
                             controller: classController,
@@ -779,19 +781,40 @@ class _CreateAssessmentState extends State<CreateAssessment>
         description: 'Created G-Excel file',
         operationResult: 'Success');
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Overrides.STANDALONE_GRADED_APP == true
-              ? IndividualSubjectPage(
-                  questionimageUrl: questionImageUrl ?? '',
-                  selectedClass: widget.customGrades[selectedGrade.value],
-                )
-              : SubjectSelection(
+    // To check State is selected or not (if selected then navigate to subject screen otherwise navigate to state selection screen)
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? selectedState = pref.getString('selected_state');
+
+    if (selectedState != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SubjectSelection(
+                  stateName: selectedState,
                   questionimageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
                 )),
-    );
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => StateSelectionPage(
+                  isFromCreateAssesmentScreen: true,
+                  questionimageUrl: questionImageUrl ?? '',
+                  selectedClass: widget.customGrades[selectedGrade.value],
+                )),
+      );
+    }
+
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => SubjectSelection(
+    //             questionimageUrl: questionImageUrl ?? '',
+    //             selectedClass: widget.customGrades[selectedGrade.value],
+    //           )),
+    // );
   }
 
   _addSectionBottomSheet() {
