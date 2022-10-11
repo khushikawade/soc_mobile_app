@@ -58,7 +58,6 @@ class _FamilyPageState extends State<FamilyPage> {
 
   @override
   void dispose() {
-    
     super.dispose();
   }
 
@@ -90,45 +89,43 @@ class _FamilyPageState extends State<FamilyPage> {
 
                 return
                     // connected?
-                    Column(
-                  mainAxisSize: MainAxisSize.max,
+                    ListView(
+                  shrinkWrap: true,
+                  //  mainAxisSize: MainAxisSize.max,
                   children: [
-                    Expanded(
-                      child: BlocBuilder<FamilyBloc, FamilyState>(
-                          bloc: _bloc,
-                          builder: (BuildContext contxt, FamilyState state) {
-                            if (state is FamilyInitial ||
-                                state is FamilyLoading) {
-                              return Center(
-                                  child: CircularProgressIndicator(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryVariant,
-                              ));
-                            } else if (state is FamiliesDataSucess) {
-                              return widget.customObj != null &&
-                                      widget.customObj!.sectionTemplate ==
-                                          "Grid Menu"
-                                  ? CommonGridWidget(
+                    BlocBuilder<FamilyBloc, FamilyState>(
+                        bloc: _bloc,
+                        builder: (BuildContext contxt, FamilyState state) {
+                          if (state is FamilyInitial ||
+                              state is FamilyLoading) {
+                            return Center(
+                                child: CircularProgressIndicator(
+                              color:
+                                  Theme.of(context).colorScheme.primaryVariant,
+                            ));
+                          } else if (state is FamiliesDataSucess) {
+                            return widget.customObj != null &&
+                                    widget.customObj!.sectionTemplate ==
+                                        "Grid Menu"
+                                ? CommonGridWidget(
                                     scrollController: _scrollController,
-                                      scaffoldKey: _scaffoldKey,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "family")
-                                  : CommonListWidget(
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "family")
+                                : CommonListWidget(
                                     scrollController: _scrollController,
-                                      key: ValueKey(key),
-                                      scaffoldKey: _scaffoldKey,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "family");
-                            } else if (state is ErrorLoading) {
-                              return ListView(children: [ErrorMsgWidget()]);
-                            } else {
-                              return Container();
-                            }
-                          }),
-                    ),
+                                    key: ValueKey(key),
+                                    scaffoldKey: _scaffoldKey,
+                                    connected: connected,
+                                    data: state.obj!,
+                                    sectionName: "family");
+                          } else if (state is ErrorLoading) {
+                            return ListView(children: [ErrorMsgWidget()]);
+                          } else {
+                            return Container();
+                          }
+                        }),
                     Container(
                       height: 0,
                       width: 0,
@@ -170,6 +167,10 @@ class _FamilyPageState extends State<FamilyPage> {
         body: Globals.appSetting.familyBannerImageC != null &&
                 Globals.appSetting.familyBannerImageC != ''
             ? NestedScrollView(
+
+                // floatHeaderSlivers: true,
+                controller: _scrollController,
+                floatHeaderSlivers: true,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[

@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
-import 'package:Soc/src/modules/ocr/ui/google_file_search.dart';
 import 'package:Soc/src/modules/ocr/ui/google_search.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -23,7 +21,7 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
 
 class AssessmentSummary extends StatefulWidget {
-  bool isFromHomeSection;
+  final bool isFromHomeSection;
   AssessmentSummary({Key? key, required this.isFromHomeSection})
       : super(key: key);
   @override
@@ -54,6 +52,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     _scrollController = ScrollController()..addListener(_scrollListener);
     _driveBloc.add(GetHistoryAssessmentFromDrive());
 
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   refreshPage(isFromPullToRefresh: false);
+    // });
     SchedulerBinding.instance.addPostFrameCallback((_) {
       refreshPage(isFromPullToRefresh: false);
     });
@@ -67,7 +68,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
 
   @override
   void dispose() {
-  _scrollController.removeListener(_scrollListener);
+    _scrollController.removeListener(_scrollListener);
 
     super.dispose();
   }
@@ -119,6 +120,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   padding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width / 30),
                   child: SearchBar(
+                    stateName: '',
                     isSearchPage: false,
                     isSubLearningPage: false,
                     readOnly: true,
@@ -208,7 +210,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                   } else {
                                     Navigator.of(context).pop();
                                     Utility.currentScreenSnackBar(
-                                        "Something Went Wrong. Please Try Again.");
+                                        "Something Went Wrong. Please Try Again.",
+                                        null);
                                   }
                                 } else if (state is GoogleDriveLoading) {
                                   Container(

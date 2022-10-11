@@ -31,7 +31,7 @@ class ImagePopupState extends State<ImagePopup>
   void initState() {
     super.initState();
     controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 550));
     scaleAnimation =
         CurvedAnimation(parent: controller!, curve: Curves.elasticInOut);
 

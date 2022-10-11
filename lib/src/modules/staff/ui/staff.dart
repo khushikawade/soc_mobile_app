@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/startup.dart';
@@ -18,11 +19,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import '../../../widgets/google_auth_webview.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
 import '../../ocr/modal/user_info.dart';
+import '../../ocr/widgets/google_login.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -94,95 +95,6 @@ class _StaffPageState extends State<StaffPage> {
     }
     return true;
   }
-  // _scrollListener() async {
-  //   bool isTop = _scrollController.position.pixels < 150;
-  //   // bool isTop = globalKey.currentState!.innerController.position.pixels < 150;
-  //   if (isTop) {
-  //     if (isScrolling.value == false) return;
-  //     isScrolling.value = false;
-  //   } else {
-  //     if (isScrolling.value == true) return;
-  //     isScrolling.value = true;
-  //   }
-  // }
-
-  //To authenticate the user via google
-  _launchURL(String? title) async {
-    var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
-        ? Color(0xff000000)
-        : Color(0xffFFFFFF);
-
-    var value = await pushNewScreen(
-      context,
-      screen: GoogleAuthWebview(
-        title: title!,
-        url: (Globals.appSetting.authenticationURL != null &&
-                        Globals.appSetting.authenticationURL != ''
-                    ? Globals.appSetting.authenticationURL
-                    : 'https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/secure-login/auth')
-                .toString() + //Overrides.secureLoginURL +
-            '?' +
-            Globals.appSetting.appLogoC +
-            '?' +
-            themeColor.toString().split('0xff')[1].split(')')[0],
-        isbuttomsheet: true,
-        language: Globals.selectedLanguage,
-        hideAppbar: false,
-        hideShare: true,
-        zoomEnabled: false,
-      ),
-      withNavBar: false,
-    );
-
-    if (value.toString().contains('authenticationfailure')) {
-      // Navigator.pop(context, false);
-      // Globals.teacherEmailId = ;
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-      DateTime currentDateTime = DateTime.now();
-      _ocrBlocLogs.add(LogUserActivityEvent(
-          sessionId: '',
-          teacherId: Globals.teacherId,
-          activityId: '2',
-          accountId: Globals.appSetting.schoolNameC,
-          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-          dateTime: currentDateTime.toString(),
-          description: 'Authentication Failure',
-          operationResult: 'Failure'));
-      Utility.showSnackBar(
-          _scaffoldKey,
-          'You are not authorized to access the feature. Please use the authorized account.',
-          context,
-          50.0);
-    } else if (value.toString().contains('success')) {
-      value = value.split('?')[1] ?? '';
-      //Save user profile
-      await saveUserProfile(value);
-      List<UserInformation> _userprofilelocalData =
-          await UserGoogleProfile.getUserProfile();
-      verifyUserAndGetDriveFolder(_userprofilelocalData);
-      Globals.teacherEmailId =
-          _userprofilelocalData[0].userEmail!.split('@')[0];
-      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-      DateTime currentDateTime = DateTime.now();
-      _ocrBlocLogs.add(LogUserActivityEvent(
-          sessionId: Globals.sessionId,
-          teacherId: Globals.teacherId,
-          activityId: '2',
-          accountId: Globals.appSetting.schoolNameC,
-          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-          dateTime: currentDateTime.toString(),
-          description: 'Google Authentication',
-          operationResult: 'Success'));
-      // Push to the grading system
-      pushNewScreen(
-        context,
-        screen: StartupPage(
-          isOcrSection: true,
-        ),
-        withNavBar: false,
-      );
-    }
-  }
 
   Future<void> saveUserProfile(String profileData) async {
     List<String> profile = profileData.split('+');
@@ -198,22 +110,6 @@ class _StaffPageState extends State<StaffPage> {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);
     await _localDb.close();
-  }
-
-  verifyUserAndGetDriveFolder(
-      List<UserInformation> _userprofilelocalData) async {
-    //Verifying with Salesforce if user exist in contact
-    _ocrBloc
-        .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
-
-    //Creating a assessment folder in users google drive to maintain all the assessments together at one place
-    Globals.googleDriveFolderId = '';
-    _googleDriveBloc.add(GetDriveFolderIdEvent(
-        isFromOcrHome: false,
-        //  filePath: file,
-        token: _userprofilelocalData[0].authorizationToken,
-        folderName: "SOLVED GRADED+",
-        refreshtoken: _userprofilelocalData[0].refreshToken));
   }
 
   Widget _body(String key) => RefreshIndicator(
@@ -238,59 +134,62 @@ class _StaffPageState extends State<StaffPage> {
               return
                   // connected?
                   Container(
-                child: Column(mainAxisSize: MainAxisSize.max, children: [
-                  Expanded(
-                    child: BlocBuilder<StaffBloc, StaffState>(
-                        bloc: _bloc,
-                        builder: (BuildContext contxt, StaffState state) {
-                          if (state is StaffInitial || state is StaffLoading) {
-                            return Center(
-                                child: CircularProgressIndicator(
-                              color:
-                                  Theme.of(context).colorScheme.primaryVariant,
-                            ));
-                          } else if (state is StaffDataSucess) {
-                            return widget.customObj != null &&
-                                    widget.customObj!.sectionTemplate ==
-                                        "Grid Menu"
-                                ? CommonGridWidget(
-                                  scrollController: _scrollController,
-                                    scaffoldKey: _scaffoldKey,
-                                    bottomPadding: 60,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: "staff")
-                                : CommonListWidget(
-                                     scrollController: _scrollController,
-                                    bottomPadding: 80,
-                                    key: ValueKey(key),
-                                    scaffoldKey: _scaffoldKey,
-                                    connected: connected,
-                                    data: state.obj!,
-                                    sectionName: "staff");
-                          } else if (state is ErrorInStaffLoading) {
-                            return ListView(children: [ErrorMsgWidget()]);
-                          } else {
-                            return ErrorMsgWidget();
-                          }
-                        }),
-                  ),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            Globals.appSetting = AppSetting.fromJson(state.obj);
-                            setState(() {});
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                ]),
+                child: ListView(shrinkWrap: true,
+                    //   mainAxisSize: MainAxisSize.max,
+                    children: [
+                      BlocBuilder<StaffBloc, StaffState>(
+                          bloc: _bloc,
+                          builder: (BuildContext contxt, StaffState state) {
+                            if (state is StaffInitial ||
+                                state is StaffLoading) {
+                              return Center(
+                                  child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ));
+                            } else if (state is StaffDataSucess) {
+                              return widget.customObj != null &&
+                                      widget.customObj!.sectionTemplate ==
+                                          "Grid Menu"
+                                  ? CommonGridWidget(
+                                      scrollController: _scrollController,
+                                      scaffoldKey: _scaffoldKey,
+                                      bottomPadding: 60,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "staff")
+                                  : CommonListWidget(
+                                      scrollController: _scrollController,
+                                      bottomPadding: 80,
+                                      key: ValueKey(key),
+                                      scaffoldKey: _scaffoldKey,
+                                      connected: connected,
+                                      data: state.obj!,
+                                      sectionName: "staff");
+                            } else if (state is ErrorInStaffLoading) {
+                              return ListView(children: [ErrorMsgWidget()]);
+                            } else {
+                              return ErrorMsgWidget();
+                            }
+                          }),
+                      Container(
+                        height: 0,
+                        width: 0,
+                        child: BlocListener<HomeBloc, HomeState>(
+                            bloc: _homeBloc,
+                            listener: (context, state) async {
+                              if (state is BottomNavigationBarSuccess) {
+                                AppTheme.setDynamicTheme(
+                                    Globals.appSetting, context);
+                                Globals.appSetting =
+                                    AppSetting.fromJson(state.obj);
+                                setState(() {});
+                              }
+                            },
+                            child: EmptyContainer()),
+                      ),
+                    ]),
               );
             },
             child: Container()),
@@ -318,6 +217,7 @@ class _StaffPageState extends State<StaffPage> {
           child: Globals.appSetting.staffBannerImageC != null &&
                   Globals.appSetting.staffBannerImageC != ''
               ? NestedScrollView(
+                  controller: _scrollController,
                   //  key: globalKey,
                   headerSliverBuilder:
                       (BuildContext context, bool innerBoxIsScrolled) {
@@ -368,16 +268,30 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
+                    // pushNewScreen(
+                    //   context,
+                    //   screen: StartupPage(
+                    //     isOcrSection: true,
+                    //     skipAppSettingsFetch: true,
+                    //   ),
+                    //   withNavBar: false,
+                    // );
+                    // return;
                     // Globals.localUserInfo.clear(); // COMMENT
                     Globals.lastindex = Globals.controller!.index;
+
                     List<UserInformation> _profileData =
                         await UserGoogleProfile.getUserProfile();
+
                     if (_profileData.isEmpty) {
-                      await _launchURL('Google Authentication');
+                      // await _launchURL('Google Authentication');
+                      await GoogleLogin.launchURL('Google Authentication',
+                          context, _scaffoldKey, true, '');
                     } else {
                       // List<UserInformation> _userprofilelocalData =
                       //     await UserGoogleProfile.getUserProfile();
-                      verifyUserAndGetDriveFolder(_profileData);
+                      GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+
                       Globals.teacherEmailId =
                           _profileData[0].userEmail!.split('@')[0];
                       Globals.sessionId =
@@ -397,22 +311,25 @@ class _StaffPageState extends State<StaffPage> {
                       pushNewScreen(
                         context,
                         screen: StartupPage(
-                          isOcrSection: true,
+                          isOcrSection: Overrides.STANDALONE_GRADED_APP,
                         ),
                         withNavBar: false,
                       );
                     }
                   },
                   icon: Container(
-                    alignment: Alignment.center,
-                    child: Icon(Icons.add,
-                        size: Globals.deviceType == 'tablet' ? 30 : null,
-                        color: Theme.of(context).backgroundColor),
+                    padding: EdgeInsets.only(left: !isScrolling.value ? 4 : 0),
+                    //alignment: Alignment.center,
+                    child: Center(
+                      child: Icon(Icons.add,
+                          size: Globals.deviceType == 'tablet' ? 30 : null,
+                          color: Theme.of(context).backgroundColor),
+                    ),
                   ),
                   label: !isScrolling.value
                       ? Container()
                       : Utility.textWidget(
-                          text: 'Assessment',
+                          text: 'Assignment',
                           context: context,
                           textTheme: Theme.of(context)
                               .textTheme
@@ -442,14 +359,11 @@ class _StaffPageState extends State<StaffPage> {
     List<CustomRubicModal> _localData = await _localDb.getData();
 
     if (_localData.isEmpty) {
-      //print('updating rubric into local db');
-      //print("local db is empty");
       RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
         await _localDb.addData(e);
       });
       await _localDb.close();
     } else {
-      //print("local db is not empty");
       RubricScoreList.scoringList = [];
       RubricScoreList.scoringList.addAll(_localData);
       // _localDb.close()

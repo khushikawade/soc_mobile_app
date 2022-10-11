@@ -503,7 +503,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   saveDarkModeField(AppSetting _appSetting) {
     if (_appSetting.disableDarkMode == true) {
-     
       HiveDbServices _hivedb = HiveDbServices();
       _hivedb.addSingleData('disableDarkMode', 'darkMode', true);
     } else {

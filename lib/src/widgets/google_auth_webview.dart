@@ -109,7 +109,7 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                         initialCookies: [],
                         backgroundColor: Theme.of(context).backgroundColor,
                         onProgress: (progress) {
-                          if (progress >= 50) {
+                          if (progress >= 30) {
                             setState(() {
                               isLoading = false;
                             });

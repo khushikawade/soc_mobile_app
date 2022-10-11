@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class Overrides {
   static String APP_NAME = '';
   static const String privacyPolicyUrl =
@@ -25,8 +27,13 @@ class Overrides {
   //Production     'https://solvedconsultingdev.my.salesforce.com/services/data/v52.0/';
 //Sandbox : 'https://solvedconsultingdev--flutter.my.salesforce.com/services/data/v52.0/';
   static const String forgotPasswordUrl = 'https://';
+
+//Use in case of graded+ stand-alone app required
+  static bool STANDALONE_GRADED_APP = true;
+  static String SCHOOL_ID = 'a1f4W000007DR8nQAG';
+  // 'a1f7h000000Eq1sAAC'; //'a1f7h000000Eq1sAAC'; // 'a1f7h00000178w9AAA'; //Bears :'a1f4W000007DR8nQAG';
   // static const String secureLoginURL =
   //     'https://bb76-111-118-246-106.in.ngrok.io/';
-  static String SCHOOL_ID =
-      'a1f4W000007DQaNQAW'; //'a1f7h000000Eq1sAAC'; // 'a1f7h00000178w9AAA'; //Bears :'a1f4W000007DR8nQAG';
+  // static String SCHOOL_ID = 'a1f4W000007DQaNQAW';
+  // 'a1f4W000007DR8nQAG'; //'a1f7h000000Eq1sAAC'; // 'a1f7h00000178w9AAA'; //Bears :'a1f4W000007DR8nQAG';
 }

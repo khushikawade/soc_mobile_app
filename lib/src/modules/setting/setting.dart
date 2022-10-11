@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -44,9 +45,11 @@ class _SettingPageState extends State<SettingPage> {
   void initState() {
     super.initState();
     // appversion();
-    OneSignal.shared
-        .getDeviceState()
-        .then((value) => {pushState(value!.pushDisabled)});
+    if (Overrides.STANDALONE_GRADED_APP != true) {
+      OneSignal.shared
+          .getDeviceState()
+          .then((value) => {pushState(value!.pushDisabled)});
+    }
     _homeBloc.add(FetchStandardNavigationBar());
     Globals.callsnackbar = true;
     // if (Globals.darkTheme != null) {
@@ -292,7 +295,7 @@ class _SettingPageState extends State<SettingPage> {
       child: Container(
           padding: EdgeInsets.all(16),
           child: TranslationWidget(
-              message: "Open Source licences",
+              message: "Open Source Licences",
               fromLanguage: "en",
               toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) => Text(
@@ -335,8 +338,12 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget _buildItem() {
     return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
-      _buildHeading("Push Notifcation"),
-      _buildNotification(),
+      Overrides.STANDALONE_GRADED_APP == true
+          ? Container()
+          : _buildHeading("Push Notifcation"),
+      Overrides.STANDALONE_GRADED_APP == true
+          ? Container()
+          : _buildNotification(),
       // _buildHeading('Display Setting'),
       // _buildSystemThemeMode(),
       // _buildThemeMode(),
@@ -357,7 +364,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
-          appBarTitle: 'Setting',
+          appBarTitle: 'Settings',
           isSearch: false,
           isShare: false,
           sharedpopBodytext: '',

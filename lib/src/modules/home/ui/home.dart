@@ -29,6 +29,7 @@ import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
+  final int? index;
   final homeObj;
   final String? language;
   final bool? isFromOcrSection;
@@ -39,7 +40,8 @@ class HomePage extends StatefulWidget {
       this.homeObj,
       this.language,
       this.builder,
-      this.isFromOcrSection})
+      this.isFromOcrSection,
+      this.index})
       : super(key: key);
 
   @override
@@ -135,11 +137,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _bloc.initPushState(context);
     restart();
     Globals.controller = PersistentTabController(
-        initialIndex: Globals.isNewTap == true
-            ? Globals.newsIndex ?? 0
-            : (widget.isFromOcrSection == true
-                ? Globals.lastindex
-                : Globals.homeIndex ?? 0));
+        initialIndex: widget.index != null
+            ? 2
+            : Globals.isNewTap == true
+                ? Globals.newsIndex ?? 0
+                : (widget.isFromOcrSection == true
+                    ? Globals.lastindex
+                    : Globals.homeIndex ?? 0));
     // initialIndex:
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);

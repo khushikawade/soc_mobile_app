@@ -33,7 +33,7 @@ class InformationPage extends StatefulWidget {
 }
 
 class _InformationPageState extends State<InformationPage> {
-  static const double _kLabelSpacing = 20.0;
+  static const double _kLabelSpacing = 10.0;
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
