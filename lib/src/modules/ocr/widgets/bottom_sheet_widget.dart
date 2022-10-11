@@ -307,9 +307,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
                                 widget.update!(true);
 
-                                Navigator.pop(
-                                  context,
-                                );
+                                Navigator.pop(context, true);
                               }
                             }
                           },

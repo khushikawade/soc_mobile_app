@@ -74,8 +74,6 @@ class _StaffPageState extends State<StaffPage> {
     }
     // _scrollController.addListener(_scrollListener);
     //  globalKey.currentState!.innerController.addListener(_scrollListener);
-
-    _getLocalDb();
   }
 
   @override
@@ -308,6 +306,7 @@ class _StaffPageState extends State<StaffPage> {
                           dateTime: currentDateTime.toString(),
                           description: 'Graded+ Accessed(Login)',
                           operationResult: 'Success'));
+                      //    await _getLocalDb();
                       pushNewScreen(
                         context,
                         screen: StartupPage(
@@ -351,22 +350,5 @@ class _StaffPageState extends State<StaffPage> {
         style: textTheme,
       ),
     );
-  }
-
-  _getLocalDb() async {
-    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
-
-    List<CustomRubicModal> _localData = await _localDb.getData();
-
-    if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
-        await _localDb.addData(e);
-      });
-      await _localDb.close();
-    } else {
-      RubricScoreList.scoringList = [];
-      RubricScoreList.scoringList.addAll(_localData);
-      // _localDb.close()
-    }
   }
 }
