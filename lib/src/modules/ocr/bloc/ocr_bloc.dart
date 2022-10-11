@@ -778,6 +778,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             jsonDecode(jsonEncode(response.data['body']))
                 .map<StateListObject>((i) => StateListObject.fromJson(i))
                 .toList();
+
+        _list.removeWhere((element) => Overrides.STANDALONE_GRADED_APP == true
+            ? element.usedInC == "school"
+            : element.usedInC == "Standalone");
         return _list;
       }
       return [];
