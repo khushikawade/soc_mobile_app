@@ -11,9 +11,11 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
+  final bool? hideStateSelection;
   final UserInformation profile;
 
-  const ProfilePage({Key? key, required this.profile}) : super(key: key);
+  const ProfilePage({Key? key, required this.profile, this.hideStateSelection})
+      : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -136,29 +138,35 @@ class _ProfilePageState extends State<ProfilePage> {
 
                           // Colors.grey[300],
                         ),
-                        listTile(
-                            icon: Icons.location_pin,
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => StateSelectionPage(
-                                            isFromCreateAssesmentScreen: false,
-                                            questionimageUrl: '',
-                                            selectedClass: '',
-                                          )));
-                            },
-                            title: 'State'),
-                        Divider(
-                          height: 5,
-                          color: Color(0xff000000) ==
-                                  Theme.of(context).backgroundColor
-                              ? Color.fromARGB(255, 203, 204, 206)
-                                  .withOpacity(0.5)
-                              : Color(0xff1f2f34).withOpacity(0.5),
+                        widget.hideStateSelection == true
+                            ? Container()
+                            : listTile(
+                                icon: Icons.location_pin,
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              StateSelectionPage(
+                                                isFromCreateAssesmentScreen:
+                                                    false,
+                                                questionimageUrl: '',
+                                                selectedClass: '',
+                                              )));
+                                },
+                                title: 'State'),
+                        widget.hideStateSelection == true
+                            ? Container()
+                            : Divider(
+                                height: 5,
+                                color: Color(0xff000000) ==
+                                        Theme.of(context).backgroundColor
+                                    ? Color.fromARGB(255, 203, 204, 206)
+                                        .withOpacity(0.5)
+                                    : Color(0xff1f2f34).withOpacity(0.5),
 
-                          // Colors.grey[300],
-                        ),
+                                // Colors.grey[300],
+                              ),
                       ],
                     ),
                   )),

@@ -196,6 +196,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
                 appBar: CustomOcrAppBarWidget(
+                  hideStateSelection: true,
                   onTap: () {
                     Utility.scrollToTop(scrollController: _scrollController);
                   },
@@ -379,13 +380,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 ? gridButtonsWidget(
                     list: state.obj, page: 1, isSubjectScreen: false)
                 : Container(
-                    height: MediaQuery.of(context).size.height * 0.6,
+                    height: MediaQuery.of(context).size.height * 0.4,
                     child: NoDataFoundErrorWidget(
+                      marginTop: MediaQuery.of(context).size.height * 0.1,
                       //errorMessage: 'No Domain Found',
                       isResultNotFoundMsg: false,
                       isNews: false,
                       isEvents: false,
-                    ),
+                    ),   
                   );
           } else if (state is NycSubDataSuccess) {
             state.obj!.forEach((element) {
@@ -459,7 +461,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       ? CircularProgressIndicator(
                           color: AppTheme.kButtonColor,
                         )
-                      : CupertinoActivityIndicator()),
+                      : CupertinoActivityIndicator(
+                          color: AppTheme.kButtonColor)),
             );
           }
           return Container();

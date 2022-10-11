@@ -101,9 +101,14 @@ class GoogleLogin {
         _localDb.clear();
         _localDb.close();
 
-        if (buttonPressed == 'Scan Assessment') {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => OpticalCharacterRecognition()));
+        if (Overrides.STANDALONE_GRADED_APP != true) {
+          pushNewScreen(
+            context,
+            screen: OpticalCharacterRecognition(),
+            withNavBar: false,
+          );
+          // Navigator.of(context).pushReplacement(MaterialPageRoute(
+          //     builder: (context) => OpticalCharacterRecognition()));
         } else {
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => GradedLandingPage()));
