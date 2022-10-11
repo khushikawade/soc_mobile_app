@@ -201,147 +201,127 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
               },
             ),
             body: Container(
-              height: MediaQuery.of(context).size.height * 0.65,
-              child: ListView(
-                  // padding: EdgeInsets.only(
-                  //     bottom: MediaQuery.of(context).size.height * 0.25),
-                  // mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    // SpacerWidget(15),
-                    // Container(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(8.0),
-                    //     child: Image.asset(
-                    //       Color(0xff000000) == Theme.of(context).backgroundColor
-                    //           ? "assets/images/graded+_light.png"
-                    //           : "assets/images/graded+_dark.png",
-                    //     ),
-                    //   ),
-                    // ),
-                    Padding(
-                      padding: const EdgeInsets.all(0), //8
-                      child: Image.asset("assets/images/landingPage_image.png"),
-                    ),
-                    ValueListenableBuilder(
-                        builder: (BuildContext context, dynamic value,
-                            Widget? child) {
-                          return Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-                            child: Text.rich(TextSpan(
+              height: MediaQuery.of(context).size.height * 0.63,
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                Expanded(
+                    child: Image.asset("assets/images/landingPage_image.png")),
+                ValueListenableBuilder(
+                    builder:
+                        (BuildContext context, dynamic value, Widget? child) {
+                      return Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                        child: Text.rich(TextSpan(
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(fontWeight: FontWeight.bold),
+                            text: 'Welcome ',
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: userName.value,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1!
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppTheme.kButtonColor),
+                              ),
+                              TextSpan(
+                                text: '!',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline1!
                                     .copyWith(fontWeight: FontWeight.bold),
-                                text: 'Welcome ',
-                                children: <InlineSpan>[
-                                  TextSpan(
-                                    text: userName.value,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1!
-                                        .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: AppTheme.kButtonColor),
-                                  ),
-                                  TextSpan(
-                                    text: '!',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                  )
-                                ])),
+                              )
+                            ])),
 
-                            // Utility.textWidget(
-                            //     text: 'Welcome ${userName.value}',
-                            //     context: context,
-                            //     textTheme: Theme.of(context)
-                            //         .textTheme
-                            //         .headline1!
-                            //         .copyWith(fontWeight: FontWeight.bold))
+                        // Utility.textWidget(
+                        //     text: 'Welcome ${userName.value}',
+                        //     context: context,
+                        //     textTheme: Theme.of(context)
+                        //         .textTheme
+                        //         .headline1!
+                        //         .copyWith(fontWeight: FontWeight.bold))
 
-                            //  Text('Welcome Back',7
-                            //     style: Theme.of(context).textTheme.headline1)
-                          );
-                        },
-                        valueListenable: userName,
-                        child: Container()),
+                        //  Text('Welcome Back',7
+                        //     style: Theme.of(context).textTheme.headline1)
+                      );
+                    },
+                    valueListenable: userName,
+                    child: Container()),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(25, 0.0, 25, 0),
+                  child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      // height: 100,
+                      // color: Colors.blue,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20.0),
+                          child: Utility.textWidget(
+                              textAlign: TextAlign.center,
+                              text:
+                                  'Scan your entire class and save results to your Google Drive within 3 minutes!',
+                              context: context,
+                              textTheme:
+                                  Theme.of(context).textTheme.headline2!),
 
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(25, 0.0, 25, 0),
-                      child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          // height: 100,
-                          // color: Colors.blue,
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 20.0),
-                              child: Utility.textWidget(
-                                  textAlign: TextAlign.center,
-                                  text:
-                                      'Scan student assessments and automate the manual efforts inculcated in delivering the feedback and scores',
-                                  context: context,
-                                  textTheme:
-                                      Theme.of(context).textTheme.headline2!),
+                          // Text('Flutter gives easy and simple methods',
+                          //     style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                      )),
+                ),
+                BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
+                    bloc: _googleClassroomBloc,
+                    child: Container(),
+                    listener: (BuildContext contxt,
+                        GoogleClassroomState state) async {
+                      if (state is GoogleClassroomCourseListSuccess) {
+                        print('Courses list Fetched');
 
-                              // Text('Flutter gives easy and simple methods',
-                              //     style: Theme.of(context).textTheme.bodyMedium),
-                            ),
-                          )),
-                    ),
-                    BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
-                        bloc: _googleClassroomBloc,
-                        child: Container(),
-                        listener: (BuildContext contxt,
-                            GoogleClassroomState state) async {
-                          if (state is GoogleClassroomCourseListSuccess) {
-                            print('Courses list Fetched');
-
-                            googleCourseList.value.clear();
-                            Utility.currentScreenSnackBar(
-                                'Roster Imported Successfully From Google Classroom',
-                                null,
-                                marginFromBottom: 90);
-                            googleCourseList.value.addAll(state.obj!);
-                            rosterImport.value = 'success';
-                            if (importRosterList == true &&
-                                rosterImport.value == 'success') {
-                              importRosterList = false;
-                              //  sort();
-                              var res = await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => CoursesListScreen(
-                                          googleClassroomCourseList:
-                                              googleCourseList.value)));
-                              if (res == true) {
-                                refreshList.value = !refreshList.value!;
-                              }
-                            }
+                        googleCourseList.value.clear();
+                        Utility.currentScreenSnackBar(
+                            'Roster Imported Successfully From Google Classroom',
+                            null,
+                            marginFromBottom: 90);
+                        googleCourseList.value.addAll(state.obj!);
+                        rosterImport.value = 'success';
+                        if (importRosterList == true &&
+                            rosterImport.value == 'success') {
+                          importRosterList = false;
+                          //  sort();
+                          var res = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => CoursesListScreen(
+                                      googleClassroomCourseList:
+                                          googleCourseList.value)));
+                          if (res == true) {
+                            refreshList.value = !refreshList.value!;
                           }
-                          if (state is GoogleClassroomLoading) {
-                            rosterImport.value = 'loading';
-                          }
-                          if (state is GoogleClassroomErrorState) {
-                            rosterImport.value = '';
-                            if (state.errorMsg ==
-                                'Reauthentication is required') {
-                              await Utility.refreshAuthenticationToken(
-                                  isNavigator: false,
-                                  errorMsg: state.errorMsg!,
-                                  context: context,
-                                  scaffoldKey: _scaffoldKey);
+                        }
+                      }
+                      if (state is GoogleClassroomLoading) {
+                        rosterImport.value = 'loading';
+                      }
+                      if (state is GoogleClassroomErrorState) {
+                        rosterImport.value = '';
+                        if (state.errorMsg == 'Reauthentication is required') {
+                          await Utility.refreshAuthenticationToken(
+                              isNavigator: false,
+                              errorMsg: state.errorMsg!,
+                              context: context,
+                              scaffoldKey: _scaffoldKey);
 
-                              _googleClassroomBloc.add(GetClassroomCourses());
-                            } else {
-                              Navigator.of(context).pop();
-                              Utility.currentScreenSnackBar(
-                                  "Something Went Wrong. Please Try Again.",
-                                  null);
-                            }
-                          }
-                        }),
-                  ]),
+                          _googleClassroomBloc.add(GetClassroomCourses());
+                        } else {
+                          Navigator.of(context).pop();
+                          Utility.currentScreenSnackBar(
+                              "Something Went Wrong. Please Try Again.", null);
+                        }
+                      }
+                    }),
+              ]),
             ),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,

@@ -112,7 +112,7 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
 
   Future<Body> getStudentDetails(email) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
         //schoolId=${Overrides.SCHOOL_ID}&objectName=//scott.walker@solvedconsulting.com//$value//
         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/getSchedule?email=$email",
         //matias.brocato@solvedconsulting.com",

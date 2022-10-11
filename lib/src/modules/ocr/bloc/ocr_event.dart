@@ -51,7 +51,6 @@ class SaveStudentDetails extends OcrEvent {
 }
 
 class SearchSubjectDetails extends OcrEvent {
-  
   final String? type;
   final String? selectedKeyword;
   final String stateName;

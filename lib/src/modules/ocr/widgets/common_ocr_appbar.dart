@@ -136,6 +136,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       child: Icon(
                         Icons.logout_outlined,
                         size: 28,
+                        color: AppTheme.kButtonColor,
                       )))
               : widget.isFromResultSection == true
                   ? Container(
@@ -301,7 +302,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ProfilePage(
-                                        hideStateSelection: widget.hideStateSelection ?? false,
+                                            hideStateSelection:
+                                                widget.hideStateSelection ??
+                                                    false,
                                             profile: snapshot.data!,
                                           )),
                                 );

@@ -625,7 +625,9 @@ class _StartupPageState extends State<StartupPage> {
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                 builder: (context) => isOldUser == true
-                                    ?  Overrides.STANDALONE_GRADED_APP == true ?    GradedLandingPage() : OpticalCharacterRecognition()
+                                    ? Overrides.STANDALONE_GRADED_APP == true
+                                        ? GradedLandingPage()
+                                        : OpticalCharacterRecognition()
                                     : CustomIntroWidget(),
                               ));
                               //         );

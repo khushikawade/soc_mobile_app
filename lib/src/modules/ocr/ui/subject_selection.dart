@@ -387,7 +387,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       isResultNotFoundMsg: false,
                       isNews: false,
                       isEvents: false,
-                    ),   
+                    ),
                   );
           } else if (state is NycSubDataSuccess) {
             state.obj!.forEach((element) {

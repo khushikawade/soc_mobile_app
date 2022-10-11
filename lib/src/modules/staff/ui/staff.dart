@@ -351,4 +351,21 @@ class _StaffPageState extends State<StaffPage> {
       ),
     );
   }
+
+  _getLocalDb() async {
+    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+
+    List<CustomRubicModal> _localData = await _localDb.getData();
+
+    if (_localData.isEmpty) {
+      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+        await _localDb.addData(e);
+      });
+      await _localDb.close();
+    } else {
+      RubricScoreList.scoringList = [];
+      RubricScoreList.scoringList.addAll(_localData);
+      // _localDb.close()
+    }
+  }
 }
