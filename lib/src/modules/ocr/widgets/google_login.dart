@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -113,7 +114,7 @@ class GoogleLogin {
         pushNewScreen(
           context,
           screen: StartupPage(
-            isOcrSection: true,
+            isOcrSection: Overrides.STANDALONE_GRADED_APP,
             skipAppSettingsFetch: true,
           ),
           withNavBar: false,

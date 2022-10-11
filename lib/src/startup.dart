@@ -614,7 +614,8 @@ class _StartupPageState extends State<StartupPage> {
                                   state.obj["App_Logo__c"]);
                           await Future.delayed(Duration(milliseconds: 200));
                           if (state.obj != null) {
-                            if (widget.isOcrSection == true) {
+                            if (widget.isOcrSection ==
+                                Overrides.STANDALONE_GRADED_APP) {
                               // Navigator.of(context).pushReplacement(
                               //     _gotoOCRLandingPage(state.obj));
                               HiveDbServices _hiveDbServices = HiveDbServices();
@@ -625,7 +626,9 @@ class _StartupPageState extends State<StartupPage> {
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                 builder: (context) => isOldUser == true
-                                    ?  Overrides.STANDALONE_GRADED_APP == true ?    GradedLandingPage() : OpticalCharacterRecognition()
+                                    ? Overrides.STANDALONE_GRADED_APP == true
+                                        ? GradedLandingPage()
+                                        : OpticalCharacterRecognition()
                                     : CustomIntroWidget(),
                               ));
                               //         );
