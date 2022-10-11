@@ -614,8 +614,7 @@ class _StartupPageState extends State<StartupPage> {
                                   state.obj["App_Logo__c"]);
                           await Future.delayed(Duration(milliseconds: 200));
                           if (state.obj != null) {
-                            if (widget.isOcrSection ==
-                                Overrides.STANDALONE_GRADED_APP) {
+                            if (widget.isOcrSection == true) {
                               // Navigator.of(context).pushReplacement(
                               //     _gotoOCRLandingPage(state.obj));
                               HiveDbServices _hiveDbServices = HiveDbServices();

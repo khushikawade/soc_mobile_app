@@ -310,7 +310,7 @@ class _StaffPageState extends State<StaffPage> {
                       pushNewScreen(
                         context,
                         screen: StartupPage(
-                          isOcrSection: Overrides.STANDALONE_GRADED_APP,
+                          isOcrSection: true, //since always opens OCR
                         ),
                         withNavBar: false,
                       );
