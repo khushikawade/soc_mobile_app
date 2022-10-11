@@ -987,7 +987,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         popupModal(
                                             title: 'Data Not Saved',
                                             message:
-                                                'Oops! You cannot save the assessment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the assessment.');
+                                                'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
                                         Globals.scanMoreStudentInfoLength =
                                             await Utility
                                                     .getStudentInfoListLength(
@@ -1309,8 +1309,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     popupModal(
                         title: 'Alert!',
                         message: Globals.isPremiumUser == true
-                            ? 'Oops! You are currently a "Premium" user. You cannot update the assessment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-                            : 'Opps! You are currently a "Free" user. You cannot update the assessment that you created as a "Premium" user. If you still want to edit this assessment then please upgrade to Premium. You can still create new assessments as Free user.');
+                            ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
+                            : 'Opps! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
                     return;
                   }
 
@@ -1967,7 +1967,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         builder: (context) {
           return CustomDialogBox(
             title: widget.asssessmentName == null
-                ? 'Asssessment Name'
+                ? 'Assignment Name'
                 : widget.asssessmentName!,
             height: MediaQuery.of(context).size.height * 0.53,
             // width: MediaQuery.of(context).size.width * 0.,

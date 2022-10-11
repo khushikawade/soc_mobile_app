@@ -323,7 +323,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                   label: !isScrolling.value
                       ? Container()
                       : Utility.textWidget(
-                          text: 'Scan Assessment',
+                          text: 'Scan Assignment',
                           context: context,
                           textTheme: Theme.of(context)
                               .textTheme

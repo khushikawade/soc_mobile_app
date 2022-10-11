@@ -453,7 +453,7 @@ class _CameraScreenState extends State<CameraScreen>
                           } else {
                             Utility.showSnackBar(
                                 _scaffoldKey,
-                                "Assessment not found! Please scan a student assessment to proceed further",
+                                "Assignment not found! Please scan a student Assignment to proceed further",
                                 context,
                                 null);
                           }

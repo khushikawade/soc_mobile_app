@@ -291,7 +291,7 @@ class _OpticalCharacterRecognitionPageState
                     padding: EdgeInsets.only(top: 10),
                     // color: Colors.red,
                     child: Utility.textWidget(
-                        text: 'Assessment History',
+                        text: 'Assignment History',
                         context: context,
                         textTheme:
                             Theme.of(context).textTheme.headline2!.copyWith(

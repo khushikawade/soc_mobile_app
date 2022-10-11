@@ -362,7 +362,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                     child: Container()),
                 SpacerWidget(8),
                 button(
-                  'Scan Assessment',
+                  'Scan Assignment',
                 ),
                 OfflineBuilder(
                     child: Container(),
@@ -394,7 +394,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                         padding: EdgeInsets.only(top: 10),
                                         // color: Colors.red,
                                         child: Utility.textWidget(
-                                            text: 'Assessment History',
+                                            text: 'Assignment History',
                                             context: context,
                                             textTheme: Theme.of(context)
                                                 .textTheme
@@ -462,7 +462,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                         // isExtended: isScrolling.value,
                         backgroundColor: AppTheme.kButtonColor,
                         onPressed: () async {
-                          if (text == 'Scan Assessment' &&
+                          if (text == 'Scan Assignment' &&
                               googleCourseList.value.length == 0) {
                             popupModal(
                                 title: 'Roster',
