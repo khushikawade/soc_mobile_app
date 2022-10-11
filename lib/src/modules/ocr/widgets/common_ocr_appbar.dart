@@ -24,6 +24,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
   CustomOcrAppBarWidget(
       {required Key? key,
+      this.hideStateSelection,
       required this.isBackButton,
       this.isTitle,
       required this.isSuccessState,
@@ -54,6 +55,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? assessmentPage;
   Widget? actionIcon;
   Widget? customBackButton;
+  bool? hideStateSelection;
   ValueListenable<bool>? isbackOnSuccess;
   String? sessionId;
   bool? isFromResultSection;
@@ -299,6 +301,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ProfilePage(
+                                        hideStateSelection: widget.hideStateSelection ?? false,
                                             profile: snapshot.data!,
                                           )),
                                 );

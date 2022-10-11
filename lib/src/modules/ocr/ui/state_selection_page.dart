@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
@@ -106,7 +108,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                     ),
                     SpacerWidget(_KVertcalSpace / 4),
                     SearchBar(
-                      stateName: 'State Search',
+                        stateName: 'State Search',
                         readOnly: false,
                         controller: searchController,
                         onSaved: (String value) {
@@ -240,6 +242,10 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                     Utility.currentScreenSnackBar(
                         '\'${list[index]}\' Has Been Updated As Your Current State',
                         null);
+                    Timer(Duration(seconds: 2), () {
+                      Navigator.pop(context);
+                      //isRetryButton.value = true;
+                    });
                   }
 
                   // _ocrBloc.add(SaveSubjectListDetailsToLocalDb(
