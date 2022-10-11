@@ -751,13 +751,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String query =
           '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
 
-      final ResponseModel response = await _dbServices.getApiNew(
+      final ResponseModel response = await _dbServices.getapiNew(
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
               'https://www.googleapis.com/drive/v3/files?fields=%2A%26q=' +
               Uri.encodeFull(query),
           headers: headers,
-          isGoogleAPI: true);
-      // final ResponseModel response = await _dbServices.getApiNew(
+          isCompleteUrl: true);
+      // final ResponseModel response = await _dbServices.getapiNew(
       //     'https://www.googleapis.com/drive/v3/files?fields=*&q=trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\'',
 
       // Uri.encodeFull(
@@ -935,10 +935,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
 
-      final ResponseModel response = await _dbServices.getApiNew(
+      final ResponseModel response = await _dbServices.getapiNew(
           "https://sheets.googleapis.com/v4/spreadsheets/$excelId",
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
       if (response.statusCode == 200) {
         return response.data["sheets"][0]['properties']['sheetId'];
       }
@@ -1103,7 +1103,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       String query =
           '(mimeType = \'application/vnd.google-apps.spreadsheet\' and \'$folderId\'+in+parents and title contains \'${searchKey}\')';
-      final ResponseModel response = await _dbServices.getApiNew(
+      final ResponseModel response = await _dbServices.getapiNew(
           isPagination == true
               ? "$nextPageUrl"
               : searchKey == ""
@@ -1116,7 +1116,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                       Uri.encodeFull(query), //Search call
 
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
 
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
@@ -1207,10 +1207,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   Future<List<AssessmentDetails>> getAssessmentList() async {
     try {
-      final ResponseModel response = await _dbServices.getApiNew(
+      final ResponseModel response = await _dbServices.getapiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"School__c"=\'${Globals.appSetting.schoolNameC}\'',
           //  'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
-          isGoogleAPI: true);
+          isCompleteUrl: true);
       if (response.statusCode == 200) {
         List<AssessmentDetails> _list = response.data['body']
             .map<AssessmentDetails>((i) => AssessmentDetails.fromJson(i))
@@ -1224,49 +1224,49 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  _updateSheetPermission(
-      String token, String fileId, String? refreshToken) async {
-    try {
-      Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'authorization': 'Bearer $token'
-      };
-      final body = {"role": "reader", "type": "anyone"};
+  // _updateSheetPermission(
+  //     String token, String fileId, String? refreshToken) async {
+  //   try {
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json',
+  //       'authorization': 'Bearer $token'
+  //     };
+  //     final body = {"role": "reader", "type": "anyone"};
 
-      final ResponseModel response = await _dbServices.postapi(
-          // 'https://www.googleapis.com/drive/v3/files/$fileId/permissions',
-          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId/permissions',
-          headers: headers,
-          body: body,
-          isGoogleApi: true);
+  //     final ResponseModel response = await _dbServices.postapi(
+  //         // 'https://www.googleapis.com/drive/v3/files/$fileId/permissions',
+  //         '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId/permissions',
+  //         headers: headers,
+  //         body: body,
+  //         isGoogleApi: true);
 
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
-        return true;
-      }
-      if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
-        _totalRetry++;
+  //     if (response.statusCode != 401 &&
+  //         response.statusCode == 200 &&
+  //         response.data['statusCode'] != 500) {
+  //       return true;
+  //     }
+  //     if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
+  //         _totalRetry < 3) {
+  //       _totalRetry++;
 
-        bool result = await _toRefreshAuthenticationToken(refreshToken!);
+  //       bool result = await _toRefreshAuthenticationToken(refreshToken!);
 
-        if (result == true) {
-          List<UserInformation> _userprofilelocalData =
-              await UserGoogleProfile.getUserProfile();
+  //       if (result == true) {
+  //         List<UserInformation> _userprofilelocalData =
+  //             await UserGoogleProfile.getUserProfile();
 
-          bool result = _updateSheetPermission(
-              _userprofilelocalData[0].authorizationToken!,
-              fileId,
-              _userprofilelocalData[0].refreshToken);
-          return result;
-        }
-      }
-      return false;
-    } catch (e) {
-      throw (e);
-    }
-  }
+  //         bool result = _updateSheetPermission(
+  //             _userprofilelocalData[0].authorizationToken!,
+  //             fileId,
+  //             _userprofilelocalData[0].refreshToken);
+  //         return result;
+  //       }
+  //     }
+  //     return false;
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
 
   _getShareableLink(
       {required String token,
@@ -1277,19 +1277,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-      final ResponseModel response = await _dbServices.getApiNew(
+      final ResponseModel response = await _dbServices.getapiNew(
           // 'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
 
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        bool result = await _updateSheetPermission(token, fileId, refreshToken);
-        if (!result) {
-          await _updateSheetPermission(token, fileId, refreshToken);
-        }
+        // bool result = await _updateSheetPermission(token, fileId, refreshToken);
+        // if (!result) {
+        //   await _updateSheetPermission(token, fileId, refreshToken);
+        // }
 
         // var data = response.data;
         return response.data['body']['webViewLink'];
@@ -1319,11 +1319,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8'
       };
-      final ResponseModel response = await _dbServices.getApiNew(
+      final ResponseModel response = await _dbServices.getapiNew(
           //   'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
 
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&

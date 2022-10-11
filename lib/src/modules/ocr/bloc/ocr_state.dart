@@ -59,7 +59,7 @@ class OcrErrorReceived extends OcrState {
 }
 
 class SubjectDataSuccess extends OcrState {
-  final List<SubjectDetailList>? obj;
+  final List<StateListObject>? obj;
   SubjectDataSuccess({
     this.obj,
   });
@@ -206,3 +206,28 @@ class AssessmentDashboardStatus extends OcrState {
   @override
   List<Object> get props => [];
 }
+
+// ---------- State to updated ui according to State List ----------
+class StateListFetchSuccessfully extends OcrState {
+  final List<String> stateList;
+  StateListFetchSuccessfully({required this.stateList});
+
+  @override
+  List<Object> get props => [];
+}
+
+// ---------- State to Confirm subject list save to localDb according to state selection ----------
+class SubjectDetailsListSaveSuccessfully extends OcrState {
+  @override
+  List<Object> get props => [];
+}
+
+// ---------- State to Return Local State search result ----------
+class LocalStateSearchResult extends OcrState {
+  final List<String> stateList;
+  LocalStateSearchResult({required this.stateList});
+  @override
+  List<Object> get props => [];
+}
+
+//LocalStateSearchEvent

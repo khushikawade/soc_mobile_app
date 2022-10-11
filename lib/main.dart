@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
@@ -67,6 +68,7 @@ void main() async {
       ..registerAdapter(CustomRubicModalAdapter())
       ..registerAdapter(TranslationModalAdapter())
       ..registerAdapter(StudentAssessmentInfoAdapter())
+      ..registerAdapter(StateListObjectAdapter())
       ..registerAdapter(GoogleClassroomCoursesAdapter())
       ..registerAdapter(ScheduleAdapter())
       ..registerAdapter(BlackoutDateAdapter())

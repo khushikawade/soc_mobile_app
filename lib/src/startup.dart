@@ -364,6 +364,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/shared_preference.dart';
@@ -624,7 +625,7 @@ class _StartupPageState extends State<StartupPage> {
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                 builder: (context) => isOldUser == true
-                                    ? GradedLandingPage()
+                                    ?  Overrides.STANDALONE_GRADED_APP == true ?    GradedLandingPage() : OpticalCharacterRecognition()
                                     : CustomIntroWidget(),
                               ));
                               //         );
