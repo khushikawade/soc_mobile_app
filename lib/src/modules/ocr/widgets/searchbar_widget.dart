@@ -7,6 +7,8 @@ import '../../../styles/theme.dart';
 
 class SearchBar extends StatelessWidget {
   final TextEditingController controller;
+  final Widget? suffixIcon;
+  final String stateName;
   final onSaved;
   final onTap;
   final bool? isCommonCore;
@@ -15,6 +17,8 @@ class SearchBar extends StatelessWidget {
   final bool? readOnly;
   const SearchBar(
       {Key? key,
+      this.suffixIcon,
+      required this.stateName,
       required this.controller,
       required this.onSaved,
       this.onTap,
@@ -36,11 +40,11 @@ class SearchBar extends StatelessWidget {
             message: isSearchPage == true
                 ? isCommonCore == true
                     ? 'Common Core'
-                    : 'Search Learning Standard and NY Next Generation Learning Standard '
+                    : 'Search Learning Standard and $stateName Learning Standard '
                 : isSubLearningPage == true
                     ? isCommonCore == true
                         ? 'Common Core'
-                        : 'Search NY Next Generation Learning Standard'
+                        : 'Search $stateName Learning Standard'
                     : 'Search',
             fromLanguage: "en",
             toLanguage: Globals.selectedLanguage,
@@ -96,16 +100,20 @@ class SearchBar extends StatelessWidget {
                   ),
                   suffixIcon: controller.text.isEmpty
                       ? null
-                      : InkWell(
-                          onTap: () {
-                            controller.clear();
-                          },
-                          child: Icon(
-                            Icons.clear,
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                            size: Globals.deviceType == "phone" ? 20 : 28,
-                          ),
-                        ),
+                      : suffixIcon == null
+                          ? InkWell(
+                              onTap: () {
+                                controller.clear();
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                                size: Globals.deviceType == "phone" ? 20 : 28,
+                              ),
+                            )
+                          : suffixIcon,
                 ),
                 onChanged: onSaved,
                 onTap: onTap,

@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/setting/information.dart';
@@ -125,6 +126,29 @@ class _ProfilePageState extends State<ProfilePage> {
                                           )));
                             },
                             title: 'Settings'),
+                        Divider(
+                          height: 5,
+                          color: Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color.fromARGB(255, 203, 204, 206)
+                                  .withOpacity(0.5)
+                              : Color(0xff1f2f34).withOpacity(0.5),
+
+                          // Colors.grey[300],
+                        ),
+                        listTile(
+                            icon: Icons.location_pin,
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => StateSelectionPage(
+                                            isFromCreateAssesmentScreen: false,
+                                            questionimageUrl: '',
+                                            selectedClass: '',
+                                          )));
+                            },
+                            title: 'State'),
                         Divider(
                           height: 5,
                           color: Color(0xff000000) ==

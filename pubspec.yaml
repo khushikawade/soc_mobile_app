@@ -87,6 +87,8 @@ dependencies:
   flutter_slidable: ^1.3.0 #To make record slidable
   flutter_inappwebview: ^5.4.3+7 #New webview plugin for android
   carousel_slider: ^4.1.1 #Used on onboarding screens of Graded+
+  geolocator: ^9.0.2 #Used to auto select user state in Graded+
+  geocoding: ^2.0.5 # Coordinate to Address
   string_similarity: ^2.0.0 #Used in email detection
   scrollable_positioned_list: ^0.2.0-nullsafety.0 #Used on courses list to scroll to specific course
 

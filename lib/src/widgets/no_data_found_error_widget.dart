@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class NoDataFoundErrorWidget extends StatelessWidget {
+  String? errorMessage;
   bool? isCalendarPageOrientationLandscape;
   bool? isOcrSearch;
   bool? isSearchpage;

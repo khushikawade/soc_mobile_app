@@ -120,6 +120,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   padding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width / 30),
                   child: SearchBar(
+                    stateName: '',
                     isSearchPage: false,
                     isSubLearningPage: false,
                     readOnly: true,

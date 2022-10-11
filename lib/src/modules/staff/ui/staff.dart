@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/startup.dart';
@@ -73,8 +74,6 @@ class _StaffPageState extends State<StaffPage> {
     }
     // _scrollController.addListener(_scrollListener);
     //  globalKey.currentState!.innerController.addListener(_scrollListener);
-
-    _getLocalDb();
   }
 
   @override
@@ -307,10 +306,11 @@ class _StaffPageState extends State<StaffPage> {
                           dateTime: currentDateTime.toString(),
                           description: 'Graded+ Accessed(Login)',
                           operationResult: 'Success'));
+                      //    await _getLocalDb();
                       pushNewScreen(
                         context,
                         screen: StartupPage(
-                          isOcrSection: true,
+                          isOcrSection: Overrides.STANDALONE_GRADED_APP,
                         ),
                         withNavBar: false,
                       );
@@ -350,22 +350,5 @@ class _StaffPageState extends State<StaffPage> {
         style: textTheme,
       ),
     );
-  }
-
-  _getLocalDb() async {
-    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
-
-    List<CustomRubicModal> _localData = await _localDb.getData();
-
-    if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
-        await _localDb.addData(e);
-      });
-      await _localDb.close();
-    } else {
-      RubricScoreList.scoringList = [];
-      RubricScoreList.scoringList.addAll(_localData);
-      // _localDb.close()
-    }
   }
 }

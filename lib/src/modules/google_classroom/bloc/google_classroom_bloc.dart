@@ -148,12 +148,12 @@ class GoogleClassroomBloc
       //   'authorization': 'Bearer $accessToken'
       // };
 
-      final ResponseModel response = await _dbServices.getApiNew(
+      final ResponseModel response = await _dbServices.getapiNew(
           // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/importRoster/$accessToken',
           //'https://classroom.googleapis.com/v1/courses',
           // headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
 
       if (response.statusCode != 401 &&
           response.data['body'] != 401 &&
