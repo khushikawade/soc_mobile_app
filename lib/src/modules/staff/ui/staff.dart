@@ -310,7 +310,7 @@ class _StaffPageState extends State<StaffPage> {
                       pushNewScreen(
                         context,
                         screen: StartupPage(
-                          isOcrSection: Overrides.STANDALONE_GRADED_APP,
+                          isOcrSection: true, //since always opens OCR
                         ),
                         withNavBar: false,
                       );
@@ -350,5 +350,22 @@ class _StaffPageState extends State<StaffPage> {
         style: textTheme,
       ),
     );
+  }
+
+  _getLocalDb() async {
+    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+
+    List<CustomRubicModal> _localData = await _localDb.getData();
+
+    if (_localData.isEmpty) {
+      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+        await _localDb.addData(e);
+      });
+      await _localDb.close();
+    } else {
+      RubricScoreList.scoringList = [];
+      RubricScoreList.scoringList.addAll(_localData);
+      // _localDb.close()
+    }
   }
 }

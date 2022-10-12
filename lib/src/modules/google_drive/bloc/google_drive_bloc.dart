@@ -751,7 +751,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String query =
           '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
 
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
               'https://www.googleapis.com/drive/v3/files?fields=%2A%26q=' +
               Uri.encodeFull(query),
@@ -935,7 +935,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
 
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           "https://sheets.googleapis.com/v4/spreadsheets/$excelId",
           headers: headers,
           isCompleteUrl: true);
@@ -1103,7 +1103,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       String query =
           '(mimeType = \'application/vnd.google-apps.spreadsheet\' and \'$folderId\'+in+parents and title contains \'${searchKey}\')';
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           isPagination == true
               ? "$nextPageUrl"
               : searchKey == ""
@@ -1207,7 +1207,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   Future<List<AssessmentDetails>> getAssessmentList() async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"School__c"=\'${Globals.appSetting.schoolNameC}\'',
           //  'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
           isCompleteUrl: true);
@@ -1277,7 +1277,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           // 'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           headers: headers,
@@ -1319,7 +1319,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8'
       };
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           //   'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           headers: headers,

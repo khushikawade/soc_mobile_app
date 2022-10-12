@@ -36,7 +36,7 @@ class Strings {
   static final String googleDrive = 'google_drive';
   static final String ocrSubjectObjectName = 'selected_state_subject_details';
   static final String stateObjectName = 'state_object_list';
- // static final String ocrSubjectObjectName = 'ocr_subject_details';
+  // static final String ocrSubjectObjectName = 'ocr_subject_details';
   static final String googleClassroomCoursesList =
       'google_classroom_courses_list';
   // static final String googleClassroomStudentList =

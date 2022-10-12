@@ -762,7 +762,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   // ---------- Fuction to fetch StateObjectList From State_and_Standards_Gradedplus__c Object ---------
   Future<List<StateListObject>> fetchStateObjectList() async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
         Uri.encodeFull(
             "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/State_and_Standards_Gradedplus__c"),
         headers: {
@@ -777,6 +777,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             jsonDecode(jsonEncode(response.data['body']))
                 .map<StateListObject>((i) => StateListObject.fromJson(i))
                 .toList();
+
+        _list.removeWhere((element) => Overrides.STANDALONE_GRADED_APP == true
+            ? element.usedInC == "school"
+            : element.usedInC == "Standalone");
         return _list;
       }
       return [];
@@ -847,7 +851,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       // }
 
       // Api Calling According to subject selection
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           Uri.encodeFull(
               'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c/filterRecords/"State_and_Standards__c" = \'$id\''),
           headers: {"Content-type": "application/json; charset=utf-8"},
@@ -888,7 +892,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   // Future<bool> saveSubjectListDetails() async {
   //   try {
-  //     final ResponseModel response = await _dbServices.getapiNew(Uri.encodeFull(
+  //     final ResponseModel response = await _dbServices.getApiNew(Uri.encodeFull(
   //             //   "${OcrOverrides.OCR_API_BASE_URL}getRecords/Standard__c",
   //             // ),
   //             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Standard__c'),
@@ -1498,7 +1502,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       required String subjectName,
       required String subLearningCode}) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Standard__c/\"Grade__c\"='$grade' AND \"Subject_Name__c\"='$subjectName' AND \"Name\"='$subLearningCode'",
           isCompleteUrl: true);
       if (response.statusCode == 200) {
@@ -1528,7 +1532,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future fetchStudentDetails(ossId) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Student__c/studentOsis/$ossId",
           isCompleteUrl: true);
 
@@ -1546,7 +1550,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<List> _getTheDashBoardStatus({required String fileId}) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
           isCompleteUrl: true);
       if (response.statusCode == 200) {
@@ -1568,7 +1572,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<int> _getAssessmentRecord({required String assessmentId}) async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Result__c/\"Assessment_Id\"='$assessmentId'",
           isCompleteUrl: true);
       if (response.statusCode == 200) {

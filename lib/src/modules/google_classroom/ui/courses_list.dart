@@ -50,8 +50,8 @@ class _CoursesListScreenState extends State<CoursesListScreen>
         duration: const Duration(seconds: 2),
         curve: Curves.linearToEaseOut);
 
-    if (isScrolling.value == false) isScrolling.value = true;
-
+    if (isScrolling.value == false)
+      isScrolling.value = true;
     else if (isScrolling.value == true) isScrolling.value = false;
 
     // _controller.animateTo(
@@ -323,7 +323,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                   label: !isScrolling.value
                       ? Container()
                       : Utility.textWidget(
-                          text: 'Scan Assessment',
+                          text: 'Scan Assignment',
                           context: context,
                           textTheme: Theme.of(context)
                               .textTheme

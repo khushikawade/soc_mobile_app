@@ -117,27 +117,21 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           ? MediaQuery.of(context).size.height
                           : MediaQuery.of(context).size.width,
                   child: ListView(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).size.height * 0.2),
+                    padding: EdgeInsets.only(bottom: 20),
                     // controller: listScrollController,
                     shrinkWrap: true,
                     children: [
                       SpacerWidget(_KVertcalSpace * 0.50),
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: highlightText(
-                          text: 'Create Assessment',
-                          theme: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
+                      highlightText(
+                        text: 'Create Assignment',
+                        theme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold),
                       ),
                       SpacerWidget(_KVertcalSpace / 1.8),
                       highlightText(
-                          text: 'Assessment Name',
+                          text: 'Assignment Name',
                           theme: Theme.of(context)
                               .textTheme
                               .headline2!
@@ -150,7 +144,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           scrollController: scrollControlleAssessmentName,
                           isAssessmenttextFormField: true,
                           controller: assessmentController,
-                          hintText: 'Assessment Name',
+                          hintText: 'Assignment Name',
                           validator: (String? value) {
                             return null;
                           },
@@ -188,9 +182,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               alignment: Alignment.centerLeft,
                               child: TranslationWidget(
                                   message: assessmentNameError.value.isEmpty
-                                      ? 'Assessment Name Is Required'
+                                      ? 'Assignment Name Is Required'
                                       : assessmentNameError.value.length < 2
-                                          ? 'Assessment Name Should Contains Atleast 2 Characters'
+                                          ? 'Assignment Name Should Contains Atleast 2 Characters'
                                           : '',
                                   fromLanguage: "en",
                                   toLanguage: Globals.selectedLanguage,
@@ -307,8 +301,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                             context: context,
                                             text: isimageFilePicked.value !=
                                                     true
-                                                ? 'Scan Assessment (Optional)'
-                                                : 'Assessment Selected',
+                                                ? 'Scan Assignment (Optional)'
+                                                : 'Assignment Selected',
                                             textTheme: TextStyle(
                                                 color: isimageFilePicked
                                                             .value !=

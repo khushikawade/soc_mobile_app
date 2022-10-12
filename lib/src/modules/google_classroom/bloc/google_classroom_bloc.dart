@@ -148,7 +148,7 @@ class GoogleClassroomBloc
       //   'authorization': 'Bearer $accessToken'
       // };
 
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/importRoster/$accessToken',
           //'https://classroom.googleapis.com/v1/courses',

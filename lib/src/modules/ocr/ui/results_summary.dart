@@ -987,7 +987,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                         popupModal(
                                             title: 'Data Not Saved',
                                             message:
-                                                'Oops! You cannot save the assessment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the assessment.');
+                                                'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
                                         Globals.scanMoreStudentInfoLength =
                                             await Utility
                                                     .getStudentInfoListLength(
@@ -1309,8 +1309,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     popupModal(
                         title: 'Alert!',
                         message: Globals.isPremiumUser == true
-                            ? 'Oops! You are currently a "Premium" user. You cannot update the assessment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-                            : 'Opps! You are currently a "Free" user. You cannot update the assessment that you created as a "Premium" user. If you still want to edit this assessment then please upgrade to Premium. You can still create new assessments as Free user.');
+                            ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
+                            : 'Opps! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
                     return;
                   }
 
@@ -1901,14 +1901,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Widget dashoardWidget({required int index}) {
-    if (widget.assessmentDetailPage == true && index == 2) {
+    if (Overrides.STANDALONE_GRADED_APP == true &&
+        widget.assessmentDetailPage == true &&
+        index == 2) {
       return Container(
           height: 28,
 
           // margin: EdgeInsets.only(right: 15, bottom: 1),
           //padding: EdgeInsets.symmetric(vertical: 9),
           child: SvgPicture.asset(Strings.googleSheetIcon));
-    } else if (widget.assessmentDetailPage != true && index == 3) {
+    } else if (Overrides.STANDALONE_GRADED_APP == true &&
+        widget.assessmentDetailPage != true &&
+        index == 3) {
       return Container(
           height: 28,
 
@@ -1917,45 +1921,50 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           //padding: EdgeInsets.symmetric(vertical: 09),
           child: SvgPicture.asset(Strings.googleSheetIcon));
     } else {
-      return Icon(
-        IconData(
-            Overrides.STANDALONE_GRADED_APP
-                ? iconsList[index]
-                : (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                        dashoardState.value == 'Success'
-                    ? 0xe877
-                    : iconsList[index],
-            fontFamily: Overrides.kFontFam,
-            fontPackage: Overrides.kFontPkg),
-        size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+      return Container(
+        //margin: EdgeInsets.only(right: 15, bottom: 4),
+        padding: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
                 dashoardState.value == ''
-            ? Globals.deviceType == 'phone'
-                ? 24
-                : 55
-            : Globals.deviceType == 'phone'
-                ? 32
-                : 48,
-        color: Overrides.STANDALONE_GRADED_APP
-            ? Theme.of(context).backgroundColor == Color(0xff000000)
-                ? Colors.white
-                : Colors.black
-            : (widget.assessmentDetailPage! &&
-                        index == 2 &&
-                        isAssessmentAlreadySaved == 'YES') ||
-                    (widget.assessmentDetailPage! &&
-                        index == 2 &&
-                        dashoardState.value == 'Success')
-                ? Colors.green
-                : index == 2 || (index == 3 && dashoardState.value == '')
-                    ? Theme.of(context).backgroundColor == Color(0xff000000)
-                        ? Colors.white
-                        : Colors.black
-                    : (widget.assessmentDetailPage!
-                                ? index == 2
-                                : index == 3) &&
-                            dashoardState.value == 'Success'
-                        ? Colors.green
-                        : AppTheme.kButtonColor,
+            ? EdgeInsets.only(right: 15, bottom: 4)
+            : null,
+        child: Icon(
+          IconData(
+              (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+                      dashoardState.value == 'Success'
+                  ? 0xe877
+                  : iconsList[index],
+              fontFamily: Overrides.kFontFam,
+              fontPackage: Overrides.kFontPkg),
+          size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
+                  dashoardState.value == ''
+              ? Globals.deviceType == 'phone'
+                  ? 35
+                  : 55
+              : Globals.deviceType == 'phone'
+                  ? 32
+                  : 48,
+          color: Overrides.STANDALONE_GRADED_APP
+              ? Theme.of(context).backgroundColor == Color(0xff000000)
+                  ? Colors.white
+                  : Colors.black
+              : (widget.assessmentDetailPage! &&
+                          index == 2 &&
+                          isAssessmentAlreadySaved == 'YES') ||
+                      (widget.assessmentDetailPage! &&
+                          index == 2 &&
+                          dashoardState.value == 'Success')
+                  ? Colors.green
+                  : index == 2 || (index == 3 && dashoardState.value == '')
+                      ? Theme.of(context).backgroundColor == Color(0xff000000)
+                          ? Colors.white
+                          : Colors.black
+                      : (widget.assessmentDetailPage!
+                                  ? index == 2
+                                  : index == 3) &&
+                              dashoardState.value == 'Success'
+                          ? Colors.green
+                          : AppTheme.kButtonColor,
+        ),
       );
     }
   }
@@ -1967,7 +1976,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         builder: (context) {
           return CustomDialogBox(
             title: widget.asssessmentName == null
-                ? 'Asssessment Name'
+                ? 'Assignment Name'
                 : widget.asssessmentName!,
             height: MediaQuery.of(context).size.height * 0.53,
             // width: MediaQuery.of(context).size.width * 0.,
