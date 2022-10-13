@@ -1498,7 +1498,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
               valueListenable: isStudentNameFilled,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                if (controller.text.length != 0) {
+                if (controller.text.length == 0) {
+                  //!=0
                   controller.selection = TextSelection.fromPosition(
                       TextPosition(offset: controller.text.length));
                 }
