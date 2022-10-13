@@ -340,7 +340,7 @@ class _SettingPageState extends State<SettingPage> {
     return ListView(padding: const EdgeInsets.only(bottom: 25.0), children: [
       Overrides.STANDALONE_GRADED_APP == true
           ? Container()
-          : _buildHeading("Push Notifcation"),
+          : _buildHeading("Push Notifications"),
       Overrides.STANDALONE_GRADED_APP == true
           ? Container()
           : _buildNotification(),
