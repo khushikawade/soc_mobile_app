@@ -777,7 +777,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           child: TranslationWidget(
                               message: Overrides.STANDALONE_GRADED_APP == true
                                   ? (isStudentNameFilled.value == ""
-                                      ? 'Student name is required'
+                                      ? 'Student Name is required'
                                       : nameController.text.length < 3
                                           ? 'Make Sure The Student Name Contains More Than 3 Character'
                                           : '')
@@ -1126,7 +1126,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           child: TranslationWidget(
                               message: Overrides.STANDALONE_GRADED_APP == true
                                   ? (isStudentNameFilled.value == ""
-                                      ? 'Student name is required'
+                                      ? 'Student Name is required'
                                       : nameController.text.length < 3
                                           ? 'Make Sure The Student Name Contains More Than 3 Character'
                                           : '')
@@ -1498,7 +1498,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
               valueListenable: isStudentNameFilled,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                if (controller.text.length != 0) {
+                if (controller.text.length == 0) {
+                  //!=0
                   controller.selection = TextSelection.fromPosition(
                       TextPosition(offset: controller.text.length));
                 }

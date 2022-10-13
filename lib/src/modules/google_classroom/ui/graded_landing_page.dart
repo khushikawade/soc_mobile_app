@@ -356,33 +356,92 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                             return userName.value == null ||
                                     userName.value == ''
                                 ? Container()
-                                : GestureDetector(
-                                    onTap: () async {
-                                      if (!connected) {
-                                        Utility.currentScreenSnackBar(
-                                            "No Internet Connection", null);
-                                        return;
-                                      }
-                                      if (Globals
-                                          .googleDriveFolderId!.isEmpty) {
-                                        _triggerDriveFolderEvent(true);
-                                      } else {
-                                        _beforenavigateOnAssessmentSection();
-                                      }
-                                    },
-                                    child: Container(
-                                        padding: EdgeInsets.only(top: 10),
-                                        // color: Colors.red,
-                                        child: Utility.textWidget(
-                                            text: 'Assignment History',
-                                            context: context,
-                                            textTheme: Theme.of(context)
-                                                .textTheme
-                                                .headline2!
-                                                .copyWith(
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                ))),
+                                : Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          if (!connected) {
+                                            Utility.currentScreenSnackBar(
+                                                "No Internet Connection", null);
+                                            return;
+                                          }
+                                          if (Globals
+                                              .googleDriveFolderId!.isEmpty) {
+                                            _triggerDriveFolderEvent(true);
+                                          } else {
+                                            _beforenavigateOnAssessmentSection();
+                                          }
+                                        },
+                                        child: Container(
+                                            padding: EdgeInsets.only(top: 10),
+                                            // color: Colors.red,
+                                            child: Utility.textWidget(
+                                                text: 'Assignment History',
+                                                context: context,
+                                                textTheme: Theme.of(context)
+                                                    .textTheme
+                                                    .headline2!
+                                                    .copyWith(
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                    ))),
+                                      ),
+                                      BlocListener<GoogleDriveBloc,
+                                              GoogleDriveState>(
+                                          bloc: _googleDriveBloc,
+                                          child: Container(),
+                                          listener: (context, state) async {
+                                            if (state is GoogleDriveLoading) {
+                                              Utility.showLoadingDialog(
+                                                  context, true);
+                                            }
+                                            if (state is GoogleSuccess) {
+                                              Navigator.of(context).pop();
+                                              _beforenavigateOnAssessmentSection();
+                                            }
+                                            if (state is ErrorState) {
+                                              if (Globals.sessionId == '') {
+                                                Globals.sessionId =
+                                                    "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+                                              }
+                                              _ocrBlocLogs.add(LogUserActivityEvent(
+                                                  sessionId: Globals.sessionId,
+                                                  teacherId: Globals.teacherId,
+                                                  activityId: '1',
+                                                  accountId: Globals
+                                                      .appSetting.schoolNameC,
+                                                  accountType:
+                                                      Globals.isPremiumUser ==
+                                                              true
+                                                          ? "Premium"
+                                                          : "Free",
+                                                  dateTime: currentDateTime
+                                                      .toString(),
+                                                  description:
+                                                      'Start Scanning Failed',
+                                                  operationResult: 'Failed'));
+                                              if (state.errorMsg ==
+                                                  'Reauthentication is required') {
+                                                await Utility
+                                                    .refreshAuthenticationToken(
+                                                        isNavigator: true,
+                                                        errorMsg:
+                                                            state.errorMsg!,
+                                                        context: context,
+                                                        scaffoldKey:
+                                                            _scaffoldKey);
+
+                                                _triggerDriveFolderEvent(
+                                                    state.isAssessmentSection);
+                                              } else {
+                                                Navigator.of(context).pop();
+                                                Utility.currentScreenSnackBar(
+                                                    "Something Went Wrong. Please Try Again.",
+                                                    null);
+                                              }
+                                            }
+                                          }),
+                                    ],
                                   );
                           },
                           valueListenable: userName,
