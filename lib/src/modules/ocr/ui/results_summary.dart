@@ -1938,15 +1938,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
                   dashoardState.value == ''
               ? Globals.deviceType == 'phone'
-                  ? 35
+                  ? 37
                   : 55
               : Globals.deviceType == 'phone'
-                  ? 32
+                  ? 37
                   : 48,
           color: Overrides.STANDALONE_GRADED_APP
-              ? Theme.of(context).backgroundColor == Color(0xff000000)
-                  ? Colors.white
-                  : Colors.black
+              ? AppTheme.kButtonbackColor
               : (widget.assessmentDetailPage! &&
                           index == 2 &&
                           isAssessmentAlreadySaved == 'YES') ||

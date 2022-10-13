@@ -182,9 +182,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               alignment: Alignment.centerLeft,
                               child: TranslationWidget(
                                   message: assessmentNameError.value.isEmpty
-                                      ? 'Assignment Name Is Required'
+                                      ? 'Assignment Name is required'
                                       : assessmentNameError.value.length < 2
-                                          ? 'Assignment Name Should Contains Atleast 2 Characters'
+                                          ? 'Assignment Name should contains atleast 2 characters'
                                           : '',
                                   fromLanguage: "en",
                                   toLanguage: Globals.selectedLanguage,
@@ -236,7 +236,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                   alignment: Alignment.centerLeft,
                                   child: TranslationWidget(
                                       message: classError.value.isEmpty
-                                          ? 'Class Is Required'
+                                          ? 'Class is required'
                                           : '',
                                       fromLanguage: "en",
                                       toLanguage: Globals.selectedLanguage,
