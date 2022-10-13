@@ -1353,7 +1353,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               // lastStudentInfoLenght: Globals.studentInfo!.length,
                               pointPossible: pointPossiable != null &&
                                       pointPossiable.isNotEmpty
-                                  ? pointPossiable
+                                  ? pointPossiable.replaceAll(' ', '')
                                   : '2')));
                 },
                 icon: Icon(
