@@ -4,12 +4,14 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart';
+import 'package:Soc/src/modules/google_drive/model/spreadsheet_model.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
@@ -21,6 +23,7 @@ import '../../../services/db_service.dart';
 import 'package:path/path.dart';
 import '../../ocr/modal/custom_rubic_modal.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
+import 'package:dio/dio.dart';
 import '../model/user_profile.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
@@ -28,6 +31,7 @@ part 'google_drive_state.dart';
 class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   GoogleDriveBloc() : super(GoogleDriveInitial());
   final DbServices _dbServices = DbServices();
+  Dio dio = Dio();
   // final HiveDbServices _localDbService = HiveDbServices();
   GoogleDriveState get initialState => GoogleDriveInitial();
   int _totalRetry = 0;
@@ -489,7 +493,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetAssessmentDetail) {
       try {
         yield GoogleDriveLoading2();
-        List<StudentAssessmentInfo> _list = [];
+        List<StudentAssessmentInfo> summaryList = [];
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         var fildObject;
@@ -502,27 +506,33 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             fildObject != null &&
             fildObject != 'Reauthentication is required' &&
             fildObject['exportLinks'] != null) {
-          String file = await downloadFile(
-              fildObject['exportLinks'][
-                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-              event.fileId!,
-              (await getApplicationDocumentsDirectory()).path);
+          // String file = await downloadFile(
+          //     fildObject['exportLinks']['text/csv'],
+          //     event.fileId!,
+          //     (await getApplicationDocumentsDirectory()).path);
+          String savePath = await getFilePath(event.fileId);
+          summaryList = await processCSVFile(
+              fildObject['exportLinks']['text/csv'],
+              _userprofilelocalData[0].authorizationToken,
+              _userprofilelocalData[0].refreshToken,
+              savePath);
 
           // //print("assessment downloaded");
 
-          if (file != "") {
+          if (summaryList != []) {
             // //print("Assessment file found");
             //  List<StudentAssessmentInfo>
-            _list = await GoogleDriveAccess.excelToJson(file);
+
+            // _list = await GoogleDriveAccess.excelToJson(file);
             // //print("assessment data is converted into json ");
 
-            bool deleted = await GoogleDriveAccess.deleteFile(File(file));
+            bool deleted = await GoogleDriveAccess.deleteFile(File(savePath));
             if (!deleted) {
-              GoogleDriveAccess.deleteFile(File(file));
+              GoogleDriveAccess.deleteFile(File(savePath));
             }
 
             yield AssessmentDetailSuccess(
-                obj: _list, webContentLink: fildObject['webViewLink']);
+                obj: summaryList, webContentLink: fildObject['webViewLink']);
           } else {
             //Return empty list
             yield AssessmentDetailSuccess(
@@ -533,7 +543,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           //Return empty list
           yield AssessmentDetailSuccess(
-              obj: _list,
+              obj: summaryList,
               webContentLink: fildObject != null && fildObject != ''
                   ? fildObject['webViewLink']
                   : '');
@@ -1361,32 +1371,124 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> downloadFile(String url, String fileName, String dir) async {
+  Future<List<StudentAssessmentInfo>> processCSVFile(
+      String? url, String? token, String? refreshToken, String savePath) async {
     try {
-      HttpClient httpClient = new HttpClient();
-      File file;
-      String filePath = '';
-      String myUrl = '';
+      List<ResultSpreadsheet> csvList = []; //Map the string list to Model
+      List<StudentAssessmentInfo> listNew =
+          []; //Map the ResultSpreadsheet list to StudentAssessmentInfo list to not chnage anything on UI
+      List data = []; //To parse String to List
+      bool? createdAsPremium = true;
+      //Downloading file to specific path
+      var response = await dio.download(
+        url!,
+        savePath,
+        options: Options(
+          headers: {
+            'responseType': ResponseType.bytes,
+            // 'Content-Type': 'application/json',
+            'authorization': 'Bearer $token'
+          },
+          method: 'GET',
+        ),
+      );
 
-      myUrl = url;
-      var request = await httpClient.getUrl(Uri.parse(myUrl));
-      var response = await request.close();
-      if (response.statusCode == 200) {
-        var bytes = await consolidateHttpClientResponseBytes(response);
-        filePath = '$dir/$fileName';
-        file = File(filePath);
-        await file.writeAsBytes(bytes, flush: true);
-        return filePath;
+      //Processing csv file
+      final input = new File('$savePath').openRead();
+      final fields = await input
+          .transform(utf8.decoder)
+          .transform(new CsvToListConverter())
+          .toList();
+
+      if (fields.length > 1) {
+        //Removing titles from the string list
+        if (fields[0][0] == 'Name') {
+          createdAsPremium = false;
+        }
+        fields.removeAt(0);
+
+        fields.forEach((element) {
+          if (createdAsPremium == false) {
+            //To manage the first field of excel sheet in case of created as non-premium user.
+            element.insert(0, '');
+          }
+          print(element);
+          data.add(element
+              .toString()
+              .replaceAll('[', "'")
+              .replaceAll(']', "'")
+              .replaceAll("''", "'"));
+        });
+        //Splitting the String list to map the values
+        for (var line in data) {
+          csvList.add(ResultSpreadsheet.fromList(line.split(',')));
+        }
+
+        //Mapping values to required Model
+        for (int i = 0; i < csvList.length; i++) {
+          listNew.add(StudentAssessmentInfo(
+              subject: csvList[i].subject,
+              assessmentImage: csvList[i]
+                  .assessmentImage
+                  .toString()
+                  .replaceAll("'", "")
+                  .replaceAll(" ", ""),
+              className: csvList[i].className,
+              customRubricImage: csvList[i].customRubricImage,
+              grade: csvList[i].grade,
+              learningStandard: csvList[i].learningStandard,
+              pointpossible: csvList[i].pointPossible,
+              questionImgUrl: csvList[i].assessmentQuestionImg,
+              scoringRubric: csvList[i].scoringRubric,
+              studentGrade: csvList[i].pointsEarned,
+              studentId: csvList[i].id,
+              studentName: csvList[i].name,
+              subLearningStandard:
+                  csvList[i].nyNextGenerationLearningStandard));
+        }
+
+        return listNew;
       }
-
-      //print('Unable to download the file');
-      return "";
+      return [];
     } catch (e) {
-      //print("download exception");
       print(e);
       throw (e);
     }
   }
+
+  Future<String> getFilePath(uniqueFileName) async {
+    //To get the path where file will be saved.
+    Directory dir = await getApplicationDocumentsDirectory();
+    String path = '${dir.path + '/file'}';
+    return path;
+  }
+
+  // Future<String> downloadFile(String url, String fileName, String dir) async {
+  //   try {
+  //     HttpClient httpClient = new HttpClient();
+  //     File file;
+  //     String filePath = '';
+  //     String myUrl = '';
+
+  //     myUrl = url;
+  //     var request = await httpClient.getUrl(Uri.parse(myUrl));
+  //     var response = await request.close();
+  //     if (response.statusCode == 200) {
+  //       var bytes = await consolidateHttpClientResponseBytes(response);
+  //       filePath = '$dir/$fileName';
+  //       file = File(filePath);
+  //       await file.writeAsBytes(bytes, flush: true);
+  //       return filePath;
+  //     }
+
+  //     //print('Unable to download the file');
+  //     return "";
+  //   } catch (e) {
+  //     //print("download exception");
+  //     print(e);
+  //     throw (e);
+  //   }
+  // }
 
   Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
     try {

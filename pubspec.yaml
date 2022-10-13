@@ -36,7 +36,7 @@ dependencies:
   cached_network_image: ^3.0.0
   device_info: ^2.0.2 #Used to get device info
   xml2json: ^5.3.1 # Used to convert xml response to json
-  dio: ^4.0.0
+  dio: ^4.0.6
   url_launcher: ^6.0.10 #^6.0.12
   permission_handler: ^8.3.0
   flutter_downloader: ^1.7.2
@@ -92,6 +92,7 @@ dependencies:
   geocoding: ^2.0.5 # Coordinate to Address
   string_similarity: ^2.0.0 #Used in email detection
   scrollable_positioned_list: ^0.2.0-nullsafety.0 #Used on courses list to scroll to specific course
+  csv: ^5.0.1
 
   #advance_pdf_viewer: 2.0.0
   #flutter_html: ^2.1.5

@@ -325,23 +325,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     width: MediaQuery.of(context).size.width *
                                         0.75,
                                     child: Utility.textWidget(
-                                        text:
-                                            // 'hykhyptjpotp]iotgjhoityhjoiyjhieorgjhnklrtnhkgjnkljgbhjrkbthn;rtnjlrnhlrdnhrjhnrjkhnkrljnjklrnrihnrtihn',
-                                            widget.asssessmentName == null
-                                                ? 'Asssessment Name'
-                                                //     //     // : widget.asssessmentName!.length > 20
-                                                //     //     //     ? '${widget.asssessmentName!.substring(0, 20)}' +
-                                                //     //     //         '...'
-                                                : widget.asssessmentName!,
+                                        text: widget.asssessmentName == null
+                                            ? 'Asssessment Name'
+                                            : widget.asssessmentName!,
                                         context: context,
                                         maxLines: 2,
                                         textAlign: TextAlign.left,
                                         textTheme: Theme.of(context)
                                             .textTheme
-                                            .headline2!
-                                            .copyWith(
-                                                // fontWeight: FontWeight.bold,
-                                                )),
+                                            .headline2!),
                                   ),
                                   trailing: Container(
                                       padding: EdgeInsets.only(left: 5),
@@ -354,84 +346,89 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ),
                   // SpacerWidget(_KVertcalSpace / 5),
                   !widget.assessmentDetailPage!
-                      ? Column(
-                          children: [
-                            resultTitle(),
-                            ValueListenableBuilder(
-                                valueListenable: assessmentCount,
-                                builder: (BuildContext context, int listCount,
-                                    Widget? child) {
-                                  return FutureBuilder(
-                                      future: Utility.getStudentInfoList(
-                                          tableName:
-                                              widget.assessmentDetailPage ==
-                                                      true
-                                                  ? 'history_student_info'
-                                                  : 'student_info'),
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<
-                                                  List<StudentAssessmentInfo>>
-                                              snapshot) {
-                                        if (snapshot.hasData) {
-                                          if (snapshot.data!.length != 0) {
-                                            questionImageUrl = snapshot
-                                                .data![0].questionImgUrl;
+                      ? Expanded(
+                          child: ListView(
+                            children: [
+                              resultTitle(),
+                              ValueListenableBuilder(
+                                  valueListenable: assessmentCount,
+                                  builder: (BuildContext context, int listCount,
+                                      Widget? child) {
+                                    return FutureBuilder(
+                                        future: Utility.getStudentInfoList(
+                                            tableName:
+                                                widget.assessmentDetailPage ==
+                                                        true
+                                                    ? 'history_student_info'
+                                                    : 'student_info'),
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<
+                                                    List<StudentAssessmentInfo>>
+                                                snapshot) {
+                                          if (snapshot.hasData) {
+                                            if (snapshot.data!.length != 0) {
+                                              questionImageUrl = snapshot
+                                                  .data![0].questionImgUrl;
+                                            }
+
+                                            return listView(
+                                              snapshot.data!,
+                                            );
                                           }
-
-                                          return listView(
-                                            snapshot.data!,
-                                          );
-                                        }
-                                        return CircularProgressIndicator();
-                                      });
-                                }),
-                            BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                                bloc: _driveBloc2,
-                                child: Container(),
-                                listener: (context, state) async {
-                                  if (state is GoogleDriveLoading) {
-                                    Utility.showLoadingDialog(context, true);
-                                  }
-                                  if (state is GoogleSuccess) {
-                                    Navigator.of(context).pop();
-                                  }
-                                  if (state is ErrorState) {
-                                    if (state.errorMsg ==
-                                        'Reauthentication is required') {
-                                      await Utility.refreshAuthenticationToken(
-                                          isNavigator: true,
-                                          errorMsg: state.errorMsg!,
-                                          context: context,
-                                          scaffoldKey: scaffoldKey);
-
-                                      _driveBloc2.add(UpdateDocOnDrive(
-                                        questionImage: questionImageUrl ?? "NA",
-                                        createdAsPremium: createdAsPremium,
-                                        assessmentName: Globals.assessmentName!,
-                                        fileId: Globals.googleExcelSheetId,
-                                        isLoading: true,
-                                        studentData:
-                                            //list2
-                                            await Utility.getStudentInfoList(
-                                                tableName:
-                                                    widget.assessmentDetailPage ==
-                                                            true
-                                                        ? 'history_student_info'
-                                                        : 'student_info'),
-                                      ));
-                                    } else {
-                                      Navigator.of(context).pop();
-                                      Utility.currentScreenSnackBar(
-                                          "Something Went Wrong. Please Try Again.",
-                                          null);
+                                          return CircularProgressIndicator();
+                                        });
+                                  }),
+                              BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                                  bloc: _driveBloc2,
+                                  child: Container(),
+                                  listener: (context, state) async {
+                                    if (state is GoogleDriveLoading) {
+                                      Utility.showLoadingDialog(context, true);
                                     }
+                                    if (state is GoogleSuccess) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    if (state is ErrorState) {
+                                      if (state.errorMsg ==
+                                          'Reauthentication is required') {
+                                        await Utility
+                                            .refreshAuthenticationToken(
+                                                isNavigator: true,
+                                                errorMsg: state.errorMsg!,
+                                                context: context,
+                                                scaffoldKey: scaffoldKey);
 
-                                    // Navigator.of(context).pop();
-                                    // Utility.currentScreenSnackBar(
-                                    //     "Something Went Wrong. Please Try Again.");
-                                  }
-                                }),
-                          ],
+                                        _driveBloc2.add(UpdateDocOnDrive(
+                                          questionImage:
+                                              questionImageUrl ?? "NA",
+                                          createdAsPremium: createdAsPremium,
+                                          assessmentName:
+                                              Globals.assessmentName!,
+                                          fileId: Globals.googleExcelSheetId,
+                                          isLoading: true,
+                                          studentData:
+                                              //list2
+                                              await Utility.getStudentInfoList(
+                                                  tableName:
+                                                      widget.assessmentDetailPage ==
+                                                              true
+                                                          ? 'history_student_info'
+                                                          : 'student_info'),
+                                        ));
+                                      } else {
+                                        Navigator.of(context).pop();
+                                        Utility.currentScreenSnackBar(
+                                            "Something Went Wrong. Please Try Again.",
+                                            null);
+                                      }
+
+                                      // Navigator.of(context).pop();
+                                      // Utility.currentScreenSnackBar(
+                                      //     "Something Went Wrong. Please Try Again.");
+                                    }
+                                  }),
+                            ],
+                          ),
                         )
                       : BlocConsumer(
                           bloc: _driveBloc,
@@ -460,42 +457,45 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 //         : dashoardState.value = ''
                                 //     : print("");
 
-                                return Column(
-                                  children: [
-                                    resultTitle(),
-                                    FutureBuilder(
-                                        future: Utility.getStudentInfoList(
-                                            tableName:
-                                                widget.assessmentDetailPage ==
-                                                        true
-                                                    ? 'history_student_info'
-                                                    : 'student_info'),
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot<
-                                                    List<StudentAssessmentInfo>>
-                                                snapshot) {
-                                          if (snapshot.hasData) {
-                                            if (snapshot.data!.length != 0) {
-                                              questionImageUrl = snapshot
-                                                  .data![0].questionImgUrl;
+                                return Expanded(
+                                  child: ListView(
+                                    children: [
+                                      resultTitle(),
+                                      FutureBuilder(
+                                          future: Utility.getStudentInfoList(
+                                              tableName:
+                                                  widget.assessmentDetailPage ==
+                                                          true
+                                                      ? 'history_student_info'
+                                                      : 'student_info'),
+                                          builder: (BuildContext context,
+                                              AsyncSnapshot<
+                                                      List<
+                                                          StudentAssessmentInfo>>
+                                                  snapshot) {
+                                            if (snapshot.hasData) {
+                                              if (snapshot.data!.length != 0) {
+                                                questionImageUrl = snapshot
+                                                    .data![0].questionImgUrl;
+                                              }
+                                              return listView(snapshot.data!);
                                             }
-                                            return listView(snapshot.data!);
-                                          }
-                                          return Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.7,
-                                            child: Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryVariant,
-                                            )),
-                                          );
-                                        })
-                                  ],
+                                            return Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.7,
+                                              child: Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primaryVariant,
+                                              )),
+                                            );
+                                          })
+                                    ],
+                                  ),
                                 );
                               } else {
                                 return Expanded(
