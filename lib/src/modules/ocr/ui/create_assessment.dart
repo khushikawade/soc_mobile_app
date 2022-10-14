@@ -204,7 +204,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                         }),
                                   );
                                 }),
-                            SpacerWidget(_KVertcalSpace / 2),
+                            SpacerWidget(_KVertcalSpace / 3),
                             highlightText(
                                 text: 'Class Name',
                                 theme: Theme.of(context)
@@ -263,25 +263,24 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                     }),
                               ],
                             ),
-                            if (widget.classSuggestions.length > 0)
+                            if (widget.classSuggestions.length > 0 &&
+                                !isAlreadySelected.value)
                               SpacerWidget(_KVertcalSpace / 8),
                             if (widget.classSuggestions.length > 0)
                               Container(
-                                  height: 30,
+                                  height: !isAlreadySelected.value ? 30 : 0.0,
                                   //padding: EdgeInsets.only(left: 2.0),
-                                  child: !isAlreadySelected.value
-                                      ? ChipsFilter(
-                                          selectedValue: (String value) {
-                                            if (value.isNotEmpty) {
-                                              classController.text = value;
-                                              classError.value = value;
-                                            }
-                                          },
-                                          selected:
-                                              1, // Select the second filter as default
-                                          filters: widget.classSuggestions,
-                                        )
-                                      : Container()),
+                                  child: ChipsFilter(
+                                    selectedValue: (String value) {
+                                      if (value.isNotEmpty) {
+                                        classController.text = value;
+                                        classError.value = value;
+                                      }
+                                    },
+                                    selected:
+                                        1, // Select the second filter as default
+                                    filters: widget.classSuggestions,
+                                  )),
 
                             SpacerWidget(_KVertcalSpace / 2),
                             highlightText(
@@ -571,6 +570,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 return Container(
                   //  color: Colors.blue,
                   child: TextFormField(
+                    onTap: (() => _checkFieldEditable()),
                     readOnly: readOnly ?? false,
                     scrollController: scrollController,
                     autovalidateMode: AutovalidateMode.always,
@@ -599,7 +599,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           .headline6!
                           .copyWith(
                               fontWeight: FontWeight.bold, color: Colors.grey),
-                      fillColor: Colors.transparent,
+                      fillColor: isAlreadySelected.value
+                          ? Colors.grey.withOpacity(.1)
+                          : Colors.transparent,
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context)
@@ -627,7 +629,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             //         0.5) // Theme.of(context).colorScheme.primaryVariant,
                             ),
                       ),
-                      contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                      contentPadding:
+                          EdgeInsets.only(top: 10, bottom: 10, left: 3.0),
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(
                           color: Theme.of(context)
@@ -914,5 +917,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
         }
       }
     }
+  }
+
+  _checkFieldEditable() {
+    if (isAlreadySelected.value) {
+      Utility.currentScreenSnackBar(
+          'You cannot edit the Assessment Name and Class once created.', null);
+    }
+    return;
   }
 }

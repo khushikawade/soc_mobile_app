@@ -1632,7 +1632,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             studentName: studentInfo[index].studentName!,
             index: index);
       } else {
-        ScaffoldMessenger.of(context).removeCurrentSnackBar();
         Utility.currentScreenSnackBar(
             "Action Not Performed. Result List Cannot Be Empty.", null);
       }
@@ -1943,8 +1942,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               : Globals.deviceType == 'phone'
                   ? 37
                   : 48,
-          color: Overrides.STANDALONE_GRADED_APP
-              ? AppTheme.kButtonbackColor
+          color:  iconsName[index] =='History'? AppTheme.kButtonbackColor
               : (widget.assessmentDetailPage! &&
                           index == 2 &&
                           isAssessmentAlreadySaved == 'YES') ||

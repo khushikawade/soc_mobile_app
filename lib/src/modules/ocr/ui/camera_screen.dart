@@ -149,6 +149,7 @@ class _CameraScreenState extends State<CameraScreen>
   void dispose() {
     Wakelock.disable();
     controller?.dispose();
+    setEnabledSystemUIMode();
     super.dispose();
   }
 
@@ -263,6 +264,7 @@ class _CameraScreenState extends State<CameraScreen>
                                       )),
                             );
                           } else {
+                            setEnabledSystemUIMode();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -567,6 +569,7 @@ class _CameraScreenState extends State<CameraScreen>
                                             List p = await _historyStudentInfoDb
                                                 .getData();
                                             //print(p.length);
+                                            setEnabledSystemUIMode();
                                             var flashOn = await Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -876,5 +879,10 @@ class _CameraScreenState extends State<CameraScreen>
       List<String> classList = [];
       return classList;
     }
+  }
+
+  void setEnabledSystemUIMode() {
+    print('calll    setEnabledSystemUIOverlays');
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 }

@@ -5,9 +5,9 @@ class Overrides {
   static const String privacyPolicyUrl =
       'https:/www.solvedconsulting.com/privacy';
   static String PUSH_APP_ID =
-      "c504a587-d16f-4858-80ab-86b6ab2f4780"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
+      "b1f41cf3-234c-4ed0-b63b-a7a7c49f488d"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
   static String REST_API_KEY =
-      "MGJiYjJkZjQtNTVkOC00NWNkLTk5YjUtNmZlNTU3ODc5YWEx";
+      "MmU4NWY1NDctODQzYy00YWVmLTgxMzctNTg3YzY0M2FlNzhi";
   // "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
   static const String privacyPolicyUrl2 =
       'https://solvedapps.webnode.com/ps-456-bronx-bears/';
@@ -29,8 +29,8 @@ class Overrides {
   static const String forgotPasswordUrl = 'https://';
 
 //Use in case of graded+ stand-alone app required
-  static bool STANDALONE_GRADED_APP = true;
-  static String SCHOOL_ID = 'a1f4W000008SzlXQAS';
+  static bool STANDALONE_GRADED_APP = false;
+  static String SCHOOL_ID = 'a1f4W000007DR8nQAG';
 
   //151 : 'a1f4W000007DQaNQAW'
   //Bronx Bears : 'a1f4W000007DR8nQAG';

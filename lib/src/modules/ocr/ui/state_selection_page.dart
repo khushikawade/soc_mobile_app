@@ -156,7 +156,9 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                           return Container(
                             height: MediaQuery.of(context).size.height * 0.5,
                             child: Center(
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                color: AppTheme.kButtonColor,
+                              ),
                             ),
                           );
                         } else if (state is StateListFetchSuccessfully) {
