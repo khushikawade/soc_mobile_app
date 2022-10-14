@@ -1728,9 +1728,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         }
       }
 
-      if (isUpdateData == true &&
-          studentInfo.isNotEmpty &&
-          !id.contains(idController.text)) {
+      if (isUpdateData == true && studentInfo.isNotEmpty) {
         // final StudentAssessmentInfo studentAssessmentInfo =
         //     StudentAssessmentInfo();
         studentAssessmentInfo.studentName = nameController.text;
@@ -1744,7 +1742,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
 // To update/edit the scanned details
-        await _studentInfoDb.putAt(studentInfo.length, studentAssessmentInfo);
+        await _studentInfoDb.putAt(
+            studentInfo.length - 1, studentAssessmentInfo);
         return;
       } else {
         final StudentAssessmentInfo studentAssessmentInfo =

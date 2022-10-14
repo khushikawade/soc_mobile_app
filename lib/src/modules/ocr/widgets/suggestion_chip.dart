@@ -14,9 +14,12 @@ class ChipsFilter extends StatefulWidget {
   ///
   final int? selected;
 
-  ChipsFilter(
-      {Key? key, this.filters, this.selected, required this.selectedValue})
-      : super(key: key);
+  ChipsFilter({
+    Key? key,
+    this.filters,
+    this.selected,
+    required this.selectedValue,
+  }) : super(key: key);
 
   @override
   _ChipsFilterState createState() => _ChipsFilterState();

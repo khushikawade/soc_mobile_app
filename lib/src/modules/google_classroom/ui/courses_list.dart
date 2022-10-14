@@ -295,7 +295,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                           await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(
                           _userprofilelocalData);
-
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) =>
