@@ -840,7 +840,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             studentId = idController.text;
                             if (idController.text.length == 9 &&
                                 (idController.text[0] == '2' ||
-                                    idController.text[0] == '1')) {
+                                    idController.text[0] == '1' &&
+                                        Overrides.STANDALONE_GRADED_APP !=
+                                            true)) {
                               _bloc2.add(FetchStudentDetails(
                                   ossId: idController.text));
                             }

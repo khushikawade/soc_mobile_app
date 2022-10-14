@@ -670,7 +670,10 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     // if (_userInformation.isEmpty) {
     //   return _userInformation;
     // }
-    Globals.teacherEmailId = _userInformation[0].userEmail!;
+    if (_userInformation.isNotEmpty) {
+      Globals.teacherEmailId = _userInformation[0].userEmail!;
+    }
+
     //print("//printing _userInformation length : ${_userInformation[0]}");
     return _userInformation[0];
   }
