@@ -103,7 +103,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                     SpacerWidget(_KVertcalSpace / 3.5),
                     Utility.textWidget(
                       context: context,
-                      text: 'Select State',
+                      text: 'Select States',
                       // textTheme: Theme.of(context).textTheme.headline1
                     ),
                     SpacerWidget(_KVertcalSpace / 4),
