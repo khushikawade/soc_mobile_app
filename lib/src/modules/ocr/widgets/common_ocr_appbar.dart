@@ -128,8 +128,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
                     popupModal(
                         message:
-                            'You are about to SignOut from the google account. This may restricts you to use the app without google SignIn. \n\nContinue SignOut?',
-                        title: 'SignOut');
+                            'You are about to Signout from the google account. This may restricts you to use the app without google SignIn. \n\nContinue Signout?',
+                        title: 'Signout');
                   },
                   icon: Container(
                       padding: EdgeInsets.only(right: 10),

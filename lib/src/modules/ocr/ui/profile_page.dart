@@ -154,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 selectedClass: '',
                                               )));
                                 },
-                                title: 'State'),
+                                title: 'States'),
                         widget.hideStateSelection == true
                             ? Container()
                             : Divider(

@@ -103,7 +103,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                     SpacerWidget(_KVertcalSpace / 3.5),
                     Utility.textWidget(
                       context: context,
-                      text: 'Select State',
+                      text: 'Select States',
                       // textTheme: Theme.of(context).textTheme.headline1
                     ),
                     SpacerWidget(_KVertcalSpace / 4),
@@ -156,7 +156,9 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                           return Container(
                             height: MediaQuery.of(context).size.height * 0.5,
                             child: Center(
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(
+                                color: AppTheme.kButtonColor,
+                              ),
                             ),
                           );
                         } else if (state is StateListFetchSuccessfully) {
