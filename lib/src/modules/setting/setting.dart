@@ -218,7 +218,7 @@ class _SettingPageState extends State<SettingPage> {
           padding:
               EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
           child: TranslationWidget(
-            message: "Enable Notification",
+            message: "Enable Notifications",
             fromLanguage: "en",
             toLanguage: Globals.selectedLanguage,
             builder: (translatedMessage) => Padding(
@@ -295,7 +295,7 @@ class _SettingPageState extends State<SettingPage> {
       child: Container(
           padding: EdgeInsets.all(16),
           child: TranslationWidget(
-              message: "Open Source Licences",
+              message: "Open Source Licenses",
               fromLanguage: "en",
               toLanguage: Globals.selectedLanguage,
               builder: (translatedMessage) => Text(
