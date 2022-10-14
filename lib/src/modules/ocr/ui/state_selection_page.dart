@@ -38,6 +38,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   OcrBloc _ocrBloc = OcrBloc();
   final searchController = TextEditingController();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
   // List<String> subjectList = [
   //   'Common Core',
   //   'NY Next Generation Learning Standard'
@@ -89,92 +90,88 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                       Navigator.pop(context);
                     }),
               ),
-              body: Container(
-                height:
-                    MediaQuery.of(context).orientation == Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.85
-                        : MediaQuery.of(context).size.width * 0.80,
-                child: ListView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                  ),
+              body: RefreshIndicator(
+                key: refreshKey,
+                onRefresh: refreshPage,
+                child: Column(
                   children: [
-                    SpacerWidget(_KVertcalSpace * 0.50),
-                    SpacerWidget(_KVertcalSpace / 3.5),
-                    Utility.textWidget(
-                      context: context,
-                      text: 'Select States',
-                      // textTheme: Theme.of(context).textTheme.headline1
-                    ),
-                    SpacerWidget(_KVertcalSpace / 4),
-                    SearchBar(
-                        stateName: 'State Search',
-                        readOnly: false,
-                        controller: searchController,
-                        onSaved: (String value) {
-                          if (searchController.text.isEmpty) {
-                            _ocrBloc.add(FetchStateListEvant(
-                                fromCreateAssesment:
-                                    widget.isFromCreateAssesmentScreen ??
-                                        false));
-                          } else {
-                            _ocrBloc.add(LocalStateSearchEvent(
-                                keyWord: searchController.text));
-                          }
-                        }),
-                    SpacerWidget(_KVertcalSpace / 4),
-                    BlocConsumer(
-                      bloc: _ocrBloc,
-                      listener: (context, state) async {
-                        if (state is OcrLoading) {
-                          Utility.showLoadingDialog(context, true);
-                        } else if (state
-                            is SubjectDetailsListSaveSuccessfully) {
-                          Navigator.pop(context);
-                          // AnimationController?.dispose();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SubjectSelection(
-                                      // isCommonCore: selectedIndex.value == 0
-                                      //     ? true
-                                      //     : false,
-                                      questionimageUrl: widget.questionimageUrl,
-                                      selectedClass: widget.selectedClass,
-                                    )),
-                          );
+                    Container(
+                      height: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? MediaQuery.of(context).size.height * 0.85
+                          : MediaQuery.of(context).size.width * 0.80,
+                      child: ListView(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                        ),
+                        children: [
+                          SpacerWidget(_KVertcalSpace * 0.50),
+                          SpacerWidget(_KVertcalSpace / 3.5),
+                          Utility.textWidget(
+                            context: context,
+                            text: 'Select States',
+                            // textTheme: Theme.of(context).textTheme.headline1
+                          ),
+                          SpacerWidget(_KVertcalSpace / 4),
+                          SearchBar(
+                              stateName: 'State Search',
+                              readOnly: false,
+                              controller: searchController,
+                              onSaved: (String value) {
+                                if (searchController.text.isEmpty) {
+                                  _ocrBloc.add(FetchStateListEvant(
+                                      fromCreateAssesment:
+                                          widget.isFromCreateAssesmentScreen ??
+                                              false));
+                                } else {
+                                  _ocrBloc.add(LocalStateSearchEvent(
+                                      keyWord: searchController.text));
+                                }
+                              }),
+                          SpacerWidget(_KVertcalSpace / 4),
+                          BlocConsumer(
+                            bloc: _ocrBloc,
+                            listener: (context, state) async {
+                              if (state is OcrLoading) {
+                                Utility.showLoadingDialog(context, true);
+                              } else if (state
+                                  is SubjectDetailsListSaveSuccessfully) {
+                                Navigator.pop(context);
+                                // AnimationController?.dispose();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SubjectSelection(
+                                            // isCommonCore: selectedIndex.value == 0
+                                            //     ? true
+                                            //     : false,
+                                            questionimageUrl:
+                                                widget.questionimageUrl,
+                                            selectedClass: widget.selectedClass,
+                                          )),
+                                );
 
-                          _ocrBloc.add(FetchStateListEvant(
-                              fromCreateAssesment:
-                                  widget.isFromCreateAssesmentScreen ?? false));
-                        } else if (state is OcrErrorReceived) {
-                          Navigator.pop(context);
-                        }
-                      },
-                      builder: (BuildContext context, Object? state) {
-                        if (state is OcrLoading2) {
-                          return Container(
-                            height: MediaQuery.of(context).size.height * 0.5,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: AppTheme.kButtonColor,
-                              ),
-                            ),
-                          );
-                        } else if (state is StateListFetchSuccessfully) {
-                          return ValueListenableBuilder(
-                            valueListenable: selectedIndex,
-                            builder: (BuildContext context, dynamic value,
-                                Widget? child) {
-                              return buttonListWidget(list: state.stateList);
+                                _ocrBloc.add(FetchStateListEvant(
+                                    fromCreateAssesment:
+                                        widget.isFromCreateAssesmentScreen ??
+                                            false));
+                              } else if (state is OcrErrorReceived) {
+                                Navigator.pop(context);
+                              }
                             },
-                            child: Container(),
-                          );
-                        }
-                        // Condition to return search List
-                        else if (state is LocalStateSearchResult) {
-                          return state.stateList.length > 0
-                              ? ValueListenableBuilder(
+                            builder: (BuildContext context, Object? state) {
+                              if (state is OcrLoading2) {
+                                return Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.5,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: AppTheme.kButtonColor,
+                                    ),
+                                  ),
+                                );
+                              } else if (state is StateListFetchSuccessfully) {
+                                return ValueListenableBuilder(
                                   valueListenable: selectedIndex,
                                   builder: (BuildContext context, dynamic value,
                                       Widget? child) {
@@ -182,19 +179,36 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                         list: state.stateList);
                                   },
                                   child: Container(),
-                                )
-                              : Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.6,
-                                  child: NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: false,
-                                      isNews: false,
-                                      isEvents: false),
                                 );
-                        }
-                        return Container();
-                      },
-                      //child: Container(),
+                              }
+                              // Condition to return search List
+                              else if (state is LocalStateSearchResult) {
+                                return state.stateList.length > 0
+                                    ? ValueListenableBuilder(
+                                        valueListenable: selectedIndex,
+                                        builder: (BuildContext context,
+                                            dynamic value, Widget? child) {
+                                          return buttonListWidget(
+                                              list: state.stateList);
+                                        },
+                                        child: Container(),
+                                      )
+                                    : Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.6,
+                                        child: NoDataFoundErrorWidget(
+                                            isResultNotFoundMsg: false,
+                                            isNews: false,
+                                            isEvents: false),
+                                      );
+                              }
+                              return Container();
+                            },
+                            //child: Container(),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -292,7 +306,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                           .replaceAll('⍰', ''), //🖾
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline2!
+                                          .headline1!
                                           .copyWith(
                                             fontWeight: FontWeight.bold,
                                           )),
@@ -341,5 +355,12 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
         },
       ),
     );
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+    _ocrBloc.add(FetchStateListEvant(
+        fromCreateAssesment: widget.isFromCreateAssesmentScreen ?? false));
   }
 }

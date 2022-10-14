@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import '../../../widgets/empty_container_widget.dart';
 import '../../google_drive/model/user_profile.dart';
@@ -234,6 +235,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             description:
                                 'Teacher Successfully Completed the process and press done ',
                             operationResult: 'Success');
+                        Fluttertoast.cancel();
                         Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
                                 builder: (context) =>
@@ -1333,7 +1335,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       tableName: widget.assessmentDetailPage == true
                           ? 'history_student_info'
                           : 'student_info');
-
+                  Fluttertoast.cancel();
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -1547,7 +1549,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             if (yesActionText != null) {
                               await _historyStudentInfoDb.clear();
                             }
-
+                            Fluttertoast.cancel();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -1942,7 +1944,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               : Globals.deviceType == 'phone'
                   ? 37
                   : 48,
-          color:  iconsName[index] =='History'? AppTheme.kButtonbackColor
+          color: iconsName[index] == 'History'
+              ? AppTheme.kButtonbackColor
               : (widget.assessmentDetailPage! &&
                           index == 2 &&
                           isAssessmentAlreadySaved == 'YES') ||

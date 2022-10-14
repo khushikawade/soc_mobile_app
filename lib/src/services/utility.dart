@@ -22,6 +22,7 @@ import 'package:http/http.dart' as http;
 import '../modules/google_drive/model/user_profile.dart';
 import '../modules/ocr/modal/user_info.dart';
 import 'local_database/local_db.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Utility {
   static bool? isOldUser = false;
@@ -468,58 +469,72 @@ class Utility {
 
   static bool? currentScreenSnackBar(String msg, height,
       {double? marginFromBottom}) {
-    //Use to show snackbar at any current screen
-    BuildContext? context = Globals.navigatorKey.currentContext;
-    ScaffoldMessenger.of(context!).removeCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      // margin: EdgeInsets.only(
-      //     bottom: marginFromBottom != null ? marginFromBottom : 0),
-      padding: EdgeInsets.only(
-        left: 16,
-      ),
-      margin: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          bottom: marginFromBottom == null
-              ? MediaQuery.of(context).size.height * 0.08
-              : marginFromBottom),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10))),
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: 3),
-      backgroundColor:
-          Globals.themeType == 'Dark' ? Colors.white : Colors.black,
-      content: Container(
-        alignment: Alignment.centerLeft,
-        height: height ?? 40,
-        child: TranslationWidget(
-          message: msg,
-          fromLanguage: "en",
-          toLanguage: Globals.selectedLanguage,
-          builder: (translatedMessage) => Text(translatedMessage,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.background,
-                fontWeight: FontWeight.w600,
-              )),
-        ),
-      ),
-      //  TranslationWidget(
-      //     message: text,
-      //     fromLanguage: "en",
-      //     toLanguage: Globals.selectedLanguage,
-      //     builder: (translatedMessage) {
-      //       return Text(translatedMessage.toString(),
-      //           textAlign: TextAlign.left,
-      //           style: TextStyle(
-      //             color: Theme.of(context).colorScheme.background,
-      //             // Theme.of(context).colorScheme.background,
-      //             fontWeight: FontWeight.w600,
-      //           ));
-      //     })
-    ));
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.SNACKBAR,
+        timeInSecForIosWeb: 1,
+        backgroundColor:
+            Globals.themeType == 'Dark' ? Colors.white : Colors.black,
+        textColor: Globals.themeType != 'Dark' ? Colors.white : Colors.black,
+        fontSize: 16.0);
     return true;
   }
+
+  //      {
+
+  //   //Use to show snackbar at any current screen
+  //   BuildContext? context = Globals.navigatorKey.currentContext;
+  //   ScaffoldMessenger.of(context!).removeCurrentSnackBar();
+  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //     // margin: EdgeInsets.only(
+  //     //     bottom: marginFromBottom != null ? marginFromBottom : 0),
+  //     padding: EdgeInsets.only(
+  //       left: 16,
+  //     ),
+  //     margin: EdgeInsets.only(
+  //         left: 16,
+  //         right: 16,
+  //         bottom: marginFromBottom == null
+  //             ? MediaQuery.of(context).size.height * 0.08
+  //             : marginFromBottom),
+  //     shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.all(Radius.circular(10))),
+  //     behavior: SnackBarBehavior.floating,
+  //     duration: Duration(seconds: 3),
+  //     backgroundColor:
+  //         Globals.themeType == 'Dark' ? Colors.white : Colors.black,
+  //     content: Container(
+  //       alignment: Alignment.centerLeft,
+  //       height: height ?? 40,
+  //       child: TranslationWidget(
+  //         message: msg,
+  //         fromLanguage: "en",
+  //         toLanguage: Globals.selectedLanguage,
+  //         builder: (translatedMessage) => Text(translatedMessage,
+  //             textAlign: TextAlign.left,
+  //             style: TextStyle(
+  //               color: Theme.of(context).colorScheme.background,
+  //               fontWeight: FontWeight.w600,
+  //             )),
+  //       ),
+  //     ),
+  //     //  TranslationWidget(
+  //     //     message: text,
+  //     //     fromLanguage: "en",
+  //     //     toLanguage: Globals.selectedLanguage,
+  //     //     builder: (translatedMessage) {
+  //     //       return Text(translatedMessage.toString(),
+  //     //           textAlign: TextAlign.left,
+  //     //           style: TextStyle(
+  //     //             color: Theme.of(context).colorScheme.background,
+  //     //             // Theme.of(context).colorScheme.background,
+  //     //             fontWeight: FontWeight.w600,
+  //     //           ));
+  //     //     })
+  //   ));
+  //   return true;
+  // }
 
   static Future<bool> checkUserConnection() async {
     try {
