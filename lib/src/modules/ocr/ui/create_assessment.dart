@@ -922,7 +922,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   _checkFieldEditable() {
     if (isAlreadySelected.value) {
       Utility.currentScreenSnackBar(
-          'You cannot edit the Assessment Name and Class once created.', null);
+          'You cannot edit the Assessment Name and Class, once created.', null);
     }
     return;
   }
