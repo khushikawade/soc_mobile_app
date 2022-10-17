@@ -93,6 +93,7 @@ dependencies:
   string_similarity: ^2.0.0 #Used in email detection
   scrollable_positioned_list: ^0.2.0-nullsafety.0 #Used on courses list to scroll to specific course
   csv: ^5.0.1
+  fluttertoast: ^8.0.9
 
   #advance_pdf_viewer: 2.0.0
   #flutter_html: ^2.1.5
