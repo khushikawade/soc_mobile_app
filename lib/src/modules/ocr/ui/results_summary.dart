@@ -283,7 +283,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   builder: (BuildContext context,
                                       AsyncSnapshot<List<StudentAssessmentInfo>>
                                           snapshot) {
-                                    print(snapshot.connectionState);
+                                    // print(snapshot.connectionState);
                                     if (snapshot.hasData) {
                                       return snapshot.data!.length == 0
                                           ? CupertinoActivityIndicator(
@@ -1049,8 +1049,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                       widget
                                                           .assessmentDetailPage!));
                                         } else {
-                                          //print(
-                                          // 'else      calling is noramal -------------------------->');
                                           // Adding the non saved record of dashboard in the list
                                           List<StudentAssessmentInfo>
                                               _listRecord = [];
@@ -1064,7 +1062,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                     savedRecordCount!,
                                                     historyRecordList.length);
                                           } else {
-                                            //
                                             _listRecord = historyRecordList;
                                           }
 
