@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -23,7 +24,7 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
   @override
   void initState() {
     super.initState();
-    var brightness = SchedulerBinding.instance!.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
 
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
@@ -33,18 +34,26 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ClipRRect(child: cachedNetworkImage()),
+      padding: Overrides.STANDALONE_GRADED_APP == true
+          ? EdgeInsets.only(right: MediaQuery.of(context).size.width / 8)
+          : null,
+      child: ClipRRect(
+          child: Overrides.STANDALONE_GRADED_APP == true
+              ? standAlonLogo()
+              : cachedNetworkImage()),
     );
   }
 
   Widget cachedNetworkImage() {
     return CachedNetworkImage(
-        imageUrl: Globals.disableDarkMode == true ? widget.iconUrl! :
-         Globals.themeType == 'Dark'
-            ? (widget.darkModeIconUrl == null || widget.darkModeIconUrl == ''
-                ? widget.iconUrl!
-                : widget.darkModeIconUrl!)
-            : widget.iconUrl!,
+        imageUrl: Globals.disableDarkMode == true
+            ? widget.iconUrl!
+            : Globals.themeType == 'Dark'
+                ? (widget.darkModeIconUrl == null ||
+                        widget.darkModeIconUrl == ''
+                    ? widget.iconUrl!
+                    : widget.darkModeIconUrl!)
+                : widget.iconUrl!,
         height: Globals.deviceType == "phone"
             ? AppTheme.kIconSize
             : AppTheme.kTabIconSize,
@@ -81,5 +90,15 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
                     ),
                   )),
             ));
+  }
+
+  Widget standAlonLogo() {
+    return Image.asset(
+      Color(0xff000000) == Theme.of(context).backgroundColor
+          ? "assets/images/graded+_light.png"
+          : "assets/images/graded+_dark.png",
+      height: AppTheme.kTabIconSize * 1.2,
+      width: AppTheme.kTabIconSize * 1.5,
+    );
   }
 }

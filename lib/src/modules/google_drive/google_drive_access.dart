@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 class GoogleDriveAccess {
@@ -167,45 +168,47 @@ class GoogleDriveAccess {
     }
   }
 
-  static Future excelToJson(String file) async {
-    var bytes = File(file).readAsBytesSync();
-    var excel = Excel.decodeBytes(bytes);
-    //print(excel);
-    int i = 0;
-    List<dynamic> keys = <dynamic>[];
-    List<Map<String, dynamic>> json = <Map<String, dynamic>>[];
-    for (var table in excel.tables.keys) {
-      for (var row in excel.tables[table]?.rows ?? []) {
-        if (i == 0) {
-          keys = row;
-          i++;
-        } else {
-          Map<String, dynamic> temp = Map<String, dynamic>();
-          int j = 0;
-          String tk = '';
-          for (var key in keys) {
-            tk = key.value;
-            temp[tk] = row[j].runtimeType != null
-                ? (row[j].runtimeType == String)
-                    ? "\u201C" + row[j] != null
-                        ? row[j].value
-                        : '' + "\u201D"
-                    : row[j] != null
-                        ? row[j].value
-                        : ''
-                : '';
-            j++;
-          }
-          json.add(temp);
-        }
-      }
-    }
-    List<StudentAssessmentInfo> _list = json
-        .map<StudentAssessmentInfo>((i) => StudentAssessmentInfo.fromJson(i))
-        .toList();
+  // static Future excelToJson(String file) async {
+  //   ByteData data = await rootBundle.load(file);
+  //   var bytes = data.buffer.asUint8List(
+  //       data.offsetInBytes, data.lengthInBytes); //File(file).readAsBytesSync();
+  //   var excel = Excel.decodeBytes(bytes);
+  //   //print(excel);
+  //   int i = 0;
+  //   List<dynamic> keys = <dynamic>[];
+  //   List<Map<String, dynamic>> json = <Map<String, dynamic>>[];
+  //   for (var table in excel.tables.keys) {
+  //     for (var row in excel.tables[table]?.rows ?? []) {
+  //       if (i == 0) {
+  //         keys = row;
+  //         i++;
+  //       } else {
+  //         Map<String, dynamic> temp = Map<String, dynamic>();
+  //         int j = 0;
+  //         String tk = '';
+  //         for (var key in keys) {
+  //           tk = key.value;
+  //           temp[tk] = row[j].runtimeType != null
+  //               ? (row[j].runtimeType == String)
+  //                   ? "\u201C" + row[j] != null
+  //                       ? row[j].value
+  //                       : '' + "\u201D"
+  //                   : row[j] != null
+  //                       ? row[j].value
+  //                       : ''
+  //               : '';
+  //           j++;
+  //         }
+  //         json.add(temp);
+  //       }
+  //     }
+  //   }
+  //   List<StudentAssessmentInfo> _list = json
+  //       .map<StudentAssessmentInfo>((i) => StudentAssessmentInfo.fromJson(i))
+  //       .toList();
 
-    return _list;
-  }
+  //   return _list;
+  // }
 
   static Future<bool> deleteFile(File file) async {
     try {

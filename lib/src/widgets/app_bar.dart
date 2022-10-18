@@ -16,7 +16,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     required this.appBarTitle,
     required this.sharedpopUpheaderText,
     required this.sharedpopBodytext,
-     this.onTap,
+    this.onTap,
     this.isCenterIcon,
     this.ishtmlpage,
     this.marginLeft,

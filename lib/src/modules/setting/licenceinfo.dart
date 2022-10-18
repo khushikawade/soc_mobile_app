@@ -93,7 +93,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
           },
           isSearch: false,
           isShare: false,
-          appBarTitle: "Open Source Licence",
+          appBarTitle: "Open Source Licenses",
           sharedpopUpheaderText: '',
           sharedpopBodytext: '',
           language: Globals.selectedLanguage,

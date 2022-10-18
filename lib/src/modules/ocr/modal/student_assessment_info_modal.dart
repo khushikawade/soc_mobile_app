@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:Soc/src/overrides.dart';
 import 'package:hive/hive.dart';
 part 'student_assessment_info_modal.g.dart';
 
@@ -56,7 +57,9 @@ class StudentAssessmentInfo {
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(
           studentName: json['Name'] as String?,
-          studentId: json['Id'] as String?,
+          studentId: Overrides.STANDALONE_GRADED_APP == true
+              ? json['Email Id'] as String?
+              : json['Id'] as String?,
           studentGrade: json['Points Earned'] as String?,
           pointpossible: json['Point Possible'] as String?,
           grade: json['Grade'] as String?,
@@ -67,7 +70,11 @@ class StudentAssessmentInfo {
           scoringRubric: json['Scoring Rubric'] as String?,
           customRubricImage: json['Custom Rubric Image'] as String?,
           className: json['Class Name'] as String?,
-          assessmentImage: json['Assessment Image'] as String?,
-          questionImgUrl: json['Assessment Question Img'] as String?,
+          assessmentImage: Overrides.STANDALONE_GRADED_APP == true
+              ? json['Student Work Image'] as String?
+              : json['Assessment Image'] as String?,
+          questionImgUrl: Overrides.STANDALONE_GRADED_APP == true
+              ? json['Assessment Image'] as String?
+              : json['Assessment Question Img'] as String?,
           isSavedOnDashBoard: json['Saved on Dashboard']);
 }

@@ -1,11 +1,14 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_content_modal.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import '../../../overrides.dart';
 import '../../../services/local_database/hive_db_services.dart';
 import '../../../translator/translation_widget.dart';
 
@@ -173,7 +176,9 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                   context,
                   MaterialPageRoute<void>(
                       builder: (BuildContext context) =>
-                          OpticalCharacterRecognition()),
+                          Overrides.STANDALONE_GRADED_APP == true
+                              ? GradedLandingPage()
+                              : OpticalCharacterRecognition()),
                 );
               } else {
                 carouselController.animateToPage(

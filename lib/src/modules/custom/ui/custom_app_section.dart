@@ -61,8 +61,8 @@ class _CustomAppSectionState extends State<CustomAppSection> {
       key: _scaffoldKey,
       appBar: AppBarWidget(
         onTap: () {
-            Utility.scrollToTop(scrollController: _scrollController);
-          },
+          Utility.scrollToTop(scrollController: _scrollController);
+        },
         marginLeft: 30,
         refresh: (v) {
           setState(() {});
@@ -71,6 +71,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
       body: widget.customObj.customBannerImageC != null &&
               widget.customObj.customBannerImageC != ''
           ? NestedScrollView(
+              controller: _scrollController,
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
@@ -109,7 +110,8 @@ class _CustomAppSectionState extends State<CustomAppSection> {
 
                 return
                     // connected?
-                    Stack(
+                    ListView(
+                  shrinkWrap: true,
                   // mainAxisSize: MainAxisSize.max,
                   children: [
                     BlocBuilder<CustomBloc, CustomState>(
@@ -119,10 +121,13 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is CustomDataSucess) {
-                            return CustomPages(
-                              scrollController: _scrollController,
-                              customList: state.obj,
-                              customObj: widget.customObj,
+                            return Container(
+                              height: MediaQuery.of(context).size.height,
+                              child: CustomPages(
+                                scrollController: _scrollController,
+                                customList: state.obj,
+                                customObj: widget.customObj,
+                              ),
                             );
                           } else if (state is ErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);

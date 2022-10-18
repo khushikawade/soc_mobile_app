@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -20,12 +21,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchScreenPage extends StatefulWidget {
-  final String? keyword;
+  final String? selectedKeyword;
   final String? grade;
   final String? questionImage;
+  final String? selectedSubject;
+  final String? subjectId;
+  final String? stateName;
 
   SearchScreenPage(
-      {Key? key, this.keyword, this.grade, required this.questionImage})
+      {Key? key,
+      required this.selectedKeyword,
+      required this.grade,
+      required this.selectedSubject,
+      required this.questionImage,
+      required this.stateName,
+      required this.subjectId})
       : super(key: key);
 
   @override
@@ -62,12 +72,12 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
     super.initState();
     _ocrBloc.add(FetchRecentSearch(
         type: 'nycSub',
-        subjectName: widget.keyword,
+        subjectName: widget.selectedKeyword,
         // isSearchPage: true,
         className: widget.grade));
     _ocrBloc2.add(FetchRecentSearch(
         type: 'nyc',
-        subjectName: widget.keyword,
+        subjectName: widget.selectedKeyword,
         // isSearchPage: true,
         className: widget.grade));
   }
@@ -104,6 +114,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                 Container(
                   // padding: EdgeInsets.symmetric(horizontal: 20),
                   child: SearchBar(
+                    stateName: widget.stateName!,
+                    //    isCommonCore: widget.isCommonCore,
                     isSearchPage: true,
                     readOnly: false,
                     controller: searchController,
@@ -111,26 +123,30 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       if (searchController.text.isEmpty) {
                         _ocrBloc.add(FetchRecentSearch(
                             type: 'nycSub',
-                            subjectName: widget.keyword,
+                            subjectName: widget.selectedKeyword,
                             // isSearchPage: true,
                             className: widget.grade));
                         _ocrBloc2.add(FetchRecentSearch(
                             type: 'nyc',
-                            subjectName: widget.keyword,
+                            subjectName: widget.selectedKeyword,
                             // isSearchPage: true,
                             className: widget.grade));
                       } else {
                         _debouncer.run(() async {
                           _ocrBloc.add(SearchSubjectDetails(
+                              subjectSelected: widget.selectedSubject,
+                              stateName: widget.stateName!,
                               searchKeyword: searchController.text,
                               type: 'nycSub',
-                              keyword: widget.keyword,
+                              selectedKeyword: widget.selectedKeyword,
                               isSearchPage: true,
                               grade: widget.grade));
                           _ocrBloc2.add(SearchSubjectDetails(
+                            subjectSelected: widget.selectedSubject,
                             searchKeyword: searchController.text,
                             type: 'nyc',
-                            keyword: widget.keyword,
+                            stateName: widget.stateName!,
+                            selectedKeyword: widget.selectedKeyword,
                             isSearchPage: true,
                             grade: widget.grade,
                           ));
@@ -281,7 +297,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                     ? Container(
                                         padding: EdgeInsets.only(bottom: 10),
                                         child: Utility.textWidget(
-                                            text: 'Learning Standard',
+                                            text: Overrides.STANDALONE_GRADED_APP == true
+                                                ? 'Common Core'
+                                                : 'Learning Standard',
                                             context: context,
                                             textTheme: Theme.of(context)
                                                 .textTheme
@@ -289,21 +307,19 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                 .copyWith(
                                                     fontWeight:
                                                         FontWeight.bold)))
-                                    : (index == standerdLearningLength &&
-                                            list.length != 0
+                                    : (index == standerdLearningLength && list.length != 0
                                         ? Container(
                                             padding:
                                                 EdgeInsets.only(bottom: 10),
                                             child: Utility.textWidget(
-                                                text:
-                                                    'NY Next Generation Learning Standard',
+                                                text: Overrides.STANDALONE_GRADED_APP == true
+                                                    ? 'Common Core'
+                                                    : 'NY Next Generation Learning Standard',
                                                 context: context,
                                                 textTheme: Theme.of(context)
                                                     .textTheme
                                                     .headline1!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.bold)))
+                                                    .copyWith(fontWeight: FontWeight.bold)))
                                         : Container()),
                                 Bouncing(
                                   child: InkWell(
@@ -317,12 +333,14 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                             type: 'nyc',
                                             obj: list[index],
                                             className: widget.grade!,
-                                            subjectName: widget.keyword!);
+                                            subjectName:
+                                                widget.selectedKeyword!);
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   SubjectSelection(
+                                                    subjectId: widget.subjectId,
                                                     questionimageUrl:
                                                         widget.questionImage ??
                                                             'NA',
@@ -334,7 +352,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                                 .domainNameC,
                                                     searchClass: widget.grade,
                                                     selectedSubject:
-                                                        widget.keyword,
+                                                        widget.selectedSubject,
+                                                    stateName: widget.stateName,
                                                   )),
                                         );
                                       } else {
@@ -348,7 +367,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                             type: 'nycSub',
                                             obj: list[index],
                                             className: widget.grade!,
-                                            subjectName: widget.keyword!);
+                                            subjectName:
+                                                widget.selectedKeyword!);
                                         isSubmitButton.value = true;
                                       }
                                       // if (nycSubIndex1.value != 50000) {
@@ -505,7 +525,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               tableName: 'student_info');
 
                       StudentAssessmentInfo element = studentInfodblist[0];
-                      element.subject = widget.keyword;
+                      element.subject = widget.selectedKeyword;
                       element.learningStandard =
                           learningStandard == null || learningStandard == ''
                               ? "NA"
@@ -554,7 +574,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                     assessmentName: Globals.assessmentName ??
                                         'Assessment Name',
                                     rubricScore: Globals.scoringRubric ?? '2',
-                                    subjectName: widget.keyword ??
+                                    subjectName: widget.selectedSubject ??
                                         '', //Student Id will not be there in case of custom subject
                                     domainName: learningStandard ?? '',
                                     subDomainName: subLearningStandard ?? '',
@@ -597,7 +617,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                 } else {
                                   Navigator.of(context).pop();
                                   Utility.currentScreenSnackBar(
-                                      "Something Went Wrong. Please Try Again.");
+                                      "Something Went Wrong. Please Try Again.",
+                                      null);
                                 }
                               }
                             }),

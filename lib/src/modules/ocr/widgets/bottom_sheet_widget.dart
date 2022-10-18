@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -103,14 +104,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                           fontSize: Globals.deviceType == "phone"
                               ? AppTheme.kBottomSheetTitleSize
                               : AppTheme.kBottomSheetTitleSize * 1.3,
-                        )
-                    // textTheme: Theme.of(context)
-                    //     .textTheme
-                    //     .headline3!
-                    //     .copyWith(
-                    //         color: Colors.black,
-                    //         fontWeight: FontWeight.bold)
-                    ),
+                        )),
               ),
             ),
             Form(
@@ -252,17 +246,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                                 ),
                                               ),
                                             ),
-
-                                      //  imageFile != null
-                                      //     ? Image.file(
-                                      //         imageFile!,
-                                      //         fit: BoxFit.fitWidth,
-                                      //       )
-                                      //     : Container(
-                                      //         child: Center(
-                                      //           child: Icon(Icons.add_a_photo),
-                                      //         ),
-                                      //       ),
                                     ),
                                   ),
                                 ),
@@ -323,41 +306,10 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 }
 
                                 widget.update!(true);
-                                Navigator.pop(
-                                  context,
-                                );
+
+                                Navigator.pop(context, true);
                               }
                             }
-
-                            // if (nameController.text.isNotEmpty &&
-                            //     customScoreController.text.isNotEmpty) {
-                            //   List<int> imageBytes;
-                            //   if (imageFile != null) {
-                            //     imageBytes = imageFile!.readAsBytesSync();
-                            //     String imageB64 = base64Encode(imageBytes);
-                            //     //print("image64 is recived --------->$imageB64");
-                            //     RubricScoreList.scoringList.add(CustomRubicModal(
-                            //         name: nameController.text,
-                            //         score: customScoreController.text,
-                            //         imgBase64: imageB64,
-                            //         customOrStandardRubic: "Custom"));
-
-                            //     _googleBloc.add(ImageToAwsBucked(
-                            //         imgBase64: RubricScoreList.scoringList.last.imgBase64));
-                            //   } else {
-                            //     RubricScoreList.scoringList.add(CustomRubicModal(
-                            //         name: nameController.text,
-                            //         score: customScoreController.text,
-                            //         customOrStandardRubic: "Custom"));
-                            //   }
-
-                            //   widget.update(true);
-                            //   Navigator.pop(
-                            //     context,
-                            //   );
-                            // } else {
-                            //   //print("error");
-                            // }
                           },
                           label: Row(
                             children: [
@@ -440,17 +392,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     } else {
       Navigator.pop(context);
     }
-
-    // final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    // if (photo != null) {
-    //   setState(() {
-    //     imageFile = File(photo.path);
-
-    //     Navigator.pop(context);
-    //   });
-    // } else {
-    //   Navigator.pop(context);
-    // }
   }
 
   _imgFromGallery(BuildContext context) async {
