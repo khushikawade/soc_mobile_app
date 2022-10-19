@@ -112,11 +112,15 @@ class Globals {
   //   '+'
   // ];
   static List ocrResultIcons = Overrides.STANDALONE_GRADED_APP == true
-      ? [0xe876, 0xe871, 0xe873, 0xe803]
+      ? [0xe873, 0xe871, 0xe803, 0xe876]
       : [0xe876, 0xe871, 0xe873, 0xe87a];
+  // ? [0xe876, 0xe871, 0xe873, 0xe803]
+  // : [0xe876, 0xe871, 0xe873, 0xe87a];
   static List ocrResultIconsName = Overrides.STANDALONE_GRADED_APP == true
-      ? ["Share", "Drive", "History", "Sheet"]
+      ? ["History", "Drive", "Sheet", "Share"]
       : ["Share", "Drive", "History", "Dashboard"];
+  //  ? ["Share", "Drive", "History", "Sheet"]
+  // : ["Share", "Drive", "History", "Dashboard"];
   // static List finishedList = [
   //   "Scan another assessment",
   //   "View all assessment results"

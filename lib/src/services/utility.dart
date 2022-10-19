@@ -906,7 +906,7 @@ class Utility {
       }
     }
 
-    return _studentInfoListDb;
+    return _studentInfoListDb ?? [];
   }
 
   static Future<int> getStudentInfoListLength(

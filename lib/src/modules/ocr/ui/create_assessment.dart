@@ -662,7 +662,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
               } else {
                 // if (_formKey.currentState!.validate()) {
                 if (assessmentNameError.value.isNotEmpty &&
-                    assessmentNameError.value.length > 2 &&
+                    assessmentNameError.value.length >= 2 &&
                     classError.value.isNotEmpty) {
                   Globals.assessmentName =
                       "${assessmentController.text}_${classController.text}";
