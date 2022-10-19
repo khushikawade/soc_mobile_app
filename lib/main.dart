@@ -3,12 +3,14 @@ import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/recent_google_file.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
@@ -18,6 +20,7 @@ import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.da
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:camera/camera.dart';
@@ -36,6 +39,11 @@ import 'src/services/local_database/hive_db_services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
+
+  const standaloneGradedApp = String.fromEnvironment("STANDALONE_GRADED_APP");
+  if (standaloneGradedApp == "true") {
+    Overrides.STANDALONE_GRADED_APP = true;
+  }
 
   if (!kIsWeb) {
     // Not running on the web!
@@ -60,6 +68,8 @@ void main() async {
       ..registerAdapter(CustomRubicModalAdapter())
       ..registerAdapter(TranslationModalAdapter())
       ..registerAdapter(StudentAssessmentInfoAdapter())
+      ..registerAdapter(StateListObjectAdapter())
+      ..registerAdapter(GoogleClassroomCoursesAdapter())
       ..registerAdapter(ScheduleAdapter())
       ..registerAdapter(BlackoutDateAdapter())
       ..registerAdapter(RecentGoogleFileSearchAdapter());

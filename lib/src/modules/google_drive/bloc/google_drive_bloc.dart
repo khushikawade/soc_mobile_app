@@ -4,14 +4,15 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart';
-
+import 'package:Soc/src/modules/google_drive/model/spreadsheet_model.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:equatable/equatable.dart';
@@ -21,6 +22,7 @@ import '../../../services/db_service.dart';
 import 'package:path/path.dart';
 import '../../ocr/modal/custom_rubic_modal.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
+import 'package:dio/dio.dart';
 import '../model/user_profile.dart';
 part 'google_drive_event.dart';
 part 'google_drive_state.dart';
@@ -28,6 +30,7 @@ part 'google_drive_state.dart';
 class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   GoogleDriveBloc() : super(GoogleDriveInitial());
   final DbServices _dbServices = DbServices();
+  Dio dio = Dio();
   // final HiveDbServices _localDbService = HiveDbServices();
   GoogleDriveState get initialState => GoogleDriveInitial();
   int _totalRetry = 0;
@@ -110,14 +113,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         yield ErrorState();
 
         rethrow;
       } catch (e) {
         if (e == 'NO_CONNECTION') {
-          Utility.currentScreenSnackBar("No Internet Connection");
+          Utility.currentScreenSnackBar("No Internet Connection", null);
         } else {
           yield ErrorState();
         }
@@ -150,12 +153,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {
         if (e == 'NO_CONNECTION') {
-          Utility.currentScreenSnackBar("No Internet Connection");
+          Utility.currentScreenSnackBar("No Internet Connection", null);
         } else {
           yield ErrorState();
         }
@@ -278,11 +281,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         assessmentData.insert(
             0,
             StudentAssessmentInfo(
-              studentId: "Id",
+              studentId:
+                  Overrides.STANDALONE_GRADED_APP == true ? "Email Id" : "Id",
               studentName: "Name",
               studentGrade: "Points Earned",
               pointpossible: "Point Possible",
-              questionImgUrl: "Assessment Question Img",
+              questionImgUrl: Overrides.STANDALONE_GRADED_APP == true
+                  ? "Assessment Image"
+                  : "Assessment Question Img",
               grade: "Grade",
               className: "Class Name",
               subject: "Subject",
@@ -290,7 +296,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               subLearningStandard: "NY Next Generation Learning Standard",
               scoringRubric: "Scoring Rubric",
               customRubricImage: "Custom Rubric Image",
-              assessmentImage: "Assessment Image",
+              assessmentImage: Overrides.STANDALONE_GRADED_APP == true
+                  ? "Student Work Image"
+                  : "Assessment Image",
             ));
 
 //Generating excel file locally with all the result data
@@ -316,6 +324,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userprofilelocalData[0].authorizationToken,
               _userprofilelocalData[0].refreshToken);
           // function to update property of excel sheet
+
           _updateFieldExcelSheet(
               assessmentData: assessmentData,
               excelId: excelSheetId,
@@ -324,6 +333,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           yield ErrorState(errorMsg: 'Reauthentication is required');
         } else {
           // function to update property of excel sheet
+
           _updateFieldExcelSheet(
               assessmentData: assessmentData,
               excelId: excelSheetId,
@@ -339,12 +349,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         throw (e);
       }
@@ -416,12 +426,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : throw (e);
       }
     }
@@ -473,7 +483,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {}
@@ -482,7 +492,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetAssessmentDetail) {
       try {
         yield GoogleDriveLoading2();
-        List<StudentAssessmentInfo> _list = [];
+        List<StudentAssessmentInfo> summaryList = [];
         List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
         var fildObject;
@@ -495,27 +505,33 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             fildObject != null &&
             fildObject != 'Reauthentication is required' &&
             fildObject['exportLinks'] != null) {
-          String file = await downloadFile(
-              fildObject['exportLinks'][
-                  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-              event.fileId!,
-              (await getApplicationDocumentsDirectory()).path);
+          // String file = await downloadFile(
+          //     fildObject['exportLinks']['text/csv'],
+          //     event.fileId!,
+          //     (await getApplicationDocumentsDirectory()).path);
+          String savePath = await getFilePath(event.fileId);
+          summaryList = await processCSVFile(
+              fildObject['exportLinks']['text/csv'],
+              _userprofilelocalData[0].authorizationToken,
+              _userprofilelocalData[0].refreshToken,
+              savePath);
 
           // //print("assessment downloaded");
 
-          if (file != "") {
+          if (summaryList != []) {
             // //print("Assessment file found");
             //  List<StudentAssessmentInfo>
-            _list = await GoogleDriveAccess.excelToJson(file);
+
+            // _list = await GoogleDriveAccess.excelToJson(file);
             // //print("assessment data is converted into json ");
 
-            bool deleted = await GoogleDriveAccess.deleteFile(File(file));
+            bool deleted = await GoogleDriveAccess.deleteFile(File(savePath));
             if (!deleted) {
-              GoogleDriveAccess.deleteFile(File(file));
+              GoogleDriveAccess.deleteFile(File(savePath));
             }
 
             yield AssessmentDetailSuccess(
-                obj: _list, webContentLink: fildObject['webViewLink']);
+                obj: summaryList, webContentLink: fildObject['webViewLink']);
           } else {
             //Return empty list
             yield AssessmentDetailSuccess(
@@ -526,19 +542,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           //Return empty list
           yield AssessmentDetailSuccess(
-              obj: _list,
+              obj: summaryList,
               webContentLink: fildObject != null && fildObject != ''
                   ? fildObject['webViewLink']
                   : '');
         }
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {
         if (e == 'NO_CONNECTION') {
-          Utility.currentScreenSnackBar("No Internet Connection");
+          Utility.currentScreenSnackBar("No Internet Connection", null);
         } else {
           yield AssessmentDetailSuccess(obj: [], webContentLink: null);
         }
@@ -604,12 +620,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         // //print("//printing imag url : $imgUrl");
       } on SocketException catch (e) {
         e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         throw (e);
       }
@@ -622,14 +638,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: 'rubric-score');
-
         // questionImgUrl.isNotEmpty
         //     ? print("question image url upload done")
         //     : print("error uploading question img");
+
         yield QuestionImageSuccess(questionImageUrl: questionImgUrl);
       } catch (e) {
         e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection")
+            ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         throw (e);
       }
@@ -673,7 +689,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   void errorThrow(msg) {
     BuildContext? context = Globals.navigatorKey.currentContext;
-    Utility.currentScreenSnackBar(msg);
+    Utility.currentScreenSnackBar(msg, null);
     Navigator.pop(context!);
   }
 
@@ -744,12 +760,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String query =
           '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
 
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
               'https://www.googleapis.com/drive/v3/files?fields=%2A%26q=' +
               Uri.encodeFull(query),
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
       // final ResponseModel response = await _dbServices.getapiNew(
       //     'https://www.googleapis.com/drive/v3/files?fields=*&q=trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\'',
 
@@ -928,10 +944,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
 
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           "https://sheets.googleapis.com/v4/spreadsheets/$excelId",
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
       if (response.statusCode == 200) {
         return response.data["sheets"][0]['properties']['sheetId'];
       }
@@ -1093,17 +1109,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-      // print(Uri.encodeFull(
-      //     "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents" +
-      //                 //     searchKey! !=
-      //                 // null &&
-      //                 searchKey! !=
-      //             ""
-      //         ? " and title contains $searchKey"
-      //         : ""));
+
       String query =
           '(mimeType = \'application/vnd.google-apps.spreadsheet\' and \'$folderId\'+in+parents and title contains \'${searchKey}\')';
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           isPagination == true
               ? "$nextPageUrl"
               : searchKey == ""
@@ -1114,8 +1123,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
                   "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
                       Uri.encodeFull(query), //Search call
+
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
 
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
@@ -1193,12 +1203,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
     } on SocketException catch (e) {
       e.message == 'Connection failed'
-          ? Utility.currentScreenSnackBar("No Internet Connection")
+          ? Utility.currentScreenSnackBar("No Internet Connection", null)
           : print(e);
       rethrow;
     } catch (e) {
       e == 'NO_CONNECTION'
-          ? Utility.currentScreenSnackBar("No Internet Connection")
+          ? Utility.currentScreenSnackBar("No Internet Connection", null)
           : print(e);
       throw (e);
     }
@@ -1206,10 +1216,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   Future<List<AssessmentDetails>> getAssessmentList() async {
     try {
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"School__c"=\'${Globals.appSetting.schoolNameC}\'',
           //  'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
-          isGoogleAPI: true);
+          isCompleteUrl: true);
       if (response.statusCode == 200) {
         List<AssessmentDetails> _list = response.data['body']
             .map<AssessmentDetails>((i) => AssessmentDetails.fromJson(i))
@@ -1223,49 +1233,49 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  _updateSheetPermission(
-      String token, String fileId, String? refreshToken) async {
-    try {
-      Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'authorization': 'Bearer $token'
-      };
-      final body = {"role": "reader", "type": "anyone"};
+  // _updateSheetPermission(
+  //     String token, String fileId, String? refreshToken) async {
+  //   try {
+  //     Map<String, String> headers = {
+  //       'Content-Type': 'application/json',
+  //       'authorization': 'Bearer $token'
+  //     };
+  //     final body = {"role": "reader", "type": "anyone"};
 
-      final ResponseModel response = await _dbServices.postapi(
-          // 'https://www.googleapis.com/drive/v3/files/$fileId/permissions',
-          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId/permissions',
-          headers: headers,
-          body: body,
-          isGoogleApi: true);
+  //     final ResponseModel response = await _dbServices.postapi(
+  //         // 'https://www.googleapis.com/drive/v3/files/$fileId/permissions',
+  //         '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId/permissions',
+  //         headers: headers,
+  //         body: body,
+  //         isGoogleApi: true);
 
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
-        return true;
-      }
-      if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
-        _totalRetry++;
+  //     if (response.statusCode != 401 &&
+  //         response.statusCode == 200 &&
+  //         response.data['statusCode'] != 500) {
+  //       return true;
+  //     }
+  //     if ((response.statusCode == 401 || response.data['statusCode'] == 500) &&
+  //         _totalRetry < 3) {
+  //       _totalRetry++;
 
-        bool result = await _toRefreshAuthenticationToken(refreshToken!);
+  //       bool result = await _toRefreshAuthenticationToken(refreshToken!);
 
-        if (result == true) {
-          List<UserInformation> _userprofilelocalData =
-              await UserGoogleProfile.getUserProfile();
+  //       if (result == true) {
+  //         List<UserInformation> _userprofilelocalData =
+  //             await UserGoogleProfile.getUserProfile();
 
-          bool result = _updateSheetPermission(
-              _userprofilelocalData[0].authorizationToken!,
-              fileId,
-              _userprofilelocalData[0].refreshToken);
-          return result;
-        }
-      }
-      return false;
-    } catch (e) {
-      throw (e);
-    }
-  }
+  //         bool result = _updateSheetPermission(
+  //             _userprofilelocalData[0].authorizationToken!,
+  //             fileId,
+  //             _userprofilelocalData[0].refreshToken);
+  //         return result;
+  //       }
+  //     }
+  //     return false;
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
 
   _getShareableLink(
       {required String token,
@@ -1276,19 +1286,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'Content-Type': 'application/json',
         'authorization': 'Bearer $token'
       };
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           // 'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
 
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        bool result = await _updateSheetPermission(token, fileId, refreshToken);
-        if (!result) {
-          await _updateSheetPermission(token, fileId, refreshToken);
-        }
+        // bool result = await _updateSheetPermission(token, fileId, refreshToken);
+        // if (!result) {
+        //   await _updateSheetPermission(token, fileId, refreshToken);
+        // }
 
         // var data = response.data;
         return response.data['body']['webViewLink'];
@@ -1318,11 +1328,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8'
       };
-      final ResponseModel response = await _dbServices.getapiNew(
+      final ResponseModel response = await _dbServices.getApiNew(
           //   'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
           headers: headers,
-          isGoogleAPI: true);
+          isCompleteUrl: true);
 
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
@@ -1360,32 +1370,124 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> downloadFile(String url, String fileName, String dir) async {
+  Future<List<StudentAssessmentInfo>> processCSVFile(
+      String? url, String? token, String? refreshToken, String savePath) async {
     try {
-      HttpClient httpClient = new HttpClient();
-      File file;
-      String filePath = '';
-      String myUrl = '';
+      List<ResultSpreadsheet> csvList = []; //Map the string list to Model
+      List<StudentAssessmentInfo> listNew =
+          []; //Map the ResultSpreadsheet list to StudentAssessmentInfo list to not chnage anything on UI
+      List data = []; //To parse String to List
+      bool? createdAsPremium = true;
+      //Downloading file to specific path
+      var response = await dio.download(
+        url!,
+        savePath,
+        options: Options(
+          headers: {
+            'responseType': ResponseType.bytes,
+            // 'Content-Type': 'application/json',
+            'authorization': 'Bearer $token'
+          },
+          method: 'GET',
+        ),
+      );
 
-      myUrl = url;
-      var request = await httpClient.getUrl(Uri.parse(myUrl));
-      var response = await request.close();
-      if (response.statusCode == 200) {
-        var bytes = await consolidateHttpClientResponseBytes(response);
-        filePath = '$dir/$fileName';
-        file = File(filePath);
-        await file.writeAsBytes(bytes, flush: true);
-        return filePath;
+      //Processing csv file
+      final input = new File('$savePath').openRead();
+      final fields = await input
+          .transform(utf8.decoder)
+          .transform(new CsvToListConverter())
+          .toList();
+
+      if (fields.length > 1) {
+        //Removing titles from the string list
+        if (fields[0][0] == 'Name') {
+          createdAsPremium = false;
+        }
+        fields.removeAt(0);
+
+        fields.forEach((element) {
+          if (createdAsPremium == false) {
+            //To manage the first field of excel sheet in case of created as non-premium user.
+            element.insert(0, '');
+          }
+
+          data.add(element
+              .toString()
+              .replaceAll('[', "'")
+              .replaceAll(']', "'")
+              .replaceAll("''", "'"));
+        });
+        //Splitting the String list to map the values
+        for (var line in data) {
+          csvList.add(ResultSpreadsheet.fromList(line.split(',')));
+        }
+
+        //Mapping values to required Model
+        for (int i = 0; i < csvList.length; i++) {
+          listNew.add(StudentAssessmentInfo(
+              subject: csvList[i].subject,
+              assessmentImage: csvList[i]
+                  .assessmentImage
+                  .toString()
+                  .replaceAll("'", "")
+                  .replaceAll(" ", ""),
+              className: csvList[i].className,
+              customRubricImage: csvList[i].customRubricImage,
+              grade: csvList[i].grade,
+              learningStandard: csvList[i].learningStandard,
+              pointpossible: csvList[i].pointPossible,
+              questionImgUrl: csvList[i].assessmentQuestionImg,
+              scoringRubric: csvList[i].scoringRubric,
+              studentGrade: csvList[i].pointsEarned,
+              studentId: csvList[i].id,
+              studentName: csvList[i].name,
+              subLearningStandard:
+                  csvList[i].nyNextGenerationLearningStandard));
+        }
+
+        return listNew;
       }
-
-      //print('Unable to download the file');
-      return "";
+      return [];
     } catch (e) {
-      //print("download exception");
       print(e);
       throw (e);
     }
   }
+
+  Future<String> getFilePath(uniqueFileName) async {
+    //To get the path where file will be saved.
+    Directory dir = await getApplicationDocumentsDirectory();
+    String path = '${dir.path + '/file'}';
+    return path;
+  }
+
+  // Future<String> downloadFile(String url, String fileName, String dir) async {
+  //   try {
+  //     HttpClient httpClient = new HttpClient();
+  //     File file;
+  //     String filePath = '';
+  //     String myUrl = '';
+
+  //     myUrl = url;
+  //     var request = await httpClient.getUrl(Uri.parse(myUrl));
+  //     var response = await request.close();
+  //     if (response.statusCode == 200) {
+  //       var bytes = await consolidateHttpClientResponseBytes(response);
+  //       filePath = '$dir/$fileName';
+  //       file = File(filePath);
+  //       await file.writeAsBytes(bytes, flush: true);
+  //       return filePath;
+  //     }
+
+  //     //print('Unable to download the file');
+  //     return "";
+  //   } catch (e) {
+  //     //print("download exception");
+  //     print(e);
+  //     throw (e);
+  //   }
+  // }
 
   Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
     try {

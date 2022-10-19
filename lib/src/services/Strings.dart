@@ -7,6 +7,7 @@ class Strings {
   static final String errorIconPath = "assets/images/error_icon.svg";
   static final String noIntenetIconPath = "assets/images/no_internet_icon.svg";
   static final String noDataIconPath = "assets/images/no_data_icon.svg";
+  static final String googleSheetIcon = "assets/images/google_sheet.svg";
   static final String customSettingObjectName = 'custom';
   static final String schoolObjectName = 'school';
   static final String familiesObjectName = 'families';
@@ -33,7 +34,13 @@ class Strings {
 
 //Using in Graded+
   static final String googleDrive = 'google_drive';
-  static final String ocrSubjectObjectName = 'ocr_subject_details';
+  static final String ocrSubjectObjectName = 'selected_state_subject_details';
+  static final String stateObjectName = 'state_object_list';
+  // static final String ocrSubjectObjectName = 'ocr_subject_details';
+  static final String googleClassroomCoursesList =
+      'google_classroom_courses_list';
+  // static final String googleClassroomStudentList =
+  //     'google_classroom_student_list'; //courses wise
   static final String scheduleObjectDetails = 'schedule_object_details';
-    static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
+  static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
 }

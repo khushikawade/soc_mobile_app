@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 import 'package:Soc/src/modules/schedule/modal/event.dart';
+import 'package:Soc/src/overrides.dart';
 // import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -109,17 +110,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           theme: theme,
           darkTheme: darkTheme,
           home: StartupPage(
-            isOcrSection: false,
-          ),
+              isOcrSection:
+                  Overrides.STANDALONE_GRADED_APP ?? false //Standalone app
+              //false,  /For standard app
+              ),
           // home: SchoolIDLogin(),
         ),
       ),
     );
   }
 }
-
-  // clearTheme() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.remove(AdaptiveTheme.prefKey);
-  //   // AdaptiveTheme.of(context).persist();
-  // }

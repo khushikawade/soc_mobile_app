@@ -144,7 +144,8 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   //             ));
   // }
 
-  String? remotePDFpath;
+  // String? remotePDFpath;
+  final ValueNotifier<String> remotePDFpath = ValueNotifier<String>('');
   final Completer<PDFViewController> _controller =
       Completer<PDFViewController>();
 
@@ -153,26 +154,23 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
     super.initState();
 
     createFileOfPdfUrl().then((f) {
-      setState(() {
-        remotePDFpath = f.path;
-      });
+      // setState(() {
+      remotePDFpath.value = f.path;
+      // });
     });
   }
 
   Future<File> createFileOfPdfUrl() async {
     Completer<File> completer = Completer();
-    print("Start download file from internet!");
+    // print("Start download file from internet!");
     try {
-      // "https://berlin2017.droidcon.cod.newthinking.net/sites/global.droidcon.cod.newthinking.net/files/media/documents/Flutter%20-%2060FPS%20UI%20of%20the%20future%20%20-%20DroidconDE%2017.pdf";
-      // final url = "https://pdfkit.org/docs/guide.pdf";
       final url = widget.url!; //"http://www.pdf995.com/samples/pdf.pdf";
       final filename = url.substring(url.lastIndexOf("/") + 1);
       var request = await HttpClient().getUrl(Uri.parse(url));
       var response = await request.close();
       var bytes = await consolidateHttpClientResponseBytes(response);
       var dir = await getApplicationDocumentsDirectory();
-      // print("Download files");
-      // print("${dir.path}/$filename");
+
       File file = File("${dir.path}/$filename");
 
       await file.writeAsBytes(bytes, flush: true);
@@ -187,59 +185,66 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.isOCRFeature == true
-          ? appBarOCRWidget()
-          : widget.isHomePage == true
-              ? null
-              : CustomAppBarWidget(
-                  isSearch: false,
-                  isShare: true,
-                  appBarTitle: widget.tittle!,
-                  sharedpopBodytext: widget.url.toString(),
-                  sharedpopUpheaderText: "Please check out this",
-                  language: Globals.selectedLanguage,
-                ),
-      body: Stack(
-        children: <Widget>[
-          widget.url != null && widget.url != ""
-              ? remotePDFpath == null
-                  ? Center(
-                      child: CircularProgressIndicator(
-                      color: widget.isOCRFeature == true
-                          ? AppTheme.kButtonColor
-                          : Theme.of(context).colorScheme.primaryVariant,
-                      // valueColor:
-                      //     new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
-                    ))
-                  : PDFView(
-                      filePath: remotePDFpath,
-                      enableSwipe: true,
-                      swipeHorizontal: false,
-                      autoSpacing: false,
-                      pageFling: true,
-                      pageSnap: true,
-                      // defaultPage: currentPage!,
-                      fitPolicy: FitPolicy.WIDTH,
-                      fitEachPage: true,
-                      // nightMode: Theme.of(context).colorScheme.background ==
-                      //         Color(0xff000000)
-                      //     ? true
-                      //     : false,
-                      preventLinkNavigation: false,
-                      onViewCreated: (PDFViewController pdfViewController) {
-                        _controller.complete(pdfViewController);
-                      },
-                      onLinkHandler: (String? uri) {
-                        print('goto uri: $uri');
-                      },
-                    )
-              : NoDataFoundErrorWidget(
-                  isResultNotFoundMsg: false,
-                  isNews: false,
-                  isEvents: false,
-                ),
-        ],
-      ),
-    );
+        appBar: widget.isOCRFeature == true
+            ? appBarOCRWidget()
+            : widget.isHomePage == true
+                ? null
+                : CustomAppBarWidget(
+                    isSearch: false,
+                    isShare: true,
+                    appBarTitle: widget.tittle!,
+                    sharedpopBodytext: widget.url.toString(),
+                    sharedpopUpheaderText: "Please check out this",
+                    language: Globals.selectedLanguage,
+                  ),
+        body: ValueListenableBuilder(
+            valueListenable: remotePDFpath,
+            child: Container(),
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return Stack(
+                children: <Widget>[
+                  widget.url != null && widget.url != ""
+                      ? remotePDFpath.value == null || remotePDFpath.value == ''
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              color: widget.isOCRFeature == true
+                                  ? AppTheme.kButtonColor
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
+                              // valueColor:
+                              //     new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
+                            ))
+                          : PDFView(
+                              filePath: remotePDFpath.value,
+                              enableSwipe: true,
+                              swipeHorizontal: false,
+                              autoSpacing: false,
+                              pageFling: true,
+                              pageSnap: true,
+                              // defaultPage: currentPage!,
+                              fitPolicy: FitPolicy.WIDTH,
+                              fitEachPage: true,
+                              // nightMode: Theme.of(context).colorScheme.background ==
+                              //         Color(0xff000000)
+                              //     ? true
+                              //     : false,
+                              preventLinkNavigation: false,
+                              onViewCreated:
+                                  (PDFViewController pdfViewController) {
+                                _controller.complete(pdfViewController);
+                              },
+                              onLinkHandler: (String? uri) {
+                                print('goto uri: $uri');
+                              },
+                            )
+                      : NoDataFoundErrorWidget(
+                          isResultNotFoundMsg: false,
+                          isNews: false,
+                          isEvents: false,
+                        ),
+                ],
+              );
+            }));
   }
 }

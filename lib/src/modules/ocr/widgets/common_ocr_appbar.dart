@@ -1,6 +1,9 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/ui/profile_page.dart';
+import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
@@ -21,6 +24,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
     implements PreferredSizeWidget {
   CustomOcrAppBarWidget(
       {required Key? key,
+      this.hideStateSelection,
       required this.isBackButton,
       this.isTitle,
       required this.isSuccessState,
@@ -35,11 +39,14 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.customBackButton,
       this.onTap,
       required this.isbackOnSuccess,
-      this.isFromResultSection})
+      this.isFromResultSection,
+      this.navigateBack,
+      this.isProfilePage})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   ValueListenable<bool>? isSuccessState;
   bool? isBackButton;
+  bool? isProfilePage;
   bool? isTitle;
   bool? isOcrHome;
   bool? isResultScreen;
@@ -48,9 +55,11 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? assessmentPage;
   Widget? actionIcon;
   Widget? customBackButton;
+  bool? hideStateSelection;
   ValueListenable<bool>? isbackOnSuccess;
   String? sessionId;
   bool? isFromResultSection;
+  bool? navigateBack;
   final VoidCallback? onTap;
 
   final scaffoldKey;
@@ -87,7 +96,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             //To dispose the snackbar message before navigating back if exist
                             ScaffoldMessenger.of(context)
                                 .removeCurrentSnackBar();
-                            Navigator.pop(context);
+                            Navigator.pop(context, widget.navigateBack);
                           },
                           icon: Icon(
                             IconData(0xe80d,
@@ -112,71 +121,45 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
               color: Colors.transparent,
             )),
         actions: [
-          widget.isFromResultSection == true
-              ? Container(
-                  padding: widget.isSuccessState!.value != false
-                      ? EdgeInsets.only(right: 10)
-                      : EdgeInsets.zero,
-                  child:
-                      //widget.actionIcon,
-                      IconButton(
-                    onPressed: () {
-                      if (widget.isHomeButtonPopup == true) {
-                        _onHomePressed();
-                      } else {
-                        Utility.setFree();
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) => HomePage(
-                                      isFromOcrSection: true,
-                                    )),
-                            (_) => false);
-                      }
-                    },
-                    icon: Icon(
-                      IconData(0xe874,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      color: AppTheme.kButtonColor,
-                      size: 30,
-                    ),
-                  ),
-                )
-              : widget.assessmentPage == true
-                  ? GestureDetector(
-                      onTap: () {
-                        //print(
-                        // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                        Globals.googleDriveFolderPath != null
-                            ? Utility.launchUrlOnExternalBrowser(
-                                Globals.googleDriveFolderPath!)
-                            : getGoogleFolderPath();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Image(
-                          alignment: Alignment.center,
-                          width: Globals.deviceType == "phone" ? 34 : 32,
-                          height: Globals.deviceType == "phone" ? 34 : 32,
-                          image: AssetImage(
-                            "assets/images/drive_ico.png",
-                          ),
-                        ),
-                      ),
-                    )
-                  : widget.assessmentDetailPage == null
-                      ? Container(
-                          // padding: widget.isSuccessState!.value != false
-                          //     ? EdgeInsets.only(right: 10)
-                          //     : EdgeInsets.zero,
-                          child:
-                              //widget.actionIcon,
-                              IconButton(
-                          onPressed: () {
-                            if (widget.isHomeButtonPopup == true) {
-                              _onHomePressed();
+          widget.isProfilePage == true
+              ? IconButton(
+                  onPressed: () {
+                    //  WarningPopupModel();
+
+                    popupModal(
+                        message:
+                            'You are about to Signout from the google account. This may restricts you to use the app without google SignIn. \n\nContinue Signout?',
+                        title: 'Signout');
+                  },
+                  icon: Container(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(
+                        Icons.logout_outlined,
+                        size: 28,
+                        color: AppTheme.kButtonColor,
+                      )))
+              : widget.isFromResultSection == true
+                  ? Container(
+                      padding: widget.isSuccessState!.value != false
+                          ? EdgeInsets.only(right: 10)
+                          : EdgeInsets.zero,
+                      child:
+                          //widget.actionIcon,
+                          IconButton(
+                        onPressed: () {
+                          if (widget.isHomeButtonPopup == true) {
+                            _onHomePressed();
+                          } else {
+                            Utility.setFree();
+                            // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                            if (Overrides.STANDALONE_GRADED_APP) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          GradedLandingPage()),
+                                  (_) => false);
                             } else {
-                              Utility.setFree();
+                              // If app is running as the regular school app, it should navigate to the Home page(Staff section).
                               Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => HomePage(
@@ -184,16 +167,83 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                           )),
                                   (_) => false);
                             }
+                          }
+                        },
+                        icon: Icon(
+                          IconData(0xe874,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: AppTheme.kButtonColor,
+                          size: 30,
+                        ),
+                      ),
+                    )
+                  : widget.assessmentPage == true
+                      ? GestureDetector(
+                          onTap: () {
+                            //print(
+                            // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
+                            Utility.updateLoges(
+                                activityId: '16',
+                                // sessionId: widget.assessmentDetailPage == true
+                                //     ? widget.obj!.sessionId
+                                //     : '',
+                                description: widget.assessmentDetailPage == true
+                                    ? 'Drive Button pressed from Assessment History Detail Page'
+                                    : 'Drive Button pressed from Result Summary',
+                                operationResult: 'Success');
+                            Globals.googleDriveFolderPath != null
+                                ? Utility.launchUrlOnExternalBrowser(
+                                    Globals.googleDriveFolderPath!)
+                                : getGoogleFolderPath();
                           },
-                          icon: Icon(
-                            IconData(0xe874,
-                                fontFamily: Overrides.kFontFam,
-                                fontPackage: Overrides.kFontPkg),
-                            color: AppTheme.kButtonColor,
-                            size: 30,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Image(
+                              alignment: Alignment.center,
+                              width: Globals.deviceType == "phone" ? 34 : 32,
+                              height: Globals.deviceType == "phone" ? 34 : 32,
+                              image: AssetImage(
+                                "assets/images/drive_ico.png",
+                              ),
+                            ),
                           ),
-                        ))
-                      : Container(),
+                        )
+                      : widget.assessmentDetailPage == null
+                          ? Container(
+                              child: IconButton(
+                              onPressed: () {
+                                if (widget.isHomeButtonPopup == true) {
+                                  _onHomePressed();
+                                } else {
+                                  Utility.setFree();
+                                  // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                                  if (Overrides.STANDALONE_GRADED_APP) {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                GradedLandingPage()),
+                                        (_) => false);
+                                  } else {
+                                    // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) => HomePage(
+                                                  isFromOcrSection: true,
+                                                )),
+                                        (_) => false);
+                                  }
+                                }
+                              },
+                              icon: Icon(
+                                IconData(0xe874,
+                                    fontFamily: Overrides.kFontFam,
+                                    fontPackage: Overrides.kFontPkg),
+                                color: AppTheme.kButtonColor,
+                                size: 30,
+                              ),
+                            ))
+                          : Container(),
           widget.assessmentDetailPage == true
               ? Container()
               : ValueListenableBuilder(
@@ -212,7 +262,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   : Container();
                             });
                   }),
-          widget.isOcrHome == true
+          widget.isOcrHome == true && Overrides.STANDALONE_GRADED_APP != true
               ? Padding(
                   padding: const EdgeInsets.only(top: 2),
                   child: IconButton(
@@ -230,46 +280,74 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       )),
                 )
               : Container(),
-          Container(
-            margin: EdgeInsets.all(10),
-            padding: widget.isSuccessState!.value != false
-                ? EdgeInsets.only(right: 10, top: 5)
-                : EdgeInsets.zero,
-            child: FutureBuilder(
-                future: getUserProfile(),
-                builder: (context, AsyncSnapshot<UserInformation> snapshot) {
-                  if (snapshot.hasData) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(60),
-                      ), //.circular(60),
-                      child: GestureDetector(
-                        onTap: () {
-                          _showPopUp(snapshot.data!);
-                          //print("profile url");
-                        },
-                        child: CachedNetworkImage(
-                          // height: 30,
-                          fit: BoxFit.cover,
-                          imageUrl: snapshot.data!.profilePicture!,
-                          placeholder: (context, url) =>
-                              CupertinoActivityIndicator(
-                                  animating: true, radius: 10),
-                        ),
-                      ),
-                    );
-                  }
-                  return Container(
-                    margin: EdgeInsets.all(10),
-                    padding: widget.isSuccessState!.value != false
-                        ? EdgeInsets.only(right: 10, top: 5)
-                        : EdgeInsets.zero,
-                  );
-                  //  CupertinoActivityIndicator(
-                  //     animating: true, radius: 10);
-                }),
-          ),
+          widget.isProfilePage == true
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.all(10),
+                  padding: widget.isSuccessState!.value != false
+                      ? EdgeInsets.only(right: 10, top: 5)
+                      : EdgeInsets.zero,
+                  child: FutureBuilder(
+                      future: getUserProfile(),
+                      builder:
+                          (context, AsyncSnapshot<UserInformation> snapshot) {
+                        if (snapshot.hasData) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(60),
+                            ), //.circular(60),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProfilePage(
+                                            hideStateSelection:
+                                                widget.hideStateSelection ??
+                                                    false,
+                                            profile: snapshot.data!,
+                                          )),
+                                );
+
+                                // _showPopUp(snapshot.data!);
+                                //print("profile url");
+                              },
+                              child: CachedNetworkImage(
+                                // height: 30,
+                                fit: BoxFit.cover,
+                                imageUrl: snapshot.data!.profilePicture!,
+                                placeholder: (context, url) =>
+                                    CupertinoActivityIndicator(
+                                        animating: true, radius: 10),
+                              ),
+                            ),
+                          );
+                        }
+                        return Container(
+                          margin: EdgeInsets.all(10),
+                          padding: widget.isSuccessState!.value != false
+                              ? EdgeInsets.only(right: 10, top: 5)
+                              : EdgeInsets.zero,
+                        );
+                        //  CupertinoActivityIndicator(
+                        //     animating: true, radius: 10);
+                      }),
+                ),
         ]);
+  }
+
+  popupModal({required String message, required String? title}) {
+    return showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return CommonPopupWidget(
+                  isLogout: true,
+                  orientation: orientation,
+                  context: context,
+                  message: message,
+                  title: title!);
+            }));
   }
 
   getGoogleFolderPath() async {
@@ -397,13 +475,22 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                       ));
                             }),
                         onPressed: () {
-                          //Globals.iscameraPopup = false;
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                        isFromOcrSection: true,
-                                      )),
-                              (_) => false);
+                          Utility.setFree();
+                          // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+                          if (Overrides.STANDALONE_GRADED_APP) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => GradedLandingPage()),
+                                (_) => false);
+                          } else {
+                            // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage(
+                                          isFromOcrSection: true,
+                                        )),
+                                (_) => false);
+                          }
                         },
                       ),
                     ],

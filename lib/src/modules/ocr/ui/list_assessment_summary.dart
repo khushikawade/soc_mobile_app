@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
@@ -22,7 +21,7 @@ import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
 
 class AssessmentSummary extends StatefulWidget {
-  bool isFromHomeSection;
+  final bool isFromHomeSection;
   AssessmentSummary({Key? key, required this.isFromHomeSection})
       : super(key: key);
   @override
@@ -53,6 +52,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     _scrollController = ScrollController()..addListener(_scrollListener);
     _driveBloc.add(GetHistoryAssessmentFromDrive());
 
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   refreshPage(isFromPullToRefresh: false);
+    // });
     SchedulerBinding.instance.addPostFrameCallback((_) {
       refreshPage(isFromPullToRefresh: false);
     });
@@ -105,7 +107,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Utility.textWidget(
-                    text: 'Assessment History',
+                    text: 'Assignment History',
                     context: context,
                     textTheme: Theme.of(context)
                         .textTheme
@@ -118,6 +120,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   padding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width / 30),
                   child: SearchBar(
+                    stateName: '',
                     isSearchPage: false,
                     isSubLearningPage: false,
                     readOnly: true,
@@ -207,7 +210,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                   } else {
                                     Navigator.of(context).pop();
                                     Utility.currentScreenSnackBar(
-                                        "Something Went Wrong. Please Try Again.");
+                                        "Something Went Wrong. Please Try Again.",
+                                        null);
                                   }
                                 } else if (state is GoogleDriveLoading) {
                                   Container(
@@ -352,7 +356,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 Utility.textWidget(
                     context: context,
                     text:
-                        'All Assessments Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                        'All Assignment Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.background ==
@@ -364,7 +368,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 Utility.textWidget(
                     context: context,
                     text:
-                        'You\'ve fetched all the available files from Graded+ Assessment',
+                        'You\'ve fetched all the available files from Graded+ Assignment',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: Colors.grey, //AppTheme.kButtonColor,
@@ -443,7 +447,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                             ? list[index].sessionId
                             : '',
                         description:
-                            'Teacher tap on Share Button on assessment summery page',
+                            'Teacher tap on Share Button on Assignment summery page',
                         operationResult: 'Success');
 
                     if (list[index].webContentLink != null &&
