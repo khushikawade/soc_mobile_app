@@ -1952,183 +1952,178 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   }
 
   Widget detailPageActionButtons(iconName, index) {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.only(bottom: 5.0),
-        //UNCOMMENT
-        //  color: Colors.black,
-        child: IconButton(
-            padding: EdgeInsets.zero,
-            icon: iconsName[index] == 'Share' &&
-                    !widget.assessmentDetailPage! &&
-                    widget.isScanMore == null
-                ? detailsPageActionWithDashboard(index)
-                : detailPageActionsWithoutDashboard(index: index),
-            onPressed: () async {
-              if (iconsName[index] == 'Share') {
-                Utility.updateLoges(
-                    activityId: '13',
-                    sessionId: widget.assessmentDetailPage == true
-                        ? widget.obj!.sessionId
-                        : '',
-                    description: widget.assessmentDetailPage == true
-                        ? 'Share Button pressed from Assessment History Detail Page'
-                        : 'Share Button pressed from Result Summary',
-                    operationResult: 'Success');
-                widget.shareLink != null && widget.shareLink!.isNotEmpty
-                    ? Share.share(widget.shareLink!)
-                    : print("no link ");
-              } else if (iconsName[index] == 'History') {
-                Utility.updateLoges(
-                    activityId: '15',
-                    description: 'History Assesment button pressed',
-                    operationResult: 'Success');
+    return Container(
+      margin: EdgeInsets.only(bottom: 5.0),
+      //UNCOMMENT
+      //  color: Colors.black,
+      child: IconButton(
+          padding: EdgeInsets.zero,
+          icon: iconsName[index] == 'Share' &&
+                  !widget.assessmentDetailPage! &&
+                  widget.isScanMore == null
+              ? detailsPageActionWithDashboard(index)
+              : detailPageActionsWithoutDashboard(index: index),
+          onPressed: () async {
+            if (iconsName[index] == 'Share') {
+              Utility.updateLoges(
+                  activityId: '13',
+                  sessionId: widget.assessmentDetailPage == true
+                      ? widget.obj!.sessionId
+                      : '',
+                  description: widget.assessmentDetailPage == true
+                      ? 'Share Button pressed from Assessment History Detail Page'
+                      : 'Share Button pressed from Result Summary',
+                  operationResult: 'Success');
+              widget.shareLink != null && widget.shareLink!.isNotEmpty
+                  ? Share.share(widget.shareLink!)
+                  : print("no link ");
+            } else if (iconsName[index] == 'History') {
+              Utility.updateLoges(
+                  activityId: '15',
+                  description: 'History Assesment button pressed',
+                  operationResult: 'Success');
 
-                _showDataSavedPopup(
-                    historyAssessmentSection: true,
-                    title: 'Action Required',
-                    msg:
-                        'If you navigate to the history section, You will not be able to return back to the current screen. \n\nDo you still want to move forward?',
-                    noActionText: 'No',
-                    yesActionText: 'Yes, Take Me There');
-              } else if ((iconName[index] == 'Sheet' ||
-                      iconName[index] == 'Dashboard') &&
-                  dashoardState.value == '') {
-                if (Overrides.STANDALONE_GRADED_APP == true) {
-                  if (widget.shareLink == null) {
-                    Utility.currentScreenSnackBar('Please Wait', null,
-                        marginFromBottom: 90);
-                  } else {
-                    await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-                  }
-
-                  return;
+              _showDataSavedPopup(
+                  historyAssessmentSection: true,
+                  title: 'Action Required',
+                  msg:
+                      'If you navigate to the history section, You will not be able to return back to the current screen. \n\nDo you still want to move forward?',
+                  noActionText: 'No',
+                  yesActionText: 'Yes, Take Me There');
+            } else if ((iconName[index] == 'Sheet' ||
+                    iconName[index] == 'Dashboard') &&
+                dashoardState.value == '') {
+              if (Overrides.STANDALONE_GRADED_APP == true) {
+                if (widget.shareLink == null) {
+                  Utility.currentScreenSnackBar('Please Wait', null,
+                      marginFromBottom: 90);
+                } else {
+                  await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
                 }
 
-                if (Globals.isPremiumUser) {
-                  if (widget.assessmentDetailPage == true &&
-                      widget.createdAsPremium == false) {
+                return;
+              }
+
+              if (Globals.isPremiumUser) {
+                if (widget.assessmentDetailPage == true &&
+                    widget.createdAsPremium == false) {
+                  Utility.updateLoges(
+                      // ,
+                      activityId: '14',
+                      description:
+                          'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
+                      operationResult: 'Failed');
+                  popupModal(
+                      title: 'Data Not Saved',
+                      message:
+                          'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
+                  Globals.scanMoreStudentInfoLength =
+                      await Utility.getStudentInfoListLength(
+                              tableName: 'student_info') -
+                          1;
+                } else {
+                  List list = await Utility.getStudentInfoList(
+                      tableName: 'student_info');
+                  if (widget.isScanMore == true &&
+                      widget.assessmentListLenght != null &&
+                      widget.assessmentListLenght! < list.length) {
                     Utility.updateLoges(
-                        // ,
+                        // accountType: 'Free',
                         activityId: '14',
                         description:
-                            'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
-                        operationResult: 'Failed');
-                    popupModal(
-                        title: 'Data Not Saved',
-                        message:
-                            'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
-                    Globals.scanMoreStudentInfoLength =
-                        await Utility.getStudentInfoListLength(
-                                tableName: 'student_info') -
-                            1;
-                  } else {
-                    List list = await Utility.getStudentInfoList(
-                        tableName: 'student_info');
-                    if (widget.isScanMore == true &&
-                        widget.assessmentListLenght != null &&
-                        widget.assessmentListLenght! < list.length) {
-                      Utility.updateLoges(
-                          // accountType: 'Free',
-                          activityId: '14',
-                          description:
-                              'Save to deshboard pressed in case for scanmore',
-                          operationResult: 'Success');
-                      //print(
-                      // 'if     calling is scanMore -------------------------->');
-                      //print(widget.assessmentListLenght);
-                      _ocrBloc.add(SaveAssessmentToDashboard(
-                          assessmentId: !widget.assessmentDetailPage!
-                              ? Globals.currentAssessmentId
-                              : historyAssessmentId ?? '',
-                          assessmentSheetPublicURL: widget.shareLink,
-                          resultList: await Utility.getStudentInfoList(
-                              tableName: widget.assessmentDetailPage == true
-                                  ? 'history_student_info'
-                                  : 'student_info'),
-                          previouslyAddedListLength:
-                              widget.assessmentListLenght,
-                          assessmentName: widget.asssessmentName!,
-                          rubricScore: widget.rubricScore ?? '',
-                          subjectId: widget.subjectId ?? '',
-                          schoolId:
-                              Globals.appSetting.schoolNameC!, //Account Id
-                          // standardId: widget.standardId ?? '',
-                          scaffoldKey: scaffoldKey,
-                          context: context,
-                          isHistoryAssessmentSection:
-                              widget.assessmentDetailPage!));
-                    } else {
-                      //print(
-                      // 'else      calling is noramal -------------------------->');
-                      // Adding the non saved record of dashboard in the list
-                      List<StudentAssessmentInfo> _listRecord = [];
-
-                      if (widget.assessmentDetailPage! &&
-                          savedRecordCount != null &&
-                          historyRecordList.length != savedRecordCount!) {
-                        _listRecord = historyRecordList.sublist(
-                            savedRecordCount!, historyRecordList.length);
-                      } else {
-                        //
-                        _listRecord = historyRecordList;
-                      }
-
-                      _ocrBloc.add(SaveAssessmentToDashboard(
+                            'Save to deshboard pressed in case for scanmore',
+                        operationResult: 'Success');
+                    //print(
+                    // 'if     calling is scanMore -------------------------->');
+                    //print(widget.assessmentListLenght);
+                    _ocrBloc.add(SaveAssessmentToDashboard(
                         assessmentId: !widget.assessmentDetailPage!
                             ? Globals.currentAssessmentId
                             : historyAssessmentId ?? '',
                         assessmentSheetPublicURL: widget.shareLink,
-                        resultList: !widget.assessmentDetailPage!
-                            ? await Utility.getStudentInfoList(
-                                tableName: 'student_info')
-                            : _listRecord,
+                        resultList: await Utility.getStudentInfoList(
+                            tableName: widget.assessmentDetailPage == true
+                                ? 'history_student_info'
+                                : 'student_info'),
+                        previouslyAddedListLength: widget.assessmentListLenght,
                         assessmentName: widget.asssessmentName!,
-                        rubricScore: !widget.assessmentDetailPage!
-                            ? widget.rubricScore ?? ''
-                            : sheetrubricScore ?? '',
+                        rubricScore: widget.rubricScore ?? '',
                         subjectId: widget.subjectId ?? '',
                         schoolId: Globals.appSetting.schoolNameC!, //Account Id
                         // standardId: widget.standardId ?? '',
                         scaffoldKey: scaffoldKey,
                         context: context,
                         isHistoryAssessmentSection:
-                            widget.assessmentDetailPage!,
-                        fileId: widget.fileId ?? '',
-                      ));
-                    }
-                  }
-                } else {
-                  Utility.updateLoges(
-                      // ,
-                      activityId: '14',
-                      description:
-                          'Free User tried to save the data to the dashboard',
-                      operationResult: 'Failed');
-                  popupModal(
-                      title: 'Upgrade To Premium',
-                      message:
-                          'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
-                }
-                // }
-              } else if (dashoardState.value == 'Success') {
-                if (Overrides.STANDALONE_GRADED_APP == true) {
-                  if (widget.shareLink == null) {
-                    Utility.currentScreenSnackBar('Please Wait', null,
-                        marginFromBottom: 90);
+                            widget.assessmentDetailPage!));
                   } else {
-                    await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-                  }
+                    //print(
+                    // 'else      calling is noramal -------------------------->');
+                    // Adding the non saved record of dashboard in the list
+                    List<StudentAssessmentInfo> _listRecord = [];
 
-                  return;
+                    if (widget.assessmentDetailPage! &&
+                        savedRecordCount != null &&
+                        historyRecordList.length != savedRecordCount!) {
+                      _listRecord = historyRecordList.sublist(
+                          savedRecordCount!, historyRecordList.length);
+                    } else {
+                      //
+                      _listRecord = historyRecordList;
+                    }
+
+                    _ocrBloc.add(SaveAssessmentToDashboard(
+                      assessmentId: !widget.assessmentDetailPage!
+                          ? Globals.currentAssessmentId
+                          : historyAssessmentId ?? '',
+                      assessmentSheetPublicURL: widget.shareLink,
+                      resultList: !widget.assessmentDetailPage!
+                          ? await Utility.getStudentInfoList(
+                              tableName: 'student_info')
+                          : _listRecord,
+                      assessmentName: widget.asssessmentName!,
+                      rubricScore: !widget.assessmentDetailPage!
+                          ? widget.rubricScore ?? ''
+                          : sheetrubricScore ?? '',
+                      subjectId: widget.subjectId ?? '',
+                      schoolId: Globals.appSetting.schoolNameC!, //Account Id
+                      // standardId: widget.standardId ?? '',
+                      scaffoldKey: scaffoldKey,
+                      context: context,
+                      isHistoryAssessmentSection: widget.assessmentDetailPage!,
+                      fileId: widget.fileId ?? '',
+                    ));
+                  }
                 }
+              } else {
+                Utility.updateLoges(
+                    // ,
+                    activityId: '14',
+                    description:
+                        'Free User tried to save the data to the dashboard',
+                    operationResult: 'Failed');
                 popupModal(
-                    title: 'Already Saved',
+                    title: 'Upgrade To Premium',
                     message:
-                        'The data has already been saved to the data dashboard.');
+                        'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
               }
-            }),
-      ),
+              // }
+            } else if (dashoardState.value == 'Success') {
+              if (Overrides.STANDALONE_GRADED_APP == true) {
+                if (widget.shareLink == null) {
+                  Utility.currentScreenSnackBar('Please Wait', null,
+                      marginFromBottom: 90);
+                } else {
+                  await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
+                }
+
+                return;
+              }
+              popupModal(
+                  title: 'Already Saved',
+                  message:
+                      'The data has already been saved to the data dashboard.');
+            }
+          }),
     );
   }
 
