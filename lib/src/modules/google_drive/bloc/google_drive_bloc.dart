@@ -1412,7 +1412,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //To manage the first field of excel sheet in case of created as non-premium user.
             element.insert(0, '');
           }
-          print(element);
+
           data.add(element
               .toString()
               .replaceAll('[', "'")
