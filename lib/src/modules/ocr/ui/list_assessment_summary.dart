@@ -457,7 +457,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     // : print("no web link $index");
                   },
                   child: Icon(
-                    IconData(Globals.ocrResultIcons[0],
+                    IconData(0xe876,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color:
