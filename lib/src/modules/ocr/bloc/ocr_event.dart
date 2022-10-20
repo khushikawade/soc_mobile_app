@@ -227,6 +227,12 @@ class LogUserActivityEvent extends OcrEvent {
   List<Object> get props => [];
 }
 
+class GetRubricPdf extends OcrEvent {
+  GetRubricPdf();
+  @override
+  List<Object> get props => [];
+}
+
 // ---------- Event to Fetch State List for Api ----------
 class FetchStateListEvant extends OcrEvent {
   final bool fromCreateAssesment;

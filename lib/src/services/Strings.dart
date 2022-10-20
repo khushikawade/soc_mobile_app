@@ -31,7 +31,7 @@ class Strings {
   static final String calendarObjectName = 'calandar_action';
   static final String hiveReferenceLogName =
       'reference_recent_item'; //To get search record object from local database
-
+  static final String rubicPdfObjectName = 'rubic_pdf_object_name';
 //Using in Graded+
   static final String googleDrive = 'google_drive';
   static final String ocrSubjectObjectName = 'selected_state_subject_details';

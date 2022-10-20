@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
+import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -534,6 +536,42 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } catch (e) {
         yield AssessmentDashboardStatus(
             resultRecordCount: null, assessmentId: null);
+      }
+    }
+
+    if (event is GetRubricPdf) {
+      LocalDatabase<RubricPdfModal> _localDb =
+          LocalDatabase(Strings.rubicPdfObjectName);
+      List<RubricPdfModal>? _localData = await _localDb.getData();
+      List<RubricPdfModal> sepratedList = [];
+      try {
+        yield OcrLoading();
+        if (_localData.isNotEmpty) {
+          yield GetRubricPdfSuccess(
+            objList: _localData,
+          );
+        }
+        //Fetch overall list from API
+        List<RubricPdfModal> pdfList = await getRubicPdfList();
+        if (pdfList.length > 0) {
+          //Sort pdf list app wise (Standard/Standalone)
+          sepratedList = await sortRubricPDFList(pdfList);
+        }
+
+        await _localDb.clear();
+        sepratedList.forEach((element) async {
+          await _localDb.addData(element);
+        });
+
+        if (sepratedList.isNotEmpty && _localData.isEmpty) {
+          yield GetRubricPdfSuccess(
+            objList: sepratedList,
+          );
+        } else if (sepratedList.isEmpty && _localData.isEmpty) {
+          yield NoRubricAvailable();
+        }
+      } catch (e) {
+        yield OcrErrorReceived(err: e);
       }
     }
 
@@ -1791,5 +1829,46 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
 
     return emails;
+  }
+
+  Future<List<RubricPdfModal>> getRubicPdfList() async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          Uri.encodeFull(
+              "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Gradedplus_Rubric__c"),
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200) {
+        List<RubricPdfModal> _list = response.data['body']
+            .map<RubricPdfModal>((i) => RubricPdfModal.fromJson(i))
+            .toList();
+        print('repsonse is recived reurning data');
+        return _list;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<RubricPdfModal>> sortRubricPDFList(
+      List<RubricPdfModal> list) async {
+    List<RubricPdfModal> newList = [];
+    for (int i = 0; i < list.length; i++) {
+      if (Overrides.STANDALONE_GRADED_APP == true) {
+        //Create list to show standalone rubric pdf
+        if (list[i].usedInC != 'Schools') {
+          newList.add(list[i]);
+        }
+      } else {
+        //Create list to show school rubric pdf
+        if (list[i].usedInC != 'Standalone') {
+          newList.add(list[i]);
+        }
+      }
+    }
+
+    return newList;
   }
 }

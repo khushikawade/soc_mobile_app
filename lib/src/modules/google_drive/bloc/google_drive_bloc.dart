@@ -1379,6 +1379,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           []; //Map the ResultSpreadsheet list to StudentAssessmentInfo list to not chnage anything on UI
       List data = []; //To parse String to List
       bool? createdAsPremium = true;
+      bool? isStandalone = false;
       //Downloading file to specific path
       var response = await dio.download(
         url!,
@@ -1405,6 +1406,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (fields[0][0] == 'Name') {
           createdAsPremium = false;
         }
+        if (fields[0][0] == 'Email Id') {
+          isStandalone = true;
+        }
         fields.removeAt(0);
 
         fields.forEach((element) {
@@ -1421,7 +1425,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         });
         //Splitting the String list to map the values
         for (var line in data) {
-          csvList.add(ResultSpreadsheet.fromList(line.split(',')));
+          csvList
+              .add(ResultSpreadsheet.fromList(line.split(','), isStandalone));
         }
 
         //Mapping values to required Model

@@ -39,7 +39,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey _bshowcase = GlobalKey();
   final GlobalKey _openSettingShowCaseKey = GlobalKey();
   final VoidCallback? onTap;
-
   AppBarWidget(
       {Key? key,
       required this.refresh,
