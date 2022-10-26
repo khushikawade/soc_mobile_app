@@ -31,6 +31,10 @@ class Strings {
   static final String calendarObjectName = 'calandar_action';
   static final String hiveReferenceLogName =
       'reference_recent_item'; //To get search record object from local database
+  static final String calendarBannerObjectName = 'calendar_banner_object_name';
+  static final String scheduleObjectDetails = 'schedule_object_details';
+  static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
+
   static final String rubicPdfObjectName = 'rubic_pdf_object_name';
 //Using in Graded+
   static final String googleDrive = 'google_drive';
@@ -41,6 +45,6 @@ class Strings {
       'google_classroom_courses_list';
   // static final String googleClassroomStudentList =
   //     'google_classroom_student_list'; //courses wise
-  static final String scheduleObjectDetails = 'schedule_object_details';
-  static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
+  // static final String scheduleObjectDetails = 'schedule_object_details';
+  // static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
 }

@@ -57,6 +57,21 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.3.0"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    version: "2.3.0"
+=======
+    version: "2.3.1"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+    version: "2.3.1"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+>>>>>>> graded_plus_main
   build_config:
     dependency: transitive
     description:
@@ -78,6 +93,21 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.5"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    version: "4.0.5"
+=======
+    version: "4.0.6"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+    version: "4.0.6"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+>>>>>>> graded_plus_main
   build_resolvers:
     dependency: transitive
     description:
@@ -85,6 +115,21 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.9"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    version: "2.0.9"
+=======
+    version: "2.0.10"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+    version: "2.0.10"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+>>>>>>> graded_plus_main
   build_runner:
     dependency: "direct dev"
     description:
@@ -92,6 +137,21 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    version: "2.2.0"
+=======
+    version: "2.2.1"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+    version: "2.2.1"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+>>>>>>> graded_plus_main
   build_runner_core:
     dependency: transitive
     description:
@@ -99,6 +159,21 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.2.3"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    version: "7.2.3"
+=======
+    version: "7.2.4"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+    version: "7.2.4"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+>>>>>>> graded_plus_main
   build_web_compilers:
     dependency: "direct dev"
     description:
@@ -106,6 +181,21 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.5"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    version: "3.2.5"
+=======
+    version: "3.2.6"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+    version: "3.2.6"
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+>>>>>>> graded_plus_main
   built_collection:
     dependency: transitive
     description:
@@ -197,6 +287,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.3"
+<<<<<<< HEAD
+=======
+    version: "2.2.4"
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> schedule_main
+=======
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+>>>>>>> 85f5bb21a5ea5f9c110c2716556bb3a63c3877c8
+>>>>>>> graded_plus_main
+=======
+>>>>>>> graded_plus_main
   fake_async:
     dependency: transitive
     description:

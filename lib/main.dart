@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
+import 'package:Soc/src/modules/families/modal/calendar_banner_image_modal.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/recent_google_file.dart';
@@ -74,6 +75,7 @@ void main() async {
       ..registerAdapter(ScheduleAdapter())
       ..registerAdapter(BlackoutDateAdapter())
       ..registerAdapter(RecentGoogleFileSearchAdapter())
+      ..registerAdapter(CalendarBannerImageModalAdapter())
       ..registerAdapter(RubricPdfModalAdapter());
   }
   clearTheme();
