@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -33,16 +34,20 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   bool? initalscreen;
   bool? hideAccessibilityButton;
   bool? showClosebutton;
+  Widget? actionButton;
 
   final GlobalKey _bshowcase = GlobalKey();
   final GlobalKey _openSettingShowCaseKey = GlobalKey();
+  final VoidCallback? onTap;
 
   AppBarWidget(
       {Key? key,
       required this.refresh,
       required this.marginLeft,
       this.hideAccessibilityButton,
-      this.showClosebutton})
+      this.onTap,
+      this.showClosebutton,
+      this.actionButton})
       : super(key: key);
 
   @override
@@ -52,7 +57,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     Orientation currentOrientation = MediaQuery.of(context).orientation;
     final scaffoldKey = Scaffold.of(context);
     return PopupMenuButton<IconMenu>(
-      color:  Globals.themeType != 'Dark'
+      color: Globals.themeType != 'Dark'
           ? Theme.of(context).backgroundColor
           : Theme.of(context).colorScheme.secondary,
       shape: RoundedRectangleBorder(
@@ -64,7 +69,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         size: Globals.deviceType == "phone" ? 20 : 28,
       ),
       onSelected: (value) async {
-     //   Utility.setFree();
+        //   Utility.setFree();
         switch (value) {
           case IconsMenu.Information:
             Globals.appSetting.appInformationC != null
@@ -76,25 +81,25 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                               isbuttomsheet: true,
                               ishtml: true,
                             )))
-                            
                 : Utility.showSnackBar(
-                    scaffoldKey, 'No Information Available', context);
+                    scaffoldKey, 'No Information Available', context, null);
             break;
           case IconsMenu.Setting:
-          await  Navigator.push(
+            await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => SettingPage(
                           appbarTitle: '',
                           isbuttomsheet: true,
                         )));
+
             break;
           case IconsMenu.Permissions:
             OpenAppsSettings.openAppsSettings(
                 settingsCode: SettingsCode.APP_SETTINGS);
             break;
         }
-       // Utility.setLocked();
+        // Utility.setLocked();
       },
       itemBuilder: (context) => IconsMenu.items
           .map((item) => PopupMenuItem<IconMenu>(
@@ -133,6 +138,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return AppBar(
+          backgroundColor: Overrides.STANDALONE_GRADED_APP == true
+              ? Colors.transparent
+              : null,
           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: BubbleShowcase(
@@ -170,19 +178,33 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 hideAccessibilityButton == true
                     ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
                     Container()
-                    : _openSettingsButton(context)
+                    : _openSettingsButton(context),
               ],
             ),
           ),
-          title: AppLogoWidget(
-            marginLeft: marginLeft,
-          ),
-          actions: <Widget>[
-            SearchButtonWidget(
-              language: 'English',
+          titleSpacing: 0,
+          title: GestureDetector(
+            // splashFactory: NoSplash.splashFactory,
+            onTap: onTap,
+            // splashColor: Theme.of(context).backgroundColor,
+            // focusColor: Theme.of(context).backgroundColor,
+            child: AppLogoWidget(
+              marginLeft: marginLeft,
             ),
-            _buildPopupMenuWidget(context),
-          ]);
+          ),
+          actions: Overrides.STANDALONE_GRADED_APP == true
+              ? <Widget>[
+                  actionButton!
+                  // Container(
+                  //   width: 30,
+                  // )
+                ]
+              : <Widget>[
+                  SearchButtonWidget(
+                    language: 'English',
+                  ),
+                  _buildPopupMenuWidget(context),
+                ]);
     });
   }
 
@@ -196,6 +218,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           .promptUserForPushNotificationPermission(fallbackToSettings: true);
     }
   }
+
+  // Future<UserInformation> getUserProfile() async {
+  //   LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+  //   List<UserInformation> _userInformation = await _localDb.getData();
+  //   Globals.teacherEmailId = _userInformation[0].userEmail!;
+  //   //print("//printing _userInformation length : ${_userInformation[0]}");
+  //   return _userInformation[0];
+  // }
 
   Widget _translateButton(StateSetter setState, BuildContext context) {
     return Container(
@@ -262,12 +292,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 8,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.black87,
+            color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Translate/Traducción/翻译/ترجمة/Traduction",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Globals.themeType == 'Dark'
+                      ? Colors.black87
+                      : Colors.white,
                   fontSize: 18.0,
                 ),
               )
@@ -294,13 +326,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: 2,
             nipLocation: NipLocation.TOP_LEFT,
             // nipHeight: 30,
-            color: Colors.black87,
+            color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
             child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
               Text(
                 "Accessibility Settings",
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
+                  color: Globals.themeType == 'Dark'
+                      ? Colors.black87
+                      : Colors.white,
                 ),
               )
             ]),

@@ -46,6 +46,16 @@ class HiveDbServices {
     }
   }
 
+    Future<List> getRecordObject(tableName) async {
+    try {
+      final hiveBox = await Hive.openBox(tableName);
+      final list = hiveBox.values.toList();
+      return list;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<int> getListLength(tableName) async {
     try {
       final hiveBox = await Hive.openBox(tableName);
@@ -55,6 +65,7 @@ class HiveDbServices {
       throw (e);
     }
   }
+  
 
   Future<bool> updateListData(tableName, index, value) async {
     try {
@@ -97,6 +108,7 @@ class HiveDbServices {
       throw (e);
     }
   }
+
   Future getSingleData(String tableName, key) async {
     try {
       final hiveBox = await Hive.openBox(tableName);

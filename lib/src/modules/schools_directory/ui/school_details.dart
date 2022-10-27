@@ -56,6 +56,12 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
     }
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget _buildIcon() {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 2),
@@ -268,42 +274,40 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   }
 
   Widget _buildItem() {
-    return SingleChildScrollView(
-      child: Column(children: [
-        _buildTitleWidget(),
-        SpacerWidget(_kLabelSpacing / 1.5),
-        _buildIcon(),
-        _buildDescriptionWidget(),
-        SpacerWidget(_kLabelSpacing * 2),
-        widget.obj.latitude != null && widget.obj.longitude != null
-            ? _buildMapWidget()
-            : Container(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        widget.obj.urlC != null ? _buildWebsiteWidget() : Container(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        widget.obj.emailC != null ? _buildEmailWidget() : Container(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        widget.obj.address != null ? _buildAddressWidget() : Container(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        widget.obj.phoneC != null ? _buildPhoneWidget() : Container(),
-        SpacerWidget(_kLabelSpacing / 1.25),
-        ButtonWidget(
-          title: widget.obj.titleC ?? "",
-          obj: widget.obj,
-          body: Utility.parseHtml(widget.obj.rtfHTMLC ?? "") +
-              "\n" +
-              "${widget.obj.urlC ?? ""}" +
-              "\n"
-                  "${widget.obj.emailC ?? ""}" +
-              "\n" +
-              "${widget.obj.address ?? ""}" +
-              "\n" +
-              "${widget.obj.phoneC ?? ""}",
-          buttonTitle: "Share",
-        ),
-        SpacerWidget(_kLabelSpacing * 3),
-      ]),
-    );
+    return ListView(children: [
+      _buildTitleWidget(),
+      SpacerWidget(_kLabelSpacing / 1.5),
+      _buildIcon(),
+      _buildDescriptionWidget(),
+      SpacerWidget(_kLabelSpacing * 2),
+      widget.obj.latitude != null && widget.obj.longitude != null
+          ? _buildMapWidget()
+          : Container(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      widget.obj.urlC != null ? _buildWebsiteWidget() : Container(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      widget.obj.emailC != null ? _buildEmailWidget() : Container(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      widget.obj.address != null ? _buildAddressWidget() : Container(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      widget.obj.phoneC != null ? _buildPhoneWidget() : Container(),
+      SpacerWidget(_kLabelSpacing / 1.25),
+      ButtonWidget(
+        title: widget.obj.titleC ?? "",
+        obj: widget.obj,
+        body: Utility.parseHtml(widget.obj.rtfHTMLC ?? "") +
+            "\n" +
+            "${widget.obj.urlC ?? ""}" +
+            "\n"
+                "${widget.obj.emailC ?? ""}" +
+            "\n" +
+            "${widget.obj.address ?? ""}" +
+            "\n" +
+            "${widget.obj.phoneC ?? ""}",
+        buttonTitle: "Share",
+      ),
+      SpacerWidget(_kLabelSpacing * 3),
+    ]);
   }
 
   Widget build(BuildContext context) {
@@ -341,20 +345,6 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                       }
                     },
                     child: EmptyContainer()),
-              ),
-              Container(
-                child: BlocListener<HomeBloc, HomeState>(
-                  bloc: homebloc,
-                  listener: (context, state) async {
-                    if (state is BottomNavigationBarSuccess) {
-                      AppTheme.setDynamicTheme(Globals.appSetting, context);
-
-                      Globals.appSetting = AppSetting.fromJson(state.obj);
-                      setState(() {});
-                    }
-                  },
-                  child: EmptyContainer(),
-                ),
               ),
             ],
           ),

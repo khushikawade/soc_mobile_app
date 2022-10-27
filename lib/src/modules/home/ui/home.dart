@@ -26,14 +26,22 @@ import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../overrides.dart';
-import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
+  final int? index;
   final homeObj;
   final String? language;
+  final bool? isFromOcrSection;
   final Widget Function(String translation)? builder;
-  HomePage({Key? key, this.title, this.homeObj, this.language, this.builder})
+  HomePage(
+      {Key? key,
+      this.title,
+      this.homeObj,
+      this.language,
+      this.builder,
+      this.isFromOcrSection,
+      this.index})
       : super(key: key);
 
   @override
@@ -46,11 +54,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String language2 = Translations.supportedLanguages.last;
   var item;
   var item2;
+
   List<Widget> _screens = [];
   String? _versionNumber;
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
+
   late PersistentTabController _controller;
   final NewsBloc _newsBloc = new NewsBloc();
   late AppLifecycleState _notification;
@@ -122,17 +132,22 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     // _getNotificationIntance();
+
     _newsBloc.add(NewsCountLength());
     _bloc.initPushState(context);
     restart();
     Globals.controller = PersistentTabController(
-        initialIndex: Globals.isNewTap == true
-            ? Globals.newsIndex ?? 0
-            : Globals.homeIndex ?? 0);
+        initialIndex: widget.index != null
+            ? 2
+            : Globals.isNewTap == true
+                ? Globals.newsIndex ?? 0
+                : (widget.isFromOcrSection == true
+                    ? Globals.lastindex
+                    : Globals.homeIndex ?? 0));
     // initialIndex:
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _checkNewVersion();
   }
 
@@ -147,7 +162,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -167,37 +182,44 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               } else if (element.contains('student')) {
                 _screens.add(StudentPage(
                   homeObj: widget.homeObj,
+                  isCustomSection: false,
                 ));
               } else if (element.contains('families')) {
                 _screens.add(
                   FamilyPage(
                     obj: widget.homeObj,
+                    isCustomSection: false,
                   ),
                 );
               } else if (element.contains('staff')) {
-                _screens.add(StaffPage());
+                _screens.add(StaffPage(
+                  isFromOcr: false,
+                  isCustomSection: false,
+                ));
               } else if (element.contains('social')) {
                 _screens.add(
                   SocialNewPage(),
                 );
               } else if (element.contains('about')) {
                 _screens.add(
-                  AboutPage(),
+                  AboutPage(isCustomSection: false),
                 );
               } else if (element.contains('school')) {
                 _screens.add(
                   SchoolDirectoryPage(
                     isStandardPage: true,
                     isSubmenu: false,
+                    isCustomSection: false,
                   ),
                 );
               } else if (element.contains('resource')) {
                 _screens.add(
-                  ResourcesPage(),
+                  ResourcesPage(isCustomSection: false),
                 );
               }
             }
           });
+
     return _screens;
   }
 
@@ -223,6 +245,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
             addNewsIndex(Globals.newsIndex);
           }
+
           setState(() {});
           return PersistentBottomNavBarItem(
             icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
@@ -235,6 +258,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Widget _bottomIcon(title, iconData, section) {
+    //  //print(title);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -308,13 +332,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       message: text,
       fromLanguage: "en",
       toLanguage: Globals.selectedLanguage,
-      builder: (translatedMessage) => Text(
-            '$translatedMessage',
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .headline1!
-                .copyWith(fontSize: 32, fontStyle: FontStyle.italic),
+      builder: (translatedMessage) => Container(
+            child: Text(
+              '$translatedMessage',
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline1!
+                  .copyWith(fontSize: 32, fontStyle: FontStyle.italic),
+            ),
           ));
 
   Widget _tabBarBody() {
@@ -326,6 +352,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       // hideNavigationBar: true,
       onItemSelected: (i) {
         // _controller.index = i;
+
         setState(() {
           if (previousIndex == i && Globals.urlIndex == i) {
             Globals.webViewController1!.loadUrl(Globals.homeUrl!);
@@ -350,7 +377,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-      stateManagement: true, // Default is true.
+      stateManagement: false, // Default is true.
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
@@ -397,15 +424,44 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return Scaffold(
       body: Stack(
         children: [
+          // ValueListenableBuilder(
+          //   builder: (context, value, _) {
+          //     return _tabBarBody();
+          //   },
+          //   valueListenable: Globals.isbottomNavbar,
+          //   child: Container(),
+          // ),
           _tabBarBody(),
           ValueListenableBuilder<bool>(
               valueListenable: Globals.hasShowcaseInitialised,
               builder: (context, value, _) {
                 if (Globals.hasShowcaseInitialised.value == true)
                   return Container();
-                return Center(
-                    child: _continueShowCaseInstructions(
-                        'Tap anywhere on the screen to continue.'));
+                return
+                    // Container(
+                    //     // margin: EdgeInsets.only(left: 20, right: 20),
+                    //     child: ClipRect(
+                    //   clipBehavior: Clip.antiAliasWithSaveLayer,
+                    //   child: BackdropFilter(
+                    //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                    //     child: Container(
+                    //         margin: EdgeInsets.only(
+                    //           top: MediaQuery.of(context).size.height * 0.1,
+                    //         ),
+                    //         alignment: Alignment.center,
+                    //         height: MediaQuery.of(context).size.height * 0.8,
+                    //         // width: 80,
+                    //         color: Color(0xff000000) !=
+                    //                 Theme.of(context).backgroundColor
+                    //             ? Color(0xffFFFFFF).withOpacity(0.6)
+                    //             : Color(0xff000000).withOpacity(0.6),
+                    //         child: _continueShowCaseInstructions(
+                    //             'Tap anywhere on the screen to continue.')),
+                    //   ),
+                    // ));
+                    Center(
+                        child: _continueShowCaseInstructions(
+                            'Tap anywhere on the screen to continue.'));
               }),
         ],
       ),
@@ -443,33 +499,37 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       }),
                 ),
                 actions: <Widget>[
-                  FlatButton(
-                    padding: Globals.deviceType != 'phone'
-                        ? EdgeInsets.only(bottom: 10.0, right: 10.0)
-                        : EdgeInsets.all(0),
-                    onPressed: () => Navigator.pop(context, false),
-                    child: TranslationWidget(
-                        message: "No",
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) {
-                          return Text(translatedMessage.toString(),
-                              style: Theme.of(context).textTheme.headline2!);
-                        }),
-                  ),
-                  FlatButton(
-                      padding: Globals.deviceType != 'phone'
-                          ? EdgeInsets.only(bottom: 10.0, right: 10.0)
-                          : EdgeInsets.all(0.0),
+                  TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Container(
+                        padding: Globals.deviceType != 'phone'
+                            ? EdgeInsets.only(bottom: 10.0, right: 10.0)
+                            : EdgeInsets.all(0),
+                        child: TranslationWidget(
+                            message: "No",
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(translatedMessage.toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headline2!);
+                            }),
+                      )),
+                  TextButton(
                       onPressed: () => exit(0),
-                      child: TranslationWidget(
-                          message: "Yes",
-                          fromLanguage: "en",
-                          toLanguage: Globals.selectedLanguage,
-                          builder: (translatedMessage) {
-                            return Text(translatedMessage.toString(),
-                                style: Theme.of(context).textTheme.headline2!);
-                          }))
+                      child: Container(
+                          padding: Globals.deviceType != 'phone'
+                              ? EdgeInsets.only(bottom: 10.0, right: 10.0)
+                              : EdgeInsets.all(0.0),
+                          child: TranslationWidget(
+                              message: "Yes",
+                              fromLanguage: "en",
+                              toLanguage: Globals.selectedLanguage,
+                              builder: (translatedMessage) {
+                                return Text(translatedMessage.toString(),
+                                    style:
+                                        Theme.of(context).textTheme.headline2!);
+                              })))
                 ],
               );
             }));
@@ -479,6 +539,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (Globals.customSetting!.length > 0) {
       for (var i = 0; i < Globals.customSetting!.length; i++) {
         // if (Globals.customSetting![i].typeOfSectionC == 'Standard section') {
+
         if (Globals.customSetting![i].systemReferenceC == 'News') {
           _screens.add(NewsPage());
           Globals.newsIndex = i;
@@ -491,16 +552,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           }
           _screens.add(SocialNewPage());
         } else if (Globals.customSetting![i].systemReferenceC == 'Students') {
-          _screens.add(StudentPage());
+          _screens.add(StudentPage(
+            isCustomSection: true,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Staff') {
-          _screens.add(StaffPage(customObj: Globals.customSetting![i]));
+          _screens.add(StaffPage(
+            customObj: Globals.customSetting![i],
+            isFromOcr: false,
+            isCustomSection: true,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Families') {
-          _screens.add(FamilyPage(customObj: Globals.customSetting![i]));
+          _screens.add(FamilyPage(
+            customObj: Globals.customSetting![i],
+            isCustomSection: true,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC ==
             'Directory Org') {
           _screens.add(SchoolDirectoryPage(
             isStandardPage: true,
             isSubmenu: false,
+            isCustomSection: true,
           ));
         } else if (Globals.customSetting![i].systemReferenceC ==
             'Directory Personnel') {
@@ -514,12 +585,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             obj: Globals.customSetting![i],
           ));
         } else if (Globals.customSetting![i].systemReferenceC == 'About') {
-          _screens.add(AboutPage(customObj: Globals.customSetting![i]));
+          _screens.add(AboutPage(
+            customObj: Globals.customSetting![i],
+            isCustomSection: true,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Resources') {
-          _screens.add(ResourcesPage(customObj: Globals.customSetting![i]));
+          _screens.add(ResourcesPage(
+            customObj: Globals.customSetting![i],
+            isCustomSection: true,
+          ));
         } else if (Globals.customSetting![i].systemReferenceC == 'Other') {
-          // if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
-          //     Globals.customSetting![i].typeOfPageC == 'List Menu') {
           if (Globals.customSetting![i].sectionTemplate == 'URL') {
             Globals.urlIndex = _screens.length;
             Globals.homeUrl = Globals.customSetting![i].appUrlC;
@@ -528,20 +603,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         } else {
           _screens.add(CustomAppSection(customObj: Globals.customSetting![i]));
         }
-        // } else if (Globals.customSetting![i].typeOfSectionC == 'Custom section') {
-        //   if (Globals.customSetting![i].typeOfPageC == 'List Menu' ||
-        //       Globals.customSetting![i].typeOfPageC == 'List Menu') {
-        //     _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        //   } else {
-        //     _screens.add(CustomPages(homeObj: Globals.customSetting![i]));
-        //     if (Globals.customSetting![i].typeOfPageC == 'URL') {
-        //       Globals.urlIndex = _screens.length - 1;
-        //       Globals.homeUrl = Globals.customSetting![i].appUrlC;
-        //     }
-        //   }
-        // } else {
-        //   _screens.add(CustomAppSection(homeObj: Globals.customSetting![i]));
-        // }
       }
     } else {
       EmptyContainer();

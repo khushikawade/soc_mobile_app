@@ -59,6 +59,12 @@ class _ContactPageState extends State<ContactPage> {
             Globals.appSetting.contactOfficeLocationLongitudeS!)));
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   Widget _buildIcon() {
     return Container(
         child: Padding(

@@ -1,11 +1,13 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class ErrorMsgWidget extends StatelessWidget {
+  var isScheduleListFound;
+  ErrorMsgWidget({this.isScheduleListFound});
   Widget build(BuildContext context) {
     return _buildNetworkerror(context);
   }
@@ -28,7 +30,9 @@ class ErrorMsgWidget extends StatelessWidget {
           Container(
             alignment: Alignment.center,
             child: TranslationWidget(
-              message: "Something Went Wrong",
+              message: isScheduleListFound == false
+                  ? "Something Went Wrong"
+                  : "Schedule not found",
               toLanguage: Globals.selectedLanguage,
               fromLanguage: "en",
               builder: (translatedMessage) => Text(translatedMessage.toString(),

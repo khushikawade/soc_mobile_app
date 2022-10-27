@@ -33,7 +33,7 @@ class InformationPage extends StatefulWidget {
 }
 
 class _InformationPageState extends State<InformationPage> {
-  static const double _kLabelSpacing = 20.0;
+  static const double _kLabelSpacing = 10.0;
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -47,6 +47,12 @@ class _InformationPageState extends State<InformationPage> {
     super.initState();
     _bloc.add(FetchStandardNavigationBar());
     Globals.callsnackbar = true;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   Widget _buildContent1() {
@@ -128,7 +134,6 @@ class _InformationPageState extends State<InformationPage> {
         appBar: CustomAppBarWidget(
           isSearch: false,
           isShare: false,
-          
           appBarTitle: widget.appbarTitle,
           ishtmlpage: widget.ishtml,
           sharedpopBodytext: Globals.appSetting.appInformationC!

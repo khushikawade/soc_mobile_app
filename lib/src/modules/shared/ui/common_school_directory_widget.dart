@@ -10,7 +10,8 @@ import '../../schools_directory/ui/school_details.dart';
 class CommonSchoolDirectoryWidget extends StatefulWidget {
   final List<SchoolDirectoryList> data;
   final bool? connected;
-  CommonSchoolDirectoryWidget({Key? key, required this.data, this.connected})
+  final ScrollController? scrollController;
+  CommonSchoolDirectoryWidget({Key? key, required this.data, this.connected, required this.scrollController})
       : super(key: key);
   @override
   _CommonSchoolDirectoryWidgetState createState() =>
@@ -104,6 +105,7 @@ class _CommonSchoolDirectoryWidgetState
   Widget build(BuildContext context) {
     return widget.data.length > 0
         ? ListView.builder(
+            controller: widget.scrollController,
             // key: ValueKey(key),
             padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
             scrollDirection: Axis.vertical,

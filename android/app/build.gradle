@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -40,6 +40,9 @@ android {
 
     lintOptions {
         disable 'InvalidPackage'
+        disable "Instantiatable"
+        checkReleaseBuilds false
+        // abortOnError false
     }
 
     defaultConfig {
@@ -48,12 +51,13 @@ android {
                 force 'androidx.core:core-ktx:1.6.0' 
             }
         }
-        applicationId "com.app.p2346HH"
-        minSdkVersion 21
+        applicationId "com.test.soc"
+        minSdkVersion 23
         multiDexEnabled true
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
      signingConfigs {
@@ -82,4 +86,5 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.google.firebase:firebase-iid:21.1.0"
 }

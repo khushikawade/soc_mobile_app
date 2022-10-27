@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
-import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/widgets/network_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +8,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class NoDataFoundErrorWidget extends StatelessWidget {
+  String? errorMessage;
   bool? isCalendarPageOrientationLandscape;
+  bool? isOcrSearch;
   bool? isSearchpage;
   bool isResultNotFoundMsg;
   bool? isNews;
   bool? isEvents;
   double? marginTop;
   bool? connected;
+  bool? isScheduleFound;
   NoDataFoundErrorWidget(
       {Key? key,
       required this.isResultNotFoundMsg,
@@ -23,7 +26,9 @@ class NoDataFoundErrorWidget extends StatelessWidget {
       this.isCalendarPageOrientationLandscape,
       required this.isEvents,
       this.isSearchpage,
-      this.marginTop})
+      this.marginTop,
+      this.isScheduleFound,
+      this.isOcrSearch})
       : super(key: key);
 
   Widget build(BuildContext context) {
@@ -69,7 +74,11 @@ class NoDataFoundErrorWidget extends StatelessWidget {
                               ? "No Event Found"
                               : isResultNotFoundMsg
                                   ? "No result found"
-                                  : "No data found",
+                                  : isOcrSearch == true
+                                      ? "No recent search"
+                                      : isScheduleFound == true
+                                          ? "Schedule not found"
+                                          : "No data found",
                       toLanguage: Globals.selectedLanguage,
                       fromLanguage: "en",
                       builder: (translatedMessage) => Text(

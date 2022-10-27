@@ -39,6 +39,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   bool? isCountLoading = true;
   bool? isActionAPICalled = false;
   bool? result;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     Globals.isNewTap = false;
     Globals.indicator.value = false;
   }
@@ -84,7 +85,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   void dispose() {
     //free screen orientation
     //  Utility.setFree();
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -95,8 +96,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       child: InkWell(
         onTap: () async {
           if (isCountLoading == true) {
-            Utility.showSnackBar(
-                _scaffoldKey, "Please wait while count is loading", context);
+            Utility.showSnackBar(_scaffoldKey,
+                "Please wait while count is loading", context, null);
           } else {
             //free screen orientation
             //  Utility.setFree();
@@ -121,6 +122,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             //   Utility.setLocked();
             if (result == true) {
               _countBloc.add(FetchActionCountList(isDetailPage: true));
+              // setState(() {});
             }
           }
         },
@@ -135,7 +137,10 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           description: obj.url == null
               ? '${obj.contents["en"].toString()}'
               : '${obj.contents["en"].toString()}\n${obj.url}',
-          titleIcon: CalendraIconWidget(dateTime: obj.completedAt),
+          titleIcon: CalendraIconWidget(
+            dateTime: obj.completedAt,
+            color: Color(0xff89A7D7),
+          ),
           url: obj.image != '' && obj.image != null ? obj.image! : '',
         ),
       ),
@@ -206,18 +211,18 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
               } else {
                 return Container(
-                  alignment: Alignment.centerLeft,
-                  child: ShimmerLoading(
-                      isLoading: true,
-                      child: UserActionBasic(
-                          title: Globals.notificationList[index].headings['en'],
-                          description:
-                              Globals.notificationList[index].contents['en'],
-                          imageUrl: Globals.notificationList[index].image,
-                          obj: Globals.notificationList[index],
-                          page: "news",
-                          isLoading: isCountLoading)),
-                );
+                    alignment: Alignment.centerLeft,
+                    child: ShimmerLoading(
+                        isLoading: true,
+                        child: UserActionBasic(
+                            title:
+                                Globals.notificationList[index].headings['en'],
+                            description:
+                                Globals.notificationList[index].contents['en'],
+                            imageUrl: Globals.notificationList[index].image,
+                            obj: Globals.notificationList[index],
+                            page: "news",
+                            isLoading: isCountLoading)));
               }
             }),
       ],
@@ -227,6 +232,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildList(List<NotificationList> obj) {
     return Expanded(
       child: ListView.builder(
+        controller: _scrollController,
         shrinkWrap: true,
         padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
@@ -242,6 +248,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBarWidget(
+        onTap: () {
+          Utility.scrollToTop(scrollController: _scrollController);
+        },
         marginLeft: 30,
         refresh: (v) {
           setState(() {});

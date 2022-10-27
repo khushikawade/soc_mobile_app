@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -51,6 +52,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   var link2;
   bool first = false;
   bool? isDeviceBackButton = true;
+  // Item? newObj;
 
   @override
   void initState() {
@@ -71,6 +73,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
+    
     if (isDeviceBackButton == true) {
       isDeviceBackButton = false;
       // bool isNewsPage =
@@ -91,15 +94,23 @@ class _SliderWidgetState extends State<SliderWidget> {
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
           elevation: 0.0,
-          leading: BackButtonWidget(
-              isNewsPage: widget.isNewsPage == true
-                  ? widget.isNewsPage
-                  : widget.issocialpage == true
-                      ? widget.issocialpage
-                      : null
-              // widget.iseventpage == false ||
-              // widget.issocialpage == true ? true : false,
-              ),
+          leading:
+              //  BackButton(
+              //   onPressed: () {
+              //     Navigator.of(context).pop(newObj);
+              //   },
+              // ),
+
+              BackButtonWidget(
+            isNewsPage: widget.isNewsPage == true
+                ? widget.isNewsPage
+                : widget.issocialpage == true
+                    ? widget.issocialpage
+                    : null,
+
+            // widget.iseventpage == false ||
+            // widget.issocialpage == true ? true : false,
+          ),
           title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             AppLogoWidget(
               marginLeft: 57,
@@ -170,6 +181,9 @@ class _SliderWidgetState extends State<SliderWidget> {
                       object: object[pageinitialIndex],
                       language: Globals.selectedLanguage,
                       index: pageinitialIndex,
+                      // onChange: (Item obj) {
+                      //   newObj = obj;
+                      // },
                     )
                   : widget.isNewsPage!
                       ? Newdescription(

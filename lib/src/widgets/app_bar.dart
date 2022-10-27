@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
-
   CustomAppBarWidget({
     Key? key,
     required this.isSearch,
@@ -17,6 +16,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     required this.appBarTitle,
     required this.sharedpopUpheaderText,
     required this.sharedpopBodytext,
+    this.onTap,
     this.isCenterIcon,
     this.ishtmlpage,
     this.marginLeft,
@@ -33,6 +33,7 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   bool? ishtmlpage;
   bool? isCenterIcon;
   String? language;
+  final VoidCallback? onTap;
 
   @override
   final Size preferredSize;
@@ -51,23 +52,35 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
     return AppBar(
       elevation: 0.0,
       leading: BackButtonWidget(),
-      title: widget.isCenterIcon != null && widget.isCenterIcon == true
-          ? AppLogoWidget(
-              marginLeft: widget.marginLeft,
-            )
-          : TranslationWidget(
-              message: widget.appBarTitle,
-              fromLanguage: "en",
-              toLanguage: Globals.selectedLanguage,
-              builder: (translatedMessage) => Text(
-                translatedMessage.toString(),
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(fontWeight: FontWeight.w400,color: Theme.of(context).primaryColor),
-                textAlign: TextAlign.center,
+      title: GestureDetector(
+        onTap: widget.onTap,
+        //  () async {
+        //   Globals.scrollController.jumpTo(0);
+        //   // await Future.delayed(const Duration(milliseconds: 300));
+        //   // SchedulerBinding.instance.addPostFrameCallback((_) {
+        //   //   Globals.scrollController.animateTo(
+        //   //       Globals.scrollController.position.minScrollExtent,
+        //   //       duration: const Duration(milliseconds: 400),
+        //   //       curve: Curves.fastOutSlowIn);
+        //   // });
+        // },
+        child: widget.isCenterIcon != null && widget.isCenterIcon == true
+            ? AppLogoWidget(
+                marginLeft: widget.marginLeft,
+              )
+            : TranslationWidget(
+                message: widget.appBarTitle,
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) => Text(
+                  translatedMessage.toString(),
+                  style: Theme.of(context).textTheme.headline2!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).primaryColor),
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
+      ),
       actions: [
         widget.isSearch == true
             ? SearchButtonWidget(

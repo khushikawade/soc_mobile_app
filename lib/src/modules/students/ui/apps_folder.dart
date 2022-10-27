@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/styles/marquee.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -132,7 +133,8 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                           : Utility.showSnackBar(
                                               widget.scaffoldKey,
                                               "No URL available",
-                                              context);
+                                              context,
+                                              40);
                                     },
                                     child: Column(
                                       children: [
@@ -170,8 +172,11 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                             .length >
                                                         11
                                                 ? Expanded(
-                                                    child: Marquee(
-                                                      text: translatedMessage
+                                                    child: MarqueeWidget(
+                                                    pauseDuration:
+                                                        Duration(seconds: 1),
+                                                    child: Text(
+                                                      translatedMessage
                                                           .toString(),
                                                       style: Theme.of(context)
                                                           .textTheme
@@ -182,30 +187,45 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                                           "phone"
                                                                       ? 16
                                                                       : 24),
-                                                      scrollAxis:
-                                                          Axis.horizontal,
-                                                      velocity: 30.0,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      blankSpace: 50,
-                                                      pauseAfterRound:
-                                                          Duration(seconds: 5),
-                                                      showFadingOnlyWhenScrolling:
-                                                          true,
-                                                      startPadding: 10.0,
-                                                      accelerationDuration:
-                                                          Duration(seconds: 1),
-                                                      accelerationCurve:
-                                                          Curves.linear,
-                                                      decelerationDuration:
-                                                          Duration(
-                                                              milliseconds:
-                                                                  500),
-                                                      decelerationCurve:
-                                                          Curves.easeOut,
                                                     ),
                                                   )
+
+                                                    //  Marquee(
+                                                    //   text: translatedMessage
+                                                    //       .toString(),
+                                                    //   style: Theme.of(context)
+                                                    //       .textTheme
+                                                    //       .bodyText1!
+                                                    //       .copyWith(
+                                                    //           fontSize:
+                                                    //               Globals.deviceType ==
+                                                    //                       "phone"
+                                                    //                   ? 16
+                                                    //                   : 24),
+                                                    //   scrollAxis:
+                                                    //       Axis.horizontal,
+                                                    //   velocity: 30.0,
+                                                    //   crossAxisAlignment:
+                                                    //       CrossAxisAlignment
+                                                    //           .start,
+                                                    //   blankSpace: 50,
+                                                    //   pauseAfterRound:
+                                                    //       Duration(seconds: 5),
+                                                    //   showFadingOnlyWhenScrolling:
+                                                    //       true,
+                                                    //   startPadding: 10.0,
+                                                    //   accelerationDuration:
+                                                    //       Duration(seconds: 1),
+                                                    //   accelerationCurve:
+                                                    //       Curves.linear,
+                                                    //   decelerationDuration:
+                                                    //       Duration(
+                                                    //           milliseconds:
+                                                    //               500),
+                                                    //   decelerationCurve:
+                                                    //       Curves.easeOut,
+                                                    // ),
+                                                    )
                                                 : MediaQuery.of(context)
                                                                 .orientation ==
                                                             Orientation
@@ -215,46 +235,67 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                                 .length >
                                                             18
                                                     ? Expanded(
-                                                        child: Marquee(
-                                                        text: translatedMessage
-                                                            .toString(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1!
-                                                            .copyWith(
-                                                                fontSize: Globals
-                                                                            .deviceType ==
-                                                                        "phone"
-                                                                    ? 16
-                                                                    : 24),
-                                                        scrollAxis:
-                                                            Axis.horizontal,
-                                                        velocity: 30.0,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        child: MarqueeWidget(
+                                                        pauseDuration: Duration(
+                                                            seconds: 1),
+                                                        child: Text(
+                                                          translatedMessage
+                                                              .toString(),
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText1!
+                                                              .copyWith(
+                                                                  fontSize:
+                                                                      Globals.deviceType ==
+                                                                              "phone"
+                                                                          ? 16
+                                                                          : 24),
+                                                        ),
+                                                      )
 
-                                                        blankSpace:
-                                                            50, //MediaQuery.of(context).size.width
-                                                        // velocity: 100.0,
-                                                        pauseAfterRound:
-                                                            Duration(
-                                                                seconds: 5),
-                                                        showFadingOnlyWhenScrolling:
-                                                            true,
-                                                        startPadding: 10.0,
-                                                        accelerationDuration:
-                                                            Duration(
-                                                                seconds: 1),
-                                                        accelerationCurve:
-                                                            Curves.linear,
-                                                        decelerationDuration:
-                                                            Duration(
-                                                                milliseconds:
-                                                                    500),
-                                                        decelerationCurve:
-                                                            Curves.easeOut,
-                                                      ))
+                                                        //    Marquee(
+                                                        //   text: translatedMessage
+                                                        //       .toString(),
+                                                        //   style: Theme.of(context)
+                                                        //       .textTheme
+                                                        //       .bodyText1!
+                                                        //       .copyWith(
+                                                        //           fontSize: Globals
+                                                        //                       .deviceType ==
+                                                        //                   "phone"
+                                                        //               ? 16
+                                                        //               : 24),
+                                                        //   scrollAxis:
+                                                        //       Axis.horizontal,
+                                                        //   velocity: 30.0,
+                                                        //   crossAxisAlignment:
+                                                        //       CrossAxisAlignment
+                                                        //           .start,
+
+                                                        //   blankSpace:
+                                                        //       50, //MediaQuery.of(context).size.width
+                                                        //   // velocity: 100.0,
+                                                        //   pauseAfterRound:
+                                                        //       Duration(
+                                                        //           seconds: 5),
+                                                        //   showFadingOnlyWhenScrolling:
+                                                        //       true,
+                                                        //   startPadding: 10.0,
+                                                        //   accelerationDuration:
+                                                        //       Duration(
+                                                        //           seconds: 1),
+                                                        //   accelerationCurve:
+                                                        //       Curves.linear,
+                                                        //   decelerationDuration:
+                                                        //       Duration(
+                                                        //           milliseconds:
+                                                        //               500),
+                                                        //   decelerationCurve:
+                                                        //       Curves.easeOut,
+                                                        // )
+
+                                                        )
                                                     : SingleChildScrollView(
                                                         scrollDirection:
                                                             Axis.horizontal,

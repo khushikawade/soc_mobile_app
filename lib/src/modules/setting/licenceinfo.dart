@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/setting/licencedetail.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -26,6 +27,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   OSSLicensesInfo obj = new OSSLicensesInfo();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
+  final ScrollController _scrollController = ScrollController();
 
   var _list;
   @override
@@ -33,6 +35,12 @@ class _LicenceinfoState extends State<Licenceinfo> {
     super.initState();
     _list = obj.ossLicenses.values.toList();
     Globals.callsnackbar = true;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   Widget _buildList(
@@ -80,9 +88,12 @@ class _LicenceinfoState extends State<Licenceinfo> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomAppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           isSearch: false,
           isShare: false,
-          appBarTitle: "Open Source Licence",
+          appBarTitle: "Open Source Licenses",
           sharedpopUpheaderText: '',
           sharedpopBodytext: '',
           language: Globals.selectedLanguage,
@@ -93,6 +104,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
             child: Column(children: [
               Expanded(
                 child: ListView.builder(
+                  controller: _scrollController,
                   padding: EdgeInsets.only(bottom: 35),
                   scrollDirection: Axis.vertical,
                   itemCount: _list.length,

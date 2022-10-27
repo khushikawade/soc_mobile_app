@@ -4,7 +4,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/strings.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -37,7 +37,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           appList.clear();
           subList.clear();
           for (int i = 0; i < _localData.length; i++) {
-            if (_localData[i].status !='Hide') {
+            if (_localData[i].status != 'Hide') {
               subList.add(_localData[i]);
               // list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
               if (_localData[i].appFolderc == null ||

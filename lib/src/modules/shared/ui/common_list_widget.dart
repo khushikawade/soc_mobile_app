@@ -17,35 +17,43 @@ import '../../../widgets/no_data_found_error_widget.dart';
 import '../../schools_directory/ui/schools_directory.dart';
 
 class CommonListWidget extends StatefulWidget {
-  CommonListWidget(
-      {Key? key,
-      required this.data,
-      required this.sectionName,
-      required this.scaffoldKey,
-      this.connected})
-      : super(key: key);
+  CommonListWidget({
+    Key? key,
+    required this.data,
+    this.bottomPadding,
+    required this.sectionName,
+    required this.scaffoldKey,
+    required this.scrollController,
+    this.connected,
+  }) : super(key: key);
 
   final bool? connected;
   final List<SharedList> data;
   final scaffoldKey;
   final String sectionName;
+  final double? bottomPadding;
+  final ScrollController? scrollController;
+  // ;
 
   @override
   _CommonListWidgetState createState() => _CommonListWidgetState();
 }
 
 class _CommonListWidgetState extends State<CommonListWidget> {
-  _launchURL(SharedList obj) async {
+  _launchURL(SharedList obj, String queryParameter) async {
+    // UNCOMMENT
     if (obj.appUrlC.toString().split(":")[0] == 'http' ||
         obj.deepLinkC == 'YES') {
       await Utility.launchUrlOnExternalBrowser(obj.appUrlC!);
     } else {
+      // //print(queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter);
       await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC!,
-                    url: obj.appUrlC!,
+                    url: obj
+                        .appUrlC!, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
                     isbuttomsheet: true,
                     language: Globals.selectedLanguage,
                   )));
@@ -65,9 +73,9 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                   )));
     } else if (obj.typeC == "URL") {
       obj.appUrlC != null && obj.appUrlC != ""
-          ? await _launchURL(obj)
+          ? await _launchURL(obj, '')
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No link available", context);
+              widget.scaffoldKey, "No link available", context, null);
     } else if (obj.typeC == "Form") {
       await Navigator.push(
           context,
@@ -93,8 +101,8 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                         calendarId: obj.calendarId.toString(),
                       )))
-          : Utility.showSnackBar(
-              widget.scaffoldKey, "No calendar/events available", context);
+          : Utility.showSnackBar(widget.scaffoldKey,
+              "No calendar/events available", context, null);
     } else if (obj.typeC == "RTF_HTML" ||
         obj.typeC == "RFT_HTML" ||
         obj.typeC == "HTML/RTF" ||
@@ -111,7 +119,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context);
+              widget.scaffoldKey, "No data available", context, null);
     } else if (obj.typeC == "Embed iFrame") {
       obj.rtfHTMLC != null
           ? await Navigator.push(
@@ -125,13 +133,14 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No data available", context);
+              widget.scaffoldKey, "No data available", context, null);
     } else if (obj.typeC == "PDF URL" || obj.typeC == "PDF") {
       obj.pdfURL != null
           ? await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => CommonPdfViewerPage(
+                        isOCRFeature: false,
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
@@ -139,7 +148,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
-              widget.scaffoldKey, "No pdf available", context);
+              widget.scaffoldKey, "No pdf available", context, null);
     } else if (obj.typeC == "Sub-Menu") {
       await Navigator.push(
           context,
@@ -175,9 +184,23 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     isSubmenu: obj.typeC == 'Org Directory' ? true : false,
                     obj: obj,
                     isStandardPage: false,
+                    isCustomSection: false, //Since its a record here
                   )));
+      // } else if (obj.typeC == "OCR") {
+      //   if (obj.isSecure == 'true') {
+      //     obj.appUrlC != null && obj.appUrlC != ""
+      //         ? await _launchURL(obj,Globals.appSetting.appLogoC)
+      //         : Utility.showSnackBar(
+      //             widget.scaffoldKey, "No authentication URL available", context);
+      //   } else {
+      //      await Navigator.push(
+      //                         context,
+      //                         MaterialPageRoute(
+      //                             builder: (BuildContext context) =>
+      //                                 OpticalCharacterRecognition()));}
     } else {
-      Utility.showSnackBar(widget.scaffoldKey, "No data available", context);
+      Utility.showSnackBar(
+          widget.scaffoldKey, "No data available", context, null);
     }
     // Utility.setLocked();
   }
@@ -247,8 +270,11 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   Widget build(BuildContext context) {
     return widget.data.length > 0
         ? ListView.builder(
+            controller: widget.scrollController,
+            //  controller: widget.scrollController,
             shrinkWrap: true,
-            padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
+            padding: EdgeInsets.only(
+                bottom: widget.bottomPadding ?? AppTheme.klistPadding),
             scrollDirection: Axis.vertical,
             itemCount: widget.data.length,
             itemBuilder: (BuildContext context, int index) {

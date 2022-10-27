@@ -2,9 +2,13 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
+import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/schedule/ui/day_view.dart';
+import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+import 'package:Soc/src/styles/marquee.dart';
 //import 'package:Soc/src/modules/students/ui/demo.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -14,17 +18,23 @@ import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/google_auth_webview.dart';
 import 'package:Soc/src/widgets/inapp_url_launcher.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:marquee/marquee.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+
+import '../../../services/local_database/local_db.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
+  final bool? isCustomSection;
 
-  StudentPage({Key? key, this.homeObj}) : super(key: key);
+  StudentPage({Key? key, this.homeObj, required this.isCustomSection})
+      : super(key: key);
   _StudentPageState createState() => _StudentPageState();
 }
 
@@ -37,14 +47,68 @@ class _StudentPageState extends State<StudentPage> {
   bool? iserrorstate = false;
 
   StudentBloc _bloc = StudentBloc();
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
+    //_scrollController = ScrollController()..addListener(_scrollListener);
     _bloc.add(StudentPageEvent());
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  // _scrollListener() {
+  //   ////print(_controller.position.extentAfter);
+  //   if (_scrollController.position.hasPixels) {
+  //     refreshPage();
+  //   }
+  // }
+
   _launchURL(StudentApp obj, subList) async {
+    // Schedule Start
+    // if (obj.titleC != null && obj.titleC!.toLowerCase().contains('schedule')) {
+    if (obj.typeC != null && obj.typeC == 'Schedule') {
+      LocalDatabase<UserInformation> _localDb =
+          LocalDatabase('student_profile');
+      List<UserInformation> _userInformation = await _localDb.getData();
+
+      if (_userInformation.isEmpty) {
+        UserInformation result = await _launchLoginUrl('Student Login');
+
+        if (result.userName != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DayViewPage(
+                      date: ValueNotifier(DateTime.now()),
+                      studentProfile: result,
+                      blackoutDateList: [],
+                      schedulesList: [],
+                    )),
+          );
+        }
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DayViewPage(
+                    date: ValueNotifier(DateTime.now()),
+                    studentProfile: _userInformation[0],
+                    blackoutDateList: [],
+                    schedulesList: [],
+                  )),
+        );
+      }
+
+      return;
+    }
+    // Schedule Ends
+
     if (obj.appUrlC != null) {
       if (obj.appUrlC == 'app_folder' || obj.isFolder == 'true') {
         showDialog(
@@ -76,7 +140,7 @@ class _StudentPageState extends State<StudentPage> {
       //lock screen orientation
 
     } else {
-      Utility.showSnackBar(_scaffoldKey, "No URL available", context);
+      Utility.showSnackBar(_scaffoldKey, "No URL available", context, null);
     }
     //  Utility.setLocked();
   }
@@ -85,6 +149,8 @@ class _StudentPageState extends State<StudentPage> {
       List<StudentApp> list, List<StudentApp> subList, String key) {
     return list.length > 0
         ? GridView.count(
+            shrinkWrap: true,
+            controller: _scrollController,
             key: ValueKey(key),
             padding: const EdgeInsets.only(
                 bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
@@ -147,8 +213,10 @@ class _StudentPageState extends State<StudentPage> {
                                           Orientation.portrait &&
                                       translatedMessage.toString().length > 11
                                   ? Expanded(
-                                      child: Marquee(
-                                        text: translatedMessage.toString(),
+                                      child: MarqueeWidget(
+                                      pauseDuration: Duration(seconds: 1),
+                                      child: Text(
+                                        translatedMessage.toString(),
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyText1!
@@ -157,58 +225,92 @@ class _StudentPageState extends State<StudentPage> {
                                                         "phone"
                                                     ? 16
                                                     : 24),
-                                        scrollAxis: Axis.horizontal,
-                                        velocity: 30.0,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        blankSpace: 50,
-                                        //MediaQuery.of(context).size.width
-                                        // velocity: 100.0,
-                                        pauseAfterRound: Duration(seconds: 5),
-                                        showFadingOnlyWhenScrolling: true,
-                                        startPadding: 10.0,
-                                        accelerationDuration:
-                                            Duration(seconds: 1),
-                                        accelerationCurve: Curves.linear,
-                                        decelerationDuration:
-                                            Duration(milliseconds: 500),
-                                        decelerationCurve: Curves.easeOut,
                                       ),
                                     )
+
+                                      // child: Marquee(
+                                      //   text: translatedMessage.toString(),
+                                      //   style: Theme.of(context)
+                                      //       .textTheme
+                                      //       .bodyText1!
+                                      //       .copyWith(
+                                      //           fontSize: Globals.deviceType ==
+                                      //                   "phone"
+                                      //               ? 16
+                                      //               : 24),
+                                      //   scrollAxis: Axis.horizontal,
+                                      //   velocity: 30.0,
+                                      //   crossAxisAlignment:
+                                      //       CrossAxisAlignment.start,
+                                      //   blankSpace: 50,
+                                      //   //MediaQuery.of(context).size.width
+                                      //   // velocity: 100.0,
+                                      //   pauseAfterRound: Duration(seconds: 5),
+                                      //   showFadingOnlyWhenScrolling: true,
+                                      //   startPadding: 10.0,
+                                      //   accelerationDuration:
+                                      //       Duration(seconds: 1),
+                                      //   accelerationCurve: Curves.linear,
+                                      //   decelerationDuration:
+                                      //       Duration(milliseconds: 500),
+                                      //   decelerationCurve: Curves.bounceIn,
+                                      //   numberOfRounds: 1,
+                                      //   startAfter: Duration.zero,
+                                      // ),
+                                      )
                                   : MediaQuery.of(context).orientation ==
                                               Orientation.landscape &&
                                           translatedMessage.toString().length >
                                               18
                                       ? Expanded(
-                                          child: Marquee(
-                                          text: translatedMessage.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1!
-                                              .copyWith(
-                                                  fontSize:
-                                                      Globals.deviceType ==
-                                                              "phone"
-                                                          ? 16
-                                                          : 24),
-                                          scrollAxis: Axis.horizontal,
-                                          velocity: 30.0,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          child: MarqueeWidget(
+                                          pauseDuration: Duration(seconds: 3),
+                                          child: Text(
+                                            translatedMessage.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1!
+                                                .copyWith(
+                                                    fontSize:
+                                                        Globals.deviceType ==
+                                                                "phone"
+                                                            ? 16
+                                                            : 24),
+                                          ),
+                                        )
 
-                                          blankSpace:
-                                              50, //MediaQuery.of(context).size.width
-                                          // velocity: 100.0,
-                                          pauseAfterRound: Duration(seconds: 5),
-                                          showFadingOnlyWhenScrolling: true,
-                                          startPadding: 10.0,
-                                          accelerationDuration:
-                                              Duration(seconds: 1),
-                                          accelerationCurve: Curves.linear,
-                                          decelerationDuration:
-                                              Duration(milliseconds: 500),
-                                          decelerationCurve: Curves.easeOut,
-                                        ))
+                                          //    Marquee(
+                                          //   text: translatedMessage.toString(),
+                                          //   style: Theme.of(context)
+                                          //       .textTheme
+                                          //       .bodyText1!
+                                          //       .copyWith(
+                                          //           fontSize:
+                                          //               Globals.deviceType ==
+                                          //                       "phone"
+                                          //                   ? 16
+                                          //                   : 24),
+                                          //   scrollAxis: Axis.horizontal,
+                                          //   velocity: 30.0,
+                                          //   crossAxisAlignment:
+                                          //       CrossAxisAlignment.start,
+
+                                          //   blankSpace:
+                                          //       50, //MediaQuery.of(context).size.width
+                                          //   // velocity: 100.0,
+                                          //   pauseAfterRound: Duration(seconds: 5),
+                                          //   showFadingOnlyWhenScrolling: true,
+                                          //   startPadding: 10.0,
+                                          //   accelerationDuration:
+                                          //       Duration(seconds: 1),
+                                          //   accelerationCurve: Curves.linear,
+                                          //   decelerationDuration:
+                                          //       Duration(milliseconds: 500),
+                                          //   decelerationCurve: Curves.easeOut,
+                                          //   numberOfRounds: 1,
+                                          // )
+
+                                          )
                                       : SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
                                           child: Text(
@@ -239,6 +341,7 @@ class _StudentPageState extends State<StudentPage> {
             // connected: connected,
           );
   }
+  //sfjhjjsfdjkfjdjsdjdjjhksfdssfjkdjdjkjsdsjkdkdjsdjkjkjsdjhkjsdjkjsdjkjfjhfdhjhfjnbfjnnnmnccnmbxzfjksldaqpwoieruyt;adjkjhkhdfghvbsd
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
@@ -267,57 +370,62 @@ class _StudentPageState extends State<StudentPage> {
               iserrorstate = true;
             }
 
-            return new Stack(fit: StackFit.expand, children: [
-              // connected
-              //     ?
-              BlocBuilder<StudentBloc, StudentState>(
-                  bloc: _bloc,
-                  builder: (BuildContext contxt, StudentState state) {
-                    if (state is StudentInitial || state is Loading) {
-                      return Center(
-                          child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.primaryVariant,
-                      ));
-                    } else if (state is StudentDataSucess) {
-                      return state.obj != null && state.obj!.length > 0
-                          ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 5),
-                              child:
-                                  _buildGrid(state.obj!, state.subFolder!, key))
-                          :
-                          // ListView(children: [
-                          NoDataFoundErrorWidget(
-                              isResultNotFoundMsg: false,
-                              isNews: false,
-                              isEvents: false,
-                              connected: connected,
-                            );
-                      // ]);
-                    } else if (state is StudentError) {
-                      return ListView(children: [ErrorMsgWidget()]);
-                    }
-                    return Container();
-                  }),
-              Container(
-                child: BlocListener<HomeBloc, HomeState>(
-                    bloc: _homeBloc,
-                    listener: (context, state) async {
-                      if (state is BottomNavigationBarSuccess) {
-                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+            return ListView(
 
-                        Globals.appSetting = AppSetting.fromJson(state.obj);
-                        setState(() {});
-                      } else if (state is HomeErrorReceived) {
-                        Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: Text("Unable to load the data")),
-                        );
-                      }
-                    },
-                    child: EmptyContainer()),
-              ),
-            ]);
+                //fit: StackFit.expand,
+                children: [
+                  // connected
+                  //     ?
+                  BlocBuilder<StudentBloc, StudentState>(
+                      bloc: _bloc,
+                      builder: (BuildContext contxt, StudentState state) {
+                        if (state is StudentInitial || state is Loading) {
+                          return Center(
+                              child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.primaryVariant,
+                          ));
+                        } else if (state is StudentDataSucess) {
+                          return state.obj != null && state.obj!.length > 0
+                              ? Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  child: _buildGrid(
+                                      state.obj!, state.subFolder!, key))
+                              :
+                              // ListView(children: [
+                              NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: false,
+                                  isNews: false,
+                                  isEvents: false,
+                                  connected: connected,
+                                );
+                          // ]);
+                        } else if (state is StudentError) {
+                          return ListView(children: [ErrorMsgWidget()]);
+                        }
+                        return Container();
+                      }),
+                  Container(
+                    child: BlocListener<HomeBloc, HomeState>(
+                        bloc: _homeBloc,
+                        listener: (context, state) async {
+                          if (state is BottomNavigationBarSuccess) {
+                            AppTheme.setDynamicTheme(
+                                Globals.appSetting, context);
+
+                            Globals.appSetting = AppSetting.fromJson(state.obj);
+                            setState(() {});
+                          } else if (state is HomeErrorReceived) {
+                            Container(
+                              alignment: Alignment.center,
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: Center(
+                                  child: Text("Unable to load the data")),
+                            );
+                          }
+                        },
+                        child: EmptyContainer()),
+                  ),
+                ]);
           },
           child: Container()),
       onRefresh: refreshPage,
@@ -329,16 +437,19 @@ class _StudentPageState extends State<StudentPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBarWidget(
+          onTap: () {
+            Utility.scrollToTop(scrollController: _scrollController);
+          },
           marginLeft: 30,
           refresh: (v) {
             setState(() {});
           },
         ),
-        body: Globals.appSetting.studentBannerImageC != null &&
+        body: widget.isCustomSection == false &&
+                Globals.appSetting.studentBannerImageC != null &&
                 Globals.appSetting.studentBannerImageC != ""
             ? NestedScrollView(
-
-                // controller: _scrollController,
+                controller: _scrollController,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
@@ -356,5 +467,63 @@ class _StudentPageState extends State<StudentPage> {
                 },
                 body: _body('body1'))
             : _body('body2'));
+  }
+
+  Future<UserInformation> _launchLoginUrl(String? title) async {
+    var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
+        ? Color(0xff000000)
+        : Color(0xffFFFFFF);
+
+    var value = await pushNewScreen(
+      context,
+      screen: GoogleAuthWebview(
+        title: title!,
+        url:
+            'https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/student-login/auth',
+        isbuttomsheet: true,
+        language: Globals.selectedLanguage,
+        hideAppbar: false,
+        hideShare: true,
+        zoomEnabled: false,
+      ),
+      withNavBar: false,
+    );
+
+    if (value.toString().contains('authenticationfailure')) {
+      // Navigator.pop(context, false);
+      Utility.showSnackBar(
+          _scaffoldKey,
+          'You are not authorized to access the feature. Please use the authorized account.',
+          context,
+          50.0);
+
+      return UserInformation(userName: null);
+    } else if (value.toString().contains('success')) {
+      value = value.split('?')[1] ?? '';
+      UserInformation _studentProfile = await saveUserProfile(value);
+      return _studentProfile;
+      // _calenderBloc.add(CalenderPageEvent(email: _studentProfile.userEmail!));
+      // loggedIn = true;
+
+    }
+    return UserInformation(userName: null);
+  }
+
+  Future<UserInformation> saveUserProfile(String profileData) async {
+    List<String> profile = profileData.split('+');
+    UserInformation _userInformation = UserInformation(
+        userName: profile[0].toString().split('=')[1],
+        userEmail: profile[1].toString().split('=')[1],
+        profilePicture: profile[2].toString().split('=')[1],
+        authorizationToken:
+            profile[3].toString().split('=')[1].replaceAll('#', ''),
+        refreshToken: profile[4].toString().split('=')[1].replaceAll('#', ''));
+
+    //Save user profile to locally
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('student_profile');
+    print(_userInformation);
+    await _localDb.addData(_userInformation);
+    await _localDb.close();
+    return _userInformation;
   }
 }

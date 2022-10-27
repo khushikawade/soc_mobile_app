@@ -1,7 +1,6 @@
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/custom/ui/custom_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
-import 'package:Soc/src/modules/home/ui/app_Bar_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import '../../home/ui/app_bar_widget.dart';
 import '../model/custom_setting.dart';
 
 class CustomAppSection extends StatefulWidget {
@@ -35,11 +35,18 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   CustomBloc _bloc = CustomBloc();
   HomeBloc _homeBloc = HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _bloc.add(CustomEvents(id: widget.customObj.id));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   Future refreshPage() async {
@@ -53,6 +60,9 @@ class _CustomAppSectionState extends State<CustomAppSection> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBarWidget(
+        onTap: () {
+          Utility.scrollToTop(scrollController: _scrollController);
+        },
         marginLeft: 30,
         refresh: (v) {
           setState(() {});
@@ -61,16 +71,16 @@ class _CustomAppSectionState extends State<CustomAppSection> {
       body: widget.customObj.customBannerImageC != null &&
               widget.customObj.customBannerImageC != ''
           ? NestedScrollView(
+              controller: _scrollController,
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
                   BannerImageWidget(
-                    imageUrl: widget.customObj.customBannerImageC!,
-                    bgColor: widget.customObj.customBannerImageC != null
-                        ? Utility.getColorFromHex(
-                            widget.customObj.customBannerImageC!)
-                        : null,
-                  )
+                      imageUrl: widget.customObj.customBannerImageC!,
+                      bgColor: widget.customObj.customBannerColorC != null
+                          ? Utility.getColorFromHex(
+                              widget.customObj.customBannerColorC!)
+                          : Colors.transparent)
                 ];
               },
               body: _body('body2'),
@@ -100,7 +110,8 @@ class _CustomAppSectionState extends State<CustomAppSection> {
 
                 return
                     // connected?
-                    Stack(
+                    ListView(
+                  shrinkWrap: true,
                   // mainAxisSize: MainAxisSize.max,
                   children: [
                     BlocBuilder<CustomBloc, CustomState>(
@@ -110,9 +121,13 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is CustomDataSucess) {
-                            return CustomPages(
-                              customList: state.obj,
-                              customObj: widget.customObj,
+                            return Container(
+                              height: MediaQuery.of(context).size.height,
+                              child: CustomPages(
+                                scrollController: _scrollController,
+                                customList: state.obj,
+                                customObj: widget.customObj,
+                              ),
                             );
                           } else if (state is ErrorLoading) {
                             return ListView(children: [ErrorMsgWidget()]);

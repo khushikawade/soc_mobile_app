@@ -1,14 +1,22 @@
+
+
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
 class ImagePopup extends StatefulWidget {
+  final bool? isOcrPage;
+  final File? imageFile;
   final String imageURL;
   @override
   ImagePopup({
     Key? key,
     required this.imageURL,
+    this.isOcrPage,
+    this.imageFile
   }) : super(key: key);
   @override
   State<StatefulWidget> createState() => ImagePopupState();
@@ -23,7 +31,7 @@ class ImagePopupState extends State<ImagePopup>
   void initState() {
     super.initState();
     controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 550));
     scaleAnimation =
         CurvedAnimation(parent: controller!, curve: Curves.elasticInOut);
 
@@ -59,15 +67,17 @@ class ImagePopupState extends State<ImagePopup>
                       backgroundDecoration: BoxDecoration(
                         color: Colors.transparent,
                       ),
-                      imageProvider:
-                          CachedNetworkImageProvider(widget.imageURL),
+                      imageProvider: widget.isOcrPage == true ? FileImage(widget.imageFile!) as ImageProvider :
+                     CachedNetworkImageProvider(widget.imageURL),
                       maxScale: PhotoViewComputedScale.covered,
                       initialScale: PhotoViewComputedScale.contained * 0.8,
                       minScale: PhotoViewComputedScale.contained * 0.8,
                       loadingBuilder: (context, event) {
                         if (event == null) {
                           return const Center(
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
                           );
                         }
                         return Container();
