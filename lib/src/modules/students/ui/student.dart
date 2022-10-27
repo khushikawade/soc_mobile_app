@@ -445,28 +445,34 @@ class _StudentPageState extends State<StudentPage> {
             setState(() {});
           },
         ),
-        body: widget.isCustomSection == false &&
-                Globals.appSetting.studentBannerImageC != null &&
-                Globals.appSetting.studentBannerImageC != ""
-            ? NestedScrollView(
-                controller: _scrollController,
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return <Widget>[
-                    Globals.appSetting.studentBannerImageC != null
-                        ? BannerImageWidget(
-                            imageUrl: Globals.appSetting.studentBannerImageC!,
-                            bgColor:
-                                Globals.appSetting.studentBannerColorC != null
+        body: //widget.isCustomSection == false &&
+            Globals.appSetting.studentBannerImageC != null &&
+                    Globals.appSetting.studentBannerImageC != ""
+                ? NestedScrollView(
+                    controller: _scrollController,
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxIsScrolled) {
+                      return <Widget>[
+                        Globals.appSetting.studentBannerImageC != null
+                            ? BannerImageWidget(
+                                imageUrl:
+                                    Globals.appSetting.studentBannerImageC!,
+                                bgColor: Globals
+                                            .appSetting.studentBannerColorC !=
+                                        null
                                     ? Utility.getColorFromHex(
                                         Globals.appSetting.studentBannerColorC!)
                                     : null,
-                          )
-                        : SliverAppBar(),
-                  ];
-                },
-                body: _body('body1'))
-            : _body('body2'));
+                              )
+                            : SliverAppBar(),
+                      ];
+                    },
+                    body: widget.isCustomSection == false
+                        ? _body('body1')
+                        : _body('body2'))
+                : widget.isCustomSection == false
+                    ? _body('body1')
+                    : _body('body2'));
   }
 
   Future<UserInformation> _launchLoginUrl(String? title) async {
