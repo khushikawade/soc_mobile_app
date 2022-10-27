@@ -1243,7 +1243,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
                 ),
             child: ListTile(
-              onTap: (() => _list[index].assessmentImage == null
+              onTap: (() => _list[index].assessmentImage == null ||
+                      _list[index].assessmentImage == 'NA'
                   ? Utility.currentScreenSnackBar('No Image Found', null,
                       marginFromBottom: 120)
                   : showDialog(
