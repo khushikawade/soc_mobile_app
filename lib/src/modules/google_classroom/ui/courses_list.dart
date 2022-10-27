@@ -124,7 +124,6 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.04,
-                    width: MediaQuery.of(context).size.width * 0.25,
                     padding: EdgeInsets.only(right: 10),
                     child: FloatingActionButton.extended(
 
@@ -142,18 +141,15 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                         },
                         label: Row(
                           children: [
-                            FittedBox(
-                              fit: BoxFit.cover,
-                              child: Utility.textWidget(
-                                  text: 'Sync',
-                                  context: context,
-                                  textTheme: Theme.of(context)
-                                      .textTheme
-                                      .headline4!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .backgroundColor)),
-                            ),
+                            Utility.textWidget(
+                                text: 'Sync',
+                                context: context,
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .headline4!
+                                    .copyWith(
+                                        color:
+                                            Theme.of(context).backgroundColor)),
                           ],
                         ),
                         icon: Container(

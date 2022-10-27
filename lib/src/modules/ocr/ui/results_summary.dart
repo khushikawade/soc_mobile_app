@@ -317,7 +317,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                   width: 10,
                                                   height: 10,
                                                   child:
-                                                      CircularProgressIndicator())
+                                                      CircularProgressIndicator(
+                                                          color: Theme.of(
+                                                                  context)
+                                                              .colorScheme
+                                                              .primaryVariant,
+                                                          strokeWidth: 2))
                                               : CupertinoActivityIndicator();
                                         });
                                   });
