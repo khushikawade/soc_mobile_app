@@ -741,17 +741,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         String stateName = await Utility.getUserlocation();
         // Conditions to update list accoding to state name
         if (stateName == '' || !stateList.contains(stateName)) {
-          stateList.removeWhere((element) => element == 'All States');
-          stateList.insert(0, 'All States');
+          stateList.removeWhere((element) => element == 'Common Core');
+          stateList.insert(0, 'Common Core');
         } else {
           for (int i = 0; i < stateList.length; i++) {
             if (stateName == stateList[i]) {
               stateList.removeAt(i);
               stateList.sort();
               stateList.insert(0, stateName);
-              if (stateName != 'All States') {
-                stateList.removeWhere((element) => element == 'All States');
-                stateList.insert(1, 'All States');
+              if (stateName != 'Common Core') {
+                stateList.removeWhere((element) => element == 'Common Core');
+                stateList.insert(1, 'Common Core');
               }
               break;
             }
@@ -763,9 +763,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             stateList.removeAt(i);
             stateList.sort();
             stateList.insert(0, stateName!);
-            if (stateName != 'All States') {
-              stateList.removeWhere((element) => element == 'All States');
-              stateList.insert(1, 'All States');
+            if (stateName != 'Common Core') {
+              stateList.removeWhere((element) => element == 'Common Core');
+              stateList.insert(1, 'Common Core');
             }
             break;
           }

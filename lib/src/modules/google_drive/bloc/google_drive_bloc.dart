@@ -601,7 +601,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                       : 'student_info');
 
           //print('Image bucket URL received : $imgUrl');
-          int hhh = 0;
+          //  int hhh = 0;
           for (int i = 0; i < studentInfo.length; i++) {
             if (studentInfo[i].studentId == event.studentId) {
               //print(hhh);
@@ -1378,7 +1378,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           []; //Map the ResultSpreadsheet list to StudentAssessmentInfo list to not chnage anything on UI
       List data = []; //To parse String to List
       bool? createdAsPremium = true;
-      bool? isStandalone = false;
+      // bool? isStandalone = false;
       //Downloading file to specific path
       var response = await dio.download(
         url!,
@@ -1405,9 +1405,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (fields[0][0] == 'Name') {
           createdAsPremium = false;
         }
-        if (fields[0][0] == 'Email Id') {
-          isStandalone = true;
-        }
+        // if (fields[0][0] == 'Email Id') {
+        //   isStandalone = true;
+        // }
 
         fields.removeAt(0);
 
@@ -1419,37 +1419,50 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
           data.add(element
               .toString()
-              .replaceAll('[', "'")
-              .replaceAll(']', "'")
+              .replaceAll('[', "")
+              .replaceAll(']', "")
               .replaceAll("''", "'"));
         });
         //Splitting the String list to map the values
+        print(data[0]);
+        print("----------------------------------------test");
         for (var line in data) {
-          csvList
-              .add(ResultSpreadsheet.fromList(line.split(','), isStandalone));
+          csvList.add(ResultSpreadsheet.fromList(line.split(',')
+              // , isStandalone
+              ));
         }
 
         //Mapping values to required Model
         for (int i = 0; i < csvList.length; i++) {
           listNew.add(StudentAssessmentInfo(
-              subject: csvList[i].subject,
+              subject: csvList[i].subject.toString().replaceFirst(" ", ""),
               assessmentImage: csvList[i]
                   .assessmentImage
                   .toString()
                   .replaceAll("'", "")
                   .replaceAll(" ", ""),
-              className: csvList[i].className,
-              customRubricImage: csvList[i].customRubricImage,
-              grade: csvList[i].grade,
-              learningStandard: csvList[i].learningStandard,
-              pointpossible: csvList[i].pointPossible,
-              questionImgUrl: csvList[i].assessmentQuestionImg,
-              scoringRubric: csvList[i].scoringRubric,
-              studentGrade: csvList[i].pointsEarned,
-              studentId: csvList[i].id,
-              studentName: csvList[i].name,
-              subLearningStandard:
-                  csvList[i].nyNextGenerationLearningStandard));
+              className: csvList[i].className.toString().replaceFirst(" ", ""),
+              customRubricImage:
+                  csvList[i].customRubricImage.toString().replaceFirst(" ", ""),
+              grade: csvList[i].grade.toString().replaceFirst(" ", ""),
+              learningStandard:
+                  csvList[i].learningStandard.toString().replaceFirst(" ", ""),
+              pointpossible:
+                  csvList[i].pointPossible.toString().replaceFirst(" ", ""),
+              questionImgUrl: csvList[i]
+                  .assessmentQuestionImg
+                  .toString()
+                  .replaceFirst(" ", ""),
+              scoringRubric:
+                  csvList[i].scoringRubric.toString().replaceFirst(" ", ""),
+              studentGrade:
+                  csvList[i].pointsEarned.toString().replaceFirst(" ", ""),
+              studentId: csvList[i].id.toString().replaceFirst(" ", ""),
+              studentName: csvList[i].name.toString().replaceFirst(" ", ""),
+              subLearningStandard: csvList[i]
+                  .nyNextGenerationLearningStandard
+                  .toString()
+                  .replaceFirst(" ", "")));
         }
 
         return listNew;

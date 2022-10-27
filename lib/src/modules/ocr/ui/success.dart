@@ -1645,18 +1645,18 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
         List id = [];
-        for (int i = 0; i < historyStudentInfo.length; i++) {
-          if (!historyStudentInfo.contains(id)) {
-            id.add(historyStudentInfo[i].studentId);
-          } else {
-            //print('Record is already exist in the list. Skipping...');
-          }
-        }
+        // for (int i = 0; i < historyStudentInfo.length; i++) {
+        //   if (!historyStudentInfo.contains(id)) {
+        //     id.add(historyStudentInfo[i].studentId);
+        //   } else {
+        //     //print('Record is already exist in the list. Skipping...');
+        //   }
+        // }
 
-        if (!id.contains(idController.text)) {
+      //  if (!id.contains(idController.text)) {
           await _historyStudentInfoDb.putAt(
               historyStudentInfo.length - 1, studentAssessmentInfo);
-        }
+       // }
 
         return;
       } else {
