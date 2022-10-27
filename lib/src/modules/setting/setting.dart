@@ -14,9 +14,9 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:open_store/open_store.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:open_store/open_store.dart';
 
 class SettingPage extends StatefulWidget {
   final bool isbuttomsheet;
