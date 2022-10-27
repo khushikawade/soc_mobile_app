@@ -28,13 +28,15 @@ class ResultSpreadsheet {
       this.customRubricImage,
       this.assessmentImage);
 
-  ResultSpreadsheet.fromList(List items, bool? isStandalone)
-      : this(
+  ResultSpreadsheet.fromList(
+    List items, //bool? isStandalone
+  ) : this(
             items[0],
             items[1],
             items[2],
             items[3],
-            !isStandalone! ? items[12] : items[4],
+            // isStandalone! ? items[12] :
+            items[4],
             items[5],
             items[6],
             items[7],
@@ -42,7 +44,8 @@ class ResultSpreadsheet {
             items[9],
             items[10],
             items[11],
-            !isStandalone ? items[4] : items[12]);
+            // isStandalone ? items[4] :
+            items[12]);
 
   @override
   String toString() {
