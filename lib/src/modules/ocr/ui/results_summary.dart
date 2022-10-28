@@ -1251,11 +1251,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ? Utility.currentScreenSnackBar('No Image Found', null,
                       marginFromBottom: 120)
                   : showDialog(
-                      useRootNavigator: false,
+                      useRootNavigator: true,
                       context: context,
                       builder: (_) =>
                           ImagePopup(imageURL: _list[index].assessmentImage!))),
-              visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+              // visualDensity: VisualDensity(horizontal: 0, vertical: 0),
               // contentPadding:
               //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
               leading:
