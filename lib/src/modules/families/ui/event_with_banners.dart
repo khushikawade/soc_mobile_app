@@ -341,7 +341,8 @@ class _EventPageState extends State<EventPage>
 
     bannerImagesList.asMap().forEach((i, value) {
       if (bannerImagesList[i].monthC != null &&
-          bannerImagesList[i].monthC!.toLowerCase() == monthString) {
+          bannerImagesList[i].monthC!.toLowerCase() ==
+              monthString.toLowerCase()) {
         monthImageBanner = bannerImagesList[i].monthImageC ?? '';
       }
     });
