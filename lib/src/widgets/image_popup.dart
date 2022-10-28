@@ -1,7 +1,4 @@
-
-
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +9,8 @@ class ImagePopup extends StatefulWidget {
   final File? imageFile;
   final String imageURL;
   @override
-  ImagePopup({
-    Key? key,
-    required this.imageURL,
-    this.isOcrPage,
-    this.imageFile
-  }) : super(key: key);
+  ImagePopup({Key? key, required this.imageURL, this.isOcrPage, this.imageFile})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => ImagePopupState();
 }
@@ -39,6 +32,13 @@ class ImagePopupState extends State<ImagePopup>
       setState(() {});
     });
     controller!.forward();
+  }
+
+  late NavigatorState _navigator;
+  @override
+  void didChangeDependencies() {
+    _navigator = Navigator.of(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -67,8 +67,9 @@ class ImagePopupState extends State<ImagePopup>
                       backgroundDecoration: BoxDecoration(
                         color: Colors.transparent,
                       ),
-                      imageProvider: widget.isOcrPage == true ? FileImage(widget.imageFile!) as ImageProvider :
-                     CachedNetworkImageProvider(widget.imageURL),
+                      imageProvider: widget.isOcrPage == true
+                          ? FileImage(widget.imageFile!) as ImageProvider
+                          : CachedNetworkImageProvider(widget.imageURL),
                       maxScale: PhotoViewComputedScale.covered,
                       initialScale: PhotoViewComputedScale.contained * 0.8,
                       minScale: PhotoViewComputedScale.contained * 0.8,
@@ -116,6 +117,9 @@ class ImagePopupState extends State<ImagePopup>
                         child: IconButton(
                           onPressed: () {
                             Navigator.pop(context);
+                            // WidgetsBinding.instance.addPostFrameCallback((_) {
+                            // Navigator.of(context, rootNavigator: true).pop();
+                            // });
                           },
                           padding: EdgeInsets.zero,
                           icon: Icon(
