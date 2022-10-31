@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
@@ -45,30 +47,12 @@ class _CoursesListScreenState extends State<CoursesListScreen>
     int index,
     int listLength,
   ) {
-    _itemScrollController.scrollTo(
-        index: index,
-        duration: const Duration(seconds: 2),
-        curve: Curves.linearToEaseOut);
-
-    if (isScrolling.value == false)
-      isScrolling.value = true;
-    else if (isScrolling.value == true) isScrolling.value = false;
-
-    // _controller.animateTo(
-    //   Platform.isAndroid == true
-    //       ? index != 0
-    //           ? index *
-    //               (MediaQuery.of(context).size.height /
-    //                   (listLength > 4 ? 5 : listLength * 2.5))
-    //           : index * _height
-    //       : index != 0
-    //           ? index *
-    //               (MediaQuery.of(context).size.height /
-    //                   (listLength > 4 ? 5 : listLength * 3))
-    //           : index * _height, //_height, //* 1.2,
-    //   duration: Duration(seconds: 1),
-    //   curve: Curves.easeIn,
-    // );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _itemScrollController.scrollTo(
+          index: index,
+          duration: const Duration(seconds: 2),
+          curve: Curves.linearToEaseOut);
+    });
   }
 
   @override
@@ -84,145 +68,143 @@ class _CoursesListScreenState extends State<CoursesListScreen>
   Widget build(BuildContext context) {
     return Stack(children: [
       CommonBackGroundImgWidget(),
-      NotificationListener<ScrollNotification>(
-        onNotification: onNotification,
-        child: Scaffold(
-          backgroundColor: Colors.transparent,
-          key: _scaffoldKey,
-          resizeToAvoidBottomInset: true,
-          appBar: CustomOcrAppBarWidget(
-            isSuccessState: ValueNotifier<bool>(true),
-            isbackOnSuccess: ValueNotifier<bool>(false),
-            key: GlobalKey(),
-            isBackButton: true,
-            assessmentDetailPage: true,
-            assessmentPage: false,
-            scaffoldKey: _scaffoldKey,
-            isFromResultSection:
-                null, //widget.isFromHomeSection == false ? true : null,
-            navigateBack: true,
-          ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              SpacerWidget(_KVertcalSpace / 4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Utility.textWidget(
-                      text: 'All Courses',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.04,
-                    padding: EdgeInsets.only(right: 10),
-                    child: FloatingActionButton.extended(
 
-                        // elevation: 0,
-                        backgroundColor: AppTheme.kButtonColor,
-                        onPressed: () {
-                          if (_animationController!.isAnimating == true) {
-                            Utility.currentScreenSnackBar(
-                                'Please Wait, Sync Is In Progress', null,
-                                marginFromBottom: 90);
-                          } else {
-                            _animationController!.repeat();
-                            refreshPage(isFromPullToRefresh: true);
-                          }
-                        },
-                        label: Row(
-                          children: [
-                            Utility.textWidget(
-                                text: 'Sync',
-                                context: context,
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .headline4!
-                                    .copyWith(
-                                        color:
-                                            Theme.of(context).backgroundColor)),
-                          ],
-                        ),
-                        icon: Container(
-                          //  / height: MediaQuery.of(context).size.height * 0.04,
-                          // width: 30,
-                          //  color: Colors.amber,
-                          child: SpinningIconButton(
-                            controller: _animationController,
-                            iconData: Icons.sync,
-                          ),
-                        )),
-                  )
-                ],
-              ),
-              SpacerWidget(_KVertcalSpace / 3),
-              SpacerWidget(_KVertcalSpace / 5),
-              Expanded(
-                  child: ValueListenableBuilder(
-                      valueListenable: refreshList,
-                      child: Container(),
-                      builder:
-                          (BuildContext context, dynamic value, Widget? child) {
-                        return RefreshIndicator(
-                            color: AppTheme.kButtonColor,
-                            key: refreshKey,
-                            onRefresh: () =>
-                                refreshPage(isFromPullToRefresh: true),
-                            child: widget.googleClassroomCourseList.length > 0
-                                ? coursesChips(widget.googleClassroomCourseList)
-                                //listView(widget.googleClassroomCourseList)
-                                : NoDataFoundErrorWidget(
-                                    isResultNotFoundMsg: true,
-                                    isNews: false,
-                                    isEvents: false));
-                      })),
-              BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
-                  bloc: _googleClassroomBloc,
-                  child: Container(),
-                  listener:
-                      (BuildContext contxt, GoogleClassroomState state) async {
-                    if (state is GoogleClassroomCourseListSuccess) {
-                      widget.googleClassroomCourseList.clear();
-                      widget.googleClassroomCourseList.addAll(state.obj!);
-                      refreshList.value = !refreshList.value;
-                      if (_animationController!.isAnimating == true) {
-                        Utility.currentScreenSnackBar(
-                            'Classroom Synced Successfully', null,
-                            marginFromBottom: 90);
-                        _animationController!.stop();
-                      }
-                    }
-                    if (state is GoogleClassroomErrorState) {
-                      if (state.errorMsg == 'Reauthentication is required') {
-                        await Utility.refreshAuthenticationToken(
-                            isNavigator: false,
-                            errorMsg: state.errorMsg!,
-                            context: context,
-                            scaffoldKey: _scaffoldKey);
-
-                        _googleClassroomBloc.add(GetClassroomCourses());
-                      } else {
-                        Navigator.of(context).pop();
-                        Utility.currentScreenSnackBar(
-                            "Something Went Wrong. Please Try Again.", null);
-                      }
-                    }
-                  }),
-            ],
-          ),
-          // floatingActionButtonLocation:
-          //     FloatingActionButtonLocation.,
-          // floatingActionButton: scanAssessmentButton(),
+      Scaffold(
+        backgroundColor: Colors.transparent,
+        key: _scaffoldKey,
+        resizeToAvoidBottomInset: true,
+        appBar: CustomOcrAppBarWidget(
+          isSuccessState: ValueNotifier<bool>(true),
+          isbackOnSuccess: ValueNotifier<bool>(false),
+          key: GlobalKey(),
+          isBackButton: true,
+          assessmentDetailPage: true,
+          assessmentPage: false,
+          scaffoldKey: _scaffoldKey,
+          isFromResultSection:
+              null, //widget.isFromHomeSection == false ? true : null,
+          navigateBack: true,
         ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SpacerWidget(_KVertcalSpace / 4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Utility.textWidget(
+                    text: 'All Courses',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.04,
+                  padding: EdgeInsets.only(right: 10),
+                  child: FloatingActionButton.extended(
+
+                      // elevation: 0,
+                      backgroundColor: AppTheme.kButtonColor,
+                      onPressed: () {
+                        if (_animationController!.isAnimating == true) {
+                          Utility.currentScreenSnackBar(
+                              'Please Wait, Sync Is In Progress', null,
+                              marginFromBottom: 90);
+                        } else {
+                          _animationController!.repeat();
+                          refreshPage(isFromPullToRefresh: true);
+                        }
+                      },
+                      label: Row(
+                        children: [
+                          Utility.textWidget(
+                              text: 'Sync',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).backgroundColor)),
+                        ],
+                      ),
+                      icon: Container(
+                        //  / height: MediaQuery.of(context).size.height * 0.04,
+                        // width: 30,
+                        //  color: Colors.amber,
+                        child: SpinningIconButton(
+                          controller: _animationController,
+                          iconData: Icons.sync,
+                        ),
+                      )),
+                )
+              ],
+            ),
+            SpacerWidget(_KVertcalSpace / 3),
+            SpacerWidget(_KVertcalSpace / 5),
+            Expanded(
+                child: ValueListenableBuilder(
+                    valueListenable: refreshList,
+                    child: Container(),
+                    builder:
+                        (BuildContext context, dynamic value, Widget? child) {
+                      return RefreshIndicator(
+                          color: AppTheme.kButtonColor,
+                          key: refreshKey,
+                          onRefresh: () =>
+                              refreshPage(isFromPullToRefresh: true),
+                          child: widget.googleClassroomCourseList.length > 0
+                              ? coursesChips(widget.googleClassroomCourseList)
+                              //listView(widget.googleClassroomCourseList)
+                              : NoDataFoundErrorWidget(
+                                  isResultNotFoundMsg: true,
+                                  isNews: false,
+                                  isEvents: false));
+                    })),
+            BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
+                bloc: _googleClassroomBloc,
+                child: Container(),
+                listener:
+                    (BuildContext contxt, GoogleClassroomState state) async {
+                  if (state is GoogleClassroomCourseListSuccess) {
+                    widget.googleClassroomCourseList.clear();
+                    widget.googleClassroomCourseList.addAll(state.obj!);
+                    refreshList.value = !refreshList.value;
+                    if (_animationController!.isAnimating == true) {
+                      Utility.currentScreenSnackBar(
+                          'Classroom Synced Successfully', null,
+                          marginFromBottom: 90);
+                      _animationController!.stop();
+                    }
+                  }
+                  if (state is GoogleClassroomErrorState) {
+                    if (state.errorMsg == 'Reauthentication is required') {
+                      await Utility.refreshAuthenticationToken(
+                          isNavigator: false,
+                          errorMsg: state.errorMsg!,
+                          context: context,
+                          scaffoldKey: _scaffoldKey);
+
+                      _googleClassroomBloc.add(GetClassroomCourses());
+                    } else {
+                      Navigator.of(context).pop();
+                      Utility.currentScreenSnackBar(
+                          "Something Went Wrong. Please Try Again.", null);
+                    }
+                  }
+                }),
+          ],
+        ),
+        // floatingActionButtonLocation:
+        //     FloatingActionButtonLocation.,
+        // floatingActionButton: scanAssessmentButton(),
       ),
 
       //  FloatingActionButton(
@@ -365,7 +347,6 @@ class _CoursesListScreenState extends State<CoursesListScreen>
           return GestureDetector(
             onTap: () {
               selectedValue.value = currentIndex;
-
               _animateToIndex(
                 currentIndex,
                 courseList[currentIndex].studentList!.length,
@@ -411,13 +392,16 @@ class _CoursesListScreenState extends State<CoursesListScreen>
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.70
             : MediaQuery.of(context).size.height * 0.45,
-        child: ScrollablePositionedList.builder(
-            shrinkWrap: true,
-            itemScrollController: _itemScrollController,
-            itemCount: courseList.length,
-            itemBuilder: (context, index) {
-              return _buildCourseSeparationList(courseList, index);
-            }));
+        child: NotificationListener<ScrollNotification>(
+          onNotification: onNotification,
+          child: ScrollablePositionedList.builder(
+              shrinkWrap: true,
+              itemScrollController: _itemScrollController,
+              itemCount: courseList.length,
+              itemBuilder: (context, index) {
+                return _buildCourseSeparationList(courseList, index);
+              }),
+        ));
   }
 
   Widget _buildCourseSeparationList(
@@ -521,14 +505,14 @@ class _CoursesListScreenState extends State<CoursesListScreen>
   }
 
   bool onNotification(ScrollNotification t) {
-    if (t.metrics.axisDirection != AxisDirection.right &&
-        t.metrics.axisDirection != AxisDirection.left) {
-      if (t.metrics.pixels < 150) {
-        if (isScrolling.value == false) isScrolling.value = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (t.metrics.pixels < 150 && t.metrics.pixels >= 0) {
+        isScrolling.value = true;
       } else {
-        if (isScrolling.value == true) isScrolling.value = false;
+        isScrolling.value = false;
       }
-    }
+    });
+
     return true;
   }
 
