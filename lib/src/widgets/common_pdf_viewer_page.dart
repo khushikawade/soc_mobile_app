@@ -148,6 +148,8 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   final ValueNotifier<String> remotePDFpath = ValueNotifier<String>('');
   final Completer<PDFViewController> _controller =
       Completer<PDFViewController>();
+  ValueNotifier<int> currentPage = ValueNotifier<int>(1);
+  ValueNotifier<int> totalPage = ValueNotifier<int>(1);
 
   @override
   void initState() {
@@ -215,29 +217,78 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                               // valueColor:
                               //     new AlwaysStoppedAnimation<Color>(Color(0xff4B80A5)),
                             ))
-                          : PDFView(
-                              filePath: remotePDFpath.value,
-                              enableSwipe: true,
-                              swipeHorizontal: false,
-                              autoSpacing: false,
-                              pageFling: true,
-                              pageSnap: true,
-                              // defaultPage: currentPage!,
-                              fitPolicy: FitPolicy.WIDTH,
-                              fitEachPage: true,
-                              // nightMode: Theme.of(context).colorScheme.background ==
-                              //         Color(0xff000000)
-                              //     ? true
-                              //     : false,
-                              preventLinkNavigation: false,
-                              onViewCreated:
-                                  (PDFViewController pdfViewController) {
-                                _controller.complete(pdfViewController);
-                              },
-                              onLinkHandler: (String? uri) {
-                                print('goto uri: $uri');
-                              },
-                            )
+                          : Stack(children: [
+                              PDFView(
+                                filePath: remotePDFpath.value,
+                                enableSwipe: true,
+                                swipeHorizontal: false,
+                                autoSpacing: false,
+                                pageFling: true,
+                                pageSnap: true,
+                                fitPolicy: FitPolicy.WIDTH,
+                                fitEachPage: true,
+                                preventLinkNavigation: false,
+                                onViewCreated: (PDFViewController
+                                    pdfViewController) async {
+                                  _controller.complete(pdfViewController);
+                                },
+                                onLinkHandler: (String? uri) {
+                                  print('goto uri: $uri');
+                                },
+                                onPageChanged: (int? page, int? total) {
+                                  totalPage.value = total!;
+                                  currentPage.value = page! + 1;
+                                },
+                              ),
+                              Flex(
+                                direction: Axis.horizontal,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Container(
+                                      margin:
+                                          EdgeInsets.only(top: 10, right: 10),
+                                      padding: const EdgeInsets.all(10.0),
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.1),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(30.0),
+                                        ),
+                                      ),
+                                      child: ValueListenableBuilder(
+                                          valueListenable: totalPage,
+                                          child: Container(),
+                                          builder: (BuildContext context,
+                                              int value, Widget? child) {
+                                            return ValueListenableBuilder(
+                                                valueListenable: currentPage,
+                                                child: Container(),
+                                                builder: (BuildContext context,
+                                                    int value, Widget? child) {
+                                                  return FittedBox(
+                                                    child: Container(
+                                                      padding: EdgeInsets.only(
+                                                          right: 10, left: 10),
+                                                      child: Text(
+                                                        "${currentPage.value} / ${totalPage.value}",
+                                                        // "999 / 1000",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ),
+                                                  );
+                                                });
+                                          })),
+                                ],
+                              )
+                            ])
                       : NoDataFoundErrorWidget(
                           isResultNotFoundMsg: false,
                           isNews: false,
