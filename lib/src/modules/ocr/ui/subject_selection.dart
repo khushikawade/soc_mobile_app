@@ -1489,8 +1489,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].customOrStandardRubic == "Custom" &&
-              _localData[i].name == Globals.scoringRubric!.split(" ")[0]) {
-            rubricImgUrl = _localData[i].imgUrl;
+              '${_localData[i].name}' + ' ' + '${_localData[i].score}' ==
+                  Globals.scoringRubric!) {
+            rubricImgUrl = await _localData[i].imgUrl;
             break;
           } else {
             rubricImgUrl = 'NA';
