@@ -235,29 +235,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // To fetch recent selected subject list
         LocalDatabase<SubjectDetailList> recentOptionDB =
             LocalDatabase('recent_option_subject');
-        // List<SubjectDetailList> data = await fatchSubjectDetails(
-        //     type: event.type!,
-        //     keyword: event.keyword!,
-        //     isSearchPage: event.isSearchPage ?? false,
-        //     gradeNo: event.grade,
-        //     subjectSelected: event.subjectSelected);
 
-        // Condition To Chnage respoance accoding to selection type
         if (event.type == 'subject') {
-          // List<StateListObject> subjectList = [];
-          // LocalDatabase<StateListObject> _localDb =
-          //     LocalDatabase(Strings.stateObjectName);
-          // List<StateListObject>? _localData = await _localDb.getData();
-          // for (int i = 0; i < _localData.length; i++) {
-          //   if (_localData[i].stateC == event.stateName) {
-          //     subjectList.add(_localData[i]);
-          //   }
-          // }
-          // List<StateListObject> list = await fatchLocalSubject(event.keyword!);
-          // subjectList.addAll(list);
-          // yield OcrLoading();
           List<SubjectDetailList> recentSubjectlist =
               await recentOptionDB.getData();
+          await recentOptionDB.close();
           List<StateListObject> subjectList = await getSubjectName(
             keyword: event.selectedKeyword!,
             stateName: event.stateName!,

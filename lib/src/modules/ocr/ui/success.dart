@@ -1653,10 +1653,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
         //   }
         // }
 
-      //  if (!id.contains(idController.text)) {
-          await _historyStudentInfoDb.putAt(
-              historyStudentInfo.length - 1, studentAssessmentInfo);
-       // }
+        //  if (!id.contains(idController.text)) {
+        await _historyStudentInfoDb.putAt(
+            historyStudentInfo.length - 1, studentAssessmentInfo);
+        // }
 
         return;
       } else {
