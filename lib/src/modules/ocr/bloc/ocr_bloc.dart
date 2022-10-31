@@ -7,10 +7,10 @@ import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
-import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -1009,7 +1009,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
         return subjectDetailList;
       }
-      return [];
 
       ////////////////////-----------------old -------------------------------/////////////////////////
       // // String grade = '';
@@ -1121,10 +1120,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        // Uri.encodeFull('https://361d-111-118-246-106.in.ngrok.io'),
-        Uri.encodeFull('http://3.142.181.122:5050/ocr'),
-        //'http://3.142.181.122:5050/ocr'), //https://1fb3-111-118-246-106.in.ngrok.io
-        // Uri.encodeFull('https://1fb3-111-118-246-106.in.ngrok.io'),
+        // Url for Productiom
+        //Uri.encodeFull('https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
+        // Url For testing and developement
+        Uri.encodeFull(
+            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
+
         body: {
           'data': '$base64',
           'account_id': Globals.appSetting.schoolNameC,
@@ -1134,20 +1135,28 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       );
 
       if (response.statusCode == 200) {
-        // ***********  Process The respoance and collecting OSS ID  ***********
+        // ***********  Process The respoance and collecting OSSIS ID  ***********
         var result = response.data;
+        List<StudentDetailsModal> _list = jsonDecode(
+                jsonEncode(response.data['studentListDetails']))
+            .map<StudentDetailsModal>((i) => StudentDetailsModal.fromJson(i))
+            .toList();
+        await addStudentDetailsToLocalDb(list: _list);
 
+        final String? studentGrade = result['StudentGrade'] == '2' ||
+                result['StudentGrade'] == '1' ||
+                result['StudentGrade'] == '0' ||
+                result['StudentGrade'] == '3' ||
+                result['StudentGrade'] == '4'
+            ? result['StudentGrade']
+            : '';
+
+        final String? studentId = result['studentId'] == 'Something Went Wrong'
+            ? ''
+            : result['studentId'];
         return [
-          result['StudentGrade'] == '2' ||
-                  result['StudentGrade'] == '1' ||
-                  result['StudentGrade'] == '0' ||
-                  result['StudentGrade'] == '3' ||
-                  result['StudentGrade'] == '4'
-              ? result['StudentGrade']
-              : '',
-          result['studentId'] == 'Something Went Wrong'
-              ? ''
-              : result['studentId'],
+          studentGrade,
+          studentId,
           result['studentName'],
         ];
       } else {
@@ -1156,6 +1165,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future addStudentDetailsToLocalDb(
+      {required List<StudentDetailsModal> list}) async {
+    LocalDatabase<StudentDetailsModal> _localDb =
+        LocalDatabase(Strings.studentDetailList);
+    //List<StateListObject>? _localData = await _localDb.getData();
+    // Syncing the Local database with remote data
+    await _localDb.clear();
+    list.forEach((StudentDetailsModal e) {
+      _localDb.addData(e);
+    });
   }
 
   Future<bool> saveStudentToSalesforce(

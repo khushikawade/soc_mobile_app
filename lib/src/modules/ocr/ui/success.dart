@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/animation_button.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -61,7 +62,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
   RegExp regex = new RegExp(
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
   bool isSelected = true;
+
   List<StudentClassroomInfo> studentInfo = [];
+  List<StudentDetailsModal> standardStudentDetails = [];
   bool onChange = false;
   String studentName = '';
   String studentId = '';
@@ -91,6 +94,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   ScrollController scrollControllerId = new ScrollController();
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
+  LocalDatabase<StudentAssessmentInfo> _standardStudentDetailsDb =
+      LocalDatabase(Strings.studentDetailList);
 
   void initState() {
     super.initState();
@@ -124,58 +129,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 //  failure == true
                 //     ?
                 IconButton(
-              onPressed: () async {
-                if (isBackFromCamera.value == true) {
-                  updateDetails(
-                      isUpdateData: true,
-                      isFromHistoryAssessmentScanMore:
-                          widget.isFromHistoryAssessmentScanMore);
-                  _navigatetoCameraSection();
-                } else {
-                  if (_formKey1.currentState == null) {
-                    scanFailure.value = 'Failure';
-                  }
-
-                  if (isStudentIdFilled.value.isNotEmpty &&
-                          Overrides.STANDALONE_GRADED_APP == true
-                      ? (regex.hasMatch(isStudentIdFilled.value))
-                      : (isStudentIdFilled.value.length == 9 &&
-                          (isStudentIdFilled.value.startsWith('2') ||
-                              isStudentIdFilled.value.startsWith('1')))) {
-                    if (Overrides.STANDALONE_GRADED_APP == true) {
-                      bool result = await checkEmailFromGoogleclassroom();
-                      if (!result) {
-                        //  Scaffold.of(context).showSnackBar(showSnack('Error. Could not log out'));
-                        Utility.currentScreenSnackBar(
-                            'Please use imported email address from google classroom',
-                            null);
-                        return;
-                      }
-                    }
-                    updateDetails(
-                        isFromHistoryAssessmentScanMore:
-                            widget.isFromHistoryAssessmentScanMore);
-
-                    if (idController.text.isNotEmpty) {
-                      if (Overrides.STANDALONE_GRADED_APP != true) {
-                        _bloc.add(SaveStudentDetails(
-                            studentName: nameController.text,
-                            studentId: idController.text));
-                      }
-                      String imgExtension = widget.imgPath.path
-                          .substring(widget.imgPath.path.lastIndexOf(".") + 1);
-
-                      _googleDriveBloc.add(AssessmentImgToAwsBucked(
-                          isHistoryAssessmentSection:
-                              widget.isFromHistoryAssessmentScanMore,
-                          imgBase64: widget.img64,
-                          imgExtension: imgExtension,
-                          studentId: idController.text));
-
-                      _navigatetoCameraSection();
-                    }
-                  }
-                }
+              onPressed: () {
+                onPressAction();
               },
               icon: Icon(
                 IconData(0xe877,
@@ -206,6 +161,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 if (state is FetchTextFromImageSuccess) {
                   //  scanFailure.value = 'Success';
                   // Future.delayed(Duration(milliseconds: 500));
+                  updateStudentDetails();
                   scanFailure.value = 'Success';
                   _performAnimation();
                   Utility.updateLoges(
@@ -233,11 +189,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // if (_formKey2.currentState!.validate()) {
 
                   if (isStudentIdFilled.value.isNotEmpty &&
-                          Overrides.STANDALONE_GRADED_APP == true
-                      ? (regex.hasMatch(isStudentIdFilled.value))
-                      : (isStudentIdFilled.value.length == 9 &&
-                          (isStudentIdFilled.value.startsWith('2') ||
-                              isStudentIdFilled.value.startsWith('1')))) {
+                              Overrides.STANDALONE_GRADED_APP == true
+                          ? (regex.hasMatch(isStudentIdFilled.value))
+                          : isStudentIdFilled.value.isNotEmpty
+                      // (isStudentIdFilled.value.length == 9 &&
+                      //     (isStudentIdFilled.value.startsWith('2') ||
+                      //         isStudentIdFilled.value.startsWith('1')))
+                      ) {
                     if (nameController.text.isNotEmpty &&
                         idController.text.isNotEmpty) {
                       timer = await Timer(Duration(seconds: 5), () async {
@@ -288,6 +246,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     // });
                   }
                 } else if (state is FetchTextFromImageFailure) {
+                  updateStudentDetails();
                   scanFailure.value = 'Failure';
 
                   // setState(() {
@@ -362,9 +321,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       ? idController.text = state.studentId!
                       : null;
                   pointScored.value = state.grade!;
-                  // idController.text = state.studentId!;
-                  // nameController.text = state.studentName!;
-                  // Globals.gradeList.add(state.grade!);
 
                   return successScreen(
                       id: state.studentId!, grade: state.grade!);
@@ -385,10 +341,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       ? nameController.text = state.studentName ?? ''
                       : null;
                   pointScored.value = state.grade!;
-                  // idController.text = state.studentId!;
-                  // nameController.text =
-                  //     onChange == true ? state.studentName! : studentName;
-                  // Globals.gradeList.add(state.grade!);
+
                   if (state.grade == '') {
                     rubricNotDetected.value = true;
                   }
@@ -417,35 +370,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                     'Scan Failure and teacher retry scan',
                                 operationResult: 'Failure');
 
-                            // Navigator.pushReplacement(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => CameraScreen(
-                            //             questionImageLink:
-                            //                 widget.questionImageUrl ?? '',
-                            //             obj: widget.obj,
-                            //             createdAsPremium:
-                            //                 widget.createdAsPremium,
-                            //             isFromHistoryAssessmentScanMore: widget
-                            //                 .isFromHistoryAssessmentScanMore!,
-                            //             onlyForPicture: false,
-                            //             isScanMore: widget.isScanMore,
-                            //             pointPossible: widget.pointPossible,
-                            //           )),
-                            // );
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             Navigator.of(context).pop(widget.isFlashOn);
-                            // Navigator.pushReplacement(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => CameraScreen(
-                            //             isFromHistoryAssessmentScanMore: widget
-                            //                 .isFromHistoryAssessmentScanMore!,
-                            //             onlyForPicture: false,
-                            //             isScanMore: widget.isScanMore,
-                            //             pointPossible: widget.pointPossible,
-                            //           )),
-                            // );
                           },
                         ))
                     : scanFailure.value == "Success"
@@ -457,129 +383,30 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               return isBackFromCamera.value != true
                                   ? Align(
                                       alignment: Alignment.bottomCenter,
-                                      child:
-                                          //  SuccessCustomButton(
-                                          //   width: MediaQuery.of(context).size.width * 0.3,
-                                          //   animatedWidth:
-                                          //       MediaQuery.of(context).size.width * 0.3,
-                                          //   // animatedWidth: animatedWidth.value
-                                          // )
-                                          ValueListenableBuilder(
-                                              valueListenable: animationStart,
-                                              child: Container(),
-                                              builder: (BuildContext context,
-                                                  dynamic value,
-                                                  Widget? child) {
-                                                return InkWell(
-                                                  onTap: () async {
-                                                    if (animationStart.value ==
-                                                        true) {
-                                                      timer!.cancel();
-
-                                                      updateDetails(
-                                                          isFromHistoryAssessmentScanMore:
-                                                              widget
-                                                                  .isFromHistoryAssessmentScanMore);
-                                                      Utility.updateLoges(
-                                                          //  ,
-                                                          activityId: '10',
-                                                          description:
-                                                              'Next Scan',
-                                                          operationResult:
-                                                              'Success');
-
-                                                      String imgExtension = widget
-                                                          .imgPath.path
-                                                          .substring(widget
-                                                                  .imgPath.path
-                                                                  .lastIndexOf(
-                                                                      ".") +
-                                                              1);
-                                                      _googleDriveBloc.add(
-                                                          AssessmentImgToAwsBucked(
-                                                              isHistoryAssessmentSection:
-                                                                  widget
-                                                                      .isFromHistoryAssessmentScanMore,
-                                                              imgBase64:
-                                                                  widget.img64,
-                                                              imgExtension:
-                                                                  imgExtension,
-                                                              studentId:
-                                                                  idController
-                                                                      .text));
-                                                      // }
-                                                      // COMMENT below section for enableing the camera
-                                                      var result =
-                                                          await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                CameraScreen(
-                                                                  questionImageLink:
-                                                                      widget.questionImageUrl ??
-                                                                          '',
-                                                                  obj: widget
-                                                                      .obj,
-                                                                  createdAsPremium:
-                                                                      widget
-                                                                          .createdAsPremium,
-                                                                  isFromHistoryAssessmentScanMore:
-                                                                      widget
-                                                                          .isFromHistoryAssessmentScanMore!,
-                                                                  onlyForPicture:
-                                                                      false,
-                                                                  isScanMore: widget
-                                                                      .isScanMore,
-                                                                  pointPossible:
-                                                                      widget
-                                                                          .pointPossible,
-                                                                  isFlashOn: ValueNotifier<
-                                                                          bool>(
-                                                                      widget
-                                                                          .isFlashOn),
-                                                                )),
-                                                      );
-                                                      if (result == true) {
-                                                        isBackFromCamera.value =
-                                                            result;
-                                                      }
-
-                                                      // Navigator.pushReplacement(
-                                                      //   context,
-                                                      //   MaterialPageRoute(
-                                                      //       builder: (context) =>
-                                                      //           CameraScreen(
-                                                      //             isScanMore:
-                                                      //                 widget.isScanMore,
-                                                      //             pointPossible: widget
-                                                      //                 .pointPossible,
-                                                      //           )),
-                                                      // );
-                                                    }
-                                                    // else {
-                                                    //   print(
-                                                    //       "Not -------------> move");
-                                                    // }
-                                                  },
-                                                  child: SuccessCustomButton(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.4,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.055,
-                                                      animationDuration:
-                                                          Duration(
-                                                              milliseconds:
-                                                                  4950),
-                                                      animationStart:
-                                                          animationStart.value),
-                                                );
-                                              }),
+                                      child: ValueListenableBuilder(
+                                          valueListenable: animationStart,
+                                          child: Container(),
+                                          builder: (BuildContext context,
+                                              dynamic value, Widget? child) {
+                                            return InkWell(
+                                              onTap: () async {
+                                                onPressSuccessFloatingButton();
+                                              },
+                                              child: SuccessCustomButton(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.055,
+                                                  animationDuration: Duration(
+                                                      milliseconds: 4950),
+                                                  animationStart:
+                                                      animationStart.value),
+                                            );
+                                          }),
                                     )
                                   : Container();
                             })
@@ -591,6 +418,101 @@ class _SuccessScreenState extends State<SuccessScreen> {
         )
       ]),
     );
+  }
+
+  onPressAction() async {
+    if (isBackFromCamera.value == true) {
+      updateDetails(
+          isUpdateData: true,
+          isFromHistoryAssessmentScanMore:
+              widget.isFromHistoryAssessmentScanMore);
+      _navigatetoCameraSection();
+    } else {
+      if (_formKey1.currentState == null) {
+        scanFailure.value = 'Failure';
+      }
+
+      if (isStudentIdFilled.value.isNotEmpty &&
+              Overrides.STANDALONE_GRADED_APP == true
+          ? (regex.hasMatch(isStudentIdFilled.value))
+          : isStudentIdFilled.value.isNotEmpty) {
+        if (Overrides.STANDALONE_GRADED_APP == true) {
+          bool result = await checkEmailFromGoogleclassroom();
+          if (!result) {
+            //  Scaffold.of(context).showSnackBar(showSnack('Error. Could not log out'));
+            Utility.currentScreenSnackBar(
+                'Please use imported email address from google classroom',
+                null);
+            return;
+          }
+        }
+        updateDetails(
+            isFromHistoryAssessmentScanMore:
+                widget.isFromHistoryAssessmentScanMore);
+
+        if (idController.text.isNotEmpty) {
+          if (Overrides.STANDALONE_GRADED_APP != true) {
+            _bloc.add(SaveStudentDetails(
+                studentName: nameController.text,
+                studentId: idController.text));
+          }
+          String imgExtension = widget.imgPath.path
+              .substring(widget.imgPath.path.lastIndexOf(".") + 1);
+
+          _googleDriveBloc.add(AssessmentImgToAwsBucked(
+              isHistoryAssessmentSection:
+                  widget.isFromHistoryAssessmentScanMore,
+              imgBase64: widget.img64,
+              imgExtension: imgExtension,
+              studentId: idController.text));
+
+          _navigatetoCameraSection();
+        }
+      }
+    }
+  }
+
+  onPressSuccessFloatingButton() async {
+    if (animationStart.value == true) {
+      timer!.cancel();
+
+      updateDetails(
+          isFromHistoryAssessmentScanMore:
+              widget.isFromHistoryAssessmentScanMore);
+      Utility.updateLoges(
+          //  ,
+          activityId: '10',
+          description: 'Next Scan',
+          operationResult: 'Success');
+
+      String imgExtension = widget.imgPath.path
+          .substring(widget.imgPath.path.lastIndexOf(".") + 1);
+      _googleDriveBloc.add(AssessmentImgToAwsBucked(
+          isHistoryAssessmentSection: widget.isFromHistoryAssessmentScanMore,
+          imgBase64: widget.img64,
+          imgExtension: imgExtension,
+          studentId: idController.text));
+      // }
+      // COMMENT below section for enableing the camera
+      var result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CameraScreen(
+                  questionImageLink: widget.questionImageUrl ?? '',
+                  obj: widget.obj,
+                  createdAsPremium: widget.createdAsPremium,
+                  isFromHistoryAssessmentScanMore:
+                      widget.isFromHistoryAssessmentScanMore!,
+                  onlyForPicture: false,
+                  isScanMore: widget.isScanMore,
+                  pointPossible: widget.pointPossible,
+                  isFlashOn: ValueNotifier<bool>(widget.isFlashOn),
+                )),
+      );
+      if (result == true) {
+        isBackFromCamera.value = result;
+      }
+    }
   }
 
   Widget loadingScreen() {
@@ -613,18 +535,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     ? retryButton(onPressed: () {
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         Navigator.of(context).pop(widget.isFlashOn);
-
-                        // Navigator.pushReplacement(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => CameraScreen(
-                        //             isFromHistoryAssessmentScanMore:
-                        //                 widget.isFromHistoryAssessmentScanMore!,
-                        //             onlyForPicture: false,
-                        //             isScanMore: widget.isScanMore,
-                        //             pointPossible: widget.pointPossible,
-                        //           )),
-                        // );
                       })
                     : Container()
               ],
@@ -696,11 +606,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .primaryVariant
                         .withOpacity(0.5))),
 
-            //                 ValueListenableBuilder(
-            // valueListenable: isStudentNameFilled,
-            // builder: (BuildContext context, dynamic value, Widget? child) {
-            //   //print(isStudentNameFilled.value);
-            //   return
             textFormField(
                 scrollController: scrollControlleName,
                 controller: nameController,
@@ -711,51 +616,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ],
                 // keyboardType: TextInputType.,
                 isFailure: true,
-                // errormsg:
-                //     "If you would like to save the student in database, Please enter the student name",
                 onSaved: (String value) {
-                  isStudentNameFilled.value = value;
-
-                  // _formKey1.currentState!.validate();
-                  // value != '' ? valuechange = true : valuechange = false;
-                  //  updateDetails(isUpdateData: true);
-                  if (value.isEmpty) {
-                    suggestionEmailList = [];
-                    suggestionEmailListLenght.value = 0;
-                  }
-                  studentName = nameController.text;
-                  if (Overrides.STANDALONE_GRADED_APP) {
-                    suggestionNameList = [];
-                    for (int i = 0; i < studentInfo.length; i++) {
-                      if (studentInfo[i]
-                              .studentName!
-                              .toUpperCase()
-                              .contains(value.toUpperCase()) &&
-                          !suggestionNameList
-                              .contains(studentInfo[i].studentName!)) {
-                        suggestionNameList.add(studentInfo[i].studentName!);
-                      }
-                    }
-                    suggestionNameListLenght.value = suggestionNameList.length;
-                    if (value.length > 3) {
-                      for (int i = 0; i < studentInfo.length; i++) {
-                        if (studentInfo[i].studentName! == value) {
-                          // nameController.text = studentInfo[i].studentName!;
-                          // isStudentNameFilled.value =
-                          //     studentInfo[i].studentName!;
-                          // isNameUpdated.value = !isNameUpdated.value;
-                          idController.text = studentInfo[i].studentEmail!;
-                          isStudentIdFilled.value =
-                              studentInfo[i].studentEmail!;
-                        }
-                      }
-                    }
-                    //        _debouncer.run(() async {
-
-                    //   setState(() {});
-                    // });
-                  }
-                  onChange = true;
+                  studentNameOnSaveFailure(value);
                 },
                 validator: (String? value) {
                   isStudentNameFilled.value = value!; //nameController.text;
@@ -799,14 +661,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 }),
             SpacerWidget(10),
             suggestionWidget(isNameList: true),
-            //       ;},
-            //   child: Container(),
-            // ),
+
             SpacerWidget(_KVertcalSpace / 3),
             Utility.textWidget(
                 text: Overrides.STANDALONE_GRADED_APP == true
                     ? 'Student Email'
-                    : 'Student ID',
+                    : 'Student ID/Student Email',
                 context: context,
                 textTheme: Theme.of(context).textTheme.headline4!.copyWith(
                     color: Theme.of(context)
@@ -824,60 +684,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       textFormField(
                           scrollController: scrollControllerId,
                           controller: idController,
-                          keyboardType: Overrides.STANDALONE_GRADED_APP == true
-                              ? null
-                              : TextInputType.number,
                           hintText: Overrides.STANDALONE_GRADED_APP == true
                               ? 'Student Email'
-                              : 'Student ID',
+                              : 'Student ID/Student Email',
                           isFailure: true,
                           // errormsg:
                           //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
                           onSaved: (String value) {
-                            isStudentIdFilled.value = value;
-                            _formKey1.currentState!.validate();
-                            // updateDetails(isUpdateData: true);
-                            studentId = idController.text;
-                            if (idController.text.length == 9 &&
-                                (idController.text[0] == '2' ||
-                                    idController.text[0] == '1' &&
-                                        Overrides.STANDALONE_GRADED_APP !=
-                                            true)) {
-                              _bloc2.add(FetchStudentDetails(
-                                  ossId: idController.text));
-                            }
-                            if (Overrides.STANDALONE_GRADED_APP) {
-                              suggestionEmailList = [];
-                              for (int i = 0; i < studentInfo.length; i++) {
-                                if (studentInfo[i]
-                                        .studentEmail!
-                                        .toUpperCase()
-                                        .contains(value.toUpperCase()) &&
-                                    !suggestionEmailList.contains(
-                                        studentInfo[i].studentEmail!)) {
-                                  suggestionEmailList
-                                      .add(studentInfo[i].studentEmail!);
-                                }
-                              }
-                              suggestionEmailListLenght.value =
-                                  suggestionEmailList.length;
-                              if (regex.hasMatch(value)) {
-                                for (int i = 0; i < studentInfo.length; i++) {
-                                  if (studentInfo[i].studentEmail! == value) {
-                                    nameController.text =
-                                        studentInfo[i].studentName!;
-                                    isStudentNameFilled.value =
-                                        studentInfo[i].studentName!;
-                                    isNameUpdated.value = !isNameUpdated.value;
-                                  }
-                                }
-                              }
-                              //        _debouncer.run(() async {
-
-                              //   setState(() {});
-                              // });
-                            }
-                            onChange = true;
+                            studentIdOnSaveFailure(value);
                           },
                           validator: (String? value) {
                             isStudentIdFilled.value = value!;
@@ -886,22 +700,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                         !regex.hasMatch(isStudentIdFilled.value)
                                     ? ''
                                     : null
-                                : (!isStudentIdFilled.value.startsWith('2') &&
-                                            !isStudentIdFilled.value
-                                                .startsWith('1')) ||
-                                        isStudentIdFilled.value.length < 9
+                                : isStudentIdFilled.value.isEmpty
                                     ? ''
                                     : null;
                           },
-                          inputFormatters:
-                              Overrides.STANDALONE_GRADED_APP == true
-                                  ? []
-                                  : [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                      // FilteringTextInputFormatter.allow(
-                                      //     RegExp("[0-9]")),
-                                    ],
-                          maxNineDigit: true),
+                          inputFormatters: [],
+                          maxNineDigit: false //true
+                          ),
                       Container(
                         alignment: Alignment.centerLeft,
                         child: TranslationWidget(
@@ -912,15 +717,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                         ? 'Please enter valid Email'
                                         : '')
                                 : (isStudentIdFilled.value == ""
-                                    ? 'Student ID is required'
-                                    : isStudentIdFilled.value.length != 9
-                                        ? 'Student ID Must Have 9 Digits Number'
-                                        : !isStudentIdFilled.value
-                                                    .startsWith('2') &&
-                                                !isStudentIdFilled.value
-                                                    .startsWith('1')
-                                            ? 'Student ID Must Starts Either With \'2\' Or \'1\''
-                                            : ''),
+                                    ? 'Student ID / Student Email is required'
+                                    : ''),
                             fromLanguage: "en",
                             toLanguage: Globals.selectedLanguage,
                             builder: (translatedMessage) {
@@ -964,8 +762,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Widget suggestionWidget({required bool isNameList}) {
-    return Overrides.STANDALONE_GRADED_APP == true
-        ? ValueListenableBuilder(
+    return
+        // Overrides.STANDALONE_GRADED_APP == true
+        //     ?
+        ValueListenableBuilder(
             valueListenable: isNameList == true
                 ? suggestionNameListLenght
                 : suggestionEmailListLenght,
@@ -980,40 +780,91 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           selectedValue: (String value) {
                             if (value.isNotEmpty) {
                               if (isNameList == true) {
-                                nameController.text = value;
-                                for (int i = 0; i < studentInfo.length; i++) {
-                                  if (studentInfo[i].studentName! == value) {
-                                    idController.text =
-                                        studentInfo[i].studentEmail!;
-                                    isNameUpdated.value = !isNameUpdated.value;
-                                    isStudentNameFilled.value =
-                                        studentInfo[i].studentName!;
-                                    suggestionNameList = [];
-                                    suggestionNameListLenght.value = 0;
-                                    isStudentIdFilled.value =
-                                        studentInfo[i].studentEmail!;
-                                    suggestionEmailList = [];
-                                    suggestionEmailListLenght.value = 0;
+                                if (Overrides.STANDALONE_GRADED_APP == true) {
+                                  nameController.text = value;
+                                  for (int i = 0; i < studentInfo.length; i++) {
+                                    if (studentInfo[i].studentName! == value) {
+                                      idController.text =
+                                          studentInfo[i].studentEmail!;
+                                      isNameUpdated.value =
+                                          !isNameUpdated.value;
+                                      isStudentNameFilled.value =
+                                          studentInfo[i].studentName!;
+                                      suggestionNameList = [];
+                                      suggestionNameListLenght.value = 0;
+                                      isStudentIdFilled.value =
+                                          studentInfo[i].studentEmail!;
+                                      suggestionEmailList = [];
+                                      suggestionEmailListLenght.value = 0;
 
-                                    break;
+                                      break;
+                                    }
+                                  }
+                                } else {
+                                  nameController.text = value;
+                                  for (int i = 0;
+                                      i < standardStudentDetails.length;
+                                      i++) {
+                                    if (standardStudentDetails[i].name! ==
+                                        value) {
+                                      idController.text =
+                                          standardStudentDetails[i].studentId!;
+                                      isNameUpdated.value =
+                                          !isNameUpdated.value;
+                                      isStudentNameFilled.value =
+                                          standardStudentDetails[i].name!;
+                                      suggestionNameList = [];
+                                      suggestionNameListLenght.value = 0;
+                                      isStudentIdFilled.value =
+                                          standardStudentDetails[i].studentId!;
+                                      suggestionEmailList = [];
+                                      suggestionEmailListLenght.value = 0;
+
+                                      break;
+                                    }
                                   }
                                 }
                               } else {
-                                idController.text = value;
-                                isStudentIdFilled.value = value;
-                                for (int i = 0; i < studentInfo.length; i++) {
-                                  if (studentInfo[i].studentEmail! == value) {
-                                    nameController.text =
-                                        studentInfo[i].studentName!;
-                                    isNameUpdated.value = !isNameUpdated.value;
-                                    isStudentNameFilled.value =
-                                        studentInfo[i].studentName!;
-                                    suggestionEmailList = [];
-                                    suggestionEmailListLenght.value = 0;
-                                    suggestionNameList = [];
-                                    suggestionNameListLenght.value = 0;
+                                if (Overrides.STANDALONE_GRADED_APP == true) {
+                                  idController.text = value;
+                                  isStudentIdFilled.value = value;
+                                  for (int i = 0; i < studentInfo.length; i++) {
+                                    if (studentInfo[i].studentEmail! == value) {
+                                      nameController.text =
+                                          studentInfo[i].studentName!;
+                                      isNameUpdated.value =
+                                          !isNameUpdated.value;
+                                      isStudentNameFilled.value =
+                                          studentInfo[i].studentName!;
+                                      suggestionEmailList = [];
+                                      suggestionEmailListLenght.value = 0;
+                                      suggestionNameList = [];
+                                      suggestionNameListLenght.value = 0;
 
-                                    break;
+                                      break;
+                                    }
+                                  }
+                                } else {
+                                  idController.text = value;
+                                  isStudentIdFilled.value = value;
+                                  for (int i = 0;
+                                      i < standardStudentDetails.length;
+                                      i++) {
+                                    if (standardStudentDetails[i].studentId! ==
+                                        value) {
+                                      nameController.text =
+                                          standardStudentDetails[i].name!;
+                                      isNameUpdated.value =
+                                          !isNameUpdated.value;
+                                      isStudentNameFilled.value =
+                                          standardStudentDetails[i].name!;
+                                      suggestionEmailList = [];
+                                      suggestionEmailListLenght.value = 0;
+                                      suggestionNameList = [];
+                                      suggestionNameListLenght.value = 0;
+
+                                      break;
+                                    }
                                   }
                                 }
                               }
@@ -1030,8 +881,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                               ? suggestionNameList
                               : suggestionEmailList),
                     );
-            })
-        : Container();
+            });
+    //   : Container();
   }
 
   Widget successScreen({required String id, required String grade}) {
@@ -1063,60 +914,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 isFailure: false,
                 // errormsg: "Make sure to save the record with student name",
                 onSaved: (String value) {
-                  isStudentNameFilled.value = value;
-                  _formKey2.currentState!.validate();
-                  value != '' ? valuechange = true : valuechange = false;
-
-                  if (value.isEmpty) {
-                    suggestionEmailList = [];
-                    suggestionEmailListLenght.value = 0;
-                  }
-                  studentName = nameController.text;
-                  if (Overrides.STANDALONE_GRADED_APP) {
-                    suggestionNameList = [];
-                    for (int i = 0; i < studentInfo.length; i++) {
-                      if (studentInfo[i]
-                              .studentName!
-                              .toUpperCase()
-                              .contains(value.toUpperCase()) &&
-                          !suggestionNameList
-                              .contains(studentInfo[i].studentName!)) {
-                        suggestionNameList.add(studentInfo[i].studentName!);
-                      }
-                    }
-                    suggestionNameListLenght.value = suggestionNameList.length;
-                    if (value.length > 3) {
-                      for (int i = 0; i < studentInfo.length; i++) {
-                        if (studentInfo[i].studentName! == value) {
-                          // nameController.text = studentInfo[i].studentName!;
-                          // isStudentNameFilled.value =
-                          //     studentInfo[i].studentName!;
-                          // isNameUpdated.value = !isNameUpdated.value;
-                          idController.text = studentInfo[i].studentEmail!;
-                          isStudentIdFilled.value =
-                              studentInfo[i].studentEmail!;
-                        }
-                      }
-                    }
-                    //        _debouncer.run(() async {
-
-                    //   setState(() {});
-                    // });
-                  }
-
-                  //updateDetails(isUpdateData: true);
-                  onChange = true;
+                  studentNameOnSaveSuccess(value);
                 },
                 validator: (String? value) {
                   isStudentNameFilled.value = value!;
-                  // return null;
-                  // if (value!.isEmpty) {
-                  //   return 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name';
-                  // } else if (value.length < 3) {
-                  //   return 'Make Sure The Student Name Contains More Than 3 Characters';
-                  // } else {
-                  //   return null;
-                  // }
                 }),
             ValueListenableBuilder(
                 valueListenable: isStudentNameFilled,
@@ -1154,7 +955,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
             Utility.textWidget(
                 text: Overrides.STANDALONE_GRADED_APP == true
                     ? 'Student Email'
-                    : 'Student ID',
+                    : 'Student ID/Student Email',
                 context: context,
                 textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                     color: Theme.of(context)
@@ -1163,80 +964,24 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .withOpacity(0.5))),
             textFormField(
               scrollController: scrollControllerId,
-              maxNineDigit: true,
+              maxNineDigit: false, //true,
               controller: idController,
               keyboardType: Overrides.STANDALONE_GRADED_APP == true
                   ? null
                   : TextInputType.number,
               hintText: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
-                  : 'Student ID',
+                  : 'Student ID/Student Email',
               // errormsg:
               //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
               isFailure: true,
               onSaved: (String value) {
-                isStudentIdFilled.value = value;
-                _formKey2.currentState!.validate();
-                studentId = idController.text;
-                if (idController.text.length == 9 &&
-                    (idController.text[0] == '2' ||
-                        idController.text[0] == '1')) {
-                  _bloc2.add(FetchStudentDetails(ossId: idController.text));
-                }
-                if (Overrides.STANDALONE_GRADED_APP) {
-                  suggestionEmailList = [];
-                  for (int i = 0; i < studentInfo.length; i++) {
-                    if (studentInfo[i]
-                            .studentEmail!
-                            .toUpperCase()
-                            .contains(value.toUpperCase()) &&
-                        !suggestionEmailList
-                            .contains(studentInfo[i].studentEmail!)) {
-                      suggestionEmailList.add(studentInfo[i].studentEmail!);
-                    }
-                  }
-                  suggestionEmailListLenght.value = suggestionEmailList.length;
-                  if (regex.hasMatch(value)) {
-                    for (int i = 0; i < studentInfo.length; i++) {
-                      if (studentInfo[i].studentEmail! == value) {
-                        nameController.text = studentInfo[i].studentName!;
-                        isStudentNameFilled.value = studentInfo[i].studentName!;
-                        isNameUpdated.value = !isNameUpdated.value;
-                      }
-                    }
-                  }
-                  //        _debouncer.run(() async {
-
-                  //   setState(() {});
-                  // });
-                }
-
-                //  updateDetails(isUpdateData: true);
-                onChange = true;
+                studentIdOnSaveSuccess(value);
               },
               validator: (String? value) {
                 isStudentIdFilled.value = value!;
-
-                // return null;
-                // if (value!.isEmpty) {
-                //   return "Student Id Should Not Be Empty, Must Starts With '2' And Contains '9' digits Number";
-                // } else if (value.length != 9) {
-                //   return 'Student ID Must Have 9 Digits Number';
-                // } else if (!value.startsWith('2') && !value.startsWith('1')) {
-                //   return 'Student ID Must Starts With \'2\'';
-                // } else {
-                //   return null;
-                // }
               },
-              inputFormatters: Overrides.STANDALONE_GRADED_APP == true
-                  ? []
-                  : [
-                      FilteringTextInputFormatter.digitsOnly,
-                      // FilteringTextInputFormatter.allow(
-                      //     RegExp("[0-9]")),
-                    ],
-              //  FilteringTextInputFormatter.allow(
-              //         RegExp("[a-z A-Z á-ú Á-Ú 0-9 ]")),
+              inputFormatters: [],
             ),
             ValueListenableBuilder(
                 valueListenable: isStudentIdFilled,
@@ -1248,19 +993,14 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         message: isStudentIdFilled.value == ""
                             ? (Overrides.STANDALONE_GRADED_APP == true
                                 ? 'Student Email is required'
-                                : 'Student ID is required')
+                                : 'Student ID/Student Email is required')
                             : (Overrides.STANDALONE_GRADED_APP == true
                                 ? (regex.hasMatch(isStudentIdFilled.value))
                                     ? ''
                                     : 'Please enter valid Email'
-                                : isStudentIdFilled.value.length != 9
-                                    ? 'Student ID Must Have 9 Digits Number'
-                                    : !isStudentIdFilled.value
-                                                .startsWith('2') &&
-                                            !isStudentIdFilled.value
-                                                .startsWith('1')
-                                        ? 'Student ID Must Starts Either With \'2\' Or \'1\''
-                                        : ''),
+                                : isStudentIdFilled.value.isEmpty
+                                    ? 'Student Email is required'
+                                    : ''),
                         fromLanguage: "en",
                         toLanguage: Globals.selectedLanguage,
                         builder: (translatedMessage) {
@@ -1406,11 +1146,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     isSelected = false;
                     rubricNotDetected.value = false;
                     indexColor.value = index;
-                    // updateDetails(isUpdateData: true);
-
-                    // nameController.text = studentName;
-                    // idController.text = studentId;
-                    //.text = studentId;
                   },
                   child: AnimatedContainer(
                     duration: Duration(microseconds: 100),
@@ -1644,14 +1379,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
         // studentAssessmentInfo.pointpossible = Globals.pointpossible;
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
-        List id = [];
-        // for (int i = 0; i < historyStudentInfo.length; i++) {
-        //   if (!historyStudentInfo.contains(id)) {
-        //     id.add(historyStudentInfo[i].studentId);
-        //   } else {
-        //     //print('Record is already exist in the list. Skipping...');
-        //   }
-        // }
 
         //  if (!id.contains(idController.text)) {
         await _historyStudentInfoDb.putAt(
@@ -1660,20 +1387,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
         return;
       } else {
-        // StudentAssessmentInfo studentAssessmentInfo =
-        //         StudentAssessmentInfo();
-        // if (historyStudentInfo.isEmpty) {
-        //   // final StudentAssessmentInfo studentAssessmentInfo =
-        //   //     StudentAssessmentInfo();
-        //   studentAssessmentInfo.studentName =
-        //       nameController.text.isNotEmpty ? nameController.text : "Unknown";
-        //   studentAssessmentInfo.studentId = idController.text;
-        //   studentAssessmentInfo.studentGrade = pointScored.value;
-        //   studentAssessmentInfo.pointpossible = Globals.pointpossible ?? '2';
-        //   studentAssessmentInfo.assessmentImgPath = widget.imgPath.toString();
-        //   // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-        //   await _historyStudentInfoDb.addData(studentAssessmentInfo);
-        // } else
         if (historyStudentInfo.isNotEmpty) {
           List id = [];
           for (int i = 0; i < historyStudentInfo.length; i++) {
@@ -1684,25 +1397,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
             }
           }
           if (!id.contains(idController.text)) {
-            // StudentAssessmentInfo studentAssessmentInfo =
-            //     StudentAssessmentInfo();
             studentAssessmentInfo.studentName = nameController.text.isNotEmpty
                 ? nameController.text
                 : "Unknown";
             studentAssessmentInfo.studentId = idController.text;
             studentAssessmentInfo.studentGrade =
                 indexColor.value.toString(); //pointScored.value;
-            // studentAssessmentInfo.pointpossible = Globals.pointpossible;
+
             studentAssessmentInfo.assessmentImgPath =
                 widget.imgPath.path.toString();
-            // studentAssessmentInfo.assessmentName = Globals.assessmentName;
-            //Imp uncomment
-            // if (!historyStudentInfo.contains(id)) {
-            //   //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
-            //   List list = await _historyStudentInfoDb.getData();
-            //   //print(list);
-            //   await _historyStudentInfoDb.addData(studentAssessmentInfo);
-            // }
+
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
               List list = await _historyStudentInfoDb.getData();
@@ -1854,38 +1558,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
     }
   }
 
-  // Widget emailTextField() {
-  //   return Autocomplete<String>(
-
-  //     optionsBuilder: (TextEditingValue textEditingValue) {
-  //       if (textEditingValue.text == '') {
-  //         return const Iterable<String>.empty();
-  //       }
-  //       return studentEmailList.where((String option) {
-  //         return option.contains(textEditingValue.text.toLowerCase());
-  //       });
-  //     },
-
-  //     onSelected: (String selection) {
-  //       debugPrint('You just selected $selection');
-  //     },
-  //   );
-  // }
-
-  // updateEmailList() async {
-  //   LocalDatabase<GoogleClassroomCourses> _localDb =
-  //       LocalDatabase(Strings.googleClassroomCoursesList);
-
-  //   List<GoogleClassroomCourses>? _localData = await _localDb.getData();
-  //   studentEmailList = [];
-  //   for (var i = 0; i < _localData.length; i++) {
-  //     for (var j = 0; j < _localData[i].studentList!.length; j++) {
-  //       studentEmailList
-  //           .add(_localData[i].studentList![j]['profile']['emailAddress']);
-  //     }
-  //   }
-  //   print(studentEmailList);
-  // }
   Future<List<StudentClassroomInfo>> studentList() async {
     try {
       List<StudentClassroomInfo> studentList = [];
@@ -1912,5 +1584,298 @@ class _SuccessScreenState extends State<SuccessScreen> {
       List<StudentClassroomInfo> studentList = [];
       return studentList;
     }
+  }
+
+  Future<List<StudentDetailsModal>> updateStudentDetails() async {
+    try {
+      //  List<StudentDetailsModal> studentList = [];
+      LocalDatabase<StudentDetailsModal> _localDb =
+          LocalDatabase(Strings.studentDetailList);
+
+      List<StudentDetailsModal>? _localData = await _localDb.getData();
+
+      standardStudentDetails.clear();
+      standardStudentDetails = _localData;
+      return standardStudentDetails;
+    } catch (e) {
+      List<StudentDetailsModal> studentList = [];
+      return studentList;
+    }
+  }
+
+  studentIdOnSaveFailure(value) {
+    isStudentIdFilled.value = value;
+    _formKey1.currentState!.validate();
+    suggestionEmailList.clear();
+
+    // updateDetails(isUpdateData: true);
+    studentId = idController.text;
+    if (idController.text.length == 9 &&
+        (idController.text[0] == '2' ||
+            idController.text[0] == '1' &&
+                Overrides.STANDALONE_GRADED_APP != true)) {
+      _bloc2.add(FetchStudentDetails(ossId: idController.text));
+    }
+
+    //List of suggestion emails for Standalone app
+    if (Overrides.STANDALONE_GRADED_APP && value.isNotEmpty) {
+      // suggestionEmailList = [];
+      for (int i = 0; i < studentInfo.length; i++) {
+        if (studentInfo[i]
+                .studentEmail!
+                .toUpperCase()
+                .contains(value.toUpperCase()) &&
+            !suggestionEmailList.contains(studentInfo[i].studentEmail!)) {
+          suggestionEmailList.add(studentInfo[i].studentEmail!);
+        }
+      }
+
+      // //Assign the length of suggestion emails
+      // suggestionEmailListLenght.value =
+      //     suggestionEmailList.length;
+
+      if (regex.hasMatch(value)) {
+        for (int i = 0; i < studentInfo.length; i++) {
+          if (studentInfo[i].studentEmail! == value) {
+            nameController.text = studentInfo[i].studentName!;
+            isStudentNameFilled.value = studentInfo[i].studentName!;
+            isNameUpdated.value = !isNameUpdated.value;
+          }
+        }
+      }
+    }
+
+    //List of suggestion emails for Standard app
+    else if (value.isNotEmpty) {
+      // suggestionEmailList = [];
+      for (int i = 0; i < standardStudentDetails.length; i++) {
+        if ((standardStudentDetails[i]
+                    .studentId!
+                    .toUpperCase()
+                    .contains(value.toUpperCase()) ||
+                standardStudentDetails[i]
+                    .email!
+                    .toUpperCase()
+                    .contains(value.toUpperCase())) &&
+            !suggestionEmailList
+                .contains(standardStudentDetails[i].studentId!)) {
+          if (standardStudentDetails[i]
+                  .email!
+                  .toUpperCase()
+                  .contains(value.toUpperCase()) &&
+              standardStudentDetails[i].email! != '') {
+            suggestionEmailList.add(standardStudentDetails[i].email!);
+          } else if (standardStudentDetails[i]
+              .studentId!
+              .toUpperCase()
+              .contains(value.toUpperCase())) {
+            suggestionEmailList.add(standardStudentDetails[i].studentId!);
+          }
+        }
+      }
+
+      // //Assign the length of suggestion emails
+      // suggestionEmailListLenght.value =
+      //     suggestionEmailList.length;
+
+      if (regex.hasMatch(value)) {
+        for (int i = 0; i < standardStudentDetails.length; i++) {
+          if (standardStudentDetails[i].name! == value) {
+            nameController.text = standardStudentDetails[i].name!;
+            isStudentNameFilled.value = standardStudentDetails[i].name!;
+            isNameUpdated.value = !isNameUpdated.value;
+          }
+        }
+      }
+    } else {
+      // suggestionEmailList = [];
+      // suggestionEmailListLenght.value =
+      //     suggestionEmailList.length;
+    }
+
+    // //Assign the length of suggestion emails
+    suggestionEmailListLenght.value = suggestionEmailList.length;
+
+    onChange = true;
+  }
+
+  studentNameOnSaveFailure(value) {
+    isStudentNameFilled.value = value;
+    suggestionNameList.clear();
+
+    studentName = nameController.text;
+    if (Overrides.STANDALONE_GRADED_APP && value.isNotEmpty) {
+      for (int i = 0; i < studentInfo.length; i++) {
+        if (studentInfo[i]
+                .studentName!
+                .toUpperCase()
+                .contains(value.toUpperCase()) &&
+            !suggestionNameList.contains(studentInfo[i].studentName!)) {
+          suggestionNameList.add(studentInfo[i].studentName!);
+        }
+      }
+      suggestionNameListLenght.value = suggestionNameList.length;
+      if (value.length > 3) {
+        for (int i = 0; i < studentInfo.length; i++) {
+          if (studentInfo[i].studentName! == value) {
+            idController.text = studentInfo[i].studentEmail!;
+            isStudentIdFilled.value = studentInfo[i].studentEmail!;
+          }
+        }
+      }
+    } else if (value.isNotEmpty) {
+      for (int i = 0; i < standardStudentDetails.length; i++) {
+        if (standardStudentDetails[i]
+                .name!
+                .toUpperCase()
+                .contains(value.toUpperCase()) &&
+            !suggestionNameList.contains(standardStudentDetails[i].name!)) {
+          suggestionNameList.add(standardStudentDetails[i].name!);
+        }
+      }
+      suggestionNameListLenght.value = suggestionNameList.length;
+      if (value.length > 3) {
+        for (int i = 0; i < standardStudentDetails.length; i++) {
+          if (standardStudentDetails[i].name! == value) {
+            idController.text = standardStudentDetails[i].name!;
+            isStudentIdFilled.value = standardStudentDetails[i].name!;
+          }
+        }
+      }
+    } else {
+      suggestionEmailListLenght.value = 0;
+    }
+    onChange = true;
+  }
+
+  studentIdOnSaveSuccess(value) {
+    isStudentIdFilled.value = value;
+    _formKey2.currentState!.validate();
+    studentId = idController.text;
+    suggestionEmailList.clear();
+
+    if (idController.text.length == 9 &&
+        (idController.text[0] == '2' || idController.text[0] == '1')) {
+      _bloc2.add(FetchStudentDetails(ossId: idController.text));
+    }
+    if (Overrides.STANDALONE_GRADED_APP && value.isNotEmpty) {
+      for (int i = 0; i < studentInfo.length; i++) {
+        if (studentInfo[i]
+                .studentEmail!
+                .toUpperCase()
+                .contains(value.toUpperCase()) &&
+            !suggestionEmailList.contains(studentInfo[i].studentEmail!)) {
+          suggestionEmailList.add(studentInfo[i].studentEmail!);
+        }
+      }
+      suggestionEmailListLenght.value = suggestionEmailList.length;
+      if (regex.hasMatch(value)) {
+        for (int i = 0; i < studentInfo.length; i++) {
+          if (studentInfo[i].studentEmail! == value) {
+            nameController.text = studentInfo[i].studentName!;
+            isStudentNameFilled.value = studentInfo[i].studentName!;
+            isNameUpdated.value = !isNameUpdated.value;
+          }
+        }
+      }
+    } else if (value.isNotEmpty) {
+      for (int i = 0; i < standardStudentDetails.length; i++) {
+        if ((standardStudentDetails[i]
+                    .studentId!
+                    .toUpperCase()
+                    .contains(value.toUpperCase()) ||
+                standardStudentDetails[i]
+                    .email!
+                    .toUpperCase()
+                    .contains(value.toUpperCase())) &&
+            !suggestionEmailList
+                .contains(standardStudentDetails[i].studentId!)) {
+          if (standardStudentDetails[i]
+                  .email!
+                  .toUpperCase()
+                  .contains(value.toUpperCase()) &&
+              standardStudentDetails[i].email! != '') {
+            suggestionEmailList.add(standardStudentDetails[i].email!);
+          } else if (standardStudentDetails[i]
+              .studentId!
+              .toUpperCase()
+              .contains(value.toUpperCase())) {
+            suggestionEmailList.add(standardStudentDetails[i].studentId!);
+          }
+        }
+      }
+      suggestionEmailListLenght.value = suggestionEmailList.length;
+      if (regex.hasMatch(value)) {
+        for (int i = 0; i < standardStudentDetails.length; i++) {
+          if (standardStudentDetails[i].name! == value) {
+            nameController.text = standardStudentDetails[i].name!;
+            isStudentNameFilled.value = standardStudentDetails[i].name!;
+            isNameUpdated.value = !isNameUpdated.value;
+          }
+        }
+      }
+    } else {
+      suggestionEmailList = [];
+      suggestionEmailListLenght.value = 0;
+    }
+
+    //  updateDetails(isUpdateData: true);
+    onChange = true;
+  }
+
+  studentNameOnSaveSuccess(String value) {
+    isStudentNameFilled.value = value;
+    _formKey2.currentState!.validate();
+    value != '' ? valuechange = true : valuechange = false;
+    suggestionNameList.clear();
+
+    if (value.isEmpty) {
+      // suggestionNameList.clear();
+      suggestionEmailListLenght.value = 0;
+    }
+
+    studentName = nameController.text;
+    if (Overrides.STANDALONE_GRADED_APP) {
+      // suggestionNameList.clear();
+      for (int i = 0; i < studentInfo.length; i++) {
+        if (studentInfo[i]
+                .studentName!
+                .toUpperCase()
+                .contains(value.toUpperCase()) &&
+            !suggestionNameList.contains(studentInfo[i].studentName!)) {
+          suggestionNameList.add(studentInfo[i].studentName!);
+        }
+      }
+      suggestionNameListLenght.value = suggestionNameList.length;
+      if (value.length > 3) {
+        for (int i = 0; i < studentInfo.length; i++) {
+          if (studentInfo[i].studentName! == value) {
+            idController.text = studentInfo[i].studentEmail!;
+            isStudentIdFilled.value = studentInfo[i].studentEmail!;
+          }
+        }
+      }
+    } else {
+      for (int i = 0; i < standardStudentDetails.length; i++) {
+        if (standardStudentDetails[i]
+                .name!
+                .toUpperCase()
+                .contains(value.toUpperCase()) &&
+            !suggestionNameList.contains(standardStudentDetails[i].name!)) {
+          suggestionNameList.add(standardStudentDetails[i].name!);
+        }
+      }
+      suggestionNameListLenght.value = suggestionNameList.length;
+      if (value.length > 3) {
+        for (int i = 0; i < standardStudentDetails.length; i++) {
+          if (standardStudentDetails[i].name! == value) {
+            idController.text = standardStudentDetails[i].email!;
+            isStudentIdFilled.value = standardStudentDetails[i].email!;
+          }
+        }
+      }
+    }
+
+    onChange = true;
   }
 }
