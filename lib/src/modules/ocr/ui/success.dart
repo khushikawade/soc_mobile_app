@@ -968,9 +968,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
               scrollController: scrollControllerId,
               maxNineDigit: false, //true,
               controller: idController,
-              keyboardType: Overrides.STANDALONE_GRADED_APP == true
-                  ? null
-                  : TextInputType.number,
+              // keyboardType: Overrides.STANDALONE_GRADED_APP == true
+              //     ? null
+              //     : TextInputType.number,
               hintText: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
                   : 'Student ID/Student Email',
