@@ -198,21 +198,21 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: _textFiled(
                                           whichContoller: 2,
-                                          keyboardType:
-                                              Overrides.STANDALONE_GRADED_APP ==
-                                                      true
-                                                  ? null
-                                                  : TextInputType.number,
-                                          maxNineDigit:
-                                              Overrides.STANDALONE_GRADED_APP ==
-                                                      true
-                                                  ? null
-                                                  : 9,
+                                          // keyboardType:
+                                          //     Overrides.STANDALONE_GRADED_APP ==
+                                          //             true
+                                          //         ? null
+                                          //         : TextInputType.number,
+                                          // maxNineDigit:
+                                          //     Overrides.STANDALONE_GRADED_APP ==
+                                          //             true
+                                          //         ? null
+                                          //         : null,
                                           msg:
                                               Overrides.STANDALONE_GRADED_APP ==
                                                       true
                                                   ? 'enter a valid Email'
-                                                  : "field is required ",
+                                                  : "field is required",
                                           controller:
                                               widget.textFieldControllerTwo)),
                                   if (Overrides.STANDALONE_GRADED_APP == true)
@@ -348,6 +348,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                           backgroundColor:
                               AppTheme.kButtonColor.withOpacity(1.0),
                           onPressed: () async {
+                            //  dnakhfkahj
                             if (_formKey.currentState!.validate()) {
                               widget.update(
                                   name: widget.textFieldControllerOne,
@@ -520,21 +521,22 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
       validator: (text) {
         if (text == null || text.isEmpty) {
           return msg;
-        } else {
-          if (whichContoller == 2) {
-            if (Overrides.STANDALONE_GRADED_APP == true &&
-                !regex.hasMatch(text)) {
-              return msg;
-            } else if (Overrides.STANDALONE_GRADED_APP != true &&
-                text.length != 9) {
-              return msg;
-            } else {
-              return null;
-            }
-          } else if (text.length != 1 && whichContoller == 3) {
-            return msg;
-          }
         }
+        //  else {
+        //   if (whichContoller == 2) {
+        //     if (Overrides.STANDALONE_GRADED_APP == true &&
+        //         !regex.hasMatch(text)) {
+        //       return msg;
+        //     } else if (Overrides.STANDALONE_GRADED_APP != true &&
+        //         text.length < 3) {
+        //       return msg;
+        //     } else {
+        //       return null;
+        //     }
+        //   } else if (text.length != 1 && whichContoller == 3) {
+        //     return msg;
+        //   }
+        // }
 
         return null;
       },
