@@ -167,10 +167,7 @@ class _FamilyPageState extends State<FamilyPage> {
         body: Globals.appSetting.familyBannerImageC != null &&
                 Globals.appSetting.familyBannerImageC != ''
             ? NestedScrollView(
-
-                // floatHeaderSlivers: true,
                 controller: _scrollController,
-                floatHeaderSlivers: true,
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[

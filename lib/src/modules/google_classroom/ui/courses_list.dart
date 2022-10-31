@@ -507,9 +507,11 @@ class _CoursesListScreenState extends State<CoursesListScreen>
   bool onNotification(ScrollNotification t) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (t.metrics.pixels < 150 && t.metrics.pixels >= 0) {
-        isScrolling.value = true;
+        if (isScrolling.value == false) isScrolling.value = true;
       } else {
-        isScrolling.value = false;
+        //To prevent from negative value
+        if (t.metrics.pixels < 0 == false && isScrolling.value == true)
+          isScrolling.value = false;
       }
     });
 
