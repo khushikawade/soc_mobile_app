@@ -18,7 +18,7 @@ class UserGoogleProfile {
       //print(_userInformation[0].userEmail);
       //print(_userInformation[0].userName);
     }
-  //  await _localDb.close();
+    //  await _localDb.close();
     return _userInformation;
   }
 

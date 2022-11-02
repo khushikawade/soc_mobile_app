@@ -98,7 +98,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                     ),
                     height: MediaQuery.of(context).orientation ==
                             Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.85
+                        ? MediaQuery.of(context).size.height * 0.88
                         : MediaQuery.of(context).size.width * 0.80,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,

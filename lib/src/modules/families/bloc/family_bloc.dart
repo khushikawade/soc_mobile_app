@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/families/modal/calendar_banner_image_modal.dart';
 import 'package:Soc/src/modules/families/modal/calendar_event_list.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
-import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -171,22 +171,30 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
       try {
         yield FamilyLoading();
+        //Fetch local calendar events
         String? _objectName =
             "${Strings.calendarObjectName}${event.calendarId}";
         LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
         List<CalendarEventList>? _localData = await _localDb.getData();
 
-        //Clear calendar local data to resolve loading issue
+        //fetch local calendar banners
+        LocalDatabase<CalendarBannerImageModal> _calendarBannerImagelocalDb =
+            LocalDatabase(Strings.calendarBannerObjectName);
+        List<CalendarBannerImageModal>? _calendarBannerImagelocalData =
+            await _calendarBannerImagelocalDb.getData();
+
+        //Clear calendar local data to manage loading issue
         SharedPreferences clearCalendarCache =
             await SharedPreferences.getInstance();
-        final clearChacheResult =
+        final clearCacheResult =
             clearCalendarCache.getBool('delete_local_calendar');
 
-        if (clearChacheResult != true) {
+        if (clearCacheResult != true) {
           _localData.clear();
           await clearCalendarCache.setBool('delete_local_calendar', true);
         }
 
+        //Send the local calendar data to UI first
         if (_localData.isEmpty) {
           yield FamilyLoading();
         } else {
@@ -195,24 +203,36 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           sortCalendarEvents(pastListobj!);
 
           yield CalendarListSuccess(
+              calendarBannerImageList: _calendarBannerImagelocalData,
               futureListobj: mapListObj(futureListobj!),
               pastListobj: mapListObj(pastListobj!.reversed.toList()));
         }
 
-        List<CalendarEventList> list =
-            await getCalendarEventList(event.calendarId);
+        //Call calendar events and banners via API to sync latest data
+        List<dynamic> calendarCombineResponse = await Future.wait(
+            [getCalendarEventList(event.calendarId), getCalendarBannerImage()]);
 
         await _localDb.clear();
-        list.forEach((CalendarEventList e) {
+        calendarCombineResponse[0].forEach((CalendarEventList e) {
           _localDb.addData(e);
         });
+
+        await _calendarBannerImagelocalDb.clear();
+        calendarCombineResponse[1].forEach((CalendarBannerImageModal e) {
+          _calendarBannerImagelocalDb.addData(e);
+        });
+
         //Filter the furure and past events
-        filterFutureAndPastEvents(list, currentDate);
+        filterFutureAndPastEvents(calendarCombineResponse[0], currentDate);
+
         //Sort the events date wise
         sortCalendarEvents(futureListobj!);
         sortCalendarEvents(pastListobj!);
         yield FamilyLoading();
+
+        //Send latest data to UI
         yield CalendarListSuccess(
+            calendarBannerImageList: calendarCombineResponse[1],
             futureListobj:
                 mapListObj(futureListobj!), //Grouping the events by month
             pastListobj: mapListObj(pastListobj!.reversed.toList())
@@ -229,12 +249,19 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               LocalDatabase(_objectName);
           List<CalendarEventList>? _localData = await _localDb.getData();
 
+          //get local calendar banners
+          LocalDatabase<CalendarBannerImageModal> _calendarBannerImagelocalDb =
+              LocalDatabase(Strings.calendarBannerObjectName);
+          List<CalendarBannerImageModal>? _calendarBannerImagelocalData =
+              await _calendarBannerImagelocalDb.getData();
+
           filterFutureAndPastEvents(_localData, currentDate);
           // futureListobj.whereNot((element) => element.status != "cancelled");
           sortCalendarEvents(futureListobj!);
           sortCalendarEvents(pastListobj!);
 
           yield CalendarListSuccess(
+              calendarBannerImageList: _calendarBannerImagelocalData,
               futureListobj: mapListObj(futureListobj!),
               pastListobj: mapListObj(pastListobj!.reversed.toList()));
         }
@@ -245,9 +272,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   filterFutureAndPastEvents(List<CalendarEventList> eventList, currentDate) {
     futureListobj!.clear();
     pastListobj!.clear();
-
-    for (int i = 0; i < eventList.length; i++) {
-      try {
+    try {
+      for (int i = 0; i < eventList.length; i++) {
+        //if (eventList[i].start != null) {
         var temp = eventList[i].start.toString().contains('dateTime')
             ? eventList[i].start['dateTime'].toString().substring(0, 10)
             : eventList[i].start['date'].toString().substring(0, 10);
@@ -256,9 +283,10 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         } else {
           futureListobj!.add(eventList[i]);
         }
-      } catch (e) {
-        throw (e);
+        //   }
       }
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -367,6 +395,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         List<CalendarEventList> data1 = dataArray
             .map<CalendarEventList>((i) => CalendarEventList.fromJson(i))
             .toList();
+        data1.removeWhere((element) => element.start == null);
         // //print(data1);
         return data1.map((i) {
           var datetime = i.start != null
@@ -377,7 +406,9 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
                   ? i.originalStartTime['dateTime'].toString().substring(0, 10)
                   : '1950-01-01');
           String month = Utility.convertTimestampToDateFormat(
-              DateTime.parse(datetime), 'MMM yyyy');
+              DateTime.parse(datetime), 'MMMM yyyy');
+          String monthString = Utility.convertTimestampToDateFormat(
+              DateTime.parse(datetime), 'MMMM');
 
           return CalendarEventList(
               kind: i.kind,
@@ -394,11 +425,32 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
               iCalUid: i.iCalUid,
               sequence: i.sequence,
               eventType: i.eventType,
-              month: month);
+              month: month,
+              monthString: monthString);
         }).toList();
       } else {
         throw ('something_went_wrong');
       }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<CalendarBannerImageModal>> getCalendarBannerImage() async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          Uri.encodeFull(
+              'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/getRecord/Calendar__c'),
+          isCompleteUrl: true);
+      if (response.statusCode == 200) {
+        List<CalendarBannerImageModal> _list = response.data['body']
+            .map<CalendarBannerImageModal>(
+                (i) => CalendarBannerImageModal.fromJson(i))
+            .toList();
+
+        return _list;
+      }
+      return [];
     } catch (e) {
       throw (e);
     }

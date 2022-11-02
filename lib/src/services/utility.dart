@@ -897,8 +897,8 @@ class Utility {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase(tableName);
 
-    List<StudentAssessmentInfo> _studentInfoListDb =
-        await _studentInfoDb.getData();
+    List<StudentAssessmentInfo> _studentInfoListDb = [];
+    _studentInfoListDb = await _studentInfoDb.getData();
     if (_studentInfoListDb.isNotEmpty) {
       if (_studentInfoListDb[0].studentId == 'Id' ||
           _studentInfoListDb[0].studentId == 'Name') {

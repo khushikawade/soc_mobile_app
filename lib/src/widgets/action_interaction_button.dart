@@ -283,13 +283,13 @@ class _ActionInteractionButtonWidgetState
       iconNameIndex = index;
     });
 
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          iconNameIndex = -1;
-        });
-      }
-    });
+    // Future.delayed(const Duration(seconds: 2), () {
+    if (mounted) {
+      setState(() {
+        iconNameIndex = -1;
+      });
+    }
+    // });
 
     index == 0
         ? like.value =

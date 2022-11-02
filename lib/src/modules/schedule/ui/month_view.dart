@@ -111,24 +111,26 @@ class _MonthViewPageState extends State<MonthViewPage>
                           );
                         },
                         cellBuilder: (date, event, isToday, isInMonth) {
-                          return FilledCell(
-                            highlightRadius:
-                                Globals.deviceType == "phone" ? 11 : 20,
-                            isInMonth: isInMonth,
-                            highlightedTitleColor:
-                                Theme.of(context).colorScheme.background,
-                            highlightColor: Color(0xff000000) ==
-                                    Theme.of(context).backgroundColor
-                                ? AppTheme.kDarkModeIconColor
-                                : AppTheme.kLightModeIconColor,
-                            date: date,
-                            shouldHighlight: isToday,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.background,
-                            onTileTap: (event, date) =>
-                                _navigateToDayView(date: date),
-                            events: event,
-                          );
+                          return isInMonth
+                              ? FilledCell(
+                                  highlightRadius:
+                                      Globals.deviceType == "phone" ? 11 : 20,
+                                  isInMonth: isInMonth,
+                                  highlightedTitleColor:
+                                      Theme.of(context).colorScheme.background,
+                                  highlightColor: Color(0xff000000) ==
+                                          Theme.of(context).backgroundColor
+                                      ? AppTheme.kDarkModeIconColor
+                                      : AppTheme.kLightModeIconColor,
+                                  date: date,
+                                  shouldHighlight: isToday,
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.background,
+                                  onTileTap: (event, date) =>
+                                      _navigateToDayView(date: date),
+                                  events: event,
+                                )
+                              : Container();
                         },
                         onCellTap: (evets, date) =>
                             _navigateToDayView(date: date),

@@ -110,8 +110,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           theme: theme,
           darkTheme: darkTheme,
           home: StartupPage(
-              isOcrSection:
-                  Overrides.STANDALONE_GRADED_APP ?? false //Standalone app
+              isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
               //false,  /For standard app
               ),
           // home: SchoolIDLogin(),

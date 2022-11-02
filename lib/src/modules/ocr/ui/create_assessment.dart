@@ -662,7 +662,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
               } else {
                 // if (_formKey.currentState!.validate()) {
                 if (assessmentNameError.value.isNotEmpty &&
-                    assessmentNameError.value.length > 2 &&
+                    assessmentNameError.value.length >= 2 &&
                     classError.value.isNotEmpty) {
                   Globals.assessmentName =
                       "${assessmentController.text}_${classController.text}";
@@ -922,7 +922,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   _checkFieldEditable() {
     if (isAlreadySelected.value) {
       Utility.currentScreenSnackBar(
-          'You cannot edit the Assessment Name and Class once created.', null);
+          'You cannot edit the Assessment Name and Class, once created.', null);
     }
     return;
   }

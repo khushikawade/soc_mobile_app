@@ -23,6 +23,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import '../../../services/Strings.dart';
 import '../../../services/local_database/local_db.dart';
 import '../widgets/bottom_sheet_widget.dart';
 
@@ -1403,22 +1404,50 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   // Fuction to update custom(subject added by teacher) subjects to local db --
   Future<void> updateList(
       {required String subjectName, required String classNo}) async {
-    LocalDatabase<StateListObject> _localDb =
-        LocalDatabase('Subject_list${widget.stateName}$classNo');
-    List<StateListObject>? _localData = await _localDb.getData();
+    List<StateListObject> subjectList = [];
 
-    if (!_localData.contains(subjectName) && subjectName != '') {
+    // to get custom subject list from localDb - State and class specific
+    LocalDatabase<StateListObject> _customSubjectlocalDb =
+        LocalDatabase('Subject_list${widget.stateName}$classNo');
+    List<StateListObject>? _stateCustomlocalData =
+        await _customSubjectlocalDb.getData();
+
+    // to get state list from localDb and extract subject names
+    LocalDatabase<StateListObject> _stateSubjectLocalDb =
+        LocalDatabase(Strings.stateObjectName);
+    List<StateListObject>? _stateSubjectLocalData =
+        await _stateSubjectLocalDb.getData();
+
+    //only adding the subjects state specific
+    for (int i = 0; i < _stateSubjectLocalData.length; i++) {
+      if (_stateSubjectLocalData[i].stateC == widget.stateName) {
+        subjectList.add(_stateSubjectLocalData[i]);
+      }
+    }
+
+    //Add custom subjects to the subject list
+    subjectList.addAll(_stateCustomlocalData);
+
+    //To check if subject already exist in the array before adding to the list
+    bool found = false;
+    subjectList.forEach((s) {
+      if (s.titleC!.toLowerCase() == subjectName.toLowerCase()) {
+        found = true;
+      }
+    });
+
+    if (subjectName.isNotEmpty && !found) {
       StateListObject subjectDetailList = StateListObject();
       subjectDetailList.titleC = subjectName;
-      _localData.add(subjectDetailList);
+      _stateCustomlocalData.add(subjectDetailList);
     } else {
       Utility.showSnackBar(_scaffoldKey,
           "Subject \'$subjectName\' Already Exist", context, null);
     }
 
-    await _localDb.clear();
-    _localData.forEach((StateListObject e) {
-      _localDb.addData(e);
+    await _customSubjectlocalDb.clear();
+    _stateCustomlocalData.forEach((StateListObject e) {
+      _customSubjectlocalDb.addData(e);
     });
     // Calling event to update subject page --------
     _ocrBloc.add(FetchSubjectDetails(
@@ -1457,21 +1486,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
         List<CustomRubicModal>? _localData = await _localDb.getData();
         String? rubricImgUrl;
-        // String? rubricScore;
+
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].customOrStandardRubic == "Custom" &&
-              _localData[i].name == Globals.scoringRubric!.split(" ")[0]) {
-            rubricImgUrl = _localData[i].imgUrl;
+              '${_localData[i].name}' + ' ' + '${_localData[i].score}' ==
+                  Globals.scoringRubric!) {
+            rubricImgUrl = await _localData[i].imgUrl;
             break;
-            // rubricScore = null;
-          }
-          //  else if (_localData[i].name == Globals.scoringRubric &&
-          //         _localData[i].customOrStandardRubic != "Custom") {
-          //       // rubricScore = _localData[i].score;
-          //     }
-          else {
+          } else {
             rubricImgUrl = 'NA';
-            // rubricScore = 'NA';
           }
         }
 

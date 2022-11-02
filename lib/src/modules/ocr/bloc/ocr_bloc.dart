@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
@@ -233,29 +235,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // To fetch recent selected subject list
         LocalDatabase<SubjectDetailList> recentOptionDB =
             LocalDatabase('recent_option_subject');
-        // List<SubjectDetailList> data = await fatchSubjectDetails(
-        //     type: event.type!,
-        //     keyword: event.keyword!,
-        //     isSearchPage: event.isSearchPage ?? false,
-        //     gradeNo: event.grade,
-        //     subjectSelected: event.subjectSelected);
 
-        // Condition To Chnage respoance accoding to selection type
         if (event.type == 'subject') {
-          // List<StateListObject> subjectList = [];
-          // LocalDatabase<StateListObject> _localDb =
-          //     LocalDatabase(Strings.stateObjectName);
-          // List<StateListObject>? _localData = await _localDb.getData();
-          // for (int i = 0; i < _localData.length; i++) {
-          //   if (_localData[i].stateC == event.stateName) {
-          //     subjectList.add(_localData[i]);
-          //   }
-          // }
-          // List<StateListObject> list = await fatchLocalSubject(event.keyword!);
-          // subjectList.addAll(list);
-          // yield OcrLoading();
           List<SubjectDetailList> recentSubjectlist =
               await recentOptionDB.getData();
+          await recentOptionDB.close();
           List<StateListObject> subjectList = await getSubjectName(
             keyword: event.selectedKeyword!,
             stateName: event.stateName!,
@@ -537,6 +521,42 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
+    if (event is GetRubricPdf) {
+      LocalDatabase<RubricPdfModal> _localDb =
+          LocalDatabase(Strings.rubicPdfObjectName);
+      List<RubricPdfModal>? _localData = await _localDb.getData();
+      List<RubricPdfModal> sepratedList = [];
+      try {
+        yield OcrLoading();
+        if (_localData.isNotEmpty) {
+          yield GetRubricPdfSuccess(
+            objList: _localData,
+          );
+        }
+        //Fetch overall list from API
+        List<RubricPdfModal> pdfList = await getRubicPdfList();
+        if (pdfList.length > 0) {
+          //Sort pdf list app wise (Standard/Standalone)
+          sepratedList = await sortRubricPDFList(pdfList);
+        }
+
+        await _localDb.clear();
+        sepratedList.forEach((element) async {
+          await _localDb.addData(element);
+        });
+
+        if (sepratedList.isNotEmpty && _localData.isEmpty) {
+          yield GetRubricPdfSuccess(
+            objList: sepratedList,
+          );
+        } else if (sepratedList.isEmpty && _localData.isEmpty) {
+          yield NoRubricAvailable();
+        }
+      } catch (e) {
+        yield OcrErrorReceived(err: e);
+      }
+    }
+
     // ---------- Event to Save Selected State Subject List to Local DB ----------
     // if (event is SaveSubjectListDetailsToLocalDb) {
     //   try {
@@ -703,17 +723,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         String stateName = await Utility.getUserlocation();
         // Conditions to update list accoding to state name
         if (stateName == '' || !stateList.contains(stateName)) {
-          stateList.removeWhere((element) => element == 'All States');
-          stateList.insert(0, 'All States');
+          stateList.removeWhere((element) => element == 'Common Core');
+          stateList.insert(0, 'Common Core');
         } else {
           for (int i = 0; i < stateList.length; i++) {
             if (stateName == stateList[i]) {
               stateList.removeAt(i);
               stateList.sort();
               stateList.insert(0, stateName);
-              if (stateName != 'All States') {
-                stateList.removeWhere((element) => element == 'All States');
-                stateList.insert(1, 'All States');
+              if (stateName != 'Common Core') {
+                stateList.removeWhere((element) => element == 'Common Core');
+                stateList.insert(1, 'Common Core');
               }
               break;
             }
@@ -725,9 +745,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             stateList.removeAt(i);
             stateList.sort();
             stateList.insert(0, stateName!);
-            if (stateName != 'All States') {
-              stateList.removeWhere((element) => element == 'All States');
-              stateList.insert(1, 'All States');
+            if (stateName != 'Common Core') {
+              stateList.removeWhere((element) => element == 'Common Core');
+              stateList.insert(1, 'Common Core');
             }
             break;
           }
@@ -989,7 +1009,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
         return subjectDetailList;
       }
-      return [];
 
       ////////////////////-----------------old -------------------------------/////////////////////////
       // // String grade = '';
@@ -1101,10 +1120,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        // Uri.encodeFull('https://361d-111-118-246-106.in.ngrok.io'),
-        Uri.encodeFull('http://3.142.181.122:5050/ocr'),
-        //'http://3.142.181.122:5050/ocr'), //https://1fb3-111-118-246-106.in.ngrok.io
-        // Uri.encodeFull('https://1fb3-111-118-246-106.in.ngrok.io'),
+       // Url for Productiom
+        Uri.encodeFull('https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
+        // Url For testing and developement
+        // Uri.encodeFull(
+        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
+
         body: {
           'data': '$base64',
           'account_id': Globals.appSetting.schoolNameC,
@@ -1114,20 +1135,28 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       );
 
       if (response.statusCode == 200) {
-        // ***********  Process The respoance and collecting OSS ID  ***********
+        // ***********  Process The respoance and collecting OSSIS ID  ***********
         var result = response.data;
+        List<StudentDetailsModal> _list = jsonDecode(
+                jsonEncode(response.data['studentListDetails']))
+            .map<StudentDetailsModal>((i) => StudentDetailsModal.fromJson(i))
+            .toList();
+        await addStudentDetailsToLocalDb(list: _list);
 
+        final String? studentGrade = result['StudentGrade'] == '2' ||
+                result['StudentGrade'] == '1' ||
+                result['StudentGrade'] == '0' ||
+                result['StudentGrade'] == '3' ||
+                result['StudentGrade'] == '4'
+            ? result['StudentGrade']
+            : '';
+
+        final String? studentId = result['studentId'] == 'Something Went Wrong'
+            ? ''
+            : result['studentId'];
         return [
-          result['StudentGrade'] == '2' ||
-                  result['StudentGrade'] == '1' ||
-                  result['StudentGrade'] == '0' ||
-                  result['StudentGrade'] == '3' ||
-                  result['StudentGrade'] == '4'
-              ? result['StudentGrade']
-              : '',
-          result['studentId'] == 'Something Went Wrong'
-              ? ''
-              : result['studentId'],
+          studentGrade,
+          studentId,
           result['studentName'],
         ];
       } else {
@@ -1136,6 +1165,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future addStudentDetailsToLocalDb(
+      {required List<StudentDetailsModal> list}) async {
+    LocalDatabase<StudentDetailsModal> _localDb =
+        LocalDatabase(Strings.studentDetailList);
+    //List<StateListObject>? _localData = await _localDb.getData();
+    // Syncing the Local database with remote data
+    await _localDb.clear();
+    list.forEach((StudentDetailsModal e) {
+      _localDb.addData(e);
+    });
   }
 
   Future<bool> saveStudentToSalesforce(
@@ -1791,5 +1832,46 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
 
     return emails;
+  }
+
+  Future<List<RubricPdfModal>> getRubicPdfList() async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          Uri.encodeFull(
+              "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Gradedplus_Rubric__c"),
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200) {
+        List<RubricPdfModal> _list = response.data['body']
+            .map<RubricPdfModal>((i) => RubricPdfModal.fromJson(i))
+            .toList();
+        print('repsonse is recived reurning data');
+        return _list;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<RubricPdfModal>> sortRubricPDFList(
+      List<RubricPdfModal> list) async {
+    List<RubricPdfModal> newList = [];
+    for (int i = 0; i < list.length; i++) {
+      if (Overrides.STANDALONE_GRADED_APP == true) {
+        //Create list to show standalone rubric pdf
+        if (list[i].usedInC != 'Schools') {
+          newList.add(list[i]);
+        }
+      } else {
+        //Create list to show school rubric pdf
+        if (list[i].usedInC != 'Standalone') {
+          newList.add(list[i]);
+        }
+      }
+    }
+
+    return newList;
   }
 }
