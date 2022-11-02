@@ -1120,11 +1120,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        // Url for Productiom
-        //Uri.encodeFull('https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
+       // Url for Productiom
+        Uri.encodeFull('https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
         // Url For testing and developement
-        Uri.encodeFull(
-            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
+        // Uri.encodeFull(
+        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
 
         body: {
           'data': '$base64',

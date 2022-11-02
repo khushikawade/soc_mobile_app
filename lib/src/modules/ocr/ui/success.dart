@@ -712,12 +712,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         child: TranslationWidget(
                             message: Overrides.STANDALONE_GRADED_APP == true
                                 ? (idController.text == ''
-                                    ? 'Student Email is required'
+                                    ? 'Student Email Is Required'
                                     : (!regex.hasMatch(idController.text))
                                         ? 'Please enter valid Email'
                                         : '')
                                 : (isStudentIdFilled.value == ""
-                                    ? 'Student ID / Student Email is required'
+                                    ? 'Student ID / Student Email Is Required'
                                     : ''),
                             fromLanguage: "en",
                             toLanguage: Globals.selectedLanguage,
@@ -851,7 +851,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                       i < standardStudentDetails.length;
                                       i++) {
                                     if (standardStudentDetails[i].studentId! ==
-                                        value) {
+                                            value ||
+                                        standardStudentDetails[i].email! ==
+                                            value) {
                                       nameController.text =
                                           standardStudentDetails[i].name!;
                                       isNameUpdated.value =
@@ -966,9 +968,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
               scrollController: scrollControllerId,
               maxNineDigit: false, //true,
               controller: idController,
-              keyboardType: Overrides.STANDALONE_GRADED_APP == true
-                  ? null
-                  : TextInputType.number,
+              // keyboardType: Overrides.STANDALONE_GRADED_APP == true
+              //     ? null
+              //     : TextInputType.number,
               hintText: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
                   : 'Student ID/Student Email',
@@ -1235,7 +1237,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               valueListenable: isStudentNameFilled,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                if (controller.text.length == 0) {
+                if (controller.text.length != 0) {
                   //!=0
                   controller.selection = TextSelection.fromPosition(
                       TextPosition(offset: controller.text.length));

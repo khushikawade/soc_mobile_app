@@ -820,6 +820,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 Expanded(
                   child: InkWell(
                     onTap: () {
+                      Fluttertoast.cancel();
                       Utility.updateLoges(
                           activityId: '16',
                           sessionId: widget.assessmentDetailPage == true
@@ -942,6 +943,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     )
                                   : detailPageActionButtons(iconName, index),
                               onPressed: () async {
+                                Fluttertoast.cancel();
                                 if (iconsName[index] == 'Share') {
                                   Utility.updateLoges(
                                       activityId: '13',
@@ -1665,7 +1667,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               textFieldTitleOne: 'Student Name',
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
-                  : 'Student Id',
+                  : 'Student Id/Student Email',
               textFileTitleThree: "Student Grade",
               isSubjectScreen: false,
               update: (
@@ -1685,8 +1687,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 _futurMethod();
                 _method();
                 disableSlidableAction.value = true;
-
-                Navigator.pop(context);
+                Navigator.pop(context, false);
 
                 _driveBloc2.add(UpdateDocOnDrive(
                   questionImage: questionImageUrl ?? "NA",
