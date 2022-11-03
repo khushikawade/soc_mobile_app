@@ -118,14 +118,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   // }
 
   void _checkNewVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String _packageName = packageInfo.packageName;
-    _versionNumber = packageInfo.version;
-    final newVersion = NewVersion(
-      iOSId: _packageName,
-      androidId: _packageName,
-    );
-    _checkVersionUpdateStatus(newVersion);
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String _packageName = packageInfo.packageName;
+      _versionNumber = packageInfo.version;
+      final newVersion = NewVersion(
+        iOSId: _packageName,
+        androidId: _packageName,
+      );
+      _checkVersionUpdateStatus(newVersion);
+    } catch (e) {}
   }
 
   @override
@@ -152,12 +154,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   _checkVersionUpdateStatus(NewVersion newVersion) async {
-    // final VersionStatus? versionStatus = await getVersionStatus();
-    newVersion.showAlertIfNecessary(context: context);
-
-    // if (Globals.packageInfo!.version != _versionNumber) {
-    //   _updateAlart();
-    // }
+    try {
+      newVersion.showAlertIfNecessary(context: context);
+    } catch (e) {}
   }
 
   @override
