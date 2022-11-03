@@ -14,7 +14,7 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:open_store/open_store.dart';
+// import 'package:open_store/open_store.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -258,14 +258,15 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   _appStoreOnTap() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    print(packageInfo);
-    OpenStore.instance.open(
-      appStoreId: packageInfo.buildSignature, // AppStore id of your app for iOS
+    // Uyt
+    // PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    // print(packageInfo);
+    // OpenStore.instance.open(
+    //   appStoreId: '1510021584', // AppStore id of your app for iOS
 
-      androidAppBundleId:
-          packageInfo.packageName, // Android app bundle package name
-    );
+    //   androidAppBundleId:
+    //       packageInfo.packageName, // Android app bundle package name
+    // );
   }
 
   Widget _storOnTap(String text) {
