@@ -179,32 +179,36 @@ class _ActionInteractionButtonWidgetState
           child: LikeButton(
             isLiked: null,
             onTap: (onActionButtonTapped) async {
-              if (widget.isLoading == true) {
-                Utility.showSnackBar(
-                    scaffoldKey, 'Please wait while loading', context, null);
+              if (!connected) {
+                Utility.currentScreenSnackBar("No Internet Connection", null);
               } else {
-                final toLanguageCode = Translations.supportedLanguagesCodes(
-                    Globals.selectedLanguage!);
-                //Save translated text locally
-                await _saveTranslatedTextLocally(
-                    originalText: Globals.iconsName[index],
-                    toLanguageCode: toLanguageCode,
-                    translatedText: TranslationAPI.translate(
-                        Globals.iconsName[index], toLanguageCode, true));
-                // _debouncer.run(() async {
-                if (connected) {
-                  if (index == 3) {
-                    await _shareNews();
-                  }
-                  return countIncrement(index, scaffoldKey);
-                } else {
+                if (widget.isLoading == true) {
                   Utility.showSnackBar(
-                      scaffoldKey,
-                      'Make sure you have a proper Internet connection',
-                      context,
-                      null);
+                      scaffoldKey, 'Please wait while loading', context, null);
+                } else {
+                  final toLanguageCode = Translations.supportedLanguagesCodes(
+                      Globals.selectedLanguage!);
+                  //Save translated text locally
+                  await _saveTranslatedTextLocally(
+                      originalText: Globals.iconsName[index],
+                      toLanguageCode: toLanguageCode,
+                      translatedText: TranslationAPI.translate(
+                          Globals.iconsName[index], toLanguageCode, true));
+                  // _debouncer.run(() async {
+                  if (connected) {
+                    if (index == 3) {
+                      await _shareNews();
+                    }
+                    return countIncrement(index, scaffoldKey);
+                  } else {
+                    Utility.showSnackBar(
+                        scaffoldKey,
+                        'Make sure you have a proper Internet connection',
+                        context,
+                        null);
+                  }
+                  // });
                 }
-                // });
               }
             },
             size: 20,
@@ -283,13 +287,13 @@ class _ActionInteractionButtonWidgetState
       iconNameIndex = index;
     });
 
-    // Future.delayed(const Duration(seconds: 2), () {
-    if (mounted) {
-      setState(() {
-        iconNameIndex = -1;
-      });
-    }
-    // });
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          iconNameIndex = -1;
+        });
+      }
+    });
 
     index == 0
         ? like.value =

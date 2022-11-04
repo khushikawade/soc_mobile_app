@@ -728,7 +728,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         } else {
                           Navigator.of(context).pop();
                           Utility.currentScreenSnackBar(
-                              "Something Went Wrong. Please Try Again.", null);
+                              state.errorMsg == 'NO_CONNECTION'
+                                  ? 'No Internet Connection'
+                                  : "Something Went Wrong. Please Try Again.",
+                              null);
                         }
                       }
                     }),
