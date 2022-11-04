@@ -73,7 +73,8 @@ dependencies:
   photo_view: ^0.13.0
   speech_bubble: ^0.0.9 #Used in standard app appbar userguide
   invert_colors: ^0.0.4 #Used for dark mode color inversion
-  new_version: ^0.2.3 #^0.2.3 #Used to show new version available popup
+  # new_version: ^0.2.3 #^0.2.3 #Used to show new version available popup
+  new_version: ^0.3.1
   flutter_math_fork: ^0.5.0 #^0.4.2+1 #
   back_button_interceptor: ^5.0.2 #Used to manage the back button for android (at news/social screen)
   camera: 0.10.0+1 #^0.9.4+16
