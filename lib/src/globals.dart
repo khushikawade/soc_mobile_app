@@ -147,8 +147,4 @@ class Globals {
   static String? historyAssessmentFileId = '';
   static late TabController tabController;
 //  static EventController scheduleController = EventController();
-
-//Google  authenticationURL graded plus
-  static String? staticGoogleAuthenticationURL =
-      'https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/secure-login/auth';
 }

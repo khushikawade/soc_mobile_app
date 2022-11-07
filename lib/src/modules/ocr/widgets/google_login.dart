@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../globals.dart';
 import '../../../services/Strings.dart';
@@ -25,25 +24,22 @@ class GoogleLogin {
     var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
         ? Color(0xff000000)
         : Color(0xffFFFFFF);
-    print(
-        'printing Authenticat url ========>${Globals.appSetting.authenticationURL}');
-    print(
-        'printing static Authenticat url ========>${Globals.staticGoogleAuthenticationURL!}');
+
     var value = await pushNewScreen(
       context,
       screen: GoogleAuthWebview(
         title: title!,
-        url: //'https://88f5-111-118-246-106.in.ngrok.io/',
-            // 'https://6016-111-118-246-106.in.ngrok.io', //AppDeveloper account URL
-            Globals.appSetting.authenticationURL != null ||
-                    Globals.appSetting.authenticationURL!.isNotEmpty
-                ? "${Globals.appSetting.authenticationURL}" +
-                    '' + //Overrides.secureLoginURL +
-                    '?' +
-                    Globals.appSetting.appLogoC +
-                    '?' +
-                    themeColor.toString().split('0xff')[1].split(')')[0]
-                : Globals.staticGoogleAuthenticationURL!,
+        url: (Globals.appSetting.authenticationURL != null ||
+                Globals.appSetting.authenticationURL!.isNotEmpty)
+            ? ("${Globals.appSetting.authenticationURL}" +
+                '' + //Overrides.secureLoginURL +
+                '?' +
+                Globals.appSetting.appLogoC +
+                '?' +
+                themeColor.toString().split('0xff')[1].split(')')[0])
+            : Overrides.STANDALONE_GRADED_APP
+                ? Overrides.googleClassroomAuthURL!
+                : Overrides.googleDriveAuthURL!,
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
