@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -14,7 +15,7 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:open_store/open_store.dart';
+// import 'package:open_store/open_store.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -258,14 +259,18 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   _appStoreOnTap() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    print(packageInfo);
-    OpenStore.instance.open(
-      appStoreId: packageInfo.buildSignature, // AppStore id of your app for iOS
+    // PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    // print(packageInfo);
+    // OpenStore.instance.open(
+    //   appStoreId: packageInfo.buildSignature, // AppStore id of your app for iOS
 
-      androidAppBundleId:
-          packageInfo.packageName, // Android app bundle package name
-    );
+    //   androidAppBundleId:
+    //       packageInfo.packageName, // Android app bundle package name
+    // );
+    Utility.launchUrlOnExternalBrowser(Globals.isAndroid == true
+        ? Overrides.Android_Store_URL
+        : //'https://apps.apple.com/us/app/j-h-s-151-lou-gehrig-academy/id1510021584'
+        Overrides.Apple_Store_URL);
   }
 
   Widget _storOnTap(String text) {

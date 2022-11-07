@@ -9,6 +9,8 @@ class Overrides {
   static String REST_API_KEY =
       "MmU4NWY1NDctODQzYy00YWVmLTgxMzctNTg3YzY0M2FlNzhi";
   // "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
+  static String Apple_Store_URL = '';
+  static String Android_Store_URL = '';
   static const String privacyPolicyUrl2 =
       'https://solvedapps.webnode.com/ps-456-bronx-bears/';
   static const defaultIconUrl =

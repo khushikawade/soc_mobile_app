@@ -187,11 +187,11 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         SharedPreferences clearCalendarCache =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            clearCalendarCache.getBool('delete_local_calendar');
+            clearCalendarCache.getBool('delete_local_calendar_cache');
 
         if (clearCacheResult != true) {
           _localData.clear();
-          await clearCalendarCache.setBool('delete_local_calendar', true);
+          await clearCalendarCache.setBool('delete_local_calendar_cache', true);
         }
 
         //Send the local calendar data to UI first

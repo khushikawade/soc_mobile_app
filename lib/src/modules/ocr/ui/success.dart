@@ -644,7 +644,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                           ? 'Make Sure The Student Name Contains More Than 3 Character'
                                           : '')
                                   : isStudentNameFilled.value == ""
-                                      ? 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name'
+                                      ? 'Please Enter The Student Name'
                                       : nameController.text.length < 3
                                           ? 'Make Sure The Student Name Contains More Than 3 Character'
                                           : '',
@@ -686,7 +686,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           controller: idController,
                           hintText: Overrides.STANDALONE_GRADED_APP == true
                               ? 'Student Email'
-                              : 'Student ID/Student Email',
+                              : 'Student ID/Email',
                           isFailure: true,
                           // errormsg:
                           //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
@@ -717,7 +717,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                         ? 'Please enter valid Email'
                                         : '')
                                 : (isStudentIdFilled.value == ""
-                                    ? 'Student ID / Student Email Is Required'
+                                    ? 'Student ID/Email Is Required'
                                     : ''),
                             fromLanguage: "en",
                             toLanguage: Globals.selectedLanguage,
