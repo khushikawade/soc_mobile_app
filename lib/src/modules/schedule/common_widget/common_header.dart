@@ -120,15 +120,17 @@ class _CalendarHeaderState extends State<CalendarHeader> {
       ),
       title: InkWell(
         onTap: widget.onTitleTapped,
-        child: Text(
-          widget.dateStringBuilder(widget.date,
-              secondaryDate: widget.secondaryDate),
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline2!.copyWith(
-              fontWeight: FontWeight.w400,
-              color: Color(0xff000000) == Theme.of(context).backgroundColor
-                  ? AppTheme.kDarkModeIconColor
-                  : AppTheme.kLightModeIconColor),
+        child: FittedBox(
+          child: Text(
+            widget.dateStringBuilder(widget.date,
+                secondaryDate: widget.secondaryDate),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline2!.copyWith(
+                fontWeight: FontWeight.w400,
+                color: Color(0xff000000) == Theme.of(context).backgroundColor
+                    ? AppTheme.kDarkModeIconColor
+                    : AppTheme.kLightModeIconColor),
+          ),
         ),
       ),
     );
