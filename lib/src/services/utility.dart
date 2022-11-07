@@ -676,12 +676,15 @@ class Utility {
       screen: GoogleAuthWebview(
         title: 'Google Authentication',
         url: //'https://88f5-111-118-246-106.in.ngrok.io/',
-            Globals.appSetting.authenticationURL ??
-                '' + //Overrides.secureLoginURL +
+            Globals.appSetting.authenticationURL != null ||
+                    Globals.appSetting.authenticationURL!.isNotEmpty
+                ? "${Globals.appSetting.authenticationURL}" +
+                    '' + //Overrides.secureLoginURL +
                     '?' +
                     Globals.appSetting.appLogoC +
                     '?' +
-                    themeColor.toString().split('0xff')[1].split(')')[0],
+                    themeColor.toString().split('0xff')[1].split(')')[0]
+                : Globals.staticGoogleAuthenticationURL!,
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
