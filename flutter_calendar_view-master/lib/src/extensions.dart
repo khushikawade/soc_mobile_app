@@ -64,17 +64,17 @@ extension DateTimeExtensions on DateTime {
     // adding 1 in index. So, new formula with WeekDays is,
     //    difference = (weekdays - (start.index + 1))%7
     //
-    final startDay =
+    var startDay =
         withoutTime.subtract(Duration(days: (weekday - start.index - 1) % 7));
 
     return [
       startDay,
-      startDay.add(Duration(days: 1)),
-      startDay.add(Duration(days: 2)),
-      startDay.add(Duration(days: 3)),
-      startDay.add(Duration(days: 4)),
-      startDay.add(Duration(days: 5)),
-      startDay.add(Duration(days: 6)),
+      startDay = DateTime(startDay.year, startDay.month, startDay.day + 1),
+      startDay = DateTime(startDay.year, startDay.month, startDay.day + 1),
+      startDay = DateTime(startDay.year, startDay.month, startDay.day + 1),
+      startDay = DateTime(startDay.year, startDay.month, startDay.day + 1),
+      startDay = DateTime(startDay.year, startDay.month, startDay.day + 1),
+      startDay = DateTime(startDay.year, startDay.month, startDay.day + 1),
     ];
   }
 
