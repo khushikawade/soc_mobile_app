@@ -9,7 +9,8 @@ class CalenderInitial extends CalenderState {
   List<Object> get props => [];
 }
 
-class Loading extends CalenderState {
+class CalenderLoading extends CalenderState {
+  CalenderLoading();
   @override
   List<Object> get props => [];
 }
@@ -25,22 +26,35 @@ class CalenderError extends CalenderState {
   List<Object> get props => [err];
 }
 
-class CalenderSucces extends CalenderState {
+class CalenderSuccess extends CalenderState {
   final List<Schedule> scheduleObjList;
   final List<BlackoutDate> blackoutDateobjList;
   final bool pullToRefresh;
-  CalenderSucces(
+  final UserInformation studentProfile;
+  CalenderSuccess(
       {required this.scheduleObjList,
       required this.blackoutDateobjList,
-      required this.pullToRefresh});
-  CalenderSucces copyWith(
-      {final scheduleObjList, final blackoutDateobjList, final pullToRefresh}) {
-    return CalenderSucces(
+      required this.pullToRefresh,
+      required this.studentProfile});
+  CalenderSuccess copyWith(
+      {final scheduleObjList,
+      final blackoutDateobjList,
+      final pullToRefresh,
+      final studentProfile}) {
+    return CalenderSuccess(
         scheduleObjList: scheduleObjList ?? this.scheduleObjList,
         blackoutDateobjList: blackoutDateobjList ?? this.blackoutDateobjList,
-        pullToRefresh: pullToRefresh ?? this.pullToRefresh);
+        pullToRefresh: pullToRefresh ?? this.pullToRefresh,
+        studentProfile: studentProfile ?? this.studentProfile);
   }
 
   @override
-  List<Object> get props => [scheduleObjList];
+  List<Object> get props =>
+      [scheduleObjList, blackoutDateobjList, pullToRefresh, studentProfile];
+}
+
+class CalenderEmptyState extends CalenderState {
+  CalenderEmptyState();
+  @override
+  List<Object> get props => [];
 }

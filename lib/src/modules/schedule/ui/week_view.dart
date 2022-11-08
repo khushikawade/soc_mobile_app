@@ -147,7 +147,7 @@ class _WeekViewPageState extends State<WeekViewPage>
                   pullToRefresh: onPullToRefresh);
             },
             listener: (BuildContext contxt, CalenderState state) {
-              if (state is CalenderSucces) {
+              if (state is CalenderSuccess) {
                 widget.schedules.clear();
                 widget.blackoutDate.clear();
                 widget.schedules.addAll(state.scheduleObjList);
@@ -189,7 +189,7 @@ class _WeekViewPageState extends State<WeekViewPage>
 
   Future<void> onPullToRefresh() async {
     _calenderBloc.add(CalenderPageEvent(
-        email: widget.studentProfile.userEmail!, pullToRefresh: true));
+        studentProfile: widget.studentProfile, pullToRefresh: true));
     refreshKey.currentState?.show();
     await Future.delayed(Duration(seconds: 2));
   }
