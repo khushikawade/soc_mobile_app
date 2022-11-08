@@ -3,6 +3,8 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
+import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
 import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
@@ -28,6 +30,7 @@ import 'package:marquee/marquee.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../../services/local_database/local_db.dart';
+import '../../schedule/modal/blackOutDate_modal.dart';
 
 class StudentPage extends StatefulWidget {
   final homeObj;
@@ -48,7 +51,9 @@ class _StudentPageState extends State<StudentPage> {
 
   StudentBloc _bloc = StudentBloc();
   ScrollController _scrollController = ScrollController();
+  CalenderBloc _scheduleBloc = CalenderBloc();
 
+  bool isCalenderEentCalledaAready = false;
   @override
   void initState() {
     super.initState();
@@ -75,34 +80,17 @@ class _StudentPageState extends State<StudentPage> {
     if (obj.typeC != null && obj.typeC == 'Schedule') {
       LocalDatabase<UserInformation> _localDb =
           LocalDatabase('student_profile');
+
       List<UserInformation> _userInformation = await _localDb.getData();
 
       if (_userInformation.isEmpty) {
         UserInformation result = await _launchLoginUrl('Student Login');
 
-        if (result.userName != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DayViewPage(
-                      date: ValueNotifier(DateTime.now()),
-                      studentProfile: result,
-                      blackoutDateList: [],
-                      schedulesList: [],
-                    )),
-          );
+        if (result.userEmail != null) {
+          _scheduleEvent(result);
         }
       } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => DayViewPage(
-                    date: ValueNotifier(DateTime.now()),
-                    studentProfile: _userInformation[0],
-                    blackoutDateList: [],
-                    schedulesList: [],
-                  )),
-        );
+        _scheduleEvent(_userInformation[0]);
       }
 
       return;
@@ -147,175 +135,150 @@ class _StudentPageState extends State<StudentPage> {
 
   Widget _buildGrid(
       List<StudentApp> list, List<StudentApp> subList, String key) {
-    return list.length > 0
-        ? GridView.count(
-            shrinkWrap: true,
-            controller: _scrollController,
-            key: ValueKey(key),
-            padding: const EdgeInsets.only(
-                bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
-            childAspectRatio:
-                MediaQuery.of(context).orientation == Orientation.portrait
-                    ? 1
-                    : 3 / 2,
-            crossAxisCount:
-                MediaQuery.of(context).orientation == Orientation.portrait &&
-                        Globals.deviceType == "phone"
-                    ? 3
-                    : (MediaQuery.of(context).orientation ==
-                                Orientation.landscape &&
-                            Globals.deviceType == "phone")
-                        ? 4
-                        : MediaQuery.of(context).orientation ==
-                                    Orientation.portrait &&
-                                Globals.deviceType != "phone"
-                            ? 4
-                            : MediaQuery.of(context).orientation ==
-                                        Orientation.landscape &&
-                                    Globals.deviceType != "phone"
-                                ? 5
-                                : 3,
-            crossAxisSpacing: _kLableSpacing * 1.2,
-            mainAxisSpacing: _kLableSpacing * 1.2,
-            children: List.generate(
-              list.length,
-              (index) {
-                return Container(
-                  padding: EdgeInsets.only(
-                    top: Globals.deviceType == "phone"
-                        ? MediaQuery.of(context).size.height * 0.001
-                        : MediaQuery.of(context).size.height * 0.01,
-                  ),
-                  child: GestureDetector(
-                      onTap: () => _launchURL(list[index], subList),
-                      child: Column(
-                        // mainAxisAlignment:MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          list[index].appIconC != null &&
-                                  list[index].appIconC != ''
-                              ? Container(
-                                  height: 80,
-                                  width: 80,
-                                  child: CustomIconWidget(
-                                      darkModeIconUrl:
-                                          list[index].darkModeIconC,
-                                      iconUrl: list[index].appIconC ??
-                                          Overrides.folderDefaultImage))
-                              : EmptyContainer(),
-                          Container(
-                              child: TranslationWidget(
-                            message: "${list[index].titleC}",
-                            fromLanguage: "en",
-                            toLanguage: Globals.selectedLanguage,
-                            builder: (translatedMessage) => Container(
-                              child: MediaQuery.of(context).orientation ==
-                                          Orientation.portrait &&
-                                      translatedMessage.toString().length > 11
-                                  ? Expanded(
-                                      child: MarqueeWidget(
-                                      pauseDuration: Duration(seconds: 1),
-                                      child: Text(
-                                        translatedMessage.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1!
-                                            .copyWith(
-                                                fontSize: Globals.deviceType ==
-                                                        "phone"
-                                                    ? 16
-                                                    : 24),
-                                      ),
-                                    )
-
-                                      // child: Marquee(
-                                      //   text: translatedMessage.toString(),
-                                      //   style: Theme.of(context)
-                                      //       .textTheme
-                                      //       .bodyText1!
-                                      //       .copyWith(
-                                      //           fontSize: Globals.deviceType ==
-                                      //                   "phone"
-                                      //               ? 16
-                                      //               : 24),
-                                      //   scrollAxis: Axis.horizontal,
-                                      //   velocity: 30.0,
-                                      //   crossAxisAlignment:
-                                      //       CrossAxisAlignment.start,
-                                      //   blankSpace: 50,
-                                      //   //MediaQuery.of(context).size.width
-                                      //   // velocity: 100.0,
-                                      //   pauseAfterRound: Duration(seconds: 5),
-                                      //   showFadingOnlyWhenScrolling: true,
-                                      //   startPadding: 10.0,
-                                      //   accelerationDuration:
-                                      //       Duration(seconds: 1),
-                                      //   accelerationCurve: Curves.linear,
-                                      //   decelerationDuration:
-                                      //       Duration(milliseconds: 500),
-                                      //   decelerationCurve: Curves.bounceIn,
-                                      //   numberOfRounds: 1,
-                                      //   startAfter: Duration.zero,
-                                      // ),
+    return BlocListener(
+      bloc: _scheduleBloc,
+      listener: (context, state) {
+        print(state);
+        if (state is CalenderLoading) {
+          Utility.showLoadingDialog(context, false);
+        }
+        if (state is CalenderSuccess) {
+          Navigator.pop(context, false);
+          navigateToSchedule(
+            blackoutDateList: state.blackoutDateobjList,
+            schedulesList: state.scheduleObjList,
+            studentProfile: state.studentProfile,
+          );
+        }
+        if (state is CalenderError) {
+          Navigator.pop(context, false);
+          Utility.showSnackBar(
+              _scaffoldKey, state.err.toString(), context, null);
+        }
+      },
+      child: list.length > 0
+          ? GridView.count(
+              shrinkWrap: true,
+              controller: _scrollController,
+              key: ValueKey(key),
+              padding: const EdgeInsets.only(
+                  bottom: AppTheme.klistPadding, top: AppTheme.kBodyPadding),
+              childAspectRatio:
+                  MediaQuery.of(context).orientation == Orientation.portrait
+                      ? 1
+                      : 3 / 2,
+              crossAxisCount:
+                  MediaQuery.of(context).orientation == Orientation.portrait &&
+                          Globals.deviceType == "phone"
+                      ? 3
+                      : (MediaQuery.of(context).orientation ==
+                                  Orientation.landscape &&
+                              Globals.deviceType == "phone")
+                          ? 4
+                          : MediaQuery.of(context).orientation ==
+                                      Orientation.portrait &&
+                                  Globals.deviceType != "phone"
+                              ? 4
+                              : MediaQuery.of(context).orientation ==
+                                          Orientation.landscape &&
+                                      Globals.deviceType != "phone"
+                                  ? 5
+                                  : 3,
+              crossAxisSpacing: _kLableSpacing * 1.2,
+              mainAxisSpacing: _kLableSpacing * 1.2,
+              children: List.generate(
+                list.length,
+                (index) {
+                  return Container(
+                    padding: EdgeInsets.only(
+                      top: Globals.deviceType == "phone"
+                          ? MediaQuery.of(context).size.height * 0.001
+                          : MediaQuery.of(context).size.height * 0.01,
+                    ),
+                    child: GestureDetector(
+                        onTap: () => _launchURL(list[index], subList),
+                        child: Column(
+                          // mainAxisAlignment:MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            list[index].appIconC != null &&
+                                    list[index].appIconC != ''
+                                ? Container(
+                                    height: 80,
+                                    width: 80,
+                                    child: CustomIconWidget(
+                                        darkModeIconUrl:
+                                            list[index].darkModeIconC,
+                                        iconUrl: list[index].appIconC ??
+                                            Overrides.folderDefaultImage))
+                                : EmptyContainer(),
+                            Container(
+                                child: TranslationWidget(
+                              message: "${list[index].titleC}",
+                              fromLanguage: "en",
+                              toLanguage: Globals.selectedLanguage,
+                              builder: (translatedMessage) => Container(
+                                child: MediaQuery.of(context).orientation ==
+                                            Orientation.portrait &&
+                                        translatedMessage.toString().length > 11
+                                    ? Expanded(
+                                        child: MarqueeWidget(
+                                        pauseDuration: Duration(seconds: 1),
+                                        child: Text(
+                                          translatedMessage.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .copyWith(
+                                                  fontSize:
+                                                      Globals.deviceType ==
+                                                              "phone"
+                                                          ? 16
+                                                          : 24),
+                                        ),
                                       )
-                                  : MediaQuery.of(context).orientation ==
-                                              Orientation.landscape &&
-                                          translatedMessage.toString().length >
-                                              18
-                                      ? Expanded(
-                                          child: MarqueeWidget(
-                                          pauseDuration: Duration(seconds: 3),
-                                          child: Text(
-                                            translatedMessage.toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1!
-                                                .copyWith(
-                                                    fontSize:
-                                                        Globals.deviceType ==
-                                                                "phone"
-                                                            ? 16
-                                                            : 24),
-                                          ),
+
+                                        // child: Marquee(
+                                        //   text: translatedMessage.toString(),
+                                        //   style: Theme.of(context)
+                                        //       .textTheme
+                                        //       .bodyText1!
+                                        //       .copyWith(
+                                        //           fontSize: Globals.deviceType ==
+                                        //                   "phone"
+                                        //               ? 16
+                                        //               : 24),
+                                        //   scrollAxis: Axis.horizontal,
+                                        //   velocity: 30.0,
+                                        //   crossAxisAlignment:
+                                        //       CrossAxisAlignment.start,
+                                        //   blankSpace: 50,
+                                        //   //MediaQuery.of(context).size.width
+                                        //   // velocity: 100.0,
+                                        //   pauseAfterRound: Duration(seconds: 5),
+                                        //   showFadingOnlyWhenScrolling: true,
+                                        //   startPadding: 10.0,
+                                        //   accelerationDuration:
+                                        //       Duration(seconds: 1),
+                                        //   accelerationCurve: Curves.linear,
+                                        //   decelerationDuration:
+                                        //       Duration(milliseconds: 500),
+                                        //   decelerationCurve: Curves.bounceIn,
+                                        //   numberOfRounds: 1,
+                                        //   startAfter: Duration.zero,
+                                        // ),
                                         )
-
-                                          //    Marquee(
-                                          //   text: translatedMessage.toString(),
-                                          //   style: Theme.of(context)
-                                          //       .textTheme
-                                          //       .bodyText1!
-                                          //       .copyWith(
-                                          //           fontSize:
-                                          //               Globals.deviceType ==
-                                          //                       "phone"
-                                          //                   ? 16
-                                          //                   : 24),
-                                          //   scrollAxis: Axis.horizontal,
-                                          //   velocity: 30.0,
-                                          //   crossAxisAlignment:
-                                          //       CrossAxisAlignment.start,
-
-                                          //   blankSpace:
-                                          //       50, //MediaQuery.of(context).size.width
-                                          //   // velocity: 100.0,
-                                          //   pauseAfterRound: Duration(seconds: 5),
-                                          //   showFadingOnlyWhenScrolling: true,
-                                          //   startPadding: 10.0,
-                                          //   accelerationDuration:
-                                          //       Duration(seconds: 1),
-                                          //   accelerationCurve: Curves.linear,
-                                          //   decelerationDuration:
-                                          //       Duration(milliseconds: 500),
-                                          //   decelerationCurve: Curves.easeOut,
-                                          //   numberOfRounds: 1,
-                                          // )
-
-                                          )
-                                      : SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Text(
+                                    : MediaQuery.of(context).orientation ==
+                                                Orientation.landscape &&
+                                            translatedMessage
+                                                    .toString()
+                                                    .length >
+                                                18
+                                        ? Expanded(
+                                            child: MarqueeWidget(
+                                            pauseDuration: Duration(seconds: 3),
+                                            child: Text(
                                               translatedMessage.toString(),
-                                              textAlign: TextAlign.center,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1!
@@ -324,22 +287,72 @@ class _StudentPageState extends State<StudentPage> {
                                                           Globals.deviceType ==
                                                                   "phone"
                                                               ? 16
-                                                              : 24)),
-                                        ),
-                            ),
-                          )),
-                        ],
-                      )),
-                );
-              },
+                                                              : 24),
+                                            ),
+                                          )
+
+                                            //    Marquee(
+                                            //   text: translatedMessage.toString(),
+                                            //   style: Theme.of(context)
+                                            //       .textTheme
+                                            //       .bodyText1!
+                                            //       .copyWith(
+                                            //           fontSize:
+                                            //               Globals.deviceType ==
+                                            //                       "phone"
+                                            //                   ? 16
+                                            //                   : 24),
+                                            //   scrollAxis: Axis.horizontal,
+                                            //   velocity: 30.0,
+                                            //   crossAxisAlignment:
+                                            //       CrossAxisAlignment.start,
+
+                                            //   blankSpace:
+                                            //       50, //MediaQuery.of(context).size.width
+                                            //   // velocity: 100.0,
+                                            //   pauseAfterRound: Duration(seconds: 5),
+                                            //   showFadingOnlyWhenScrolling: true,
+                                            //   startPadding: 10.0,
+                                            //   accelerationDuration:
+                                            //       Duration(seconds: 1),
+                                            //   accelerationCurve: Curves.linear,
+                                            //   decelerationDuration:
+                                            //       Duration(milliseconds: 500),
+                                            //   decelerationCurve: Curves.easeOut,
+                                            //   numberOfRounds: 1,
+                                            // )
+
+                                            )
+                                        : SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Text(
+                                                translatedMessage.toString(),
+                                                textAlign: TextAlign.center,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1!
+                                                    .copyWith(
+                                                        fontSize:
+                                                            Globals.deviceType ==
+                                                                    "phone"
+                                                                ? 16
+                                                                : 24)),
+                                          ),
+                              ),
+                            )),
+                          ],
+                        )),
+                  );
+                },
+              ),
+            )
+          : NoDataFoundErrorWidget(
+              isResultNotFoundMsg: false,
+              isNews: false,
+              isEvents: false,
+              // connected: connected,
             ),
-          )
-        : NoDataFoundErrorWidget(
-            isResultNotFoundMsg: false,
-            isNews: false,
-            isEvents: false,
-            // connected: connected,
-          );
+    );
   }
   //sfjhjjsfdjkfjdjsdjdjjhksfdssfjkdjdjkjsdsjkdkdjsdjkjkjsdjhkjsdjkjsdjkjfjhfdhjhfjnbfjnnnmnccnmbxzfjksldaqpwoieruyt;adjkjhkhdfghvbsd
 
@@ -531,5 +544,35 @@ class _StudentPageState extends State<StudentPage> {
     await _localDb.addData(_userInformation);
     await _localDb.close();
     return _userInformation;
+  }
+
+  void navigateToSchedule(
+      {required UserInformation studentProfile,
+      required List<Schedule> schedulesList,
+      required List<BlackoutDate> blackoutDateList}) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => DayViewPage(
+                date: ValueNotifier(DateTime.now()),
+                studentProfile: studentProfile,
+                blackoutDateList: blackoutDateList ?? [],
+                schedulesList: schedulesList ?? [],
+              )),
+    );
+
+    isCalenderEentCalledaAready = false;
+  }
+
+  void _scheduleEvent(UserInformation studentProfile) {
+    if (isCalenderEentCalledaAready) {
+      Utility.currentScreenSnackBar('Please wait..... ', null);
+    } else {
+      isCalenderEentCalledaAready = true;
+      _scheduleBloc.add(CalenderPageEvent(
+          studentProfile: studentProfile,
+          pullToRefresh: false,
+          isFromStudent: true));
+    }
   }
 }
