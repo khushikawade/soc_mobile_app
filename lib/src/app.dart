@@ -1,3 +1,4 @@
+import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 import 'package:Soc/src/modules/schedule/modal/event.dart';
@@ -113,7 +114,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
               isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
               //false,  /For standard app
               ),
-          // home: SchoolIDLogin(),
+          //  home: SchoolIDLogin(),
         ),
       ),
     );
