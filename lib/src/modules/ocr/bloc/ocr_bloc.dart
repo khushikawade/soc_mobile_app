@@ -1125,6 +1125,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
         // Url For testing and developement
         // Uri.encodeFull(
+        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
+        // Url For testing and developement
+        // Uri.encodeFull(
         //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
 
         body: {
@@ -1575,11 +1578,26 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future fetchStudentDetails(ossId) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
+          //API from global API
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Student__c/studentOsis/$ossId",
+
+          //Filter API
+          // Uri.encodeFull(
+          //     "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Student__c/\"School__c\" = \'${Globals.appSetting.schoolNameC}\' and \"Student_ID__c\" = \'$ossId\'"),
           isCompleteUrl: true);
 
       if (response.statusCode == 200) {
+        //Resposne from global API
         StudentDetails res = StudentDetails.fromJson(response.data['body']);
+
+        //Response from filter API ---
+        // List<StudentDetails> _list = response.data['body']
+        //     .map<StudentDetails>((i) => StudentDetails.fromJson(i))
+        //     .toList();
+        // StudentDetails? res;
+        // if (_list.length > 0) {
+        //   res = _list[0];
+        // }
 
         return res;
       } else {
