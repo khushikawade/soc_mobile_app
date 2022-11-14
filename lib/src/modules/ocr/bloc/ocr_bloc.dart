@@ -495,7 +495,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           "Account_Type": "${event.accountType ?? ''}",
           "Date_Time": "${event.dateTime ?? ''}",
           "Description": "${event.description ?? ''}",
-          "Operation_Result": "${event.operationResult ?? ''}"
+          "Operation_Result": "${event.operationResult ?? ''}",
+          "App_Type__c":
+              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard"
         };
         await activityLog(body: body);
       } catch (e) {
