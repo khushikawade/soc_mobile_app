@@ -28,6 +28,7 @@ import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:camera/camera.dart';
 import 'package:device_info/device_info.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -47,6 +48,11 @@ void main() async {
   if (standaloneGradedApp == "true") {
     Overrides.STANDALONE_GRADED_APP = true;
   }
+
+  // Initializing Fieebase Starts
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  // Initializing Fieebase Ends
 
   if (!kIsWeb) {
     // Not running on the web!
