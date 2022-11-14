@@ -20,6 +20,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../families/modal/calendar_banner_image_modal.dart';
 import '../../google_drive/overrides.dart';
 part 'custom_event.dart';
 part 'custom_state.dart';
@@ -155,78 +156,101 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
       }
     }
 
-    if (event is CalendarListEvent) {
-      DateTime now = new DateTime.now();
-      final DateFormat formatter = DateFormat('yyyy-MM-dd');
-      final DateTime currentDate =
-          DateTime.parse(formatter.format(now).toString());
+    // if (event is CalendarListEvent) {
+    //   print('calling custom calendar--------------------------------------');
+    //   DateTime now = new DateTime.now();
+    //   final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    //   final DateTime currentDate =
+    //       DateTime.parse(formatter.format(now).toString());
 
-      try {
-        yield CustomLoading();
-        String? _objectName =
-            "${Strings.calendarObjectName}${event.calendarId}";
-        LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
-        List<CalendarEventList>? _localData = await _localDb.getData();
+    //   try {
+    //     yield CustomLoading();
+    //     String? _objectName =
+    //         "${Strings.calendarObjectName}${event.calendarId}";
+    //     LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
+    //     List<CalendarEventList>? _localData = await _localDb.getData();
 
-        //Clear calendar local data to resolve loading issue
-        SharedPreferences clearCalendarCache =
-            await SharedPreferences.getInstance();
-        final clearChacheResult =
-            clearCalendarCache.getBool('delete_local_calendar_custom');
-        if (clearChacheResult != true) {
-          _localData.clear();
-          await clearCalendarCache.setBool(
-              'delete_local_calendar_custom', true);
-        }
+    //     LocalDatabase<CalendarBannerImageModal> _calendarBannerImagelocalDb =
+    //         LocalDatabase(Strings.calendarBannerObjectName);
+    //     List<CalendarBannerImageModal>? _calendarBannerImagelocalData = [];
+    //     _calendarBannerImagelocalData =
+    //         await _calendarBannerImagelocalDb.getData();
 
-        if (_localData.isEmpty) {
-          yield CustomLoading();
-        } else {
-          filterFutureAndPastEvents(_localData, currentDate);
-          futureListobj = sortCalendarEvents(futureListobj!);
-          pastListobj = sortCalendarEvents(pastListobj!);
+    //     //Clear calendar local data to resolve loading issue
+    //     SharedPreferences clearCalendarCache =
+    //         await SharedPreferences.getInstance();
+    //     final clearChacheResult =
+    //         clearCalendarCache.getBool('delete_local_calendar_custom');
+    //     if (clearChacheResult != true) {
+    //       _localData.clear();
+    //       await clearCalendarCache.setBool(
+    //           'delete_local_calendar_custom', true);
+    //     }
 
-          yield CalendarListSuccess(
-              futureListobj: mapListObj(futureListobj!),
-              pastListobj: mapListObj(pastListobj!.reversed.toList()));
-        }
+    //     if (_localData.isEmpty) {
+    //       yield CustomLoading();
+    //     } else {
+    //       filterFutureAndPastEvents(_localData, currentDate);
+    //       futureListobj = sortCalendarEvents(futureListobj!);
+    //       pastListobj = sortCalendarEvents(pastListobj!);
 
-        List<CalendarEventList> list =
-            await getCalendarEventList(event.calendarId);
+    //       yield CalendarListSuccess(
+    //           calendarBannerImageList: _calendarBannerImagelocalData,
+    //           futureListobj: mapListObj(futureListobj!),
+    //           pastListobj: mapListObj(pastListobj!.reversed.toList()));
+    //     }
 
-        await _localDb.clear();
-        list.forEach((CalendarEventList e) {
-          _localDb.addData(e);
-        });
+    //     // List<CalendarEventList> list =
+    //     //     await getCalendarEventList(event.calendarId);
+    //     List<dynamic> responses = await Future.wait(
+    //         [getCalendarEventList(event.calendarId), getCalendarBannerImage()]);
 
-        filterFutureAndPastEvents(
-            list, currentDate); //Filter the furure and past events
-        sortCalendarEvents(futureListobj!); //Sort the events date wise
-        sortCalendarEvents(pastListobj!); //Sort the events date wise
+    //     await _localDb.clear();
+    //     responses[0].forEach((CalendarEventList e) {
+    //       _localDb.addData(e);
+    //     });
 
-        yield CalendarListSuccess(
-            futureListobj:
-                mapListObj(futureListobj!), //Grouping the events by month
-            pastListobj: mapListObj(pastListobj!.reversed.toList())
-            // futureListobj: futureListMap, pastListobj: pastListMap
-            );
-      } catch (e) {
-        //print(e);
-        String? _objectName =
-            "${Strings.calendarObjectName}${event.calendarId}";
-        LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
-        List<CalendarEventList>? _localData = await _localDb.getData();
+    //     await _calendarBannerImagelocalDb.clear();
+    //     responses[1].forEach((CalendarBannerImageModal e) {
+    //       _calendarBannerImagelocalDb.addData(e);
+    //     });
 
-        filterFutureAndPastEvents(_localData, currentDate);
-        // futureListobj.whereNot((element) => element.status != "cancelled");
-        futureListobj = sortCalendarEvents(futureListobj!);
-        pastListobj = sortCalendarEvents(pastListobj!);
+    //     filterFutureAndPastEvents(
+    //         responses[0], currentDate); //Filter the furure and past events
+    //     sortCalendarEvents(futureListobj!); //Sort the events date wise
+    //     sortCalendarEvents(pastListobj!); //Sort the events date wise
 
-        yield CalendarListSuccess(
-            futureListobj: mapListObj(futureListobj!),
-            pastListobj: mapListObj(pastListobj!.reversed.toList()));
-      }
-    }
+    //     yield CalendarListSuccess(
+    //         calendarBannerImageList: responses[1],
+    //         futureListobj:
+    //             mapListObj(futureListobj!), //Grouping the events by month
+    //         pastListobj: mapListObj(
+    //           pastListobj!.reversed.toList(),
+    //         )
+    //         // futureListobj: futureListMap, pastListobj: pastListMap
+    //         );
+    //   } catch (e) {
+    //     //print(e);
+    //     String? _objectName =
+    //         "${Strings.calendarObjectName}${event.calendarId}";
+    //     LocalDatabase<CalendarEventList> _localDb = LocalDatabase(_objectName);
+    //     List<CalendarEventList>? _localData = await _localDb.getData();
+
+    //     LocalDatabase<CalendarBannerImageModal> _calendarBannerImagelocalDb =
+    //         LocalDatabase(Strings.calendarBannerObjectName);
+    //     List<CalendarBannerImageModal>? _calendarBannerImagelocalData =
+    //         await _calendarBannerImagelocalDb.getData();
+    //     filterFutureAndPastEvents(_localData, currentDate);
+    //     // futureListobj.whereNot((element) => element.status != "cancelled");
+    //     futureListobj = sortCalendarEvents(futureListobj!);
+    //     pastListobj = sortCalendarEvents(pastListobj!);
+
+    //     yield CalendarListSuccess(
+    //         futureListobj: mapListObj(futureListobj!),
+    //         pastListobj: mapListObj(pastListobj!.reversed.toList()),
+    //         calendarBannerImageList: _calendarBannerImagelocalData);
+    //   }
+    // }
   }
 
   filterFutureAndPastEvents(List<CalendarEventList> eventList, currentDate) {
@@ -378,6 +402,26 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
       } else {
         throw ('something_went_wrong');
       }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<List<CalendarBannerImageModal>> getCalendarBannerImage() async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          Uri.encodeFull(
+              'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/getRecord/Calendar__c'),
+          isCompleteUrl: true);
+      if (response.statusCode == 200) {
+        List<CalendarBannerImageModal> _list = response.data['body']
+            .map<CalendarBannerImageModal>(
+                (i) => CalendarBannerImageModal.fromJson(i))
+            .toList();
+
+        return _list;
+      }
+      return [];
     } catch (e) {
       throw (e);
     }

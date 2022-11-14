@@ -72,18 +72,21 @@ class SDDataSuccess extends CustomState {
   List<Object> get props => [];
 }
 
-class CalendarListSuccess extends CustomState {
-  final  Map<String?, List<CalendarEventList>>? pastListobj;
-  final Map<String?, List<CalendarEventList>>? futureListobj;
-  CalendarListSuccess({this.pastListobj, this.futureListobj});
-  CalendarListSuccess copyWith({
-    final obj,
-  }) {
-    return CalendarListSuccess(
-        pastListobj: obj ?? this.pastListobj,
-        futureListobj: obj ?? this.futureListobj);
-  }
+// class CalendarListSuccess extends CustomState {
+//   final Map<String?, List<CalendarEventList>>? pastListobj;
+//   final Map<String?, List<CalendarEventList>>? futureListobj;
+//   final List<CalendarBannerImageModal>? calendarBannerImageList;
+//   CalendarListSuccess(
+//       {this.pastListobj, this.futureListobj, this.calendarBannerImageList});
+//   CalendarListSuccess copyWith({
+//     final obj,
+//   }) {
+//     return CalendarListSuccess(
+//         pastListobj: obj ?? this.pastListobj,
+//         futureListobj: obj ?? this.futureListobj,
+//         calendarBannerImageList: obj ?? this.calendarBannerImageList);
+//   }
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }

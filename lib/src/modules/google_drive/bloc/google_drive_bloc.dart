@@ -51,28 +51,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
         folderObject = await _getGoogleDriveFolderId(
             token: event.token, folderName: event.folderName);
-        //  //print('FolderId = ${folderObject['id']}');
 
         if (folderObject != 401 && folderObject != 500) {
           if (folderObject.length == 0) {
-            //print(
-            // 'Folder doesn\'t exist already. Creating new folder on drive');
             await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
-            //print("Folder created successfully");
 
             if (event.isFromOcrHome! &&
                 Globals.googleDriveFolderId!.isNotEmpty) {
               yield GoogleSuccess(assessmentSection: event.assessmentSection);
             }
-          }
-          // else if (folderObject.length == 0) {
-          //   //print('No folder found');
-          // }
-          else {
-            // //print("Folder Id received : ${folderObject['id']}");
-            // //print("Folder path received : ${folderObject['webViewLink']}");
-
+          } else {
             Globals.googleDriveFolderId = folderObject['id'];
             Globals.googleDriveFolderPath = folderObject['webViewLink'];
             // Globals.
@@ -81,12 +70,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               yield GoogleSuccess(assessmentSection: event.assessmentSection);
             }
             if (event.fetchHistory == true) {
-              //Fetch history assessment
               GetHistoryAssessmentFromDrive();
             }
           }
         } else {
-          //print('Authentication required');
           var result = await _toRefreshAuthenticationToken(event.refreshtoken!);
 
           if (result == true) {
@@ -152,16 +139,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           yield ExcelSheetCreated(obj: result);
         }
       } on SocketException catch (e) {
-        e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection", null)
-            : print(e);
+        yield ErrorState(errorMsg: e.toString());
         rethrow;
       } catch (e) {
-        if (e == 'NO_CONNECTION') {
-          Utility.currentScreenSnackBar("No Internet Connection", null);
-        } else {
-          yield ErrorState();
-        }
+        yield ErrorState(errorMsg: e.toString());
         throw (e);
       }
     }
@@ -451,14 +432,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               searchKey: "");
           List<HistoryAssessment>? _list =
               pair != null && pair.length > 0 ? pair[0] : [];
-          // //print('updatedList');
-          // //print(
-          //     "---------------------------------------------------------------listLength----------------------${_list!.length}");
           if (_list == null) {
             yield ErrorState(errorMsg: 'Reauthentication is required');
           } else {
             _list.forEach((element) {
-              //print(element.label['trashed']);
               if (element.label['trashed'] != true) {
                 assessmentList.add(element);
               }
@@ -505,10 +482,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             fildObject != null &&
             fildObject != 'Reauthentication is required' &&
             fildObject['exportLinks'] != null) {
-          // String file = await downloadFile(
-          //     fildObject['exportLinks']['text/csv'],
-          //     event.fileId!,
-          //     (await getApplicationDocumentsDirectory()).path);
           String savePath = await getFilePath(event.fileId);
           summaryList = await processCSVFile(
               fildObject['exportLinks']['text/csv'],
@@ -516,15 +489,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userprofilelocalData[0].refreshToken,
               savePath);
 
-          // //print("assessment downloaded");
-
           if (summaryList != []) {
-            // //print("Assessment file found");
-            //  List<StudentAssessmentInfo>
-
-            // _list = await GoogleDriveAccess.excelToJson(file);
-            // //print("assessment data is converted into json ");
-
             bool deleted = await GoogleDriveAccess.deleteFile(File(savePath));
             if (!deleted) {
               GoogleDriveAccess.deleteFile(File(savePath));
@@ -586,7 +551,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: "assessment-sheet");
-        //  int index = RubricScoreList.scoringList.length - 1;
 
         if (imgUrl != "") {
           LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
@@ -600,15 +564,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                       ? 'history_student_info'
                       : 'student_info');
 
-          //print('Image bucket URL received : $imgUrl');
-          //  int hhh = 0;
           for (int i = 0; i < studentInfo.length; i++) {
             if (studentInfo[i].studentId == event.studentId) {
-              //print(hhh);
-              //print(
-              // 'gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg');
-              //print("updateing img url");
-
               StudentAssessmentInfo e = studentInfo[i];
               e.assessmentImage = imgUrl;
 
@@ -616,8 +573,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           }
         }
-
-        // //print("//printing imag url : $imgUrl");
       } on SocketException catch (e) {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
@@ -633,14 +588,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is QuestionImgToAwsBucked) {
       try {
         yield GoogleDriveLoading();
-        //  Globals.questionImgUrl = '';
+
         String questionImgUrl = await _uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: 'rubric-score');
-        // questionImgUrl.isNotEmpty
-        //     ? print("question image url upload done")
-        //     : print("error uploading question img");
 
         yield QuestionImageSuccess(questionImageUrl: questionImgUrl);
       } catch (e) {
@@ -671,15 +623,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       yield GoogleDriveLoading();
       LocalDatabase<HistoryAssessment> _localDb =
           LocalDatabase("HistoryAssessment");
-      // await _localDb.clear();
+
       List<HistoryAssessment>? _localData = await _localDb.getData();
       //Sort the list as per the modified date
       if (_localData.isNotEmpty) {
         _localData = await listSort(_localData);
         List<HistoryAssessment> searchList = List.from(_localData.where((e) =>
             e.title!.toLowerCase().contains(event.keyword!.toLowerCase())));
-        // //print('returntin--------------------------');
-        // //print(searchList.length);
+
         yield GoogleDriveGetSuccess(obj: searchList);
       } else {
         yield GoogleDriveGetSuccess(obj: []);
@@ -697,9 +648,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     try {
       if (Globals.googleExcelSheetId!.isEmpty) {
         await Future.delayed(Duration(milliseconds: 200));
-        // if (Globals.googleExcelSheetId!.isEmpty) {
+
         checkForGoogleExcelId();
-        // }
       }
     } catch (e) {
       throw (e);
@@ -766,17 +716,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               Uri.encodeFull(query),
           headers: headers,
           isCompleteUrl: true);
-      // final ResponseModel response = await _dbServices.getapiNew(
-      //     'https://www.googleapis.com/drive/v3/files?fields=*&q=trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\'',
-
-      // Uri.encodeFull(
-
-      //     '\'SOLVED GRADED%2B\''),
-
-      //     '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v3/files?fields=*',
-
-      // headers: headers,
-      // isGoogleAPI: true);
 
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
@@ -788,15 +727,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           return data[0];
         }
-        // return data[0];
-        // for (int i = 0; i < data.length; i++) {
-        //   if (data[i]['name'] == folderName &&
-        //       data[i]["mimeType"] == "application/vnd.google-apps.folder" &&
-        //       data[i]["trashed"] == false) {
-        //     // //print("folder is already exits : ${data[i]['id']}");
-        //    return data[i];
-        //   }
-        // }
       } else if (response.statusCode == 401 ||
           response.data['statusCode'] == 500) {
         return response.statusCode == 401 ? response.statusCode : 500;
@@ -839,16 +769,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         String fileId = response.data['body']['id'];
         Globals.googleExcelSheetId = fileId;
 
-        // bool result =
-        //     await _updateSheetPermission(accessToken!, fileId, refreshToken);
-        // if (!result) {
-        //   await _updateSheetPermission(accessToken, fileId, refreshToken);
-        // }
-
-        // bool link = await _getShareableLink(accessToken, fileId, refreshToken);
-        // if (!link) {
-        //   await _getShareableLink(accessToken, fileId, refreshToken);
-        // }
         return 'Done';
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
@@ -884,10 +804,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     try {
       // String accessToken = await Prefs.getToken();
       String? mimeType = mime(basename(file!.path).toLowerCase());
-      //print(mimeType);
-      //print(id);
-      //print(accessToken);
-      //print(file.readAsBytesSync());
+
       Map<String, String> headers = {
         'Authorization': 'Bearer $accessToken',
         'Content-Type': '$mimeType'
@@ -902,9 +819,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        //print("upload result data to assessment file completed");
-        print(response.data['body']['id']);
-
         return response.data['body']['id'];
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
@@ -1117,11 +1031,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               ? "$nextPageUrl"
               : searchKey == ""
                   ? "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents" //List Call
-                  :
-                  //     searchKey! !=
-                  // null &&
-
-                  "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
+                  : "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
                       Uri.encodeFull(query), //Search call
 
           headers: headers,
@@ -1130,34 +1040,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        //print("assessment list is received ");
-        //print(response.data);
         String updatedNextUrlLink = '';
         try {
           updatedNextUrlLink = isPagination == true
               ? response.data["nextLink"]
-              :
-              // searchKey == ""
-              //     ?
-              response.data['body']["nextLink"];
-          // : response.data["nextLink"];
+              : response.data['body']["nextLink"];
         } catch (e) {
           updatedNextUrlLink = '';
         }
-        //print(updatedNextUrlLink);
-        // nextPageToken = response.data['body']["nextPageToken"];
-        // print("Before mapping");
+
         List<HistoryAssessment> _list = isPagination == true
             ? response.data['items']
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList()
-            : //searchKey == ""
-            //     ?
-            response.data['body']['items']
-                // : response.data["items"]
+            : response.data['body']['items']
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList();
-        // print("After mapping");
+
         List<AssessmentDetails> assessmentList = await getAssessmentList();
         for (int i = 0; i < _list.length; i++) {
           for (int j = 0; j < assessmentList.length; j++) {
@@ -1189,11 +1088,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               isPagination: isPagination,
               nextPageUrl: nextPageUrl,
               searchKey: searchKey ?? "");
-          // List<HistoryAssessment>? _list = pair[0];
 
           return pair;
-
-          //   GetHistoryAssessmentFromDrive();
         } else {
           return null;
         }
@@ -1338,13 +1234,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
         return response.data['body'];
-        // return 'Reauthentication is required';
-        // //print('File URL Received :${data['webViewLink']}');
-        // String downloadLink = data['exportLinks'] != null
-        //     ? data['exportLinks'][
-        //         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-        //     : '';
-        // return downloadLink;
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
@@ -1378,6 +1267,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           []; //Map the ResultSpreadsheet list to StudentAssessmentInfo list to not chnage anything on UI
       List data = []; //To parse String to List
       bool? createdAsPremium = true;
+      // bool? isStandalone = false;
 
       //Downloading file to specific path
       var response = await dio.download(
@@ -1420,9 +1310,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               .replaceAll(']', "")
               .replaceAll("''", "'"));
         });
-        //Splitting the String list to map the values
-        print(data[0]);
-        print("----------------------------------------test");
+
         for (var line in data) {
           csvList.add(ResultSpreadsheet.fromList(line.split(',')));
         }
