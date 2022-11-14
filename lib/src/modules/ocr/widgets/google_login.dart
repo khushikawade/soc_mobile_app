@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../globals.dart';
@@ -82,6 +83,14 @@ class GoogleLogin {
 
       Globals.teacherEmailId =
           _userprofilelocalData[0].userEmail!.split('@')[0];
+
+      // Log Firebase Event
+      FirebaseAnalyticsService.setUserId(id: Globals.teacherEmailId);
+      FirebaseAnalyticsService.logLogin(method: 'Google');
+      FirebaseAnalyticsService.setUserProperty(
+          key: 'email', value: Globals.teacherEmailId);
+      // Log End
+
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
       DateTime currentDateTime = DateTime.now();
       _ocrBlocLogs.add(LogUserActivityEvent(

@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 import 'package:Soc/src/modules/schedule/modal/event.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 // import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +115,10 @@ class _AppState extends State<App> with WidgetsBindingObserver {
               isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
               //false,  /For standard app
               ),
-          //  home: SchoolIDLogin(),
+          // home: SchoolIDLogin(),
+          navigatorObservers: [
+            FirebaseAnalyticsService().appAnalyticsObserver()
+          ],
         ),
       ),
     );

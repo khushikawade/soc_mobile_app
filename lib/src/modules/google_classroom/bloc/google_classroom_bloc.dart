@@ -18,8 +18,8 @@ part 'google_classroom_state.dart';
 class GoogleClassroomBloc
     extends Bloc<GoogleClassroomEvent, GoogleClassroomState> {
   GoogleClassroomBloc() : super(GoogleClassroomInitial());
+
   final DbServices _dbServices = DbServices();
-  GoogleClassroomState get initialState => GoogleClassroomInitial();
   int _totalRetry = 0;
 
   @override
@@ -140,6 +140,8 @@ class GoogleClassroomBloc
     // }
   }
 
+  GoogleClassroomState get initialState => GoogleClassroomInitial();
+
   Future<List> getAllGoogleClassroomCourses(
       {required String? accessToken, required String? refreshToken}) async {
     try {
@@ -198,6 +200,21 @@ class GoogleClassroomBloc
 
       throw (e);
     }
+  }
+
+  sort({required List<GoogleClassroomCourses> obj}) {
+    obj.sort((a, b) => a.name!.compareTo(b.name!));
+    try {
+      for (int i = 0; i < obj.length; i++) {
+        if (obj[i].studentList!.length > 0) {
+          obj[i].studentList!.sort((a, b) => a['profile']['name']['givenName']!
+              .toString()
+              .toUpperCase()
+              .compareTo(
+                  b['profile']['name']['givenName']!.toString().toUpperCase()));
+        }
+      }
+    } catch (e) {}
   }
 
   // Future getClassroomStudentsByCoursesId(
@@ -294,20 +311,5 @@ class GoogleClassroomBloc
       print(e);
       throw (e);
     }
-  }
-
-  sort({required List<GoogleClassroomCourses> obj}) {
-    obj.sort((a, b) => a.name!.compareTo(b.name!));
-    try {
-      for (int i = 0; i < obj.length; i++) {
-        if (obj[i].studentList!.length > 0) {
-          obj[i].studentList!.sort((a, b) => a['profile']['name']['givenName']!
-              .toString()
-              .toUpperCase()
-              .compareTo(
-                  b['profile']['name']['givenName']!.toString().toUpperCase()));
-        }
-      }
-    } catch (e) {}
   }
 }
