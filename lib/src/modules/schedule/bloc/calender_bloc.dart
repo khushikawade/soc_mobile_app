@@ -1,5 +1,6 @@
 import 'dart:convert';
 //import 'package:Soc/src/modules/schedule/modal/calender_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/model_calender.dart';
 import 'package:Soc/src/services/db_service.dart';
@@ -30,6 +31,7 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
   ) async* {
     if (event is CalenderPageEvent) {
       try {
+        bool storeOnlyLocalDB = false;
         String? _scheduleObjectName = "${Strings.scheduleObjectDetails}";
         String? _blackoutDateObjectName =
             "${Strings.blackoutDateObjectDetails}";
@@ -46,17 +48,22 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
         List<BlackoutDate> _blackoutDateLocalData =
             await _blackoutDateObjectLocalDb.getData();
 
+        yield CalenderLoading();
         if (_scheduleLocalData.isEmpty || _blackoutDateLocalData.isEmpty) {
-          yield Loading();
+          yield CalenderLoading();
         } else {
-          yield Loading();
-          yield CalenderSucces(
+          if (event.isFromStudent == true) {
+            storeOnlyLocalDB = true;
+          }
+          yield CalenderLoading();
+          yield CalenderSuccess(
               scheduleObjList: _scheduleLocalData,
               blackoutDateobjList: _blackoutDateLocalData,
-              pullToRefresh: event.pullToRefresh);
+              pullToRefresh: event.pullToRefresh,
+              studentProfile: event.studentProfile);
         }
 
-        Body body = await getStudentDetails(event.email);
+        Body body = await getStudentDetails(event.studentProfile.userEmail);
         List<Schedule> appList = body.schedules!;
 
         List<BlackoutDate> blackoutdate = body.blackoutDates!;
@@ -67,16 +74,17 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
         });
 
         await _blackoutDateObjectLocalDb.clear();
-
         blackoutdate.forEach((BlackoutDate e) async {
           await _blackoutDateObjectLocalDb.addData(e);
         });
-        yield Loading();
-        if (appList.isNotEmpty) {
-          yield CalenderSucces(
+
+        if (!storeOnlyLocalDB) {
+          yield CalenderEmptyState();
+          yield CalenderSuccess(
               scheduleObjList: appList,
               blackoutDateobjList: blackoutdate,
-              pullToRefresh: event.pullToRefresh);
+              pullToRefresh: event.pullToRefresh,
+              studentProfile: event.studentProfile);
         }
       } catch (e) {
         String? _scheduleObjectName = "${Strings.scheduleObjectDetails}";
@@ -96,15 +104,13 @@ class CalenderBloc extends Bloc<CalenderEvent, CalenderState> {
             await _blackoutDateObjectLocalDb.getData();
 
         if (_scheduleLocalData.isEmpty || _blackoutDateLocalData.isEmpty) {
-          e == 'NO_CONNECTION'
-              ? Utility.currentScreenSnackBar("No Internet Connection", null)
-              : print(e);
-          yield CalenderError(err: e);
+          yield CalenderError(err: e.toString());
         } else {
-          yield CalenderSucces(
+          yield CalenderSuccess(
               scheduleObjList: _scheduleLocalData,
               blackoutDateobjList: _blackoutDateLocalData,
-              pullToRefresh: event.pullToRefresh);
+              pullToRefresh: event.pullToRefresh,
+              studentProfile: event.studentProfile);
         }
       }
     }

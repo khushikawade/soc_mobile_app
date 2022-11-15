@@ -495,7 +495,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           "Account_Type": "${event.accountType ?? ''}",
           "Date_Time": "${event.dateTime ?? ''}",
           "Description": "${event.description ?? ''}",
-          "Operation_Result": "${event.operationResult ?? ''}"
+          "Operation_Result": "${event.operationResult ?? ''}",
+          "App_Type__c":
+              Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard"
         };
         await activityLog(body: body);
       } catch (e) {
@@ -1120,8 +1122,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-       // Url for Productiom
-        Uri.encodeFull('https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
+        // Url for Productiom
+        Uri.encodeFull(
+            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
+        // Url For testing and developement
+        // Uri.encodeFull(
+        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
         // Url For testing and developement
         // Uri.encodeFull(
         //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
@@ -1218,7 +1224,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
       };
-      final body = {"email": email.toString()};
+      final body = {"email": 'mmurdocco@schools.nyc.gov'.toString()};
       final ResponseModel response = await _dbServices.postapi(
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail?objectName=Contact",
           body: body,
@@ -1574,11 +1580,26 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future fetchStudentDetails(ossId) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
+          //API from global API
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Student__c/studentOsis/$ossId",
+
+          //Filter API
+          // Uri.encodeFull(
+          //     "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Student__c/\"School__c\" = \'${Globals.appSetting.schoolNameC}\' and \"Student_ID__c\" = \'$ossId\'"),
           isCompleteUrl: true);
 
       if (response.statusCode == 200) {
+        //Resposne from global API
         StudentDetails res = StudentDetails.fromJson(response.data['body']);
+
+        //Response from filter API ---
+        // List<StudentDetails> _list = response.data['body']
+        //     .map<StudentDetails>((i) => StudentDetails.fromJson(i))
+        //     .toList();
+        // StudentDetails? res;
+        // if (_list.length > 0) {
+        //   res = _list[0];
+        // }
 
         return res;
       } else {

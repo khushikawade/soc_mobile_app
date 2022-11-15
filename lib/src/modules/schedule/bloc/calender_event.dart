@@ -5,9 +5,13 @@ abstract class CalenderEvent extends Equatable {
 }
 
 class CalenderPageEvent extends CalenderEvent {
-  final String email;
+  final UserInformation studentProfile;
   final bool pullToRefresh;
-  CalenderPageEvent({required this.email, required this.pullToRefresh});
+  var isFromStudent;
+  CalenderPageEvent(
+      {required this.studentProfile,
+      required this.pullToRefresh,
+      this.isFromStudent});
   @override
-  List<Object> get props => [email];
+  List<Object> get props => [studentProfile];
 }

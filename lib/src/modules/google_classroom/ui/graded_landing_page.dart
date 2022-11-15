@@ -16,6 +16,7 @@ import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/ocr/widgets/google_login.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -500,6 +501,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                         // isExtended: isScrolling.value,
                         backgroundColor: AppTheme.kButtonColor,
                         onPressed: () async {
+                          //
                           if (text == 'Scan Assignment' &&
                               googleCourseList.value.length == 0) {
                             popupModal(
@@ -530,6 +532,11 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     await UserGoogleProfile.getUserProfile();
                                 Globals.teacherEmailId =
                                     _profileData[0].userEmail!.split('@')[0];
+                                // Analytics start
+                              //  Analytics.setUserId(Globals.teacherEmailId);
+
+                                // Analytics end
+
                                 Globals.sessionId =
                                     "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
                                 DateTime currentDateTime = DateTime.now();

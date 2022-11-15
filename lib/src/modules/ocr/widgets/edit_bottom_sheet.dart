@@ -222,6 +222,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                 ]),
                           )
                         : Container(),
+                    SpacerWidget(20),
                     widget.textFileTitleThree != null
                         ? Container(
                             child: Column(

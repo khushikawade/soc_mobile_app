@@ -39,7 +39,7 @@ class _DayViewPageState extends State<DayViewPage>
     super.initState();
     if (widget.schedulesList.length == 0) {
       _calenderBloc.add(CalenderPageEvent(
-          email: widget.studentProfile.userEmail!, pullToRefresh: false));
+          studentProfile: widget.studentProfile, pullToRefresh: false));
     } else {
       _callEventBuilder(
           date: widget.date!.value,
@@ -129,7 +129,7 @@ class _DayViewPageState extends State<DayViewPage>
             pullToRefresh: onPullToRefresh);
       },
       listener: (BuildContext contxt, CalenderState state) {
-        if (state is CalenderSucces) {
+        if (state is CalenderSuccess) {
           widget.schedulesList.clear();
           widget.blackoutDateList.clear();
           widget.schedulesList.addAll(state.scheduleObjList);
@@ -165,7 +165,7 @@ class _DayViewPageState extends State<DayViewPage>
 
   Future onPullToRefresh() async {
     _calenderBloc.add(CalenderPageEvent(
-        email: widget.studentProfile.userEmail!, pullToRefresh: true));
+        studentProfile: widget.studentProfile, pullToRefresh: true));
     refreshKey.currentState?.show();
     await Future.delayed(Duration(seconds: 2));
   }

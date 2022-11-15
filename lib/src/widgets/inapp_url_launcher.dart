@@ -155,12 +155,10 @@
 ///
 
 import 'dart:async';
-import 'dart:collection';
 import 'dart:io';
 // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as inAppWebView;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:Soc/src/globals.dart';

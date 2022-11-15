@@ -644,7 +644,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                           ? 'Make Sure The Student Name Contains More Than 3 Character'
                                           : '')
                                   : isStudentNameFilled.value == ""
-                                      ? 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name'
+                                      ? 'Please Enter The Student Name'
                                       : nameController.text.length < 3
                                           ? 'Make Sure The Student Name Contains More Than 3 Character'
                                           : '',
@@ -686,7 +686,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           controller: idController,
                           hintText: Overrides.STANDALONE_GRADED_APP == true
                               ? 'Student Email'
-                              : 'Student ID/Student Email',
+                              : 'Student ID/Email',
                           isFailure: true,
                           // errormsg:
                           //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
@@ -717,7 +717,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                         ? 'Please enter valid Email'
                                         : '')
                                 : (isStudentIdFilled.value == ""
-                                    ? 'Student ID / Student Email Is Required'
+                                    ? 'Student ID/Email Is Required'
                                     : ''),
                             fromLanguage: "en",
                             toLanguage: Globals.selectedLanguage,
@@ -1355,9 +1355,28 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
+  String getIdFromEmail(studentEmailDetails) {
+    try {
+      for (int i = 0; i < standardStudentDetails.length; i++) {
+        if (standardStudentDetails[i].email == studentEmailDetails) {
+          return standardStudentDetails[i].studentId ?? studentEmailDetails;
+        }
+      }
+      return studentEmailDetails;
+    } catch (e) {
+      return studentEmailDetails;
+    }
+  }
+
   void updateDetails(
       {bool? isUpdateData,
       required bool? isFromHistoryAssessmentScanMore}) async {
+    String? updatedStudentId;
+    if (idController.text.contains('@')) {
+      updatedStudentId = getIdFromEmail(idController.text);
+    } else {
+      updatedStudentId = idController.text;
+    }
     StudentAssessmentInfo studentAssessmentInfo = StudentAssessmentInfo();
 
     // To add the scan more result to the google file existing list
@@ -1375,7 +1394,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
       if (isUpdateData == true && historyStudentInfo.isNotEmpty) {
         studentAssessmentInfo.studentName = nameController.text;
-        studentAssessmentInfo.studentId = idController.text;
+        studentAssessmentInfo.studentId =
+            updatedStudentId; // commented to add id case of email //idController.text;
         studentAssessmentInfo.studentGrade =
             indexColor.value.toString(); //pointScored.value;
         // studentAssessmentInfo.pointpossible = Globals.pointpossible;
@@ -1398,11 +1418,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
               //print('Record is already exist in the list. Skipping...');
             }
           }
-          if (!id.contains(idController.text)) {
+          if (!id.contains(updatedStudentId)) {
+            // commented to add id case of email //idController.text;
             studentAssessmentInfo.studentName = nameController.text.isNotEmpty
                 ? nameController.text
                 : "Unknown";
-            studentAssessmentInfo.studentId = idController.text;
+            studentAssessmentInfo.studentId =
+                updatedStudentId; // commented to add id case of email //idController.text;
             studentAssessmentInfo.studentGrade =
                 indexColor.value.toString(); //pointScored.value;
 
@@ -1440,7 +1462,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         // final StudentAssessmentInfo studentAssessmentInfo =
         //     StudentAssessmentInfo();
         studentAssessmentInfo.studentName = nameController.text;
-        studentAssessmentInfo.studentId = idController.text;
+        studentAssessmentInfo.studentId =
+            updatedStudentId; // commented to add id case of email //idController.text;
         studentAssessmentInfo.studentGrade =
             indexColor.value.toString(); //pointScored.value;
         studentAssessmentInfo.pointpossible =
@@ -1461,7 +1484,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
           //     StudentAssessmentInfo();
           studentAssessmentInfo.studentName =
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
-          studentAssessmentInfo.studentId = idController.text;
+          studentAssessmentInfo.studentId =
+              updatedStudentId; // commented to add id case of email //idController.text;
           studentAssessmentInfo.studentGrade =
               indexColor.value.toString(); //pointScored.value;
           studentAssessmentInfo.pointpossible =
@@ -1476,18 +1500,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
         } else {
           List id = [];
           for (int i = 0; i < studentInfo.length; i++) {
-            if (!studentInfo.contains(id)) {
+            if (!id.contains(id)) {
               //print('not contaains ----------------->');
               id.add(studentInfo[i].studentId);
             } else {
               //print('Record is already exist in the list. Skipping...');
             }
           }
-          if (!id.contains(idController.text)) {
+          if (!id.contains(updatedStudentId)) {
+            // commented to add id case of email //idController.text;
             studentAssessmentInfo.studentName = nameController.text.isNotEmpty
                 ? nameController.text
                 : "Unknown";
-            studentAssessmentInfo.studentId = idController.text;
+            studentAssessmentInfo.studentId =
+                updatedStudentId; // commented to add id case of email //idController.text;
             studentAssessmentInfo.studentGrade =
                 indexColor.value.toString(); //pointScored.value;
             studentAssessmentInfo.pointpossible =

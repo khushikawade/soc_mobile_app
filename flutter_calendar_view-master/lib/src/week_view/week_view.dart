@@ -407,8 +407,8 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
     if (!widget.showWeekends) {
       _weekDays
-      ..remove(WeekDays.saturday)
-      ..remove(WeekDays.sunday);
+        ..remove(WeekDays.saturday)
+        ..remove(WeekDays.sunday);
     }
 
     assert(

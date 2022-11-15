@@ -139,16 +139,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           yield ExcelSheetCreated(obj: result);
         }
       } on SocketException catch (e) {
-        e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection", null)
-            : print(e);
+        yield ErrorState(errorMsg: e.toString());
         rethrow;
       } catch (e) {
-        if (e == 'NO_CONNECTION') {
-          Utility.currentScreenSnackBar("No Internet Connection", null);
-        } else {
-          yield ErrorState();
-        }
+        yield ErrorState(errorMsg: e.toString());
         throw (e);
       }
     }
