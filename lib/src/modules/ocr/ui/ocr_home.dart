@@ -606,6 +606,7 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnCameraSection() async {
+    //Comparing with selected index
     Globals.pointpossible = rubricScoreSelectedColor.value == 0 //NYS 0-2
         ? '2'
         : rubricScoreSelectedColor.value == 2 //NYS 0-3
