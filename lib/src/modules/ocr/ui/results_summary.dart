@@ -155,7 +155,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       _driveBloc
           .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
 
-      _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
+      if (!Overrides.STANDALONE_GRADED_APP) {
+        _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
+      }
     } else {
       if (widget.isScanMore != true) {
         _driveBloc.add(GetShareLink(fileId: widget.fileId));
