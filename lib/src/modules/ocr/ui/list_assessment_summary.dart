@@ -171,7 +171,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                   }
                                   // bool isloading
                                   lastAssessmentHistoryListbj = state.obj;
-                                  return state.obj.length > 0
+                                  return state.obj != null &&
+                                          state.obj.length > 0
                                       ? listView(state.obj, isloading)
                                       : Expanded(
                                           child: NoDataFoundErrorWidget(
@@ -432,9 +433,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         : ""),
                 title: Utility.textWidget(
                     text: list[index].title == null
-                        ? '  AsssessmentName'
-                        // : list[index].title!.length > 20
-                        //     ? '${list[index].title!.substring(0, 20)}' + '...'
+                        ? 'Asssessment Name not found'
                         : list[index].title!,
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline2),
@@ -443,7 +442,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   onTap: () {
                     Utility.updateLoges(
                         activityId: '13',
-                        sessionId: list[index].sessionId != ''
+                        sessionId: list[index].sessionId != null
                             ? list[index].sessionId
                             : '',
                         description:
@@ -457,7 +456,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     // : print("no web link $index");
                   },
                   child: Icon(
-                    IconData(Globals.ocrResultIcons[0],
+                    IconData(0xe876,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color:

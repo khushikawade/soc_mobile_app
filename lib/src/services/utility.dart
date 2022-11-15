@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
@@ -676,12 +677,17 @@ class Utility {
       screen: GoogleAuthWebview(
         title: 'Google Authentication',
         url: //'https://88f5-111-118-246-106.in.ngrok.io/',
-            Globals.appSetting.authenticationURL ??
-                '' + //Overrides.secureLoginURL +
+            (Globals.appSetting.authenticationURL != null ||
+                    Globals.appSetting.authenticationURL!.isNotEmpty)
+                ? ("${Globals.appSetting.authenticationURL}" +
+                    '' + //Overrides.secureLoginURL +
                     '?' +
                     Globals.appSetting.appLogoC +
                     '?' +
-                    themeColor.toString().split('0xff')[1].split(')')[0],
+                    themeColor.toString().split('0xff')[1].split(')')[0])
+                : Overrides.STANDALONE_GRADED_APP
+                    ? Overrides.googleClassroomAuthURL!
+                    : Overrides.googleDriveAuthURL!,
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
@@ -897,8 +903,8 @@ class Utility {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase(tableName);
 
-    List<StudentAssessmentInfo> _studentInfoListDb =
-        await _studentInfoDb.getData();
+    List<StudentAssessmentInfo> _studentInfoListDb = [];
+    _studentInfoListDb = await _studentInfoDb.getData();
     if (_studentInfoListDb.isNotEmpty) {
       if (_studentInfoListDb[0].studentId == 'Id' ||
           _studentInfoListDb[0].studentId == 'Name') {

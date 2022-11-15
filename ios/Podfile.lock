@@ -33,27 +33,27 @@ PODS:
   - google_maps_flutter_ios (0.0.1):
     - Flutter
     - GoogleMaps
-  - GoogleMaps (7.1.0):
-    - GoogleMaps/Maps (= 7.1.0)
-  - GoogleMaps/Base (7.1.0)
-  - GoogleMaps/Maps (7.1.0):
+  - GoogleMaps (7.2.0):
+    - GoogleMaps/Maps (= 7.2.0)
+  - GoogleMaps/Base (7.2.0)
+  - GoogleMaps/Maps (7.2.0):
     - GoogleMaps/Base
   - image_picker_ios (0.0.1):
     - Flutter
   - network_info_plus (0.0.1):
     - Flutter
-  - onesignal_flutter (3.4.1):
+  - onesignal_flutter (3.4.2):
     - Flutter
-    - OneSignalXCFramework (= 3.11.2)
-  - OneSignalXCFramework (3.11.2):
-    - OneSignalXCFramework/OneSignalCore (= 3.11.2)
-    - OneSignalXCFramework/OneSignalExtension (= 3.11.2)
-    - OneSignalXCFramework/OneSignalOutcomes (= 3.11.2)
-  - OneSignalXCFramework/OneSignalCore (3.11.2)
-  - OneSignalXCFramework/OneSignalExtension (3.11.2):
+    - OneSignalXCFramework (= 3.11.4)
+  - OneSignalXCFramework (3.11.4):
+    - OneSignalXCFramework/OneSignalCore (= 3.11.4)
+    - OneSignalXCFramework/OneSignalExtension (= 3.11.4)
+    - OneSignalXCFramework/OneSignalOutcomes (= 3.11.4)
+  - OneSignalXCFramework/OneSignalCore (3.11.4)
+  - OneSignalXCFramework/OneSignalExtension (3.11.4):
     - OneSignalXCFramework/OneSignalCore
     - OneSignalXCFramework/OneSignalOutcomes
-  - OneSignalXCFramework/OneSignalOutcomes (3.11.2):
+  - OneSignalXCFramework/OneSignalOutcomes (3.11.4):
     - OneSignalXCFramework/OneSignalCore
   - open_apps_settings (0.0.1):
     - Flutter
@@ -187,16 +187,16 @@ SPEC CHECKSUMS:
   flutter_downloader: b7301ae057deadd4b1650dc7c05375f10ff12c39
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd
-  fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
+  fluttertoast: 74526702fea2c060ea55dde75895b7e1bde1c86b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
   geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
   google_maps_flutter_ios: 66201f392bf62d500f07670a30488a247b9bb5b9
-  GoogleMaps: bc56ffb0324e345a2d91bac1a64a920f9c8f1b20
+  GoogleMaps: 65ce5426e2398bb81433c8076f2ab6419c2c5537
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   network_info_plus: b78876159360f5580608c2cea620d6ceffabd0ad
-  onesignal_flutter: 02a850e079073e8bd03948f50a2fb9a7918b5db6
-  OneSignalXCFramework: 81ceac017a290f23793443323090cfbe888f74ea
+  onesignal_flutter: bd3bc654bc632e7d6cc8d219a7caebf0592c63e5
+  OneSignalXCFramework: 45932e3c1e659e1485bfd765e0543d7f30cc737b
   open_apps_settings: b15bcddca026a201319f58e24f36464218793efc
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
@@ -213,6 +213,6 @@ SPEC CHECKSUMS:
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17
+PODFILE CHECKSUM: 10c31e7ea4ec48676bcbfd2274a28498b1fd8fff
 
 COCOAPODS: 1.11.3

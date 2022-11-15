@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/setting/licenceinfo.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -14,9 +15,9 @@ import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+// import 'package:open_store/open_store.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../globals.dart';
 
 class SettingPage extends StatefulWidget {
   final bool isbuttomsheet;
@@ -52,14 +53,6 @@ class _SettingPageState extends State<SettingPage> {
     }
     _homeBloc.add(FetchStandardNavigationBar());
     Globals.callsnackbar = true;
-    // if (Globals.darkTheme != null) {
-    //   _theme = Globals.darkTheme!;
-    // }
-    // if (Globals.systemTheme != null) {
-    //   _themeSystem = Globals.systemTheme!;
-    // } else {
-    //   Globals.systemTheme = false;
-    // }
   }
 
   @override
@@ -108,76 +101,6 @@ class _SettingPageState extends State<SettingPage> {
       ],
     );
   }
-
-  // Widget _buildSwitchTheme() {
-  //   return Globals.systemTheme! == true
-  //       ? Container()
-  //       : Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           crossAxisAlignment: CrossAxisAlignment.end,
-  //           children: <Widget>[
-  //               Transform.scale(
-  //                 scale: 1.0,
-  //                 child: Padding(
-  //                   padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
-  //                   child: Switch(
-  //                     value: push2 != null ? _theme = !push2! : _theme,
-  //                     onChanged: (bool value) async {
-  //                       setState(() {
-  //                         _theme = value;
-  //                         if (_theme == true) {
-  //                           Globals.darkTheme = _theme;
-  //                           AdaptiveTheme.of(context).setDark();
-  //                         } else {
-  //                           Globals.darkTheme = _theme;
-  //                           AdaptiveTheme.of(context).setLight();
-  //                         }
-  //                       });
-  //                       //
-  //                     },
-  //                     activeColor: AppTheme.kactivebackColor,
-  //                     activeTrackColor: AppTheme.kactiveTrackColor,
-  //                     inactiveThumbColor: AppTheme.kIndicatorColor,
-  //                     inactiveTrackColor: AppTheme.kinactiveTrackColor,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ]);
-  // }
-
-  // Widget _buildSwitchSystemTheme() {
-  //   return Column(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       crossAxisAlignment: CrossAxisAlignment.end,
-  //       children: <Widget>[
-  //         Transform.scale(
-  //           scale: 1.0,
-  //           child: Padding(
-  //             padding: const EdgeInsets.only(left: _kLabelSpacing * 1.5),
-  //             child: Switch(
-  //               value: push3 != null ? _themeSystem = !push3! : _themeSystem,
-  //               onChanged: (bool value) async {
-  //                 setState(() {
-  //                   _themeSystem = value;
-  //                   if (_themeSystem == true) {
-  //                     Globals.systemTheme = _themeSystem;
-  //                     AdaptiveTheme.of(context).setSystem();
-  //                   } else {
-  //                     Globals.systemTheme = _themeSystem;
-  //                     AdaptiveTheme.of(context).setLight();
-  //                   }
-  //                 });
-  //                 //
-  //               },
-  //               activeColor: AppTheme.kactivebackColor,
-  //               activeTrackColor: AppTheme.kactiveTrackColor,
-  //               inactiveThumbColor: AppTheme.kIndicatorColor,
-  //               inactiveTrackColor: AppTheme.kinactiveTrackColor,
-  //             ),
-  //           ),
-  //         ),
-  //       ]);
-  // }
 
   Widget _buildSwitch() {
     return Column(
@@ -234,56 +157,6 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  // Widget _buildSystemThemeMode() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     crossAxisAlignment: CrossAxisAlignment.center,
-  //     children: [
-  //       Container(
-  //         padding:
-  //             EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
-  //         child: TranslationWidget(
-  //           message: "Enable System Theme",
-  //           fromLanguage: "en",
-  //           toLanguage: Globals.selectedLanguage,
-  //           builder: (translatedMessage) => Padding(
-  //             padding: const EdgeInsets.only(left: _kLabelSpacing),
-  //             child: Text(translatedMessage.toString(),
-  //                 textAlign: TextAlign.center,
-  //                 style: Theme.of(context).textTheme.headline2!),
-  //           ),
-  //         ),
-  //       ),
-  //       _buildSwitchSystemTheme(),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildThemeMode() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     crossAxisAlignment: CrossAxisAlignment.center,
-  //     children: [
-  //       Container(
-  //         padding:
-  //             EdgeInsets.symmetric(horizontal: 0, vertical: _kLabelSpacing / 2),
-  //         child: TranslationWidget(
-  //           message: "Enable Dark Theme",
-  //           fromLanguage: "en",
-  //           toLanguage: Globals.selectedLanguage,
-  //           builder: (translatedMessage) => Padding(
-  //             padding: const EdgeInsets.only(left: _kLabelSpacing),
-  //             child: Text(translatedMessage.toString(),
-  //                 textAlign: TextAlign.center,
-  //                 style: Theme.of(context).textTheme.headline2!),
-  //           ),
-  //         ),
-  //       ),
-  //       _buildSwitchTheme(),
-  //     ],
-  //   );
-  // }
-
   Widget _buildLicence() {
     return InkWell(
       onTap: () {
@@ -304,28 +177,6 @@ class _SettingPageState extends State<SettingPage> {
                   ))),
     );
   }
-
-  // Widget _buildThemeMode() {
-  //   return InkWell(
-  //     onTap: () {
-  //       showDialog(
-  //           context: context,
-  //           builder: (BuildContext context) {
-  //             return SelectTheme();
-  //           });
-  //     },
-  //     child: Container(
-  //         padding: EdgeInsets.all(16),
-  //         child: TranslationWidget(
-  //             message: "Theme",
-  //             fromLanguage: "en",
-  //             toLanguage: Globals.selectedLanguage,
-  //             builder: (translatedMessage) => Text(
-  //                   translatedMessage.toString(),
-  //                   style: Theme.of(context).textTheme.headline2!,
-  //                 ))),
-  //   );
-  // }
 
   Widget _appVersion() {
     return Container(
@@ -350,7 +201,8 @@ class _SettingPageState extends State<SettingPage> {
       _buildHeading("Acknowledgements"),
       _buildLicence(),
       _buildHeading("App Version"),
-      _appVersion(),
+      _appVersion(), _buildHeading("App Store"),
+      _storOnTap('Go To Store'),
       HorzitalSpacerWidget(_kLabelSpacing * 20),
       SizedBox(
           width: MediaQuery.of(context).size.width * 1,
@@ -404,6 +256,33 @@ class _SettingPageState extends State<SettingPage> {
           )),
           onRefresh: refreshPage,
         ));
+  }
+
+  _appStoreOnTap() async {
+    // PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    // print(packageInfo);
+    // OpenStore.instance.open(
+    //   appStoreId: packageInfo.buildSignature, // AppStore id of your app for iOS
+
+    //   androidAppBundleId:
+    //       packageInfo.packageName, // Android app bundle package name
+    // );
+    Utility.launchUrlOnExternalBrowser(Globals.isAndroid == true
+        ? Overrides.Android_Store_URL
+        : //'https://apps.apple.com/us/app/j-h-s-151-lou-gehrig-academy/id1510021584'
+        Overrides.Apple_Store_URL);
+  }
+
+  Widget _storOnTap(String text) {
+    return InkWell(
+      onTap: _appStoreOnTap,
+      child: Container(
+          padding: EdgeInsets.all(16),
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.headline2!,
+          )),
+    );
   }
 
   Future refreshPage() async {

@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../../globals.dart';
 import '../../../services/Strings.dart';
@@ -30,14 +29,17 @@ class GoogleLogin {
       context,
       screen: GoogleAuthWebview(
         title: title!,
-        url: //'https://88f5-111-118-246-106.in.ngrok.io/',
-            // 'https://6016-111-118-246-106.in.ngrok.io', //AppDeveloper account URL
-            Globals.appSetting.authenticationURL ??
+        url: (Globals.appSetting.authenticationURL != null ||
+                Globals.appSetting.authenticationURL!.isNotEmpty)
+            ? ("${Globals.appSetting.authenticationURL}" +
                 '' + //Overrides.secureLoginURL +
-                    '?' +
-                    Globals.appSetting.appLogoC +
-                    '?' +
-                    themeColor.toString().split('0xff')[1].split(')')[0],
+                '?' +
+                Globals.appSetting.appLogoC +
+                '?' +
+                themeColor.toString().split('0xff')[1].split(')')[0])
+            : Overrides.STANDALONE_GRADED_APP
+                ? Overrides.googleClassroomAuthURL!
+                : Overrides.googleDriveAuthURL!,
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,

@@ -207,6 +207,24 @@ class AssessmentDashboardStatus extends OcrState {
   List<Object> get props => [];
 }
 
+class GetRubricPdfSuccess extends OcrState {
+  List<RubricPdfModal>? objList;
+
+  GetRubricPdfSuccess({
+    this.objList,
+  });
+  GetRubricPdfSuccess copyWith({
+    final objList,
+  }) {
+    return GetRubricPdfSuccess(
+      objList: objList ?? this.objList,
+    );
+  }
+
+  @override
+  List<Object> get props => [objList!];
+}
+
 // ---------- State to updated ui according to State List ----------
 class StateListFetchSuccessfully extends OcrState {
   final List<String> stateList;
@@ -231,3 +249,4 @@ class LocalStateSearchResult extends OcrState {
 }
 
 //LocalStateSearchEvent
+class NoRubricAvailable extends OcrState {}
