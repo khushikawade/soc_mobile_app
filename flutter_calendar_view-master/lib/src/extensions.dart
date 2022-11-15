@@ -13,7 +13,7 @@ extension DateTimeExtensions on DateTime {
   }
 
   /// Returns [DateTime] without timestamp.
-  DateTime get withoutTime => DateTime(year, month, day);
+  DateTime get withoutTime => DateTime.utc(year, month, day);
 
   /// Checks if time stamp of [date] is same as [this].
   ///
