@@ -611,7 +611,9 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnCameraSection() async {
+    //Rubric selection comparision
     Globals.pointpossible = Globals.scoringRubric == 'None'
+        //Point possible index comparision
         ? pointPossibleSelectedColor.value == 1
             ? "2"
             : (pointPossibleSelectedColor.value + 1).toString()
