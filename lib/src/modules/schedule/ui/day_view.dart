@@ -27,7 +27,8 @@ class DayViewPage extends StatefulWidget {
 }
 
 class _DayViewPageState extends State<DayViewPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  AppLifecycleState? state;
   bool showViewChangeArea = false;
   bool isAnimationContainerOpen = false;
   EventController _controller = EventController();
@@ -45,6 +46,15 @@ class _DayViewPageState extends State<DayViewPage>
           date: widget.date!.value,
           scheduleDates: widget.schedulesList,
           blackoutDates: widget.blackoutDateList);
+    }
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _calenderBloc.add(CalenderPageEvent(
+          studentProfile: widget.studentProfile, pullToRefresh: true));
     }
   }
 
@@ -66,6 +76,7 @@ class _DayViewPageState extends State<DayViewPage>
   @override
   void dispose() {
     _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

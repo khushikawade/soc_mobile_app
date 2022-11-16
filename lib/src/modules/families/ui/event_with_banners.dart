@@ -281,7 +281,7 @@ class _EventPageState extends State<EventPage>
 
   Event buildEvent(CalendarEventList list) {
     return Event(
-      title: list.summary!,
+      title: list.summary ?? '',
       description: list.description ?? "",
       startDate: DateTime.parse(list.start.toString().contains('dateTime')
               ? list.start['dateTime'].toString()

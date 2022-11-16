@@ -1241,28 +1241,31 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           if (!result) {
             await createContactToSalesforce(email: email.toString());
           }
-        } else if (data['Assessment_App_User__c'] != 'true') {
-          var userType = data["GRADED_Premium__c"];
-          if (userType == "true") {
-            Globals.isPremiumUser = true;
-          } else {
-            Globals.isPremiumUser = false;
-          }
-
-          Globals.teacherId = data['Id'];
-          bool result = await updateContactToSalesforce(recordId: data['Id']);
-          if (!result) {
-            await updateContactToSalesforce(recordId: data['Id']);
-          }
         } else {
-          var userType = data["GRADED_Premium__c"];
-          if (userType == "true") {
-            Globals.isPremiumUser = true;
+          Globals.teacherId = data['Id'];
+          if (data['Assessment_App_User__c'] != 'true') {
+            var userType = data["GRADED_Premium__c"];
+            if (userType == "true") {
+              Globals.isPremiumUser = true;
+            } else {
+              Globals.isPremiumUser = false;
+            }
+
+            Globals.teacherId = data['Id'];
+            bool result = await updateContactToSalesforce(recordId: data['Id']);
+            if (!result) {
+              await updateContactToSalesforce(recordId: data['Id']);
+            }
           } else {
-            Globals.isPremiumUser = false;
+            var userType = data["GRADED_Premium__c"];
+            if (userType == "true") {
+              Globals.isPremiumUser = true;
+            } else {
+              Globals.isPremiumUser = false;
+            }
           }
         }
-        Globals.teacherId = data['Id'];
+
         return true;
         // return data;
       } else {
@@ -1280,9 +1283,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
       };
       final body = {
-        "AccountId": "0014W00002uusl7QAA", //Static for graded+ account
+        //"0014W00002uusl7QAA", //Static for graded+ account
+        "AccountId": Overrides.STANDALONE_GRADED_APP
+            ? '0014W000030jqbbQAA' //Graded+  Standalone
+            : '0014W00002uusl7QAA', //Graded+ Schools
+
         "RecordTypeId":
-            "0124W0000003GVyQAM", //Static to save in a 'Teacher' catagory list
+            "0124W0000003GVyQAM", //Static to save in a 'Teacher' catagory listview
         "Assessment_App_User__c": "true",
         "LastName": email, //.split("@")[0],
         "Email": email,
@@ -1297,8 +1304,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           body: body,
           headers: headers);
       if (response.statusCode == 200) {
+        // print(response.data["body"]);
         Globals.teacherId = response.data["body"]["id"];
-
+        // print(response.data["body"]["id"]);
         return true;
       } else {
         return false;
