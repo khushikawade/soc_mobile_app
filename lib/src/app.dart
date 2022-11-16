@@ -114,7 +114,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
               isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
               //false,  /For standard app
               ),
-          //  home: SchoolIDLogin(),
+          // home: SchoolIDLogin(),
         ),
       ),
     );

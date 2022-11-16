@@ -14,6 +14,7 @@ import 'package:calendar_view/calendar_view.dart';
 
 // import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -39,7 +40,9 @@ class MonthViewPage extends StatefulWidget {
 }
 
 class _MonthViewPageState extends State<MonthViewPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  AppLifecycleState? state;
+
   bool isAnimationContainerOpen = false;
 
   DateTime _date = DateTime.now();
@@ -52,13 +55,23 @@ class _MonthViewPageState extends State<MonthViewPage>
     super.initState();
 
     _callEventBuilder(_date);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose\
     _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _calenderBloc.add(CalenderPageEvent(
+          studentProfile: widget.studentProfile, pullToRefresh: true));
+    }
   }
 
   @override

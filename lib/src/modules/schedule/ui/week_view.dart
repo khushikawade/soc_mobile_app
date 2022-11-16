@@ -12,6 +12,7 @@ import 'package:calendar_view/calendar_view.dart';
 // import 'package:calendar_view/calendar_view.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../modal/event.dart';
 import '../modal/schedule_modal.dart';
@@ -35,7 +36,8 @@ class WeekViewPage extends StatefulWidget {
 }
 
 class _WeekViewPageState extends State<WeekViewPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  AppLifecycleState? state;
   List<CalendarEventData<Event>> staticEventList = [];
   bool showViewChangeArea = false;
   bool showicon = false;
@@ -55,13 +57,23 @@ class _WeekViewPageState extends State<WeekViewPage>
     //  addEvent(_date);
     _callEventBuilder(_date);
     AppConstants.height = isContainer1Open ? 0 : 0;
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose\
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _calenderBloc.add(CalenderPageEvent(
+          studentProfile: widget.studentProfile, pullToRefresh: true));
+    }
   }
 
   @override
@@ -148,6 +160,7 @@ class _WeekViewPageState extends State<WeekViewPage>
             },
             listener: (BuildContext contxt, CalenderState state) {
               if (state is CalenderSuccess) {
+                print("bloc success is recived-------------------------------------------");
                 widget.schedules.clear();
                 widget.blackoutDate.clear();
                 widget.schedules.addAll(state.scheduleObjList);
