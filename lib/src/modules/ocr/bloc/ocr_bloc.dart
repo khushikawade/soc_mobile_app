@@ -1224,7 +1224,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
       };
-      final body = {"email": 'mmurdocco@schools.nyc.gov'.toString()};
+      final body = {"email": email.toString()};
       final ResponseModel response = await _dbServices.postapi(
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail?objectName=Contact",
           body: body,
