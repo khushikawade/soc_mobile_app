@@ -3,15 +3,7 @@
 export "FLUTTER_ROOT=/Users/apple/Documents/Setups/flutter"
 export "FLUTTER_APPLICATION_PATH=/Users/apple/Documents/Flutter_Projects/SOC/soc_mobile_app/flutter_calendar_view-master/example"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
-<<<<<<< HEAD
 export "FLUTTER_TARGET=lib/main.dart"
-=======
-<<<<<<< HEAD
-export "FLUTTER_TARGET=lib/main.dart"
-=======
-export "FLUTTER_TARGET=/Users/apple/Documents/Flutter_Projects/SOC/soc_mobile_app/flutter_calendar_view-master/example/lib/main.dart"
->>>>>>> 1d2dda4aff823a6c26d0f61a8789bbc29515e055
->>>>>>> development
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
 export "FLUTTER_BUILD_NUMBER=1"
