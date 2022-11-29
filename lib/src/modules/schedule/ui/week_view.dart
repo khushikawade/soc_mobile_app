@@ -160,7 +160,6 @@ class _WeekViewPageState extends State<WeekViewPage>
             },
             listener: (BuildContext contxt, CalenderState state) {
               if (state is CalenderSuccess) {
-                print("bloc success is recived-------------------------------------------");
                 widget.schedules.clear();
                 widget.blackoutDate.clear();
                 widget.schedules.addAll(state.scheduleObjList);

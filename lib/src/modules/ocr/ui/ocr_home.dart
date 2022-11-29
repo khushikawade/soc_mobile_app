@@ -475,6 +475,11 @@ class _OpticalCharacterRecognitionPageState
                               lastIndex = index;
                               Globals.scoringRubric =
                                   '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
+                            } else if (RubricScoreList
+                                    .scoringList[index].name ==
+                                "None") {
+                              Globals.scoringRubric =
+                                  RubricScoreList.scoringList[index].name;
                             } else {
                               Globals.scoringRubric =
                                   '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
@@ -606,18 +611,24 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnCameraSection() async {
-    Globals.pointpossible = rubricScoreSelectedColor.value == 0 //NYS 0-2
-        ? '2'
-        : rubricScoreSelectedColor.value == 2 //NYS 0-3
-            ? '3'
-            // : rubricScoreSelectedColor.value == 3 //None
-            //     ? (pointPossibleSelectedColor.value + 2).toString() //
-            : rubricScoreSelectedColor.value == 4 //NYS 0-4
-                ? '4'
-                : rubricScoreSelectedColor.value > 4 //Custom selection
-                    ? (pointPossibleSelectedColor.value + 1)
-                        .toString() //+1 is added for 'index+1' to get right point possible
-                    : '2'; //In case of 'None' or 'Custom rubric' selection
+    //Rubric selection comparision
+    Globals.pointpossible = Globals.scoringRubric == 'None'
+        //Point possible index comparision
+        ? pointPossibleSelectedColor.value == 1
+            ? "2"
+            : (pointPossibleSelectedColor.value + 1).toString()
+        : rubricScoreSelectedColor.value == 0 //NYS 0-2
+            ? '2'
+            : rubricScoreSelectedColor.value == 2 //NYS 0-3
+                ? '3'
+                // : rubricScoreSelectedColor.value == 3 //None
+                //     ? (pointPossibleSelectedColor.value + 2).toString() //
+                : rubricScoreSelectedColor.value == 4 //NYS 0-4
+                    ? '4'
+                    : rubricScoreSelectedColor.value > 4 //Custom selection
+                        ? (pointPossibleSelectedColor.value + 1)
+                            .toString() //+1 is added for 'index+1' to get right point possible
+                        : '2'; //In case of 'None' or 'Custom rubric' selection
 
     Globals.googleExcelSheetId = "";
     //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
@@ -639,6 +650,8 @@ class _OpticalCharacterRecognitionPageState
     //  _bloc.add(SaveSubjectListDetails());
     // //print(Globals.scoringRubric);
     // UNCOMMENT Below
+    print("navigate to camera");
+    print(Globals.pointpossible);
     Navigator.push(
       context,
       MaterialPageRoute(

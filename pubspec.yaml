@@ -93,9 +93,10 @@ dependencies:
   geocoding: ^2.0.5 # Coordinate to Address
   string_similarity: ^2.0.0 #Used in email detection
   scrollable_positioned_list: ^0.2.0-nullsafety.0 #Used on courses list to scroll to specific course
-  csv: ^5.0.1 #Used to process google excel file
-  fluttertoast: ^8.0.9 #Used to show snackbars
-  # open_store: ^0.3.1 #Used to navigate the user to store
+  csv: ^5.0.1
+  fluttertoast: ^8.0.9
+  firebase_core: ^1.24.0
+  firebase_analytics: ^9.3.8
 
   #advance_pdf_viewer: 2.0.0
   #flutter_html: ^2.1.5
@@ -116,6 +117,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.9.0
+  change_app_package_name: ^1.1.0
 
 dependency_overrides:
   webview_flutter: ^3.0.4
