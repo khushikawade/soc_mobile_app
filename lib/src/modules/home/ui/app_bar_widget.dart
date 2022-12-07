@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
@@ -236,7 +236,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           height: Globals.deviceType == "phone" ? 26 : 32,
           image: AssetImage("assets/images/gtranslate.png"),
         ),
-        onTap: () {
+        onTap: () async {
+          await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              "language_translate");
+
           setState(() {});
           LanguageSelector(context, (language) {
             if (language != null) {
@@ -256,7 +259,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return Container(
         padding: EdgeInsets.only(left: 5),
         child: IconButton(
-          onPressed: () {
+          onPressed: () async {
+            await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                "settings_drawer");
             if (Platform.isAndroid) {
               OpenAppsSettings.openAppsSettings(
                   settingsCode: SettingsCode.ACCESSIBILITY);

@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -73,6 +74,10 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     _setLocked();
     Globals.callsnackbar = true;
     getListLength();
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("google_file_search_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'google_file_search_page',
+        screenClass: 'GoogleFileSearchPage');
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -39,6 +40,10 @@ class _ResourcesPageState extends State<ResourcesPage> {
     // Utility.setLocked();
     super.initState();
     _bloc.add(ResourcesListEvent());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'google_login', screenClass: 'GoogleLogin');
   }
 
   @override

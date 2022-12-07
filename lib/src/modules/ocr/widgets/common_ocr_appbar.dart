@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -146,7 +147,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       child:
                           //widget.actionIcon,
                           IconButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          await FirebaseAnalyticsService
+                              .addCustomAnalyticsEvent("home");
                           if (widget.isHomeButtonPopup == true) {
                             _onHomePressed();
                           } else {
@@ -180,7 +183,10 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     )
                   : widget.assessmentPage == true
                       ? GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            await FirebaseAnalyticsService
+                                .addCustomAnalyticsEvent(
+                                    "go_to_drive_assessment_detail");
                             //print(
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
                             Utility.updateLoges(
@@ -267,6 +273,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   padding: const EdgeInsets.only(top: 2),
                   child: IconButton(
                       onPressed: () async {
+                        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                            "walkthrough");
                         var result = await Navigator.of(context).push(
                           MaterialPageRoute(
                               builder: (context) => CustomIntroWidget()),
@@ -297,7 +305,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               Radius.circular(60),
                             ), //.circular(60),
                             child: GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                await FirebaseAnalyticsService
+                                    .addCustomAnalyticsEvent("profile");
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -455,7 +465,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                         color: AppTheme.kButtonColor,
                                       ));
                             }),
-                        onPressed: () {
+                        onPressed: () async {
                           //Globals.iscameraPopup = false;
                           Navigator.pop(context, false);
                         },

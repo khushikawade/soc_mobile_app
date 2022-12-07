@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/startup.dart';
@@ -72,6 +73,9 @@ class _StaffPageState extends State<StaffPage> {
     if (widget.isFromOcr) {
       _homeBloc.add(FetchStandardNavigationBar());
     }
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("staff");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'staff', screenClass: 'StaffPage');
     // _scrollController.addListener(_scrollListener);
     //  globalKey.currentState!.innerController.addListener(_scrollListener);
   }
@@ -266,6 +270,10 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
+                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "assignment");
+
+                    FirebaseAnalyticsService.logLogin();
                     // pushNewScreen(
                     //   context,
                     //   screen: StartupPage(

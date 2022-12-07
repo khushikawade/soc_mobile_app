@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -25,6 +26,16 @@ class _ProfilePageState extends State<ProfilePage> {
   int counter = 0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("Profile_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'Profile_page', screenClass: 'ProfilePage');
+  }
+
   @override
   Widget build(BuildContext context) {
     //  appBar: AppBar(

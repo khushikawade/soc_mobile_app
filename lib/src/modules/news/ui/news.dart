@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -43,6 +44,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   @override
   void initState() {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("news");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'news', screenClass: 'NewsPage');
     super.initState();
     bloc.add(FetchNotificationList());
     _countBloc.add(FetchActionCountList(isDetailPage: false));
@@ -300,11 +304,15 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
                         SharedPreferences intPrefs =
                             await SharedPreferences.getInstance();
-                        intPrefs.getInt("totalCount") == null
-                            ? intPrefs.setInt("totalCount", Globals.notiCount!)
-                            : intPrefs.getInt("totalCount");
-                        if (Globals.notiCount! >
-                            intPrefs.getInt("totalCount")!) {
+                        if (Globals.notiCount != null) {
+                          intPrefs.getInt("totalCount") == null
+                              ? intPrefs.setInt(
+                                  "totalCount", Globals.notiCount!)
+                              : intPrefs.getInt("totalCount");
+                        }
+                        if (Globals.notiCount != null &&
+                            Globals.notiCount! >
+                                intPrefs.getInt("totalCount")!) {
                           intPrefs.setInt("totalCount", Globals.notiCount!);
                         }
                       }

@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:flutter/material.dart';
@@ -96,6 +97,9 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                   textButtonWidget(
                       title: 'Yes',
                       onPressed: () async {
+                        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                            "logout");
+
                         await UserGoogleProfile.clearUserProfile();
                         await GoogleClassroom.clearClassroomCourses();
                         Utility.updateLoges(

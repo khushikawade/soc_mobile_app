@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -54,6 +55,9 @@ class _FamilyPageState extends State<FamilyPage> {
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
     }
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("families");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'family', screenClass: 'FamilyPage');
   }
 
   @override

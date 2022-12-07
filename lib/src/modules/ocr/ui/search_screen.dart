@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -80,6 +81,10 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
         subjectName: widget.selectedKeyword,
         // isSearchPage: true,
         className: widget.grade));
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("search_screen_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'search_screen_page', screenClass: 'SearchScreenPage');
   }
 
   @override

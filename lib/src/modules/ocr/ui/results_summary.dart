@@ -12,6 +12,7 @@ import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -180,6 +181,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     // }
     _scrollController.addListener(_scrollListener);
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("results_summary");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'results_summary', screenClass: 'ResultsSummary');
   }
 
   @override
@@ -1013,6 +1018,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                           'student_info') -
                                               1;
                                     } else {
+                                      await FirebaseAnalyticsService
+                                          .addCustomAnalyticsEvent(
+                                              "save_to_dashboard");
                                       List list =
                                           await Utility.getStudentInfoList(
                                               tableName: 'student_info');
@@ -1974,6 +1982,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               : detailPageActionsWithoutDashboard(index: index),
           onPressed: () async {
             if (iconsName[index] == 'Share') {
+              await FirebaseAnalyticsService.addCustomAnalyticsEvent("share");
               Utility.updateLoges(
                   activityId: '13',
                   sessionId: widget.assessmentDetailPage == true
@@ -2031,6 +2040,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               tableName: 'student_info') -
                           1;
                 } else {
+                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      "save_to_dashboard");
                   List list = await Utility.getStudentInfoList(
                       tableName: 'student_info');
                   if (widget.isScanMore == true &&
@@ -2040,7 +2051,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         // accountType: 'Free',
                         activityId: '14',
                         description:
-                            'Save to deshboard pressed in case for scanmore',
+                            'Save to dashboard pressed in case for scanmore',
                         operationResult: 'Success');
                     //print(
                     // 'if     calling is scanMore -------------------------->');

@@ -20,6 +20,10 @@ class GoogleLogin {
   //To authenticate the user via google
   static launchURL(String? title, context, _scaffoldKey, bool? isStandAloneApp,
       String? buttonPressed) async {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'google_login', screenClass: 'GoogleLogin');
+
     final OcrBloc _ocrBlocLogs = new OcrBloc();
     int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
     var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)

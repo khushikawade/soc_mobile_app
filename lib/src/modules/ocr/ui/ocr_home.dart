@@ -12,6 +12,7 @@ import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -69,6 +70,9 @@ class _OpticalCharacterRecognitionPageState
     super.initState();
     Globals.scoringRubric =
         "${RubricScoreList.scoringList[0].name} ${RubricScoreList.scoringList[0].score}";
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("graded_home");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'graded_home', screenClass: 'OpticalCharacterRecognition');
   }
 
   @override
@@ -84,7 +88,7 @@ class _OpticalCharacterRecognitionPageState
         CommonBackGroundImgWidget(),
         Scaffold(
           key: _scaffoldKey,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Color.fromRGBO(0, 0, 0, 0),
           appBar: CustomOcrAppBarWidget(
             //Show home button in standard app and hide in standalone
             assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
@@ -203,6 +207,9 @@ class _OpticalCharacterRecognitionPageState
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (!connected) {
+                      await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                          "start_scanning");
+
                       Utility.currentScreenSnackBar(
                           "No Internet Connection", null);
                     } else {
@@ -297,6 +304,8 @@ class _OpticalCharacterRecognitionPageState
               final bool connected = connectivity != ConnectivityResult.none;
               return GestureDetector(
                 onTap: () async {
+                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      "assessment_history");
                   if (!connected) {
                     Utility.currentScreenSnackBar(
                         "No Internet Connection", null);
@@ -353,7 +362,9 @@ class _OpticalCharacterRecognitionPageState
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return InkWell(
-              onTap: () {
+              onTap: () async {
+                await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                    "Point_possible_selection");
                 pointPossibleSelectedColor.value = index + 1;
                 //To take the rubric name to result screen and save the same in excel sheet
                 Globals.scoringRubric =

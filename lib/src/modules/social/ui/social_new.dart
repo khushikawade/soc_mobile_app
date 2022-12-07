@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/action_interaction_button.dart';
@@ -39,6 +40,9 @@ class _SocialNewPageState extends State<SocialNewPage> {
   void initState() {
     super.initState();
     bloc.add(SocialPageEvent(action: "initial"));
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("social");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'social', screenClass: 'SocialNewPage');
   }
 
   @override

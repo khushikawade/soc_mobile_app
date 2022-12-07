@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -40,6 +41,10 @@ class _AboutPageState extends State<AboutPage> {
   void initState() {
     super.initState();
     _bloc.add(AboutStaffDirectoryEvent());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("about_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'about_page', screenClass: 'AboutPage');
   }
 
   @override

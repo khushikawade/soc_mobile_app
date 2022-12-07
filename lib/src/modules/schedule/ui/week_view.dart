@@ -6,13 +6,10 @@ import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/contweek.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
 import 'package:Soc/src/modules/schedule/ui/schedule_event_builder.dart';
-import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:calendar_view/calendar_view.dart';
-// import 'package:calendar_view/calendar_view.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../modal/event.dart';
 import '../modal/schedule_modal.dart';
@@ -58,6 +55,10 @@ class _WeekViewPageState extends State<WeekViewPage>
     _callEventBuilder(_date);
     AppConstants.height = isContainer1Open ? 0 : 0;
     WidgetsBinding.instance.addObserver(this);
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("Week_view_calendar");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'Week_view_calendar', screenClass: 'WeekViewPage');
   }
 
   @override
