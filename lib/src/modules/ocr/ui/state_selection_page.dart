@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -51,6 +52,9 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
     _ocrBloc.add(FetchStateListEvant(
         fromCreateAssesment: widget.isFromCreateAssesmentScreen ?? false));
     super.initState();
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("state_selection_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'state_selection_page', screenClass: 'StateSelectionPage');
   }
 
   @override

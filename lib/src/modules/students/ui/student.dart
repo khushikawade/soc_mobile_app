@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/marquee.dart';
 //import 'package:Soc/src/modules/students/ui/demo.dart';
 import 'package:Soc/src/overrides.dart';
@@ -59,6 +60,9 @@ class _StudentPageState extends State<StudentPage> {
     super.initState();
     //_scrollController = ScrollController()..addListener(_scrollListener);
     _bloc.add(StudentPageEvent());
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("students");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student', screenClass: 'StudentPage');
   }
 
   @override

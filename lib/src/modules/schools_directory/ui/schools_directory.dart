@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/schools_directory/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/shared/ui/common_school_directory_widget.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -52,6 +53,11 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     bloc.add(SchoolDirectoryListEvent(
         customRecordId: widget.isStandardPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("school_directory_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'school_directory_page',
+        screenClass: 'SchoolDirectoryPage');
   }
 
   @override

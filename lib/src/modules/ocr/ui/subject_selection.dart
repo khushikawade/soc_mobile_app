@@ -12,6 +12,7 @@ import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -123,6 +124,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     }
 
     super.initState();
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("subject_selection");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'subject_selection', screenClass: 'SubjectSelection');
   }
 
   @override
@@ -950,7 +954,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                   textTheme: Theme.of(context)
                                       .textTheme
                                       .headline2!
-                                      .copyWith(fontWeight: FontWeight.bold),
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              Globals.deviceType == 'tablet' &&
+                                                      page == 1
+                                                  ? 16
+                                                  : null),
                                   context: context),
                               decoration: BoxDecoration(
                                   color: Color(0xff000000) !=
@@ -1161,7 +1171,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                 fileId:
                                                     Globals.googleExcelSheetId,
                                                 isLoading: true,
-                                              
                                                 studentData: await Utility
                                                     .getStudentInfoList(
                                                         tableName:

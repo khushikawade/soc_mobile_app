@@ -15,6 +15,7 @@ import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/suggestion_chip.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/firstLetterUpperCase.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -101,6 +102,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
     super.initState();
     _bloc.add(FetchTextFromImage(
         base64: widget.img64, pointPossible: widget.pointPossible ?? '2'));
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("success_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'success_screen', screenClass: 'SuccessScreen');
   }
 
   @override

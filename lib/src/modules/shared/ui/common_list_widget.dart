@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -62,6 +63,9 @@ class _CommonListWidgetState extends State<CommonListWidget> {
   }
 
   _navigate(SharedList obj, index) async {
+    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "${widget.sectionName}_${obj.titleC!}");
+
     if (obj.typeC == "Contact") {
       await Navigator.push(
           context,

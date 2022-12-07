@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_popup.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -141,6 +142,9 @@ class _CameraScreenState extends State<CameraScreen>
 
     onNewCameraSelected(cameras[0]);
     // _checkPermission();
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("camera_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'camera_screen', screenClass: 'CameraScreen');
 
     super.initState();
   }

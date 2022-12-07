@@ -13,6 +13,7 @@ import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -70,6 +71,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
     // listScrollController.addListener(_scrollListener);
     Globals.googleExcelSheetId = '';
     //_bloc.add(SaveSubjectListDetails());
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'create_assessment', screenClass: 'CreateAssessment');
     super.initState();
   }
 

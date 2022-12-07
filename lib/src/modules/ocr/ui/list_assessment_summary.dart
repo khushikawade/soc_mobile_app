@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -62,7 +63,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     // _driveBloc.add(GetHistoryAssessmentFromDrive());
 
     // _controller = new ScrollController()..addListener(_scrollListener);
-
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("assessment_summary");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'assessment_summary', screenClass: 'AssessmentSummary');
     super.initState();
   }
 

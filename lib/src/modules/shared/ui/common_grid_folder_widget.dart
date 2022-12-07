@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/marquee.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -103,6 +104,8 @@ class CommonGridFolderState extends State<CommonGridFolder>
   }
 
   _navigate(List<SharedList> list, SharedList obj, index) async {
+    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "${widget.sectionName}_${obj.titleC!}");
     if (obj.typeC == "Contact") {
       await Navigator.push(
           context,

@@ -54,7 +54,7 @@ android {
                 force 'androidx.core:core-ktx:1.6.0' 
             }
         }
-        applicationId "com.development.testapp2"
+        applicationId "com.app.p2346HH"
         minSdkVersion 23
         multiDexEnabled true
         targetSdkVersion 33

@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_content_modal.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -181,6 +182,8 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                               : OpticalCharacterRecognition()),
                 );
               } else {
+                await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                    "walkthrough_skip");
                 carouselController.animateToPage(
                     CustomContentModal.onboardingPagesList.length - 1);
               }
