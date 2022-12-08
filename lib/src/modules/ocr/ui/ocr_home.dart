@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/ui/multiple_choice_section.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -565,7 +566,7 @@ class _OpticalCharacterRecognitionPageState
         textFieldTitleTwo: 'Custom Score',
         isSubjectScreen: false,
         valueChanged: (controller) async {},
-        isPdfInfo: true,
+        section: 'PDF section',
         rubricPdfModalList: infoPdfList,
         tileOnTap: (object) => navigateToPdfViewer(pdfObject: object),
         sheetHeight: MediaQuery.of(context).size.height * 0.50,
@@ -621,7 +622,7 @@ class _OpticalCharacterRecognitionPageState
         refreshtoken: _profileData[0].refreshToken));
   }
 
-  void _beforenavigateOnCameraSection() async {
+  Future<void> _beforenavigateOnCameraSection() async {
     //Rubric selection comparision
     Globals.pointpossible = Globals.scoringRubric == 'None'
         //Point possible index comparision
@@ -661,22 +662,19 @@ class _OpticalCharacterRecognitionPageState
     //  _bloc.add(SaveSubjectListDetails());
     // //print(Globals.scoringRubric);
     // UNCOMMENT Below
-    print("navigate to camera");
-    print(Globals.pointpossible);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CameraScreen(
-          isFromHistoryAssessmentScanMore: false,
-          onlyForPicture: false,
-          scaffoldKey: _scaffoldKey,
-          isScanMore: false,
-          pointPossible: Globals.pointpossible,
-          isFlashOn: ValueNotifier<bool>(false),
-        ),
-        // settings: RouteSettings(name: "/home")
-      ),
-    );
+
+    String section = await _selectSectionBeforeNavigate();
+    if (section.isEmpty) {
+      Utility.currentScreenSnackBar("Please select one section", null);
+    } else if (section == 'Multiple choice Assignment') {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MultipleChoiceSection()),
+      );
+    } else {
+      navigateToCamera();
+    }
+
     // End
     // // COMMENT Below
     // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
@@ -743,13 +741,15 @@ class _OpticalCharacterRecognitionPageState
         elevation: 10,
         context: context,
         builder: (context) => BottomSheetWidget(
-            update: _update,
-            title: 'Scoring Rubric',
-            isImageField: true,
-            textFieldTitleOne: 'Score Name',
-            textFieldTitleTwo: 'Custom Score',
-            isSubjectScreen: false,
-            valueChanged: (controller) async {}));
+              update: _update,
+              title: 'Scoring Rubric',
+              isImageField: true,
+              textFieldTitleOne: 'Score Name',
+              textFieldTitleTwo: 'Custom Score',
+              isSubjectScreen: false,
+              valueChanged: (controller) async {},
+              submitButton: true,
+            ));
   }
 
   String getScrobingRubric({required int index}) {
@@ -773,5 +773,50 @@ class _OpticalCharacterRecognitionPageState
       RubricScoreList.scoringList.addAll(_localData);
       updateRubricList.value = !updateRubricList.value;
     }
+  }
+
+  _selectSectionBeforeNavigate() async {
+    String sectin = '';
+    await showModalBottomSheet(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      elevation: 10,
+      context: context,
+      builder: (context) => BottomSheetWidget(
+        update: _update,
+        title: 'Please select section',
+        isImageField: false,
+        textFieldTitleOne: 'Score Name',
+        textFieldTitleTwo: 'Custom Score',
+        isSubjectScreen: false,
+        valueChanged: (controller) async {},
+        section: 'MCQ Assessment',
+        tileOnTap: (i) {
+          sectin = i;
+        },
+        sheetHeight: MediaQuery.of(context).size.height / 3,
+      ),
+    );
+    return sectin;
+  }
+
+  void navigateToCamera() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(
+          isFromHistoryAssessmentScanMore: false,
+          onlyForPicture: false,
+          scaffoldKey: _scaffoldKey,
+          isScanMore: false,
+          pointPossible: Globals.pointpossible,
+          isFlashOn: ValueNotifier<bool>(false),
+        ),
+        // settings: RouteSettings(name: "/home")
+      ),
+    );
   }
 }

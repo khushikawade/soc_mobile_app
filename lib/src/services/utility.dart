@@ -470,6 +470,7 @@ class Utility {
 
   static bool? currentScreenSnackBar(String msg, height,
       {double? marginFromBottom}) {
+    Fluttertoast.cancel();
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_LONG,

@@ -856,31 +856,32 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
   _addSectionBottomSheet() {
     showModalBottomSheet(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
-        backgroundColor: Colors.transparent,
-        elevation: 10,
-        context: context,
-        builder: (context) => BottomSheetWidget(
-              title: 'Add Custom Grade',
-              isImageField: false,
-              textFieldTitleOne: 'Grade Name',
-              isSubjectScreen: true,
-              sheetHeight:
-                  MediaQuery.of(context).orientation == Orientation.landscape
-                      ? MediaQuery.of(context).size.height * 0.82
-                      : MediaQuery.of(context).size.height * 0.45,
-              valueChanged: (controller) async {
-                await updateList(
-                  sectionName: controller.text,
-                );
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      elevation: 10,
+      context: context,
+      builder: (context) => BottomSheetWidget(
+        title: 'Add Custom Grade',
+        isImageField: false,
+        textFieldTitleOne: 'Grade Name',
+        isSubjectScreen: true,
+        sheetHeight: MediaQuery.of(context).orientation == Orientation.landscape
+            ? MediaQuery.of(context).size.height * 0.82
+            : MediaQuery.of(context).size.height / 2.5,
+        valueChanged: (controller) async {
+          await updateList(
+            sectionName: controller.text,
+          );
 
-                controller.clear();
-                Navigator.pop(context, false);
-              },
-            ));
+          controller.clear();
+          Navigator.pop(context, false);
+        },
+        submitButton: true,
+      ),
+    );
   }
 
   updateList({required String sectionName}) async {

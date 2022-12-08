@@ -1,4 +1,3 @@
-import 'dart:core';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
@@ -258,7 +257,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
 
         // yield HomeErrorReceived(err: e);
-
       }
     }
   }

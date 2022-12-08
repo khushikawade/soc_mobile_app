@@ -127,7 +127,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
           appBar: CustomOcrAppBarWidget(
             isBackButton: false,
             isSuccessState: isSuccessResult,
-
             isHomeButtonPopup: true,
             isbackOnSuccess: isBackFromCamera,
             actionIcon:
