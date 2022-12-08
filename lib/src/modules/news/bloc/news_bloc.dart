@@ -66,6 +66,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         // Local database end.
         List<NotificationList> _list = await fetchNotificationList();
         // Syncing to local database
+
         await _localDb.clear();
         _list.forEach((NotificationList e) {
           _localDb.addData(e);
@@ -240,17 +241,21 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<NotificationList>> fetchNotificationList() async {
     try {
+      // print(
+      //     "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/getNotifications?appId=${Overrides.PUSH_APP_ID}");
+      // print(Overrides.REST_API_KEY);
       final response = await http.get(
           Uri.parse(
-              "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}"),
+              "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/getNotifications?appId=${Overrides.PUSH_APP_ID}"),
           headers: {
             'Authorization': 'Basic ${Overrides.REST_API_KEY}',
           });
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        Globals.notiCount = data["total_count"];
-        final _allNotifications = data["notifications"];
+        // Globals.notiCount = data["total_count"];
+        Globals.notiCount = data['body'].length;
+        final _allNotifications = data['body'];
         // Filtering the scheduled notifications. Only delivered notifications should display in the list.
         final data1 =
             _allNotifications.where((e) => e['completed_at'] != null).toList();
