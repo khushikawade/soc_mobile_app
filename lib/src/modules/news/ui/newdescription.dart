@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/widgets/action_button_basic.dart';
+import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -224,7 +225,7 @@ class _NewdescriptionState extends State<Newdescription> {
         SpacerWidget(AppTheme.kBodyPadding),
         Container(
           alignment: Alignment.centerLeft,
-          child: UserActionBasic(
+          child: ActionInteractionButtonWidget(
             page: "news",
             obj: widget.obj,
             title: widget.obj.headings['en'],

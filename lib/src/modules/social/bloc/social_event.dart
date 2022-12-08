@@ -28,7 +28,7 @@ class SocialAction extends SocialEvent {
   final int? thanks;
   final int? helpful;
   final int? shared;
-
+  final int? support;
   SocialAction(
       {required this.id,
       required this.title,
@@ -37,7 +37,8 @@ class SocialAction extends SocialEvent {
       this.helpful,
       this.shared,
       required this.context,
-      required this.scaffoldKey});
+      required this.scaffoldKey,
+      this.support});
 
   @override
   List<Object> get props => [id!, title!, like!, thanks!, helpful!, shared!];

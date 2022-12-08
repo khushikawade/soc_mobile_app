@@ -23,7 +23,7 @@ class NewsAction extends NewsEvent {
   final int? thanks;
   final int? helpful;
   final int? shared;
-
+  final int? support;
   NewsAction(
       {required this.notificationId,
       required this.notificationTitle,
@@ -32,7 +32,8 @@ class NewsAction extends NewsEvent {
       this.helpful,
       this.shared,
       required this.context,
-      required this.scaffoldKey});
+      required this.scaffoldKey,
+      this.support});
 
   @override
   List<Object> get props =>

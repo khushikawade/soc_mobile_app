@@ -25,7 +25,7 @@ class Globals {
   static bool? isCustomNavbar = false;
   static int? newsIndex;
   static Locale? myLocale;
-  static int? notiCount;
+  static int? notiCount = 0;
   static String? selectedLanguage = 'en';
   static String? appLogo;
   static bool? isnetworkexception = false;
@@ -58,8 +58,8 @@ class Globals {
   static bool? isDarkTheme;
   static bool? systemTheme;
   static String? themeType;
-  static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
-  static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
+  static List icons = [0xe823, 0xe824, 0xe825, 0xe829, 0xe863];
+  static List iconsName = ["Like", "Thanks", "Helpful", "Share", "Support"];
   static List<NotificationList> notificationList = [];
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;

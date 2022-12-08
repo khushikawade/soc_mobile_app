@@ -7,7 +7,7 @@ class Overrides {
   static String PUSH_APP_ID =
       "4d63eb69-bd08-4e3d-9a75-3d66f44e92c6"; //"4d63eb69-bd08-4e3d-9a75-3d66f44e92c6";
   static String REST_API_KEY =
-      "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDB";
+      "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
   // "NjY1YzEwY2ItN2UxNS00MzRkLWJkM2EtZTY1OTkyNDRlNDBj";
   static String Apple_Store_URL = '';
   static String Android_Store_URL = '';

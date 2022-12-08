@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
+import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -51,10 +52,13 @@ class _ActionInteractionButtonWidgetState
   final ValueNotifier<int> thanks = ValueNotifier<int>(0);
   final ValueNotifier<int> helpful = ValueNotifier<int>(0);
   final ValueNotifier<int> share = ValueNotifier<int>(0);
+  final ValueNotifier<int> support = ValueNotifier<int>(0);
   bool _downloadingFile = false;
   int? iconNameIndex;
   bool _isDownloadingFile = false;
   var f = NumberFormat.compact();
+  String pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
   // final _debouncer = Debouncer(milliseconds: 1000);
 
@@ -66,6 +70,7 @@ class _ActionInteractionButtonWidgetState
     thanks.value = widget.obj.thanksCount ?? 0;
     helpful.value = widget.obj.helpfulCount ?? 0;
     share.value = widget.obj.shareCount ?? 0;
+    support.value = widget.obj.supportCount ?? 0;
   }
 
   @override
@@ -77,6 +82,7 @@ class _ActionInteractionButtonWidgetState
     thanks.value = widget.obj.thanksCount ?? 0;
     helpful.value = widget.obj.helpfulCount ?? 0;
     share.value = widget.obj.shareCount ?? 0;
+    support.value = widget.obj.supportCount ?? 0;
   }
 
   Widget build(BuildContext context) {
@@ -107,33 +113,38 @@ class _ActionInteractionButtonWidgetState
             ? null
             : EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.04),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                      height: Globals.deviceType == 'phone' ? 35 : 45,
-                      width: Globals.deviceType == 'phone' ? 35 : 45,
-                      child: IconButton(
-                          padding: EdgeInsets.all(0),
-                          onPressed: () {},
-                          icon: iconListWidget(
-                              context, index, false, widget.scaffoldKey))),
-                  widget.isLoading == true
-                      ? Container()
-                      : Container(
-                          // padding: EdgeInsets.only(top:4),
-                          child: _actionCount(index),
-                        )
-                ],
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                        height: Globals.deviceType == 'phone' ? 35 : 45,
+                        width: Globals.deviceType == 'phone' ? 35 : 45,
+                        child: IconButton(
+                            padding: EdgeInsets.all(0),
+                            onPressed: () {},
+                            icon: iconListWidget(
+                                context, index, false, widget.scaffoldKey))),
+                    widget.isLoading == true
+                        ? Container()
+                        : Container(
+                            // padding: EdgeInsets.only(top:4),
+                            child: _actionCount(index),
+                          )
+                  ],
+                ),
               ),
             ),
             Expanded(
                 child: iconNameIndex == index
                     ? Container(
+                        alignment: Alignment.center,
                         constraints: BoxConstraints(),
                         child: FutureBuilder(
                             future: _getLocalTranslation(
@@ -198,6 +209,8 @@ class _ActionInteractionButtonWidgetState
                   if (connected) {
                     if (index == 3) {
                       await _shareNews();
+                    } else if (index == 4) {
+                      showPopupModal();
                     }
                     return countIncrement(index, scaffoldKey);
                   } else {
@@ -219,14 +232,18 @@ class _ActionInteractionButtonWidgetState
                       ? Colors.blue
                       : index == 2
                           ? Colors.green
-                          : Colors.black,
+                          : index == 3
+                              ? Colors.black
+                              : Theme.of(context).primaryColor,
               end: index == 0
                   ? Colors.red
                   : index == 1
                       ? Colors.blue
                       : index == 2
                           ? Colors.green
-                          : Colors.black,
+                          : index == 3
+                              ? Colors.black
+                              : Theme.of(context).primaryColor,
             ),
             bubblesColor: BubblesColor(
               dotPrimaryColor: index == 0
@@ -235,14 +252,18 @@ class _ActionInteractionButtonWidgetState
                       ? Colors.blue
                       : index == 2
                           ? Colors.green
-                          : Colors.black,
+                          : index == 3
+                              ? Colors.black
+                              : Theme.of(context).primaryColor,
               dotSecondaryColor: index == 0
                   ? Colors.red
                   : index == 1
                       ? Colors.blue
                       : index == 2
                           ? Colors.green
-                          : Colors.black,
+                          : index == 3
+                              ? Colors.black
+                              : Theme.of(context).primaryColor,
             ),
             likeBuilder: (bool isLiked) {
               return _isDownloadingFile == true &&
@@ -262,12 +283,14 @@ class _ActionInteractionButtonWidgetState
                               ? Colors.blue
                               : index == 2
                                   ? Colors.green
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .primaryVariant,
+                                  : index == 3
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant
+                                      : Theme.of(context).primaryColor,
                       size: Globals.deviceType == "phone"
-                          ? (index == 0 ? 26 : 21)
-                          : (index == 0 ? 30 : 25),
+                          ? (index == 0 || index == 4 ? 26 : 22)
+                          : (index == 0 || index == 4 ? 30 : 25),
                     );
             },
           ),
@@ -306,9 +329,13 @@ class _ActionInteractionButtonWidgetState
                 ? helpful.value = helpful.value != 0
                     ? helpful.value + 1
                     : widget.obj.helpfulCount! + 1
-                : share.value = share.value != 0
-                    ? share.value + 1
-                    : widget.obj.shareCount! + 1;
+                : index == 3
+                    ? share.value = share.value != 0
+                        ? share.value + 1
+                        : widget.obj.shareCount! + 1
+                    : support.value = support.value != 0
+                        ? support.value + 1
+                        : widget.obj.supportCount! + 1;
 
     index == 0
         ? widget.obj.likeCount = like.value
@@ -316,7 +343,9 @@ class _ActionInteractionButtonWidgetState
             ? widget.obj.thanksCount = thanks.value
             : index == 2
                 ? widget.obj.helpfulCount = helpful.value
-                : widget.obj.shareCount = share.value;
+                : index == 3
+                    ? widget.obj.shareCount = share.value
+                    : widget.obj.supportCount = support.value;
 
     // Item obj = Item();
     // index == 0
@@ -340,7 +369,8 @@ class _ActionInteractionButtonWidgetState
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,
-          shared: index == 3 ? 1 : 0));
+          shared: index == 3 ? 1 : 0,
+          support: index == 4 ? 1 : 0));
     } else if (widget.page == "social") {
       _socialBloc.add(SocialAction(
           context: context,
@@ -351,7 +381,8 @@ class _ActionInteractionButtonWidgetState
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,
-          shared: index == 3 ? 1 : 0));
+          shared: index == 3 ? 1 : 0,
+          support: index == 4 ? 1 : 0));
     }
     return isliked;
   }
@@ -444,12 +475,19 @@ class _ActionInteractionButtonWidgetState
                                   widget.obj.helpfulCount == null
                               ? ""
                               : f.format(widget.obj.helpfulCount))
-                      : share.value != 0
-                          ? f.format(share.value).toString().split('.')[0]
-                          : widget.obj.shareCount == 0 ||
-                                  widget.obj.shareCount == null
-                              ? ""
-                              : f.format(widget.obj.shareCount),
+                      : index == 3
+                          ? (share.value != 0
+                              ? f.format(share.value).toString().split('.')[0]
+                              : widget.obj.shareCount == 0 ||
+                                      widget.obj.shareCount == null
+                                  ? ""
+                                  : f.format(widget.obj.shareCount))
+                          : support.value != 0
+                              ? f.format(support.value).toString().split('.')[0]
+                              : widget.obj.supportCount == 0 ||
+                                      widget.obj.supportCount == null
+                                  ? ""
+                                  : f.format(widget.obj.supportCount),
           style: Theme.of(context).textTheme.bodyText1!,
         );
       },
@@ -516,4 +554,110 @@ class _ActionInteractionButtonWidgetState
           translatedText: translatedTextNew));
     }
   }
+
+  showPopupModal() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    showDialog(
+        context: context,
+        builder: (context) =>
+            OrientationBuilder(builder: (context, orientation) {
+              return CommonPopupWidget(
+                isLogout: true,
+                orientation: orientation,
+                context: context,
+                message:
+                    'For any query or support, get in touch via email or call',
+                title: 'Contact Us',
+                actionWidget: actonWidget(
+                    contactNumber: Globals.appSetting.contactPhoneC,
+                    email: Globals.appSetting.contactEmailC),
+                clearButton: true,
+                titleStyle: Theme.of(context)
+                    .textTheme
+                    .headline1!
+                    .copyWith(fontWeight: FontWeight.bold),
+              );
+            }));
+  }
+
+  List<Widget> actonWidget(
+      {required String? email, required String? contactNumber}) {
+    return [
+      popUpbutton(
+          'Email', Theme.of(context).scaffoldBackgroundColor, Icons.email,
+          onPressed: () {
+        RegExp regex = new RegExp(pattern);
+        if (email != null && (regex.hasMatch(email))) {
+          Utility.launchUrlOnExternalBrowser("mailto:" + email);
+        } else {
+          Utility.currentScreenSnackBar("Email is not available", null);
+        }
+      }),
+      popUpbutton('Call', Theme.of(context).primaryColor, Icons.call,
+          onPressed: () {
+        if (contactNumber != null && contactNumber.isNotEmpty) {
+          Utility.launchUrlOnExternalBrowser("tel:" + contactNumber);
+        } else {
+          Utility.currentScreenSnackBar("Contact is not available", null);
+        }
+      }),
+    ];
+  }
+
+  Widget popUpbutton(text, color, iconData, {required onPressed}) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Icon(
+                iconData,
+                color: Colors.grey,
+              ),
+              TranslationWidget(
+                  message: text ?? '',
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) {
+                    return Text(translatedMessage.toString(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(fontWeight: FontWeight.bold));
+                  }),
+            ],
+          ),
+          style: ElevatedButton.styleFrom(
+            primary: color ?? Colors.transparent,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.white, width: 0.10),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  // Widget buildTitle(title) {
+  //   return Row(
+  //     children: [
+  //       TranslationWidget(
+  //           message: title,
+  //           fromLanguage: "en",
+  //           toLanguage: Globals.selectedLanguage,
+  //           builder: (translatedMessage) {
+  //             return Text(translatedMessage.toString(),
+  //                 textAlign: TextAlign.center,
+  //                 style: Theme.of(context).textTheme.headline1!.copyWith());
+  //           }),
+  //       Icon(
+  //         Icons.clear,
+  //         size: Globals.deviceType == "phone" ? 28 : 36,
+  //       ),
+  //     ],
+  //   );
+  // }
 }

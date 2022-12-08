@@ -22,6 +22,8 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../widgets/action_interaction_button.dart';
+
 class NewsPage extends StatefulWidget {
   @override
   _NewsPageState createState() => _NewsPageState();
@@ -165,7 +167,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               isCountLoading = false;
               Container(
                 alignment: Alignment.centerLeft,
-                child: UserActionBasic(
+                child: ActionInteractionButtonWidget(
                     title: state.obj![index].headings['en'],
                     description: state.obj![index].contents['en'],
                     imageUrl: state.obj![index].image,
@@ -189,7 +191,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   child: state.obj![index] ==
                           null // To make it backward compatible:: If the local database has something different than the real data that has been fetched by the API.
                       ? Container()
-                      : UserActionBasic(
+                      : ActionInteractionButtonWidget(
                           title: state.obj![index].headings['en'],
                           description: state.obj![index].contents['en'],
                           imageUrl: state.obj![index].image,
@@ -202,7 +204,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                   alignment: Alignment.centerLeft,
                   child: ShimmerLoading(
                       isLoading: true,
-                      child: UserActionBasic(
+                      child: ActionInteractionButtonWidget(
                           title: Globals.notificationList[index].headings['en'],
                           description:
                               Globals.notificationList[index].contents['en'],
@@ -218,7 +220,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     alignment: Alignment.centerLeft,
                     child: ShimmerLoading(
                         isLoading: true,
-                        child: UserActionBasic(
+                        child: ActionInteractionButtonWidget(
                             title:
                                 Globals.notificationList[index].headings['en'],
                             description:

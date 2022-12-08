@@ -36,6 +36,18 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
 
+        //Clear news notification local data to manage loading issue
+        SharedPreferences clearNewsCache =
+            await SharedPreferences.getInstance();
+        final clearCacheResult =
+            clearNewsCache.getBool('delete_local_news_notification_cache');
+
+        if (clearCacheResult != true) {
+          _localData.clear();
+          await clearNewsCache.setBool(
+              'delete_local_news_notification_cache', true);
+        }
+
         _localData.forEach((element) {
           if (element.completedAtTimestamp != null) {
             _localData.sort((a, b) =>
@@ -97,7 +109,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
-          "Test_School__c": "${Globals.appSetting.isTestSchool}"
+          "Test_School__c": "${Globals.appSetting.isTestSchool}",
+          "Support__c": "${event.support}"
         });
         yield NewsActionSuccess(
           obj: data,
@@ -227,6 +240,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<NotificationList>> fetchNotificationList() async {
     try {
+      print(
+          "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}");
+      print('Basic ${Overrides.REST_API_KEY}');
       final response = await http.get(
           Uri.parse(
               "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}"),
@@ -267,6 +283,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
+      print(body);
       final ResponseModel response = await _dbServices.postapimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);

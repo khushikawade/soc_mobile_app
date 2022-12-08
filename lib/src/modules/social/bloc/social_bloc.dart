@@ -11,6 +11,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xml2json/xml2json.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -33,6 +34,17 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         String? _objectName = "${Strings.socialObjectName}";
         LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
         List<Item> _localData = await _localDb.getData();
+
+        //Clear social local data to manage loading issue
+        SharedPreferences clearSocialCache =
+            await SharedPreferences.getInstance();
+        final clearCacheResult =
+            clearSocialCache.getBool('delete_local_social_cache');
+
+        if (clearCacheResult != true) {
+          _localData.clear();
+          await clearSocialCache.setBool('delete_local_social_cache', true);
+        }
 
         if (_localData.isEmpty) {
           yield Loading(); //Circular loader for whole content loading (Social + Interactions)
@@ -84,7 +96,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
                     likeCount: listActioncount[j].likeCount,
                     thanksCount: listActioncount[j].thanksCount,
                     helpfulCount: listActioncount[j].helpfulCount,
-                    shareCount: listActioncount[j].shareCount));
+                    shareCount: listActioncount[j].shareCount,
+                    supportCount: listActioncount[j].supportCount));
                 break;
               }
 
@@ -103,7 +116,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
                     likeCount: 0,
                     thanksCount: 0,
                     helpfulCount: 0,
-                    shareCount: 0));
+                    shareCount: 0,
+                    supportCount: 0));
               }
             }
           }
@@ -159,6 +173,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
+          "Support__c": "${event.support}",
           "Test_School__c": "${Globals.appSetting.isTestSchool}",
         });
         yield SocialActionSuccess(
@@ -214,6 +229,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future<List<ActionCountList>> fetchSocialActionCount() async {
     try {
+      print(Overrides.SCHOOL_ID);
       final ResponseModel response = await _dbServices.getapi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {

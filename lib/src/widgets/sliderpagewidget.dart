@@ -40,7 +40,8 @@ class SliderWidget extends StatefulWidget {
   _SliderWidgetState createState() => _SliderWidgetState();
 }
 
-class _SliderWidgetState extends State<SliderWidget> {
+class _SliderWidgetState extends State<SliderWidget>
+    with AutomaticKeepAliveClientMixin {
   var _controller = new PageController();
   static const _kDuration = const Duration(milliseconds: 400);
   int pageinitialIndex = 0;
@@ -73,7 +74,6 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
-    
     if (isDeviceBackButton == true) {
       isDeviceBackButton = false;
       // bool isNewsPage =
@@ -90,6 +90,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
@@ -216,4 +217,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     final element = doc.getElementById('content');
     debugPrint(element!.querySelectorAll('div').toString());
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
