@@ -240,9 +240,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<NotificationList>> fetchNotificationList() async {
     try {
-      print(
-          "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}");
-      print('Basic ${Overrides.REST_API_KEY}');
       final response = await http.get(
           Uri.parse(
               "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}"),
@@ -283,7 +280,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      print(body);
       final ResponseModel response = await _dbServices.postapimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);
