@@ -250,7 +250,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                           // print(state);
                           // print('ppppppppppppppppppppppppp');
 
-                          if (state is SocialDataSucess) {
+                          if (state is SocialDataSuccess) {
                             // _countSocialBloc.add(FetchSocialActionCount());
                             return state.obj != null && state.obj!.length > 0
                                 ? Expanded(child: makeList(state.obj, false))
