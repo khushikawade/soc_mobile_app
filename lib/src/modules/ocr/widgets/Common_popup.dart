@@ -25,19 +25,21 @@ class CommonPopupWidget extends StatefulWidget {
   final List<Widget>? actionWidget;
   final bool? clearButton;
   final TextStyle? titleStyle;
+  final Color? backgroundColor;
 
-  CommonPopupWidget({
-    Key? key,
-    required this.orientation,
-    required this.context,
-    required this.message,
-    required this.title,
-    this.isLogout,
-    this.isAccessDenied,
-    this.actionWidget,
-    this.clearButton,
-    this.titleStyle,
-  }) : super(key: key);
+  CommonPopupWidget(
+      {Key? key,
+      required this.orientation,
+      required this.context,
+      required this.message,
+      required this.title,
+      this.isLogout,
+      this.isAccessDenied,
+      this.actionWidget,
+      this.clearButton,
+      this.titleStyle,
+      this.backgroundColor})
+      : super(key: key);
 
   @override
   State<CommonPopupWidget> createState() => _CommonPopupWidgetState();
@@ -47,23 +49,24 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titlePadding:
-          widget.clearButton == true ? EdgeInsets.only(bottom: 5) : null,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      // titlePadding:
+      //     widget.clearButton == true ? EdgeInsets.only(bottom: 5) : null,
+      backgroundColor:
+          widget.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       title: Column(
         children: [
-          if (widget.clearButton == true)
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(
-                  Icons.clear,
-                  size: Globals.deviceType == "phone" ? 28 : 36,
-                ),
-              ),
-            ),
+          // if (widget.clearButton == true)
+          //   Align(
+          //     alignment: Alignment.topRight,
+          //     child: IconButton(
+          //       padding: EdgeInsets.zero,
+          //       onPressed: () => Navigator.pop(context),
+          //       icon: Icon(
+          //         Icons.clear,
+          //         size: Globals.deviceType == "phone" ? 28 : 36,
+          //       ),
+          //     ),
+          //   ),
           Container(
             padding: Globals.deviceType == 'phone'
                 ? null

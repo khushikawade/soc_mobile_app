@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/translator/translator_api.dart';
@@ -210,7 +211,11 @@ class _ActionInteractionButtonWidgetState
                     if (index == 3) {
                       await _shareNews();
                     } else if (index == 4) {
-                      showPopupModal();
+                      supportPopupModal();
+                      // popupModal(
+                      //     message:
+                      //         'You are about to Signout from the google account. This may restricts you to use the app without google SignIn. \n\nContinue Signout?',
+                      //     title: 'Signout');
                     }
                     return countIncrement(index, scaffoldKey);
                   } else {
@@ -233,8 +238,8 @@ class _ActionInteractionButtonWidgetState
                       : index == 2
                           ? Colors.green
                           : index == 3
-                              ? Colors.black
-                              : Theme.of(context).primaryColor,
+                              ? Theme.of(context).colorScheme.primaryVariant
+                              : Theme.of(context).colorScheme.primaryVariant,
               end: index == 0
                   ? Colors.red
                   : index == 1
@@ -242,8 +247,8 @@ class _ActionInteractionButtonWidgetState
                       : index == 2
                           ? Colors.green
                           : index == 3
-                              ? Colors.black
-                              : Theme.of(context).primaryColor,
+                              ? Theme.of(context).colorScheme.primaryVariant
+                              : Theme.of(context).colorScheme.primaryVariant,
             ),
             bubblesColor: BubblesColor(
               dotPrimaryColor: index == 0
@@ -253,8 +258,8 @@ class _ActionInteractionButtonWidgetState
                       : index == 2
                           ? Colors.green
                           : index == 3
-                              ? Colors.black
-                              : Theme.of(context).primaryColor,
+                              ? Theme.of(context).colorScheme.primaryVariant
+                              : Theme.of(context).colorScheme.primaryVariant,
               dotSecondaryColor: index == 0
                   ? Colors.red
                   : index == 1
@@ -262,8 +267,8 @@ class _ActionInteractionButtonWidgetState
                       : index == 2
                           ? Colors.green
                           : index == 3
-                              ? Colors.black
-                              : Theme.of(context).primaryColor,
+                              ? Theme.of(context).colorScheme.primaryVariant
+                              : Theme.of(context).colorScheme.primaryVariant,
             ),
             likeBuilder: (bool isLiked) {
               return _isDownloadingFile == true &&
@@ -287,7 +292,9 @@ class _ActionInteractionButtonWidgetState
                                       ? Theme.of(context)
                                           .colorScheme
                                           .primaryVariant
-                                      : Theme.of(context).primaryColor,
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
                       size: Globals.deviceType == "phone"
                           ? (index == 0 || index == 4 ? 26 : 22)
                           : (index == 0 || index == 4 ? 30 : 25),
@@ -417,6 +424,7 @@ class _ActionInteractionButtonWidgetState
       setState(() {
         _downloadingFile = false;
       });
+
       if (_image != null) {
         Share.shareFiles(
           [_image.path],
@@ -555,20 +563,38 @@ class _ActionInteractionButtonWidgetState
     }
   }
 
-  showPopupModal() async {
+  // popupModal({required String message, required String? title}) {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) =>
+  //           OrientationBuilder(builder: (context, orientation) {
+  //             return CommonPopupWidget(
+  //                 isLogout: false,
+  //                 orientation: orientation,
+  //                 context: context,
+  //                 message: message,
+  //                 title: title!);
+  //           }));
+  // }
+
+  supportPopupModal() async {
     await Future.delayed(Duration(milliseconds: 500));
     showDialog(
         context: context,
         builder: (context) =>
             OrientationBuilder(builder: (context, orientation) {
               return CommonPopupWidget(
+                backgroundColor: Theme.of(context).colorScheme.background ==
+                        Color(0xff000000)
+                    ? Color(0xff162429)
+                    : null,
                 isLogout: true,
                 orientation: orientation,
                 context: context,
                 message:
                     'For any query or support, get in touch via email or call',
                 title: 'Contact Us',
-                actionWidget: actonWidget(
+                actionWidget: supportActionWidget(
                     contactNumber: Globals.appSetting.contactPhoneC,
                     email: Globals.appSetting.contactEmailC),
                 clearButton: true,
@@ -580,65 +606,173 @@ class _ActionInteractionButtonWidgetState
             }));
   }
 
-  List<Widget> actonWidget(
+  List<Widget> supportActionWidget(
       {required String? email, required String? contactNumber}) {
     return [
-      popUpbutton(
-          'Email', Theme.of(context).scaffoldBackgroundColor, Icons.email,
-          onPressed: () {
-        RegExp regex = new RegExp(pattern);
-        if (email != null && (regex.hasMatch(email))) {
-          Utility.launchUrlOnExternalBrowser("mailto:" + email);
-        } else {
-          Utility.currentScreenSnackBar("Email is not available", null);
-        }
-      }),
-      popUpbutton('Call', Theme.of(context).primaryColor, Icons.call,
-          onPressed: () {
-        if (contactNumber != null && contactNumber.isNotEmpty) {
-          Utility.launchUrlOnExternalBrowser("tel:" + contactNumber);
-        } else {
-          Utility.currentScreenSnackBar("Contact is not available", null);
-        }
-      }),
+      // Row(
+      //   children: [
+      textButtonWidget(
+          title: 'Email',
+          iconData: Icons.email,
+          onPressed: () async {
+            RegExp regex = new RegExp(pattern);
+            if (email != null && (regex.hasMatch(email))) {
+              Utility.launchUrlOnExternalBrowser("mailto:" + email);
+            } else {
+              Utility.currentScreenSnackBar("Email is not available", null);
+            }
+          }),
+      Container(
+        height: 40,
+        width: 1,
+        color: Colors.grey.withOpacity(0.2),
+      ),
+      textButtonWidget(
+          title: 'Call',
+          iconData: Icons.call,
+          onPressed: () async {
+            if (contactNumber != null && contactNumber.isNotEmpty) {
+              Utility.launchUrlOnExternalBrowser("tel:" + contactNumber);
+            } else {
+              Utility.currentScreenSnackBar("Contact is not available", null);
+            }
+          }),
+
+// ==========================================================
+
+      // popUpbutton(
+      //     'Email', Theme.of(context).scaffoldBackgroundColor, Icons.email,
+      //     onPressed: () {
+      //   RegExp regex = new RegExp(pattern);
+      //   if (email != null && (regex.hasMatch(email))) {
+      //     Utility.launchUrlOnExternalBrowser("mailto:" + email);
+      //   } else {
+      //     Utility.currentScreenSnackBar("Email is not available", null);
+      //   }
+      // }),
+      // popUpbutton('Call', Theme.of(context).scaffoldBackgroundColor, Icons.call,
+      //     onPressed: () {
+      //   if (contactNumber != null && contactNumber.isNotEmpty) {
+      //     Utility.launchUrlOnExternalBrowser("tel:" + contactNumber);
+      //   } else {
+      //     Utility.currentScreenSnackBar("Contact is not available", null);
+      //   }
+      // })
     ];
   }
 
-  Widget popUpbutton(text, color, iconData, {required onPressed}) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: ElevatedButton(
-          onPressed: onPressed,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Icon(
-                iconData,
-                color: Colors.grey,
-              ),
-              TranslationWidget(
-                  message: text ?? '',
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) {
-                    return Text(translatedMessage.toString(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(fontWeight: FontWeight.bold));
-                  }),
-            ],
+  // Widget popUpbutton(text, color, iconData, {required onPressed}) {
+  //   return Row(
+  //     children: [
+  //       textButtonWidget(title: 'Yes', onPressed: () async {},),
+  //       Container(
+  //         height: 40,
+  //         width: 1,
+  //         color: Colors.grey.withOpacity(0.2),
+  //       ),
+  //       textButtonWidget(title: 'Yes', onPressed: () async {},),
+  //       Container(
+  //         height: 40,
+  //         width: 1,
+  //         color: Colors.grey.withOpacity(0.2),
+  //       )
+  //     ],
+  // );
+// ===================================================
+  // Expanded(
+  //   child: Padding(
+  //     padding: EdgeInsets.all(10.0),
+  //     child: ElevatedButton(
+  //       onPressed: onPressed,
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Icon(
+  //             iconData,
+  //             // size: size,
+  //             color: Theme.of(context).colorScheme.background ==
+  //                     Color(0xff000000)
+  //                 ? Colors.white
+  //                 : Colors.black,
+  //           ),
+  //           SizedBox(
+  //             width: 10,
+  //           ),
+  //           TranslationWidget(
+  //               message: text ?? '',
+  //               fromLanguage: "en",
+  //               toLanguage: Globals.selectedLanguage,
+  //               builder: (translatedMessage) {
+  //                 return Text(translatedMessage.toString(),
+  //                     style: Theme.of(context)
+  //                         .textTheme
+  //                         .headline2!
+  //                         .copyWith(fontWeight: FontWeight.bold));
+  //               }),
+  //         ],
+  //       ),
+  //       style: ElevatedButton.styleFrom(
+  //         primary: color ?? Colors.transparent,
+  //         shape: RoundedRectangleBorder(
+  //           side: BorderSide(
+  //               width: 0.10, color: Theme.of(context).colorScheme.background),
+  //           borderRadius: BorderRadius.circular(40.0),
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // );
+  // }
+
+  Widget textButtonWidget(
+      {required String title,
+      required IconData iconData,
+      required void Function()? onPressed}) {
+    return TextButton(
+      child: Row(
+        children: [
+          Icon(
+            iconData,
           ),
-          style: ElevatedButton.styleFrom(
-            primary: color ?? Colors.transparent,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: Colors.white, width: 0.10),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
+          SizedBox(
+            width: 10,
           ),
-        ),
+          TranslationWidget(
+              message: title,
+              fromLanguage: "en",
+              toLanguage: Globals.selectedLanguage,
+              builder: (translatedMessage) {
+                return Text(translatedMessage.toString(),
+                    style: Theme.of(context).textTheme.headline1!.copyWith(
+                        // color:,
+                        ));
+              }),
+        ],
       ),
+      onPressed: onPressed,
+
+      //  () async {
+      //   if (widget.isAccessDenied == true) {
+      //     //To pop 2 times to navigate back to the home screen in case of camera access denied
+      //     int count = 0;
+      //     Navigator.of(context).popUntil((_) {
+      //       if (Platform.isAndroid) {
+      //         return count++ >= 3;
+      //       } else {
+      //         return count++ >= 2;
+      //       }
+      //     });
+
+      //     //To open the app setting for permission access
+      //     OpenAppsSettings.openAppsSettings(
+      //         settingsCode: SettingsCode.APP_SETTINGS);
+      //   } else if (widget.isLogout == true) {
+      //
+      //   } else {
+      //     //Globals.iscameraPopup = false;
+      //     Navigator.pop(context, false);
+      //   }
+      // },
     );
   }
   // Widget buildTitle(title) {
