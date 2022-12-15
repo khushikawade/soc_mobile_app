@@ -111,11 +111,11 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           title: 'Solved',
           theme: theme,
           darkTheme: darkTheme,
-          // home: StartupPage(
-          //     isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
-          //     //false,  /For standard app
-          //     ),
-          home: SchoolIDLogin(),
+          home: StartupPage(
+              isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
+              //false,  /For standard app
+              ),
+          // home: SchoolIDLogin(),
           navigatorObservers: [
             FirebaseAnalyticsService().appAnalyticsObserver()
           ],
