@@ -64,7 +64,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           yield NewsLoaded(obj: _localData);
         }
         // Local database end.
-        List<NotificationList> _list = await fetchNotificationList();
+        List<NotificationList> _list = await fetchNotificationList(0, 300);
         // Syncing to local database
 
         await _localDb.clear();
@@ -133,7 +133,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     if (event is NewsCountLength) {
       try {
-        List<NotificationList> _list = await fetchNotificationList();
+        List<NotificationList> _list = await fetchNotificationList(0, 300);
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
@@ -185,7 +185,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                     likeCount: list[j].likeCount,
                     thanksCount: list[j].thanksCount,
                     helpfulCount: list[j].helpfulCount,
-                    shareCount: list[j].shareCount));
+                    shareCount: list[j].shareCount,
+                    supportCount: list[j].supportCount));
                 break;
               }
 
@@ -201,7 +202,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                     likeCount: 0,
                     thanksCount: 0,
                     helpfulCount: 0,
-                    shareCount: 0));
+                    shareCount: 0,
+                    supportCount: 0));
               }
             }
           }
@@ -239,14 +241,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
-  Future<List<NotificationList>> fetchNotificationList() async {
+  Future<List<NotificationList>> fetchNotificationList(
+      int offset, int limit) async {
     try {
-      // print(
-      //     "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/getNotifications?appId=${Overrides.PUSH_APP_ID}");
-      // print(Overrides.REST_API_KEY);
       final response = await http.get(
           Uri.parse(
-              "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/getNotifications?appId=${Overrides.PUSH_APP_ID}"),
+              "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/getNotifications?appId=${Overrides.PUSH_APP_ID}&offset=${offset}&limit=${limit}"),
           headers: {
             'Authorization': 'Basic ${Overrides.REST_API_KEY}',
           });
@@ -260,6 +260,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         final data1 =
             _allNotifications.where((e) => e['completed_at'] != null).toList();
         final data2 = data1 as List;
+
         return data2.map((i) {
           return NotificationList(
               id: i["id"],

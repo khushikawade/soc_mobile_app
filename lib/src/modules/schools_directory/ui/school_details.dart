@@ -326,9 +326,12 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           key: refreshKey,
           child: ListView(
             children: [
-              isloadingstate!
-                  ? ShimmerLoading(isLoading: true, child: _buildItem())
-                  : _buildItem(),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.85,
+                child: isloadingstate!
+                    ? ShimmerLoading(isLoading: true, child: _buildItem())
+                    : _buildItem(),
+              ),
               Container(
                 child: BlocListener<HomeBloc, HomeState>(
                     bloc: homebloc,
