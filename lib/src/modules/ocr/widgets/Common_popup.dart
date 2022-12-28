@@ -55,18 +55,6 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
           widget.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       title: Column(
         children: [
-          // if (widget.clearButton == true)
-          //   Align(
-          //     alignment: Alignment.topRight,
-          //     child: IconButton(
-          //       padding: EdgeInsets.zero,
-          //       onPressed: () => Navigator.pop(context),
-          //       icon: Icon(
-          //         Icons.clear,
-          //         size: Globals.deviceType == "phone" ? 28 : 36,
-          //       ),
-          //     ),
-          //   ),
           Container(
             padding: Globals.deviceType == 'phone'
                 ? null
@@ -139,6 +127,10 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                           onPressed: () async {
                             await UserGoogleProfile.clearUserProfile();
                             await GoogleClassroom.clearClassroomCourses();
+                            Utility.clearStudentInfo(tableName: 'student_info');
+                            Utility.clearStudentInfo(
+                                tableName: 'history_student_info');
+
                             Utility.updateLoges(
                                 // ,
                                 // sessionId: Globals.sessionId,
@@ -264,29 +256,6 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                     ));
           }),
       onPressed: onPressed,
-
-      //  () async {
-      //   if (widget.isAccessDenied == true) {
-      //     //To pop 2 times to navigate back to the home screen in case of camera access denied
-      //     int count = 0;
-      //     Navigator.of(context).popUntil((_) {
-      //       if (Platform.isAndroid) {
-      //         return count++ >= 3;
-      //       } else {
-      //         return count++ >= 2;
-      //       }
-      //     });
-
-      //     //To open the app setting for permission access
-      //     OpenAppsSettings.openAppsSettings(
-      //         settingsCode: SettingsCode.APP_SETTINGS);
-      //   } else if (widget.isLogout == true) {
-      //
-      //   } else {
-      //     //Globals.iscameraPopup = false;
-      //     Navigator.pop(context, false);
-      //   }
-      // },
     );
   }
 }

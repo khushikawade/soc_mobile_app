@@ -9,8 +9,10 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
+import 'package:Soc/src/modules/ocr/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/ui/profile_page.dart';
+import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/ocr/widgets/google_login.dart';
@@ -31,7 +33,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class GradedLandingPage extends StatefulWidget {
   final bool? isFromLogoutPage;
-  const GradedLandingPage({Key? key, this.isFromLogoutPage}) : super(key: key);
+  final bool? isMultiplechoice;
+  const GradedLandingPage(
+      {Key? key, this.isFromLogoutPage, this.isMultiplechoice})
+      : super(key: key);
 
   @override
   State<GradedLandingPage> createState() => _GradedLandingPageState();
@@ -182,13 +187,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                       ),
                                     );
                                   }
-                                  return Container(
-                                      // margin: EdgeInsets.all(10),
-                                      // padding:
-                                      //     EdgeInsets.only(right: 10, top: 5)
-                                      );
-                                  //  CupertinoActivityIndicator(
-                                  //     animating: true, radius: 10);
+                                  return Container();
                                 }),
                           );
                         }),
@@ -235,17 +234,6 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     .copyWith(fontWeight: FontWeight.bold),
                               )
                             ])),
-
-                        // Utility.textWidget(
-                        //     text: 'Welcome ${userName.value}',
-                        //     context: context,
-                        //     textTheme: Theme.of(context)
-                        //         .textTheme
-                        //         .headline1!
-                        //         .copyWith(fontWeight: FontWeight.bold))
-
-                        //  Text('Welcome Back',7
-                        //     style: Theme.of(context).textTheme.headline1)
                       );
                     },
                     valueListenable: userName,
@@ -471,6 +459,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
       context,
       MaterialPageRoute(
           builder: (context) => AssessmentSummary(
+                selectedFilterValue: "All",
                 isFromHomeSection: true,
               )),
     );
@@ -518,7 +507,10 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                 //     : '',
                                 description: 'user move to scan assessment',
                                 operationResult: 'Success');
-
+                            await Utility.clearStudentInfo(
+                                tableName: 'student_info');
+                            await Utility.clearStudentInfo(
+                                tableName: 'history_student_info');
                             if (_profileData.isEmpty) {
                               var result = await GoogleLogin.launchURL(
                                   'Google Authentication',
@@ -533,7 +525,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                 Globals.teacherEmailId =
                                     _profileData[0].userEmail!.split('@')[0];
                                 // Analytics start
-                              //  Analytics.setUserId(Globals.teacherEmailId);
+                                //  Analytics.setUserId(Globals.teacherEmailId);
 
                                 // Analytics end
 
@@ -597,11 +589,13 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     description: 'Graded+ Accessed(Login)',
                                     operationResult: 'Success'));
 
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          OpticalCharacterRecognition()),
-                                );
+                                Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            SelectAssessmentType())
+                                    // widget.isMultiplechoice == true
+                                    //     ? MultipleChoiceSection()
+                                    //     :         OpticalCharacterRecognition()),
+                                    );
                               }
                             }
                           }

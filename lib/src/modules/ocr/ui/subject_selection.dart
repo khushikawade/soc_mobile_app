@@ -29,6 +29,8 @@ import '../../../services/local_database/local_db.dart';
 import '../widgets/bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
+  final bool? isMcqSheet;
+  final String? selectedAnswer;
   final String? selectedClass;
   final String? subjectId;
   final String? stateName;
@@ -48,7 +50,9 @@ class SubjectSelection extends StatefulWidget {
       this.searchClass,
       this.selectedSubject,
       required this.questionimageUrl,
-      this.isCommonCore})
+      this.isCommonCore,
+      this.isMcqSheet,
+      this.selectedAnswer})
       : super(key: key);
 
   @override
@@ -206,7 +210,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     Utility.scrollToTop(scrollController: _scrollController);
                   },
                   isSuccessState: ValueNotifier<bool>(true),
-                  isbackOnSuccess: isBackFromCamera,
+                  isBackOnSuccess: isBackFromCamera,
                   isBackButton: true,
                   key: null,
                   isHomeButtonPopup: true,
@@ -239,6 +243,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => SearchScreenPage(
+                                  isMcqSheet: widget.isMcqSheet,
+                                  selectedAnswer: widget.selectedAnswer,
                                   questionImage: widget.questionimageUrl ?? '',
                                   selectedKeyword: selectedKeyword,
                                   grade: widget.selectedClass,
@@ -297,6 +303,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => SearchScreenPage(
+                                  isMcqSheet: widget.isMcqSheet,
+                                  selectedAnswer: widget.selectedAnswer,
                                   questionImage: widget.questionimageUrl ?? '',
                                   selectedKeyword: selectedKeyword,
                                   grade: widget.selectedClass,
@@ -459,16 +467,18 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     : buttonListWidget(list: list);
           } else if (state is OcrLoading) {
             // loading when user fetch subject detail first time
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.6,
-              child: Center(
-                  child: Globals.isAndroid == true
-                      ? CircularProgressIndicator(
-                          color: AppTheme.kButtonColor,
-                        )
-                      : CupertinoActivityIndicator(
-                          color: AppTheme.kButtonColor)),
-            );
+            return pageIndex.value == 2
+                ? Container()
+                : Container(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: Center(
+                        child: Globals.isAndroid == true
+                            ? CircularProgressIndicator(
+                                color: AppTheme.kButtonColor,
+                              )
+                            : CupertinoActivityIndicator(
+                                radius: 20, color: AppTheme.kButtonColor)),
+                  );
           }
           return Container();
           // return widget here based on BlocA's state
@@ -597,65 +607,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         TextSpan(text: translatedMessage)
                                       ]),
                           ),
-
-                          // Text(
-                          //     translatedMessage.toString(),
-                          //     style: Theme.of(context).textTheme.bodyText1!),
                         ),
-
-                        // RichText(
-                        //   text: list[index].standardAndDescriptionC != null &&
-                        //           list[index]
-                        //                   .standardAndDescriptionC!
-                        //                   .split(' - ')
-                        //                   .length >
-                        //               1
-                        //       ? TextSpan(
-                        //           // Note: Styles for TextSpans must be explicitly defined.
-                        //           // Child text spans will inherit styles from parent
-                        //           style: Theme.of(context).textTheme.headline2,
-                        //           children: <TextSpan>[
-                        //             TextSpan(
-                        //                 text: list[index]
-                        //                     .standardAndDescriptionC!
-                        //                     .split(' - ')[0]
-                        //                     .replaceAll('Â', '')
-                        //                     .replaceAll('U+2612', '')
-                        //                     .replaceAll('⍰', ''), //🖾
-                        //                 style: Theme.of(context)
-                        //                     .textTheme
-                        //                     .headline2!
-                        //                     .copyWith(
-                        //                       fontWeight: FontWeight.bold,
-                        //                     )),
-                        //             TextSpan(text: '  '),
-                        //             TextSpan(
-                        //               text: list[index]
-                        //                   .standardAndDescriptionC!
-                        //                   .split(' - ')[1]
-                        //                   .replaceAll('Â', '')
-                        //                   .replaceAll('U+2612', '')
-                        //                   .replaceAll('⍰', ''),
-                        //               style:
-                        //                   Theme.of(context).textTheme.headline2,
-                        //             ),
-                        //           ],
-                        //         )
-                        //       : TextSpan(
-                        //           style: Theme.of(context).textTheme.headline2,
-                        //           children: [
-                        //               TextSpan(
-                        //                   text: list[index]
-                        //                           .standardAndDescriptionC ??
-                        //                       '')
-                        //             ]),
-                        // ),
-
-                        //  Utility.textWidget(
-                        //     text: HtmlUnescape()
-                        //         .convert(list[index].standardAndDescriptionC!),
-                        //     textTheme: Theme.of(context).textTheme.headline2,
-                        //     context: context),
                         decoration: BoxDecoration(
                             color: Color(0xff000000) !=
                                     Theme.of(context).backgroundColor
@@ -917,6 +869,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ResultsSummary(
+                                          isMcqSheet: widget.isMcqSheet,
+                                          selectedAnswer: widget.selectedAnswer,
                                           subjectId: subjectId ?? '',
                                           standardId: standardId ?? '',
                                           asssessmentName:
@@ -1048,6 +1002,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         title: 'Add Subject',
         isImageField: false,
         textFieldTitleOne: 'Subject Name',
+        submitButton: true,
         isSubjectScreen: true,
         sheetHeight: MediaQuery.of(context).orientation == Orientation.landscape
             ? MediaQuery.of(context).size.height * 0.82
@@ -1114,6 +1069,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         Globals.currentAssessmentId = '';
                                         _ocrBloc.add(
                                             SaveAssessmentToDashboardAndGetId(
+                                                isMcqSheet:
+                                                    widget.isMcqSheet ?? false,
                                                 assessmentQueImage:
                                                     widget.questionimageUrl ??
                                                         '',
@@ -1158,6 +1115,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                           _googleDriveBloc.add(
                                             UpdateDocOnDrive(
+                                                isMcqSheet: widget.isMcqSheet,
                                                 questionImage: widget
                                                             .questionimageUrl ==
                                                         ''
@@ -1201,6 +1159,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   ResultsSummary(
+                                                    isMcqSheet:
+                                                        widget.isMcqSheet,
+                                                    selectedAnswer:
+                                                        widget.selectedAnswer,
                                                     fileId: Globals
                                                         .googleExcelSheetId,
                                                     subjectId: subjectId ?? '',
@@ -1263,15 +1225,16 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           Globals.currentAssessmentId = '';
                                           _ocrBloc.add(
                                               SaveAssessmentToDashboardAndGetId(
+                                                  isMcqSheet: widget.isMcqSheet ??
+                                                      false,
                                                   assessmentQueImage:
                                                       widget.questionimageUrl ??
                                                           '',
                                                   assessmentName:
                                                       Globals.assessmentName ??
                                                           'Assessment Name',
-                                                  rubricScore:
-                                                      Globals.scoringRubric ??
-                                                          '2',
+                                                  rubricScore: Globals.scoringRubric ??
+                                                      '2',
                                                   subjectName: widget.isSearchPage == true
                                                       ? widget.selectedSubject ??
                                                           ''
@@ -1290,8 +1253,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                   standardId: standardId ?? '',
                                                   scaffoldKey: _scaffoldKey,
                                                   context: context,
-                                                  fileId: Globals
-                                                          .googleExcelSheetId ??
+                                                  fileId: Globals.googleExcelSheetId ??
                                                       'Excel Id not found',
                                                   sessionId: Globals.sessionId,
                                                   teacherContactId: Globals.teacherId,
@@ -1309,6 +1271,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                             _googleDriveBloc.add(
                                               UpdateDocOnDrive(
+                                                isMcqSheet: widget.isMcqSheet,
                                                 questionImage: widget
                                                             .questionimageUrl ==
                                                         ''
@@ -1358,6 +1321,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ResultsSummary(
+                                                      isMcqSheet:
+                                                          widget.isMcqSheet,
+                                                      selectedAnswer:
+                                                          widget.selectedAnswer,
                                                       fileId: Globals
                                                           .googleExcelSheetId,
                                                       subjectId:
@@ -1500,8 +1467,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].customOrStandardRubic == "Custom" &&
               '${_localData[i].name}' + ' ' + '${_localData[i].score}' ==
-                  Globals.scoringRubric!) {
-            rubricImgUrl = await _localData[i].imgUrl;
+                  Globals.scoringRubric) {
+            rubricImgUrl = _localData[i].imgUrl;
             break;
           } else {
             rubricImgUrl = 'NA';
@@ -1523,7 +1490,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             subLearningStandard == null || subLearningStandard == ''
                 ? "NA"
                 : subLearningStandard;
-        element.scoringRubric = Globals.scoringRubric;
+        element.scoringRubric =
+            widget.isMcqSheet == true ? '0-1' : Globals.scoringRubric;
         element.className = Globals.assessmentName!.split("_")[1];
         element.customRubricImage = rubricImgUrl ?? "NA";
         element.grade = widget.selectedClass;
@@ -1534,6 +1502,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
         _googleDriveBloc.add(
           UpdateDocOnDrive(
+              isMcqSheet: widget.isMcqSheet,
               questionImage: widget.questionimageUrl == ''
                   ? 'NA'
                   : widget.questionimageUrl ?? 'NA',

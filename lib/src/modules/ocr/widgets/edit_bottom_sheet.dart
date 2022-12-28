@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/overrides.dart';
-
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +12,15 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../../services/firstLetterUpperCase.dart';
-import '../../../widgets/textfield_widget.dart';
 
 // ignore: must_be_immutable
 class EditBottomSheet extends StatefulWidget {
   EditBottomSheet(
       {Key? key,
+      this.studentSelection,
+      this.selectedAnswer,
       required this.title,
+      required this.isMcqSheet,
       required this.isImageField,
       required this.textFieldTitleOne,
       this.textFieldTitleTwo,
@@ -34,6 +36,9 @@ class EditBottomSheet extends StatefulWidget {
       : super(key: key);
 
   final bool? isImageField;
+  final String? selectedAnswer;
+  final String? studentSelection;
+  final bool? isMcqSheet;
   final String? title;
   final String? textFieldTitleOne;
   final String? textFieldTitleTwo;
@@ -48,7 +53,8 @@ class EditBottomSheet extends StatefulWidget {
   final Function(
       {required TextEditingController name,
       required TextEditingController id,
-      required TextEditingController score}) update;
+      required TextEditingController score,
+      String? studentResonance}) update;
   @override
   State<EditBottomSheet> createState() => _BottomSheetWidgetState();
 }
@@ -59,6 +65,11 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
   // final formKey = new GlobalKey<FormState>();
   final _formKey = GlobalKey<FormState>();
   final GoogleDriveBloc _googleBloc = new GoogleDriveBloc();
+  final ValueNotifier<dynamic> indexColor = ValueNotifier<dynamic>(2);
+  final ValueNotifier<String> pointScored = ValueNotifier<String>('2');
+  final ValueNotifier<bool> rubricNotDetected = ValueNotifier<bool>(false);
+  List<String> pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
+  bool isSelected = true;
   RegExp regex = new RegExp(
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
 
@@ -117,14 +128,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                           fontSize: Globals.deviceType == "phone"
                               ? AppTheme.kBottomSheetTitleSize
                               : AppTheme.kBottomSheetTitleSize * 1.3,
-                        )
-                    // textTheme: Theme.of(context)
-                    //     .textTheme
-                    //     .headline3!
-                    //     .copyWith(
-                    //         color: Colors.black,
-                    //         fontWeight: FontWeight.bold)
-                    ),
+                        )),
               ),
             ),
             Form(
@@ -133,8 +137,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                 child: ListView(
                   //   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  // mainAxisSize: MainAxisSize.min,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
+
                   children: [
                     widget.textFieldTitleOne != null
                         ? Column(
@@ -164,7 +167,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                       horizontal: 20,
                                     ),
                                     child: _textFiled(
-                                        whichContoller: 1,
+                                        // whichContoller: 1,
                                         msg: "field is required ",
                                         controller:
                                             widget.textFieldControllerOne))
@@ -197,17 +200,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: _textFiled(
-                                          whichContoller: 2,
-                                          // keyboardType:
-                                          //     Overrides.STANDALONE_GRADED_APP ==
-                                          //             true
-                                          //         ? null
-                                          //         : TextInputType.number,
-                                          // maxNineDigit:
-                                          //     Overrides.STANDALONE_GRADED_APP ==
-                                          //             true
-                                          //         ? null
-                                          //         : null,
+                                          // whichContoller: 2,
                                           msg:
                                               Overrides.STANDALONE_GRADED_APP ==
                                                       true
@@ -222,7 +215,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                 ]),
                           )
                         : Container(),
-                    SpacerWidget(20),
+                    SpacerWidget(8),
                     widget.textFileTitleThree != null
                         ? Container(
                             child: Column(
@@ -248,16 +241,25 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                                   : Color(0xff000000),
                                             )),
                                   ),
-                                  Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 20),
-                                      child: _textFiled(
-                                          whichContoller: 3,
-                                          keyboardType: TextInputType.number,
-                                          maxNineDigit: 1,
-                                          msg: "field is required ",
-                                          controller:
-                                              widget.textFieldControllerthree)),
+                                  widget.isMcqSheet == true
+                                      ? Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          child: pointsEarnedButton(
+                                              widget.studentSelection,
+                                              isSuccessState: true),
+                                        )
+                                      : Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          child: _textFiled(
+                                              // whichContoller: 3,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              maxNineDigit: 1,
+                                              msg: "field is required ",
+                                              controller: widget
+                                                  .textFieldControllerthree)),
                                 ]),
                           )
                         : Container(),
@@ -284,20 +286,6 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                           )),
                                 ),
                                 SpacerWidget(5),
-                                // InkWell(
-                                //   onTap: () {
-                                //     showActionsheet(context);
-                                //   },
-                                //   child: Padding(
-                                //     padding: EdgeInsets.symmetric(
-                                //       horizontal: 20,
-                                //     ),
-                                //     child: textFormField(
-                                //         msg: "Add Name Please",
-                                //         controller: nameController,
-                                //         onSaved: (String value) {}),
-                                //   ),
-                                // ),
                                 SpacerWidget(10),
                                 InkWell(
                                   onTap: () {
@@ -351,10 +339,20 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                           onPressed: () async {
                             //  dnakhfkahj
                             if (_formKey.currentState!.validate()) {
+                              widget.textFieldControllerthree.text =
+                                  widget.isMcqSheet == true
+                                      ? (widget.selectedAnswer ==
+                                              indexColor.value.toString()
+                                          ? '1'
+                                          : '0')
+                                      : widget.textFieldControllerthree.text;
                               widget.update(
                                   name: widget.textFieldControllerOne,
                                   id: widget.textFieldControllerTwo,
-                                  score: widget.textFieldControllerthree);
+                                  score: widget.textFieldControllerthree,
+                                  studentResonance: widget.isMcqSheet == true
+                                      ? indexColor.value.toString()
+                                      : 'NA');
                             }
                           },
                           label: Row(
@@ -381,61 +379,160 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
     );
   }
 
-  // Widget textFormField(
-  //     {required TextEditingController controller,
-  //     required onSaved,
-  //     required String? msg}) {
-  //   return TextFormField(
-  //     validator: (text) {
-  //       if (text == null || text.isEmpty) {
-  //         return msg;
-  //       }
-  //       return null;
-  //     },
-  //     autofocus: false,
-  //     //
-  //     textAlign: TextAlign.start,
-  //     style: Theme.of(context)
-  //         .textTheme
-  //         .subtitle1!
-  //         .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
-  //     controller: controller,
-  //     cursorColor: Theme.of(context).colorScheme.primaryVariant,
-  //     decoration: InputDecoration(
-  //       fillColor: Colors.transparent,
-  //       enabledBorder: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme.kButtonColor,
-  //         ),
-  //       ),
-  //       focusedBorder: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme
-  //               .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
-  //         ),
-  //       ),
-  //       contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-  //       border: UnderlineInputBorder(
-  //         borderSide: BorderSide(
-  //           color: AppTheme.kButtonColor,
-  //         ),
-  //       ),
-  //     ),
-  //     onChanged: onSaved,
-  //   );
-  // }
+  Widget pointsEarnedButton(dynamic grade, {required bool isSuccessState}) {
+    return FittedBox(
+      child: Container(
+          alignment: Alignment.center,
+          height: MediaQuery.of(context).size.height * 0.1,
+          width: MediaQuery.of(context).size.width,
+          child: pointsEarnedList.length > 4
+              ? ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(
+                        child: pointsButton(
+                            widget.isMcqSheet == true
+                                ? pointsEarnedList[index]
+                                : index,
+                            grade,
+                            isSuccessState: isSuccessState));
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      width: 12,
+                    );
+                  },
+                  itemCount: pointsEarnedList.length)
+              : Row(
+                  // scrollDirection: Axis.horizontal,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: pointsEarnedList
+                      .map<Widget>((element) => pointsButton(
+                          pointsEarnedList.indexOf(element), grade,
+                          isSuccessState: true))
+                      .toList(),
+                )),
+    );
+  }
 
-  // _getImage() async {
-  //   final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (image != null) {
-  //     setState(() {
-  //       // isImageEmpty = false;
-  //       imageFile = File(image.path);
-  //     });
-  //   } else {
-  //     //  isImageEmpty = true;
-  //   }
-  // }
+  Widget pointsButton(index, dynamic grade, {required bool isSuccessState}) {
+    isSelected ? indexColor.value = grade : null;
+    return ValueListenableBuilder(
+        valueListenable: rubricNotDetected,
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return ValueListenableBuilder(
+            valueListenable: indexColor,
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return InkWell(
+                  onTap: () {
+                    // updateDetails(isUpdateData: true);
+                    Utility.updateLoges(
+                        // ,
+                        activityId: '8',
+                        description:
+                            'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
+                        operationResult: 'Success');
+                    pointScored.value = index.toString();
+                    // if (isSuccessState) {}
+                    isSelected = false;
+                    //   rubricNotDetected.value = false;
+                    indexColor.value = index;
+                  },
+                  child: AnimatedContainer(
+                    duration: Duration(microseconds: 100),
+                    padding: EdgeInsets.only(
+                      bottom: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: widget.isMcqSheet == true
+                          ? index == widget.selectedAnswer
+                              ? index == indexColor.value
+                                  ? AppTheme.kSelectedColor
+                                  : Colors.grey //AppTheme.kButtonColor
+                              : index == indexColor.value
+                                  ? AppTheme.kSelectedColor
+                                  : Colors.grey
+                          : index == indexColor.value
+                              ? AppTheme.kSelectedColor
+                              : Colors.grey,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8),
+                      ),
+                    ),
+                    child: Container(
+                        alignment: Alignment.center,
+                        height: //pointsEarnedList.length>3?
+                            widget.isMcqSheet == true
+                                ? MediaQuery.of(context).size.height *
+                                    //  0.085, //:MediaQuery.of(context).size.height*0.2,
+                                    0.075
+                                : MediaQuery.of(context).size.height * 0.085,
+                        width:
+                            //pointsEarnedList.length>3?
+                            widget.isMcqSheet == true
+                                ? MediaQuery.of(context).size.width * 0.14
+                                : MediaQuery.of(context).size.width * 0.17,
+                        //:MediaQuery.of(context).size.width*0.2,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical:
+                                10), //horizontal: pointsEarnedList.length>3?20:30
+                        decoration: BoxDecoration(
+                          color: Color(0xff000000) !=
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                          border: Border.all(
+                            color: widget.isMcqSheet == true
+                                ? index == widget.selectedAnswer
+                                    ? index == indexColor.value
+                                        ? AppTheme.kSelectedColor
+                                        : Colors.grey //AppTheme.kButtonColor
+                                    : index == indexColor.value
+                                        ? Colors.grey
+                                        : index == indexColor.value
+                                            ? AppTheme.kSelectedColor
+                                            : Colors.grey
+                                : Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: TranslationWidget(
+                          message: widget.isMcqSheet == true
+                              ? index
+                              : pointsEarnedList[index].toString(),
+                          toLanguage: Globals.selectedLanguage,
+                          fromLanguage: "en",
+                          builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: widget.isMcqSheet == true
+                                    ? (index == widget.selectedAnswer
+                                        ? AppTheme.kButtonColor
+                                        : indexColor.value == index
+                                            ?
+                                            // rubricNotDetected.value ==
+                                            //             true &&
+                                            //         isSelected == true
+                                            //     ? Colors.red
+                                            Colors.red //AppTheme.kSelectedColor
+                                            : Colors.grey)
+                                    : (indexColor.value == index
+                                        ?
+                                        // rubricNotDetected.value == true &&
+                                        //         isSelected == true
+                                        //     ? Colors.red
+                                        //     :
+                                        AppTheme.kSelectedColor
+                                        : Colors.grey)),
+                          ),
+                        )),
+                  ));
+            },
+          );
+        });
+  }
 
   showActionsheet(context) {
     showCupertinoModalPopup(
@@ -502,7 +599,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
   }
 
   Widget _textFiled({
-    required int whichContoller,
+    // required int whichContoller,
     required String msg,
     required TextEditingController controller,
     int? maxNineDigit,
@@ -523,21 +620,6 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
         if (text == null || text.isEmpty) {
           return msg;
         }
-        //  else {
-        //   if (whichContoller == 2) {
-        //     if (Overrides.STANDALONE_GRADED_APP == true &&
-        //         !regex.hasMatch(text)) {
-        //       return msg;
-        //     } else if (Overrides.STANDALONE_GRADED_APP != true &&
-        //         text.length < 3) {
-        //       return msg;
-        //     } else {
-        //       return null;
-        //     }
-        //   } else if (text.length != 1 && whichContoller == 3) {
-        //     return msg;
-        //   }
-        // }
 
         return null;
       },

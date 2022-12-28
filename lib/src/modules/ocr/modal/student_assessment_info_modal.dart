@@ -36,6 +36,12 @@ class StudentAssessmentInfo {
   bool? isSavedOnDashBoard;
   @HiveField(14)
   String? assessmentImgPath;
+  @HiveField(15)
+  String? answerKey;
+  @HiveField(16)
+  String? studentResponseKey;
+  @HiveField(17)
+  String? presentationURL;
 
   StudentAssessmentInfo(
       {this.studentName,
@@ -52,7 +58,10 @@ class StudentAssessmentInfo {
       this.className,
       this.questionImgUrl,
       this.isSavedOnDashBoard,
-      this.assessmentImgPath});
+      this.assessmentImgPath,
+      this.answerKey,
+      this.presentationURL,
+      this.studentResponseKey});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(
@@ -76,5 +85,8 @@ class StudentAssessmentInfo {
           questionImgUrl: Overrides.STANDALONE_GRADED_APP == true
               ? json['Assessment Image'] as String?
               : json['Assessment Question Img'] as String?,
-          isSavedOnDashBoard: json['Saved on Dashboard']);
+          isSavedOnDashBoard: json['Saved on Dashboard'],
+          answerKey: json['Answer Key'],
+          presentationURL: json['Presentation URL'],
+          studentResponseKey: json['Student Response Key']);
 }

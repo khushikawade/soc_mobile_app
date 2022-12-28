@@ -188,44 +188,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                                       ? 16
                                                                       : 24),
                                                     ),
-                                                  )
-
-                                                    //  Marquee(
-                                                    //   text: translatedMessage
-                                                    //       .toString(),
-                                                    //   style: Theme.of(context)
-                                                    //       .textTheme
-                                                    //       .bodyText1!
-                                                    //       .copyWith(
-                                                    //           fontSize:
-                                                    //               Globals.deviceType ==
-                                                    //                       "phone"
-                                                    //                   ? 16
-                                                    //                   : 24),
-                                                    //   scrollAxis:
-                                                    //       Axis.horizontal,
-                                                    //   velocity: 30.0,
-                                                    //   crossAxisAlignment:
-                                                    //       CrossAxisAlignment
-                                                    //           .start,
-                                                    //   blankSpace: 50,
-                                                    //   pauseAfterRound:
-                                                    //       Duration(seconds: 5),
-                                                    //   showFadingOnlyWhenScrolling:
-                                                    //       true,
-                                                    //   startPadding: 10.0,
-                                                    //   accelerationDuration:
-                                                    //       Duration(seconds: 1),
-                                                    //   accelerationCurve:
-                                                    //       Curves.linear,
-                                                    //   decelerationDuration:
-                                                    //       Duration(
-                                                    //           milliseconds:
-                                                    //               500),
-                                                    //   decelerationCurve:
-                                                    //       Curves.easeOut,
-                                                    // ),
-                                                    )
+                                                  ))
                                                 : MediaQuery.of(context)
                                                                 .orientation ==
                                                             Orientation
@@ -252,50 +215,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                                                                           ? 16
                                                                           : 24),
                                                         ),
-                                                      )
-
-                                                        //    Marquee(
-                                                        //   text: translatedMessage
-                                                        //       .toString(),
-                                                        //   style: Theme.of(context)
-                                                        //       .textTheme
-                                                        //       .bodyText1!
-                                                        //       .copyWith(
-                                                        //           fontSize: Globals
-                                                        //                       .deviceType ==
-                                                        //                   "phone"
-                                                        //               ? 16
-                                                        //               : 24),
-                                                        //   scrollAxis:
-                                                        //       Axis.horizontal,
-                                                        //   velocity: 30.0,
-                                                        //   crossAxisAlignment:
-                                                        //       CrossAxisAlignment
-                                                        //           .start,
-
-                                                        //   blankSpace:
-                                                        //       50, //MediaQuery.of(context).size.width
-                                                        //   // velocity: 100.0,
-                                                        //   pauseAfterRound:
-                                                        //       Duration(
-                                                        //           seconds: 5),
-                                                        //   showFadingOnlyWhenScrolling:
-                                                        //       true,
-                                                        //   startPadding: 10.0,
-                                                        //   accelerationDuration:
-                                                        //       Duration(
-                                                        //           seconds: 1),
-                                                        //   accelerationCurve:
-                                                        //       Curves.linear,
-                                                        //   decelerationDuration:
-                                                        //       Duration(
-                                                        //           milliseconds:
-                                                        //               500),
-                                                        //   decelerationCurve:
-                                                        //       Curves.easeOut,
-                                                        // )
-
-                                                        )
+                                                      ))
                                                     : SingleChildScrollView(
                                                         scrollDirection:
                                                             Axis.horizontal,
@@ -327,18 +247,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
                             isNews: false,
                             isEvents: false,
                             // connected: connected,
-                          )
-                    // Center(
-                    //     child: Container(
-                    //         child: TranslationWidget(
-                    //     message: "No apps available here",
-                    //     fromLanguage: "en",
-                    //     toLanguage: Globals.selectedLanguage,
-                    //     builder: (translatedMessage) => Text(
-                    //       translatedMessage.toString(),
-                    //     ),
-                    //   ))),
-                    ),
+                          )),
               ),
             ),
           ),

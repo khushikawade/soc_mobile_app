@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/fetch_google_sheet.dart';
 import 'package:Soc/src/modules/google_drive/google_drive_access.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart';
@@ -262,28 +263,31 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         assessmentData.insert(
             0,
             StudentAssessmentInfo(
-              studentId:
-                  Overrides.STANDALONE_GRADED_APP == true ? "Email Id" : "Id",
-              studentName: "Name",
-              studentGrade: "Points Earned",
-              pointpossible: "Point Possible",
-              questionImgUrl: Overrides.STANDALONE_GRADED_APP == true
-                  ? "Assessment Image"
-                  : "Assessment Question Img",
-              grade: "Grade",
-              className: "Class Name",
-              subject: "Subject",
-              learningStandard: "Learning Standard",
-              subLearningStandard: "NY Next Generation Learning Standard",
-              scoringRubric: "Scoring Rubric",
-              customRubricImage: "Custom Rubric Image",
-              assessmentImage: Overrides.STANDALONE_GRADED_APP == true
-                  ? "Student Work Image"
-                  : "Assessment Image",
-            ));
+                studentId:
+                    Overrides.STANDALONE_GRADED_APP == true ? "Email Id" : "Id",
+                studentName: "Name",
+                studentGrade: "Points Earned",
+                pointpossible: "Point Possible",
+                questionImgUrl: Overrides.STANDALONE_GRADED_APP == true
+                    ? "Assessment Image"
+                    : "Assessment Question Img",
+                grade: "Grade",
+                className: "Class Name",
+                subject: "Subject",
+                learningStandard: "Learning Standard",
+                subLearningStandard: "NY Next Generation Learning Standard",
+                scoringRubric: "Scoring Rubric",
+                customRubricImage: "Custom Rubric Image",
+                assessmentImage: Overrides.STANDALONE_GRADED_APP == true
+                    ? "Student Work Image"
+                    : "Assessment Image",
+                answerKey: 'Answer Key',
+                presentationURL: 'Presentation URL',
+                studentResponseKey: 'Student Selection'));
 
 //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
+            isMcqSheet: event.isMcqSheet,
             data: assessmentData,
             name: event.assessmentName!,
             createdAsPremium: event.createdAsPremium);
@@ -307,6 +311,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           // function to update property of excel sheet
 
           _updateFieldExcelSheet(
+              isMcqSheet: event.isMcqSheet ?? false,
               assessmentData: assessmentData,
               excelId: excelSheetId,
               token: _userprofilelocalData[0].authorizationToken!);
@@ -316,6 +321,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           // function to update property of excel sheet
 
           _updateFieldExcelSheet(
+              isMcqSheet: event.isMcqSheet ?? false,
               assessmentData: assessmentData,
               excelId: excelSheetId,
               token: _userprofilelocalData[0].authorizationToken!);
@@ -800,7 +806,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }
 
   Future<String> uploadSheetOnDrive(
-      File? file, String? id, String? accessToken, String? refreshToken) async {
+    File? file,
+    String? id,
+    String? accessToken,
+    String? refreshToken,
+  ) async {
     try {
       // String accessToken = await Prefs.getToken();
       String? mimeType = mime(basename(file!.path).toLowerCase());
@@ -875,6 +885,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future<void> _updateFieldExcelSheet(
       {required String token,
       required String excelId,
+      required bool isMcqSheet,
       //required int sheetID,
       required List<StudentAssessmentInfo> assessmentData}) async {
     try {
@@ -897,6 +908,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       // To make assessment question image url hyperlinked //Same for all students
       if (assessmentData[1].questionImgUrl != 'NA') {
+        //Property Update in Excel Sheet // URL Hyperlink and Heading Bold
         data.add(_updateFieldExcelSheetRequestBody(
             isHyperLink: true,
             startRowIndex: 1,
@@ -904,19 +916,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? 3
-                : 4,
+                ? (isMcqSheet == true ? 5 : 3)
+                : (isMcqSheet == true ? 6 : 4),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? 4
-                : 5,
+                ? (isMcqSheet == true ? 6 : 4)
+                : (isMcqSheet == true ? 7 : 5),
             sheetId: sheetID,
             imageLink: assessmentData[1].questionImgUrl));
       }
 
       // To make custom rubric image url hyperlinked //Same for all students
       if (assessmentData[1].customRubricImage != 'NA') {
+        //Property Update in Excel Sheet // URL Hyperlink and Heading Bold
         data.add(_updateFieldExcelSheetRequestBody(
             isHyperLink: true,
             startRowIndex: 1,
@@ -924,13 +937,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? 10
-                : 11,
+                ? (isMcqSheet == true ? 12 : 10)
+                : (isMcqSheet == true ? 13 : 11),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? 11
-                : 12,
+                ? (isMcqSheet == true ? 13 : 11)
+                : (isMcqSheet == true ? 14 : 12),
             sheetId: sheetID,
             imageLink: assessmentData[1].customRubricImage));
       }
@@ -944,13 +957,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? 11
-                : 12,
+                ? (isMcqSheet == true ? 13 : 11)
+                : (isMcqSheet == true ? 14 : 12),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? 12
-                : 13,
+                ? (isMcqSheet == true ? 14 : 12)
+                : (isMcqSheet == true ? 15 : 13),
             sheetId: sheetID,
             imageLink: assessmentData[i].assessmentImage));
       }
@@ -966,7 +979,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             headers: headers,
             isGoogleApi: true,
             body: body);
-        if (response.statusCode == '200') {}
+        if (response.statusCode == 200) {}
       } else {
         print('Excel file grid if not found');
       }
@@ -1064,6 +1077,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 assessmentList[j].googleFileId != '') {
               _list[i].sessionId = assessmentList[j].sessionId;
               _list[i].isCreatedAsPremium = assessmentList[j].createdAsPremium;
+              _list[i].assessmentType = assessmentList[j].assessmentType;
             }
           }
         }
@@ -1295,58 +1309,93 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (fields[0][0] == 'Name') {
           createdAsPremium = false;
         }
-
+        listNew = FetchGoogleSheet.fetchGoogleSheetData(fields: fields);
         fields.removeAt(0);
 
-        fields.forEach((element) {
-          if (createdAsPremium == false) {
-            //To manage the first field of excel sheet in case of created as non-premium user.
-            element.insert(0, '');
-          }
+        // fields.forEach((element) {
+        //   if (createdAsPremium == false) {
+        //     //To manage the first field of excel sheet in case of created as non-premium user.
+        //     element.insert(0, '');
+        //   }
 
-          data.add(element
-              .toString()
-              .replaceAll('[', "")
-              .replaceAll(']', "")
-              .replaceAll("''", "'"));
-        });
+        //   data.add(element
+        //       .toString()
+        //       .replaceAll('[', "")
+        //       .replaceAll(']', "")
+        //       .replaceAll("''", "'"));
+        // });
 
-        for (var line in data) {
-          csvList.add(ResultSpreadsheet.fromList(line.split(',')));
-        }
+        // for (var line in data) {
+        //   print(line);
+        //   csvList.add(ResultSpreadsheet.fromList(line.split(',')));
+        // }
 
         //Mapping values to required Model
-        for (int i = 0; i < csvList.length; i++) {
-          listNew.add(StudentAssessmentInfo(
-              subject: csvList[i].subject.toString().replaceFirst(" ", ""),
-              assessmentImage: csvList[i]
-                  .assessmentImage
-                  .toString()
-                  .replaceAll("'", "")
-                  .replaceAll(" ", ""),
-              className: csvList[i].className.toString().replaceFirst(" ", ""),
-              customRubricImage:
-                  csvList[i].customRubricImage.toString().replaceFirst(" ", ""),
-              grade: csvList[i].grade.toString().replaceFirst(" ", ""),
-              learningStandard:
-                  csvList[i].learningStandard.toString().replaceFirst(" ", ""),
-              pointpossible:
-                  csvList[i].pointPossible.toString().replaceFirst(" ", ""),
-              questionImgUrl: csvList[i]
-                  .assessmentQuestionImg
-                  .toString()
-                  .replaceFirst(" ", ""),
-              scoringRubric:
-                  csvList[i].scoringRubric.toString().replaceFirst(" ", ""),
-              studentGrade:
-                  csvList[i].pointsEarned.toString().replaceFirst(" ", ""),
-              studentId: csvList[i].id.toString().replaceFirst(" ", ""),
-              studentName: csvList[i].name.toString().replaceFirst(" ", ""),
-              subLearningStandard: csvList[i]
-                  .nyNextGenerationLearningStandard
-                  .toString()
-                  .replaceFirst(" ", "")));
-        }
+        // for (var i = 0; i < fields.length; i++) {
+        //   listNew.add(StudentAssessmentInfo(
+        //       studentId: fields[i][0].toString().replaceFirst(" ", ""),
+        //       studentName: fields[i][1].toString().replaceFirst(" ", ""),
+        //       studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
+        //       pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+        //       questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
+        //       grade: fields[i][5].toString().replaceFirst(" ", ""),
+        //       className: fields[i][6].toString().replaceFirst(" ", ""),
+        //       subject: fields[i][7].toString().replaceFirst(" ", ""),
+        //       learningStandard: fields[i][8].toString().replaceFirst(" ", ""),
+        //       subLearningStandard:
+        //           fields[i][9].toString().replaceFirst(" ", ""),
+        //       scoringRubric: fields[i][10].toString().replaceFirst(" ", ""),
+        //       customRubricImage: fields[i][11].toString().replaceFirst(" ", ""),
+        //       assessmentImage: fields[i][12]
+        //           .toString()
+        //           .replaceAll("'", "")
+        //           .replaceAll(" ", ""),
+
+        //       //
+
+        //       answerKey: fields[i][13].toString().replaceFirst(" ", ""),
+        //       studentResponseKey:
+        //           fields[i][14].toString().replaceFirst(" ", ""),
+        //       presentationURL: fields[i][15].toString().replaceFirst(" ", "")));
+        // }
+        // for (int i = 0; i < csvList.length; i++) {
+        //   listNew.add(StudentAssessmentInfo(
+        //       subject: csvList[i].subject.toString().replaceFirst(" ", ""),
+        //       assessmentImage: csvList[i]
+        //           .assessmentImage
+        //           .toString()
+        //           .replaceAll("'", "")
+        //           .replaceAll(" ", ""),
+        //       className: csvList[i].className.toString().replaceFirst(" ", ""),
+        //       customRubricImage:
+        //           csvList[i].customRubricImage.toString().replaceFirst(" ", ""),
+        //       grade: csvList[i].grade.toString().replaceFirst(" ", ""),
+        //       learningStandard:
+        //           csvList[i].learningStandard.toString().replaceFirst(" ", ""),
+        //       pointpossible:
+        //           csvList[i].pointPossible.toString().replaceFirst(" ", ""),
+        //       questionImgUrl: csvList[i]
+        //           .assessmentQuestionImg
+        //           .toString()
+        //           .replaceFirst(" ", ""),
+        //       scoringRubric:
+        //           csvList[i].scoringRubric.toString().replaceFirst(" ", ""),
+        //       studentGrade:
+        //           csvList[i].pointsEarned.toString().replaceFirst(" ", ""),
+        //       studentId: csvList[i].id.toString().replaceFirst(" ", ""),
+        //       studentName: csvList[i].name.toString().replaceFirst(" ", ""),
+        //       subLearningStandard: csvList[i]
+        //           .nyNextGenerationLearningStandard
+        //           .toString()
+        //           .replaceFirst(" ", ""),
+        //       answerKey: csvList[i].answerKey.toString().replaceFirst(" ", ""),
+        //       studentResponseKey: csvList[i]
+        //           .studentResponseKey
+        //           .toString()
+        //           .replaceFirst(" ", ""),
+        //       presentationURL:
+        //           csvList[i].presentationURL.toString().replaceFirst(" ", "")));
+        // }
 
         return listNew;
       }
@@ -1356,6 +1405,157 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       throw (e);
     }
   }
+
+  // // Function to map sheet data
+  // mapAssessmentSheetData({required List fields}){
+  //   try {
+  //     //Mapping values to required Model
+  //       List<StudentAssessmentInfo> listNew = [];
+  //       if (Overrides.STANDALONE_GRADED_APP == true) {
+  //         if (fields[0].length == 16) {
+  //          for (var i = 0; i < fields.length; i++) {
+  //         listNew.add(StudentAssessmentInfo(
+  //             studentId: fields[i][0].toString().replaceFirst(" ", ""),
+  //             studentName: fields[i][1].toString().replaceFirst(" ", ""),
+  //             studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
+  //             pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+  //             questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
+  //             grade: fields[i][5].toString().replaceFirst(" ", ""),
+  //             className: fields[i][6].toString().replaceFirst(" ", ""),
+  //             subject: fields[i][7].toString().replaceFirst(" ", ""),
+  //             learningStandard: fields[i][8].toString().replaceFirst(" ", ""),
+  //             subLearningStandard:
+  //                 fields[i][9].toString().replaceFirst(" ", ""),
+  //             scoringRubric: fields[i][10].toString().replaceFirst(" ", ""),
+  //             customRubricImage: fields[i][11].toString().replaceFirst(" ", ""),
+  //             assessmentImage: fields[i][12]
+  //                 .toString()
+  //                 .replaceAll("'", "")
+  //                 .replaceAll(" ", ""),
+
+  //             //
+
+  //             answerKey: fields[i][13].toString().replaceFirst(" ", ""),
+  //             studentResponseKey:
+  //                 fields[i][14].toString().replaceFirst(" ", ""),
+  //             presentationURL: fields[i][15].toString().replaceFirst(" ", "")));
+  //       }
+  //       }else if(fields[0].length == 13){
+  //          for (var i = 0; i < fields.length; i++) {
+  //         listNew.add(StudentAssessmentInfo(
+  //             studentId: fields[i][0].toString().replaceFirst(" ", ""),
+  //             studentName: fields[i][1].toString().replaceFirst(" ", ""),
+  //             studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
+  //             pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+  //             questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
+  //             grade: fields[i][5].toString().replaceFirst(" ", ""),
+  //             className: fields[i][6].toString().replaceFirst(" ", ""),
+  //             subject: fields[i][7].toString().replaceFirst(" ", ""),
+  //             learningStandard: fields[i][8].toString().replaceFirst(" ", ""),
+  //             subLearningStandard:
+  //                 fields[i][9].toString().replaceFirst(" ", ""),
+  //             scoringRubric: fields[i][10].toString().replaceFirst(" ", ""),
+  //             customRubricImage: fields[i][11].toString().replaceFirst(" ", ""),
+  //             assessmentImage: fields[i][12]
+  //                 .toString()
+  //                 .replaceAll("'", "")
+  //                 .replaceAll(" ", "")
+
+  //             //
+
+  //         ));
+  //       }
+
+  //       }
+  //       } else {
+  //          if (fields[0].length == 16) {
+  //          for (var i = 0; i < fields.length; i++) {
+  //         listNew.add(StudentAssessmentInfo(
+  //             studentId: fields[i][0].toString().replaceFirst(" ", ""),
+  //             studentName: fields[i][1].toString().replaceFirst(" ", ""),
+  //             studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
+  //             pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+  //             questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
+  //             grade: fields[i][5].toString().replaceFirst(" ", ""),
+  //             className: fields[i][6].toString().replaceFirst(" ", ""),
+  //             subject: fields[i][7].toString().replaceFirst(" ", ""),
+  //             learningStandard: fields[i][8].toString().replaceFirst(" ", ""),
+  //             subLearningStandard:
+  //                 fields[i][9].toString().replaceFirst(" ", ""),
+  //             scoringRubric: fields[i][10].toString().replaceFirst(" ", ""),
+  //             customRubricImage: fields[i][11].toString().replaceFirst(" ", ""),
+  //             assessmentImage: fields[i][12]
+  //                 .toString()
+  //                 .replaceAll("'", "")
+  //                 .replaceAll(" ", ""),
+
+  //             //
+
+  //             answerKey: fields[i][13].toString().replaceFirst(" ", ""),
+  //             studentResponseKey:
+  //                 fields[i][14].toString().replaceFirst(" ", ""),
+  //             presentationURL: fields[i][15].toString().replaceFirst(" ", "")));
+  //       }
+  //       }else if(fields[0].length == 13){
+  //          for (var i = 0; i < fields.length; i++) {
+  //         listNew.add(StudentAssessmentInfo(
+  //             studentId: fields[i][0].toString().replaceFirst(" ", ""),
+  //             studentName: fields[i][1].toString().replaceFirst(" ", ""),
+  //             studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
+  //             pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+  //             questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
+  //             grade: fields[i][5].toString().replaceFirst(" ", ""),
+  //             className: fields[i][6].toString().replaceFirst(" ", ""),
+  //             subject: fields[i][7].toString().replaceFirst(" ", ""),
+  //             learningStandard: fields[i][8].toString().replaceFirst(" ", ""),
+  //             subLearningStandard:
+  //                 fields[i][9].toString().replaceFirst(" ", ""),
+  //             scoringRubric: fields[i][10].toString().replaceFirst(" ", ""),
+  //             customRubricImage: fields[i][11].toString().replaceFirst(" ", ""),
+  //             assessmentImage: fields[i][12]
+  //                 .toString()
+  //                 .replaceAll("'", "")
+  //                 .replaceAll(" ", "")
+
+  //             //
+
+  //         ));
+  //       }
+
+  //       }else{
+  //         for (var i = 0; i < fields.length; i++) {
+  //         listNew.add(StudentAssessmentInfo(
+  //             //studentId: fields[i][0].toString().replaceFirst(" ", ""),
+  //             studentName: fields[i][0].toString().replaceFirst(" ", ""),
+  //             studentGrade: fields[i][1].toString().replaceFirst(" ", ""),
+  //             pointpossible: fields[i][2].toString().replaceFirst(" ", ""),
+  //             questionImgUrl: fields[i][3].toString().replaceFirst(" ", ""),
+  //             grade: fields[i][4].toString().replaceFirst(" ", ""),
+  //             className: fields[i][5].toString().replaceFirst(" ", ""),
+  //             subject: fields[i][6].toString().replaceFirst(" ", ""),
+  //             learningStandard: fields[i][7].toString().replaceFirst(" ", ""),
+  //             subLearningStandard:
+  //                 fields[i][8].toString().replaceFirst(" ", ""),
+  //             scoringRubric: fields[i][9].toString().replaceFirst(" ", ""),
+  //             customRubricImage: fields[i][10].toString().replaceFirst(" ", ""),
+  //             assessmentImage: fields[i][11]
+  //                 .toString()
+  //                 .replaceAll("'", "")
+  //                 .replaceAll(" ", "")
+
+  //             //
+
+  //         ));
+  //       }
+
+  //       }
+
+  //       }
+
+  //   } catch (e) {
+
+  //   }
+  // }
 
   Future<String> getFilePath(uniqueFileName) async {
     //To get the path where file will be saved.

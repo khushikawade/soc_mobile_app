@@ -33,9 +33,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class SearchPage extends StatefulWidget {
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String? language;
-  SearchPage({Key? key, required this.isbuttomsheet, required this.language})
+  SearchPage({Key? key, required this.isBottomSheet, required this.language})
       : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -254,7 +254,7 @@ class _SearchPageState extends State<SearchPage> {
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                         isOCRFeature: false,
                       )))

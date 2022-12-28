@@ -23,6 +23,9 @@ class RecentGoogleFileSearch {
   String? isCreatedAsPremium;
   @HiveField(9)
   int? hiveobjid;
+  @HiveField(10)
+  String? assessmentType;
+
   RecentGoogleFileSearch(
       {this.title,
       this.description,
@@ -33,5 +36,6 @@ class RecentGoogleFileSearch {
       this.modifiedDate,
       this.sessionId,
       this.isCreatedAsPremium,
-      this.hiveobjid});
+      this.hiveobjid,
+      this.assessmentType});
 }

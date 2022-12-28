@@ -31,7 +31,8 @@ class BottomSheetWidget extends StatefulWidget {
       this.tileOnTap,
       this.submitButton})
       : super(key: key);
-
+  // final bool? isMcqSheet;
+  // final bool? selectedAnswer;
   final ValueChanged<bool>? update;
   final bool? isImageField;
   final String? title;
@@ -208,20 +209,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                             )),
                                   ),
                                   SpacerWidget(5),
-                                  // InkWell(
-                                  //   onTap: () {
-                                  //     showActionsheet(context);
-                                  //   },
-                                  //   child: Padding(
-                                  //     padding: EdgeInsets.symmetric(
-                                  //       horizontal: 20,
-                                  //     ),
-                                  //     child: textFormField(
-                                  //         msg: "Add Name Please",
-                                  //         controller: nameController,
-                                  //         onSaved: (String value) {}),
-                                  //   ),
-                                  // ),
                                   SpacerWidget(10),
                                   InkWell(
                                     onTap: () {
@@ -262,17 +249,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                                   ),
                                                 ),
                                               ),
-
-                                        //  imageFile != null
-                                        //     ? Image.file(
-                                        //         imageFile!,
-                                        //         fit: BoxFit.fitWidth,
-                                        //       )
-                                        //     : Container(
-                                        //         child: Center(
-                                        //           child: Icon(Icons.add_a_photo),
-                                        //         ),
-                                        //       ),
                                       ),
                                     ),
                                   ),
@@ -313,6 +289,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 imgBase64: imageB64,
                                 filePath: imageFile!.path.toString(),
                                 customOrStandardRubic: "Custom"));
+                            // Globals.scoringRubric =
+                            //     '${textFieldControllerOne.text} ${textFieldController2.text}';
                             //print("calling get img url");
                             _googleBloc.add(ImageToAwsBucked(
                                 imgBase64:
@@ -400,6 +378,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
+                isMcqSheet: false,
+                selectedAnswer: '',
                 isFromHistoryAssessmentScanMore: false,
                 onlyForPicture: true,
                 isScanMore: false,

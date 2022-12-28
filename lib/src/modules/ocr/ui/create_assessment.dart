@@ -25,17 +25,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/firstLetterUpperCase.dart';
 import '../widgets/suggestion_chip.dart';
 
 class CreateAssessment extends StatefulWidget {
   CreateAssessment(
-      {Key? key, required this.classSuggestions, required this.customGrades})
+      {Key? key,
+      required this.classSuggestions,
+      required this.customGrades,
+      this.isMcqSheet,
+      required this.selectedAnswer})
       : super(key: key);
   final List<String> classSuggestions;
   final List<String> customGrades;
+  final bool? isMcqSheet;
+  final String? selectedAnswer;
   @override
   State<CreateAssessment> createState() => _CreateAssessmentState();
 }
@@ -104,7 +109,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               isSuccessState: ValueNotifier<bool>(true),
-              isbackOnSuccess: isBackFromCamera,
+              isBackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: false,
               isHomeButtonPopup: true,
@@ -159,21 +164,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                 },
                                 onSaved: (String value) {
                                   assessmentNameError.value = value;
-
-                                  //To insert the value in the middle of the text
-                                  // String beforeCursorPosition = assessmentController
-                                  //     .selection
-                                  //     .textBefore(assessmentController.text);
-
-                                  // String afterCursorPosition = assessmentController
-                                  //     .selection
-                                  //     .textAfter(assessmentController.text);
-
-                                  // String result = beforeCursorPosition +
-                                  //     value +
-                                  //     afterCursorPosition;
-
-                                  // assessmentNameError.value = result;
                                 },
                                 readOnly: isAlreadySelected.value),
 
@@ -478,7 +468,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     //   //     ? _addSectionBottomSheet()
                     //   //     : selectedGrade.value = index;
                     // },
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         widget.customGrades[index] == '+'
                             ? _addSectionBottomSheet()
@@ -591,13 +581,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     cursorColor: Theme.of(context).colorScheme.primaryVariant,
                     decoration: InputDecoration(
                       hintText: hintText,
-                      // errorText: isAssessmenttextFormField == true &&
-                      //             (controller.text.isEmpty ||
-                      //                 assessmentNameError.value.length < 2) ||
-                      //         controller.text.isEmpty
-                      //     ? ''
-                      //     : null,
-                      // errorMaxLines: 2,
                       hintStyle: Theme.of(context)
                           .textTheme
                           .headline6!
@@ -611,27 +594,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             color: Theme.of(context)
                                 .colorScheme
                                 .primaryVariant
-                                .withOpacity(0.5)
-                            //  controller.text.isEmpty ||
-                            //         assessmentNameError.value.length < 2 ||
-                            //         classError.value.isEmpty
-                            //     ? Colors.red
-                            //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-                            ),
+                                .withOpacity(0.5)),
                       ),
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context)
                                 .colorScheme
                                 .primaryVariant
-                                .withOpacity(0.5)
-                            //  assessmentNameError.value.isEmpty ||
-                            //         assessmentNameError.value.length < 2 ||
-                            //         classError.value.isEmpty
-                            //     ? Colors.red
-                            //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(
-                            //         0.5) // Theme.of(context).colorScheme.primaryVariant,
-                            ),
+                                .withOpacity(0.5)),
                       ),
                       contentPadding:
                           EdgeInsets.only(top: 10, bottom: 10, left: 3.0),
@@ -782,6 +752,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
                 isFromHistoryAssessmentScanMore: false,
                 onlyForPicture: true,
                 isScanMore: false,
@@ -827,6 +799,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
         context,
         MaterialPageRoute(
             builder: (context) => SubjectSelection(
+                  isMcqSheet: widget.isMcqSheet,
+                  selectedAnswer: widget.selectedAnswer,
                   stateName: selectedState,
                   questionimageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
@@ -837,6 +811,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
         context,
         MaterialPageRoute(
             builder: (context) => StateSelectionPage(
+                  isMcqSheet: widget.isMcqSheet,
+                  selectedAnswer: widget.selectedAnswer,
                   isFromCreateAssesmentScreen: true,
                   questionimageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],

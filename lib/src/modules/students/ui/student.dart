@@ -126,7 +126,6 @@ class _StudentPageState extends State<StudentPage> {
         }
       }
       //lock screen orientation
-
     } else {
       Utility.showSnackBar(_scaffoldKey, "No URL available", context, null);
     }
@@ -236,38 +235,7 @@ class _StudentPageState extends State<StudentPage> {
                                                           ? 16
                                                           : 24),
                                         ),
-                                      )
-
-                                        // child: Marquee(
-                                        //   text: translatedMessage.toString(),
-                                        //   style: Theme.of(context)
-                                        //       .textTheme
-                                        //       .bodyText1!
-                                        //       .copyWith(
-                                        //           fontSize: Globals.deviceType ==
-                                        //                   "phone"
-                                        //               ? 16
-                                        //               : 24),
-                                        //   scrollAxis: Axis.horizontal,
-                                        //   velocity: 30.0,
-                                        //   crossAxisAlignment:
-                                        //       CrossAxisAlignment.start,
-                                        //   blankSpace: 50,
-                                        //   //MediaQuery.of(context).size.width
-                                        //   // velocity: 100.0,
-                                        //   pauseAfterRound: Duration(seconds: 5),
-                                        //   showFadingOnlyWhenScrolling: true,
-                                        //   startPadding: 10.0,
-                                        //   accelerationDuration:
-                                        //       Duration(seconds: 1),
-                                        //   accelerationCurve: Curves.linear,
-                                        //   decelerationDuration:
-                                        //       Duration(milliseconds: 500),
-                                        //   decelerationCurve: Curves.bounceIn,
-                                        //   numberOfRounds: 1,
-                                        //   startAfter: Duration.zero,
-                                        // ),
-                                        )
+                                      ))
                                     : MediaQuery.of(context).orientation ==
                                                 Orientation.landscape &&
                                             translatedMessage
@@ -289,40 +257,7 @@ class _StudentPageState extends State<StudentPage> {
                                                               ? 16
                                                               : 24),
                                             ),
-                                          )
-
-                                            //    Marquee(
-                                            //   text: translatedMessage.toString(),
-                                            //   style: Theme.of(context)
-                                            //       .textTheme
-                                            //       .bodyText1!
-                                            //       .copyWith(
-                                            //           fontSize:
-                                            //               Globals.deviceType ==
-                                            //                       "phone"
-                                            //                   ? 16
-                                            //                   : 24),
-                                            //   scrollAxis: Axis.horizontal,
-                                            //   velocity: 30.0,
-                                            //   crossAxisAlignment:
-                                            //       CrossAxisAlignment.start,
-
-                                            //   blankSpace:
-                                            //       50, //MediaQuery.of(context).size.width
-                                            //   // velocity: 100.0,
-                                            //   pauseAfterRound: Duration(seconds: 5),
-                                            //   showFadingOnlyWhenScrolling: true,
-                                            //   startPadding: 10.0,
-                                            //   accelerationDuration:
-                                            //       Duration(seconds: 1),
-                                            //   accelerationCurve: Curves.linear,
-                                            //   decelerationDuration:
-                                            //       Duration(milliseconds: 500),
-                                            //   decelerationCurve: Curves.easeOut,
-                                            //   numberOfRounds: 1,
-                                            // )
-
-                                            )
+                                          ))
                                         : SingleChildScrollView(
                                             scrollDirection: Axis.horizontal,
                                             child: Text(
@@ -354,7 +289,6 @@ class _StudentPageState extends State<StudentPage> {
             ),
     );
   }
-  //sfjhjjsfdjkfjdjsdjdjjhksfdssfjkdjdjkjsdsjkdkdjsdjkjkjsdjhkjsdjkjsdjkjfjhfdhjhfjnbfjnnnmnccnmbxzfjksldaqpwoieruyt;adjkjhkhdfghvbsd
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
@@ -523,7 +457,6 @@ class _StudentPageState extends State<StudentPage> {
       return _studentProfile;
       // _calenderBloc.add(CalenderPageEvent(email: _studentProfile.userEmail!));
       // loggedIn = true;
-
     }
     return UserInformation(userName: null);
   }

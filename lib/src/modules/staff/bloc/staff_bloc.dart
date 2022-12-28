@@ -37,7 +37,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           yield StaffLoading();
         } else {
           getCalendarId(_localData);
-          yield StaffDataSucess(obj: _localData);
+          yield StaffDataSuccess(obj: _localData);
         }
 
         List<SharedList> list = await getStaffDetails();
@@ -51,7 +51,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield StaffLoading();
-        yield StaffDataSucess(
+        yield StaffDataSuccess(
           obj: list,
         );
       } catch (e) {
@@ -65,7 +65,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         _localDb.close();
         getCalendarId(_localData);
         yield StaffLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield StaffDataSucess(obj: _localData);
+        yield StaffDataSuccess(obj: _localData);
       }
     }
 

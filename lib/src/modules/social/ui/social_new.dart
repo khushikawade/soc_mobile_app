@@ -109,10 +109,8 @@ class _SocialNewPageState extends State<SocialNewPage> {
                   obj.title!["__cdata"].length > 1
               ? "${obj.title!["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
               : '',
-          actionIcon: Container(
-              // padding: EdgeInsets.only(
-              //     top: MediaQuery.of(context).size.height * 0.030),
-              child: actionButton(mainObj, obj, index, reLoad)),
+          actionIcon:
+              Container(child: actionButton(mainObj, obj, index, reLoad)),
           url: (obj.enclosure != null &&
                   obj.enclosure != '' &&
                   obj.enclosure['url'] != null &&
@@ -121,9 +119,6 @@ class _SocialNewPageState extends State<SocialNewPage> {
               : (imageLink != null && imageLink != "")
                   ? imageLink
                   : '',
-          // Globals.splashImageUrl ??
-          //     // Globals.homeObject["App_Logo__c"],
-          //     Globals.appSetting.appLogoC,
           titleIcon: widgetIcon(obj.link),
         ),
         //
@@ -132,9 +127,6 @@ class _SocialNewPageState extends State<SocialNewPage> {
   }
 
   Widget actionButton(List<Item> list, obj, int index, bool reLoad) {
-    // print('ACTION BUTTON ON SOCAIL SCTION ------------------>');
-    // print(list[index].likeCount);
-    // print(obj.likeCount);
     // ignore: unnecessary_null_comparison
     return reLoad == false
         ? ActionInteractionButtonWidget(

@@ -19,11 +19,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StateSelectionPage extends StatefulWidget {
+  final bool? isMcqSheet;
+  final String? selectedAnswer;
   final bool? isFromCreateAssesmentScreen;
   final String questionimageUrl;
   final String selectedClass;
   const StateSelectionPage(
       {Key? key,
+      this.isMcqSheet,
+      this.selectedAnswer,
       required this.questionimageUrl,
       required this.selectedClass,
       this.isFromCreateAssesmentScreen})
@@ -77,7 +81,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
                 isSuccessState: ValueNotifier<bool>(true),
-                isbackOnSuccess: isBackFromCamera,
+                isBackOnSuccess: isBackFromCamera,
                 isBackButton: true,
                 key: null,
                 isHomeButtonPopup: true,
@@ -148,6 +152,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SubjectSelection(
+                                       isMcqSheet:widget.isMcqSheet ,selectedAnswer: widget.selectedAnswer ,
                                           // isCommonCore: selectedIndex.value == 0
                                           //     ? true
                                           //     : false,
@@ -255,6 +260,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => SubjectSelection(
+                               isMcqSheet:widget.isMcqSheet ,selectedAnswer: widget.selectedAnswer ,
                                   stateName: list[index],
                                   // isCommonCore: selectedIndex.value == 0
                                   //     ? true

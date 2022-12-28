@@ -5,6 +5,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -687,8 +688,8 @@ class Utility {
                     '?' +
                     themeColor.toString().split('0xff')[1].split(')')[0])
                 : Overrides.STANDALONE_GRADED_APP
-                    ? Overrides.googleClassroomAuthURL!
-                    : Overrides.googleDriveAuthURL!,
+                    ? OcrOverrides.googleClassroomAuthURL!
+                    : OcrOverrides.googleDriveAuthURL!,
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
@@ -897,6 +898,12 @@ class Utility {
     //   }
     //   return true;
     // }
+  }
+
+  static Future clearStudentInfo({required String tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    await _studentInfoDb.clear();
   }
 
   static Future<List<StudentAssessmentInfo>> getStudentInfoList(

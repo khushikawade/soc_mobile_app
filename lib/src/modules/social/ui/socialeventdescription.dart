@@ -150,26 +150,6 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildBottomSection(BuildContext context) {
-    // String data = object.description["__cdata"].toString()
-    // .contains("\\n")
-    //     ? object.description["__cdata"]
-    //         .toString()
-    //         .split("<div>")[2]
-    //         .split("\\n")[0]
-    //     : "";
-    // String data2 = object.description["__cdata"].toString().contains("\\n#")
-    //     ? object.description["__cdata"]
-    //         .toString()
-    //         .split("\\n#")[1]
-    //         .split("</div>")[0]
-    //     : "";
-    // String _socialDescription = object.description["__cdata"]
-    //     .toString()
-    //     .replaceAll(new RegExp(r'[\\]+'), '\n')
-    //     .replaceAll("n.", ".")
-    //     .replaceAll("\nn", "\n")
-    //     .replaceAll("n ", "");
-
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
@@ -201,12 +181,6 @@ class SocialDescription extends StatelessWidget {
                                 object.description["__cdata"])
                             : Globals.splashImageUrl ??
                                 Globals.appSetting.appLogoC,
-
-                    // object.enclosure['url'] ??
-                    //     Utility.getHTMLImgSrc(object.description["__cdata"]) ??
-                    //     Globals.splashImageUrl ??
-                    //     // Globals.homeObject["App_Logo__c"],
-                    //     Globals.appSetting.appLogoC,
                     fitMethod: BoxFit.contain,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100)))
@@ -234,11 +208,6 @@ class SocialDescription extends StatelessWidget {
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
             },
-            // customRender: {
-            //   "img": (RenderContext context, Widget child) {
-            //     return Container();
-            //   },
-            // },
             data: translatedMessage.toString(),
             style: {
               "body": Style(
@@ -319,7 +288,6 @@ class SocialDescription extends StatelessWidget {
   _buildActionCount(BuildContext context) {
     return ActionInteractionButtonWidget(
       page: "social",
-
       obj: object,
       title: object.title != "" && object.title != null
           ? object.title['__cdata']
@@ -327,7 +295,6 @@ class SocialDescription extends StatelessWidget {
       description: object.title != "" && object.title != null
           ? object.title['__cdata']
           : "",
-
       imageUrl: object.enclosure != "" &&
               object.enclosure != null &&
               object.enclosure['url'] != "" &&
@@ -340,11 +307,6 @@ class SocialDescription extends StatelessWidget {
               object.enclosure['type'] != null
           ? object.enclosure['type']
           : "",
-      // icons: icons,
-      // iconsName: iconsName,
-      // onChange: (Item obj) {
-      //   onChange!(obj);
-      // },
     );
   }
 
@@ -376,7 +338,6 @@ class SocialDescription extends StatelessWidget {
 // iconWidget(
 
 // FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
-
     } else if (link["\$t"].contains('twitter')) {
       return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2), context);
     } else if (link["\$t"].contains('facebook')) {
