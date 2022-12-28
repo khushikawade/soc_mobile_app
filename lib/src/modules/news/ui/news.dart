@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -16,6 +18,8 @@ import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -42,16 +46,17 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   bool? isCountLoading = true;
   bool? isActionAPICalled = false;
   bool? result;
-  final ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
+    _scrollController = ScrollController()..addListener(_scrollListener);
     FirebaseAnalyticsService.addCustomAnalyticsEvent("news");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'news', screenClass: 'NewsPage');
     super.initState();
     bloc.add(FetchNotificationList());
-    _countBloc.add(FetchActionCountList(isDetailPage: false));
+    // _countBloc.add(FetchActionCountList(isDetailPage: false));
     hideIndicator();
     WidgetsBinding.instance.addObserver(this);
     Globals.isNewTap = false;
@@ -59,6 +64,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _scrollController.removeListener(_scrollListener);
     // setState(() {
     //   _notification = state;
     // });
@@ -82,7 +88,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         Globals.indicator.value = true;
       });
       await Future.delayed(Duration(milliseconds: 1500));
-      bloc.add(FetchNotificationList());
+      // bloc.add(FetchNotificationList());
+      Utility.scrollToTop(scrollController: _scrollController);
+      refreshPage();
       isActionAPICalled = false;
     });
   }
@@ -95,6 +103,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  List<NotificationList> notification_list = [];
   Widget _buildListItems(
       List<NotificationList> list, NotificationList obj, int index) {
     return Container(
@@ -127,7 +136,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
             //lock screen orientation
             //   Utility.setLocked();
             if (result == true) {
-              _countBloc.add(FetchActionCountList(isDetailPage: true));
+              _countBloc.add(FetchActionCountList(
+                isDetailPage: true,
+              ));
               // setState(() {});
             }
           }
@@ -235,16 +246,36 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildList(List<NotificationList> obj) {
+  Widget _buildList(List<NotificationList> _list, bool isLoading) {
     return Expanded(
       child: ListView.builder(
         controller: _scrollController,
         shrinkWrap: true,
         padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
         scrollDirection: Axis.vertical,
-        itemCount: obj.length,
+        itemCount: _list.length + 1,
         itemBuilder: (BuildContext context, int index) {
-          return _buildListItems(obj, obj[index], index);
+          return index == _list.length
+              ? isLoading == true
+                  ? Container(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Center(
+                        child: Platform.isIOS
+                            ? CupertinoActivityIndicator(
+                                color: AppTheme.kButtonbackColor,
+                              )
+                            : Container(
+                                margin: EdgeInsets.only(bottom: 15),
+                                height: 25,
+                                width: 25,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                      ))
+                  : allCaughtUp()
+              : _buildListItems(_list, _list[index], index);
         },
       ),
     );
@@ -276,7 +307,9 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 if (iserrorstate == true) {
                   bloc.add(FetchNotificationList());
                   isActionAPICalled = false;
-                  _countBloc.add(FetchActionCountList(isDetailPage: false));
+                  _countBloc.add(FetchActionCountList(
+                    isDetailPage: false,
+                  ));
                   iserrorstate = false;
                 }
               } else if (!connected) {
@@ -296,11 +329,12 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     bloc: bloc,
                     listener: (context, state) async {
                       if (state is NewsLoaded) {
-                        _countBloc
-                            .add(FetchActionCountList(isDetailPage: false));
+                        notification_list = state.obj!;
+                        _countBloc.add(FetchActionCountList(
+                            isDetailPage: state.isFromUpdatedNewsList));
                         if (isActionAPICalled == false) {
-                          _countBloc
-                              .add(FetchActionCountList(isDetailPage: false));
+                          _countBloc.add(FetchActionCountList(
+                              isDetailPage: state.isFromUpdatedNewsList));
                           isActionAPICalled = true;
                         }
 
@@ -342,7 +376,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           Globals.notificationList.clear();
                           Globals.notificationList.addAll(state.obj!);
                           return state.obj != null && state.obj!.length > 0
-                              ? _buildList(state.obj!)
+                              ? _buildList(state.obj!, state.isloading)
                               : Expanded(
                                   child: NoDataFoundErrorWidget(
                                     isResultNotFoundMsg: false,
@@ -381,5 +415,116 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     bloc.add(FetchNotificationList());
     isActionAPICalled = false;
     _homeBloc.add(FetchStandardNavigationBar());
+  }
+
+  _scrollListener() {
+    if (_scrollController.position.atEdge) {
+      bloc.add(UpdateNotificationList(list: notification_list));
+    }
+  }
+
+  Widget allCaughtUp() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          Row(children: [
+            Expanded(
+              child: Container(
+                  margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Colors.white
+                        : Colors.black,
+                    height: 40,
+                  )),
+            ),
+            Container(
+              width: 50,
+              height: 50,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Container(
+                  child: ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return RadialGradient(
+                        center: Alignment.topLeft,
+                        radius: 0.5,
+                        colors: <Color>[
+                          AppTheme.kButtonColor,
+                          AppTheme.kSelectedColor,
+                        ],
+                        tileMode: TileMode.repeated,
+                      ).createShader(bounds);
+                    },
+                    child: Icon(Icons.done, color: AppTheme.kButtonColor),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Color(0xff111C20)
+                        : Color(0xffF7F8F9),
+
+                    // Theme.of(context).colorScheme.background ==
+                    //     Color(0xff000000)
+                    // ? Color(0xffF7F8F9)
+                    // : Color(0xff162429),
+                    // border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                ),
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [
+                  Theme.of(context).primaryColor,
+                  AppTheme.kSelectedColor,
+                ]),
+                borderRadius: BorderRadius.circular(32),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                  margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.background ==
+                            Color(0xff000000)
+                        ? Colors.white
+                        : Colors.black,
+                    height: 40,
+                  )),
+            ),
+          ]),
+          Container(
+            padding: EdgeInsets.only(top: 15),
+            // height: 80,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Utility.textWidget(
+                    context: context,
+                    text:
+                        'All Notification Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                    textAlign: TextAlign.center,
+                    textTheme: Theme.of(context).textTheme.headline1!.copyWith(
+                        color: Theme.of(context).colorScheme.background ==
+                                Color(0xff000000)
+                            ? Colors.white
+                            : Colors.black, //AppTheme.kButtonColor,
+                        fontWeight: FontWeight.bold)),
+                SpacerWidget(10),
+                Utility.textWidget(
+                    context: context,
+                    text: 'You\'ve fetched all the available News notification',
+                    textAlign: TextAlign.center,
+                    textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          color: Colors.grey, //AppTheme.kButtonColor,
+                        )),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
