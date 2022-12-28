@@ -124,18 +124,20 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Syncing to local database
-        if (listActioncount.length != 0) {
-          await _localDb.clear();
-          newList.forEach((Item e) {
-            _localDb.addData(e);
-          });
-        }
+        // if (listActioncount.length != 0) {
+        await _localDb.clear();
+        newList.forEach((Item e) {
+          _localDb.addData(e);
+        });
+        // }
 
         // Syncing end.
         yield Loading(); //To mimic the state
 
-        yield SocialDataSucess(
-          obj: listActioncount.length == 0 ? _localData : newList,
+        yield SocialDataSuccess(
+          obj:
+              // listActioncount.length == 0 ? _localData :
+              newList,
         );
       } catch (e) {
         //print("inside catch");
@@ -143,7 +145,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         String? _objectName = "${Strings.socialObjectName}";
         LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
         List<Item> _localData = await _localDb.getData();
-        yield SocialDataSucess(
+        yield SocialDataSuccess(
           obj: _localData,
         );
         // yield SocialError(err: e);
@@ -166,7 +168,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           }
         }
 
-        var data = await addSocailAction({
+        var data = await addSocialAction({
           "Notification_Id__c": event.id! + Overrides.SCHOOL_ID,
           "Title__c": "${event.title}",
           "Like__c": "${event.like}",
@@ -240,6 +242,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         return data1
             .map<ActionCountList>((i) => ActionCountList.fromJson(i))
             .toList();
+        //return [];
       } else {
         if (_totalRetry < 3) {
           // print('retrrrrrrrrrrrrrrrrrry');
@@ -256,7 +259,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
     }
   }
 
-  Future addSocailAction(body) async {
+  Future addSocialAction(body) async {
     try {
       final ResponseModel response = await _dbServices.postapimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
