@@ -149,7 +149,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(

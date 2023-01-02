@@ -153,14 +153,6 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   linkStyle: TextStyle(color: Colors.blue),
                   style: Theme.of(context).textTheme.headline2!,
                   text: translatedMessage.toString());
-
-              // Text(
-              //   translatedMessage.toString(),
-              //   style: Theme.of(context)
-              //       .textTheme
-              //       .headline2!
-              //       .copyWith(fontSize: 16),
-              // );
             },
           );
   }

@@ -32,13 +32,16 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       questionImgUrl: fields[12] as String?,
       isSavedOnDashBoard: fields[13] as bool?,
       assessmentImgPath: fields[14] as String?,
+      answerKey: fields[15] as String?,
+      presentationURL: fields[17] as String?,
+      studentResponseKey: fields[16] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentAssessmentInfo obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.studentName)
       ..writeByte(1)
@@ -68,7 +71,13 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       ..writeByte(13)
       ..write(obj.isSavedOnDashBoard)
       ..writeByte(14)
-      ..write(obj.assessmentImgPath);
+      ..write(obj.assessmentImgPath)
+      ..writeByte(15)
+      ..write(obj.answerKey)
+      ..writeByte(16)
+      ..write(obj.studentResponseKey)
+      ..writeByte(17)
+      ..write(obj.presentationURL);
   }
 
   @override

@@ -22,6 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchScreenPage extends StatefulWidget {
+  final bool? isMcqSheet;
+  final String? selectedAnswer;
   final String? selectedKeyword;
   final String? grade;
   final String? questionImage;
@@ -31,6 +33,8 @@ class SearchScreenPage extends StatefulWidget {
 
   SearchScreenPage(
       {Key? key,
+      this.isMcqSheet,
+      this.selectedAnswer,
       required this.selectedKeyword,
       required this.grade,
       required this.selectedSubject,
@@ -107,7 +111,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
             },
             isSuccessState: ValueNotifier<bool>(true),
             isBackButton: true,
-            isbackOnSuccess: isBackFromCamera,
+            isBackOnSuccess: isBackFromCamera,
             key: _scaffoldKey,
           ),
           body: Container(
@@ -345,6 +349,10 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   SubjectSelection(
+                                                    isMcqSheet:
+                                                        widget.isMcqSheet,
+                                                    selectedAnswer:
+                                                        widget.selectedAnswer,
                                                     subjectId: widget.subjectId,
                                                     questionimageUrl:
                                                         widget.questionImage ??
@@ -539,7 +547,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           subLearningStandard == null || learningStandard == ''
                               ? "NA"
                               : subLearningStandard;
-                      element.scoringRubric = Globals.scoringRubric;
+                      element.scoringRubric = widget.isMcqSheet == true ? '0-1':Globals.scoringRubric;
                       element.customRubricImage = rubricImgUrl ?? "NA";
                       element.grade = widget.grade;
                       element.className = Globals.assessmentName!.split("_")[1];
@@ -550,6 +558,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       await _studentInfoDb.putAt(0, element);
 
                       _googleDriveBloc.add(UpdateDocOnDrive(
+                        isMcqSheet: widget.isMcqSheet,
                           questionImage: widget.questionImage == ''
                               ? 'NA'
                               : widget.questionImage ?? 'NA',
@@ -574,6 +583,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               if (state is GoogleSuccess) {
                                 Globals.currentAssessmentId = '';
                                 _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
+                                  isMcqSheet: widget.isMcqSheet ?? false,
                                     assessmentQueImage:
                                         widget.questionImage ?? 'NA',
                                     assessmentName: Globals.assessmentName ??
@@ -606,6 +616,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
 
                                   _googleDriveBloc.add(
                                     UpdateDocOnDrive(
+                                      isMcqSheet: widget.isMcqSheet,
                                       questionImage: widget.questionImage == ''
                                           ? 'NA'
                                           : widget.questionImage ?? 'NA',
@@ -646,6 +657,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ResultsSummary(
+                                            isMcqSheet: widget.isMcqSheet,
+                                            selectedAnswer:
+                                                widget.selectedAnswer,
                                             fileId: Globals.googleExcelSheetId,
                                             // subjectId:  ?? '',
                                             standardId: standardId ?? '',

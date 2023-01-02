@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
@@ -7,7 +9,6 @@ import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/translator/translator_api.dart';
@@ -212,10 +213,6 @@ class _ActionInteractionButtonWidgetState
                       await _shareNews();
                     } else if (index == 4) {
                       supportPopupModal();
-                      // popupModal(
-                      //     message:
-                      //         'You are about to Signout from the google account. This may restricts you to use the app without google SignIn. \n\nContinue Signout?',
-                      //     title: 'Signout');
                     }
                     return countIncrement(index, scaffoldKey);
                   } else {
@@ -353,19 +350,6 @@ class _ActionInteractionButtonWidgetState
                 : index == 3
                     ? widget.obj.shareCount = share.value
                     : widget.obj.supportCount = support.value;
-
-    // Item obj = Item();
-    // index == 0
-    //     ? obj.likeCount = widget.obj.likeCount
-    //     : index == 1
-    //         ? obj.thanksCount = widget.obj.thanksCount
-    //         : index == 2
-    //             ? obj.helpfulCount = widget.obj.helpfulCount
-    //             : obj.shareCount = widget.obj.shareCount;
-
-    // print(obj.likeCount);
-    // obj.likeCount = widget.obj.likeCount;
-    // print(obj.likeCount);
 
     if (widget.page == "news") {
       _newsBloc.add(NewsAction(
@@ -563,20 +547,6 @@ class _ActionInteractionButtonWidgetState
     }
   }
 
-  // popupModal({required String message, required String? title}) {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) =>
-  //           OrientationBuilder(builder: (context, orientation) {
-  //             return CommonPopupWidget(
-  //                 isLogout: false,
-  //                 orientation: orientation,
-  //                 context: context,
-  //                 message: message,
-  //                 title: title!);
-  //           }));
-  // }
-
   supportPopupModal() async {
     await Future.delayed(Duration(milliseconds: 500));
     showDialog(
@@ -637,92 +607,8 @@ class _ActionInteractionButtonWidgetState
               Utility.currentScreenSnackBar("Contact is not available", null);
             }
           }),
-
-// ==========================================================
-
-      // popUpbutton(
-      //     'Email', Theme.of(context).scaffoldBackgroundColor, Icons.email,
-      //     onPressed: () {
-      //   RegExp regex = new RegExp(pattern);
-      //   if (email != null && (regex.hasMatch(email))) {
-      //     Utility.launchUrlOnExternalBrowser("mailto:" + email);
-      //   } else {
-      //     Utility.currentScreenSnackBar("Email is not available", null);
-      //   }
-      // }),
-      // popUpbutton('Call', Theme.of(context).scaffoldBackgroundColor, Icons.call,
-      //     onPressed: () {
-      //   if (contactNumber != null && contactNumber.isNotEmpty) {
-      //     Utility.launchUrlOnExternalBrowser("tel:" + contactNumber);
-      //   } else {
-      //     Utility.currentScreenSnackBar("Contact is not available", null);
-      //   }
-      // })
     ];
   }
-
-  // Widget popUpbutton(text, color, iconData, {required onPressed}) {
-  //   return Row(
-  //     children: [
-  //       textButtonWidget(title: 'Yes', onPressed: () async {},),
-  //       Container(
-  //         height: 40,
-  //         width: 1,
-  //         color: Colors.grey.withOpacity(0.2),
-  //       ),
-  //       textButtonWidget(title: 'Yes', onPressed: () async {},),
-  //       Container(
-  //         height: 40,
-  //         width: 1,
-  //         color: Colors.grey.withOpacity(0.2),
-  //       )
-  //     ],
-  // );
-// ===================================================
-  // Expanded(
-  //   child: Padding(
-  //     padding: EdgeInsets.all(10.0),
-  //     child: ElevatedButton(
-  //       onPressed: onPressed,
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Icon(
-  //             iconData,
-  //             // size: size,
-  //             color: Theme.of(context).colorScheme.background ==
-  //                     Color(0xff000000)
-  //                 ? Colors.white
-  //                 : Colors.black,
-  //           ),
-  //           SizedBox(
-  //             width: 10,
-  //           ),
-  //           TranslationWidget(
-  //               message: text ?? '',
-  //               fromLanguage: "en",
-  //               toLanguage: Globals.selectedLanguage,
-  //               builder: (translatedMessage) {
-  //                 return Text(translatedMessage.toString(),
-  //                     style: Theme.of(context)
-  //                         .textTheme
-  //                         .headline2!
-  //                         .copyWith(fontWeight: FontWeight.bold));
-  //               }),
-  //         ],
-  //       ),
-  //       style: ElevatedButton.styleFrom(
-  //         primary: color ?? Colors.transparent,
-  //         shape: RoundedRectangleBorder(
-  //           side: BorderSide(
-  //               width: 0.10, color: Theme.of(context).colorScheme.background),
-  //           borderRadius: BorderRadius.circular(40.0),
-  //         ),
-  //       ),
-  //     ),
-  //   ),
-  // );
-  // }
 
   Widget textButtonWidget(
       {required String title,
@@ -750,48 +636,6 @@ class _ActionInteractionButtonWidgetState
         ],
       ),
       onPressed: onPressed,
-
-      //  () async {
-      //   if (widget.isAccessDenied == true) {
-      //     //To pop 2 times to navigate back to the home screen in case of camera access denied
-      //     int count = 0;
-      //     Navigator.of(context).popUntil((_) {
-      //       if (Platform.isAndroid) {
-      //         return count++ >= 3;
-      //       } else {
-      //         return count++ >= 2;
-      //       }
-      //     });
-
-      //     //To open the app setting for permission access
-      //     OpenAppsSettings.openAppsSettings(
-      //         settingsCode: SettingsCode.APP_SETTINGS);
-      //   } else if (widget.isLogout == true) {
-      //
-      //   } else {
-      //     //Globals.iscameraPopup = false;
-      //     Navigator.pop(context, false);
-      //   }
-      // },
     );
   }
-  // Widget buildTitle(title) {
-  //   return Row(
-  //     children: [
-  //       TranslationWidget(
-  //           message: title,
-  //           fromLanguage: "en",
-  //           toLanguage: Globals.selectedLanguage,
-  //           builder: (translatedMessage) {
-  //             return Text(translatedMessage.toString(),
-  //                 textAlign: TextAlign.center,
-  //                 style: Theme.of(context).textTheme.headline1!.copyWith());
-  //           }),
-  //       Icon(
-  //         Icons.clear,
-  //         size: Globals.deviceType == "phone" ? 28 : 36,
-  //       ),
-  //     ],
-  //   );
-  // }
 }

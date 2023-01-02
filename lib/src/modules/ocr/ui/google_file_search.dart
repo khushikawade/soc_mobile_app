@@ -1,6 +1,8 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
+import 'package:Soc/src/modules/ocr/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -22,7 +24,11 @@ import '../../google_drive/model/recent_google_file.dart';
 
 class GoogleFileSearchPage extends StatefulWidget {
   final ScrollController? scrollController;
-  GoogleFileSearchPage({Key? key, required this.scrollController})
+  final String selectedFilterValue;
+  GoogleFileSearchPage(
+      {Key? key,
+      required this.scrollController,
+      required this.selectedFilterValue})
       : super(key: key);
   @override
   _GoogleFileSearchPageState createState() => _GoogleFileSearchPageState();
@@ -46,6 +52,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   String? searchId;
   dynamic recordObject;
   ValueNotifier<bool> updateTheUi = ValueNotifier<bool>(false);
+  final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
 
   onItemChanged(String? searchKey) {
     // issuggestionList = true;
@@ -74,6 +81,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     _setLocked();
     Globals.callsnackbar = true;
     getListLength();
+    selectedValue.value = widget.selectedFilterValue;
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_file_search_page");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'google_file_search_page',
@@ -187,47 +195,54 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   }
 
   Widget _buildRecentItemList() {
-    return FutureBuilder(
-        future: HiveDbServices().getListData(Strings.googleRecentSearch),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          // if (snapshot.connectionState == ConnectionState.done) {
-          return snapshot.data != null && snapshot.data.length > 0
-              ? Expanded(
-                  child: ListView.builder(
-                    controller: widget.scrollController,
-                    padding: EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
-                    scrollDirection: Axis.vertical,
-                    itemCount:
-                        snapshot.data.length < 10 ? snapshot.data.length : 10,
-                    itemBuilder: (BuildContext context, int index) {
-                      List reverseList = List.from(snapshot.data.reversed);
-                      // return _buildRecentItem(index, snapshot.data);
-                      return _buildRecentItem(index, reverseList);
-                    },
-                  ),
-                )
-              : Expanded(
-                  child: NoDataFoundErrorWidget(
-                    isSearchpage: true,
-                    isResultNotFoundMsg: false,
-                    marginTop: MediaQuery.of(context).size.height * 0.15,
-                    isNews: false,
-                    isEvents: false,
-                  ),
-                );
-          //EmptyContainer();
-          // } else if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return Expanded(
-          //     child: Container(
-          //       height: MediaQuery.of(context).size.height * 0.7,
-          //       child: Center(
-          //           child: CircularProgressIndicator(
-          //         color: Theme.of(context).colorScheme.primaryVariant,
-          //       )),
-          //     ),
-          //   );
-          // } else
-          //   return Scaffold();
+    return ValueListenableBuilder(
+        valueListenable: selectedValue,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return FutureBuilder(
+              future: HiveDbServices().getListData(Strings.googleRecentSearch),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container();
+                }
+                // if (snapshot.connectionState == ConnectionState.done) {
+                List reverseList = List.from(snapshot.data.reversed);
+                List list = [];
+                list.addAll(reverseList);
+
+                if (selectedValue.value == 'Multiple Choice') {
+                  list.removeWhere((element) =>
+                      element.assessmentType != selectedValue.value ||
+                      element.assessmentType == null);
+                } else if (selectedValue.value == 'Constructed Response') {
+                  list.removeWhere((element) =>
+                      element.assessmentType != selectedValue.value &&
+                      element.assessmentType != null);
+                }
+                return list != null && list.length > 0
+                    ? Expanded(
+                        child: ListView.builder(
+                          controller: widget.scrollController,
+                          padding:
+                              EdgeInsets.only(bottom: _kLabelSpacing * 1.5),
+                          scrollDirection: Axis.vertical,
+                          itemCount: list.length < 10 ? list.length : 10,
+                          itemBuilder: (BuildContext context, int index) {
+                            // return _buildRecentItem(index, snapshot.data);
+                            return _buildRecentItem(index, list);
+                          },
+                        ),
+                      )
+                    : Expanded(
+                        child: NoDataFoundErrorWidget(
+                          isSearchpage: true,
+                          isResultNotFoundMsg: false,
+                          marginTop: MediaQuery.of(context).size.height * 0.15,
+                          isNews: false,
+                          isEvents: false,
+                        ),
+                      );
+              });
         });
   }
 
@@ -261,6 +276,24 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
           ],
         ),
         child: ListTile(
+            leading: Container(
+              padding: EdgeInsets.only(top: 8),
+              //color: Colors.amber,
+              child: Icon(
+                  IconData(
+                      items[index].assessmentType == 'Multiple Choice'
+                          ? 0xe833
+                          : 0xe87c,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  size: Globals.deviceType == 'phone'
+                      ? (items[index].assessmentType == 'Multiple Choice'
+                          ? 30
+                          : 28)
+                      : 38,
+                  color: AppTheme.kButtonColor),
+            ),
+            minLeadingWidth: 0,
             title: TranslationWidget(
               message: (items[index].title != null && items[index].title != ''
                   ? '${items[index].title} '
@@ -300,7 +333,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                 }
               },
               child: Icon(
-                IconData(Globals.ocrResultIcons[0],
+                IconData(0xe876,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: Color(0xff000000) != Theme.of(context).backgroundColor
@@ -342,151 +375,211 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   Widget _buildissuggestionList() {
     return BlocBuilder<GoogleDriveBloc, GoogleDriveState>(
         bloc: googleBloc,
-        builder: (BuildContext contxt, GoogleDriveState state) {
+        builder: (BuildContext context, GoogleDriveState state) {
           if (state is GoogleDriveGetSuccess) {
             searchList.clear();
             searchList.addAll(state.obj);
 
             return searchList.length > 0
                 ? Expanded(
-                    child: ListView(
-                    controller: widget.scrollController,
-                    shrinkWrap: true,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    scrollDirection: Axis.vertical,
-                    padding: EdgeInsets.only(
-                        left: _kLabelSpacing / 2,
-                        right: _kLabelSpacing / 2,
-                        bottom: _kLabelSpacing * 1.5),
-                    children: searchList.map<Widget>((data) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: (searchList.indexOf(data) % 2 == 0)
-                              ? Theme.of(context).colorScheme.background ==
-                                      Color(0xff000000)
-                                  ? AppTheme.klistTilePrimaryDark
-                                  : AppTheme
-                                      .klistTilePrimaryLight //Theme.of(context).colorScheme.background
-                              : Theme.of(context).colorScheme.background ==
-                                      Color(0xff000000)
-                                  ? AppTheme.klistTileSecoandryDark
-                                  : AppTheme.klistTileSecoandryLight,
-                          borderRadius: BorderRadius.circular(4),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.2),
-                              spreadRadius: 0,
-                              blurRadius: 1,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                            title: TranslationWidget(
-                              message: data.title ?? "Unknown",
-                              toLanguage: Globals.selectedLanguage,
-                              fromLanguage: "en",
-                              builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant)),
-                            ),
-                            subtitle: Utility.textWidget(
-                                context: context,
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .subtitle2!
-                                    .copyWith(color: Colors.grey.shade500),
-                                text: data.modifiedDate != null
-                                    ? Utility.convertTimestampToDateFormat(
-                                        DateTime.parse(data.modifiedDate!),
-                                        "MM/dd/yy")
-                                    : ""),
-                            trailing: GestureDetector(
-                              onTap: () {
-                                Utility.updateLoges(
-                                    activityId: '13',
-                                    sessionId: data.sessionId != ''
-                                        ? data.sessionId
-                                        : '',
-                                    description:
-                                        'Teacher tap on Share Button on assessment summery page',
-                                    operationResult: 'Success');
+                    child: ValueListenableBuilder(
+                        valueListenable: selectedValue,
+                        child: Container(),
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          List list = [];
+                          list.addAll(searchList);
 
-                                if (data.webContentLink != null &&
-                                    data.webContentLink != '') {
-                                  Share.share(data.webContentLink!);
-                                }
-                              },
-                              child: Icon(
-                                IconData(Globals.ocrResultIcons[0],
-                                    fontFamily: Overrides.kFontFam,
-                                    fontPackage: Overrides.kFontPkg),
-                                color: Color(0xff000000) !=
-                                        Theme.of(context).backgroundColor
-                                    ? Color(0xff111C20)
-                                    : Color(0xffF7F8F9),
-                                size: Globals.deviceType == 'phone' ? 28 : 38,
-                              ),
-                            ),
-                            onTap: () async {
-                              List itemListData =
-                                  await getListData(Strings.googleRecentSearch);
+                          if (selectedValue.value == 'Multiple Choice') {
+                            list.removeWhere((element) =>
+                                element.assessmentType != selectedValue.value ||
+                                element.assessmentType == null);
+                          } else if (selectedValue.value ==
+                              'Constructed Response') {
+                            list.removeWhere((element) =>
+                                element.assessmentType != selectedValue.value &&
+                                element.assessmentType != null);
+                          }
+                          return ListView(
+                            controller: widget.scrollController,
+                            shrinkWrap: true,
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            scrollDirection: Axis.vertical,
+                            padding: EdgeInsets.only(
+                                left: _kLabelSpacing / 2,
+                                right: _kLabelSpacing / 2,
+                                bottom: _kLabelSpacing * 1.5),
+                            children: list.map<Widget>((data) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: (list.indexOf(data) % 2 == 0)
+                                      ? Theme.of(context)
+                                                  .colorScheme
+                                                  .background ==
+                                              Color(0xff000000)
+                                          ? AppTheme.klistTilePrimaryDark
+                                          : AppTheme
+                                              .klistTilePrimaryLight //Theme.of(context).colorScheme.background
+                                      : Theme.of(context)
+                                                  .colorScheme
+                                                  .background ==
+                                              Color(0xff000000)
+                                          ? AppTheme.klistTileSecoandryDark
+                                          : AppTheme.klistTileSecoandryLight,
+                                  borderRadius: BorderRadius.circular(4),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromRGBO(0, 0, 0, 0.2),
+                                      spreadRadius: 0,
+                                      blurRadius: 1,
+                                      offset: Offset(0, 1),
+                                    ),
+                                  ],
+                                ),
+                                child: ListTile(
+                                    leading: Container(
+                                      padding: EdgeInsets.only(top: 8),
+                                      //color: Colors.amber,
+                                      child: Icon(
+                                          IconData(
+                                              data.assessmentType ==
+                                                      'Multiple Choice'
+                                                  ? 0xe833
+                                                  : 0xe87c,
+                                              fontFamily: Overrides.kFontFam,
+                                              fontPackage: Overrides.kFontPkg),
+                                          size: Globals.deviceType == 'phone'
+                                              ? (data.assessmentType ==
+                                                      'Multiple Choice'
+                                                  ? 30
+                                                  : 28)
+                                              : 38,
+                                          color: AppTheme.kButtonColor),
+                                    ),
+                                    minLeadingWidth: 0,
+                                    title: TranslationWidget(
+                                      message: data.title ?? "Unknown",
+                                      toLanguage: Globals.selectedLanguage,
+                                      fromLanguage: "en",
+                                      builder: (translatedMessage) => Text(
+                                          translatedMessage.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1!
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .primaryVariant)),
+                                    ),
+                                    subtitle: Utility.textWidget(
+                                        context: context,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2!
+                                            .copyWith(
+                                                color: Colors.grey.shade500),
+                                        text: data.modifiedDate != null
+                                            ? Utility
+                                                .convertTimestampToDateFormat(
+                                                    DateTime.parse(
+                                                        data.modifiedDate!),
+                                                    "MM/dd/yy")
+                                            : ""),
+                                    trailing: GestureDetector(
+                                      onTap: () {
+                                        Utility.updateLoges(
+                                            activityId: '13',
+                                            sessionId: data.sessionId != ''
+                                                ? data.sessionId
+                                                : '',
+                                            description:
+                                                'Teacher tap on Share Button on assessment summery page',
+                                            operationResult: 'Success');
 
-                              List idList = [];
-                              if (itemListData.length > 0) {
-                                for (int i = 0; i < itemListData.length; i++) {
-                                  idList.add(itemListData[i].fileid);
-                                }
-                              }
-                              if (!idList.contains(data.fileid)) {
-                                if (data != null) {
-                                  deleteItem(Strings.googleRecentSearch);
+                                        if (data.webContentLink != null &&
+                                            data.webContentLink != '') {
+                                          Share.share(data.webContentLink!);
+                                        }
+                                      },
+                                      child: Icon(
+                                        IconData(0xe876,
+                                            fontFamily: Overrides.kFontFam,
+                                            fontPackage: Overrides.kFontPkg),
+                                        color: Color(0xff000000) !=
+                                                Theme.of(context)
+                                                    .backgroundColor
+                                            ? Color(0xff111C20)
+                                            : Color(0xffF7F8F9),
+                                        size: Globals.deviceType == 'phone'
+                                            ? 28
+                                            : 38,
+                                      ),
+                                    ),
+                                    onTap: () async {
+                                      List itemListData = await getListData(
+                                          Strings.googleRecentSearch);
 
-                                  final recentitem = RecentGoogleFileSearch(
-                                    hiveobjid: 1,
-                                    createdDate: data.createdDate,
-                                    description: data.description,
-                                    fileid: data.fileid,
-                                    isCreatedAsPremium: data.isCreatedAsPremium,
-                                    label: data.label,
-                                    modifiedDate: data.modifiedDate,
-                                    sessionId: data.sessionId,
-                                    title: data.title,
-                                    webContentLink: data.webContentLink,
-                                  );
+                                      List idList = [];
+                                      if (itemListData.length > 0) {
+                                        for (int i = 0;
+                                            i < itemListData.length;
+                                            i++) {
+                                          idList.add(itemListData[i].fileid);
+                                        }
+                                      }
+                                      if (!idList.contains(data.fileid)) {
+                                        if (data != null) {
+                                          deleteItem(
+                                              Strings.googleRecentSearch);
 
-                                  addtoDataBase(recentitem);
-                                }
-                              }
-                              // }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ResultsSummary(
-                                          createdAsPremium: data
-                                                      .isCreatedAsPremium
-                                                      .toLowerCase() ==
-                                                  'true'
-                                              ? true
-                                              : false as bool?,
-                                          obj: data,
-                                          asssessmentName: data.title!,
-                                          shareLink: data.webContentLink,
-                                          fileId: data.fileid,
-                                          assessmentDetailPage: true,
-                                        )),
+                                          final recentitem =
+                                              RecentGoogleFileSearch(
+                                                  hiveobjid: 1,
+                                                  createdDate: data.createdDate,
+                                                  description: data.description,
+                                                  fileid: data.fileid,
+                                                  isCreatedAsPremium:
+                                                      data.isCreatedAsPremium,
+                                                  label: data.label,
+                                                  modifiedDate:
+                                                      data.modifiedDate,
+                                                  sessionId: data.sessionId,
+                                                  title: data.title,
+                                                  webContentLink:
+                                                      data.webContentLink,
+                                                  assessmentType:
+                                                      data.assessmentType);
+
+                                          addtoDataBase(recentitem);
+                                        }
+                                      }
+                                      // }
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ResultsSummary(
+                                                  createdAsPremium: data
+                                                              .isCreatedAsPremium
+                                                              .toString()
+                                                              .toLowerCase() ==
+                                                          'true'
+                                                      ? true
+                                                      : false as bool?,
+                                                  obj: data,
+                                                  asssessmentName: data.title!,
+                                                  shareLink:
+                                                      data.webContentLink,
+                                                  fileId: data.fileid,
+                                                  assessmentDetailPage: true,
+                                                )),
+                                      );
+                                    }),
                               );
-                            }),
-                      );
-                    }).toList(),
-                  ))
+                            }).toList(),
+                          );
+                        }))
                 : Expanded(
                     child: NoDataFoundErrorWidget(
                       isSearchpage: true,
@@ -516,22 +609,63 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   }
 
   Widget _buildHeading(String? title, TextStyle? textstyle) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        HorzitalSpacerWidget(_kLabelSpacing / 2),
-        TranslationWidget(
-          message: title, //"Google File Search",
-          toLanguage: Globals.selectedLanguage,
-          fromLanguage: "en",
-          builder: (translatedMessage) => Text(
-            translatedMessage.toString(),
-            style: textstyle,
-            textAlign: TextAlign.left,
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // HorzitalSpacerWidget(_kLabelSpacing / 2),
+          TranslationWidget(
+            message: title, //"Google File Search",
+            toLanguage: Globals.selectedLanguage,
+            fromLanguage: "en",
+            builder: (translatedMessage) => Text(
+              translatedMessage.toString(),
+              style: textstyle,
+              textAlign: TextAlign.left,
+            ),
           ),
-        ),
-      ],
+          title == 'Google File Search'
+              ? Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          filterBottomSheet();
+                        },
+                        icon: Icon(
+                          IconData(0xe87d,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: AppTheme.kButtonColor,
+                          size: 28,
+                        )),
+                    ValueListenableBuilder(
+                        valueListenable: selectedValue,
+                        child: Container(),
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          return selectedValue.value == 'All'
+                              ? Container()
+                              : Wrap(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(top: 6, right: 6),
+                                      height: 7,
+                                      width: 7,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle),
+                                    ),
+                                  ],
+                                );
+                        })
+                  ],
+                )
+              : Container()
+        ],
+      ),
     );
   }
 
@@ -637,5 +771,24 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+  }
+
+  filterBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => FilterBottomSheet(
+              title: 'Filter Assignment',
+              selectedValue: selectedValue.value,
+              update: ({String? filterValue}) async {
+                selectedValue.value = filterValue!;
+              },
+            ));
   }
 }

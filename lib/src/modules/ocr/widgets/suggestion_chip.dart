@@ -78,12 +78,7 @@ class _ChipsFilterState extends State<ChipsFilter> {
         margin: EdgeInsets.only(left: 5),
         decoration: BoxDecoration(
           boxShadow: [
-            BoxShadow(
-                // spreadRadius: 1.0,
-                // blurRadius: 1.0,
-                // color:
-                //     isActive && active ? AppTheme.kSelectedColor : Colors.grey
-                ),
+            BoxShadow(),
           ],
           color: //Colors.transparent,
               Color(0xff000000) != Theme.of(context).backgroundColor

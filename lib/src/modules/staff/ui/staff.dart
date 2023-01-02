@@ -5,7 +5,6 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -151,7 +150,7 @@ class _StaffPageState extends State<StaffPage> {
                                           .colorScheme
                                           .primaryVariant,
                                     ));
-                                  } else if (state is StaffDataSucess) {
+                                  } else if (state is StaffDataSuccess) {
                                     return widget.customObj != null &&
                                             widget.customObj!.sectionTemplate ==
                                                 "Grid Menu"
@@ -270,6 +269,18 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
+                    await Utility.clearStudentInfo(tableName: 'student_info');
+                    await Utility.clearStudentInfo(
+                        tableName: 'history_student_info');
+
+                    // else if (selectedField == 'Multiple choice Assignment') {
+                    //   await Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => MultipleChoiceSection()),
+                    //   );
+                    // } else {
+                    //   navigateToCamera();
+                    // }
                     await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                         "assignment");
 
@@ -315,10 +326,12 @@ class _StaffPageState extends State<StaffPage> {
                           description: 'Graded+ Accessed(Login)',
                           operationResult: 'Success'));
                       //    await _getLocalDb();
+
                       pushNewScreen(
                         context,
                         screen: StartupPage(
                           isOcrSection: true, //since always opens OCR
+                          isMultipleChoice: false,
                         ),
                         withNavBar: false,
                       );

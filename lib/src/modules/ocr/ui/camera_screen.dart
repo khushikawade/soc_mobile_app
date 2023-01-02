@@ -28,6 +28,8 @@ import 'package:wakelock/wakelock.dart';
 
 class CameraScreen extends StatefulWidget {
   final String? pointPossible;
+  final String? selectedAnswer;
+  final bool? isMcqSheet;
   final bool? isScanMore;
   final onlyForPicture;
   final bool isFromHistoryAssessmentScanMore;
@@ -47,6 +49,8 @@ class CameraScreen extends StatefulWidget {
       this.scaffoldKey,
       required this.isFromHistoryAssessmentScanMore,
       this.oneTimeCamera,
+      this.isMcqSheet,
+      this.selectedAnswer,
       this.createdAsPremium,
       this.obj,
       required this.isFlashOn})
@@ -61,7 +65,7 @@ class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    //print("inside applifecycle");
+    //print("inside lifecycle");
     final CameraController? cameraController = controller!.value;
 
     // App state changed before we got the chance to initialize.
@@ -91,11 +95,7 @@ class _CameraScreenState extends State<CameraScreen>
   ));
 
   ValueNotifier<bool>? _isCameraInitialized = ValueNotifier<bool>(false);
-  // bool _isCameraInitialized = false;
-  //bool isflashOff = true;
-  // bool flash = false;
-  FlashMode? _currentFlashMode;
-  int? scanMoreAssesmentList;
+  int? scanMoreAssessmentList;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
 
@@ -137,7 +137,7 @@ class _CameraScreenState extends State<CameraScreen>
     // Hide the status bar
     // SystemChrome.ssEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     // widget.isScanMore == true
-    //     ? scanMoreAssesmentList = Globals.studentInfo!.length
+    //     ? scanMoreAssessmentList = Globals.studentInfo!.length
     //     : null;
 
     onNewCameraSelected(cameras[0]);
@@ -205,10 +205,8 @@ class _CameraScreenState extends State<CameraScreen>
                       (BuildContext context, dynamic value, Widget? child) {
                     return IconButton(
                         onPressed: () async {
-                          // setState(() {
                           widget.isFlashOn!.value = !widget.isFlashOn!.value;
-                          // isflashOff = !isflashOff;
-                          // });
+
                           try {
                             await controller!.value.setFlashMode(
                                 widget.isFlashOn!.value
@@ -251,6 +249,8 @@ class _CameraScreenState extends State<CameraScreen>
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => ResultsSummary(
+                                        isMcqSheet: widget.isMcqSheet,
+                                        selectedAnswer: widget.selectedAnswer,
                                         obj: widget.obj,
                                         createdAsPremium:
                                             widget.createdAsPremium,
@@ -273,6 +273,8 @@ class _CameraScreenState extends State<CameraScreen>
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ResultsSummary(
+                                        isMcqSheet: widget.isMcqSheet,
+                                        selectedAnswer: widget.selectedAnswer,
                                         createdAsPremium:
                                             widget.createdAsPremium,
                                         historysecondTime: widget
@@ -292,7 +294,7 @@ class _CameraScreenState extends State<CameraScreen>
                         }
                         if (state is ErrorState) {
                           if (state.errorMsg ==
-                              'Reauthentication is required') {
+                              'Re-Authentication is required') {
                             await Utility.refreshAuthenticationToken(
                                 isNavigator: true,
                                 errorMsg: state.errorMsg!,
@@ -300,6 +302,7 @@ class _CameraScreenState extends State<CameraScreen>
                                 scaffoldKey: _scaffoldKey);
 
                             _driveBloc.add(UpdateDocOnDrive(
+                                isMcqSheet: widget.isMcqSheet,
                                 questionImage: widget.questionImageLink ?? 'NA',
                                 createdAsPremium: widget.createdAsPremium,
                                 assessmentName: Globals.historyAssessmentName,
@@ -359,6 +362,7 @@ class _CameraScreenState extends State<CameraScreen>
                             if (widget.isFromHistoryAssessmentScanMore ==
                                 true) {
                               _driveBloc.add(UpdateDocOnDrive(
+                                  isMcqSheet: widget.isMcqSheet,
                                   questionImage:
                                       widget.questionImageLink ?? 'NA',
                                   createdAsPremium: widget.createdAsPremium ??
@@ -396,6 +400,7 @@ class _CameraScreenState extends State<CameraScreen>
                               await _studentInfoDb.putAt(0, element);
 
                               _driveBloc.add(UpdateDocOnDrive(
+                                  isMcqSheet: widget.isMcqSheet,
                                   questionImage:
                                       widget.questionImageLink ?? 'NA',
                                   createdAsPremium: widget.createdAsPremium,
@@ -413,6 +418,8 @@ class _CameraScreenState extends State<CameraScreen>
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => CreateAssessment(
+                                          isMcqSheet: widget.isMcqSheet,
+                                          selectedAnswer: widget.selectedAnswer,
                                           customGrades: classList,
                                           classSuggestions: suggestionList)),
                                 );
@@ -451,6 +458,8 @@ class _CameraScreenState extends State<CameraScreen>
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => CreateAssessment(
+                                          isMcqSheet: widget.isMcqSheet,
+                                          selectedAnswer: widget.selectedAnswer,
                                           customGrades: classList,
                                           classSuggestions: classSuggestions)),
                                 );
@@ -527,18 +536,13 @@ class _CameraScreenState extends State<CameraScreen>
                                       padding: EdgeInsets.all(3),
                                       child: InkWell(
                                         onTap: () async {
-                                          try {
-                                            // await controller!
-                                            //     .setFlashMode(FlashMode.off);
-                                          } catch (e) {}
+                                          try {} catch (e) {}
                                           HapticFeedback.vibrate();
                                           XFile? rawImage = await takePicture();
                                           File imageFile = File(rawImage!.path);
                                           final bytes = File(rawImage.path)
                                               .readAsBytesSync();
                                           String img64 = base64Encode(bytes);
-
-                                          //  File imageFile = File(rawImage!.path);
 
                                           int currentUnix = DateTime.now()
                                               .millisecondsSinceEpoch;
@@ -550,7 +554,6 @@ class _CameraScreenState extends State<CameraScreen>
                                           await imageFile.copy(
                                             '${directory.path}/$currentUnix.$fileFormat',
                                           );
-                                          //print(widget.pointPossible);
 
                                           if (widget.onlyForPicture) {
                                             Navigator.pop(context, imageFile);
@@ -579,6 +582,10 @@ class _CameraScreenState extends State<CameraScreen>
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       SuccessScreen(
+                                                        isMcqSheet:
+                                                            widget.isMcqSheet,
+                                                        selectedAnswer: widget
+                                                            .selectedAnswer,
                                                         questionImageUrl: widget
                                                             .questionImageLink,
                                                         obj: widget.obj,
@@ -642,26 +649,13 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Dispose the previous controller
     await previousCameraController.dispose();
-    // _currentFlashMode = controller!.value.flashMode;
+
     // Replace with the new controller
 
     if (mounted) {
-      // setState(() {
       controller!.value = cameraController;
-      // });
     }
 
-    // Update UI if controller updated
-    // cameraController.addListener(() {
-    //   if (mounted) setState(() {});
-    // });
-
-    // // Initialize controller
-    // try {
-    //   await cameraController.initialize();
-    // } on CameraException catch (e) {
-    //   //print('Error initializing camera: $e');
-    // }
     try {
       await cameraController.initialize();
       await cameraController.lockCaptureOrientation();
@@ -672,22 +666,14 @@ class _CameraScreenState extends State<CameraScreen>
             ? <Future<Object?>>[
                 cameraController
                     .getMinExposureOffset()
-                    .then((double value) => value
-                        // _minAvailableExposureOffset = value
-                        ),
+                    .then((double value) => value),
                 cameraController
                     .getMaxExposureOffset()
-                    .then((double value) => value
-                        // _maxAvailableExposureOffset = value
-                        )
+                    .then((double value) => value)
               ]
             : <Future<Object?>>[],
-        cameraController.getMaxZoomLevel().then((double value) => value
-            // _maxAvailableZoom = value
-            ),
-        cameraController.getMinZoomLevel().then((double value) => value
-            // _minAvailableZoom = value
-            ),
+        cameraController.getMaxZoomLevel().then((double value) => value),
+        cameraController.getMinZoomLevel().then((double value) => value),
       ]);
     } on CameraException catch (e) {
       switch (e.code) {
@@ -722,14 +708,12 @@ class _CameraScreenState extends State<CameraScreen>
 
     // Update the Boolean
     if (mounted) {
-      // setState(() async {
       _isCameraInitialized!.value = cameraController.value.isInitialized;
-      //controller!.value.isInitialized;
+
       try {
         await controller!.value.setFlashMode(
             widget.isFlashOn!.value ? FlashMode.always : FlashMode.off);
       } catch (e) {}
-      // });
     }
   }
 
@@ -873,7 +857,6 @@ class _CameraScreenState extends State<CameraScreen>
           LocalDatabase(Strings.googleClassroomCoursesList);
 
       List<GoogleClassroomCourses>? _localData = await _localDb.getData();
-      List<String> studentEmailList = [];
       for (var i = 0; i < _localData.length; i++) {
         classList.add(_localData[i].name!);
       }
@@ -886,7 +869,6 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   void setEnabledSystemUIMode() {
-    print('calll    setEnabledSystemUIOverlays');
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 }

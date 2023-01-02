@@ -206,7 +206,7 @@ class _CustomPagesState extends State<CustomPages> {
                 tittle: '',
                 isHomePage: true,
                 url: obj.pdfURL,
-                isbuttomsheet: true,
+                isBottomSheet: true,
                 language: Globals.selectedLanguage,
               ),
             )

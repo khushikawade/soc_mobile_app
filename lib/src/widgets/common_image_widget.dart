@@ -40,9 +40,6 @@ class CommonImageWidget extends StatelessWidget {
                         : iconUrl ??
                             Globals.splashImageUrl ??
                             Globals.appSetting.appLogoC,
-                    //  iconUrl ??
-                    //     Globals.splashImageUrl ??
-                    //     Globals.appSetting.appLogoC
                   ));
         }
       },

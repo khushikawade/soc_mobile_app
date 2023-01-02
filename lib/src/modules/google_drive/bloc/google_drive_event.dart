@@ -32,6 +32,7 @@ class CreateExcelSheetToDrive extends GoogleDriveEvent {
 }
 
 class UpdateDocOnDrive extends GoogleDriveEvent {
+  final bool? isMcqSheet;
   final List<StudentAssessmentInfo>? studentData;
   final String? fileId;
   final bool isLoading;
@@ -49,7 +50,8 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
       this.isCustomRubricSelcted,
       this.selectedRubric,
       required this.assessmentName,
-      required this.createdAsPremium});
+      required this.createdAsPremium,
+      this.isMcqSheet});
   @override
   List<Object> get props => [];
 }

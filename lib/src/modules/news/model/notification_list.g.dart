@@ -28,13 +28,14 @@ class NotificationListAdapter extends TypeAdapter<NotificationList> {
       helpfulCount: fields[7] as int?,
       shareCount: fields[8] as int?,
       completedAtTimestamp: fields[10] as dynamic,
+      supportCount: fields[11] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, NotificationList obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -56,7 +57,9 @@ class NotificationListAdapter extends TypeAdapter<NotificationList> {
       ..writeByte(9)
       ..write(obj.likeCount)
       ..writeByte(10)
-      ..write(obj.completedAtTimestamp);
+      ..write(obj.completedAtTimestamp)
+      ..writeByte(11)
+      ..write(obj.supportCount);
   }
 
   @override

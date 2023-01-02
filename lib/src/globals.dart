@@ -146,6 +146,7 @@ class Globals {
   static String? historyAssessmentName = '';
   static String? historyAssessmentFileId = '';
   static late TabController tabController;
+  static String selectedFilterValue = 'All';
 //  static EventController scheduleController = EventController();
 
 }

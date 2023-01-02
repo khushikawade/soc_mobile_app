@@ -54,16 +54,6 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
       leading: BackButtonWidget(),
       title: GestureDetector(
         onTap: widget.onTap,
-        //  () async {
-        //   Globals.scrollController.jumpTo(0);
-        //   // await Future.delayed(const Duration(milliseconds: 300));
-        //   // SchedulerBinding.instance.addPostFrameCallback((_) {
-        //   //   Globals.scrollController.animateTo(
-        //   //       Globals.scrollController.position.minScrollExtent,
-        //   //       duration: const Duration(milliseconds: 400),
-        //   //       curve: Curves.fastOutSlowIn);
-        //   // });
-        // },
         child: widget.isCenterIcon != null && widget.isCenterIcon == true
             ? AppLogoWidget(
                 marginLeft: widget.marginLeft,

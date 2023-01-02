@@ -92,15 +92,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         if (state is NewsCountLenghtSuccess) {
           // SharedPreferences prefs = await SharedPreferences.getInstance();
           // SharedPreferences intPrefs = await SharedPreferences.getInstance();
-          String? _objectName = "${Strings.newsObjectName}";
-          LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-          List<NotificationList> _localData = await _localDb.getData();
+          // String? _objectName = "${Strings.newsObjectName}";
+          // LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+          // List<NotificationList> _localData = await _localDb.getData();
 
-          if (_localData.length < state.obj!.length && _localData.isNotEmpty) {
-            // intPrefs.setInt("totalCount", Globals.notiCount!);
-            // prefs.setBool("enableIndicator", true);
-            Globals.indicator.value = true;
-          }
+          // if (_localData.length < state.obj!.length && _localData.isNotEmpty) {
+          //   // intPrefs.setInt("totalCount", Globals.notiCount!);
+          //   // prefs.setBool("enableIndicator", true);
+          //   Globals.indicator.value = true;
+          // }
         }
       },
       child: Container(),

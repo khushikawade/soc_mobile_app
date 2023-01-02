@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/google_search.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/ocr/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
@@ -23,7 +24,11 @@ import '../widgets/searchbar_widget.dart';
 
 class AssessmentSummary extends StatefulWidget {
   final bool isFromHomeSection;
-  AssessmentSummary({Key? key, required this.isFromHomeSection})
+  final String selectedFilterValue;
+  AssessmentSummary(
+      {Key? key,
+      required this.isFromHomeSection,
+      required this.selectedFilterValue})
       : super(key: key);
   @override
   State<AssessmentSummary> createState() => _AssessmentSummaryState();
@@ -47,16 +52,19 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
       LocalDatabase('history_student_info');
   ScrollController _scrollController = ScrollController();
+  final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
 //  late ScrollController _controller;
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(_scrollListener);
     _driveBloc.add(GetHistoryAssessmentFromDrive());
+    // selectedValue.value = widget.selectedFilterValue;
 
     // SchedulerBinding.instance.addPostFrameCallback((_) {
     //   refreshPage(isFromPullToRefresh: false);
     // });
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      selectedValue.value = Globals.selectedFilterValue;
       refreshPage(isFromPullToRefresh: false);
     });
 
@@ -93,7 +101,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 Utility.scrollToTop(scrollController: _scrollController);
               },
               isSuccessState: ValueNotifier<bool>(true),
-              isbackOnSuccess: isBackFromCamera,
+              isBackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: widget.isFromHomeSection,
               assessmentDetailPage: true,
@@ -106,18 +114,60 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                SpacerWidget(_KVertcalSpace / 4),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Utility.textWidget(
-                    text: 'Assignment History',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
+                SpacerWidget(_KVertcalSpace / 5),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width / 30),
+                        child: Utility.textWidget(
+                          text: 'Assignment History',
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                filterBottomSheet();
+                              },
+                              icon: Icon(
+                                IconData(0xe87d,
+                                    fontFamily: Overrides.kFontFam,
+                                    fontPackage: Overrides.kFontPkg),
+                                color: AppTheme.kButtonColor,
+                                size: 28,
+                              )),
+                          ValueListenableBuilder(
+                              valueListenable: selectedValue,
+                              child: Container(),
+                              builder: (BuildContext context, dynamic value,
+                                  Widget? child) {
+                                return selectedValue.value == 'All'
+                                    ? Container()
+                                    : Wrap(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                                top: 6, right: 6),
+                                            height: 7,
+                                            width: 7,
+                                            decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                shape: BoxShape.circle),
+                                          ),
+                                        ],
+                                      );
+                              })
+                        ],
+                      )
+                    ]),
                 SpacerWidget(_KVertcalSpace / 3),
                 Padding(
                   padding: EdgeInsets.symmetric(
@@ -141,7 +191,9 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => GoogleSearchWidget()),
+                            builder: (context) => GoogleSearchWidget(
+                                  selectedFilterValue: selectedValue.value,
+                                )),
                       );
                       // print('taped');
                     },
@@ -176,13 +228,58 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                   lastAssessmentHistoryListbj = state.obj;
                                   return state.obj != null &&
                                           state.obj.length > 0
-                                      ? listView(state.obj, isloading)
-                                      : Expanded(
-                                          child: NoDataFoundErrorWidget(
-                                              isResultNotFoundMsg: true,
-                                              isNews: false,
-                                              isEvents: false),
-                                        );
+                                      ? ValueListenableBuilder(
+                                          valueListenable: selectedValue,
+                                          child: Container(),
+                                          builder: (
+                                            BuildContext context,
+                                            dynamic value,
+                                            Widget? child,
+                                          ) {
+                                            List<HistoryAssessment> list = [];
+                                            list.addAll(state.obj);
+
+                                            if (selectedValue.value ==
+                                                'Multiple Choice') {
+                                              list.removeWhere((element) =>
+                                                  element.assessmentType !=
+                                                  selectedValue.value);
+                                            } else if (selectedValue.value ==
+                                                'Constructed Response') {
+                                              list.removeWhere((element) =>
+                                                  element.assessmentType !=
+                                                  selectedValue.value);
+                                            }
+                                            if (list.length < 6 &&
+                                                isloading == true) {
+                                              isloading = false;
+                                            } else if (nextPageUrl != '') {
+                                              isloading = true;
+                                            }
+                                            if (selectedValue.value ==
+                                                'Multiple Choice') {
+                                              for (var i = 0;
+                                                  i < list.length;
+                                                  i++) {
+                                                if (DateTime.parse(state
+                                                        .obj.last.createdDate!)
+                                                    .isBefore(DateTime.utc(
+                                                        2022, 20, 12))) {
+                                                  isloading = false;
+                                                }
+                                              }
+                                            }
+                                            return list.length > 0
+                                                ? listView(list, isloading)
+                                                : NoDataFoundErrorWidget(
+                                                    isResultNotFoundMsg: true,
+                                                    isNews: false,
+                                                    isEvents: false);
+                                          })
+                                      : NoDataFoundErrorWidget(
+                                          isResultNotFoundMsg: true,
+                                          isNews: false,
+                                          isEvents: false);
                                 } else if (state is GoogleDriveLoading) {
                                   return Container(
                                     height: MediaQuery.of(context).size.height *
@@ -321,12 +418,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                             Color(0xff000000)
                         ? Color(0xff111C20)
                         : Color(0xffF7F8F9),
-
-                    // Theme.of(context).colorScheme.background ==
-                    //     Color(0xff000000)
-                    // ? Color(0xffF7F8F9)
-                    // : Color(0xff162429),
-                    // border: Border.all(color: Colors.white),
                     borderRadius: BorderRadius.circular(32),
                   ),
                 ),
@@ -359,8 +450,11 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               children: [
                 Utility.textWidget(
                     context: context,
-                    text:
-                        'All Assignment Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                    text: selectedValue.value == 'All'
+                        ? 'All Assignment Caught Up'
+                        : selectedValue.value == 'Constructed Response'
+                            ? 'All Constructed Assignment Caught Up'
+                            : 'All MCQ Assignment Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.background ==
@@ -372,7 +466,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 Utility.textWidget(
                     context: context,
                     text:
-                        'You\'ve fetched all the available files from Graded+ Assignment',
+                        'You\'ve fetched all the available ${selectedValue.value == 'All' ? '' : selectedValue.value} files from Graded+ Assignment',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: Colors.grey, //AppTheme.kButtonColor,
@@ -422,6 +516,24 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         ? Color(0xff111C20)
                         : Color(0xffE9ECEE)),
             child: ListTile(
+                leading: Container(
+                  padding: EdgeInsets.only(top: 8),
+                  //color: Colors.amber,
+                  child: Icon(
+                      IconData(
+                          list[index].assessmentType == 'Multiple Choice'
+                              ? 0xe833
+                              : 0xe87c,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: Globals.deviceType == 'phone'
+                          ? (list[index].assessmentType == 'Multiple Choice'
+                              ? 30
+                              : 28)
+                          : 38,
+                      color: AppTheme.kButtonColor),
+                ),
+                minLeadingWidth: 0,
                 visualDensity: VisualDensity(horizontal: 0, vertical: 0),
                 subtitle: Utility.textWidget(
                     context: context,
@@ -492,5 +604,25 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
           obj: lastAssessmentHistoryListbj, nextPageUrl: nextPageUrl!));
       nextPageUrl = '';
     }
+  }
+
+  filterBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => FilterBottomSheet(
+              title: 'Filter Assignment',
+              selectedValue: selectedValue.value,
+              update: ({String? filterValue}) async {
+                selectedValue.value = filterValue!;
+                Globals.selectedFilterValue = selectedValue.value;
+              },
+            ));
   }
 }

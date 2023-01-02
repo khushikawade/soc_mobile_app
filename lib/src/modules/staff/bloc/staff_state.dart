@@ -25,14 +25,14 @@ class ErrorInStaffLoading extends StaffState {
   List<Object> get props => [err];
 }
 
-class StaffDataSucess extends StaffState {
+class StaffDataSuccess extends StaffState {
   final List<SharedList>? obj;
   final List<SharedList>? subFolder;
 
-  StaffDataSucess({this.obj, this.subFolder});
+  StaffDataSuccess({this.obj, this.subFolder});
 
-  StaffDataSucess copyWith({final obj, final subFolder}) {
-    return StaffDataSucess(
+  StaffDataSuccess copyWith({final obj, final subFolder}) {
+    return StaffDataSuccess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }
 

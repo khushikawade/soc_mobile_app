@@ -153,7 +153,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(

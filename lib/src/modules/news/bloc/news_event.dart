@@ -49,3 +49,10 @@ class FetchActionCountList extends NewsEvent {
   @override
   List<Object> get props => [isDetailPage!];
 }
+
+class UpdateNotificationList extends NewsEvent {
+  final List<NotificationList>? list;
+  UpdateNotificationList({this.list});
+  List<Object> get props => [];
+}
+

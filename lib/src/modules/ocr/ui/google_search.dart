@@ -5,8 +5,8 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 
 class GoogleSearchWidget extends StatefulWidget {
-  const GoogleSearchWidget({Key? key}) : super(key: key);
-
+  const GoogleSearchWidget({Key? key,required this.selectedFilterValue}) : super(key: key);
+  final String selectedFilterValue;
   @override
   State<GoogleSearchWidget> createState() => _GoogleSearchState();
 }
@@ -14,6 +14,7 @@ class GoogleSearchWidget extends StatefulWidget {
 class _GoogleSearchState extends State<GoogleSearchWidget> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController scrollController = ScrollController();
+  
 
 //Separating appbar and body to stop the profile reload on keyboard appearing
   @override
@@ -28,7 +29,7 @@ class _GoogleSearchState extends State<GoogleSearchWidget> {
                   Utility.scrollToTop(scrollController: scrollController);
                 },
                 isSuccessState: ValueNotifier<bool>(true),
-                isbackOnSuccess: ValueNotifier<bool>(false),
+                isBackOnSuccess: ValueNotifier<bool>(false),
                 key: GlobalKey(),
                 isBackButton: true,
                 assessmentDetailPage: true,
@@ -39,6 +40,7 @@ class _GoogleSearchState extends State<GoogleSearchWidget> {
                 ),
             body: GoogleFileSearchPage(
               scrollController: scrollController,
+               selectedFilterValue: widget.selectedFilterValue,
             )),
       ],
     );

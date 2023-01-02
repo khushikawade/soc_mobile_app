@@ -19,13 +19,13 @@ class CommonPdfViewerPage extends StatefulWidget {
   bool? isOCRFeature;
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
 
-  bool isbuttomsheet;
+  bool isBottomSheet;
   CommonPdfViewerPage(
       {Key? key,
       @required this.isOCRFeature,
       @required this.url,
       @required this.tittle,
-      required this.isbuttomsheet,
+      required this.isBottomSheet,
       required this.language,
       required this.isHomePage})
       : super(key: key);
@@ -86,7 +86,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
       isSuccessState: ValueNotifier<bool>(true),
-      isbackOnSuccess: widget.isBackFromCamera,
+      isBackOnSuccess: widget.isBackFromCamera,
       key: GlobalKey(),
       isBackButton: true,
     );

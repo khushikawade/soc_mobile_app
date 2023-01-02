@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -42,24 +43,46 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
+
         if (Overrides.STANDALONE_GRADED_APP) {
           List resultList = await Future.wait([
             emailDetectionApi(base64: event.base64),
-            procressAssessmentSheet(
-                base64: event.base64, pointPossible: event.pointPossible)
+            event.isMcqSheet == true
+                ? processMcqSheet(base64: event.base64)
+                : processAssessmentSheet(
+                    base64: event.base64, pointPossible: event.pointPossible)
           ]);
           String email = resultList[0][0];
           String name = resultList[0][1];
           String grade = resultList[1][0];
+          String result = event.isMcqSheet == true
+              ? OcrUtility.getMcqAnswer(detectedAnswer: grade)
+              : grade;
           if (email != '' && name != '' && grade != '') {
             yield FetchTextFromImageSuccess(
-                studentId: email, grade: grade, studentName: name);
+                studentId: email, grade: result, studentName: name);
           } else {
             yield FetchTextFromImageFailure(
-                studentId: email, grade: grade, studentName: name);
+                studentId: email, grade: result, studentName: name);
           }
         } else {
-          List data = await procressAssessmentSheet(
+          if (event.isMcqSheet == true) {
+            List resultList = await processMcqSheet(base64: event.base64);
+            String email = resultList[1];
+            String name = resultList[2];
+            String grade = resultList[0];
+            String result = OcrUtility.getMcqAnswer(detectedAnswer: grade);
+
+            if (email != '' && name != '' && grade != '') {
+              yield FetchTextFromImageSuccess(
+                  studentId: email, grade: result, studentName: name);
+            } else {
+              yield FetchTextFromImageFailure(
+                  studentId: email, grade: result, studentName: name);
+            }
+            return;
+          }
+          List data = await processAssessmentSheet(
               base64: event.base64, pointPossible: event.pointPossible);
           if (data[0] != '' && data[1] != '' && data[2] != '') {
             yield FetchTextFromImageSuccess(
@@ -465,6 +488,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is SaveAssessmentToDashboardAndGetId) {
       yield OcrLoading();
       String dashboardId = await saveAssessmentToDatabase(
+          isMcqSheet: event.isMcqSheet,
           assessmentQueImage: event.assessmentQueImage,
           fileId: event.fileId,
           assessmentName: event.assessmentName,
@@ -1020,13 +1044,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //     LocalDatabase(Strings.ocrSubjectObjectName);
       // List<SubjectDetailList>? _localData = await _localDb.getData();
 
-      // //Common detail list to save all deatails of subject for specific grade. Include : Subject, Learning standard and sub learning standard
+      // //Common detail list to save all details of subject for specific grade. Include : Subject, Learning standard and sub learning standard
       // List<SubjectDetailList> subjectDetailList = [];
 
       // //Return subject details
       // if (type == 'subject') {
       //   grade = keyword;
-      //   //Using a seperate list to check only 'Subject' whether already exist or not.
+      //   //Using a separate list to check only 'Subject' whether already exist or not.
       //   List subjectList = [];
 
       //   for (int i = 0; i < _localData.length; i++) {
@@ -1067,7 +1091,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //   return subjectDetailList;
       // } //Return Sub Learning standard details
       // else if (type == 'nycSub') {
-      //   //Using a seperate list to check only 'Sub Learning Standard' whether already exist or not.
+      //   //Using a separate list to check only 'Sub Learning Standard' whether already exist or not.
       //   if (isSearchPage == true) {
       //     List<SubjectDetailList> list = [];
       //     List subLearningStdList = [];
@@ -1118,17 +1142,74 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future procressAssessmentSheet(
+  // ----------Function to process MCQ sheet ------------
+  Future processMcqSheet(
+      {required String base64, String? pointPossible}) async {
+    try {
+      final ResponseModel response = await _dbServices.postapi(
+        // Url for Production
+        Uri.encodeFull(
+            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
+        // Url For testing and development
+        // Uri.encodeFull(
+        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
+        // Url For testing and development
+        // Uri.encodeFull(
+        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
+
+        body: {
+          'data': '$base64',
+          'account_id': Globals.appSetting.schoolNameC,
+          'point_possible': pointPossible ?? ''
+        },
+        isGoogleApi: true,
+      );
+
+      if (response.statusCode == 200) {
+        // ***********  Process The response and collecting OSSIS ID  ***********
+        var result = response.data;
+        List<StudentDetailsModal> _list = jsonDecode(
+                jsonEncode(response.data['studentListDetails']))
+            .map<StudentDetailsModal>((i) => StudentDetailsModal.fromJson(i))
+            .toList();
+        await addStudentDetailsToLocalDb(list: _list);
+
+        final String? studentGrade = result['detectedAnswer'] == '2' ||
+                result['detectedAnswer'] == '1' ||
+                result['detectedAnswer'] == '0' ||
+                result['detectedAnswer'] == '3' ||
+                result['detectedAnswer'] == '4'
+            ? result['detectedAnswer']
+            : '';
+
+        final String? studentId = result['studentId'] == 'Something Went Wrong'
+            ? ''
+            : result['studentId'].toString();
+        return [
+          studentGrade,
+          studentId,
+          result['studentName'],
+        ];
+      } else {
+        return ['', '', ''];
+      }
+    } catch (e) {
+      print(e);
+      return ['', '', ''];
+    }
+  }
+
+  Future processAssessmentSheet(
       {required String base64, required String pointPossible}) async {
     try {
       final ResponseModel response = await _dbServices.postapi(
-        // Url for Productiom
+        // Url for Production
         Uri.encodeFull(
             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
-        // Url For testing and developement
+        // Url For testing and development
         // Uri.encodeFull(
         //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
-        // Url For testing and developement
+        // Url For testing and development
         // Uri.encodeFull(
         //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
 
@@ -1243,27 +1324,37 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         } else {
           Globals.teacherId = data['Id'];
-          if (data['Assessment_App_User__c'] != 'true') {
-            var userType = data["GRADED_Premium__c"];
-            if (userType == "true") {
-              Globals.isPremiumUser = true;
-            } else {
-              Globals.isPremiumUser = false;
-            }
-
-            Globals.teacherId = data['Id'];
-            bool result = await updateContactToSalesforce(recordId: data['Id']);
-            if (!result) {
-              await updateContactToSalesforce(recordId: data['Id']);
-            }
+          var premiumUserType = data["GRADED_Premium__c"];
+          // if (data['Assessment_App_User__c'] != 'true') {
+          // var premiumUserType = data["GRADED_Premium__c"];
+          if (premiumUserType == "true") {
+            Globals.isPremiumUser = true;
           } else {
-            var userType = data["GRADED_Premium__c"];
-            if (userType == "true") {
+            if (Overrides.STANDALONE_GRADED_APP == true) {
               Globals.isPremiumUser = true;
             } else {
               Globals.isPremiumUser = false;
             }
           }
+          if (data['Assessment_App_User__c'] != 'true') {
+            Globals.teacherId = data['Id'];
+            bool result = await updateContactToSalesforce(recordId: data['Id']);
+            if (!result) {
+              await updateContactToSalesforce(recordId: data['Id']);
+            }
+          }
+          // else {
+          //   // var premiumUserType = data["GRADED_Premium__c"];
+          //   if (premiumUserType == "true") {
+          //     Globals.isPremiumUser = true;
+          //   } else {
+          //     if (Overrides.STANDALONE_GRADED_APP == true) {
+          //       Globals.isPremiumUser = true;
+          //     } else {
+          //       Globals.isPremiumUser = false;
+          //     }
+          //   }
+          // }
         }
 
         return true;
@@ -1340,21 +1431,21 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<String> saveAssessmentToDatabase({
-    required String? assessmentName,
-    required String? rubicScore,
-    required String? subjectName,
-    required String? grade,
-    required String? domainName,
-    required String? subDomainName,
-    required String? schoolId,
-    required String? standardId,
-    required String? fileId,
-    required String sessionId,
-    required String teacherContactId,
-    required String teacherEmail,
-    required String assessmentQueImage,
-  }) async {
+  Future<String> saveAssessmentToDatabase(
+      {required String? assessmentName,
+      required String? rubicScore,
+      required String? subjectName,
+      required String? grade,
+      required String? domainName,
+      required String? subDomainName,
+      required String? schoolId,
+      required String? standardId,
+      required String? fileId,
+      required String sessionId,
+      required String teacherContactId,
+      required String teacherEmail,
+      required String assessmentQueImage,
+      required bool isMcqSheet}) async {
     try {
       String currentDate = Utility.getCurrentDate(DateTime.now());
 
@@ -1379,7 +1470,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
         "Created_As_Premium": Globals.isPremiumUser.toString(),
-        "Assessment_Que_Image__c": assessmentQueImage
+        "Assessment_Que_Image__c": assessmentQueImage,
+        "Assessment_Type":
+            isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response'
       };
 
       final ResponseModel response = await _dbServices.postapi(
@@ -1725,6 +1818,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     } catch (e) {
       print(e);
+      return ['', ''];
       throw (e);
     }
   }
@@ -1767,21 +1861,20 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         print(match);
         emails.add("${match.bestMatch.target!}_${match.bestMatch.rating}");
         // return match.bestMatch.target!;
-
       }
-      String newresult = emails.isNotEmpty ? emails[0].split('_')[0] : '';
-      double confidence =
-          emails.isNotEmpty ? double.parse(emails[0].split('_')[1]) : 0;
+      String newResult = ''; //emails.isNotEmpty ? emails[0].split('_')[0] : '';
+      double confidence = 0;
+      //emails.isNotEmpty ? double.parse(emails[0].split('_')[1]) : 0;
 
-      for (int i = 1; i < emails.length; i++) {
+      for (int i = 0; i < emails.length; i++) {
         if (confidence < double.parse(emails[i].split('_')[1])) {
-          newresult = emails.isNotEmpty ? emails[i].split('_')[0] : '';
+          newResult = emails.isNotEmpty ? emails[i].split('_')[0] : '';
         }
       }
       String studentName = '';
       for (var i = 0; i < _localData.length; i++) {
         for (var j = 0; j < _localData[i].studentList!.length; j++) {
-          if (newresult ==
+          if (newResult ==
               _localData[i].studentList![j]['profile']['emailAddress']) {
             studentName =
                 _localData[i].studentList![j]['profile']['name']['fullName'];
@@ -1789,7 +1882,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       }
 
-      return [newresult, studentName];
+      return [newResult, studentName];
 
       // if (result.isNotEmpty) {
       //   return result[0];
@@ -1857,7 +1950,6 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //   emails.add(string.substring(match.start, match.end));
 
       // }
-
     }
 
     return emails;

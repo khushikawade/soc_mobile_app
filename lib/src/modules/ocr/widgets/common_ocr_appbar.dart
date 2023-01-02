@@ -39,7 +39,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.scaffoldKey,
       this.customBackButton,
       this.onTap,
-      required this.isbackOnSuccess,
+      required this.isBackOnSuccess,
       this.isFromResultSection,
       this.navigateBack,
       this.isProfilePage})
@@ -57,7 +57,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   Widget? actionIcon;
   Widget? customBackButton;
   bool? hideStateSelection;
-  ValueListenable<bool>? isbackOnSuccess;
+  ValueListenable<bool>? isBackOnSuccess;
   String? sessionId;
   bool? isFromResultSection;
   bool? navigateBack;
@@ -260,7 +260,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             widget.isResultScreen == true
                         ? widget.actionIcon!
                         : ValueListenableBuilder(
-                            valueListenable: widget.isbackOnSuccess!,
+                            valueListenable: widget.isBackOnSuccess!,
                             builder: (BuildContext context, dynamic value,
                                 Widget? child) {
                               return value == true
@@ -339,8 +339,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               ? EdgeInsets.only(right: 10, top: 5)
                               : EdgeInsets.zero,
                         );
-                        //  CupertinoActivityIndicator(
-                        //     animating: true, radius: 10);
                       }),
                 ),
         ]);

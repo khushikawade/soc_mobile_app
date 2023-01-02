@@ -76,22 +76,7 @@ class SearchBar extends StatelessWidget {
                       Color(0xff000000) != Theme.of(context).backgroundColor
                           ? Color.fromRGBO(0, 0, 0, 0.1)
                           : Color.fromRGBO(255, 255, 255, 0.16),
-                  prefixIcon:
-                      //  isSearchPage == true
-                      //     ? IconButton(
-                      //         onPressed: () {
-                      //           Navigator.pop(context);
-                      //         },
-                      //         icon: Icon(
-                      //           const IconData(0xe83b,
-                      //               fontFamily: Overrides.kFontFam,
-                      //               fontPackage: Overrides.kFontPkg),
-                      //           color: Color(0xffAAAAAA),
-                      //           size: Globals.deviceType == "phone" ? 18 : 16,
-                      //         ),
-                      //       )
-                      //     :
-                      Icon(
+                  prefixIcon: Icon(
                     const IconData(0xe805,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),

@@ -19,6 +19,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/image_popup.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,21 +34,23 @@ import '../bloc/ocr_bloc.dart';
 import '../modal/user_info.dart';
 
 class ResultsSummary extends StatefulWidget {
-  ResultsSummary({
-    Key? key,
-    this.obj,
-    this.createdAsPremium,
-    required this.assessmentDetailPage,
-    this.fileId,
-    this.subjectId,
-    this.standardId,
-    this.rubricScore,
-    this.isScanMore,
-    this.assessmentListLenght,
-    required this.shareLink,
-    required this.asssessmentName,
-    this.historysecondTime,
-  }) : super(key: key);
+  ResultsSummary(
+      {Key? key,
+      this.obj,
+      this.createdAsPremium,
+      required this.assessmentDetailPage,
+      this.fileId,
+      this.subjectId,
+      this.standardId,
+      this.rubricScore,
+      this.isScanMore,
+      this.assessmentListLenght,
+      required this.shareLink,
+      required this.asssessmentName,
+      this.historysecondTime,
+      this.isMcqSheet,
+      this.selectedAnswer})
+      : super(key: key);
   final bool? assessmentDetailPage;
   String? fileId;
   // final HistoryAssessment? obj;
@@ -60,8 +63,9 @@ class ResultsSummary extends StatefulWidget {
   String? shareLink;
   String? asssessmentName;
   bool? historysecondTime;
-
   final bool? createdAsPremium;
+  bool? isMcqSheet;
+  String? selectedAnswer;
   @override
   State<ResultsSummary> createState() => _ResultsSummaryState();
 }
@@ -222,7 +226,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 Utility.scrollToTop(scrollController: _scrollController);
               },
               isSuccessState: ValueNotifier<bool>(true),
-              isbackOnSuccess: isBackFromCamera,
+              isBackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               sessionId: widget.obj != null ? widget.obj!.sessionId : '',
               isBackButton: widget.assessmentDetailPage,
@@ -319,18 +323,40 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                         .headline3)
                                                 : Container();
                                           }
-                                          return Globals.isAndroid!
-                                              ? Container(
-                                                  width: 10,
-                                                  height: 10,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .colorScheme
-                                                              .primaryVariant,
-                                                          strokeWidth: 2))
-                                              : CupertinoActivityIndicator();
+                                          return
+                                              // Padding(
+                                              //   padding: EdgeInsets.only(top: 10),
+                                              //   child: ShimmerLoading(
+                                              //     isLoading: true,
+                                              //     child: Container(
+                                              //       decoration: BoxDecoration(
+                                              //           color: Colors.white,
+                                              //           borderRadius:
+                                              //               BorderRadius.all(
+                                              //                   Radius.circular(
+                                              //                       40))),
+                                              //       // height: 15,
+                                              //       // width: 15,
+
+                                              //       child: CircleAvatar(
+                                              //         radius: 10,
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              // );
+
+                                              Globals.isAndroid!
+                                                  ? Container(
+                                                      width: 10,
+                                                      height: 10,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .primaryVariant,
+                                                              strokeWidth: 2))
+                                                  : CupertinoActivityIndicator();
                                         });
                                   });
                             }),
@@ -435,6 +461,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                 scaffoldKey: scaffoldKey);
 
                                         _driveBloc2.add(UpdateDocOnDrive(
+                                          isMcqSheet: widget.isMcqSheet,
                                           questionImage:
                                               questionImageUrl ?? "NA",
                                           createdAsPremium: createdAsPremium,
@@ -593,6 +620,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   });
                                 }
 
+                                if (state.obj[0].answerKey != '' &&
+                                    state.obj[0].answerKey != 'NA' &&
+                                    state.obj[0].answerKey != null) {
+                                  widget.isMcqSheet = true;
+                                  widget.selectedAnswer =
+                                      state.obj[0].answerKey;
+                                }
                                 savedRecordCount != null
                                     ? savedRecordCount == state.obj.length
                                         ? dashoardState.value = 'Success'
@@ -645,7 +679,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             Utility.updateLoges(
                                 // accountType: 'Free',
                                 activityId: '14',
-                                description: 'Save to deshboard success',
+                                description: 'Save to dashboard success',
                                 operationResult: 'Success');
                             List<StudentAssessmentInfo> studentInfo =
                                 await Utility.getStudentInfoList(
@@ -1354,6 +1388,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                              isMcqSheet: widget.isMcqSheet,
+                              selectedAnswer: widget.selectedAnswer,
                               isFlashOn: ValueNotifier<bool>(false),
                               questionImageLink: questionImageUrl,
                               obj: widget.obj,
@@ -1568,6 +1604,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AssessmentSummary(
+                                        selectedFilterValue:
+                                            widget.isMcqSheet == true
+                                                ? 'Multiple Choice'
+                                                : 'Constructed Response',
                                         isFromHomeSection: false,
                                       )),
                             );
@@ -1633,9 +1673,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
       editingStudentNameController.text = studentInfo[index].studentName!;
       editingStudentIdController.text = studentInfo[index].studentId!;
-      editingStudentScoreController.text = studentInfo[index].studentGrade!;
+      editingStudentScoreController.text = widget.isMcqSheet == true
+          ? studentInfo[index].studentResponseKey!
+          : studentInfo[index].studentGrade!;
+      String answerKey = studentInfo[index].answerKey!;
+      String studentSelection = studentInfo[index].studentResponseKey!;
 
       editBottomSheet(
+          studentSelection: studentSelection,
+          answerKey: answerKey,
           controllerOne: editingStudentNameController,
           controllerTwo: editingStudentIdController,
           controllerThree: editingStudentScoreController,
@@ -1658,7 +1704,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       {required TextEditingController controllerOne,
       required TextEditingController controllerTwo,
       required TextEditingController controllerThree,
-      required int index}) {
+      required int index,
+      required String answerKey,
+      required String studentSelection}) {
     showModalBottomSheet(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
@@ -1669,6 +1717,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         elevation: 10,
         context: context,
         builder: (context) => EditBottomSheet(
+              studentSelection: studentSelection,
+              selectedAnswer: answerKey,
+              isMcqSheet: widget.isMcqSheet,
               textFieldControllerthree: controllerThree,
               textFieldControllerOne: controllerOne,
               textFieldControllerTwo: controllerTwo,
@@ -1679,12 +1730,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
                   : 'Student Id/Student Email',
-              textFileTitleThree: "Student Grade",
+              textFileTitleThree: widget.isMcqSheet == true
+                  ? "Student Selection"
+                  : "Student Grade",
               isSubjectScreen: false,
               update: (
                   {required TextEditingController name,
                   required TextEditingController id,
-                  required TextEditingController score}) async {
+                  required TextEditingController score,
+                  String? studentResonance}) async {
                 List<StudentAssessmentInfo> _list =
                     await Utility.getStudentInfoList(tableName: 'student_info');
                 StudentAssessmentInfo studentInfo = _list[index];
@@ -1692,6 +1746,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 studentInfo.studentName = name.text;
                 studentInfo.studentId = id.text;
                 studentInfo.studentGrade = score.text;
+                studentInfo.studentResponseKey = studentResonance;
                 _studentInfoDb.putAt(index, studentInfo);
                 assessmentCount.value = _list.length;
 
@@ -1701,6 +1756,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 Navigator.pop(context, false);
 
                 _driveBloc2.add(UpdateDocOnDrive(
+                  isMcqSheet: widget.isMcqSheet,
                   questionImage: questionImageUrl ?? "NA",
                   createdAsPremium: Globals.isPremiumUser,
                   assessmentName: Globals.assessmentName!,
@@ -1865,6 +1921,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           );
 
                           _driveBloc2.add(UpdateDocOnDrive(
+                              isMcqSheet: widget.isMcqSheet,
                               questionImage: questionImageUrl ?? "NA",
                               createdAsPremium: Globals.isPremiumUser,
                               assessmentName: Globals.assessmentName!,
@@ -2204,6 +2261,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         context: context,
         builder: (context) {
           return CustomDialogBox(
+            isMcqSheet: widget.isMcqSheet,
             title: widget.asssessmentName == null
                 ? 'Assignment Name'
                 : widget.asssessmentName!,
@@ -2224,21 +2282,23 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             tableName: widget.assessmentDetailPage == true
                 ? 'history_student_info'
                 : 'student_info');
-        _showPopUp(studentAssessmentInfo: list.first);
+        _showPopUp(
+          studentAssessmentInfo: list.first,
+        );
       },
-      icon: Icon(
-        Icons.info,
-        size: Globals.deviceType == 'tablet' ? 35 : null,
-        color: Color(0xff000000) != Theme.of(context).backgroundColor
-            ? Color(0xff111C20)
-            : Color(0xffF7F8F9), //Colors.grey.shade400,
-      ),
+      icon: Icon(Icons.info,
+          size: Globals.deviceType == 'tablet' ? 35 : null, color: Colors.grey
+
+          //  Color(0xff000000) != Theme.of(context).backgroundColor
+          //     ? Color(0xff111C20)
+          //     : Color(0xffF7F8F9), //Colors.grey.shade400,
+          ),
     );
   }
 
   Future<String> _getPointPossiable({required String tableName}) async {
-    List<StudentAssessmentInfo> sudentInfo =
+    List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: tableName);
-    return sudentInfo.first.pointpossible!;
+    return studentInfo.first.pointpossible ?? '2';
   }
 }

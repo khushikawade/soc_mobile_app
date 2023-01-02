@@ -9,7 +9,8 @@ class GoogleDriveAccess {
   static Future generateExcelSheetLocally(
       {required List<StudentAssessmentInfo> data,
       required String name,
-      bool? createdAsPremium}) async {
+      bool? createdAsPremium,
+      bool? isMcqSheet}) async {
     try {
       var excel = Excel.createExcel();
       final sheet = excel[excel.getDefaultSheet()!];
@@ -50,12 +51,31 @@ class GoogleDriveAccess {
                 .value =
             row == 0 ? data[row].pointpossible : data[1].pointpossible ?? '2';
 
+        if (isMcqSheet == true) {
+          sheet
+              .cell(CellIndex.indexByColumnRow(
+                  columnIndex:
+                      Globals.isPremiumUser == true && createdAsPremium == true
+                          ? 4
+                          : 3,
+                  rowIndex: row))
+              .value = data[row].answerKey ?? 'NA';
+          sheet
+              .cell(CellIndex.indexByColumnRow(
+                  columnIndex:
+                      Globals.isPremiumUser == true && createdAsPremium == true
+                          ? 5
+                          : 4,
+                  rowIndex: row))
+              .value = data[row].studentResponseKey ?? 'NA';
+        }
+
         sheet
                 .cell(CellIndex.indexByColumnRow(
                     columnIndex: Globals.isPremiumUser == true &&
                             createdAsPremium == true
-                        ? 4
-                        : 3,
+                        ? (isMcqSheet == true ? 6 : 4)
+                        : (isMcqSheet == true ? 5 : 3),
                     rowIndex: row))
                 .value =
             row == 0 ? data[row].questionImgUrl : data[1].questionImgUrl;
@@ -64,8 +84,8 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:
                     Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 5
-                        : 4,
+                        ? (isMcqSheet == true ? 7 : 5)
+                        : (isMcqSheet == true ? 6 : 4),
                 rowIndex: row))
             .value = row == 0 ? data[row].grade : data[1].grade;
 
@@ -73,8 +93,8 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:
                     Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 6
-                        : 5,
+                        ? (isMcqSheet == true ? 8 : 6)
+                        : (isMcqSheet == true ? 7 : 5),
                 rowIndex: row))
             .value = row == 0 ? data[row].className : data[1].className;
         // sheet
@@ -84,8 +104,8 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:
                     Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 7
-                        : 6,
+                        ? (isMcqSheet == true ? 9 : 7)
+                        : (isMcqSheet == true ? 8 : 6),
                 rowIndex: row))
             .value = row == 0 ? data[row].subject : data[1].subject;
 
@@ -93,8 +113,8 @@ class GoogleDriveAccess {
                 .cell(CellIndex.indexByColumnRow(
                     columnIndex: Globals.isPremiumUser == true &&
                             createdAsPremium == true
-                        ? 8
-                        : 7,
+                        ? (isMcqSheet == true ? 10 : 8)
+                        : (isMcqSheet == true ? 9 : 7),
                     rowIndex: row))
                 .value =
             row == 0 ? data[row].learningStandard : data[1].learningStandard;
@@ -103,8 +123,8 @@ class GoogleDriveAccess {
                 .cell(CellIndex.indexByColumnRow(
                     columnIndex: Globals.isPremiumUser == true &&
                             createdAsPremium == true
-                        ? 9
-                        : 8,
+                        ? (isMcqSheet == true ? 11 : 9)
+                        : (isMcqSheet == true ? 10 : 8),
                     rowIndex: row))
                 .value =
             row == 0
@@ -114,8 +134,8 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:
                     Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 10
-                        : 9,
+                        ? (isMcqSheet == true ? 12 : 10)
+                        : (isMcqSheet == true ? 11 : 9),
                 rowIndex: row))
             .value = row == 0 ? data[row].scoringRubric : data[1].scoringRubric;
 
@@ -123,8 +143,8 @@ class GoogleDriveAccess {
                 .cell(CellIndex.indexByColumnRow(
                     columnIndex: Globals.isPremiumUser == true &&
                             createdAsPremium == true
-                        ? 11
-                        : 10,
+                        ? (isMcqSheet == true ? 13 : 11)
+                        : (isMcqSheet == true ? 12 : 10),
                     rowIndex: row)) //.isFormula
                 .value =
             row == 0 ? data[row].customRubricImage : data[1].customRubricImage;
@@ -133,11 +153,19 @@ class GoogleDriveAccess {
             .cell(CellIndex.indexByColumnRow(
                 columnIndex:
                     Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 12
-                        : 11,
+                        ? (isMcqSheet == true ? 14 : 12)
+                        : (isMcqSheet == true ? 13 : 11),
                 rowIndex: row))
             .value = data[row].assessmentImage;
 
+        sheet
+            .cell(CellIndex.indexByColumnRow(
+                columnIndex:
+                    Globals.isPremiumUser == true && createdAsPremium == true
+                        ? (isMcqSheet == true ? 15 : 13)
+                        : (isMcqSheet == true ? 14 : 12),
+                rowIndex: row))
+            .value = data[row].presentationURL ?? 'NA';
         // sheet
         //     .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
         //     .value = data[row].isSavedOnDashBoard;

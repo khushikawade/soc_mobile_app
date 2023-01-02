@@ -1,6 +1,9 @@
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/overrides.dart';
+import 'package:Soc/src/modules/ocr/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +21,13 @@ import '../bloc/ocr_bloc.dart';
 
 class GoogleLogin {
   //To authenticate the user via google
-  static launchURL(String? title, context, _scaffoldKey, bool? isStandAloneApp,
-      String? buttonPressed) async {
+  static launchURL(
+    String? title,
+    context,
+    _scaffoldKey,
+    bool? isStandAloneApp,
+    String? buttonPressed,
+  ) async {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'google_login', screenClass: 'GoogleLogin');
@@ -43,8 +51,8 @@ class GoogleLogin {
                 '?' +
                 themeColor.toString().split('0xff')[1].split(')')[0])
             : Overrides.STANDALONE_GRADED_APP
-                ? Overrides.googleClassroomAuthURL!
-                : Overrides.googleDriveAuthURL!,
+                ? OcrOverrides.googleClassroomAuthURL!
+                : OcrOverrides.googleDriveAuthURL!,
         isbuttomsheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
@@ -119,7 +127,10 @@ class GoogleLogin {
         if (Overrides.STANDALONE_GRADED_APP != true) {
           pushNewScreen(
             context,
-            screen: OpticalCharacterRecognition(),
+            screen: SelectAssessmentType(),
+            // isMcqSheet == true
+            //     ? MultipleChoiceSection()
+            //     : OpticalCharacterRecognition(),
             withNavBar: false,
           );
           // Navigator.of(context).pushReplacement(MaterialPageRoute(
