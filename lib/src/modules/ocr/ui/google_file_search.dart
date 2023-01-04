@@ -295,7 +295,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                 }
               },
               child: Icon(
-                IconData(Globals.ocrResultIcons[0],
+                IconData(0xe876,
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: Color(0xff000000) != Theme.of(context).backgroundColor
@@ -420,7 +420,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                 }
                               },
                               child: Icon(
-                                IconData(Globals.ocrResultIcons[0],
+                                IconData(0xe876,
                                     fontFamily: Overrides.kFontFam,
                                     fontPackage: Overrides.kFontPkg),
                                 color: Color(0xff000000) !=
