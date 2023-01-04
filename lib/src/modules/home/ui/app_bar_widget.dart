@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
@@ -13,7 +14,6 @@ import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/searchbuttonwidget.dart';
 import 'package:bubble_showcase/bubble_showcase.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
@@ -34,18 +34,19 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   bool? initalscreen;
   bool? hideAccessibilityButton;
   bool? showClosebutton;
+  Widget? actionButton;
 
   final GlobalKey _bshowcase = GlobalKey();
-
   final GlobalKey _openSettingShowCaseKey = GlobalKey();
- final VoidCallback? onTap;
+  final VoidCallback? onTap;
   AppBarWidget(
       {Key? key,
       required this.refresh,
       required this.marginLeft,
       this.hideAccessibilityButton,
       this.onTap,
-      this.showClosebutton})
+      this.showClosebutton,
+      this.actionButton})
       : super(key: key);
 
   @override
@@ -90,6 +91,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                           appbarTitle: '',
                           isbuttomsheet: true,
                         )));
+
             break;
           case IconsMenu.Permissions:
             OpenAppsSettings.openAppsSettings(
@@ -135,6 +137,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
       return AppBar(
+          backgroundColor: Overrides.STANDALONE_GRADED_APP == true
+              ? Colors.transparent
+              : null,
           leadingWidth: _kIconSize,
           elevation: 0.0,
           leading: BubbleShowcase(
@@ -172,25 +177,33 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 hideAccessibilityButton == true
                     ? //To adjust Accessibility button apearance in the AppBar, since we are using the smae common widget in the Accessibility page and we don't wnat to show this "Accessibility Button" on the "Accessibility Page" itself.
                     Container()
-                    : _openSettingsButton(context)
+                    : _openSettingsButton(context),
               ],
             ),
           ),
+          titleSpacing: 0,
           title: GestureDetector(
             // splashFactory: NoSplash.splashFactory,
-            onTap: onTap, 
+            onTap: onTap,
             // splashColor: Theme.of(context).backgroundColor,
             // focusColor: Theme.of(context).backgroundColor,
             child: AppLogoWidget(
               marginLeft: marginLeft,
             ),
           ),
-          actions: <Widget>[
-            SearchButtonWidget(
-              language: 'English',
-            ),
-            _buildPopupMenuWidget(context),
-          ]);
+          actions: Overrides.STANDALONE_GRADED_APP == true
+              ? <Widget>[
+                  actionButton!
+                  // Container(
+                  //   width: 30,
+                  // )
+                ]
+              : <Widget>[
+                  SearchButtonWidget(
+                    language: 'English',
+                  ),
+                  _buildPopupMenuWidget(context),
+                ]);
     });
   }
 
@@ -204,6 +217,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           .promptUserForPushNotificationPermission(fallbackToSettings: true);
     }
   }
+
+  // Future<UserInformation> getUserProfile() async {
+  //   LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+  //   List<UserInformation> _userInformation = await _localDb.getData();
+  //   Globals.teacherEmailId = _userInformation[0].userEmail!;
+  //   //print("//printing _userInformation length : ${_userInformation[0]}");
+  //   return _userInformation[0];
+  // }
 
   Widget _translateButton(StateSetter setState, BuildContext context) {
     return Container(

@@ -18,21 +18,27 @@ class VerifyUserWithDatabase extends OcrEvent {
   List<Object> get props => [email!];
 }
 
-class FatchSubjectDetails extends OcrEvent {
+class FetchSubjectDetails extends OcrEvent {
   final String? type;
-  final String? keyword;
+  final String? selectedKeyword;
   final String? grade;
   final bool? isSearchPage;
   final String? subjectSelected;
-  FatchSubjectDetails(
-      {required this.type,
-      required this.keyword,
+  // new changes related to subject selection
+  final String? stateName;
+  final String? subjectId;
+
+  FetchSubjectDetails(
+      {required this.subjectId,
+      required this.type,
+      required this.stateName,
+      this.selectedKeyword,
       this.isSearchPage,
-      this.grade,
-      this.subjectSelected});
+      required this.grade,
+      required this.subjectSelected});
 
   @override
-  List<Object> get props => [type!, keyword!];
+  List<Object> get props => [type!, selectedKeyword!];
 }
 
 class SaveStudentDetails extends OcrEvent {
@@ -46,15 +52,17 @@ class SaveStudentDetails extends OcrEvent {
 
 class SearchSubjectDetails extends OcrEvent {
   final String? type;
-  final String? keyword;
+  final String? selectedKeyword;
+  final String stateName;
   final String? searchKeyword;
   final String? grade;
   final bool? isSearchPage;
   final String? subjectSelected;
   SearchSubjectDetails(
       {required this.type,
-      required this.keyword,
+      required this.selectedKeyword,
       required this.searchKeyword,
+      required this.stateName,
       this.isSearchPage,
       this.grade,
       this.subjectSelected});
@@ -63,7 +71,10 @@ class SearchSubjectDetails extends OcrEvent {
   List<Object> get props => [type!];
 }
 
-class SaveSubjectListDetails extends OcrEvent {
+class SaveSubjectListDetailsToLocalDb extends OcrEvent {
+  final String selectedState;
+  //final String pointPossible;
+  SaveSubjectListDetailsToLocalDb({required this.selectedState});
   @override
   List<Object> get props => [];
 }
@@ -211,6 +222,30 @@ class LogUserActivityEvent extends OcrEvent {
       required this.dateTime,
       required this.description,
       required this.operationResult});
+
+  @override
+  List<Object> get props => [];
+}
+
+class GetRubricPdf extends OcrEvent {
+  GetRubricPdf();
+  @override
+  List<Object> get props => [];
+}
+
+// ---------- Event to Fetch State List for Api ----------
+class FetchStateListEvant extends OcrEvent {
+  final bool fromCreateAssesment;
+  FetchStateListEvant({required this.fromCreateAssesment});
+
+  @override
+  List<Object> get props => [];
+}
+
+// ---------- Event to Local search in State List ----------
+class LocalStateSearchEvent extends OcrEvent {
+  final String? keyWord;
+  LocalStateSearchEvent({required this.keyWord});
 
   @override
   List<Object> get props => [];

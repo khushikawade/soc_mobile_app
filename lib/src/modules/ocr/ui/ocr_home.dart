@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
@@ -21,9 +22,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../../widgets/common_pdf_viewer_page.dart';
-import 'assessment_summary.dart';
+import 'list_assessment_summary.dart';
 import 'camera_screen.dart';
-import 'create_assessment.dart';
 
 class OpticalCharacterRecognition extends StatefulWidget {
   const OpticalCharacterRecognition({Key? key}) : super(key: key);
@@ -47,18 +47,22 @@ class _OpticalCharacterRecognitionPageState
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  int? lastIndex;
+  int? lastIndex = 0;
   final ValueNotifier<int> pointPossibleSelectedColor = ValueNotifier<int>(1);
   final ValueNotifier<int> rubricScoreSelectedColor = ValueNotifier<int>(0);
   final ValueNotifier<bool> updateRubricList = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+
   DateTime currentDateTime = DateTime.now(); //DateTime
 
   int myTimeStamp = DateTime.now().microsecondsSinceEpoch;
 
+  LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+
   @override
   void initState() {
     // Globals.questionImgUrl = '';
+    getAllRubricList();
     Globals.questionImgFilePath = null;
     Utility.setLocked();
     _homeBloc.add(FetchStandardNavigationBar());
@@ -82,11 +86,13 @@ class _OpticalCharacterRecognitionPageState
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            //Show home button in standard app and hide in standalone
+            assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
             isOcrHome: true,
             isSuccessState: ValueNotifier<bool>(true),
             isbackOnSuccess: isBackFromCamera,
             key: GlobalKey(),
-            isBackButton: false,
+            isBackButton: Overrides.STANDALONE_GRADED_APP ? true : false,
           ),
           body: Container(
             padding: EdgeInsets.symmetric(
@@ -117,30 +123,51 @@ class _OpticalCharacterRecognitionPageState
                             .headline6!
                             .copyWith(fontWeight: FontWeight.bold)),
                     SpacerWidget(5),
-                    IconButton(
-                      padding: EdgeInsets.only(top: 2),
-                      onPressed: () async {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    CommonPdfViewerPage(
-                                      isOCRFeature: true,
-                                      isHomePage: false,
-                                      url: Overrides.rubric_Score_PDF_URL,
-                                      tittle: '',
-                                      isbuttomsheet: false,
-                                      language: Globals.selectedLanguage,
-                                    )));
+                    BlocConsumer(
+                      bloc: _bloc,
+                      builder: (BuildContext context, Object? state) {
+                        return IconButton(
+                          padding: EdgeInsets.only(top: 2),
+                          onPressed: () {
+                            _bloc.add(GetRubricPdf());
+                          },
+                          icon: Icon(
+                            Icons.info,
+                            size: Globals.deviceType == 'tablet' ? 35 : null,
+                            color: Color(0xff000000) !=
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xff111C20)
+                                : Color(0xffF7F8F9), //Colors.grey.shade400,
+                          ),
+                        );
                       },
-                      icon: Icon(
-                        Icons.info,
-                        size: Globals.deviceType == 'tablet' ? 35 : null,
-                        color: Color(0xff000000) !=
-                                Theme.of(context).backgroundColor
-                            ? Color(0xff111C20)
-                            : Color(0xffF7F8F9), //Colors.grey.shade400,
-                      ),
+                      listener: (BuildContext context, Object? state) {
+                        if (state is OcrLoading) {
+                          Utility.showLoadingDialog(context, true);
+                        }
+                        if (state is GetRubricPdfSuccess) {
+                          Navigator.pop(context);
+                          if (state.objList == null || state.objList!.isEmpty) {
+                            Utility.currentScreenSnackBar("no pdf link ", null);
+                          } else if (state.objList!.length > 1) {
+                            showRubricList(state.objList);
+                          } else {
+                            navigateToPdfViewer(pdfObject: state.objList![0]);
+                          }
+                        }
+                        if (state is OcrErrorReceived) {
+                          print(state.err);
+                          Navigator.pop(context);
+                          Utility.currentScreenSnackBar(
+                              state.err.toString(), null);
+                        }
+
+                        if (state is NoRubricAvailable) {
+                          Navigator.pop(context);
+                          Utility.currentScreenSnackBar(
+                              'No Rubric Available', null);
+                        }
+                      },
                     )
                   ],
                 ),
@@ -176,7 +203,8 @@ class _OpticalCharacterRecognitionPageState
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (!connected) {
-                      Utility.currentScreenSnackBar("No Internet Connection");
+                      Utility.currentScreenSnackBar(
+                          "No Internet Connection", null);
                     } else {
                       //Utility.showLoadingDialog(context);
                       // Globals.studentInfo!.clear();
@@ -253,7 +281,7 @@ class _OpticalCharacterRecognitionPageState
                 } else {
                   Navigator.of(context).pop();
                   Utility.currentScreenSnackBar(
-                      "Something Went Wrong. Please Try Again.");
+                      "Something Went Wrong. Please Try Again.", null);
                 }
                 // Utility.refreshAuthenticationToken(
                 //     state.errorMsg!, context, _scaffoldKey);
@@ -270,7 +298,8 @@ class _OpticalCharacterRecognitionPageState
               return GestureDetector(
                 onTap: () async {
                   if (!connected) {
-                    Utility.currentScreenSnackBar("No Internet Connection");
+                    Utility.currentScreenSnackBar(
+                        "No Internet Connection", null);
                     return;
                   }
                   if (Globals.googleDriveFolderId!.isEmpty) {
@@ -283,7 +312,7 @@ class _OpticalCharacterRecognitionPageState
                     padding: EdgeInsets.only(top: 10),
                     // color: Colors.red,
                     child: Utility.textWidget(
-                        text: 'Assessment History',
+                        text: 'Assignment History',
                         context: context,
                         textTheme:
                             Theme.of(context).textTheme.headline2!.copyWith(
@@ -423,6 +452,7 @@ class _OpticalCharacterRecognitionPageState
                                 RubricScoreList.scoringList[index]);
                           },
                           onTap: () {
+                            print(Globals.scoringRubric);
                             rubricScoreSelectedColor.value = index;
 
                             if (RubricScoreList.scoringList[index].name ==
@@ -430,7 +460,6 @@ class _OpticalCharacterRecognitionPageState
                                 rubricScoreSelectedColor.value == 1) {
                               // To make sure, custom name not mismatches the options
                               customRubricBottomSheet();
-                            } else {
                               if (index == 0) {
                                 pointPossibleSelectedColor.value = 1;
                               } else if (index == 2) {
@@ -444,6 +473,14 @@ class _OpticalCharacterRecognitionPageState
                               }
 
                               lastIndex = index;
+                              Globals.scoringRubric =
+                                  '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
+                            } else if (RubricScoreList
+                                    .scoringList[index].name ==
+                                "None") {
+                              Globals.scoringRubric =
+                                  RubricScoreList.scoringList[index].name;
+                            } else {
                               Globals.scoringRubric =
                                   '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
                             }
@@ -464,8 +501,7 @@ class _OpticalCharacterRecognitionPageState
                             child: Container(
                               alignment: Alignment.center,
                               child: Utility.textWidget(
-                                text:
-                                    "${RubricScoreList.scoringList[index].name! + " " + RubricScoreList.scoringList[index].score!}",
+                                text: getScrobingRubric(index: index),
                                 context: context,
                                 textTheme: Theme.of(context)
                                     .textTheme
@@ -500,43 +536,41 @@ class _OpticalCharacterRecognitionPageState
         });
   }
 
-  customRubricBottomSheet() {
+  showRubricList(List<RubricPdfModal>? infoPdfList) {
     showModalBottomSheet(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
-        backgroundColor: Colors.transparent,
-        // animationCurve: Curves.easeOutQuart,
-        elevation: 10,
-        context: context,
-        builder: (context) => BottomSheetWidget(
-            update: _update,
-            title: 'Scoring Rubric',
-            isImageField: true,
-            textFieldTitleOne: 'Score Name',
-            textFieldTitleTwo: 'Custom Score',
-            isSubjectScreen: false,
-            valueChanged: (controller) async {}));
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      // animationCurve: Curves.easeOutQuart,
+      elevation: 10,
+      context: context,
+      builder: (context) => BottomSheetWidget(
+        update: _update,
+        title: 'Rubric Info',
+        isImageField: false,
+        textFieldTitleOne: 'Score Name',
+        textFieldTitleTwo: 'Custom Score',
+        isSubjectScreen: false,
+        valueChanged: (controller) async {},
+        isPdfInfo: true,
+        rubricPdfModalList: infoPdfList,
+        tileOnTap: (object) => navigateToPdfViewer(pdfObject: object),
+        sheetHeight: MediaQuery.of(context).size.height * 0.50,
+      ),
+    );
   }
 
 //To update the rubric score list
+
+//To update the rubric score list
   void _update(bool value) {
-    if (!value) {
-      if (lastIndex == null) {
-        lastIndex = 0;
-      }
-      Globals.scoringRubric =
-          "${RubricScoreList.scoringList[lastIndex!].name}  ${RubricScoreList.scoringList[lastIndex!].score}";
-      rubricScoreSelectedColor.value = lastIndex!;
-    } else {
+    if (value) {
+      updateLocalDb();
       updateRubricList.value = !updateRubricList.value;
       rubricScoreSelectedColor.value = RubricScoreList.scoringList.length - 1;
       Globals.scoringRubric = RubricScoreList.scoringList.last.name;
-    }
-
-    if (value) {
-      updateRubricList.value = !updateRubricList.value;
     }
   }
 
@@ -553,7 +587,7 @@ class _OpticalCharacterRecognitionPageState
 
   Future updateLocalDb() async {
     //Save user profile to locally
-    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+    // LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
     //print(RubricScoreList.scoringList);
     await _localDb.clear();
 
@@ -577,21 +611,29 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnCameraSection() async {
-    Globals.pointpossible = rubricScoreSelectedColor.value == 0 //NYS 0-2
-        ? '2'
-        : rubricScoreSelectedColor.value == 2 //NYS 0-3
-            ? '3'
-            // : rubricScoreSelectedColor.value == 3 //None
-            //     ? (pointPossibleSelectedColor.value + 2).toString() //
-            : rubricScoreSelectedColor.value == 4 //NYS 0-4
-                ? '4'
-                : rubricScoreSelectedColor.value > 4 //Custom selection
-                    ? (pointPossibleSelectedColor.value + 1)
-                        .toString() //+1 is added for 'index+1' to get right point possible
-                    : '2'; //In case of 'None' or 'Custom rubric' selection
+    //Rubric selection comparision
+    Globals.pointpossible = Globals.scoringRubric == 'None'
+        //Point possible index comparision
+        ? pointPossibleSelectedColor.value == 1
+            ? "2"
+            : (pointPossibleSelectedColor.value + 1).toString()
+        : rubricScoreSelectedColor.value == 0 //NYS 0-2
+            ? '2'
+            : rubricScoreSelectedColor.value == 2 //NYS 0-3
+                ? '3'
+                // : rubricScoreSelectedColor.value == 3 //None
+                //     ? (pointPossibleSelectedColor.value + 2).toString() //
+                : rubricScoreSelectedColor.value == 4 //NYS 0-4
+                    ? '4'
+                    : rubricScoreSelectedColor.value > 4 //Custom selection
+                        ? (pointPossibleSelectedColor.value + 1)
+                            .toString() //+1 is added for 'index+1' to get right point possible
+                        : '2'; //In case of 'None' or 'Custom rubric' selection
 
     Globals.googleExcelSheetId = "";
+    //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
     updateLocalDb();
+
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
@@ -605,9 +647,11 @@ class _OpticalCharacterRecognitionPageState
         description: 'Start Scanning',
         operationResult: 'Success'));
 
-    _bloc.add(SaveSubjectListDetails());
+    //  _bloc.add(SaveSubjectListDetails());
     // //print(Globals.scoringRubric);
     // UNCOMMENT Below
+    print("navigate to camera");
+    print(Globals.pointpossible);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -637,7 +681,6 @@ class _OpticalCharacterRecognitionPageState
   }
 
   void _beforenavigateOnAssessmentSection() {
-    updateLocalDb();
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
@@ -657,5 +700,67 @@ class _OpticalCharacterRecognitionPageState
                 isFromHomeSection: true,
               )),
     );
+  }
+
+  void navigateToPdfViewer({required RubricPdfModal pdfObject}) {
+    if (pdfObject.rubricPdfC == null ||
+        pdfObject.rubricPdfC!.contains('http') == false) {
+      Utility.currentScreenSnackBar("No Pdf url", null);
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => CommonPdfViewerPage(
+                    isOCRFeature: true,
+                    isHomePage: false,
+                    url: pdfObject.rubricPdfC,
+                    tittle: pdfObject.titleC ?? 'no tittle',
+                    isbuttomsheet: false,
+                    language: Globals.selectedLanguage,
+                  )));
+    }
+  }
+
+  customRubricBottomSheet() {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (context) => BottomSheetWidget(
+            update: _update,
+            title: 'Scoring Rubric',
+            isImageField: true,
+            textFieldTitleOne: 'Score Name',
+            textFieldTitleTwo: 'Custom Score',
+            isSubjectScreen: false,
+            valueChanged: (controller) async {}));
+  }
+
+  String getScrobingRubric({required int index}) {
+    String rubric =
+        "${RubricScoreList.scoringList[index].name! + " " + RubricScoreList.scoringList[index].score!}";
+
+    return Overrides.STANDALONE_GRADED_APP == true
+        ? rubric.replaceAll('NYS', '')
+        : rubric;
+  }
+
+  getAllRubricList() async {
+    List<CustomRubicModal> _localData = await _localDb.getData();
+    if (_localData.isEmpty) {
+      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+        await _localDb.addData(e);
+      });
+      await _localDb.close();
+    } else {
+      RubricScoreList.scoringList.clear();
+      RubricScoreList.scoringList.addAll(_localData);
+      updateRubricList.value = !updateRubricList.value;
+    }
   }
 }

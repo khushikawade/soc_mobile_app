@@ -24,8 +24,7 @@ class GoogleDriveGetSuccess extends GoogleDriveState {
   final List<HistoryAssessment> obj;
   final String? nextPageLink;
 
-
-  GoogleDriveGetSuccess({required this.obj,this.nextPageLink});
+  GoogleDriveGetSuccess({required this.obj, this.nextPageLink});
 
   GoogleDriveGetSuccess copyWith({final obj}) {
     return GoogleDriveGetSuccess(obj: obj ?? this.obj);

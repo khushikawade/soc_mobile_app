@@ -1,7 +1,7 @@
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/custom/ui/open_external_browser_button.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
-import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
@@ -26,7 +26,12 @@ class CustomPages extends StatefulWidget {
   final CustomSetting? customObj;
   final ScrollController? scrollController;
 
-  CustomPages({Key? key, this.customList, this.customObj, required this.scrollController}) : super(key: key);
+  CustomPages(
+      {Key? key,
+      this.customList,
+      this.customObj,
+      required this.scrollController})
+      : super(key: key);
 
   @override
   _CustomPagesState createState() => _CustomPagesState();
@@ -120,14 +125,14 @@ class _CustomPagesState extends State<CustomPages> {
   Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
     if (obj.sectionTemplate == 'List Menu') {
       return CommonListWidget(
-        scrollController: widget.scrollController,
+          scrollController: widget.scrollController,
           scaffoldKey: _scaffoldKey,
           connected: connected,
           data: list,
           sectionName: "Custom");
     } else if (obj.sectionTemplate == 'Grid Menu') {
       return CommonGridWidget(
-        scrollController: widget.scrollController,
+          scrollController: widget.scrollController,
           scaffoldKey: _scaffoldKey,
           connected: connected,
           data: list,

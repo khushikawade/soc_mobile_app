@@ -39,6 +39,8 @@ class CalendarEventList {
   String? month;
   @HiveField(15)
   final originalStartTime;
+  @HiveField(16)
+  String? monthString;
 
   CalendarEventList(
       {this.kind,
@@ -58,25 +60,26 @@ class CalendarEventList {
       this.sequence,
       this.eventType,
       this.month,
-      this.originalStartTime});
+      this.originalStartTime,
+      this.monthString});
 
   factory CalendarEventList.fromJson(Map<String, dynamic> json) =>
       CalendarEventList(
-        kind: json['kind'] as String?,
-        etag: json['etag'] as String?,
-        id: json['id'] as String?,
-        status: json['status'] as String?,
-        htmlLink: json['htmlLink'] as String?,
-        summary: json['summary'] as String?,
-        description: json['description'] as String?,
-        start: json['start'] ?? null,
-        originalStartTime: json['originalStartTime'] ?? null,
-        end: json['end'],
-        iCalUid: json['iCalUID'] as String?,
-        sequence: json['sequence'] as int?,
-        eventType: json['eventType'] as String?,
-        month: "",
-      );
+          kind: json['kind'] as String?,
+          etag: json['etag'] as String?,
+          id: json['id'] as String?,
+          status: json['status'] as String?,
+          htmlLink: json['htmlLink'] as String?,
+          summary: json['summary'] as String?,
+          description: json['description'] as String?,
+          start: json['start'] ?? null,
+          originalStartTime: json['originalStartTime'] ?? null,
+          end: json['end'],
+          iCalUid: json['iCalUID'] as String?,
+          sequence: json['sequence'] as int?,
+          eventType: json['eventType'] as String?,
+          month: "",
+          monthString: '');
 
   Map<String, dynamic> toJson() => {
         'kind': kind,

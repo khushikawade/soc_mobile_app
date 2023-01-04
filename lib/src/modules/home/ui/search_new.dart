@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/contact.dart';
 import 'package:Soc/src/modules/families/ui/event.dart';
+import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/schools_directory/ui/school_details.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
@@ -45,7 +46,7 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kLabelSpacing = 20.0;
   static const double _kMargin = 16.0;
   final _controller = TextEditingController();
-  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  // final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final HomeBloc _homeBloc = new HomeBloc();
   final HomeBloc _homeBloc2 = new HomeBloc();
@@ -753,32 +754,34 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        resizeToAvoidBottomInset: true,
-        appBar: new AppBar(
-          elevation: 0.0,
-          leading: BackButtonWidget(),
-          centerTitle: true,
-          title: // SizedBox(width: 100.0, height: 60.0, child:
-              Container(
-            // color: Colors.blue,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: GestureDetector(
-                onTap: () {
-                  Utility.scrollToTop(scrollController: _scrollController);
-                },
-                child: AppLogoWidget(
-                  marginLeft: 0,
-                ),
+      key: _scaffoldKey,
+      resizeToAvoidBottomInset: true,
+      appBar: new AppBar(
+        elevation: 0.0,
+        leading: BackButtonWidget(),
+        centerTitle: true,
+        title: // SizedBox(width: 100.0, height: 60.0, child:
+            Container(
+          // color: Colors.blue,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: () {
+                Utility.scrollToTop(scrollController: _scrollController);
+              },
+              child: AppLogoWidget(
+                marginLeft: 0,
               ),
             ),
           ),
-          // )
         ),
-        body: RefreshIndicator(
-          key: refreshKey,
-          child: OfflineBuilder(
+        // )
+      ),
+      body:
+          // RefreshIndicator(
+          //   key: refreshKey,
+          //   child:
+          OfflineBuilder(
               connectivityBuilder: (
                 BuildContext context,
                 ConnectivityResult connectivity,
@@ -860,14 +863,15 @@ class _SearchPageState extends State<SearchPage> {
                 );
               },
               child: Container()),
-          onRefresh: refreshPage,
-        ));
+      //   onRefresh: refreshPage,
+      // )
+    );
   }
 
-  Future refreshPage() async {
-    refreshKey.currentState?.show(atTop: false);
-    _homeBloc.add(FetchStandardNavigationBar());
-  }
+  // Future refreshPage() async {
+  //   refreshKey.currentState?.show(atTop: false);
+  //   _homeBloc.add(FetchStandardNavigationBar());
+  // }
 
   Future _setFree() async {
     await SystemChrome.setPreferredOrientations([

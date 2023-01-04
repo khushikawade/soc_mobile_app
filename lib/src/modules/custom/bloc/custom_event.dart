@@ -43,14 +43,14 @@ class SDevent extends CustomEvent {
   String toString() => 'SDButtonPressed';
 }
 
-class CalendarListEvent extends CustomEvent {
-  final String? calendarId;
-  CalendarListEvent({
-    this.calendarId,
-  });
-  @override
-  List<Object> get props => [];
+// class CalendarListEvent extends CustomEvent {
+//   final String? calendarId;
+//   CalendarListEvent({
+//     this.calendarId,
+//   });
+//   @override
+//   List<Object> get props => [];
 
-  @override
-  String toString() => 'Calendar';
-}
+//   @override
+//   String toString() => 'Calendar';
+// }

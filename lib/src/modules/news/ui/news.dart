@@ -85,7 +85,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   void dispose() {
     //free screen orientation
     //  Utility.setFree();
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
