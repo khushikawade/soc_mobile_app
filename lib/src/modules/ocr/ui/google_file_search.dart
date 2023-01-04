@@ -33,7 +33,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   static const double _kLabelSpacing = 20.0;
   static const double _kMargin = 16.0;
   final _controller = TextEditingController();
-  final refreshKey = GlobalKey<RefreshIndicatorState>();
+  // final refreshKey = GlobalKey<RefreshIndicatorState>();
   bool iserrorstate = false;
   final GoogleDriveBloc googleBloc = new GoogleDriveBloc();
   FocusNode myFocusNode = new FocusNode();

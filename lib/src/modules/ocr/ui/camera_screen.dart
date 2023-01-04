@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
-import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
+import 'package:Soc/src/modules/ocr/widgets/common_popup.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -127,7 +129,7 @@ class _CameraScreenState extends State<CameraScreen>
     Wakelock.enable();
 
     Globals.iscameraPopup
-        ? WidgetsBinding.instance!
+        ? WidgetsBinding.instance
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
     SystemChrome.setEnabledSystemUIOverlays([]);
@@ -147,6 +149,7 @@ class _CameraScreenState extends State<CameraScreen>
   void dispose() {
     Wakelock.disable();
     controller?.dispose();
+    setEnabledSystemUIMode();
     super.dispose();
   }
 
@@ -261,6 +264,7 @@ class _CameraScreenState extends State<CameraScreen>
                                       )),
                             );
                           } else {
+                            setEnabledSystemUIMode();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -306,7 +310,8 @@ class _CameraScreenState extends State<CameraScreen>
                           } else {
                             Navigator.of(context).pop();
                             Utility.currentScreenSnackBar(
-                                "Something Went Wrong. Please Try Again.");
+                                "Something Went Wrong. Please Try Again.",
+                                null);
                           }
                         }
                       }),
@@ -396,47 +401,61 @@ class _CameraScreenState extends State<CameraScreen>
                                   studentData: await Utility.getStudentInfoList(
                                       tableName: 'student_info')));
                             } else {
-                              List<String> classSuggestions =
-                                  await _localDb.getData();
-                              LocalDatabase<String> classSectionLocalDb =
-                                  LocalDatabase('class_section_list');
+                              if (Overrides.STANDALONE_GRADED_APP == true) {
+                                List<String> suggestionList =
+                                    await getSuggestionChips();
 
-                              List<String> localSectionList =
-                                  await classSectionLocalDb.getData();
-
-                              // Compares 2 list and update the changes in local database.
-                              bool isClassChanges = false;
-                              for (int i = 0; i < classList.length; i++) {
-                                if (!localSectionList.contains(classList[i])) {
-                                  isClassChanges = true;
-                                  break;
-                                }
-                              }
-
-                              if (localSectionList.isEmpty || isClassChanges) {
-                                //print("local db is empty");
-                                classSectionLocalDb.clear();
-                                classList.forEach((String e) {
-                                  classSectionLocalDb.addData(e);
-                                });
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CreateAssessment(
+                                          customGrades: classList,
+                                          classSuggestions: suggestionList)),
+                                );
                               } else {
-                                //print("local db is not empty");
-                                classList = [];
-                                classList.addAll(localSectionList);
-                              }
+                                List<String> classSuggestions =
+                                    await _localDb.getData();
+                                LocalDatabase<String> classSectionLocalDb =
+                                    LocalDatabase('class_section_list');
 
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CreateAssessment(
-                                        customGrades: classList,
-                                        classSuggestions: classSuggestions)),
-                              );
+                                List<String> localSectionList =
+                                    await classSectionLocalDb.getData();
+
+                                // Compares 2 list and update the changes in local database.
+                                bool isClassChanges = false;
+                                for (int i = 0; i < classList.length; i++) {
+                                  if (!localSectionList
+                                      .contains(classList[i])) {
+                                    isClassChanges = true;
+                                    break;
+                                  }
+                                }
+
+                                if (localSectionList.isEmpty ||
+                                    isClassChanges) {
+                                  //print("local db is empty");
+                                  classSectionLocalDb.clear();
+                                  classList.forEach((String e) {
+                                    classSectionLocalDb.addData(e);
+                                  });
+                                } else {
+                                  //print("local db is not empty");
+                                  classList = [];
+                                  classList.addAll(localSectionList);
+                                }
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CreateAssessment(
+                                          customGrades: classList,
+                                          classSuggestions: classSuggestions)),
+                                );
+                              }
                             }
                           } else {
                             Utility.showSnackBar(
                                 _scaffoldKey,
-                                "Assessment not found! Please scan a student assessment to proceed further",
+                                "Assignment not found! Please scan a student Assignment to proceed further",
                                 context,
                                 null);
                           }
@@ -550,6 +569,7 @@ class _CameraScreenState extends State<CameraScreen>
                                             List p = await _historyStudentInfoDb
                                                 .getData();
                                             //print(p.length);
+                                            setEnabledSystemUIMode();
                                             var flashOn = await Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -840,5 +860,29 @@ class _CameraScreenState extends State<CameraScreen>
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase('student_info');
     return await _studentInfoDb.getData();
+  }
+
+  Future<List<String>> getSuggestionChips() async {
+    try {
+      List<String> classList = [];
+      LocalDatabase<GoogleClassroomCourses> _localDb =
+          LocalDatabase(Strings.googleClassroomCoursesList);
+
+      List<GoogleClassroomCourses>? _localData = await _localDb.getData();
+      List<String> studentEmailList = [];
+      for (var i = 0; i < _localData.length; i++) {
+        classList.add(_localData[i].name!);
+      }
+      classList.sort();
+      return classList;
+    } catch (e) {
+      List<String> classList = [];
+      return classList;
+    }
+  }
+
+  void setEnabledSystemUIMode() {
+    print('calll    setEnabledSystemUIOverlays');
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   }
 }

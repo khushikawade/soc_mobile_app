@@ -29,6 +29,7 @@ import '../../../overrides.dart';
 
 class HomePage extends StatefulWidget {
   final String? title;
+  final int? index;
   final homeObj;
   final String? language;
   final bool? isFromOcrSection;
@@ -39,7 +40,8 @@ class HomePage extends StatefulWidget {
       this.homeObj,
       this.language,
       this.builder,
-      this.isFromOcrSection})
+      this.isFromOcrSection,
+      this.index})
       : super(key: key);
 
   @override
@@ -116,14 +118,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   // }
 
   void _checkNewVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String _packageName = packageInfo.packageName;
-    _versionNumber = packageInfo.version;
-    final newVersion = NewVersion(
-      iOSId: _packageName,
-      androidId: _packageName,
-    );
-    _checkVersionUpdateStatus(newVersion);
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String _packageName = packageInfo.packageName;
+      _versionNumber = packageInfo.version;
+      final newVersion = NewVersion(
+        iOSId: _packageName,
+        androidId: _packageName,
+      );
+      _checkVersionUpdateStatus(newVersion);
+    } catch (e) {}
   }
 
   @override
@@ -135,11 +139,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _bloc.initPushState(context);
     restart();
     Globals.controller = PersistentTabController(
-        initialIndex: Globals.isNewTap == true
-            ? Globals.newsIndex ?? 0
-            : (widget.isFromOcrSection == true
-                ? Globals.lastindex
-                : Globals.homeIndex ?? 0));
+        initialIndex: widget.index != null
+            ? 2
+            : Globals.isNewTap == true
+                ? Globals.newsIndex ?? 0
+                : (widget.isFromOcrSection == true
+                    ? Globals.lastindex
+                    : Globals.homeIndex ?? 0));
     // initialIndex:
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
@@ -148,12 +154,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   _checkVersionUpdateStatus(NewVersion newVersion) async {
-    // final VersionStatus? versionStatus = await getVersionStatus();
-    newVersion.showAlertIfNecessary(context: context);
-
-    // if (Globals.packageInfo!.version != _versionNumber) {
-    //   _updateAlart();
-    // }
+    try {
+      newVersion.showAlertIfNecessary(context: context);
+    } catch (e) {}
   }
 
   @override

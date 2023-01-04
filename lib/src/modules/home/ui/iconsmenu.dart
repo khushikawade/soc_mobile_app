@@ -10,7 +10,7 @@ class IconsMenu {
   );
 
   static const Permissions = IconMenu(
-    text: 'Permission',
+    text: 'Permissions',
   );
 }
 

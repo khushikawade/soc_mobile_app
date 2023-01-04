@@ -3,6 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/search_screen.dart';
@@ -16,28 +17,37 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import '../../../services/Strings.dart';
 import '../../../services/local_database/local_db.dart';
 import '../widgets/bottom_sheet_widget.dart';
 
 class SubjectSelection extends StatefulWidget {
   final String? selectedClass;
+  final String? subjectId;
+  final String? stateName;
   final bool? isSearchPage;
   final String? domainNameC;
   final String? searchClass;
   final String? selectedSubject;
   final String? questionimageUrl;
+  final bool? isCommonCore;
   SubjectSelection(
       {Key? key,
+      this.stateName,
+      this.subjectId,
       required this.selectedClass,
       this.isSearchPage,
       this.domainNameC,
       this.searchClass,
       this.selectedSubject,
-      required this.questionimageUrl})
+      required this.questionimageUrl,
+      this.isCommonCore})
       : super(key: key);
 
   @override
@@ -48,8 +58,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   static const double _KVertcalSpace = 60.0;
   final searchController = TextEditingController();
   final addController = TextEditingController();
-
-  String? keyword;
+  String? selectedKeyword;
   String? keywordSub;
   OcrBloc _ocrBloc = OcrBloc();
   List<String> userAddedSubjectList = [];
@@ -84,16 +93,33 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   @override
   initState() {
+    // To Fetch Subject Name Accoding to state seletion
+
     if (widget.isSearchPage == true) {
       isSkipButton.value = true;
-      _ocrBloc.add(FatchSubjectDetails(
+      _ocrBloc.add(FetchSubjectDetails(
+          stateName: widget.stateName,
+          subjectId: widget.subjectId,
           type: 'nycSub',
-          keyword: widget.domainNameC,
-          grade: widget.searchClass,
-          subjectSelected: widget.selectedSubject));
+          selectedKeyword: widget.domainNameC,
+          grade: widget.selectedClass,
+          subjectSelected: widget.selectedSubject
+
+          // type: 'nycSub',
+          // keyword: widget.domainNameC,
+          // grade: widget.searchClass,
+          // subjectSelected: widget.selectedSubject
+          ));
     } else {
-      _ocrBloc.add(
-          FatchSubjectDetails(type: 'subject', keyword: widget.selectedClass));
+      // if user come from state selection page or create assesment page
+      _ocrBloc.add(FetchSubjectDetails(
+          type: 'subject',
+          grade: widget.selectedClass,
+          // empty because no subject selected yet
+          subjectId: '',
+          subjectSelected: '',
+          selectedKeyword: widget.selectedClass,
+          stateName: widget.stateName));
     }
 
     super.initState();
@@ -105,6 +131,57 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     super.dispose();
   }
 
+  // back button widget on subject selection page at appBar -------
+  Widget backButtonWidget() {
+    return IconButton(
+      icon: Icon(
+        IconData(0xe80d,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: AppTheme.kButtonColor,
+      ),
+      onPressed: () async {
+        FocusManager.instance.primaryFocus?.unfocus();
+        // Change pages according to current page position on back press ..
+        if (pageIndex.value == 1) {
+          learningStandard = '';
+          isSkipButton.value = false;
+          nycIndex1.value = -1;
+          subjectIndex1.value = 0;
+          isSubmitButton.value = false;
+          _ocrBloc.add(FetchSubjectDetails(
+              type: 'subject',
+              selectedKeyword: widget.selectedClass,
+              grade: widget.selectedClass,
+              stateName: widget.stateName,
+              subjectId: '',
+              subjectSelected: ''));
+        } else if (pageIndex.value == 2) {
+          nycSubIndex1.value = -1;
+          nycIndex1.value = 0;
+          learningStandard = '';
+          subLearningStandard = '';
+          isSubmitButton.value = false;
+          isSkipButton.value = true;
+
+          if (widget.isSearchPage == true) {
+            Navigator.pop(context);
+          } else {
+            _ocrBloc.add(FetchSubjectDetails(
+              type: 'nyc',
+              selectedKeyword: selectedKeyword,
+              grade: widget.selectedClass,
+              stateName: widget.stateName,
+              subjectId: subjectId,
+              subjectSelected: subject,
+            ));
+          }
+        } else {
+          Navigator.pop(context);
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -114,201 +191,166 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           children: [
             CommonBackGroundImgWidget(),
             Scaffold(
-              key: _scaffoldKey,
-              bottomNavigationBar: progressIndicatorBar(),
-              floatingActionButton: submitAssessmentButton(),
-              backgroundColor: Colors.transparent,
-              resizeToAvoidBottomInset: false,
-              appBar: CustomOcrAppBarWidget(
-                onTap: () {
-                  Utility.scrollToTop(scrollController: _scrollController);
-                },
-                isSuccessState: ValueNotifier<bool>(true),
-                isbackOnSuccess: isBackFromCamera,
-                //key: null,
-                isBackButton: true,
-                key: null,
-                isHomeButtonPopup: true,
-
-                customBackButton: IconButton(
-                  icon: Icon(
-                    IconData(0xe80d,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    color: AppTheme.kButtonColor,
-                  ),
-                  onPressed: () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    if (pageIndex.value == 1) {
-                      // isSkipButton.value = false;
-                      learningStandard = '';
-                      isSkipButton.value = false;
-                      // subjectIndex1.value = -1;
-                      nycIndex1.value = -1;
-                      isSubmitButton.value = false;
-                      _ocrBloc.add(FatchSubjectDetails(
-                          type: 'subject', keyword: widget.selectedClass));
-                    } else if (pageIndex.value == 2) {
-                      // isSkipButton.value = false;
-                      nycSubIndex1.value = -1;
-                      learningStandard = '';
-                      subLearningStandard = '';
-                      isSubmitButton.value = false;
-                      isSkipButton.value = true;
-                      // nycIndex1.value = -1;
-                      if (widget.isSearchPage == true) {
-                        //   FatchSubjectDetails(type: 'nyc', keyword: keyword));
-                        Navigator.pop(context);
-                      } else {
-                        _ocrBloc.add(
-                            FatchSubjectDetails(type: 'nyc', keyword: keyword));
-                      }
-                    } else {
-                      Navigator.pop(context);
-                    }
+                key: _scaffoldKey,
+                bottomNavigationBar: progressIndicatorBar(),
+                floatingActionButton: saveToDriveButton(),
+                backgroundColor: Colors.transparent,
+                resizeToAvoidBottomInset: false,
+                appBar: CustomOcrAppBarWidget(
+                  hideStateSelection: true,
+                  onTap: () {
+                    Utility.scrollToTop(scrollController: _scrollController);
                   },
+                  isSuccessState: ValueNotifier<bool>(true),
+                  isbackOnSuccess: isBackFromCamera,
+                  isBackButton: true,
+                  key: null,
+                  isHomeButtonPopup: true,
+                  customBackButton: backButtonWidget(),
                 ),
-              ),
-              body: Container(
-                height:
-                    MediaQuery.of(context).orientation == Orientation.portrait
-                        ? MediaQuery.of(context).size.height * 0.85
-                        : MediaQuery.of(context).size.width * 0.80,
-                child: ListView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                  ),
-                  children: [
-                    SpacerWidget(_KVertcalSpace * 0.50),
-                    titleWidget(),
-                    SpacerWidget(_KVertcalSpace / 3.5),
-                    ValueListenableBuilder(
-                        valueListenable: pageIndex,
-                        builder: (BuildContext context, dynamic value,
-                            Widget? child) {
-                          return pageIndex.value == 0
-                              ? Container()
-                              : SearchBar(
-                                  isSubLearningPage:
-                                      pageIndex.value == 2 ? true : false,
-                                  readOnly: false,
-                                  onTap: () {
-                                    if (pageIndex.value == 1) {
-                                      FocusManager.instance.primaryFocus
-                                          ?.unfocus();
-
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SearchScreenPage(
-                                                  questionImage:
-                                                      widget.questionimageUrl ??
-                                                          '',
-                                                  keyword: keyword,
-                                                  grade: widget.selectedClass,
-                                                )),
-                                      );
-                                    }
-                                  },
-                                  controller: searchController,
-                                  onSaved: (String value) {
-                                    if (searchController.text.isEmpty &&
-                                        pageIndex.value != 1) {
-                                      _ocrBloc.add(FatchSubjectDetails(
-                                          type: pageIndex.value == 0
-                                              ? 'subject'
-                                              : pageIndex.value == 1
-                                                  ? 'nyc'
-                                                  : 'nycSub',
-                                          keyword: pageIndex.value == 0
-                                              ? widget.selectedClass
-                                              : pageIndex.value == 1
-                                                  ? keyword
-                                                  : keywordSub ??
-                                                      widget.domainNameC,
-                                          grade: widget.searchClass,
-                                          subjectSelected:
-                                              widget.selectedSubject));
-                                    } else if (pageIndex.value != 1) {
-                                      _debouncer.run(() async {
-                                        pageIndex.value == 0
-                                            ? searchList(
-                                                classNo: widget.selectedClass!,
-                                                searchKeyword:
-                                                    searchController.text)
-                                            : null;
-
-                                        _ocrBloc.add(SearchSubjectDetails(
-                                            searchKeyword:
-                                                searchController.text,
-                                            type: pageIndex.value == 0
-                                                ? 'subject'
-                                                : pageIndex.value == 1
-                                                    ? 'nyc'
-                                                    : 'nycSub',
-                                            keyword: pageIndex.value == 0
-                                                ? widget.selectedClass
-                                                : pageIndex.value == 1
-                                                    ? keyword
-                                                    : keywordSub ??
-                                                        widget.domainNameC,
-                                            grade: widget.searchClass,
-                                            subjectSelected:
-                                                widget.selectedSubject));
-                                        setState(() {});
-                                      });
-                                    }
-
-                                    if (pageIndex.value == 1) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SearchScreenPage(
-                                                  questionImage:
-                                                      widget.questionimageUrl ??
-                                                          '',
-                                                  keyword: keyword,
-                                                  grade: widget.selectedClass,
-                                                )),
-                                      );
-                                    }
-                                  });
-                        }),
-                    SpacerWidget(_KVertcalSpace / 4),
-                    ValueListenableBuilder(
-                        valueListenable: pageIndex,
-                        builder: (BuildContext context, dynamic value,
-                            Widget? child) {
-                          return pageIndex.value == 1
-                              ? searchDomainText()
-                              : Container();
-                        }),
-                    SpacerWidget(_KVertcalSpace / 4),
-                    blocBuilderWidget(),
-                    BlocListener(
-                      bloc: _ocrBloc,
-                      listener: (context, state) async {
-                        if (state is SubjectDataSuccess) {
-                          pageIndex.value = 0;
-                        } else if (state is NycDataSuccess) {
-                          // AnimationController?.dispose();
-                          pageIndex.value = 1;
-                        } else if (state is NycSubDataSuccess) {
-                          pageIndex.value = 2;
-                        }
-                      },
-                      child: Container(),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                body: mainBodyWidget()),
           ],
         ),
       ),
     );
+  }
+
+  // Search Bar widget with there conditions -----------
+  Widget searchWidget() {
+    return ValueListenableBuilder(
+        valueListenable: pageIndex,
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return pageIndex.value == 0
+              ? Container()
+              : SearchBar(
+                  stateName: widget.stateName!,
+                  isSubLearningPage: pageIndex.value == 2 ? true : false,
+                  readOnly: false,
+                  onTap: () {
+                    // In case of Domain search it will navigated to SearchPage
+                    if (pageIndex.value == 1) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchScreenPage(
+                                  questionImage: widget.questionimageUrl ?? '',
+                                  selectedKeyword: selectedKeyword,
+                                  grade: widget.selectedClass,
+                                  selectedSubject: subject,
+                                  stateName: widget.stateName,
+                                  subjectId: subjectId,
+                                )),
+                      );
+                    }
+                  },
+                  suffixIcon: InkWell(
+                    onTap: () {
+                      searchController.clear();
+                      _ocrBloc.add(FetchSubjectDetails(
+                          stateName: widget.stateName,
+                          subjectId: subjectId,
+                          type: 'nycSub',
+                          selectedKeyword: keywordSub,
+                          grade: widget.selectedClass,
+                          subjectSelected: subject));
+                    },
+                    child: Icon(
+                      Icons.clear,
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                      size: Globals.deviceType == "phone" ? 20 : 28,
+                    ),
+                  ),
+                  controller: searchController,
+                  onSaved: (String value) {
+                    if (searchController.text.isEmpty && pageIndex.value != 1) {
+                      // Fetch whole data related to perticular Domain in case of search field is empty
+                      _ocrBloc.add(FetchSubjectDetails(
+                          stateName: widget.stateName,
+                          subjectId: subjectId,
+                          type: 'nycSub',
+                          selectedKeyword: keywordSub,
+                          grade: widget.selectedClass,
+                          subjectSelected: subject));
+                      // setState(() {});
+                    } else {
+                      // search according to text and return the data
+                      _debouncer.run(() async {
+                        _ocrBloc.add(SearchSubjectDetails(
+                            stateName: widget.stateName!,
+                            searchKeyword: searchController.text,
+                            type: 'nycSub',
+                            selectedKeyword: keywordSub,
+                            grade: widget.selectedClass,
+                            subjectSelected: subject));
+                        setState(() {});
+                      });
+                    }
+
+                    if (pageIndex.value == 1) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchScreenPage(
+                                  questionImage: widget.questionimageUrl ?? '',
+                                  selectedKeyword: selectedKeyword,
+                                  grade: widget.selectedClass,
+                                  selectedSubject: subject,
+                                  stateName: widget.stateName,
+                                  subjectId: subjectId,
+                                )),
+                      );
+                    }
+                  });
+        });
+  }
+
+  // main body structure of the page----------------
+  Widget mainBodyWidget() {
+    return Container(
+        height: MediaQuery.of(context).orientation == Orientation.portrait
+            ? MediaQuery.of(context).size.height * 0.85
+            : MediaQuery.of(context).size.width * 0.80,
+        child: ListView(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
+          children: [
+            SpacerWidget(_KVertcalSpace * 0.50),
+            titleWidget(),
+            SpacerWidget(_KVertcalSpace / 3.5),
+            searchWidget(),
+            SpacerWidget(_KVertcalSpace / 4),
+            ValueListenableBuilder(
+                valueListenable: pageIndex,
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return pageIndex.value == 1
+                      ? searchDomainText()
+                      : Container();
+                }),
+            SpacerWidget(_KVertcalSpace / 4),
+            blocBuilderWidget(),
+            BlocListener(
+              bloc: _ocrBloc,
+              listener: (context, state) async {
+                if (state is SubjectDataSuccess) {
+                  pageIndex.value = 0;
+                } else if (state is NycDataSuccess) {
+                  // AnimationController?.dispose();
+                  pageIndex.value = 1;
+                  if (state.obj.length == 0) {
+                    isSkipButton.value = false;
+                    isSubmitButton.value = true;
+                  }
+                } else if (state is NycSubDataSuccess) {
+                  pageIndex.value = 2;
+                }
+              },
+              child: Container(),
+            ),
+          ],
+        ));
   }
 
   Widget blocBuilderWidget() {
@@ -327,6 +369,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             return gridButtonsWidget(
                 list: state.obj!, page: 0, isSubjectScreen: true);
           } else if (state is NycDataSuccess) {
+            state.obj.removeWhere((element) => element.domainNameC == null);
             state.obj.forEach((element) {
               if (element.dateTime != null) {
                 state.obj.sort((a, b) => DateTime.parse(b.dateTime.toString())
@@ -334,8 +377,19 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               }
             });
 
-            return gridButtonsWidget(
-                list: state.obj, page: 1, isSubjectScreen: false);
+            return state.obj.length > 0
+                ? gridButtonsWidget(
+                    list: state.obj, page: 1, isSubjectScreen: false)
+                : Container(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    child: NoDataFoundErrorWidget(
+                      marginTop: MediaQuery.of(context).size.height * 0.1,
+                      //errorMessage: 'No Domain Found',
+                      isResultNotFoundMsg: false,
+                      isNews: false,
+                      isEvents: false,
+                    ),
+                  );
           } else if (state is NycSubDataSuccess) {
             state.obj!.forEach((element) {
               if (element.domainCodeC != null) {
@@ -399,6 +453,18 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     ? gridButtonsWidget(
                         list: list, page: 1, isSubjectScreen: false)
                     : buttonListWidget(list: list);
+          } else if (state is OcrLoading) {
+            // loading when user fetch subject detail first time
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.6,
+              child: Center(
+                  child: Globals.isAndroid == true
+                      ? CircularProgressIndicator(
+                          color: AppTheme.kButtonColor,
+                        )
+                      : CupertinoActivityIndicator(
+                          color: AppTheme.kButtonColor)),
+            );
           }
           return Container();
           // return widget here based on BlocA's state
@@ -412,7 +478,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         return Utility.textWidget(
             text: pageIndex.value == 0
                 ? 'Subject'
-                : 'NY Next Generation Learning Standard',
+                : '${widget.stateName} Learning Standard',
             context: context);
       },
       child: Container(),
@@ -428,6 +494,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         context: context);
   }
 
+  // widget to show list view on Sub-learning page  -------
   Widget buttonListWidget({required List<SubjectDetailList> list}) {
     return ValueListenableBuilder(
       valueListenable: nycSubIndex1,
@@ -663,10 +730,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
+  // Widget to show details in grid view on subject selection page and learning page
+  // Using Dynamic list because subject page have different modal list and sub learning have different list
   Widget gridButtonsWidget(
-      {required List<SubjectDetailList> list,
-      int? page,
-      bool? isSubjectScreen}) {
+      {required List<dynamic> list, int? page, bool? isSubjectScreen}) {
     return ValueListenableBuilder(
       valueListenable: pageIndex.value == 0 ? subjectIndex1 : nycIndex1,
       child: Container(),
@@ -682,11 +749,22 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height * 0.09),
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: Globals.deviceType == 'phone' ? 180 : 400,
-                  childAspectRatio:
-                      Globals.deviceType == 'phone' ? 5 / 3 : 5 / 1.5,
-                  crossAxisSpacing: Globals.deviceType == 'phone' ? 15 : 20,
-                  mainAxisSpacing: 15),
+                  maxCrossAxisExtent: Globals.deviceType == 'phone'
+                      ? (pageIndex.value == 1)
+                          ? 220
+                          : 180
+                      : 400,
+                  childAspectRatio: Globals.deviceType == 'phone'
+                      ? (pageIndex.value == 1 && widget.isCommonCore == true)
+                          ? 7 / 6
+                          : 5 / 3
+                      : 5 / 1.5,
+                  crossAxisSpacing: Globals.deviceType == 'phone'
+                      ? (pageIndex.value == 1)
+                          ? 10
+                          : 15
+                      : 20,
+                  mainAxisSpacing: pageIndex.value == 1 ? 15 : 15),
               itemCount: page == 1 ? list.length : list.length + 1,
               itemBuilder: (BuildContext ctx, index) {
                 return page == 1 || (page == 0 && index < list.length)
@@ -705,28 +783,30 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                             if (pageIndex.value == 0) {
                               isSkipButton.value = true;
-                              subject = list[index].subjectNameC ?? '';
-                              subjectId = list[index].subjectC ?? '';
+                              subject = list[index].titleC ?? '';
+                              subjectId = list[index].id ?? '';
                               // standardId = list[index].id ?? '';
 
                               subjectIndex1.value = index;
+                              selectedKeyword = list[index].titleC;
 
-                              if ((subject != 'Math' &&
-                                  subject != 'Science' &&
-                                  subject != 'ELA' &&
-                                  subject != null)) {
+                              // Condition to check selected subject from local or not
+                              if ((list[index].id == null)) {
                                 isSubmitButton.value = true;
                               } else {
                                 isSkipButton.value = true;
                                 isSubmitButton.value = false;
+                                _ocrBloc.add(FetchSubjectDetails(
+                                    type: 'nyc',
+                                    grade: widget.selectedClass,
+                                    selectedKeyword: widget.selectedClass,
+                                    subjectSelected: list[index].titleC,
+                                    subjectId: list[index].id,
+                                    stateName: widget.stateName));
                               }
 
                               if (index < list.length &&
-                                  !isSubmitButton.value) {
-                                keyword = list[index].subjectNameC;
-                                _ocrBloc.add(FatchSubjectDetails(
-                                    type: 'nyc', keyword: keyword));
-                              }
+                                  !isSubmitButton.value) {}
                               //To manage the recent subject list
                               List<SubjectDetailList> recentlUsedList =
                                   await subjectRecentOptionDB.getData();
@@ -742,7 +822,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     i < recentlUsedList.length;
                                     i++) {
                                   if (recentlUsedList[i].subjectNameC ==
-                                      list[index].subjectNameC) {
+                                      list[index].titleC) {
                                     recentSubjectList = recentlUsedList[i];
 
                                     recentSubjectList.dateTime = DateTime.now();
@@ -756,14 +836,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 //To add the object if not exist
                                 if (addToRecentList == false) {
                                   recentSubjectList.subjectNameC =
-                                      list[index].subjectNameC;
+                                      list[index].titleC;
                                   recentSubjectList.dateTime = DateTime.now();
                                   await subjectRecentOptionDB
                                       .addData(recentSubjectList);
                                 }
                               } else {
                                 recentSubjectList.subjectNameC =
-                                    list[index].subjectNameC;
+                                    list[index].titleC;
                                 recentSubjectList.dateTime = DateTime.now();
                                 await subjectRecentOptionDB
                                     .addData(recentSubjectList);
@@ -775,8 +855,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                               if (index < list.length) {
                                 keywordSub = list[index].domainNameC;
-                                _ocrBloc.add(FatchSubjectDetails(
-                                    type: 'nycSub', keyword: keywordSub));
+                                _ocrBloc.add(FetchSubjectDetails(
+                                    type: 'nycSub',
+                                    grade: widget.selectedClass,
+                                    subjectId: subjectId,
+                                    selectedKeyword: keywordSub,
+                                    stateName: widget.stateName,
+                                    subjectSelected: subject));
                               }
                               //To manage the recent learning standard list
                               List<SubjectDetailList> learningrecentList =
@@ -860,8 +945,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                               child: Utility.textWidget(
                                   textAlign: TextAlign.left,
                                   text: page == 0
-                                      ? list[index].subjectNameC!
-                                      : list[index].domainNameC!,
+                                      ? list[index].titleC
+                                      : list[index].domainNameC ?? '',
                                   textTheme: Theme.of(context)
                                       .textTheme
                                       .headline2!
@@ -891,7 +976,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             // if (pageIndex.value == 0) {
                             //   subjectIndex1.value = index;
                             // }
-                            customRubricBottomSheet();
+                            addCustomSubjectBottomSheet();
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
@@ -939,7 +1024,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  customRubricBottomSheet() {
+  //  To Open bottom sheet by which user can add new subjects to screen
+  addCustomSubjectBottomSheet() {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       isScrollControlled: true,
@@ -959,8 +1045,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         valueChanged: (controller) async {
           await updateList(
               subjectName: controller.text, classNo: widget.selectedClass!);
-          _ocrBloc.add(FatchSubjectDetails(
-              type: 'subject', keyword: widget.selectedClass));
+          _ocrBloc.add(FetchSubjectDetails(
+              type: 'subject',
+              selectedKeyword: widget.selectedClass,
+              grade: widget.selectedClass,
+              stateName: widget.stateName,
+              subjectId: subjectId,
+              subjectSelected: selectedKeyword));
 
           controller.clear();
           Navigator.pop(context, false);
@@ -972,7 +1063,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
-  Widget submitAssessmentButton() {
+  // Widget from save to drive by which teacher can save data to google drive
+  Widget saveToDriveButton() {
     return Wrap(
       alignment: WrapAlignment.end,
       children: [
@@ -990,13 +1082,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             backgroundColor:
                                 AppTheme.kButtonColor.withOpacity(1.0),
                             onPressed: () async {
-                              _uploadSheetOnDriveAndnavigate(
-                                  isSkip: true, connected: connected);
                               Utility.updateLoges(
                                   // ,
                                   activityId: '18',
                                   description: 'Skip subject selection process',
                                   operationResult: 'Success');
+                              _uploadSheetOnDriveAndnavigate(
+                                  isSkip: true, connected: connected);
                             },
                             label: Row(
                               children: [
@@ -1069,6 +1161,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                 fileId:
                                                     Globals.googleExcelSheetId,
                                                 isLoading: true,
+                                              
                                                 studentData: await Utility
                                                     .getStudentInfoList(
                                                         tableName:
@@ -1080,7 +1173,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         } else {
                                           Navigator.of(context).pop();
                                           Utility.currentScreenSnackBar(
-                                              "Something Went Wrong. Please Try Again.");
+                                              "Something Went Wrong. Please Try Again.",
+                                              null);
                                         }
                                       }
                                     }),
@@ -1230,7 +1324,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           } else {
                                             Navigator.of(context).pop();
                                             Utility.currentScreenSnackBar(
-                                                "Something Went Wrong. Please Try Again.");
+                                                "Something Went Wrong. Please Try Again.",
+                                                null);
                                           }
                                         }
                                       }),
@@ -1307,30 +1402,70 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     );
   }
 
+  // Fuction to update custom(subject added by teacher) subjects to local db --
   Future<void> updateList(
       {required String subjectName, required String classNo}) async {
-    LocalDatabase<SubjectDetailList> _localDb =
-        LocalDatabase('Subject_list$classNo');
-    List<SubjectDetailList>? _localData = await _localDb.getData();
+    List<StateListObject> subjectList = [];
 
-    if (!_localData.contains(subjectName) && subjectName != '') {
-      SubjectDetailList subjectDetailList = SubjectDetailList();
-      subjectDetailList.subjectNameC = subjectName;
-      _localData.add(subjectDetailList);
+    // to get custom subject list from localDb - State and class specific
+    LocalDatabase<StateListObject> _customSubjectlocalDb =
+        LocalDatabase('Subject_list${widget.stateName}$classNo');
+    List<StateListObject>? _stateCustomlocalData =
+        await _customSubjectlocalDb.getData();
+
+    // to get state list from localDb and extract subject names
+    LocalDatabase<StateListObject> _stateSubjectLocalDb =
+        LocalDatabase(Strings.stateObjectName);
+    List<StateListObject>? _stateSubjectLocalData =
+        await _stateSubjectLocalDb.getData();
+
+    //only adding the subjects state specific
+    for (int i = 0; i < _stateSubjectLocalData.length; i++) {
+      if (_stateSubjectLocalData[i].stateC == widget.stateName) {
+        subjectList.add(_stateSubjectLocalData[i]);
+      }
+    }
+
+    //Add custom subjects to the subject list
+    subjectList.addAll(_stateCustomlocalData);
+
+    //To check if subject already exist in the array before adding to the list
+    bool found = false;
+    subjectList.forEach((s) {
+      if (s.titleC!.toLowerCase() == subjectName.toLowerCase()) {
+        found = true;
+      }
+    });
+
+    if (subjectName.isNotEmpty && !found) {
+      StateListObject subjectDetailList = StateListObject();
+      subjectDetailList.titleC = subjectName;
+      _stateCustomlocalData.add(subjectDetailList);
     } else {
       Utility.showSnackBar(_scaffoldKey,
           "Subject \'$subjectName\' Already Exist", context, null);
     }
 
-    await _localDb.clear();
-    _localData.forEach((SubjectDetailList e) {
-      _localDb.addData(e);
+    await _customSubjectlocalDb.clear();
+    _stateCustomlocalData.forEach((StateListObject e) {
+      _customSubjectlocalDb.addData(e);
     });
+    // Calling event to update subject page --------
+    _ocrBloc.add(FetchSubjectDetails(
+        type: 'subject',
+        grade: widget.selectedClass,
+        // empty because no subject selected yet
+        subjectId: '',
+        subjectSelected: '',
+        selectedKeyword: widget.selectedClass,
+        stateName: widget.stateName));
   }
 
   Future<void> searchList(
       {required String searchKeyword, required String classNo}) async {
-    LocalDatabase<String> _localDb = LocalDatabase('Subject_list$classNo');
+    LocalDatabase<String> _localDb = LocalDatabase(widget.isCommonCore == true
+        ? 'Subject_list_Common_core$classNo'
+        : 'Subject_list$classNo');
     List<String>? _localData = await _localDb.getData();
     userAddedSubjectList = [];
     for (int i = 0; i < _localData.length; i++) {
@@ -1340,32 +1475,27 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     }
   }
 
+  // Function to update sheet to drive and navigate to assessment summery -------------
   void _uploadSheetOnDriveAndnavigate(
       {required bool isSkip, required bool connected}) async {
     {
       if (!connected) {
-        Utility.currentScreenSnackBar("No Internet Connection");
+        Utility.currentScreenSnackBar("No Internet Connection", null);
       } else {
         LocalDatabase<CustomRubicModal> _localDb =
             LocalDatabase('custom_rubic');
 
         List<CustomRubicModal>? _localData = await _localDb.getData();
         String? rubricImgUrl;
-        // String? rubricScore;
+
         for (int i = 0; i < _localData.length; i++) {
           if (_localData[i].customOrStandardRubic == "Custom" &&
-              _localData[i].name == Globals.scoringRubric!.split(" ")[0]) {
-            rubricImgUrl = _localData[i].imgUrl;
+              '${_localData[i].name}' + ' ' + '${_localData[i].score}' ==
+                  Globals.scoringRubric!) {
+            rubricImgUrl = await _localData[i].imgUrl;
             break;
-            // rubricScore = null;
-          }
-          //  else if (_localData[i].name == Globals.scoringRubric &&
-          //         _localData[i].customOrStandardRubic != "Custom") {
-          //       // rubricScore = _localData[i].score;
-          //     }
-          else {
+          } else {
             rubricImgUrl = 'NA';
-            // rubricScore = 'NA';
           }
         }
 
