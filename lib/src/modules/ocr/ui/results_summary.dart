@@ -44,10 +44,10 @@ class ResultsSummary extends StatefulWidget {
       this.standardId,
       this.rubricScore,
       this.isScanMore,
-      this.assessmentListLenght,
+      this.assessmentListLength,
       required this.shareLink,
-      required this.asssessmentName,
-      this.historysecondTime,
+      required this.assessmentName,
+      this.historySecondTime,
       this.isMcqSheet,
       this.selectedAnswer})
       : super(key: key);
@@ -59,22 +59,23 @@ class ResultsSummary extends StatefulWidget {
   final String? standardId;
   final String? rubricScore;
   final bool? isScanMore;
-  final int? assessmentListLenght;
+  final int? assessmentListLength;
   String? shareLink;
-  String? asssessmentName;
-  bool? historysecondTime;
+  String? assessmentName;
+  bool? historySecondTime;
   final bool? createdAsPremium;
   bool? isMcqSheet;
   String? selectedAnswer;
   @override
-  State<ResultsSummary> createState() => _ResultsSummaryState();
+  State<ResultsSummary> createState() => studentRecordList();
 }
 
-class _ResultsSummaryState extends State<ResultsSummary> {
-  static const double _KVertcalSpace = 60.0;
+class studentRecordList extends State<ResultsSummary> {
+  static const double _KVerticalSpace = 60.0;
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
+  int lastAssessmentLength = 0;
   // int? assessmentCount;
   //ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
@@ -82,18 +83,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   final ValueNotifier<bool> editStudentDetailSuccess =
       ValueNotifier<bool>(false);
   final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final ValueNotifier<String> dashoardState = ValueNotifier<String>('');
-  int? assessmentListLenght;
+  final ValueNotifier<String> dashboardState = ValueNotifier<String>('');
+  int? assessmentListLength;
   ValueNotifier<int> assessmentCount = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
-  ValueNotifier<bool> isSuccessStateRecived = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isSuccessStateReceived = ValueNotifier<bool>(false);
   ValueNotifier<bool> infoIconValue = ValueNotifier<bool>(false);
   String? isAssessmentAlreadySaved = '';
   int? savedRecordCount;
   String? questionImageUrl;
 
   String? webContentLink;
-  String? sheetrubricScore;
+  String? sheetRubricScore;
   List<StudentAssessmentInfo> historyRecordList = [];
   List iconsList = [];
   List iconsName = [];
@@ -103,7 +104,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   final editingStudentIdController = TextEditingController();
   final editingStudentScoreController = TextEditingController();
 
-  // ValueNotifier<List<StudentAssessmentInfo>> sudentRecordList =
+  // ValueNotifier<List<StudentAssessmentInfo>> studentRecordList =
   //     ValueNotifier([]);
   ValueNotifier<int> _listCount = ValueNotifier(0);
 
@@ -117,22 +118,22 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   // ValueNotifier<List<bool>> dashboardWidget =
   //     ValueNotifier<List<bool>>([false, false]);
 
-  ValueNotifier<bool> isGoogleSheetStateRecived = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isGoogleSheetStateReceived = ValueNotifier<bool>(false);
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    _futurMethod();
+    _futureMethod();
     if (widget.assessmentDetailPage!) {
       // Globals.historyStudentInfo = [];
       _historyStudentInfoDb.clear();
-      if (widget.historysecondTime == true) {
-        widget.asssessmentName = Globals.historyAssessmentName;
+      if (widget.historySecondTime == true) {
+        widget.assessmentName = Globals.historyAssessmentName;
         widget.fileId = Globals.historyAssessmentFileId;
       } else {
         Globals.historyAssessmentName = '';
         Globals.historyAssessmentFileId = '';
-        Globals.historyAssessmentName = widget.asssessmentName;
+        Globals.historyAssessmentName = widget.assessmentName;
         Globals.historyAssessmentFileId = widget.fileId;
       }
 
@@ -142,14 +143,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               0xe803,
               0xe876,
             ]
-          : [0xe876, 0xe871, 0xe87a];
+          : [0xe876, 0xe871, 0xe87a, 0xe80d];
       iconsName = Overrides.STANDALONE_GRADED_APP
           ? [
               "Drive",
               "Sheet",
               "Share",
             ]
-          : ["Share", "Drive", "Dashboard"];
+          : ["Share", "Drive", "Dashboard", "Slide"];
 
       // if (Overrides.STANDALONE_GRADED_APP) {
       //   // Disable the Save to Dashboard option in case of Graded+ standalone app.
@@ -165,7 +166,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       }
     } else {
       if (widget.isScanMore != true) {
-        _driveBloc.add(GetShareLink(fileId: widget.fileId));
+        print("Shared Link called");
+        _driveBloc.add(GetShareLink(fileId: widget.fileId, slideLink: false));
       } else {
         //TODO : REMOVE GLOBAL ACCESS : IMPROVE
         widget.shareLink = Globals.shareableLink;
@@ -181,7 +183,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     }
     //Checking in case of scan more if data is already saved to the dashboard for previously scanned sheets
     // if (Globals.studentInfo!.length == Globals.scanMoreStudentInfoLength) {
-    //   dashoardState.value = 'Success';
+    //   dashboardState.value = 'Success';
     // }
     _scrollController.addListener(_scrollListener);
     super.initState();
@@ -249,7 +251,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           }),
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                        Utility.updateLoges(
+                        Utility.updateLogs(
                             activityId: '19',
                             description:
                                 'Teacher Successfully Completed the process and press done ',
@@ -274,7 +276,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SpacerWidget(_KVertcalSpace * 0.40),
+                  SpacerWidget(_KVerticalSpace * 0.40),
                   Padding(
                     padding: EdgeInsets.only(
                         left: 5,
@@ -290,7 +292,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 .headline6!
                                 .copyWith(fontWeight: FontWeight.bold)),
                         ValueListenableBuilder(
-                            valueListenable: isGoogleSheetStateRecived,
+                            valueListenable: isGoogleSheetStateReceived,
                             builder: (BuildContext context, bool value,
                                 Widget? child) {
                               return ValueListenableBuilder(
@@ -308,14 +310,30 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             AsyncSnapshot<
                                                     List<StudentAssessmentInfo>>
                                                 snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Globals.isAndroid!
+                                                ? Container(
+                                                    width: 10,
+                                                    height: 10,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .colorScheme
+                                                                .primaryVariant,
+                                                            strokeWidth: 2))
+                                                : CupertinoActivityIndicator();
+                                          }
                                           if (snapshot.hasData &&
                                                   widget.assessmentDetailPage ==
                                                       true
-                                              ? isGoogleSheetStateRecived.value
-                                              : !isGoogleSheetStateRecived
+                                              ? isGoogleSheetStateReceived.value
+                                              : !isGoogleSheetStateReceived
                                                   .value) {
-                                            return snapshot.data != null &&
-                                                    snapshot.data!.length > 0
+                                            lastAssessmentLength =
+                                                snapshot.data!.length;
+                                            return snapshot.data != null
                                                 ? Text(
                                                     '${snapshot.data!.length}',
                                                     style: Theme.of(context)
@@ -363,7 +381,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       ],
                     ),
                   ),
-                  // SpacerWidget(_KVertcalSpace / 5),
+                  // SpacerWidget(_KVerticalSpace / 5),
                   Container(
                     height: MediaQuery.of(context).size.height * 0.09,
                     child: ValueListenableBuilder(
@@ -383,9 +401,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     width: MediaQuery.of(context).size.width *
                                         0.75,
                                     child: Utility.textWidget(
-                                        text: widget.asssessmentName == null
-                                            ? 'Asssessment Name'
-                                            : widget.asssessmentName!,
+                                        text: widget.assessmentName == null
+                                            ? 'Assessment Name'
+                                            : widget.assessmentName!,
                                         context: context,
                                         maxLines: 2,
                                         textAlign: TextAlign.left,
@@ -402,7 +420,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       child: Container(),
                     ),
                   ),
-                  // SpacerWidget(_KVertcalSpace / 5),
+                  // SpacerWidget(_KVerticalSpace / 5),
                   !widget.assessmentDetailPage!
                       ? Expanded(
                           child: ListView(
@@ -452,7 +470,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     }
                                     if (state is ErrorState) {
                                       if (state.errorMsg ==
-                                          'Reauthentication is required') {
+                                          'ReAuthentication is required') {
                                         await Utility
                                             .refreshAuthenticationToken(
                                                 isNavigator: true,
@@ -461,7 +479,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                 scaffoldKey: scaffoldKey);
 
                                         _driveBloc2.add(UpdateDocOnDrive(
-                                          isMcqSheet: widget.isMcqSheet,
+                                          isMcqSheet:
+                                              widget.isMcqSheet ?? false,
                                           questionImage:
                                               questionImageUrl ?? "NA",
                                           createdAsPremium: createdAsPremium,
@@ -519,14 +538,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                             if (state is AssessmentDetailSuccess) {
                               if (state.obj.length > 0) {
-                                // isGoogleSheetStateRecived = true;
-
-                                // savedRecordCount != null
-                                //     ? savedRecordCount == state.obj.length
-                                //         ? dashoardState.value = 'Success'
-                                //         : dashoardState.value = ''
-                                //     : print("");
-
                                 return Expanded(
                                   child: ListView(
                                     children: [
@@ -619,6 +630,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                     await _historyStudentInfoDb.addData(e);
                                   });
                                 }
+                                if (state.obj[0].googleSlidePresentationURL !=
+                                        'NA' &&
+                                    state.obj[0].googleSlidePresentationURL !=
+                                        null) {
+                                  Globals.googleSlidePresentationId = state
+                                      .obj[0].googleSlidePresentationURL!
+                                      .split('/')[5];
+                                } else {
+                                  Globals.googleSlidePresentationId = 'NA';
+                                }
 
                                 if (state.obj[0].answerKey != '' &&
                                     state.obj[0].answerKey != 'NA' &&
@@ -627,25 +648,27 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   widget.selectedAnswer =
                                       state.obj[0].answerKey;
                                 }
+                                Globals.googleSlidePresentationLink =
+                                    state.obj[0].googleSlidePresentationURL;
                                 savedRecordCount != null
                                     ? savedRecordCount == state.obj.length
-                                        ? dashoardState.value = 'Success'
-                                        : dashoardState.value = ''
+                                        ? dashboardState.value = 'Success'
+                                        : dashboardState.value = ''
                                     : print("");
 
-                                sheetrubricScore =
+                                sheetRubricScore =
                                     state.obj.first.scoringRubric;
                                 webContentLink = state.webContentLink;
-                                isSuccessStateRecived.value = true;
+                                isSuccessStateReceived.value = true;
                                 infoIconValue.value = true;
                                 historyRecordList = state.obj;
 
                                 assessmentCount.value = state.obj.length;
                               }
-                              isGoogleSheetStateRecived.value = true;
+                              isGoogleSheetStateReceived.value = true;
                             } else if (state is ErrorState) {
                               if (state.errorMsg ==
-                                  'Reauthentication is required') {
+                                  'ReAuthentication is required') {
                                 await Utility.refreshAuthenticationToken(
                                     isNavigator: false,
                                     errorMsg: state.errorMsg!,
@@ -670,13 +693,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         bloc: _ocrBloc,
                         listener: (context, state) async {
                           if (state is OcrLoading) {
-                            dashoardState.value = 'Loading';
+                            dashboardState.value = 'Loading';
                           } else if (state is AssessmentSavedSuccessfully) {
                             //To update slidable action buttons : Enable/Disable
                             disableSlidableAction.value = true;
 
-                            dashoardState.value = 'Success';
-                            Utility.updateLoges(
+                            dashboardState.value = 'Success';
+                            Utility.updateLogs(
                                 // accountType: 'Free',
                                 activityId: '14',
                                 description: 'Save to dashboard success',
@@ -703,12 +726,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             assessmentCount.value = list.length;
 
                             Globals.scanMoreStudentInfoLength = list.length;
-                            //print(Globals.scanMoreStudentInfoLength);
-                            // _driveBloc.add(UpdateDocOnDrive(
-                            //   isLoading: false,
-                            //     fileId: widget.fileId,
-                            //     studentData: Globals.studentInfo!)
-                            //     );
 
                             _showDataSavedPopup(
                                 historyAssessmentSection: false,
@@ -720,25 +737,24 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                             // Utility.showSnackBar(
                             //     scaffoldKey,
-                            //     'Yay! Data has been successully saved to the dashboard',
+                            //     'Yay! Data has been successfully saved to the dashboard',
                             //     context,
                             //     null);
-
                           } else if (state is OcrErrorReceived) {
                             disableSlidableAction.value = false;
                           }
                           if (state is AssessmentDashboardStatus) {
                             if (state.assessmentId == null &&
                                 state.resultRecordCount == null) {
-                              dashoardState.value = '';
+                              dashboardState.value = '';
                             } else {
-                              if (isGoogleSheetStateRecived.value == true) {
+                              if (isGoogleSheetStateReceived.value == true) {
                                 List list = await Utility.getStudentInfoList(
                                     tableName: 'history_student_info');
 
                                 state.resultRecordCount == list.length
-                                    ? dashoardState.value = 'Success'
-                                    : dashoardState.value = '';
+                                    ? dashboardState.value = 'Success'
+                                    : dashboardState.value = '';
                               }
                               // dashboardWidget.value[0] = true;
 
@@ -747,7 +763,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             }
                           }
                           if (state is OcrLoading2) {
-                            dashoardState.value = 'Loading';
+                            dashboardState.value = 'Loading';
                           }
                         },
                         child: EmptyContainer()),
@@ -765,11 +781,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     ? _bottomButtons(context, iconsList, iconsName,
                         webContentLink: Globals.googleDriveFolderPath ?? '')
                     : ValueListenableBuilder(
-                        valueListenable: isSuccessStateRecived,
+                        valueListenable: isSuccessStateReceived,
                         child: Container(),
                         builder:
                             (BuildContext context, bool value, Widget? child) {
-                          return isSuccessStateRecived.value == true
+                          return isSuccessStateReceived.value == true
                               ? Column(
                                   children: [
                                     _scanFloatingWidget(),
@@ -806,10 +822,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 : Color(0xffF7F8F9),
             boxShadow: [
               BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.5), //Colors.grey,
-                // Theme.of(context).backgroundColor == Color(0xff000000)
-                //     ? Color(0xff162429)
-                //     : Color(0xffE9ECEE),
+                color: Color.fromRGBO(0, 0, 0, 0.5),
                 offset: Offset(0.0, 1.0), //(x,y)
                 blurRadius: 6.0,
               ),
@@ -840,7 +853,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
   Widget _iconButton(int index, List iconName,
       {required String webContentLink}) {
     return ValueListenableBuilder(
-        valueListenable: dashoardState,
+        valueListenable: dashboardState,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Column(
@@ -848,7 +861,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                padding: EdgeInsets.only(top: 5, right: index == 3 ? 12 : 0),
+                padding: EdgeInsets.only(top: 5, right: 0), //index == 3 ? 12 :
                 child: Utility.textWidget(
                     text: iconName[index],
                     context: context,
@@ -862,7 +875,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   child: InkWell(
                     onTap: () {
                       Fluttertoast.cancel();
-                      Utility.updateLoges(
+                      Utility.updateLogs(
                           activityId: '16',
                           sessionId: widget.assessmentDetailPage == true
                               ? widget.obj!.sessionId
@@ -890,9 +903,40 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     ),
                   ),
                 )
+              else if (iconsName[index] == 'Slide')
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Fluttertoast.cancel();
+                      Utility.updateLogs(
+                          activityId: '16',
+                          sessionId: widget.assessmentDetailPage == true
+                              ? widget.obj!.sessionId
+                              : '',
+                          description: widget.assessmentDetailPage == true
+                              ? 'Drive Button pressed from Assessment History Detail Page'
+                              : 'Drive Button pressed from Result Summary',
+                          operationResult: 'Success');
+                      Globals.googleSlidePresentationLink != null
+                          ? Utility.launchUrlOnExternalBrowser(
+                              Globals.googleSlidePresentationLink!)
+                          : Utility.currentScreenSnackBar(
+                              'Assessment do not have slides', null);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: SvgPicture.asset(
+                        Strings.slidePath,
+                        width: Globals.deviceType == "phone" ? 28 : 50,
+                        height: Globals.deviceType == "phone" ? 28 : 50,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                  ),
+                )
               else
                 (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                        dashoardState.value == 'Loading'
+                        dashboardState.value == 'Loading'
                     ? Container(
                         padding: EdgeInsets.only(bottom: 14, top: 10),
                         height: MediaQuery.of(context).size.height * 0.058,
@@ -917,7 +961,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   ? BlocConsumer(
                                       bloc: _driveBloc,
                                       builder: (context, state) {
-                                        if (state is ShareLinkRecived) {
+                                        if (state is ShareLinkReceived) {
                                           widget.shareLink = state.shareLink;
 
                                           return Icon(
@@ -928,7 +972,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             size: (widget.assessmentDetailPage!
                                                         ? index == 2
                                                         : index == 3) &&
-                                                    dashoardState.value == ''
+                                                    dashboardState.value == ''
                                                 ? Globals.deviceType == 'phone'
                                                     ? 34
                                                     : 45
@@ -963,7 +1007,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       listener: (context, state) async {
                                         if (state is ErrorState) {
                                           if (state.errorMsg ==
-                                              'Reauthentication is required') {
+                                              'ReAuthentication is required') {
                                             await Utility
                                                 .refreshAuthenticationToken(
                                                     isNavigator: false,
@@ -972,7 +1016,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                     scaffoldKey: scaffoldKey);
 
                                             _driveBloc.add(GetShareLink(
-                                                fileId: widget.fileId));
+                                                fileId: widget.fileId,
+                                                slideLink: false));
                                           } else {
                                             Navigator.of(context).pop();
                                             Utility.currentScreenSnackBar(
@@ -986,7 +1031,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               onPressed: () async {
                                 Fluttertoast.cancel();
                                 if (iconsName[index] == 'Share') {
-                                  Utility.updateLoges(
+                                  Utility.updateLogs(
                                       activityId: '13',
                                       sessionId:
                                           widget.assessmentDetailPage == true
@@ -1003,10 +1048,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       ? Share.share(widget.shareLink!)
                                       : print("no link ");
                                 } else if (iconsName[index] == 'History') {
-                                  Utility.updateLoges(
+                                  Utility.updateLogs(
                                       activityId: '15',
                                       description:
-                                          'History Assesment button pressed',
+                                          'History Assessment button pressed',
                                       operationResult: 'Success');
 
                                   _showDataSavedPopup(
@@ -1018,7 +1063,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       yesActionText: 'Yes, Take Me There');
                                 } else if ((iconName[index] == 'Sheet' ||
                                         iconName[index] == 'Dashboard') &&
-                                    dashoardState.value == '') {
+                                    dashboardState.value == '') {
                                   if (Overrides.STANDALONE_GRADED_APP == true) {
                                     if (widget.shareLink == null) {
                                       Utility.currentScreenSnackBar(
@@ -1035,7 +1080,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   if (Globals.isPremiumUser) {
                                     if (widget.assessmentDetailPage == true &&
                                         widget.createdAsPremium == false) {
-                                      Utility.updateLoges(
+                                      Utility.updateLogs(
                                           // ,
                                           activityId: '14',
                                           description:
@@ -1059,18 +1104,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                           await Utility.getStudentInfoList(
                                               tableName: 'student_info');
                                       if (widget.isScanMore == true &&
-                                          widget.assessmentListLenght != null &&
-                                          widget.assessmentListLenght! <
+                                          widget.assessmentListLength != null &&
+                                          widget.assessmentListLength! <
                                               list.length) {
-                                        Utility.updateLoges(
+                                        Utility.updateLogs(
                                             // accountType: 'Free',
                                             activityId: '14',
                                             description:
-                                                'Save to deshboard pressed in case for scanmore',
+                                                'Save to dashboard pressed in case for scan more',
                                             operationResult: 'Success');
                                         //print(
                                         // 'if     calling is scanMore -------------------------->');
-                                        //print(widget.assessmentListLenght);
+                                        //print(widget.assessmentListLength);
                                         _ocrBloc.add(SaveAssessmentToDashboard(
                                             assessmentId: !widget
                                                     .assessmentDetailPage!
@@ -1086,9 +1131,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                         ? 'history_student_info'
                                                         : 'student_info'),
                                             previouslyAddedListLength:
-                                                widget.assessmentListLenght,
+                                                widget.assessmentListLength,
                                             assessmentName:
-                                                widget.asssessmentName!,
+                                                widget.assessmentName!,
                                             rubricScore:
                                                 widget.rubricScore ?? '',
                                             subjectId: widget.subjectId ?? '',
@@ -1101,7 +1146,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                 widget.assessmentDetailPage!));
                                       } else {
                                         //print(
-                                        // 'else      calling is noramal -------------------------->');
+                                        // 'else      calling is normal -------------------------->');
                                         // Adding the non saved record of dashboard in the list
                                         List<StudentAssessmentInfo>
                                             _listRecord = [];
@@ -1133,11 +1178,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                                       tableName: 'student_info')
                                               : _listRecord,
                                           assessmentName:
-                                              widget.asssessmentName!,
+                                              widget.assessmentName!,
                                           rubricScore:
                                               !widget.assessmentDetailPage!
                                                   ? widget.rubricScore ?? ''
-                                                  : sheetrubricScore ?? '',
+                                                  : sheetRubricScore ?? '',
                                           subjectId: widget.subjectId ?? '',
                                           schoolId: Globals.appSetting
                                               .schoolNameC!, //Account Id
@@ -1151,7 +1196,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       }
                                     }
                                   } else {
-                                    Utility.updateLoges(
+                                    Utility.updateLogs(
                                         // ,
                                         activityId: '14',
                                         description:
@@ -1163,7 +1208,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                             'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
                                   }
                                   // }
-                                } else if (dashoardState.value == 'Success') {
+                                } else if (dashboardState.value == 'Success') {
                                   if (Overrides.STANDALONE_GRADED_APP == true) {
                                     if (widget.shareLink == null) {
                                       Utility.currentScreenSnackBar(
@@ -1319,19 +1364,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                     textTheme: Theme.of(context).textTheme.headline2!),
               ),
 
-              trailing:
-                  // Text(_list[index].pointpossible!),
-                  Utility.textWidget(
-                      text: //'2/2',
-                          _list[index].studentGrade == '' ||
-                                  _list[index].studentGrade == null
-                              ? '2/${_list[index].pointpossible ?? '2'}'
-                              : '${_list[index].studentGrade}/${_list[index].pointpossible ?? '2'}', // '${Globals.gradeList[index]} /2',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(fontWeight: FontWeight.bold)),
+              trailing: Utility.textWidget(
+                  text: //'2/2',
+                      _list[index].studentGrade == '' ||
+                              _list[index].studentGrade == null
+                          ? '2/${_list[index].pointPossible ?? '2'}'
+                          : '${_list[index].studentGrade}/${_list[index].pointPossible ?? '2'}', // '${Globals.gradeList[index]} /2',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(fontWeight: FontWeight.bold)),
             ),
           );
   }
@@ -1360,11 +1403,11 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         title: 'Alert!',
                         message: Globals.isPremiumUser == true
                             ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-                            : 'Opps! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
+                            : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
                     return;
                   }
 
-                  Utility.updateLoges(
+                  Utility.updateLogs(
                       //,
                       activityId: '22',
                       sessionId: widget.assessmentDetailPage == true
@@ -1379,15 +1422,18 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                       widget.obj!.isCreatedAsPremium == "true") {
                     createdAsPremium = true;
                   }
-                  String pointPossiable = await _getPointPossiable(
+                  String pointPossible = await _getPointPossible(
                       tableName: widget.assessmentDetailPage == true
                           ? 'history_student_info'
                           : 'student_info');
+
                   Fluttertoast.cancel();
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => CameraScreen(
+                              lastAssessmentLength: lastAssessmentLength,
+                              assessmentName: widget.assessmentName,
                               isMcqSheet: widget.isMcqSheet,
                               selectedAnswer: widget.selectedAnswer,
                               isFlashOn: ValueNotifier<bool>(false),
@@ -1402,10 +1448,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                   widget.assessmentDetailPage!,
                               onlyForPicture: false,
                               isScanMore: true,
-                              // lastStudentInfoLenght: Globals.studentInfo!.length,
-                              pointPossible: pointPossiable != null &&
-                                      pointPossiable.isNotEmpty
-                                  ? pointPossiable.replaceAll(' ', '')
+                              // lastStudentInfoLength: Globals.studentInfo!.length,
+                              pointPossible: pointPossible != null &&
+                                      pointPossible.isNotEmpty
+                                  ? pointPossible.replaceAll(' ', '')
                                   : '2')));
                 },
                 icon: Icon(
@@ -1443,8 +1489,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
             borderRadius: BorderRadius.circular(4)),
         margin: widget.assessmentDetailPage!
             ? EdgeInsets.only(
-                left: MediaQuery.of(context).size.width * 0.20,
-                right: MediaQuery.of(context).size.width * 0.20)
+                left: MediaQuery.of(context).size.width * 0.15,
+                right: MediaQuery.of(context).size.width * 0.15)
             : !widget.assessmentDetailPage!
                 ? EdgeInsets.only(
                     left: MediaQuery.of(context).size.width * 0.0,
@@ -1525,7 +1571,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 content: TranslationWidget(
                     message: msg,
                     //'Yay! Assessment data has been successfully added to your school’s Data Dashboard.',
-                    //     'Yay! Data has been successully saved to the dashboard',
+                    //     'Yay! Data has been successfully saved to the dashboard',
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
@@ -1565,7 +1611,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                 }),
                           ),
                           onPressed: () {
-                            //Globals.iscameraPopup = false;
+                            //Globals.cameraPopup = false;
                             Navigator.of(context).pop();
                           },
                         ),
@@ -1612,7 +1658,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       )),
                             );
 
-                            //Globals.iscameraPopup = false;
+                            //Globals.isCameraPopup = false;
                           },
                         ),
                       ],
@@ -1636,7 +1682,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         onPressed: () {
                           Navigator.of(context).pop();
 
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                         },
                       ),
                     )
@@ -1658,14 +1704,14 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
   performEditAndDelete(BuildContext context, int index, bool? edit) async {
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: 'student_info');
     if (edit!) {
-      Utility.updateLoges(
+      Utility.updateLogs(
           // ,
           activityId: '17',
           description: 'Teacher edited the record',
@@ -1750,13 +1796,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 _studentInfoDb.putAt(index, studentInfo);
                 assessmentCount.value = _list.length;
 
-                _futurMethod();
+                _futureMethod();
                 _method();
                 disableSlidableAction.value = true;
                 Navigator.pop(context, false);
 
                 _driveBloc2.add(UpdateDocOnDrive(
-                  isMcqSheet: widget.isMcqSheet,
+                  isMcqSheet: widget.isMcqSheet ?? false,
                   questionImage: questionImageUrl ?? "NA",
                   createdAsPremium: Globals.isPremiumUser,
                   assessmentName: Globals.assessmentName!,
@@ -1770,7 +1816,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
                 // assessmentCount.value = await Utility.getStudentInfoListLength(
                 //           tableName: 'student_info');
-                // sudentRecordList.value = Utility.getStudentInfoList(
+                // studentRecordList.value = Utility.getStudentInfoList(
                 //           tableName: 'student_info');
               },
             ));
@@ -1831,12 +1877,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           ],
                         ),
                       );
-
-                      //  Text(translatedMessage.toString(),
-                      //     style: Theme.of(context)
-                      //         .textTheme
-                      //         .headline2!
-                      //         .copyWith(color: Colors.black));
                     }),
                 actions: <Widget>[
                   Container(
@@ -1862,7 +1902,6 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                                       ));
                             }),
                         onPressed: () {
-                          //Globals.iscameraPopup = false;
                           Navigator.pop(
                             context,
                           );
@@ -1904,7 +1943,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           }
                           _studentInfoDb.deleteAt(index);
 
-                          Utility.updateLoges(
+                          Utility.updateLogs(
                               activityId: '17',
                               description:
                                   'Teacher Deleted the record successfully',
@@ -1913,9 +1952,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           // List _list = await Utility.getStudentInfoList(
                           //     tableName: 'student_info');
                           assessmentCount.value = _list.length - 1;
-                          _futurMethod();
+                          _futureMethod();
                           _method();
-                          // sudentRecordList.value = Globals.studentInfo!;
+                          // studentRecordList.value = Globals.studentInfo!;
                           Navigator.pop(
                             context,
                           );
@@ -1927,10 +1966,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
-                              studentData:
-                                  //list2
-                                  await Utility.getStudentInfoList(
-                                      tableName: 'student_info')));
+                              studentData: await Utility.getStudentInfoList(
+                                  tableName: 'student_info')));
                         },
                       ),
                     ],
@@ -1961,12 +1998,12 @@ class _ResultsSummaryState extends State<ResultsSummary> {
 
     if (Globals.scanMoreStudentInfoLength != null) {
       if (list.length == Globals.scanMoreStudentInfoLength) {
-        dashoardState.value = 'Success';
+        dashboardState.value = 'Success';
       }
     }
   }
 
-  void _futurMethod() async {
+  void _futureMethod() async {
     _listCount.value =
         await Utility.getStudentInfoListLength(tableName: 'student_info');
   }
@@ -1975,7 +2012,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     return BlocConsumer(
       bloc: _driveBloc,
       builder: (context, state) {
-        if (state is ShareLinkRecived) {
+        if (state is ShareLinkReceived) {
           widget.shareLink = state.shareLink;
 
           return Icon(
@@ -1983,7 +2020,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                 fontFamily: Overrides.kFontFam,
                 fontPackage: Overrides.kFontPkg),
             size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                    dashoardState.value == ''
+                    dashboardState.value == ''
                 ? Globals.deviceType == 'phone'
                     ? 34
                     : 45
@@ -2007,14 +2044,15 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       },
       listener: (context, state) async {
         if (state is ErrorState) {
-          if (state.errorMsg == 'Reauthentication is required') {
+          if (state.errorMsg == 'ReAuthentication is required') {
             await Utility.refreshAuthenticationToken(
                 isNavigator: false,
                 errorMsg: state.errorMsg!,
                 context: context,
                 scaffoldKey: scaffoldKey);
 
-            _driveBloc.add(GetShareLink(fileId: widget.fileId));
+            _driveBloc
+                .add(GetShareLink(fileId: widget.fileId, slideLink: false));
           } else {
             Navigator.of(context).pop();
             Utility.currentScreenSnackBar(
@@ -2040,7 +2078,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
           onPressed: () async {
             if (iconsName[index] == 'Share') {
               await FirebaseAnalyticsService.addCustomAnalyticsEvent("share");
-              Utility.updateLoges(
+              Utility.updateLogs(
                   activityId: '13',
                   sessionId: widget.assessmentDetailPage == true
                       ? widget.obj!.sessionId
@@ -2053,9 +2091,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   ? Share.share(widget.shareLink!)
                   : print("no link ");
             } else if (iconsName[index] == 'History') {
-              Utility.updateLoges(
+              Utility.updateLogs(
                   activityId: '15',
-                  description: 'History Assesment button pressed',
+                  description: 'History Assessment button pressed',
                   operationResult: 'Success');
 
               _showDataSavedPopup(
@@ -2067,7 +2105,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   yesActionText: 'Yes, Take Me There');
             } else if ((iconName[index] == 'Sheet' ||
                     iconName[index] == 'Dashboard') &&
-                dashoardState.value == '') {
+                dashboardState.value == '') {
               if (Overrides.STANDALONE_GRADED_APP == true) {
                 if (widget.shareLink == null) {
                   Utility.currentScreenSnackBar('Please Wait', null,
@@ -2082,7 +2120,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
               if (Globals.isPremiumUser) {
                 if (widget.assessmentDetailPage == true &&
                     widget.createdAsPremium == false) {
-                  Utility.updateLoges(
+                  Utility.updateLogs(
                       // ,
                       activityId: '14',
                       description:
@@ -2102,17 +2140,17 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   List list = await Utility.getStudentInfoList(
                       tableName: 'student_info');
                   if (widget.isScanMore == true &&
-                      widget.assessmentListLenght != null &&
-                      widget.assessmentListLenght! < list.length) {
-                    Utility.updateLoges(
+                      widget.assessmentListLength != null &&
+                      widget.assessmentListLength! < list.length) {
+                    Utility.updateLogs(
                         // accountType: 'Free',
                         activityId: '14',
                         description:
-                            'Save to dashboard pressed in case for scanmore',
+                            'Save to dashboard pressed in case for scan more',
                         operationResult: 'Success');
                     //print(
                     // 'if     calling is scanMore -------------------------->');
-                    //print(widget.assessmentListLenght);
+                    //print(widget.assessmentListLength);
                     _ocrBloc.add(SaveAssessmentToDashboard(
                         assessmentId: !widget.assessmentDetailPage!
                             ? Globals.currentAssessmentId
@@ -2122,8 +2160,8 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             tableName: widget.assessmentDetailPage == true
                                 ? 'history_student_info'
                                 : 'student_info'),
-                        previouslyAddedListLength: widget.assessmentListLenght,
-                        assessmentName: widget.asssessmentName!,
+                        previouslyAddedListLength: widget.assessmentListLength,
+                        assessmentName: widget.assessmentName!,
                         rubricScore: widget.rubricScore ?? '',
                         subjectId: widget.subjectId ?? '',
                         schoolId: Globals.appSetting.schoolNameC!, //Account Id
@@ -2134,7 +2172,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             widget.assessmentDetailPage!));
                   } else {
                     //print(
-                    // 'else      calling is noramal -------------------------->');
+                    // 'else      calling is normal -------------------------->');
                     // Adding the non saved record of dashboard in the list
                     List<StudentAssessmentInfo> _listRecord = [];
 
@@ -2157,10 +2195,10 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                           ? await Utility.getStudentInfoList(
                               tableName: 'student_info')
                           : _listRecord,
-                      assessmentName: widget.asssessmentName!,
+                      assessmentName: widget.assessmentName!,
                       rubricScore: !widget.assessmentDetailPage!
                           ? widget.rubricScore ?? ''
-                          : sheetrubricScore ?? '',
+                          : sheetRubricScore ?? '',
                       subjectId: widget.subjectId ?? '',
                       schoolId: Globals.appSetting.schoolNameC!, //Account Id
                       // standardId: widget.standardId ?? '',
@@ -2172,7 +2210,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                   }
                 }
               } else {
-                Utility.updateLoges(
+                Utility.updateLogs(
                     // ,
                     activityId: '14',
                     description:
@@ -2184,7 +2222,7 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                         'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
               }
               // }
-            } else if (dashoardState.value == 'Success') {
+            } else if (dashboardState.value == 'Success') {
               if (Overrides.STANDALONE_GRADED_APP == true) {
                 if (widget.shareLink == null) {
                   Utility.currentScreenSnackBar('Please Wait', null,
@@ -2217,13 +2255,13 @@ class _ResultsSummaryState extends State<ResultsSummary> {
       return Icon(
         IconData(
             (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                    dashoardState.value == 'Success'
+                    dashboardState.value == 'Success'
                 ? 0xe877
                 : iconsList[index],
             fontFamily: Overrides.kFontFam,
             fontPackage: Overrides.kFontPkg),
         size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                dashoardState.value == ''
+                dashboardState.value == ''
             ? Globals.deviceType == 'phone'
                 ? 33
                 : 55
@@ -2239,16 +2277,16 @@ class _ResultsSummaryState extends State<ResultsSummary> {
                             isAssessmentAlreadySaved == 'YES') ||
                         (widget.assessmentDetailPage! &&
                             index == 2 &&
-                            dashoardState.value == 'Success')
+                            dashboardState.value == 'Success')
                     ? Colors.green
-                    : index == 2 || (index == 3 && dashoardState.value == '')
+                    : index == 2 || (index == 3 && dashboardState.value == '')
                         ? Theme.of(context).backgroundColor == Color(0xff000000)
                             ? Colors.white
                             : Colors.black
                         : (widget.assessmentDetailPage!
                                     ? index == 2
                                     : index == 3) &&
-                                dashoardState.value == 'Success'
+                                dashboardState.value == 'Success'
                             ? Colors.green
                             : AppTheme.kButtonColor,
       );
@@ -2262,9 +2300,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
         builder: (context) {
           return CustomDialogBox(
             isMcqSheet: widget.isMcqSheet,
-            title: widget.asssessmentName == null
+            title: widget.assessmentName == null
                 ? 'Assignment Name'
-                : widget.asssessmentName!,
+                : widget.assessmentName!,
             height: MediaQuery.of(context).size.height * 0.53,
             // width: MediaQuery.of(context).size.width * 0.,
             studentAssessmentInfo: studentAssessmentInfo,
@@ -2296,9 +2334,9 @@ class _ResultsSummaryState extends State<ResultsSummary> {
     );
   }
 
-  Future<String> _getPointPossiable({required String tableName}) async {
+  Future<String> _getPointPossible({required String tableName}) async {
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: tableName);
-    return studentInfo.first.pointpossible ?? '2';
+    return studentInfo.first.pointPossible ?? '2';
   }
 }

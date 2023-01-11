@@ -56,7 +56,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           String name = resultList[0][1];
           String grade = resultList[1][0];
           String result = event.isMcqSheet == true
-              ? OcrUtility.getMcqAnswer(detectedAnswer: grade)
+              ? getMcqAnswer(detectedAnswer: grade)
               : grade;
           if (email != '' && name != '' && grade != '') {
             yield FetchTextFromImageSuccess(
@@ -71,7 +71,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             String email = resultList[1];
             String name = resultList[2];
             String grade = resultList[0];
-            String result = OcrUtility.getMcqAnswer(detectedAnswer: grade);
+            String result = getMcqAnswer(detectedAnswer: grade);
 
             if (email != '' && name != '' && grade != '') {
               yield FetchTextFromImageSuccess(
@@ -919,7 +919,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<void> activityLog({required body}) async {
     try {
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
         Uri.encodeFull(
             "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/createRecord?objectName=Graded_Activity_Logs"),
         body: body,
@@ -1142,14 +1142,48 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
+  String getMcqAnswer({required String detectedAnswer}) {
+    try {
+      switch (detectedAnswer) {
+        case '0':
+          {
+            return 'A';
+          }
+        case '1':
+          {
+            return 'B';
+          }
+        case '2':
+          {
+            return 'C';
+          }
+        case '3':
+          {
+            return 'D';
+          }
+        case '4':
+          {
+            return 'E';
+          }
+
+        default:
+          {
+            return '';
+          }
+      }
+    } catch (e) {
+      return '';
+    }
+  }
+
   // ----------Function to process MCQ sheet ------------
   Future processMcqSheet(
       {required String base64, String? pointPossible}) async {
     try {
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
         // Url for Production
         Uri.encodeFull(
-            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
+            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processMcqSheet'),
         // Url For testing and development
         // Uri.encodeFull(
         //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
@@ -1202,13 +1236,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future processAssessmentSheet(
       {required String base64, required String pointPossible}) async {
     try {
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
         // Url for Production
+        // Uri.encodeFull(
+        //     'https://f63f-111-118-246-106.in.ngrok.io/processAssessmentSheet'),
+        // Url For testing and development
         Uri.encodeFull(
             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
-        // Url For testing and development
-        // Uri.encodeFull(
-        //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
         // Url For testing and development
         // Uri.encodeFull(
         //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
@@ -1284,7 +1318,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Teacher_added__c": true
       };
 
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
           "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Student__c",
           isGoogleApi: true,
           body: body,
@@ -1306,7 +1340,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
       };
       final body = {"email": email.toString()};
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
           "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/authorizeEmail?objectName=Contact",
           body: body,
           headers: headers,
@@ -1324,16 +1358,32 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         } else {
           Globals.teacherId = data['Id'];
-          var premiumUserType = data["GRADED_Premium__c"];
-          // if (data['Assessment_App_User__c'] != 'true') {
-          // var premiumUserType = data["GRADED_Premium__c"];
-          if (premiumUserType == "true") {
-            Globals.isPremiumUser = true;
+          if (data['Assessment_App_User__c'] != 'true') {
+            var userType = data["GRADED_Premium__c"];
+            if (userType == "true") {
+              Globals.isPremiumUser = true;
+            } else {
+              if (Overrides.STANDALONE_GRADED_APP == true) {
+                Globals.isPremiumUser = true;
+              } else {
+                Globals.isPremiumUser = false;
+              }
+            }
+
+            Globals.teacherId = data['Id'];
+            bool result = await updateContactToSalesforce(recordId: data['Id']);
+            if (!result) {
+              await updateContactToSalesforce(recordId: data['Id']);
+            }
           } else {
             if (Overrides.STANDALONE_GRADED_APP == true) {
               Globals.isPremiumUser = true;
             } else {
-              Globals.isPremiumUser = false;
+              if (Overrides.STANDALONE_GRADED_APP == true) {
+                Globals.isPremiumUser = true;
+              } else {
+                Globals.isPremiumUser = false;
+              }
             }
           }
           if (data['Assessment_App_User__c'] != 'true') {
@@ -1389,7 +1439,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         //     "Free" //Currently free but will be dynamic later on
       };
 
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
           "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact",
           isGoogleApi: true,
           body: body,
@@ -1416,7 +1466,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       final body = {
         "Assessment_App_User__c": "true",
       };
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
           "${OcrOverrides.OCR_API_BASE_URL}saveRecordToSalesforce/Contact/$recordId",
           isGoogleApi: true,
           body: body,
@@ -1475,7 +1525,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response'
       };
 
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecord?objectName=Assessment__c",
         isGoogleApi: true,
         headers: headers,
@@ -1534,7 +1584,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               studentDetails[i].studentName ?? ''));
         }
       }
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
         isGoogleApi: true,
         body: bodyContent,
@@ -1627,7 +1677,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
       };
 
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
         "${OcrOverrides.OCR_API_BASE_URL}sendsmtpEmail",
         isGoogleApi: true,
         body: body,
@@ -1664,7 +1714,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   // Future authenticateEmail(body) async {
   //   try {
   //     final ResponseModel response = await _dbServices
-  //         .postapi("authorizeEmail?objectName=Contact", body: body);
+  //         .postApi("authorizeEmail?objectName=Contact", body: body);
 
   //     if (response.statusCode == 200) {
   //       var res = response.data;
@@ -1790,7 +1840,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<List> emailDetectionApi({required String base64}) async {
     try {
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
         Uri.encodeFull(
             'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'),
         body: {

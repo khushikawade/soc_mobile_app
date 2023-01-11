@@ -109,7 +109,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
 
   Future<List<SharedList>> getAboutSDList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=About_App__c"));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']
@@ -127,7 +127,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
 
   Future<List<SharedList>> getAboutSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=About_App__c&objectName=About_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']

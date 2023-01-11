@@ -131,7 +131,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                             Utility.clearStudentInfo(
                                 tableName: 'history_student_info');
 
-                            Utility.updateLoges(
+                            Utility.updateLogs(
                                 // ,
                                 // sessionId: Globals.sessionId,
                                 activityId: '3',
@@ -203,7 +203,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                         } else if (widget.isLogout == true) {
                           UserGoogleProfile.clearUserProfile();
                           GoogleClassroom.clearClassroomCourses();
-                          Utility.updateLoges(
+                          Utility.updateLogs(
                               // ,
                               // sessionId: Globals.sessionId,
                               activityId: '3',

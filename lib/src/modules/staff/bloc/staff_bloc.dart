@@ -126,7 +126,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
   Future<List<SharedList>> getStaffDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_App__c'));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']
@@ -144,7 +144,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
   Future<List<SharedList>> getStaffSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=Staff_App__c&objectName=Staff_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']

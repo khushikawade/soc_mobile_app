@@ -303,7 +303,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
 
   Future<List<SharedList>> getCustomList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           'getSubRecords?parentId=$id&parentName=Custom_App_Section__c&objectName=Custom_App_Menu__c'));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']
@@ -321,7 +321,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
 
   Future<List<SharedList>> getCustomSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=Custom_App_Menu__c&objectName=Custom_App_Sub_Menu__c"));
 
       if (response.statusCode == 200) {
@@ -340,7 +340,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
 
   Future<List<SDlist>> getStaffList(categoryId) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(categoryId == null
+      final ResponseModel response = await _dbServices.getApi(categoryId == null
           ? Uri.encodeFull(
               'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c')
           : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId');

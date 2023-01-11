@@ -21,16 +21,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 class StateSelectionPage extends StatefulWidget {
   final bool? isMcqSheet;
   final String? selectedAnswer;
-  final bool? isFromCreateAssesmentScreen;
-  final String questionimageUrl;
+  final bool? isFromCreateAssessmentScreen;
+  final String questionImageUrl;
   final String selectedClass;
   const StateSelectionPage(
       {Key? key,
       this.isMcqSheet,
       this.selectedAnswer,
-      required this.questionimageUrl,
+      required this.questionImageUrl,
       required this.selectedClass,
-      this.isFromCreateAssesmentScreen})
+      this.isFromCreateAssessmentScreen})
       : super(key: key);
 
   @override
@@ -54,7 +54,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
   @override
   void initState() {
     _ocrBloc.add(FetchStateListEvant(
-        fromCreateAssesment: widget.isFromCreateAssesmentScreen ?? false));
+        fromCreateAssesment: widget.isFromCreateAssessmentScreen ?? false));
     super.initState();
     FirebaseAnalyticsService.addCustomAnalyticsEvent("state_selection_page");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -131,7 +131,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                               if (searchController.text.isEmpty) {
                                 _ocrBloc.add(FetchStateListEvant(
                                     fromCreateAssesment:
-                                        widget.isFromCreateAssesmentScreen ??
+                                        widget.isFromCreateAssessmentScreen ??
                                             false));
                               } else {
                                 _ocrBloc.add(LocalStateSearchEvent(
@@ -156,15 +156,15 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                           // isCommonCore: selectedIndex.value == 0
                                           //     ? true
                                           //     : false,
-                                          questionimageUrl:
-                                              widget.questionimageUrl,
+                                          questionImageUrl:
+                                              widget.questionImageUrl,
                                           selectedClass: widget.selectedClass,
                                         )),
                               );
 
                               _ocrBloc.add(FetchStateListEvant(
                                   fromCreateAssesment:
-                                      widget.isFromCreateAssesmentScreen ??
+                                      widget.isFromCreateAssessmentScreen ??
                                           false));
                             } else if (state is OcrErrorReceived) {
                               Navigator.pop(context);
@@ -255,7 +255,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                     SharedPreferences pref =
                         await SharedPreferences.getInstance();
                     pref.setString('selected_state', list[index]);
-                    if (widget.isFromCreateAssesmentScreen == true) {
+                    if (widget.isFromCreateAssessmentScreen == true) {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -265,7 +265,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                   // isCommonCore: selectedIndex.value == 0
                                   //     ? true
                                   //     : false,
-                                  questionimageUrl: widget.questionimageUrl,
+                                  questionImageUrl: widget.questionImageUrl,
                                   selectedClass: widget.selectedClass,
                                 )),
                       );
@@ -381,6 +381,6 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
     );
     await Future.delayed(Duration(seconds: 2));
     _ocrBloc.add(FetchStateListEvant(
-        fromCreateAssesment: widget.isFromCreateAssesmentScreen ?? false));
+        fromCreateAssesment: widget.isFromCreateAssessmentScreen ?? false));
   }
 }

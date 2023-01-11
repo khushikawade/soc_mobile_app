@@ -113,12 +113,12 @@ class Globals {
   // ];
   static List ocrResultIcons = Overrides.STANDALONE_GRADED_APP == true
       ? [0xe873, 0xe871, 0xe803, 0xe876]
-      : [0xe876, 0xe871, 0xe873, 0xe87a];
+      : [0xe876, 0xe871, 0xe873, 0xe87a, 0xe80d];
   // ? [0xe876, 0xe871, 0xe873, 0xe803]
   // : [0xe876, 0xe871, 0xe873, 0xe87a];
   static List ocrResultIconsName = Overrides.STANDALONE_GRADED_APP == true
       ? ["History", "Drive", "Sheet", "Share"]
-      : ["Share", "Drive", "History", "Dashboard"];
+      : ["Share", "Drive", "History", "Dashboard", "Slide"];
   //  ? ["Share", "Drive", "History", "Sheet"]
   // : ["Share", "Drive", "History", "Dashboard"];
   // static List finishedList = [
@@ -146,7 +146,8 @@ class Globals {
   static String? historyAssessmentName = '';
   static String? historyAssessmentFileId = '';
   static late TabController tabController;
+  static String? googleSlidePresentationId;
+  static String? googleSlidePresentationLink;
   static String selectedFilterValue = 'All';
 //  static EventController scheduleController = EventController();
-
 }

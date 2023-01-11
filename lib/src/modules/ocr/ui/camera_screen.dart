@@ -38,10 +38,14 @@ class CameraScreen extends StatefulWidget {
   final bool? createdAsPremium;
   final String? questionImageLink;
   final HistoryAssessment? obj;
+  final String? assessmentName;
+  final int? lastAssessmentLength;
   // bool flash;
   ValueNotifier<bool>? isFlashOn = ValueNotifier<bool>(false);
   CameraScreen(
       {Key? key,
+      this.lastAssessmentLength,
+      this.assessmentName,
       required this.pointPossible,
       required this.isScanMore,
       required this.onlyForPicture,
@@ -98,6 +102,7 @@ class _CameraScreenState extends State<CameraScreen>
   int? scanMoreAssessmentList;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+  GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
 
   LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
   List<String> classList = [
@@ -235,7 +240,7 @@ class _CameraScreenState extends State<CameraScreen>
                       bloc: _driveBloc,
                       child: Container(),
                       listener: (context, state) async {
-                        if (state is GoogleDriveLoading) {
+                        if (state is ShowLoadingDialog) {
                           Utility.showLoadingDialog(context, true);
                         }
                         if (state is GoogleSuccess) {
@@ -254,16 +259,16 @@ class _CameraScreenState extends State<CameraScreen>
                                         obj: widget.obj,
                                         createdAsPremium:
                                             widget.createdAsPremium,
-                                        historysecondTime: widget
+                                        historySecondTime: widget
                                                 .isFromHistoryAssessmentScanMore
                                             ? true
                                             : null,
-                                        asssessmentName: Globals.assessmentName,
+                                        assessmentName: Globals.assessmentName,
                                         shareLink: Globals.shareableLink ?? '',
                                         assessmentDetailPage: widget
                                             .isFromHistoryAssessmentScanMore,
                                         isScanMore: true,
-                                        assessmentListLenght:
+                                        assessmentListLength:
                                             Globals.scanMoreStudentInfoLength,
                                       )),
                             );
@@ -277,16 +282,16 @@ class _CameraScreenState extends State<CameraScreen>
                                         selectedAnswer: widget.selectedAnswer,
                                         createdAsPremium:
                                             widget.createdAsPremium,
-                                        historysecondTime: widget
+                                        historySecondTime: widget
                                                 .isFromHistoryAssessmentScanMore
                                             ? true
                                             : null,
-                                        asssessmentName: Globals.assessmentName,
+                                        assessmentName: Globals.assessmentName,
                                         shareLink: Globals.shareableLink ?? '',
                                         assessmentDetailPage: widget
                                             .isFromHistoryAssessmentScanMore,
                                         isScanMore: true,
-                                        assessmentListLenght:
+                                        assessmentListLength:
                                             Globals.scanMoreStudentInfoLength,
                                       )),
                             );
@@ -294,7 +299,7 @@ class _CameraScreenState extends State<CameraScreen>
                         }
                         if (state is ErrorState) {
                           if (state.errorMsg ==
-                              'Re-Authentication is required') {
+                              'ReAuthentication is required') {
                             await Utility.refreshAuthenticationToken(
                                 isNavigator: true,
                                 errorMsg: state.errorMsg!,
@@ -302,7 +307,7 @@ class _CameraScreenState extends State<CameraScreen>
                                 scaffoldKey: _scaffoldKey);
 
                             _driveBloc.add(UpdateDocOnDrive(
-                                isMcqSheet: widget.isMcqSheet,
+                                isMcqSheet: widget.isMcqSheet ?? false,
                                 questionImage: widget.questionImageLink ?? 'NA',
                                 createdAsPremium: widget.createdAsPremium,
                                 assessmentName: Globals.historyAssessmentName,
@@ -321,7 +326,67 @@ class _CameraScreenState extends State<CameraScreen>
                                 null);
                           }
                         }
+                        if (state is AddBlankSlidesOnDriveSuccess) {
+                          _driveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
+                              slidepresentationId:
+                                  Globals.googleSlidePresentationId));
+                        }
+                        if (state is GoogleAssessmentImagesOnSlidesUpdated) {
+                          List<StudentAssessmentInfo> studentInfoDb =
+                              await Utility.getStudentInfoList(
+                                  tableName:
+                                      widget.isFromHistoryAssessmentScanMore ==
+                                              true
+                                          ? 'history_student_info'
+                                          : 'student_info');
+                          StudentAssessmentInfo element = studentInfoDb[0];
+
+                          //Updating remaining common details of assessment
+                          element.subject = studentInfoDb.first.subject;
+                          element.learningStandard =
+                              studentInfoDb.first.learningStandard == null
+                                  ? "NA"
+                                  : studentInfoDb.first.learningStandard;
+                          element.subLearningStandard =
+                              studentInfoDb.first.subLearningStandard == null
+                                  ? "NA"
+                                  : studentInfoDb.first.subLearningStandard;
+                          element.scoringRubric = Globals.scoringRubric;
+                          element.customRubricImage =
+                              studentInfoDb.first.customRubricImage ?? "NA";
+                          element.grade = studentInfoDb.first.grade;
+                          element.className = Globals.assessmentName!
+                              .split("_")[1]; //widget.selectedClass;
+                          element.questionImgUrl =
+                              studentInfoDb.first.questionImgUrl;
+
+                          await _studentInfoDb.putAt(0, element);
+                          List l = await Utility.getStudentInfoList(
+                              tableName: 'student_info');
+
+                          _driveBloc.add(UpdateDocOnDrive(
+                              isMcqSheet: widget.isMcqSheet ?? false,
+                              questionImage: widget.questionImageLink ?? 'NA',
+                              createdAsPremium: widget.createdAsPremium,
+                              assessmentName: Globals.assessmentName!,
+                              fileId: Globals.googleExcelSheetId,
+                              isLoading: true,
+                              studentData: await Utility.getStudentInfoList(
+                                  tableName: 'student_info')));
+                        }
+                        if (state is GoogleSheetUpdateOnScanMoreSuccess) {
+                          _driveBloc.add(UpdateDocOnDrive(
+                              isMcqSheet: widget.isMcqSheet ?? false,
+                              questionImage: widget.questionImageLink ?? 'NA',
+                              createdAsPremium: widget.createdAsPremium ??
+                                  Globals.isPremiumUser,
+                              assessmentName: Globals.historyAssessmentName,
+                              fileId: Globals.historyAssessmentFileId,
+                              isLoading: true,
+                              studentData: state.list));
+                        }
                       }),
+
               widget.onlyForPicture
                   ? Container()
                   : Container(
@@ -345,7 +410,7 @@ class _CameraScreenState extends State<CameraScreen>
                           try {
                             await controller!.value.setFlashMode(FlashMode.off);
                           } catch (e) {}
-                          Utility.updateLoges(
+                          Utility.updateLogs(
                               activityId: '19',
                               description: 'Assessment scan finished',
                               operationResult: 'Success');
@@ -361,55 +426,72 @@ class _CameraScreenState extends State<CameraScreen>
                           if (studentInfoDb.length > 0) {
                             if (widget.isFromHistoryAssessmentScanMore ==
                                 true) {
-                              _driveBloc.add(UpdateDocOnDrive(
-                                  isMcqSheet: widget.isMcqSheet,
-                                  questionImage:
-                                      widget.questionImageLink ?? 'NA',
-                                  createdAsPremium: widget.createdAsPremium ??
-                                      Globals.isPremiumUser,
-                                  assessmentName: Globals.historyAssessmentName,
-                                  fileId: Globals.historyAssessmentFileId,
-                                  isLoading: true,
-                                  studentData: await Utility.getStudentInfoList(
-                                      tableName: 'history_student_info')));
+                              _driveBloc.add(UpdateGoogleSlideOnScanMore(
+                                  assessmentName: widget.assessmentName ?? '',
+                                  isFromHistoryAssessment:
+                                      widget.isFromHistoryAssessmentScanMore,
+                                  lastAssessmentLength:
+                                      widget.lastAssessmentLength ?? 0,
+                                  slidePresentationId:
+                                      Globals.googleSlidePresentationId!));
                             } else if (!widget
                                     .isFromHistoryAssessmentScanMore &&
                                 widget.isScanMore == true) {
-                              StudentAssessmentInfo element = studentInfoDb[0];
+                              _driveBloc.add(AddBlankSlidesOnDrive(
+                                  slidepresentationId:
+                                      Globals.googleSlidePresentationId));
+                            }
 
-                              //Updating remaining common details of assessment
-                              element.subject = studentInfoDb.first.subject;
-                              element.learningStandard =
-                                  studentInfoDb.first.learningStandard == null
-                                      ? "NA"
-                                      : studentInfoDb.first.learningStandard;
-                              element.subLearningStandard =
-                                  studentInfoDb.first.subLearningStandard ==
-                                          null
-                                      ? "NA"
-                                      : studentInfoDb.first.subLearningStandard;
-                              element.scoringRubric = Globals.scoringRubric;
-                              element.customRubricImage =
-                                  studentInfoDb.first.customRubricImage ?? "NA";
-                              element.grade = studentInfoDb.first.grade;
-                              element.className = Globals.assessmentName!
-                                  .split("_")[1]; //widget.selectedClass;
-                              element.questionImgUrl =
-                                  studentInfoDb.first.questionImgUrl;
+                            //     {
 
-                              await _studentInfoDb.putAt(0, element);
+                            //   StudentAssessmentInfo element = studentInfoDb[0];
 
-                              _driveBloc.add(UpdateDocOnDrive(
-                                  isMcqSheet: widget.isMcqSheet,
-                                  questionImage:
-                                      widget.questionImageLink ?? 'NA',
-                                  createdAsPremium: widget.createdAsPremium,
-                                  assessmentName: Globals.assessmentName!,
-                                  fileId: Globals.googleExcelSheetId,
-                                  isLoading: true,
-                                  studentData: await Utility.getStudentInfoList(
-                                      tableName: 'student_info')));
-                            } else {
+                            //   //Updating remaining common details of assessment
+                            //   element.subject = studentInfoDb.first.subject;
+                            //   element.learningStandard =
+                            //       studentInfoDb.first.learningStandard == null
+                            //           ? "NA"
+                            //           : studentInfoDb.first.learningStandard;
+                            //   element.subLearningStandard =
+                            //       studentInfoDb.first.subLearningStandard ==
+                            //               null
+                            //           ? "NA"
+                            //           : studentInfoDb.first.subLearningStandard;
+                            //   element.scoringRubric = Globals.scoringRubric;
+                            //   element.customRubricImage =
+                            //       studentInfoDb.first.customRubricImage ?? "NA";
+                            //   element.grade = studentInfoDb.first.grade;
+                            //   element.className = Globals.assessmentName!
+                            //       .split("_")[1]; //widget.selectedClass;
+                            //   element.questionImgUrl =
+                            //       studentInfoDb.first.questionImgUrl;
+
+                            //   await _studentInfoDb.putAt(0, element);
+
+                            //   _driveBloc.add(UpdateDocOnDrive(
+                            //       questionImage:
+                            //           widget.questionImageLink ?? 'NA',
+                            //       createdAsPremium: widget.createdAsPremium,
+                            //       assessmentName: Globals.assessmentName!,
+                            //       fileId: Globals.googleExcelSheetId,
+                            //       isLoading: true,
+                            //       studentData: await Utility.getStudentInfoList(
+                            //           tableName: 'student_info')));
+                            // }
+
+                            // else {
+                            //   _driveBloc.add(UpdateDocOnDrive(
+                            //       isMcqSheet: widget.isMcqSheet,
+                            //       questionImage:
+                            //           widget.questionImageLink ?? 'NA',
+                            //       createdAsPremium: widget.createdAsPremium,
+                            //       assessmentName: Globals.assessmentName!,
+                            //       fileId: Globals.googleExcelSheetId,
+                            //       isLoading: true,
+                            //       studentData: await Utility.getStudentInfoList(
+                            //           tableName: 'student_info')));
+                            // }
+                            else {
                               if (Overrides.STANDALONE_GRADED_APP == true) {
                                 List<String> suggestionList =
                                     await getSuggestionChips();
@@ -582,6 +664,10 @@ class _CameraScreenState extends State<CameraScreen>
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       SuccessScreen(
+                                                        assessmentName: widget
+                                                            .assessmentName,
+                                                        lastAssessmentLength: widget
+                                                            .lastAssessmentLength,
                                                         isMcqSheet:
                                                             widget.isMcqSheet,
                                                         selectedAnswer: widget

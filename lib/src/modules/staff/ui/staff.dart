@@ -305,7 +305,7 @@ class _StaffPageState extends State<StaffPage> {
                       await GoogleLogin.launchURL('Google Authentication',
                           context, _scaffoldKey, true, '');
                     } else {
-                      // List<UserInformation> _userprofilelocalData =
+                      // List<UserInformation> _userProfileLocalData =
                       //     await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
@@ -374,12 +374,12 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   _getLocalDb() async {
-    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+    LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
 
-    List<CustomRubicModal> _localData = await _localDb.getData();
+    List<CustomRubricModal> _localData = await _localDb.getData();
 
     if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+      RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
         await _localDb.addData(e);
       });
       await _localDb.close();

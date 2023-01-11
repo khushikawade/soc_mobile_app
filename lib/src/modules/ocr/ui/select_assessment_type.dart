@@ -248,7 +248,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                           dateTime: currentDateTime.toString(),
                           description: 'Start Scanning Failed',
                           operationResult: 'Failed'));
-                      if (state.errorMsg == 'Reauthentication is required') {
+                      if (state.errorMsg == 'ReAuthentication is required') {
                         await Utility.refreshAuthenticationToken(
                             isNavigator: true,
                             errorMsg: state.errorMsg!,
@@ -282,7 +282,8 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                               "No Internet Connection", null);
                           return;
                         }
-                        if (Globals.googleDriveFolderId!.isEmpty) {
+                        if (Globals.googleDriveFolderId!.isEmpty ||
+                            Globals.googleDriveFolderId == '') {
                           _triggerDriveFolderEvent(true);
                         } else {
                           _beforenavigateOnAssessmentSection();
@@ -317,7 +318,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
   void _beforenavigateOnAssessmentSection() {

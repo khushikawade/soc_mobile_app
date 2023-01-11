@@ -3,7 +3,6 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 // ignore: must_be_immutable
 class FilterBottomSheet extends StatefulWidget {
   FilterBottomSheet(

@@ -47,7 +47,7 @@ class CreateAssessment extends StatefulWidget {
 
 class _CreateAssessmentState extends State<CreateAssessment>
     with SingleTickerProviderStateMixin {
-  static const double _KVertcalSpace = 60.0;
+  static const double _KVerticalSpace = 60.0;
   final assessmentController = TextEditingController();
   final classController = TextEditingController();
   // int selectedGrade.value = 0;
@@ -58,7 +58,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   // final ScrollController listScrollController = ScrollController();
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
-  ValueNotifier<bool> isimageFilePicked = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isImageFilePicked = ValueNotifier<bool>(false);
   final ValueNotifier<String> assessmentNameError = ValueNotifier<String>('');
   final ValueNotifier<String> classError = ValueNotifier<String>('');
   ValueNotifier<bool> isAlreadySelected = ValueNotifier<bool>(false);
@@ -75,6 +75,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
     //   wd
     // listScrollController.addListener(_scrollListener);
     Globals.googleExcelSheetId = '';
+    Globals.googleSlidePresentationId = '';
+    Globals.googleSlidePresentationLink = '';
     //_bloc.add(SaveSubjectListDetails());
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -90,13 +92,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
   //   FocusScope.of(context).requestFocus(FocusNode());
   // }
 
-  ScrollController scrollControlleAssessmentName = new ScrollController();
-  ScrollController scrollControlleClassName = new ScrollController();
+  ScrollController scrollControllerAssessmentName = new ScrollController();
+  ScrollController scrollControllerClassName = new ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async => true,
       child: Stack(
         children: [
           CommonBackGroundImgWidget(),
@@ -135,7 +137,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           // controller: listScrollController,
                           shrinkWrap: true,
                           children: [
-                            SpacerWidget(_KVertcalSpace * 0.50),
+                            SpacerWidget(_KVerticalSpace * 0.50),
                             highlightText(
                               text: 'Create Assignment',
                               theme: Theme.of(context)
@@ -143,7 +145,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                   .headline6!
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
-                            SpacerWidget(_KVertcalSpace / 1.8),
+                            SpacerWidget(_KVerticalSpace / 1.8),
                             highlightText(
                                 text: 'Assignment Name',
                                 theme: Theme.of(context)
@@ -155,8 +157,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                             .primaryVariant
                                             .withOpacity(0.3))),
                             textFormField(
-                                scrollController: scrollControlleAssessmentName,
-                                isAssessmenttextFormField: true,
+                                scrollController:
+                                    scrollControllerAssessmentName,
+                                isAssessmentTextFormField: true,
                                 controller: assessmentController,
                                 hintText: 'Assignment Name',
                                 validator: (String? value) {
@@ -198,7 +201,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                         }),
                                   );
                                 }),
-                            SpacerWidget(_KVertcalSpace / 3),
+                            SpacerWidget(_KVerticalSpace / 3),
                             highlightText(
                                 text: 'Class Name',
                                 theme: Theme.of(context)
@@ -218,8 +221,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       Overrides.STANDALONE_GRADED_APP == true
                                           ? true
                                           : isAlreadySelected.value, // true,
-                                  scrollController: scrollControlleClassName,
-                                  isAssessmenttextFormField: false,
+                                  scrollController: scrollControllerClassName,
+                                  isAssessmentTextFormField: false,
                                   controller: classController,
                                   hintText: '1st',
                                   onSaved: (String value) {
@@ -259,7 +262,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             ),
                             if (widget.classSuggestions.length > 0 &&
                                 !isAlreadySelected.value)
-                              SpacerWidget(_KVertcalSpace / 8),
+                              SpacerWidget(_KVerticalSpace / 8),
                             if (widget.classSuggestions.length > 0)
                               Container(
                                   height: !isAlreadySelected.value ? 30 : 0.0,
@@ -276,7 +279,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                     filters: widget.classSuggestions,
                                   )),
 
-                            SpacerWidget(_KVertcalSpace / 2),
+                            SpacerWidget(_KVerticalSpace / 2),
                             highlightText(
                                 text: 'Select Grade',
                                 theme: Theme.of(context)
@@ -287,14 +290,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                             .colorScheme
                                             .primaryVariant
                                             .withOpacity(0.3))),
-                            SpacerWidget(_KVertcalSpace / 4),
+                            SpacerWidget(_KVerticalSpace / 4),
                             scoringButton(),
-                            SpacerWidget(_KVertcalSpace / 3),
+                            SpacerWidget(_KVerticalSpace / 3),
 
                             Row(
                               children: [
                                 ValueListenableBuilder(
-                                    valueListenable: isimageFilePicked,
+                                    valueListenable: isImageFilePicked,
                                     builder: (BuildContext context,
                                         dynamic value, Widget? child) {
                                       return Container(
@@ -307,13 +310,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                               children: [
                                                 Utility.textWidget(
                                                   context: context,
-                                                  text: isimageFilePicked
+                                                  text: isImageFilePicked
                                                               .value !=
                                                           true
                                                       ? 'Scan Assignment (Optional)'
                                                       : 'Assignment Selected',
                                                   textTheme: TextStyle(
-                                                      color: isimageFilePicked
+                                                      color: isImageFilePicked
                                                                   .value !=
                                                               true
                                                           ? Color(0xff000000) ==
@@ -332,7 +335,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                               ? 16
                                                               : 22),
                                                 ),
-                                                isimageFilePicked.value == true
+                                                isImageFilePicked.value == true
                                                     ? IconButton(
                                                         onPressed: () {
                                                           _cameraImage(context);
@@ -346,7 +349,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                                   ? 20
                                                                   : 25,
                                                         ),
-                                                        color: isimageFilePicked
+                                                        color: isImageFilePicked
                                                                     .value !=
                                                                 true
                                                             ? Color(0xff000000) ==
@@ -363,11 +366,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                     : Container(),
                                               ],
                                             ),
-                                            SpacerWidget(_KVertcalSpace / 8),
+                                            SpacerWidget(_KVerticalSpace / 8),
                                             CircleAvatar(
                                               //  foregroundColor:  Colors.red,
                                               backgroundImage:
-                                                  isimageFilePicked.value ==
+                                                  isImageFilePicked.value ==
                                                           true
                                                       ? FileImage(imageFile!)
                                                       : null,
@@ -376,7 +379,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                               radius: 30,
                                               child: IconButton(
                                                 onPressed: () {
-                                                  if (isimageFilePicked.value !=
+                                                  if (isImageFilePicked.value !=
                                                       true) {
                                                     _cameraImage(context);
                                                   } else {
@@ -384,7 +387,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                   }
                                                 },
                                                 icon: Icon(
-                                                  isimageFilePicked.value !=
+                                                  isImageFilePicked.value !=
                                                           true
                                                       ? Icons.add
                                                       : Icons.check,
@@ -394,7 +397,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                       ? 25
                                                       : 30,
                                                 ),
-                                                color: isimageFilePicked
+                                                color: isImageFilePicked
                                                             .value !=
                                                         true
                                                     ? Color(0xff000000) ==
@@ -548,7 +551,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     required onSaved,
     required hintText,
     required validator,
-    required bool isAssessmenttextFormField,
+    required bool isAssessmentTextFormField,
     required ScrollController scrollController,
   }) {
     return ValueListenableBuilder(
@@ -667,29 +670,20 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     bloc: _googleDriveBloc,
                     child: Container(),
                     listener: (context, state) async {
+                      print(
+                          "$state is received -------------> on create assessment screen");
                       if (state is GoogleDriveLoading) {
                         Utility.showLoadingDialog(context, true);
                       }
 
                       if (state is ExcelSheetCreated) {
-                        Navigator.of(context).pop();
-
-                        // to update question image to aws s3 bucket and get the link
-                        if (imageFile != null && imageFile!.path.isNotEmpty) {
-                          String imgExtension = imageFile!.path
-                              .substring(imageFile!.path.lastIndexOf(".") + 1);
-                          List<int> imageBytes = imageFile!.readAsBytesSync();
-                          String imageB64 = base64Encode(imageBytes);
-                          Globals.questionImgFilePath = imageFile;
-
-                          _googleDriveBloc2.add(QuestionImgToAwsBucked(
-                              imgBase64: imageB64, imgExtension: imgExtension));
-                        } else {
-                          _navigateToSubjectSection('');
-                        }
+                        //Create Google Presentation once Spreadsheet created
+                        _googleDriveBloc.add(CreateSlideToDrive(
+                            fileTitle:
+                                "${assessmentController.text}_${classController.text}"));
                       }
                       if (state is ErrorState) {
-                        if (state.errorMsg == 'Reauthentication is required') {
+                        if (state.errorMsg == 'ReAuthentication is required') {
                           await Utility.refreshAuthenticationToken(
                               isNavigator: true,
                               errorMsg: state.errorMsg!,
@@ -708,6 +702,54 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               null);
                         }
                       }
+                      if (state is RecallTheEvent) {
+                        _googleDriveBloc.add(CreateExcelSheetToDrive(
+                            name:
+                                "${assessmentController.text}_${classController.text}"));
+                      }
+
+                      if (state is GoogleSlideCreated) {
+                        // _googleDriveBloc.add(GetShareLink(
+                        //     fileId: Globals.googleSlidePresentationId,
+                        //     slideLink: true));
+
+                        //Save Google Presentation Id
+                        Globals.googleSlidePresentationId = state.slideFiledId;
+                        Navigator.of(context).pop();
+
+                        // to update question image to aws s3 bucket and get the link
+                        if (imageFile != null && imageFile!.path.isNotEmpty) {
+                          String imgExtension = imageFile!.path
+                              .substring(imageFile!.path.lastIndexOf(".") + 1);
+                          List<int> imageBytes = imageFile!.readAsBytesSync();
+                          String imageB64 = base64Encode(imageBytes);
+                          Globals.questionImgFilePath = imageFile;
+
+                          _googleDriveBloc2.add(QuestionImgToAwsBucked(
+                              imgBase64: imageB64, imgExtension: imgExtension));
+                        } else {
+                          _navigateToSubjectSection('');
+                        }
+                      }
+
+                      // if (state is ShareLinkRecived) {
+                      //   Globals.googleSlidePresentationLink = state.shareLink;
+                      //   Navigator.of(context).pop();
+
+                      //   // to update question image to aws s3 bucket and get the link
+                      //   if (imageFile != null && imageFile!.path.isNotEmpty) {
+                      //     String imgExtension = imageFile!.path
+                      //         .substring(imageFile!.path.lastIndexOf(".") + 1);
+                      //     List<int> imageBytes = imageFile!.readAsBytesSync();
+                      //     String imageB64 = base64Encode(imageBytes);
+                      //     Globals.questionImgFilePath = imageFile;
+
+                      //     _googleDriveBloc2.add(QuestionImgToAwsBucked(
+                      //         imgBase64: imageB64, imgExtension: imgExtension));
+                      //   } else {
+                      //     _navigateToSubjectSection('');
+                      //   }
+                      // }
                     }),
                 BlocListener<GoogleDriveBloc, GoogleDriveState>(
                     bloc: _googleDriveBloc2,
@@ -763,8 +805,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
     );
     if (photo != null) {
       imageFile = photo;
-      isimageFilePicked.value = false;
-      isimageFilePicked.value = true;
+      isImageFilePicked.value = false;
+      isImageFilePicked.value = true;
     }
   }
 
@@ -785,7 +827,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     widget.classSuggestions.forEach((String e) {
       _localDb.addData(e);
     });
-    Utility.updateLoges(
+    Utility.updateLogs(
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');
@@ -802,7 +844,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   stateName: selectedState,
-                  questionimageUrl: questionImageUrl ?? '',
+                  questionImageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
                 )),
       );
@@ -813,8 +855,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
             builder: (context) => StateSelectionPage(
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
-                  isFromCreateAssesmentScreen: true,
-                  questionimageUrl: questionImageUrl ?? '',
+                  isFromCreateAssessmentScreen: true,
+                  questionImageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
                 )),
       );
