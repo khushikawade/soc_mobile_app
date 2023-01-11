@@ -109,7 +109,12 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
                           "Select the Answer Key", null);
                     } else {
                       Fluttertoast.cancel();
-                      navigateToCamera();
+                      if (Globals.googleDriveFolderId!.isEmpty) {
+                        _triggerDriveFolderEvent(false);
+                      } else {
+                        _beforeNavigateOnCameraSection();
+                      }
+                      //  navigateToCamera();
                     }
                   },
                   label: Container(
@@ -153,7 +158,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
         //             dateTime: currentDateTime.toString(),
         //             description: 'Start Scanning Failed',
         //             operationResult: 'Failed'));
-        //         if (state.errorMsg == 'Reauthentication is required') {
+        //         if (state.errorMsg == 'ReAuthentication is required') {
         //           await Utility.refreshAuthenticationToken(
         //               isNavigator: true,
         //               errorMsg: state.errorMsg!,
@@ -280,39 +285,33 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
     );
   }
 
-  void _triggerDriveFolderEvent(bool isTriggerdbyAssessmentSection) async {
+  void _triggerDriveFolderEvent(bool isTriggeredAssessmentSection) async {
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 
     _googleDriveBloc.add(GetDriveFolderIdEvent(
-        assessmentSection: isTriggerdbyAssessmentSection ? true : null,
+        assessmentSection: isTriggeredAssessmentSection ? true : null,
         isFromOcrHome: true,
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
-  void _beforenavigateOnAssessmentSection() {
+  void _beforeNavigateOnCameraSection() {
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
     _ocrBlocLogs.add(LogUserActivityEvent(
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
-        activityId: '4',
+        activityId: '1',
         accountId: Globals.appSetting.schoolNameC,
         accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
-        description: 'Assessment History page for home page',
+        description: 'Start Scanning',
         operationResult: 'Success'));
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => AssessmentSummary(
-                selectedFilterValue: 'Multiple Choice',
-                isFromHomeSection: true,
-              )),
-    );
+
+    navigateToCamera();
   }
 }

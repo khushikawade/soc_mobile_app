@@ -6,17 +6,17 @@ part of 'custom_rubic_modal.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
+class CustomRubricModalAdapter extends TypeAdapter<CustomRubricModal> {
   @override
   final int typeId = 20;
 
   @override
-  CustomRubicModal read(BinaryReader reader) {
+  CustomRubricModal read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return CustomRubicModal(
+    return CustomRubricModal(
       name: fields[0] as String?,
       score: fields[1] as String?,
       imgBase64: fields[2] as String?,
@@ -27,7 +27,7 @@ class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
   }
 
   @override
-  void write(BinaryWriter writer, CustomRubicModal obj) {
+  void write(BinaryWriter writer, CustomRubricModal obj) {
     writer
       ..writeByte(6)
       ..writeByte(0)
@@ -50,7 +50,7 @@ class CustomRubicModalAdapter extends TypeAdapter<CustomRubicModal> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CustomRubicModalAdapter &&
+      other is CustomRubricModalAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

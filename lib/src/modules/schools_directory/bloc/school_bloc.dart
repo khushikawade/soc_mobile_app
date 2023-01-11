@@ -71,7 +71,7 @@ class SchoolDirectoryBloc
   Future<List<SchoolDirectoryList>> getSchoolDirectorySDList(
       parentId, isSubMenu) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(parentId ==
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(parentId ==
               null
           ? "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"
           : (isSubMenu == true

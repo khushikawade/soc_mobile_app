@@ -13,7 +13,7 @@ class GoogleAuthWebview extends StatefulWidget {
   final String url;
   final bool? hideAppbar; //To hide the appbar
   final bool? hideShare; //To hide share icon only from appbar
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String? language;
   final bool? isCustomMainPageWebView;
   // final callBackFunction;
@@ -24,7 +24,7 @@ class GoogleAuthWebview extends StatefulWidget {
     Key? key,
     required this.title,
     required this.url,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.language,
     this.hideAppbar,
     this.hideShare,

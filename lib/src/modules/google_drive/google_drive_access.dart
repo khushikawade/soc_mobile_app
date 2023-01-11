@@ -49,7 +49,26 @@ class GoogleDriveAccess {
                         : 2,
                     rowIndex: row))
                 .value =
-            row == 0 ? data[row].pointpossible : data[1].pointpossible ?? '2';
+            row == 0 ? data[row].pointPossible : data[1].pointPossible ?? '2';
+
+        if (isMcqSheet == true) {
+          sheet
+              .cell(CellIndex.indexByColumnRow(
+                  columnIndex:
+                      Globals.isPremiumUser == true && createdAsPremium == true
+                          ? 4
+                          : 3,
+                  rowIndex: row))
+              .value = data[row].answerKey ?? 'NA';
+          sheet
+              .cell(CellIndex.indexByColumnRow(
+                  columnIndex:
+                      Globals.isPremiumUser == true && createdAsPremium == true
+                          ? 5
+                          : 4,
+                  rowIndex: row))
+              .value = data[row].studentResponseKey ?? 'NA';
+        }
 
         if (isMcqSheet == true) {
           sheet
@@ -165,7 +184,7 @@ class GoogleDriveAccess {
                         ? (isMcqSheet == true ? 15 : 13)
                         : (isMcqSheet == true ? 14 : 12),
                 rowIndex: row))
-            .value = data[row].presentationURL ?? 'NA';
+            .value = data[row].googleSlidePresentationURL ?? 'NA';
         // sheet
         //     .cell(CellIndex.indexByColumnRow(columnIndex: 13, rowIndex: row))
         //     .value = data[row].isSavedOnDashBoard;

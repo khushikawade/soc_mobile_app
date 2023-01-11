@@ -53,7 +53,7 @@ class GoogleLogin {
             : Overrides.STANDALONE_GRADED_APP
                 ? OcrOverrides.googleClassroomAuthURL!
                 : OcrOverrides.googleDriveAuthURL!,
-        isbuttomsheet: true,
+        isBottomSheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
         hideShare: true,
@@ -88,13 +88,13 @@ class GoogleLogin {
       value = value.split('?')[1] ?? '';
       //Save user profile
       await saveUserProfile(value);
-      List<UserInformation> _userprofilelocalData =
+      List<UserInformation> _userProfileLocalData =
           await UserGoogleProfile.getUserProfile();
 
-      verifyUserAndGetDriveFolder(_userprofilelocalData);
+      verifyUserAndGetDriveFolder(_userProfileLocalData);
 
       Globals.teacherEmailId =
-          _userprofilelocalData[0].userEmail!.split('@')[0];
+          _userProfileLocalData[0].userEmail!.split('@')[0];
 
       // Log Firebase Event
       FirebaseAnalyticsService.setUserId(id: Globals.teacherEmailId);
@@ -171,20 +171,20 @@ class GoogleLogin {
   }
 
   static verifyUserAndGetDriveFolder(
-      List<UserInformation> _userprofilelocalData) async {
+      List<UserInformation> _userProfileLocalData) async {
     OcrBloc _ocrBloc = new OcrBloc();
     GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
     //Verifying with Salesforce if user exist in contact
     _ocrBloc
-        .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
+        .add(VerifyUserWithDatabase(email: _userProfileLocalData[0].userEmail));
 
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     Globals.googleDriveFolderId = '';
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         isFromOcrHome: false,
         //  filePath: file,
-        token: _userprofilelocalData[0].authorizationToken,
+        token: _userProfileLocalData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _userprofilelocalData[0].refreshToken));
+        refreshToken: _userProfileLocalData[0].refreshToken));
   }
 }

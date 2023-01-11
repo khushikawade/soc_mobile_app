@@ -28,7 +28,7 @@ class FetchGoogleSheet {
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
             case 'Point Possible':
-              studentAssessmentInfo.pointpossible =
+              studentAssessmentInfo.pointPossible =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
             case 'Student Selection':
@@ -83,6 +83,11 @@ class FetchGoogleSheet {
               break;
             case 'Student Work Image':
               studentAssessmentInfo.assessmentImage =
+                  fields[j][i].toString().replaceFirst(" ", "");
+
+              break;
+            case 'Presentation URL':
+              studentAssessmentInfo.googleSlidePresentationURL =
                   fields[j][i].toString().replaceFirst(" ", "");
 
               break;

@@ -268,7 +268,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                       if (_formKey.currentState!.validate()) {
                         if (widget.isSubjectScreen!) {
                           widget.valueChanged!(textFieldControllerOne);
-                          Utility.updateLoges(
+                          Utility.updateLogs(
                               activityId: '21',
                               description: 'Teacher added custom subject ',
                               operationResult: 'Success');
@@ -283,7 +283,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                             List<int> imageBytes = imageFile!.readAsBytesSync();
                             String imageB64 = base64Encode(imageBytes);
 
-                            RubricScoreList.scoringList.add(CustomRubicModal(
+                            RubricScoreList.scoringList.add(CustomRubricModal(
                                 name: textFieldControllerOne.text,
                                 score: textFieldController2.text,
                                 imgBase64: imageB64,
@@ -298,11 +298,11 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 imgExtension: imgExtension));
                           } else {
                             //print("save score and name on local db");
-                            Utility.updateLoges(
+                            Utility.updateLogs(
                                 activityId: '21',
                                 description: 'Teacher added custom rubric ',
                                 operationResult: 'Success');
-                            RubricScoreList.scoringList.add(CustomRubicModal(
+                            RubricScoreList.scoringList.add(CustomRubricModal(
                                 name: textFieldControllerOne.text,
                                 score: textFieldController2.text,
                                 customOrStandardRubic: "Custom"));

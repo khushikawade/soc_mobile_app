@@ -232,7 +232,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   Future<List<ActionCountList>> fetchSocialActionCount() async {
     try {
       print(Overrides.SCHOOL_ID);
-      final ResponseModel response = await _dbServices.getapi(Uri.parse(
+      final ResponseModel response = await _dbServices.getApi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {
         var data = response.data["body"];
@@ -261,7 +261,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
   Future addSocialAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postapimain(
+      final ResponseModel response = await _dbServices.postApimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
           body: body);
 

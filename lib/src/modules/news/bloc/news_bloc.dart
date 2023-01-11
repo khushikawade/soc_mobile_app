@@ -332,7 +332,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postapimain(
+      final ResponseModel response = await _dbServices.postApimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);
 
@@ -350,7 +350,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.parse(
+      final ResponseModel response = await _dbServices.getApi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
 
       if (response.statusCode == 200) {

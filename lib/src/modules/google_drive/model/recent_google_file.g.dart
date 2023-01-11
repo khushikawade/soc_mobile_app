@@ -28,13 +28,14 @@ class RecentGoogleFileSearchAdapter
       sessionId: fields[7] as String?,
       isCreatedAsPremium: fields[8] as String?,
       hiveobjid: fields[9] as int?,
+      assessmentType: fields[10] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, RecentGoogleFileSearch obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -54,7 +55,9 @@ class RecentGoogleFileSearchAdapter
       ..writeByte(8)
       ..write(obj.isCreatedAsPremium)
       ..writeByte(9)
-      ..write(obj.hiveobjid);
+      ..write(obj.hiveobjid)
+      ..writeByte(10)
+      ..write(obj.assessmentType);
   }
 
   @override

@@ -9,6 +9,8 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
+import 'package:Soc/src/modules/ocr/ui/mcq_correct_answer_screen.dart';
+import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/ui/profile_page.dart';
 import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
@@ -291,7 +293,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                       }
                       if (state is GoogleClassroomErrorState) {
                         rosterImport.value = '';
-                        if (state.errorMsg == 'Reauthentication is required') {
+                        if (state.errorMsg == 'ReAuthentication is required') {
                           await Utility.refreshAuthenticationToken(
                               isNavigator: false,
                               errorMsg: state.errorMsg!,
@@ -406,7 +408,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                                       'Start Scanning Failed',
                                                   operationResult: 'Failed'));
                                               if (state.errorMsg ==
-                                                  'Reauthentication is required') {
+                                                  'ReAuthentication is required') {
                                                 await Utility
                                                     .refreshAuthenticationToken(
                                                         isNavigator: true,
@@ -472,7 +474,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
   Widget button(String? text) {
@@ -497,7 +499,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                             // await UserGoogleProfile.clearUserProfile();
                             List<UserInformation> _profileData =
                                 await UserGoogleProfile.getUserProfile();
-                            Utility.updateLoges(
+                            Utility.updateLogs(
                                 activityId: '1',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -552,7 +554,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                       .add(GetClassroomCourses());
                                 }
                               } else if (text == 'View Imported Roster') {
-                                Utility.updateLoges(
+                                Utility.updateLogs(
                                     activityId: '25',
                                     // sessionId: widget.assessmentDetailPage == true
                                     //     ? widget.obj!.sessionId
@@ -566,10 +568,10 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                         googleClassroomCourseList:
                                             googleCourseList.value)));
                               } else {
-                                List<UserInformation> _userprofilelocalData =
+                                List<UserInformation> _userProfileLocalData =
                                     await UserGoogleProfile.getUserProfile();
                                 GoogleLogin.verifyUserAndGetDriveFolder(
-                                    _userprofilelocalData);
+                                    _userProfileLocalData);
                                 Globals.teacherEmailId =
                                     _profileData[0].userEmail!.split('@')[0];
 

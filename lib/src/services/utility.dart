@@ -116,7 +116,7 @@ class Utility {
     }
   }
 
-  static bool updateLoges(
+  static bool updateLogs(
       {required String activityId,
       //  required String accountType,
       required String description,
@@ -690,7 +690,7 @@ class Utility {
                 : Overrides.STANDALONE_GRADED_APP
                     ? OcrOverrides.googleClassroomAuthURL!
                     : OcrOverrides.googleDriveAuthURL!,
-        isbuttomsheet: true,
+        isBottomSheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
         hideShare: true,

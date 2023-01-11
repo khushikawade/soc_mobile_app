@@ -433,7 +433,7 @@ class _StudentPageState extends State<StudentPage> {
         title: title!,
         url:
             'https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/student-login/auth',
-        isbuttomsheet: true,
+        isBottomSheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
         hideShare: true,

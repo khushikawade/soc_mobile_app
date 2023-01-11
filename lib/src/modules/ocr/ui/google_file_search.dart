@@ -65,7 +65,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
       _debouncer.run(() {
         // _homeBloc.add(GlobalSearchEvent(keyword: value));
         googleBloc
-            .add(GetHistoryAssessmentFromDrive(searchKeywork: searchKey!));
+            .add(GetHistoryAssessmentFromDrive(searchKeyword: searchKey!));
         updateTheUi.value = !updateTheUi.value;
         // setState(() {});
       });
@@ -318,7 +318,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                     : ""),
             trailing: GestureDetector(
               onTap: () {
-                Utility.updateLoges(
+                Utility.updateLogs(
                     activityId: '13',
                     sessionId: items[index].sessionId != ''
                         ? items[index].sessionId
@@ -359,7 +359,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                               ? true
                               : false as bool?,
                           obj: reversedRecentDetailDbList[index],
-                          asssessmentName:
+                          assessmentName:
                               reversedRecentDetailDbList[index].title!,
                           shareLink:
                               reversedRecentDetailDbList[index].webContentLink,
@@ -488,7 +488,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                             : ""),
                                     trailing: GestureDetector(
                                       onTap: () {
-                                        Utility.updateLoges(
+                                        Utility.updateLogs(
                                             activityId: '13',
                                             sessionId: data.sessionId != ''
                                                 ? data.sessionId
@@ -568,7 +568,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                                       ? true
                                                       : false as bool?,
                                                   obj: data,
-                                                  asssessmentName: data.title!,
+                                                  assessmentName: data.title!,
                                                   shareLink:
                                                       data.webContentLink,
                                                   fileId: data.fileid,

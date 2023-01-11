@@ -354,7 +354,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                     selectedAnswer:
                                                         widget.selectedAnswer,
                                                     subjectId: widget.subjectId,
-                                                    questionimageUrl:
+                                                    questionImageUrl:
                                                         widget.questionImage ??
                                                             'NA',
                                                     selectedClass: widget.grade,
@@ -509,9 +509,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                 ? FloatingActionButton.extended(
                     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                     onPressed: () async {
-                      LocalDatabase<CustomRubicModal> _localDb =
+                      LocalDatabase<CustomRubricModal> _localDb =
                           LocalDatabase('custom_rubic');
-                      List<CustomRubicModal>? _localData =
+                      List<CustomRubricModal>? _localData =
                           await _localDb.getData();
                       String? rubricImgUrl;
                       // String? rubricScore;
@@ -547,18 +547,21 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           subLearningStandard == null || learningStandard == ''
                               ? "NA"
                               : subLearningStandard;
-                      element.scoringRubric = widget.isMcqSheet == true ? '0-1':Globals.scoringRubric;
+                      element.scoringRubric = widget.isMcqSheet == true
+                          ? '0-1'
+                          : Globals.scoringRubric;
                       element.customRubricImage = rubricImgUrl ?? "NA";
                       element.grade = widget.grade;
                       element.className = Globals.assessmentName!.split("_")[1];
                       element.questionImgUrl = widget.questionImage == ''
                           ? "NA"
                           : widget.questionImage;
-
+                      element.googleSlidePresentationURL =
+                          Globals.googleSlidePresentationLink;
                       await _studentInfoDb.putAt(0, element);
 
                       _googleDriveBloc.add(UpdateDocOnDrive(
-                        isMcqSheet: widget.isMcqSheet,
+                          isMcqSheet: widget.isMcqSheet ?? false,
                           questionImage: widget.questionImage == ''
                               ? 'NA'
                               : widget.questionImage ?? 'NA',
@@ -583,7 +586,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               if (state is GoogleSuccess) {
                                 Globals.currentAssessmentId = '';
                                 _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
-                                  isMcqSheet: widget.isMcqSheet ?? false,
+                                    isMcqSheet: widget.isMcqSheet ?? false,
                                     assessmentQueImage:
                                         widget.questionImage ?? 'NA',
                                     assessmentName: Globals.assessmentName ??
@@ -607,7 +610,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               }
                               if (state is ErrorState) {
                                 if (state.errorMsg ==
-                                    'Reauthentication is required') {
+                                    'ReAuthentication is required') {
                                   await Utility.refreshAuthenticationToken(
                                       isNavigator: true,
                                       errorMsg: state.errorMsg!,
@@ -616,7 +619,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
 
                                   _googleDriveBloc.add(
                                     UpdateDocOnDrive(
-                                      isMcqSheet: widget.isMcqSheet,
+                                      isMcqSheet: widget.isMcqSheet ?? false,
                                       questionImage: widget.questionImage == ''
                                           ? 'NA'
                                           : widget.questionImage ?? 'NA',
@@ -647,7 +650,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               }
                               if (state is AssessmentIdSuccess) {
                                 Navigator.of(context).pop();
-                                Utility.updateLoges(
+                                Utility.updateLogs(
                                     // ,
                                     activityId: '14',
                                     description: 'Save to drive',
@@ -663,7 +666,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                             fileId: Globals.googleExcelSheetId,
                                             // subjectId:  ?? '',
                                             standardId: standardId ?? '',
-                                            asssessmentName:
+                                            assessmentName:
                                                 Globals.assessmentName,
                                             shareLink: '',
                                             assessmentDetailPage: false,

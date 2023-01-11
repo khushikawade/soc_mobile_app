@@ -185,7 +185,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                     }
                   }
                   if (state is GoogleClassroomErrorState) {
-                    if (state.errorMsg == 'Reauthentication is required') {
+                    if (state.errorMsg == 'ReAuthentication is required') {
                       await Utility.refreshAuthenticationToken(
                           isNavigator: false,
                           errorMsg: state.errorMsg!,
@@ -237,10 +237,10 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                           title: 'Roster',
                           message: 'Please import the Roster first');
                     } else {
-                      List<UserInformation> _userprofilelocalData =
+                      List<UserInformation> _userProfileLocalData =
                           await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(
-                          _userprofilelocalData);
+                          _userProfileLocalData);
                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       Navigator.of(context).push(
                         MaterialPageRoute(

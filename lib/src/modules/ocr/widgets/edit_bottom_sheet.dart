@@ -426,7 +426,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
               return InkWell(
                   onTap: () {
                     // updateDetails(isUpdateData: true);
-                    Utility.updateLoges(
+                    Utility.updateLogs(
                         // ,
                         activityId: '8',
                         description:

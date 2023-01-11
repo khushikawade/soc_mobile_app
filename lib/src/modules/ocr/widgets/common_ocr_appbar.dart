@@ -189,7 +189,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     "go_to_drive_assessment_detail");
                             //print(
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                            Utility.updateLoges(
+                            Utility.updateLogs(
                                 activityId: '16',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -372,7 +372,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
   Widget commonGradedLogo() {
