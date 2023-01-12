@@ -24,6 +24,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   @override
   initState() {
+    FirebaseAnalyticsService.enableAnalytics();
     super.initState();
     // getTheme();
     // clearLocalDataBase();

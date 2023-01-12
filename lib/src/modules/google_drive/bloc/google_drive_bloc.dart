@@ -262,22 +262,26 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
 
     // --------------------Event To Update Excel Sheet On Drive------------------
-    else if (event is UpdateDocOnDrive) {
+    if (event is UpdateDocOnDrive) {
       try {
         if (event.isLoading) {
           yield GoogleDriveLoading();
         }
-        List<UserInformation> _userProfileLocalData =
+
+        List<UserInformation> _userprofilelocalData =
             await UserGoogleProfile.getUserProfile();
-        LocalDatabase<CustomRubricModal> customRubricLocalDb =
+        LocalDatabase<CustomRubricModal> customRubicLocalDb =
             LocalDatabase('custom_rubic');
-        List<CustomRubricModal>? customRubricLocalData =
-            await customRubricLocalDb.getData();
+        List<CustomRubricModal>? customRubicLocalData =
+            await customRubicLocalDb.getData();
+
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
+
         checkForGoogleExcelId(); //To check for excel sheet id
         if (assessmentData!.length > 0 && assessmentData[0].studentId == 'Id') {
           assessmentData.removeAt(0);
         }
+
         for (int i = 0; i < assessmentData.length; i++) {
           // Checking for 'Assessment Sheets Image' to get URL for specific index if not exist
           if (assessmentData[i].assessmentImage == null ||
@@ -300,35 +304,85 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 ? assessmentData[i].assessmentImage = imgUrl
                 : print("error");
           }
+
+          // if (event.isCustomRubricSelcted == true &&
+          //     (assessmentData[i].customRubricImage == null ||
+          //         assessmentData[i].customRubricImage!.isEmpty) &&
+          //     event.selectedRubric != 0 &&
+          //     customRubicLocalData[event.selectedRubric!].filePath != null &&
+          //     customRubicLocalData[event.selectedRubric!]
+          //         .filePath!
+          //         .isNotEmpty) {
+          //   if (customRubicLocalData[event.selectedRubric!].imgUrl != null ||
+          //       customRubicLocalData[event.selectedRubric!]
+          //           .imgUrl!
+          //           .isNotEmpty) {
+          //     assessmentData.forEach((element) {
+          //       element.customRubricImage =
+          //           customRubicLocalData[event.selectedRubric!].imgUrl;
+          //     });
+          //   } else {
+          //     File assessmentImageFile =
+          //         File(customRubicLocalData[event.selectedRubric!].filePath!);
+          //     String imgExtension = assessmentImageFile.path
+          //         .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
+
+          //     String imgUrl = await _uploadImgB64AndGetUrl(
+          //         imgBase64:
+          //             customRubicLocalData[event.selectedRubric!].imgBase64,
+          //         imgExtension: imgExtension,
+          //         section: 'rubric-score');
+          //     if (imgUrl != '') {
+          //       assessmentData.forEach((element) {
+          //         element.customRubricImage = imgUrl;
+          //       });
+          //     }
+          //   }
+          // }
+
           // Checking for 'Custom rubric score Image' to get URL for specific index if not exist
-          if (event.isCustomRubricSelected == true &&
-              (assessmentData[i].customRubricImage == null ||
-                  assessmentData[i].customRubricImage!.isEmpty) &&
-              event.selectedRubric != 0 &&
-              customRubricLocalData[event.selectedRubric!].filePath != null &&
-              customRubricLocalData[event.selectedRubric!]
-                  .filePath!
-                  .isNotEmpty) {
-            if (customRubricLocalData[event.selectedRubric!].imgUrl != null ||
-                customRubricLocalData[event.selectedRubric!]
-                    .imgUrl!
-                    .isNotEmpty) {
+          if ((assessmentData[i].customRubricImage == null ||
+              assessmentData[i].customRubricImage!.isEmpty)) {
+            int? localCustomRubricIndex = 0;
+            CustomRubricModal? customRubicModal = customRubicLocalData[0];
+
+            for (int customRubricIndex = 0;
+                customRubricIndex < customRubicLocalData.length;
+                customRubricIndex++) {
+              if (customRubicLocalData[customRubricIndex]
+                          .customOrStandardRubic ==
+                      "Custom" &&
+                  '${customRubicLocalData[customRubricIndex].name}' +
+                          ' ' +
+                          '${customRubicLocalData[customRubricIndex].score}' ==
+                      Globals.scoringRubric) {
+                //Checking index for the custom rubric
+                localCustomRubricIndex = customRubricIndex;
+                customRubicModal = customRubicLocalData[customRubricIndex];
+                break;
+              }
+            }
+
+            //Updating custom rubric image in all student record if not exist already
+            if (customRubicModal!.imgUrl != null &&
+                customRubicModal.imgUrl!.isNotEmpty) {
               assessmentData.forEach((element) {
-                element.customRubricImage =
-                    customRubricLocalData[event.selectedRubric!].imgUrl;
+                element.customRubricImage = customRubicModal!.imgUrl;
               });
             } else {
-              File assessmentImageFile =
-                  File(customRubricLocalData[event.selectedRubric!].filePath!);
+              //If custom rubric image url not exist and path exist, uploading again the image to get the image URL
+              File assessmentImageFile = File(customRubicModal.filePath!);
               String imgExtension = assessmentImageFile.path
                   .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
 
               String imgUrl = await _uploadImgB64AndGetUrl(
-                  imgBase64:
-                      customRubricLocalData[event.selectedRubric!].imgBase64,
+                  imgBase64: customRubicModal.imgBase64,
                   imgExtension: imgExtension,
                   section: 'rubric-score');
               if (imgUrl != '') {
+                customRubicModal.imgUrl = imgUrl;
+                await customRubicLocalDb.putAt(
+                    localCustomRubricIndex!, customRubicModal);
                 assessmentData.forEach((element) {
                   element.customRubricImage = imgUrl;
                 });
@@ -346,6 +400,26 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 element.questionImgUrl = event.questionImage;
               });
             }
+            //  else {
+            //   String imgExtension = Globals.questionImgFilePath!.path.substring(
+            //       Globals.questionImgFilePath!.path.lastIndexOf(".") + 1);
+
+            //   List<int> imageBytes =
+            //       Globals.questionImgFilePath!.readAsBytesSync();
+
+            //   String imageB64 = base64Encode(imageBytes);
+
+            //   Globals.questionImgUrl = await _uploadImgB64AndGetUrl(
+            //       imgBase64: imageB64,
+            //       imgExtension: imgExtension,
+            //       section: 'rubric-score');
+
+            //   Globals.questionImgUrl!.isNotEmpty
+            //       ? assessmentData.forEach((element) {
+            //           element.questionImgUrl = Globals.questionImgUrl;
+            //         })
+            //       : //print("image erooooooooooooooooo");
+            // }
           }
         }
 
@@ -370,43 +444,42 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 assessmentImage: Overrides.STANDALONE_GRADED_APP == true
                     ? "Student Work Image"
                     : "Assessment Image",
-                //googleSlidePresentationLink: "Presentation URL",
                 answerKey: 'Answer Key',
                 googleSlidePresentationURL: 'Presentation URL',
                 studentResponseKey: 'Student Selection'));
 
-        //Generating excel file locally with all the result data
+//Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
             isMcqSheet: event.isMcqSheet,
             data: assessmentData,
             name: event.assessmentName!,
             createdAsPremium: event.createdAsPremium);
 
-        //Update the created excel file to drive with all the result data
+//Update the created excel file to drive with all the result data
         String excelSheetId = await uploadSheetOnDrive(
             file,
             event.fileId == null ? Globals.googleExcelSheetId : event.fileId,
-            _userProfileLocalData[0].authorizationToken,
-            _userProfileLocalData[0].refreshToken);
+            _userprofilelocalData[0].authorizationToken,
+            _userprofilelocalData[0].refreshToken);
 
         if (excelSheetId.isEmpty) {
           // await _toRefreshAuthenticationToken(
-          //     _userProfileLocalData[0].refreshToken!);
+          //     _userprofilelocalData[0].refreshToken!);
 
           String excelSheetId = await uploadSheetOnDrive(
               file,
               Globals.googleExcelSheetId,
-              _userProfileLocalData[0].authorizationToken,
-              _userProfileLocalData[0].refreshToken);
+              _userprofilelocalData[0].authorizationToken,
+              _userprofilelocalData[0].refreshToken);
           // function to update property of excel sheet
 
           _updateFieldExcelSheet(
               isMcqSheet: event.isMcqSheet ?? false,
               assessmentData: assessmentData,
               excelId: excelSheetId,
-              token: _userProfileLocalData[0].authorizationToken!);
-        } else if (excelSheetId == 'ReAuthentication is required') {
-          yield ErrorState(errorMsg: 'ReAuthentication is required');
+              token: _userprofilelocalData[0].authorizationToken!);
+        } else if (excelSheetId == 'Reauthentication is required') {
+          yield ErrorState(errorMsg: 'Reauthentication is required');
         } else {
           // function to update property of excel sheet
 
@@ -414,7 +487,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               isMcqSheet: event.isMcqSheet ?? false,
               assessmentData: assessmentData,
               excelId: excelSheetId,
-              token: _userProfileLocalData[0].authorizationToken!);
+              token: _userprofilelocalData[0].authorizationToken!);
 
           if (event.isLoading) {
             yield GoogleSuccess();

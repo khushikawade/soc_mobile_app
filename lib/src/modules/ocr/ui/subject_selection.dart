@@ -1590,7 +1590,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         element.scoringRubric =
             widget.isMcqSheet == true ? '0-1' : Globals.scoringRubric;
         element.className = Globals.assessmentName!.split("_")[1];
-        element.customRubricImage = rubricImgUrl ?? "NA";
+        element.customRubricImage = rubricImgUrl;
         element.grade = widget.selectedClass;
         element.questionImgUrl =
             widget.questionImageUrl == '' ? "NA" : widget.questionImageUrl;

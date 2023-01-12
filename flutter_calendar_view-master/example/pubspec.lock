@@ -77,21 +77,21 @@ packages:
       name: build_modules
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.6"
+    version: "4.0.7"
   build_resolvers:
     dependency: transitive
     description:
       name: build_resolvers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.10"
+    version: "2.1.0"
   build_runner:
     dependency: "direct dev"
     description:
       name: build_runner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   build_runner_core:
     dependency: transitive
     description:
@@ -105,7 +105,7 @@ packages:
       name: build_web_compilers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.6"
+    version: "3.2.7"
   built_collection:
     dependency: transitive
     description:
@@ -140,7 +140,7 @@ packages:
       name: checked_yaml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   clock:
     dependency: transitive
     description:
@@ -154,7 +154,7 @@ packages:
       name: code_builder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.0"
+    version: "4.4.0"
   collection:
     dependency: transitive
     description:
@@ -168,7 +168,7 @@ packages:
       name: convert
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.1.1"
   crypto:
     dependency: transitive
     description:
@@ -269,7 +269,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.17.0"
+    version: "0.18.0"
   io:
     dependency: transitive
     description:
@@ -311,7 +311,11 @@ packages:
       name: material_color_utilities
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
+    version: "0.1.4"
+=======
     version: "0.1.5"
+>>>>>>> graded_plus_main
   meta:
     dependency: transitive
     description:
@@ -407,14 +411,18 @@ packages:
       name: source_maps
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.10"
+    version: "0.10.11"
   source_span:
     dependency: transitive
     description:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
+    version: "1.8.2"
+=======
     version: "1.9.0"
+>>>>>>> graded_plus_main
   stack_trace:
     dependency: transitive
     description:
@@ -456,7 +464,11 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
+    version: "0.4.9"
+=======
     version: "0.4.12"
+>>>>>>> graded_plus_main
   timing:
     dependency: transitive
     description:
