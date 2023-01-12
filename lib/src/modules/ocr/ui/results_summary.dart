@@ -892,7 +892,7 @@ class studentRecordList extends State<ResultsSummary> {
                     child: Container(
                       margin: EdgeInsets.only(bottom: 5.0),
                       padding: EdgeInsets.symmetric(horizontal: 5),
-                      width: 45,
+                      //width: 45,
                       child: Image(
                         width: Globals.deviceType == "phone" ? 33 : 50,
                         height: Globals.deviceType == "phone" ? 33 : 50,
@@ -1265,7 +1265,7 @@ class studentRecordList extends State<ResultsSummary> {
                     endActionPane: ActionPane(
                       motion: ScrollMotion(),
                       children: [
-                        SlidableAction(
+                        CustomSlidableAction(
                           // An action can be bigger than the others.
 
                           onPressed: (i) {
@@ -1284,28 +1284,33 @@ class studentRecordList extends State<ResultsSummary> {
                                   ? AppTheme.kButtonColor
                                   : Colors.grey,
                           foregroundColor: Colors.white,
-                          icon: Icons.edit,
-                          label: 'Edit',
+                          // icon: Icons.edit,
+                          // label: 'Edit',
+                          child: customSlidableDecorationWidget(
+                              label: 'Edit', icon: Icons.edit),
                         ),
-                        SlidableAction(
-                          onPressed: (i) {
-                            //To reset the value listener
-                            disableSlidableAction.value = false;
+                        CustomSlidableAction(
+                            onPressed: (i) {
+                              //To reset the value listener
+                              disableSlidableAction.value = false;
 
-                            _list[index].isSavedOnDashBoard == null
-                                ? performEditAndDelete(context, index, false)
-                                : Utility.currentScreenSnackBar(
-                                    "You Cannot Delete The Record Which Is Already Saved To The \'Data Dashboard\'",
-                                    null);
-                          },
-                          backgroundColor:
                               _list[index].isSavedOnDashBoard == null
-                                  ? Colors.red
-                                  : Colors.grey,
-                          foregroundColor: Colors.white,
-                          icon: Icons.delete,
-                          label: 'Delete',
-                        ),
+                                  ? performEditAndDelete(context, index, false)
+                                  : Utility.currentScreenSnackBar(
+                                      "You Cannot Delete The Record Which Is Already Saved To The \'Data Dashboard\'",
+                                      null);
+                            },
+                            backgroundColor:
+                                _list[index].isSavedOnDashBoard == null
+                                    ? Colors.red
+                                    : Colors.grey,
+                            foregroundColor: Colors.white,
+                            // icon: Icons.delete,
+                            // label: 'Delete',
+                            child: customSlidableDecorationWidget(
+                              label: 'Delete',
+                              icon: Icons.delete,
+                            )),
                       ],
                     ),
                     child: _buildList(index, _list, context));
@@ -1605,7 +1610,6 @@ class studentRecordList extends State<ResultsSummary> {
                                           .textTheme
                                           .headline5!
                                           .copyWith(
-                                            fontSize: 16,
                                             color: AppTheme.kButtonColor,
                                           ));
                                 }),
@@ -1632,7 +1636,6 @@ class studentRecordList extends State<ResultsSummary> {
                                           .textTheme
                                           .headline5!
                                           .copyWith(
-                                            fontSize: 16,
                                             color: yesActionText ==
                                                     'Yes, Take Me There'
                                                 ? Colors.red
@@ -2264,10 +2267,10 @@ class studentRecordList extends State<ResultsSummary> {
                 dashboardState.value == ''
             ? Globals.deviceType == 'phone'
                 ? 33
-                : 55
+                : 52
             : Globals.deviceType == 'phone'
                 ? 33
-                : 48,
+                : 52,
         color: iconsName[index] == 'History'
             ? AppTheme.kButtonbackColor
             : iconsName[index] == 'Share'
@@ -2338,5 +2341,43 @@ class studentRecordList extends State<ResultsSummary> {
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: tableName);
     return studentInfo.first.pointPossible ?? '2';
+  }
+
+  // Custom Slidable Widget use to translation wrapping issue
+  Widget customSlidableDecorationWidget(
+      {required String label, required IconData icon}) {
+    final children = <Widget>[];
+
+    children.add(
+      Icon(icon),
+    );
+
+    children.add(
+      SizedBox(height: 4),
+    );
+
+    children.add(
+      TranslationWidget(
+          message: label,
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) {
+            return Text(
+              translatedMessage,
+              overflow: TextOverflow.ellipsis,
+            );
+          }),
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...children.map(
+          (child) => Flexible(
+            child: child,
+          ),
+        )
+      ],
+    );
   }
 }

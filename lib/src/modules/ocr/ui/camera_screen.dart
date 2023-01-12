@@ -89,6 +89,7 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   CameraDescription? description;
+
   ValueNotifier<CameraController>? controller =
       ValueNotifier<CameraController>(CameraController(
     cameras[0],
@@ -162,6 +163,10 @@ class _CameraScreenState extends State<CameraScreen>
     super.dispose();
   }
 
+  ValueNotifier<bool> showFocusCircle = ValueNotifier<bool>(false);
+
+  double x = 0;
+  double y = 0;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -593,8 +598,8 @@ class _CameraScreenState extends State<CameraScreen>
                     ? LayoutBuilder(builder:
                         (BuildContext context, BoxConstraints constraints) {
                         return GestureDetector(
-                          onTapDown: (details) =>
-                              onViewFinderTap(details, constraints),
+                          onTapUp: (details) => manualCameraFocusOnTap(details),
+                          // onViewFinderTap(details, constraints),
                           child: Stack(children: [
                             Center(child: controller!.value.buildPreview()),
                             Positioned(
@@ -712,7 +717,33 @@ class _CameraScreenState extends State<CameraScreen>
                                       )),
                                 ),
                               ),
-                            )
+                            ),
+                            ValueListenableBuilder(
+                                child: Container(),
+                                valueListenable: showFocusCircle,
+                                builder: (BuildContext context, dynamic value,
+                                    Widget? child) {
+                                  return showFocusCircle.value
+                                      ? Positioned(
+                                          top: y - 20,
+                                          left: x - 20,
+                                          child: Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                10,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                10,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 1.5)),
+                                          ))
+                                      : Container();
+                                })
                           ]),
                         );
                       })
@@ -916,19 +947,19 @@ class _CameraScreenState extends State<CameraScreen>
         : null;
   }
 
-  void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
-    if (controller == null) {
-      return;
-    }
+  // void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
+  //   if (controller == null) {
+  //     return;
+  //   }
 
-    final offset = Offset(
-      details.localPosition.dx / constraints.maxWidth,
-      details.localPosition.dy / constraints.maxHeight,
-    );
+  //   final offset = Offset(
+  //     details.localPosition.dx / constraints.maxWidth,
+  //     details.localPosition.dy / constraints.maxHeight,
+  //   );
 
-    controller!.value.setExposurePoint(offset);
-    controller!.value.setFocusPoint(offset);
-  }
+  //   controller!.value.setExposurePoint(offset);
+  //   controller!.value.setFocusPoint(offset);
+  // }
 
   Future<List<StudentAssessmentInfo>> _getStudentInfoList() async {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
@@ -956,5 +987,31 @@ class _CameraScreenState extends State<CameraScreen>
 
   void setEnabledSystemUIMode() {
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  }
+
+  Future<void> manualCameraFocusOnTap(TapUpDetails details) async {
+    if (controller!.value.value.isInitialized) {
+      showFocusCircle.value = true;
+      x = details.localPosition.dx;
+      y = details.localPosition.dy;
+
+      double fullWidth = MediaQuery.of(context).size.width;
+      double cameraHeight = fullWidth * controller!.value.value.aspectRatio;
+
+      double xp = x / fullWidth;
+      double yp = y / cameraHeight;
+
+      Offset point = Offset(xp, yp);
+
+      // Manually focus
+      await controller!.value.setFocusPoint(point);
+
+      // Manually set light exposure
+      await controller!.value.setExposurePoint(point);
+
+      Future.delayed(const Duration(seconds: 2)).whenComplete(() {
+        showFocusCircle.value = false;
+      });
+    }
   }
 }

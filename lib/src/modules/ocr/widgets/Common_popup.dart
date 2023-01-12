@@ -125,6 +125,8 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                       textButtonWidget(
                           title: 'Yes',
                           onPressed: () async {
+                            await FirebaseAnalyticsService
+                                .addCustomAnalyticsEvent("logout");
                             await UserGoogleProfile.clearUserProfile();
                             await GoogleClassroom.clearClassroomCourses();
                             Utility.clearStudentInfo(tableName: 'student_info');
