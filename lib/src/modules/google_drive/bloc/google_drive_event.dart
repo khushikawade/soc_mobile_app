@@ -8,7 +8,7 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? token;
   final String? folderName;
   final bool? fetchHistory;
-  final String? refreshtoken;
+  final String? refreshToken;
   final bool? isFromOcrHome;
   final bool? assessmentSection;
   //final File? filePath;
@@ -16,7 +16,7 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
       {required this.token,
       required this.folderName, //required this.filePath
       this.fetchHistory,
-      this.refreshtoken,
+      this.refreshToken,
       required this.isFromOcrHome,
       this.assessmentSection});
 
@@ -36,7 +36,7 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
   final List<StudentAssessmentInfo>? studentData;
   final String? fileId;
   final bool isLoading;
-  final bool? isCustomRubricSelcted;
+  final bool? isCustomRubricSelected;
   final int? selectedRubric;
   final String questionImage;
   final String? assessmentName;
@@ -47,19 +47,19 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
       required this.fileId,
       required this.isLoading,
       required this.questionImage,
-      this.isCustomRubricSelcted,
+      this.isCustomRubricSelected,
       this.selectedRubric,
       required this.assessmentName,
       required this.createdAsPremium,
-      this.isMcqSheet});
+      required this.isMcqSheet});
   @override
   List<Object> get props => [];
 }
 
 class GetHistoryAssessmentFromDrive extends GoogleDriveEvent {
-  final String? searchKeywork;
+  final String? searchKeyword;
 
-  GetHistoryAssessmentFromDrive({this.searchKeywork});
+  GetHistoryAssessmentFromDrive({this.searchKeyword});
   @override
   List<Object> get props => [];
 }
@@ -131,8 +131,9 @@ class QuestionImgToAwsBucked extends GoogleDriveEvent {
 }
 
 class GetShareLink extends GoogleDriveEvent {
+  final bool slideLink;
   final String? fileId;
-  GetShareLink({required this.fileId});
+  GetShareLink({required this.fileId, required this.slideLink});
   @override
   List<Object> get props => [];
 }
@@ -152,4 +153,44 @@ class GetAssessmentSearchDetails extends GoogleDriveEvent {
 
   @override
   List<Object> get props => [keyword!];
+}
+
+// ignore: must_be_immutable
+class AddBlankSlidesOnDrive extends GoogleDriveEvent {
+  String? slidepresentationId;
+  AddBlankSlidesOnDrive({required this.slidepresentationId});
+
+  @override
+  List<Object> get props => [];
+}
+
+class CreateSlideToDrive extends GoogleDriveEvent {
+  final String? fileTitle;
+  CreateSlideToDrive({required this.fileTitle});
+  @override
+  List<Object> get props => [];
+}
+
+// Event To Update Google Slide On Scan More -----------------------------------//
+class UpdateGoogleSlideOnScanMore extends GoogleDriveEvent {
+  final bool isFromHistoryAssessment;
+  final String slidePresentationId;
+  final String assessmentName;
+  final int lastAssessmentLength;
+
+  UpdateGoogleSlideOnScanMore(
+      {required this.slidePresentationId,
+      required this.lastAssessmentLength,
+      required this.isFromHistoryAssessment,
+      required this.assessmentName});
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateAssessmentImageToSlidesOnDrive extends GoogleDriveEvent {
+  final String? slidepresentationId;
+  UpdateAssessmentImageToSlidesOnDrive({required this.slidepresentationId});
+
+  @override
+  List<Object> get props => [];
 }

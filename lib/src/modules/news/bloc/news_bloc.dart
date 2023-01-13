@@ -69,7 +69,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         }
         // Local database end.
         List<NotificationList> _list = await fetchNotificationList(0, 50);
-        print("list length $event ================> ${_list.length}");
         // Syncing to local database
 
         await _localDb.clear();
@@ -146,7 +145,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       try {
         List<NotificationList> _list = await fetchNotificationList(0, 50);
 
-        print("list length $event================> ${_list.length}");
+        // print("list length $event================> ${_list.length}");
         Globals.notiCount = _list.length;
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
@@ -232,44 +231,54 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
         yield ActionCountSuccess(obj: newList);
       } catch (e) {
-        //print(e);
+        print(e);
         // yield NewsErrorReceived(err: e);
         String? _objectName = "news_action";
         // String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
         // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-        yield ActionCountSuccess(obj: _localData);
+        if (event.isDetailPage == false) {
+          yield ActionCountSuccess(obj: _localData);
+        }
       }
     }
 
     if (event is UpdateNotificationList) {
       try {
-        print('inside update');
-        List<NotificationList> _list =
-            await fetchNotificationList(event.list!.length, 50);
-        print("list length $event ================> ${_list.length}");
-        List<NotificationList> oldList = event.list!;
-        oldList.addAll(_list);
+        List<NotificationList> existingNotificationList = event.list!;
 
+        List<NotificationList> _list =
+            await fetchNotificationList(event.list!.length, 50); //offset,limit
+
+        //Adding newly fetched notification to the existing list
+        existingNotificationList.addAll(_list);
+
+        //Sending the loading indicator to UI to show at last index of the list
         bool isLoading = true;
+
         if (_list.isEmpty) {
           isLoading = false;
         }
-        oldList.forEach((element) {
+
+        //Sorting the notification by date
+        existingNotificationList.forEach((element) {
           if (element.completedAtTimestamp != null) {
-            oldList.sort((a, b) =>
+            existingNotificationList.sort((a, b) =>
                 b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
           }
         });
+
+        //To mimic the state
         yield NewsLoading2();
+
         yield NewsLoaded(
-          obj: oldList,
+          obj: existingNotificationList,
           isloading: isLoading,
           isFromUpdatedNewsList: true,
         );
       } catch (e) {
-        throw Exception(e);
+        print(e);
       }
     }
   }
@@ -301,7 +310,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         final data = json.decode(response.body);
         // Globals.notiCount = data["total_count"];
 
-        final _allNotifications = data['body'];
+        final _allNotifications = data['body'] ?? [];
         // Filtering the scheduled notifications. Only delivered notifications should display in the list.
         final data1 =
             _allNotifications.where((e) => e['completed_at'] != null).toList();
@@ -324,7 +333,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (e.toString().contains("Failed host lookup")) {
         throw ("No Internet Connection.");
       } else {
-        //print(e);
+        print(e);
         throw (e);
       }
     }
@@ -332,7 +341,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postapimain(
+      final ResponseModel response = await _dbServices.postApimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);
 
@@ -350,7 +359,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.parse(
+      final ResponseModel response = await _dbServices.getApi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
 
       if (response.statusCode == 200) {

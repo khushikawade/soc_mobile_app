@@ -74,7 +74,7 @@ void main() async {
       ..registerAdapter(UserInformationAdapter())
       ..registerAdapter(SubjectDetailListAdapter())
       ..registerAdapter(HistoryAssessmentAdapter())
-      ..registerAdapter(CustomRubicModalAdapter())
+      ..registerAdapter(CustomRubricModalAdapter())
       ..registerAdapter(TranslationModalAdapter())
       ..registerAdapter(StudentAssessmentInfoAdapter())
       ..registerAdapter(StateListObjectAdapter())

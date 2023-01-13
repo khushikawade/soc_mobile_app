@@ -113,7 +113,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
   Future<List<SharedList>> getResourcesSDList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Resources_App__c"));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']
@@ -131,7 +131,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
   Future<List<SharedList>> getResourcesSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=Resources_App__c&objectName=Resources_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']

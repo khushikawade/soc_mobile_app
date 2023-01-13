@@ -3,7 +3,6 @@ import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 import 'package:Soc/src/modules/schedule/modal/event.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
-// import 'package:Soc/src/services/local_database/hive_db_services.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -25,6 +24,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   @override
   initState() {
+    FirebaseAnalyticsService.enableAnalytics();
     super.initState();
     // getTheme();
     // clearLocalDataBase();

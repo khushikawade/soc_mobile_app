@@ -13,7 +13,7 @@ class StudentAssessmentInfo {
   @HiveField(2)
   String? studentGrade;
   @HiveField(3) //pointsEarned
-  String? pointpossible;
+  String? pointPossible;
   @HiveField(4)
   String? grade;
   @HiveField(5)
@@ -37,17 +37,20 @@ class StudentAssessmentInfo {
   @HiveField(14)
   String? assessmentImgPath;
   @HiveField(15)
-  String? answerKey;
+  String? slideObjectId;
   @HiveField(16)
-  String? studentResponseKey;
+  // String? googleSlidePresentationLink;
+  String? answerKey;
   @HiveField(17)
-  String? presentationURL;
+  String? studentResponseKey;
+  @HiveField(18)
+  String? googleSlidePresentationURL;
 
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,
       this.studentGrade,
-      this.pointpossible,
+      this.pointPossible,
       this.grade,
       this.subject,
       this.learningStandard,
@@ -59,8 +62,10 @@ class StudentAssessmentInfo {
       this.questionImgUrl,
       this.isSavedOnDashBoard,
       this.assessmentImgPath,
+      this.slideObjectId,
+      this.googleSlidePresentationURL,
       this.answerKey,
-      this.presentationURL,
+      //this.presentationURL,
       this.studentResponseKey});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
@@ -70,7 +75,7 @@ class StudentAssessmentInfo {
               ? json['Email Id'] as String?
               : json['Id'] as String?,
           studentGrade: json['Points Earned'] as String?,
-          pointpossible: json['Point Possible'] as String?,
+          pointPossible: json['Point Possible'] as String?,
           grade: json['Grade'] as String?,
           subject: json['Subject'] as String?,
           learningStandard: json['Learning Standard'] as String?,
@@ -87,6 +92,6 @@ class StudentAssessmentInfo {
               : json['Assessment Question Img'] as String?,
           isSavedOnDashBoard: json['Saved on Dashboard'],
           answerKey: json['Answer Key'],
-          presentationURL: json['Presentation URL'],
+          googleSlidePresentationURL: json['Presentation URL'],
           studentResponseKey: json['Student Response Key']);
 }

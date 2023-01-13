@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
@@ -46,6 +48,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   bool? isCountLoading = true;
   bool? isActionAPICalled = false;
   bool? result;
+  bool? allCaughtUpFlag = false;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -246,7 +249,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildList(List<NotificationList> _list, bool isLoading) {
+  Widget _buildList(
+      List<NotificationList> _list, bool isLoading, bool connected) {
     return Expanded(
       child: ListView.builder(
         controller: _scrollController,
@@ -256,25 +260,56 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
         itemCount: _list.length + 1,
         itemBuilder: (BuildContext context, int index) {
           return index == _list.length
-              ? isLoading == true
-                  ? Container(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Center(
-                        child: Platform.isIOS
-                            ? CupertinoActivityIndicator(
-                                color: AppTheme.kButtonbackColor,
-                              )
-                            : Container(
-                                margin: EdgeInsets.only(bottom: 15),
-                                height: 25,
-                                width: 25,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                      ))
-                  : allCaughtUp()
+              ? !connected
+                  ? Column(
+                      children: [
+                        Container(
+                          color: Theme.of(context).colorScheme.secondary,
+                          height: 6,
+                        ),
+                        Container(
+                            alignment: Alignment.bottomCenter,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color:
+                                    Theme.of(context).colorScheme.background ==
+                                            Color(0xff000000)
+                                        ? Color(0xff162429)
+                                        : Colors.grey.shade300),
+                            margin: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 20),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10,
+                            ),
+                            child: Utility.textWidget(
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                                text: "Please check your internet connection",
+                                context: context)),
+                      ],
+                    )
+                  : isLoading == true
+                      ? Container(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Center(
+                            child: Platform.isIOS
+                                ? CupertinoActivityIndicator(
+                                    color: Theme.of(context).primaryColor,
+                                  )
+                                : Container(
+                                    margin: EdgeInsets.only(bottom: 15),
+                                    height: 25,
+                                    width: 25,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                          ))
+                      : allCaughtUp()
               : _buildListItems(_list, _list[index], index);
         },
       ),
@@ -376,7 +411,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           Globals.notificationList.clear();
                           Globals.notificationList.addAll(state.obj!);
                           return state.obj != null && state.obj!.length > 0
-                              ? _buildList(state.obj!, state.isloading)
+                              ? _buildList(
+                                  state.obj!, state.isloading, connected)
                               : Expanded(
                                   child: NoDataFoundErrorWidget(
                                     isResultNotFoundMsg: false,
@@ -418,12 +454,13 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   }
 
   _scrollListener() {
-    if (_scrollController.position.atEdge) {
+    if (_scrollController.position.atEdge && !allCaughtUpFlag!) {
       bloc.add(UpdateNotificationList(list: notification_list));
     }
   }
 
   Widget allCaughtUp() {
+    allCaughtUpFlag = true;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Column(
@@ -504,7 +541,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 Utility.textWidget(
                     context: context,
                     text:
-                        'All Notification Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                        'All Notifications Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.background ==

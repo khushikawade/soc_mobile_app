@@ -321,7 +321,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<SharedList>> getFamilyList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Families_App__c'));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']
@@ -339,7 +339,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<SharedList>> getFamilySubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=Families_App__c&objectName=Family_Sub_Menu_App__c"));
 
       if (response.statusCode == 200) {
@@ -358,7 +358,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
   Future<List<SDlist>> getStaffList(categoryId, customrecordId) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(customrecordId !=
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(customrecordId !=
               null
           ? //'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&Custom_App_Menu__c=$customrecordId'
           'getSubRecords?parentId=$customrecordId&parentName=Custom_App_Menu__c&objectName=Staff_Directory_App__c'

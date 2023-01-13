@@ -58,7 +58,7 @@ class _OpticalCharacterRecognitionPageState
 
   int myTimeStamp = DateTime.now().microsecondsSinceEpoch;
 
-  LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+  LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
 
   @override
   void initState() {
@@ -415,8 +415,8 @@ class _OpticalCharacterRecognitionPageState
                               Globals.scoringRubric =
                                   '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
                             }
-                            //print(Globals.scoringRubric);
-                            // //print("//printing ----> ${Globals.scoringRubric}");
+                            print(Globals.scoringRubric);
+                            print("//printing ----> ${Globals.scoringRubric}");
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
@@ -507,7 +507,7 @@ class _OpticalCharacterRecognitionPageState
     }
   }
 
-  void showCustomRubricImage(CustomRubicModal customScoreObj) {
+  void showCustomRubricImage(CustomRubricModal customScoreObj) {
     customScoreObj.imgUrl != null
         ? showDialog(
             context: context,
@@ -520,11 +520,11 @@ class _OpticalCharacterRecognitionPageState
 
   Future updateLocalDb() async {
     //Save user profile to locally
-    // LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+    // LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubric');
     //print(RubricScoreList.scoringList);
     await _localDb.clear();
 
-    RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+    RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
       await _localDb.addData(e);
     });
     // ignore: unnecessary_statements
@@ -540,7 +540,7 @@ class _OpticalCharacterRecognitionPageState
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
   Future<void> _beforenavigateOnCameraSection() async {
@@ -657,9 +657,9 @@ class _OpticalCharacterRecognitionPageState
   }
 
   getAllRubricList() async {
-    List<CustomRubicModal> _localData = await _localDb.getData();
+    List<CustomRubricModal> _localData = await _localDb.getData();
     if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+      RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
         await _localDb.addData(e);
       });
       await _localDb.close();
@@ -704,7 +704,7 @@ class _OpticalCharacterRecognitionPageState
       MaterialPageRoute(
         builder: (context) => CameraScreen(
           isMcqSheet: false,
-          selectedAnswer: '', //For constructed response, its empty
+          selectedAnswer: '',
           isFromHistoryAssessmentScanMore: false,
           onlyForPicture: false,
           scaffoldKey: _scaffoldKey,

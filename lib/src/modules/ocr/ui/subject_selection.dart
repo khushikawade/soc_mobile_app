@@ -38,7 +38,7 @@ class SubjectSelection extends StatefulWidget {
   final String? domainNameC;
   final String? searchClass;
   final String? selectedSubject;
-  final String? questionimageUrl;
+  final String? questionImageUrl;
   final bool? isCommonCore;
   SubjectSelection(
       {Key? key,
@@ -49,7 +49,7 @@ class SubjectSelection extends StatefulWidget {
       this.domainNameC,
       this.searchClass,
       this.selectedSubject,
-      required this.questionimageUrl,
+      required this.questionImageUrl,
       this.isCommonCore,
       this.isMcqSheet,
       this.selectedAnswer})
@@ -60,7 +60,7 @@ class SubjectSelection extends StatefulWidget {
 }
 
 class _SubjectSelectionState extends State<SubjectSelection> {
-  static const double _KVertcalSpace = 60.0;
+  static const double _KVerticalSpace = 60.0;
   final searchController = TextEditingController();
   final addController = TextEditingController();
   String? selectedKeyword;
@@ -100,6 +100,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   initState() {
     // To Fetch Subject Name Accoding to state seletion
 
+    googleSlidesPrepration();
     if (widget.isSearchPage == true) {
       isSkipButton.value = true;
       _ocrBloc.add(FetchSubjectDetails(
@@ -135,6 +136,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   @override
   void dispose() {
+    _googleDriveBloc.close();
     // TODO: implement dispose
     super.dispose();
   }
@@ -217,6 +219,82 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   customBackButton: backButtonWidget(),
                 ),
                 body: mainBodyWidget()),
+            BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                bloc: _googleDriveBloc,
+                child: Container(),
+                listener: (context, state) async {
+                  if (state is GoogleDriveLoading) {
+                    //   Utility.showLoadingDialog(context, true);
+                  }
+                  if (state is AddBlankSlidesOnDriveSuccess) {
+                    _googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
+                        slidepresentationId:
+                            Globals.googleSlidePresentationId));
+                  }
+                  if (state is GoogleSuccess) {
+                    Globals.currentAssessmentId = '';
+                    _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
+                        isMcqSheet: widget.isMcqSheet!,
+                        assessmentQueImage: widget.questionImageUrl ?? '',
+                        assessmentName:
+                            Globals.assessmentName ?? 'Assessment Name',
+                        rubricScore: Globals.scoringRubric ?? '2',
+                        subjectName: subject ??
+                            '', //Student Id will not be there in case of custom subject
+                        domainName: learningStandard ?? '',
+                        subDomainName: subLearningStandard ?? '',
+                        schoolId: Globals.appSetting.schoolNameC ?? '',
+                        grade: widget.selectedClass ?? '',
+                        standardId: standardId ?? '',
+                        scaffoldKey: _scaffoldKey,
+                        context: context,
+                        fileId:
+                            Globals.googleExcelSheetId ?? 'Excel Id not found',
+                        sessionId: Globals.sessionId,
+                        teacherContactId: Globals.teacherId,
+                        teacherEmail: Globals.teacherEmailId));
+                  }
+                  if (state is ErrorState) {
+                    if (state.errorMsg == 'ReAuthentication is required') {
+                      await Utility.refreshAuthenticationToken(
+                          isNavigator: true,
+                          errorMsg: state.errorMsg!,
+                          context: context,
+                          scaffoldKey: _scaffoldKey);
+
+                      _googleDriveBloc.add(
+                        UpdateDocOnDrive(
+                            isMcqSheet: widget.isMcqSheet ?? false,
+                            questionImage: widget.questionImageUrl == ''
+                                ? 'NA'
+                                : widget.questionImageUrl ?? 'NA',
+                            createdAsPremium: Globals.isPremiumUser,
+                            assessmentName: Globals.assessmentName,
+                            fileId: Globals.googleExcelSheetId,
+                            isLoading: true,
+                            studentData: await Utility.getStudentInfoList(
+                                tableName: 'student_info')
+                            //list2
+                            //Globals.studentInfo!
+                            ),
+                      );
+                    } else {
+                      Navigator.of(context).pop();
+                      Utility.currentScreenSnackBar(
+                          "Something Went Wrong. Please Try Again.", null);
+                    }
+                  }
+
+                  if (state is ShareLinkReceived) {
+                    Globals.googleSlidePresentationLink = state.shareLink;
+
+                    _googleDriveBloc.add(AddBlankSlidesOnDrive(
+                        slidepresentationId:
+                            Globals.googleSlidePresentationId));
+                  }
+
+                  if (state is GoogleAssessmentImagesOnSlidesUpdated) {}
+                }),
           ],
         ),
       ),
@@ -245,7 +323,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             builder: (context) => SearchScreenPage(
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
-                                  questionImage: widget.questionimageUrl ?? '',
+                                  questionImage: widget.questionImageUrl ?? '',
                                   selectedKeyword: selectedKeyword,
                                   grade: widget.selectedClass,
                                   selectedSubject: subject,
@@ -305,7 +383,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             builder: (context) => SearchScreenPage(
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
-                                  questionImage: widget.questionimageUrl ?? '',
+                                  questionImage: widget.questionImageUrl ?? '',
                                   selectedKeyword: selectedKeyword,
                                   grade: widget.selectedClass,
                                   selectedSubject: subject,
@@ -329,11 +407,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             horizontal: 20,
           ),
           children: [
-            SpacerWidget(_KVertcalSpace * 0.50),
+            SpacerWidget(_KVerticalSpace * 0.50),
             titleWidget(),
-            SpacerWidget(_KVertcalSpace / 3.5),
+            SpacerWidget(_KVerticalSpace / 3.5),
             searchWidget(),
-            SpacerWidget(_KVertcalSpace / 4),
+            SpacerWidget(_KVerticalSpace / 4),
             ValueListenableBuilder(
                 valueListenable: pageIndex,
                 builder: (BuildContext context, dynamic value, Widget? child) {
@@ -341,7 +419,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       ? searchDomainText()
                       : Container();
                 }),
-            SpacerWidget(_KVertcalSpace / 4),
+            SpacerWidget(_KVerticalSpace / 4),
             blocBuilderWidget(),
             BlocListener(
               bloc: _ocrBloc,
@@ -539,7 +617,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           isSkipButton.value = false;
                         }
                       }
-                      //print(subLearningStandard);
                     },
                     child: AnimatedContainer(
                       padding: EdgeInsets.only(bottom: 5),
@@ -632,7 +709,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
               ]);
             },
             separatorBuilder: (BuildContext context, int index) {
-              return SpacerWidget(_KVertcalSpace / 3.75);
+              return SpacerWidget(_KVerticalSpace / 3.75);
             },
           ),
         );
@@ -865,7 +942,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             if (index >= list.length &&
                                 index !=
                                     list.length + userAddedSubjectList.length) {
-                              Navigator.push(
+                              _googleDriveBloc.close();
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ResultsSummary(
@@ -873,7 +951,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           selectedAnswer: widget.selectedAnswer,
                                           subjectId: subjectId ?? '',
                                           standardId: standardId ?? '',
-                                          asssessmentName:
+                                          assessmentName:
                                               Globals.assessmentName,
                                           shareLink: Globals.shareableLink!,
                                           assessmentDetailPage: false,
@@ -1047,7 +1125,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             backgroundColor:
                                 AppTheme.kButtonColor.withOpacity(1.0),
                             onPressed: () async {
-                              Utility.updateLoges(
+                              Utility.updateLogs(
                                   // ,
                                   activityId: '18',
                                   description: 'Skip subject selection process',
@@ -1062,50 +1140,50 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     child: Container(),
                                     listener: (context, state) async {
                                       if (state is GoogleDriveLoading) {
-                                        Utility.showLoadingDialog(
-                                            context, true);
+                                        // Utility.showLoadingDialog(
+                                        //     context, true);
                                       }
                                       if (state is GoogleSuccess) {
-                                        Globals.currentAssessmentId = '';
-                                        _ocrBloc.add(
-                                            SaveAssessmentToDashboardAndGetId(
-                                                isMcqSheet:
-                                                    widget.isMcqSheet ?? false,
-                                                assessmentQueImage:
-                                                    widget.questionimageUrl ??
-                                                        '',
-                                                assessmentName:
-                                                    Globals.assessmentName ??
-                                                        'Assessment Name',
-                                                rubricScore:
-                                                    Globals.scoringRubric ??
-                                                        '2',
-                                                subjectName: subject ??
-                                                    '', //Student Id will not be there in case of custom subject
-                                                domainName:
-                                                    learningStandard ?? '',
-                                                subDomainName:
-                                                    subLearningStandard ?? '',
-                                                schoolId: Globals.appSetting
-                                                        .schoolNameC ??
-                                                    '',
-                                                grade:
-                                                    widget.selectedClass ?? '',
-                                                standardId: standardId ?? '',
-                                                scaffoldKey: _scaffoldKey,
-                                                context: context,
-                                                fileId: Globals
-                                                        .googleExcelSheetId ??
-                                                    'Excel Id not found',
-                                                sessionId: Globals.sessionId,
-                                                teacherContactId:
-                                                    Globals.teacherId,
-                                                teacherEmail:
-                                                    Globals.teacherEmailId));
+                                        // Globals.currentAssessmentId = '';
+                                        // _ocrBloc.add(
+                                        //     SaveAssessmentToDashboardAndGetId(
+                                        //         isMcqSheet:
+                                        //             widget.isMcqSheet ?? false,
+                                        //         assessmentQueImage:
+                                        //             widget.questionimageUrl ??
+                                        //                 '',
+                                        //         assessmentName:
+                                        //             Globals.assessmentName ??
+                                        //                 'Assessment Name',
+                                        //         rubricScore:
+                                        //             Globals.scoringRubric ??
+                                        //                 '2',
+                                        //         subjectName: subject ??
+                                        //             '', //Student Id will not be there in case of custom subject
+                                        //         domainName:
+                                        //             learningStandard ?? '',
+                                        //         subDomainName:
+                                        //             subLearningStandard ?? '',
+                                        //         schoolId: Globals.appSetting
+                                        //                 .schoolNameC ??
+                                        //             '',
+                                        //         grade:
+                                        //             widget.selectedClass ?? '',
+                                        //         standardId: standardId ?? '',
+                                        //         scaffoldKey: _scaffoldKey,
+                                        //         context: context,
+                                        //         fileId: Globals
+                                        //                 .googleExcelSheetId ??
+                                        //             'Excel Id not found',
+                                        //         sessionId: Globals.sessionId,
+                                        //         teacherContactId:
+                                        //             Globals.teacherId,
+                                        //         teacherEmail:
+                                        //             Globals.teacherEmailId));
                                       }
                                       if (state is ErrorState) {
                                         if (state.errorMsg ==
-                                            'Reauthentication is required') {
+                                            'ReAuthentication is required') {
                                           await Utility
                                               .refreshAuthenticationToken(
                                                   isNavigator: true,
@@ -1115,12 +1193,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                           _googleDriveBloc.add(
                                             UpdateDocOnDrive(
-                                                isMcqSheet: widget.isMcqSheet,
+                                                isMcqSheet:
+                                                    widget.isMcqSheet ?? false,
                                                 questionImage: widget
-                                                            .questionimageUrl ==
+                                                            .questionImageUrl ==
                                                         ''
                                                     ? 'NA'
-                                                    : widget.questionimageUrl ??
+                                                    : widget.questionImageUrl ??
                                                         'NA',
                                                 createdAsPremium:
                                                     Globals.isPremiumUser,
@@ -1154,7 +1233,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       }
                                       if (state is AssessmentIdSuccess) {
                                         Navigator.of(context).pop();
-                                        Navigator.push(
+                                        _googleDriveBloc.close();
+                                        Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
@@ -1168,7 +1248,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                     subjectId: subjectId ?? '',
                                                     standardId:
                                                         standardId ?? '',
-                                                    asssessmentName:
+                                                    assessmentName:
                                                         Globals.assessmentName,
                                                     shareLink: '',
                                                     assessmentDetailPage: false,
@@ -1218,8 +1298,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       child: Container(),
                                       listener: (context, state) async {
                                         if (state is GoogleDriveLoading) {
-                                          Utility.showLoadingDialog(
-                                              context, true);
+                                          // Utility.showLoadingDialog(
+                                          //     context, true);
                                         }
                                         if (state is GoogleSuccess) {
                                           Globals.currentAssessmentId = '';
@@ -1228,7 +1308,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                   isMcqSheet: widget.isMcqSheet ??
                                                       false,
                                                   assessmentQueImage:
-                                                      widget.questionimageUrl ??
+                                                      widget.questionImageUrl ??
                                                           '',
                                                   assessmentName:
                                                       Globals.assessmentName ??
@@ -1261,7 +1341,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         }
                                         if (state is ErrorState) {
                                           if (state.errorMsg ==
-                                              'Reauthentication is required') {
+                                              'ReAuthentication is required') {
                                             await Utility
                                                 .refreshAuthenticationToken(
                                                     isNavigator: true,
@@ -1271,12 +1351,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                             _googleDriveBloc.add(
                                               UpdateDocOnDrive(
-                                                isMcqSheet: widget.isMcqSheet,
+                                                isMcqSheet:
+                                                    widget.isMcqSheet ?? false,
                                                 questionImage: widget
-                                                            .questionimageUrl ==
+                                                            .questionImageUrl ==
                                                         ''
                                                     ? 'NA'
-                                                    : widget.questionimageUrl ??
+                                                    : widget.questionImageUrl ??
                                                         'NA',
                                                 createdAsPremium:
                                                     Globals.isPremiumUser,
@@ -1300,6 +1381,19 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                 null);
                                           }
                                         }
+                                        if (state is GoogleSlideCreated) {
+                                          Globals.googleSlidePresentationId =
+                                              state.slideFiledId;
+
+                                          _googleDriveBloc.add(GetShareLink(
+                                              fileId: Globals
+                                                  .googleSlidePresentationId,
+                                              slideLink: true));
+                                        }
+                                        if (state is ShareLinkReceived) {
+                                          Globals.googleSlidePresentationLink =
+                                              state.shareLink;
+                                        }
                                       }),
                                   BlocListener<OcrBloc, OcrState>(
                                       bloc: _ocrBloc,
@@ -1310,13 +1404,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         }
                                         if (state is AssessmentIdSuccess) {
                                           Navigator.of(context).pop();
-                                          Utility.updateLoges(
+                                          Utility.updateLogs(
                                               // ,
                                               activityId: '14',
                                               description: 'Save to drive',
                                               operationResult: 'Success');
-
-                                          Navigator.push(
+                                          _googleDriveBloc.close();
+                                          Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
@@ -1331,7 +1425,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                           subjectId ?? '',
                                                       standardId:
                                                           standardId ?? '',
-                                                      asssessmentName: Globals
+                                                      assessmentName: Globals
                                                           .assessmentName,
                                                       shareLink: '',
                                                       assessmentDetailPage:
@@ -1458,10 +1552,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       if (!connected) {
         Utility.currentScreenSnackBar("No Internet Connection", null);
       } else {
-        LocalDatabase<CustomRubicModal> _localDb =
+        LocalDatabase<CustomRubricModal> _localDb =
             LocalDatabase('custom_rubic');
 
-        List<CustomRubicModal>? _localData = await _localDb.getData();
+        List<CustomRubricModal>? _localData = await _localDb.getData();
         String? rubricImgUrl;
 
         for (int i = 0; i < _localData.length; i++) {
@@ -1493,19 +1587,20 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         element.scoringRubric =
             widget.isMcqSheet == true ? '0-1' : Globals.scoringRubric;
         element.className = Globals.assessmentName!.split("_")[1];
-        element.customRubricImage = rubricImgUrl ?? "NA";
+        element.customRubricImage = rubricImgUrl;
         element.grade = widget.selectedClass;
         element.questionImgUrl =
-            widget.questionimageUrl == '' ? "NA" : widget.questionimageUrl;
-
+            widget.questionImageUrl == '' ? "NA" : widget.questionImageUrl;
+        element.googleSlidePresentationURL =
+            Globals.googleSlidePresentationLink;
         await _studentInfoDb.putAt(0, element);
-
+        Utility.showLoadingDialog(context, true);
         _googleDriveBloc.add(
           UpdateDocOnDrive(
-              isMcqSheet: widget.isMcqSheet,
-              questionImage: widget.questionimageUrl == ''
+              isMcqSheet: widget.isMcqSheet ?? false,
+              questionImage: widget.questionImageUrl == ''
                   ? 'NA'
-                  : widget.questionimageUrl ?? 'NA',
+                  : widget.questionImageUrl ?? 'NA',
               createdAsPremium: Globals.isPremiumUser,
               assessmentName: Globals.assessmentName,
               fileId: Globals.googleExcelSheetId,
@@ -1516,5 +1611,24 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         );
       }
     }
+  }
+
+  Future<void> googleSlidesPrepration() async {
+    // _googleDriveBloc.add(GetShareLink(
+    //     fileId: Globals.googleSlidePresentationId, slideLink: true));
+    // if (Globals.googleSlidePresentationId!.isEmpty) {
+    //   _googleDriveBloc
+    //       .add(CreateSlideToDrive(fileTitle: Globals.assessmentName));
+    // } else
+
+    // check if the presentation url exists or not else call the API to get URL
+    if (Globals.googleSlidePresentationLink!.isEmpty) {
+      _googleDriveBloc.add(GetShareLink(
+          fileId: Globals.googleSlidePresentationId, slideLink: true));
+    }
+    // else {
+    //   _googleDriveBloc.add(AddBlankSlidesOnDrive(
+    //       slidepresentationId: Globals.googleSlidePresentationId));
+    // }
   }
 }

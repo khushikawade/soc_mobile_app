@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,31 +49,22 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCypMyVspQ-qcNrsK2Q5v6MODrMW46igSU',
-    appId: '1:971796701109:web:127d7438b224b9073e03fc',
-    messagingSenderId: '971796701109',
-    projectId: 'solved-consulting',
-    authDomain: 'solved-consulting.firebaseapp.com',
-    storageBucket: 'solved-consulting.appspot.com',
-    measurementId: 'G-Q17P3NFRSW',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBDNxwur94NezjopfgigrqsKqF29OpUIuk',
-    appId: '1:971796701109:android:b11588190bcccdbc3e03fc',
-    messagingSenderId: '971796701109',
-    projectId: 'solved-consulting',
-    storageBucket: 'solved-consulting.appspot.com',
+    apiKey: 'AIzaSyAm04JzrdSJR7K9dU-LfLqBw2NMcqe9pMs',
+    appId: '1:789027884162:android:b74fdc336355b825a3789b',
+    messagingSenderId: '789027884162',
+    projectId: 'graded-plus-standalone',
+    storageBucket: 'graded-plus-standalone.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB46U17OvVSOHkSDZTIapusywF0HuQuJTA',
-    appId: '1:971796701109:ios:e0658080983559323e03fc',
-    messagingSenderId: '971796701109',
-    projectId: 'solved-consulting',
-    storageBucket: 'solved-consulting.appspot.com',
-    iosClientId: '971796701109-pq4thnvdnug1st0c422nm4crujcmst6c.apps.googleusercontent.com',
-    iosBundleId: 'com.app.a1f4W000007DQaNQAW',
+    apiKey: 'AIzaSyAPQCCMdKPFedr4VWj1b_P8sSWJF_58Ylk',
+    appId: '1:789027884162:ios:009b627e401c34fca3789b',
+    messagingSenderId: '789027884162',
+    projectId: 'graded-plus-standalone',
+    storageBucket: 'graded-plus-standalone.appspot.com',
+    iosClientId:
+        '789027884162-i7i04sf17custt7medidefqsebdcrcc9.apps.googleusercontent.com',
+    iosBundleId: 'com.app.a1f4W000008SzlXQAS',
   );
 }

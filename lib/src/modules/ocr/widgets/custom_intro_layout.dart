@@ -183,8 +183,8 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                                   )
                                 : SelectAssessmentType()));
               } else {
-                await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                    "walkthrough_skip");
+                // await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                //     "walkthrough_skip");
                 carouselController.animateToPage(
                     CustomContentModal.onboardingPagesList.length - 1);
               }

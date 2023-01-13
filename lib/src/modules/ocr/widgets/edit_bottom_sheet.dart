@@ -167,7 +167,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                       horizontal: 20,
                                     ),
                                     child: _textFiled(
-                                        // whichContoller: 1,
+                                        whichContoller: 1,
                                         msg: "field is required ",
                                         controller:
                                             widget.textFieldControllerOne))
@@ -200,7 +200,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: _textFiled(
-                                          // whichContoller: 2,
+                                          whichContoller: 2,
                                           msg:
                                               Overrides.STANDALONE_GRADED_APP ==
                                                       true
@@ -253,7 +253,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 20),
                                           child: _textFiled(
-                                              // whichContoller: 3,
+                                              whichContoller: 3,
                                               keyboardType:
                                                   TextInputType.number,
                                               maxNineDigit: 1,
@@ -426,7 +426,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
               return InkWell(
                   onTap: () {
                     // updateDetails(isUpdateData: true);
-                    Utility.updateLoges(
+                    Utility.updateLogs(
                         // ,
                         activityId: '8',
                         description:
@@ -599,7 +599,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
   }
 
   Widget _textFiled({
-    // required int whichContoller,
+   required int whichContoller,
     required String msg,
     required TextEditingController controller,
     int? maxNineDigit,

@@ -299,7 +299,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                   GoogleDriveState state) async {
                                 if (state is ErrorState) {
                                   if (state.errorMsg ==
-                                      'Reauthentication is required') {
+                                      'ReAuthentication is required') {
                                     await Utility.refreshAuthenticationToken(
                                         isNavigator: false,
                                         errorMsg: state.errorMsg!,
@@ -488,6 +488,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             if (list[index].isCreatedAsPremium == "true") {
               createdAsPremium = true;
             }
+
             await _historyStudentInfoDb.clear();
             Navigator.push(
               context,
@@ -495,7 +496,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   builder: (context) => ResultsSummary(
                         createdAsPremium: createdAsPremium,
                         obj: list[index],
-                        asssessmentName: list[index].title!,
+                        assessmentName: list[index].title!,
                         shareLink: list[index].webContentLink,
                         fileId: list[index].fileid,
                         assessmentDetailPage: true,
@@ -555,7 +556,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 // subtitle:
                 trailing: GestureDetector(
                   onTap: () {
-                    Utility.updateLoges(
+                    Utility.updateLogs(
                         activityId: '13',
                         sessionId: list[index].sessionId != null
                             ? list[index].sessionId
