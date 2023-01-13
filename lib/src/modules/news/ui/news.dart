@@ -541,7 +541,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 Utility.textWidget(
                     context: context,
                     text:
-                        'All Notification Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                        'All Notifications Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.background ==
