@@ -55,4 +55,3 @@ class UpdateNotificationList extends NewsEvent {
   UpdateNotificationList({this.list});
   List<Object> get props => [];
 }
-

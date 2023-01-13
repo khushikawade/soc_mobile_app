@@ -532,7 +532,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         if (Globals.googleDriveFolderId != null &&
             Globals.googleDriveFolderId != "") {
-          print(_userProfileLocalData[0].authorizationToken);
           List pair = await _fetchHistoryAssessment(
               token: _userProfileLocalData[0].authorizationToken,
               isPagination: false,
@@ -775,7 +774,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
     if (event is GetShareLink) {
       try {
-        print("inside $event ------------->");
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
@@ -822,7 +820,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        print("now calling createBlankSlidesOnDrive");
         String result = await createBlankSlidesOnDrive(
             event.slidepresentationId!,
             _userProfileLocalData[0].authorizationToken,
@@ -1267,7 +1264,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             body: body);
         if (response.statusCode == 200) {}
       } else {
-        print('Excel file grid if not found');
+        print('Excel file grid is not found');
       }
     } catch (e) {
       print(e);
@@ -1448,7 +1445,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
-        print("link is received");
         return response.data['body']['webViewLink'];
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
@@ -2083,8 +2079,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isGoogleApi: true);
       if (response.statusCode == 200) {
-        print("update images on slides successfully------------>");
-
         return 'Done';
       } else if (response.statusCode == 401 && _totalRetry < 3) {
         var result = await _toRefreshAuthenticationToken(refreshToken!);
