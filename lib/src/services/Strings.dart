@@ -49,4 +49,5 @@ class Strings {
   // static final String scheduleObjectDetails = 'schedule_object_details';
   // static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
   static final String studentDetailList = 'student_detail_List';
+  static final String keyArrowSvgIconPath = "assets/images/arrow.svg";
 }

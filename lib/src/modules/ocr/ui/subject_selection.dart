@@ -943,7 +943,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 index !=
                                     list.length + userAddedSubjectList.length) {
                               _googleDriveBloc.close();
-
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -1235,7 +1234,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                       if (state is AssessmentIdSuccess) {
                                         Navigator.of(context).pop();
                                         _googleDriveBloc.close();
-
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
@@ -1412,7 +1410,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                               description: 'Save to drive',
                                               operationResult: 'Success');
                                           _googleDriveBloc.close();
-
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
