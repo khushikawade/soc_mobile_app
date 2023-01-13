@@ -36,7 +36,6 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
   final List<StudentAssessmentInfo>? studentData;
   final String? fileId;
   final bool isLoading;
-
   final bool? isCustomRubricSelected;
   final int? selectedRubric;
   final String questionImage;

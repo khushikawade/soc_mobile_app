@@ -52,15 +52,6 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-<<<<<<< HEAD
-            argument = "FIRDebugEnabled"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "FIRAnalyticsDebugEnabled"
-            isEnabled = "YES">
-         </CommandLineArgument>
-=======
             argument = "-FIRAnalyticsDebugEnabled"
             isEnabled = "YES">
          </CommandLineArgument>
@@ -72,7 +63,6 @@
             argument = ""
             isEnabled = "NO">
          </CommandLineArgument>
->>>>>>> firebase_custom_events
       </CommandLineArguments>
    </LaunchAction>
    <ProfileAction

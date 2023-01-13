@@ -145,14 +145,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     else if (event is UpdateGoogleSlideOnScanMore) {
       try {
         yield ShowLoadingDialog();
-
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
         LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
             LocalDatabase('history_student_info');
         List<StudentAssessmentInfo> assessmentData =
             await _studentInfoDb.getData();
-
         for (var i = 0; i < assessmentData.length; i++) {
           if (assessmentData[i].assessmentImage == null ||
               assessmentData[i].assessmentImage!.isEmpty) {
@@ -226,7 +224,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               assessmentData[i].googleSlidePresentationURL = shareLink;
             }
           }
-
           yield GoogleSheetUpdateOnScanMoreSuccess(list: assessmentData);
         } else {
           List<StudentAssessmentInfo> list = [];
@@ -249,7 +246,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 _userProfileLocalData[0].authorizationToken,
                 _userProfileLocalData[0].refreshToken,
                 list);
-
             yield GoogleSheetUpdateOnScanMoreSuccess(list: assessmentData);
           }
 
@@ -267,8 +263,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (event.isLoading) {
           yield GoogleDriveLoading();
         }
-
-        List<UserInformation> _userprofilelocalData =
+        List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
         LocalDatabase<CustomRubricModal> customRubicLocalDb =
             LocalDatabase('custom_rubic');
@@ -276,12 +271,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             await customRubicLocalDb.getData();
 
         List<StudentAssessmentInfo>? assessmentData = event.studentData;
-
         checkForGoogleExcelId(); //To check for excel sheet id
         if (assessmentData!.length > 0 && assessmentData[0].studentId == 'Id') {
           assessmentData.removeAt(0);
         }
-
         for (int i = 0; i < assessmentData.length; i++) {
           // Checking for 'Assessment Sheets Image' to get URL for specific index if not exist
           if (assessmentData[i].assessmentImage == null ||
@@ -400,26 +393,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 element.questionImgUrl = event.questionImage;
               });
             }
-            //  else {
-            //   String imgExtension = Globals.questionImgFilePath!.path.substring(
-            //       Globals.questionImgFilePath!.path.lastIndexOf(".") + 1);
-
-            //   List<int> imageBytes =
-            //       Globals.questionImgFilePath!.readAsBytesSync();
-
-            //   String imageB64 = base64Encode(imageBytes);
-
-            //   Globals.questionImgUrl = await _uploadImgB64AndGetUrl(
-            //       imgBase64: imageB64,
-            //       imgExtension: imgExtension,
-            //       section: 'rubric-score');
-
-            //   Globals.questionImgUrl!.isNotEmpty
-            //       ? assessmentData.forEach((element) {
-            //           element.questionImgUrl = Globals.questionImgUrl;
-            //         })
-            //       : //print("image erooooooooooooooooo");
-            // }
           }
         }
 
@@ -444,42 +417,43 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 assessmentImage: Overrides.STANDALONE_GRADED_APP == true
                     ? "Student Work Image"
                     : "Assessment Image",
+                //googleSlidepresentationLink: "Presentation URL",
                 answerKey: 'Answer Key',
                 googleSlidePresentationURL: 'Presentation URL',
                 studentResponseKey: 'Student Selection'));
 
-//Generating excel file locally with all the result data
+        //Generating excel file locally with all the result data
         File file = await GoogleDriveAccess.generateExcelSheetLocally(
             isMcqSheet: event.isMcqSheet,
             data: assessmentData,
             name: event.assessmentName!,
             createdAsPremium: event.createdAsPremium);
 
-//Update the created excel file to drive with all the result data
+        //Update the created excel file to drive with all the result data
         String excelSheetId = await uploadSheetOnDrive(
             file,
             event.fileId == null ? Globals.googleExcelSheetId : event.fileId,
-            _userprofilelocalData[0].authorizationToken,
-            _userprofilelocalData[0].refreshToken);
+            _userProfileLocalData[0].authorizationToken,
+            _userProfileLocalData[0].refreshToken);
 
         if (excelSheetId.isEmpty) {
           // await _toRefreshAuthenticationToken(
-          //     _userprofilelocalData[0].refreshToken!);
+          //     _userProfileLocalData[0].refreshToken!);
 
           String excelSheetId = await uploadSheetOnDrive(
               file,
               Globals.googleExcelSheetId,
-              _userprofilelocalData[0].authorizationToken,
-              _userprofilelocalData[0].refreshToken);
+              _userProfileLocalData[0].authorizationToken,
+              _userProfileLocalData[0].refreshToken);
           // function to update property of excel sheet
 
           _updateFieldExcelSheet(
               isMcqSheet: event.isMcqSheet ?? false,
               assessmentData: assessmentData,
               excelId: excelSheetId,
-              token: _userprofilelocalData[0].authorizationToken!);
-        } else if (excelSheetId == 'Reauthentication is required') {
-          yield ErrorState(errorMsg: 'Reauthentication is required');
+              token: _userProfileLocalData[0].authorizationToken!);
+        } else if (excelSheetId == 'ReAuthentication is required') {
+          yield ErrorState(errorMsg: 'ReAuthentication is required');
         } else {
           // function to update property of excel sheet
 
@@ -487,7 +461,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               isMcqSheet: event.isMcqSheet ?? false,
               assessmentData: assessmentData,
               excelId: excelSheetId,
-              token: _userprofilelocalData[0].authorizationToken!);
+              token: _userProfileLocalData[0].authorizationToken!);
 
           if (event.isLoading) {
             yield GoogleSuccess();
@@ -858,7 +832,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         yield ErrorState(errorMsg: e.toString());
       }
     }
-
     if (event is UpdateAssessmentImageToSlidesOnDrive) {
       try {
         List<UserInformation> _userProfileLocalData =
