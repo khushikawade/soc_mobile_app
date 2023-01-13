@@ -1683,11 +1683,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: body,
       );
       if (response.statusCode == 200) {
-        //print("email send successfully");
         return true;
       } else {
-        //print("email sending fail");
-
         return false;
       }
     } catch (e) {
@@ -1856,20 +1853,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         isGoogleApi: true,
       );
       if (response.statusCode == 200) {
-        // print(response.data);
         String data =
             response.data["responses"][0]["textAnnotations"][0]["description"];
-        print(data);
+
         List nameAndemail = await checkEmailInsideRoster(respoanceText: data);
         return [nameAndemail[0], nameAndemail[1]];
       } else {
-        print(response.statusCode);
         return ['', ''];
       }
     } catch (e) {
       print(e);
       return ['', ''];
-      throw (e);
+      // throw (e);
     }
   }
 
@@ -1907,8 +1902,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
         var match = StringSimilarity.findBestMatch(
             result[i], studentEmailList); // result[i].bestMatch(studentList);
-        print("--------------------------match-----------------------");
-        print(match);
+
         emails.add("${match.bestMatch.target!}_${match.bestMatch.rating}");
         // return match.bestMatch.target!;
       }
@@ -2016,7 +2010,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<RubricPdfModal> _list = response.data['body']
             .map<RubricPdfModal>((i) => RubricPdfModal.fromJson(i))
             .toList();
-        print('repsonse is recived reurning data');
+
         return _list;
       } else {
         throw ('something_went_wrong');
