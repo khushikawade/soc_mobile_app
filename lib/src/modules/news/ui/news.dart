@@ -297,7 +297,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                           child: Center(
                             child: Platform.isIOS
                                 ? CupertinoActivityIndicator(
-                                    color: AppTheme.kButtonbackColor,
+                                    color: Theme.of(context).primaryColor,
                                   )
                                 : Container(
                                     margin: EdgeInsets.only(bottom: 15),
