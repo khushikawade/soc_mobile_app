@@ -177,7 +177,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.title.toString(),
                     url: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }

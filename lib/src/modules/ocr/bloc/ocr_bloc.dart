@@ -1242,7 +1242,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         //     'https://f63f-111-118-246-106.in.ngrok.io/processAssessmentSheet'),
         // Url For testing and development
         Uri.encodeFull(
-            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
+            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
         // Url For testing and development
         // Uri.encodeFull(
         //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),

@@ -56,7 +56,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     title: obj.titleC!,
                     url: obj
                         .appUrlC!, //queryParameter=='' ? obj.appUrlC! : obj.appUrlC!+'?'+queryParameter,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
@@ -72,7 +72,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
           MaterialPageRoute(
               builder: (BuildContext context) => ContactPage(
                     obj: Globals.appSetting,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",
                   )));
@@ -92,7 +92,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isSubmenu: true,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     } else if (obj.typeC == "Calendar/Events") {
@@ -101,7 +101,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => EventPage(
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
                         calendarId: obj.calendarId.toString(),
@@ -118,7 +118,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
                         language: Globals.selectedLanguage,
@@ -134,7 +134,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                         isiFrame: true,
                         title: obj.titleC!,
                         url: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
@@ -162,7 +162,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     module: widget.sectionName,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     } else if (obj.typeC == "Staff_Directory") {
@@ -175,7 +175,7 @@ class _CommonListWidgetState extends State<CommonListWidget> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isSubmenu: true,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     isAbout: true,
                     language: Globals.selectedLanguage,
                   )));

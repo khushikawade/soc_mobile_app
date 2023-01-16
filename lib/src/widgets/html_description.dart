@@ -10,7 +10,7 @@ import 'package:html/dom.dart' as dom;
 class AboutusPage extends StatefulWidget {
   final String htmlText;
   final String? language;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final bool ishtml;
   final String appbarTitle;
   final bool? isAppBar;
@@ -19,7 +19,7 @@ class AboutusPage extends StatefulWidget {
   AboutusPage({
     Key? key,
     required this.htmlText,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.ishtml,
     required this.appbarTitle,
     required this.language,
@@ -104,7 +104,7 @@ class _AboutusPageState extends State<AboutusPage> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.appbarTitle.toString(),
                     url: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }

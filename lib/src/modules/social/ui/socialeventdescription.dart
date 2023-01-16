@@ -123,7 +123,7 @@ class SocialDescription extends StatelessWidget {
                           builder: (context) => SocialPageWebview(
                                 link: link2,
                                 isSocialpage: true,
-                                isbuttomsheet: true,
+                                isBottomSheet: true,
                               )));
                 },
                 child: TranslationWidget(
@@ -153,32 +153,26 @@ class SocialDescription extends StatelessWidget {
     return Column(
       children: [
         HorzitalSpacerWidget(_kPadding / 4),
-        (object.enclosure != null &&
-                    object.enclosure != "" &&
-                    object.enclosure['url'] != null &&
-                    object.enclosure['url'] != "") ||
+        (object.mediaContent != null &&
+                    object.mediaContent != "" &&
+                    object.mediaContent != null &&
+                    object.mediaContent != "") ||
                 (object.description != null &&
                     object.description != "" &&
-                    object.description["__cdata"] != null &&
-                    object.description["__cdata"]
-                        .toString()
-                        .contains("<img src=") &&
-                    object.description["__cdata"].toString().split('"')[1] !=
-                        "")
+                    object.description != null &&
+                    object.description.toString().contains("<img src=") &&
+                    object.description.toString().split('"')[1] != "")
             ? Container(
                 alignment: Alignment.center,
                 child: CommonImageWidget(
                     isOnTap: true,
-                    iconUrl: (object.enclosure != null &&
-                            object.enclosure != "" &&
-                            object.enclosure['url'] != null &&
-                            object.enclosure['url'] != "")
-                        ? object.enclosure['url']
-                        : Utility.getHTMLImgSrc(
-                                    object.description["__cdata"]) !=
-                                ''
-                            ? Utility.getHTMLImgSrc(
-                                object.description["__cdata"])
+                    iconUrl: (object.mediaContent != null &&
+                            object.mediaContent != "" &&
+                            object.mediaContent != null &&
+                            object.mediaContent != "")
+                        ? object.mediaContent
+                        : Utility.getHTMLImgSrc(object.description) != ''
+                            ? Utility.getHTMLImgSrc(object.description)
                             : Globals.splashImageUrl ??
                                 Globals.appSetting.appLogoC,
                     fitMethod: BoxFit.contain,
@@ -197,7 +191,7 @@ class SocialDescription extends StatelessWidget {
         SpacerWidget(_kPadding),
         TranslationWidget(
           message:
-              "${object.description != null && object.description != "" ? object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "").replaceAll('⁦', '').replaceAll('⁩', '') : ""}",
+              "${object.description != null && object.description != "" ? object.description.toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "").replaceAll('⁦', '').replaceAll('⁩', '') : ""}",
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
@@ -232,7 +226,7 @@ class SocialDescription extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: TranslationWidget(
             message: object.title != null && object.title != ""
-                ? "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
+                ? "${object.title.toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
                 : "",
             fromLanguage: "en",
             toLanguage: language,
@@ -259,7 +253,9 @@ class SocialDescription extends StatelessWidget {
 
   Widget _buildnewTimeStamp(BuildContext context) {
     return Container(
-        child: object != null && object.pubDate.length > 1
+        child: object != null &&
+                object.pubDate != null &&
+                object.pubDate.length > 1
             ? TranslationWidget(
                 message: Utility.convertDate(object.pubDate).toString(),
                 toLanguage: language,
@@ -289,29 +285,26 @@ class SocialDescription extends StatelessWidget {
     return ActionInteractionButtonWidget(
       page: "social",
       obj: object,
-      title: object.title != "" && object.title != null
-          ? object.title['__cdata']
+      title: object.title != "" && object.title != null ? object.title : "",
+      description:
+          object.title != "" && object.title != null ? object.title : "",
+      imageUrl: object.mediaContent != "" &&
+              object.mediaContent != null &&
+              object.mediaContent != "" &&
+              object.mediaContent != null
+          ? object.mediaContent
           : "",
-      description: object.title != "" && object.title != null
-          ? object.title['__cdata']
-          : "",
-      imageUrl: object.enclosure != "" &&
-              object.enclosure != null &&
-              object.enclosure['url'] != "" &&
-              object.enclosure['url'] != null
-          ? object.enclosure['url']
-          : "",
-      imageExtType: object.enclosure != "" &&
-              object.enclosure != null &&
-              object.enclosure['type'] != "" &&
-              object.enclosure['type'] != null
-          ? object.enclosure['type']
+      imageExtType: object.mediaContent != "" &&
+              object.mediaContent != null &&
+              object.mediaContent.toString().split(".").last != "" &&
+              object.mediaContent.toString().split(".").last != null
+          ? object.mediaContent.toString().split(".").last
           : "",
     );
   }
 
   Widget widgetIcon(link, context) {
-    if (link["\$t"].contains('instagram')) {
+    if (link.contains('instagram')) {
       return ShaderMask(
           shaderCallback: (bounds) => RadialGradient(
                 center: Alignment.topRight,
@@ -338,14 +331,14 @@ class SocialDescription extends StatelessWidget {
 // iconWidget(
 
 // FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
-    } else if (link["\$t"].contains('twitter')) {
+    } else if (link.contains('twitter')) {
       return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2), context);
-    } else if (link["\$t"].contains('facebook')) {
+    } else if (link.contains('facebook')) {
       return Padding(
           padding: EdgeInsets.only(bottom: 1),
           child: iconWidget(
               FontAwesomeIcons.facebook, Color(0xff4267B2), context));
-    } else if (link["\$t"].contains('youtube')) {
+    } else if (link.contains('youtube')) {
       return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000), context);
     }
 

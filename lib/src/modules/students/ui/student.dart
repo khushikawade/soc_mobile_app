@@ -44,7 +44,7 @@ class _StudentPageState extends State<StudentPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   StudentBloc _bloc = StudentBloc();
   ScrollController _scrollController = ScrollController();
@@ -120,7 +120,7 @@ class _StudentPageState extends State<StudentPage> {
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
                         url: obj.appUrlC!,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )));
         }
@@ -309,12 +309,12 @@ class _StudentPageState extends State<StudentPage> {
             final bool connected = connectivity != ConnectivityResult.none;
 
             if (connected) {
-              if (iserrorstate == true) {
-                iserrorstate = false;
+              if (isErrorState == true) {
+                isErrorState = false;
                 _bloc.add(StudentPageEvent());
               }
             } else if (!connected) {
-              iserrorstate = true;
+              isErrorState = true;
             }
 
             return ListView(

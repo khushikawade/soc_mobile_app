@@ -47,7 +47,7 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kMargin = 16.0;
   final _controller = TextEditingController();
   // final refreshKey = GlobalKey<RefreshIndicatorState>();
-  bool iserrorstate = false;
+  bool isErrorState = false;
   final HomeBloc _homeBloc = new HomeBloc();
   final HomeBloc _homeBloc2 = new HomeBloc();
   FocusNode myFocusNode = new FocusNode();
@@ -132,7 +132,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => ContactPage(
                         obj: Globals.appSetting,
                         //  Globals.homeObject,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         appBarTitle: obj.titleC!,
                         language: Globals.selectedLanguage!,
                       )))
@@ -148,7 +148,7 @@ class _SearchPageState extends State<SearchPage> {
     //               builder: (BuildContext context) => ContactPage(
     //                     obj: Globals.appSetting,
     //                     //  Globals.homeObject,
-    //                     isbuttomsheet: true,
+    //                     isBottomSheet: true,
     //                     appBarTitle: obj.titleC!,
     //                     language: Globals.selectedLanguage!,
     //                   )));
@@ -164,12 +164,12 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context) => SliderWidget(
                     obj: newObj,
                     currentIndex: 0,
-                    issocialpage: false,
+                    isSocialPage: false,
                     isAboutSDPage: true,
                     isNewsPage: false,
                     // iseventpage: false,
                     date: "",
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     } else if (objectType == "Form") {
@@ -182,7 +182,7 @@ class _SearchPageState extends State<SearchPage> {
                   isAbout: true,
                   appBarTitle: obj.titleC!,
                   obj: obj,
-                  isbuttomsheet: true,
+                  isBottomSheet: true,
                   language: Globals.selectedLanguage,
                   isSubmenu: false)));
     } else if (objectType == "SchoolDirectoryApp") {
@@ -203,7 +203,7 @@ class _SearchPageState extends State<SearchPage> {
                     isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
@@ -215,7 +215,7 @@ class _SearchPageState extends State<SearchPage> {
     //             builder: (BuildContext context) => InAppUrlLauncer(
     //                   title: obj.titleC!,
     //                   url: obj.appURLC!,
-    //                   isbuttomsheet: true,
+    //                   isBottomSheet: true,
     //                   language: Globals.selectedLanguage,
     //                 )));
     //   } else {
@@ -238,7 +238,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
                         language: Globals.selectedLanguage,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
                       )))
@@ -267,7 +267,7 @@ class _SearchPageState extends State<SearchPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => EventPage(
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
                         calendarId: obj.calendarId.toString(),
@@ -291,7 +291,7 @@ class _SearchPageState extends State<SearchPage> {
                                     : obj.name.toString().contains("CAM")
                                         ? "Custom"
                                         : "",
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage,
                   )));
@@ -321,7 +321,7 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC ?? "",
                     url: obj.appUrlC,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
       // _setLocked();
@@ -790,11 +790,11 @@ class _SearchPageState extends State<SearchPage> {
                 final bool connected = connectivity != ConnectivityResult.none;
 
                 if (connected) {
-                  if (iserrorstate == true) {
-                    iserrorstate = false;
+                  if (isErrorState == true) {
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return
@@ -939,7 +939,7 @@ class _SearchPageState extends State<SearchPage> {
 //                                   : obj.name.toString().contains("CAM")
 //                                       ? "Custom"
 //                                       : "",
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   appBarTitle: obj.titleC!,
 //                   language: Globals.selectedLanguage,
 //                 )));
@@ -954,7 +954,7 @@ class _SearchPageState extends State<SearchPage> {
 //                   builder: (BuildContext context) => ContactPage(
 //                         obj: Globals.appSetting,
 //                         //  Globals.homeObject,
-//                         isbuttomsheet: true,
+//                         isBottomSheet: true,
 //                         appBarTitle: obj.titleC!,
 //                         language: Globals.selectedLanguage!,
 //                       )))
@@ -984,7 +984,7 @@ class _SearchPageState extends State<SearchPage> {
 //                     isNewsPage: false,
 //                     // iseventpage: false,
 //                     date: "",
-//                     isbuttomsheet: true,
+//                     isBottomSheet: true,
 //                     language: Globals.selectedLanguage,
 //                   )));
 //     } else if (obj.typeC == "URL") {
@@ -1003,7 +1003,7 @@ class _SearchPageState extends State<SearchPage> {
 //             builder: (BuildContext context) => ContactPage(
 //                   obj: Globals.appSetting,
 //                   //  Globals.homeObject,
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   appBarTitle: obj.titleC!,
 //                   language: Globals.selectedLanguage!,
 //                 )));
@@ -1017,7 +1017,7 @@ class _SearchPageState extends State<SearchPage> {
 //                   isAbout: true,
 //                   appBarTitle: obj.titleC!,
 //                   obj: obj,
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   language: Globals.selectedLanguage,
 //                 )));
 //   } else if (obj.typeC == "SchoolDirectoryApp") {
@@ -1037,7 +1037,7 @@ class _SearchPageState extends State<SearchPage> {
 //                   isAbout: true,
 //                   appBarTitle: obj.titleC!,
 //                   obj: obj,
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   language: Globals.selectedLanguage,
 //                 )));
 //   }
@@ -1049,7 +1049,7 @@ class _SearchPageState extends State<SearchPage> {
 //   //             builder: (BuildContext context) => InAppUrlLauncer(
 //   //                   title: obj.titleC!,
 //   //                   url: obj.appURLC!,
-//   //                   isbuttomsheet: true,
+//   //                   isBottomSheet: true,
 //   //                   language: Globals.selectedLanguage,
 //   //                 )));
 //   //   } else {
@@ -1071,7 +1071,7 @@ class _SearchPageState extends State<SearchPage> {
 //                 builder: (BuildContext context) => AboutusPage(
 //                       htmlText: obj.rtfHTMLC.toString(),
 //                       language: Globals.selectedLanguage,
-//                       isbuttomsheet: true,
+//                       isBottomSheet: true,
 //                       ishtml: true,
 //                       appbarTitle: obj.titleC!,
 //                     )))
@@ -1086,7 +1086,7 @@ class _SearchPageState extends State<SearchPage> {
 //                       isHomePage: false,
 //                       url: obj.pdfURL,
 //                       tittle: obj.titleC,
-//                       isbuttomsheet: true,
+//                       isBottomSheet: true,
 //                       language: Globals.selectedLanguage,
 //                     )))
 //         : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
@@ -1097,7 +1097,7 @@ class _SearchPageState extends State<SearchPage> {
 //             context,
 //             MaterialPageRoute(
 //                 builder: (BuildContext context) => EventPage(
-//                       isbuttomsheet: true,
+//                       isBottomSheet: true,
 //                       appBarTitle: obj.titleC,
 //                       language: Globals.selectedLanguage,
 //                       calendarId: obj.calendarId.toString(),
@@ -1121,7 +1121,7 @@ class _SearchPageState extends State<SearchPage> {
 //                                   : obj.name.toString().contains("CAM")
 //                                       ? "Custom"
 //                                       : "",
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   appBarTitle: obj.titleC!,
 //                   language: Globals.selectedLanguage,
 //                 )));

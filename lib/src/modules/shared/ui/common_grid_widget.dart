@@ -57,7 +57,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC!,
                     url: obj.appUrlC!,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
@@ -73,7 +73,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
           MaterialPageRoute(
               builder: (BuildContext context) => ContactPage(
                     obj: Globals.appSetting,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",
                   )));
@@ -96,7 +96,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                     isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     } else if (obj.typeC == "Calendar/Events") {
@@ -105,7 +105,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => EventPage(
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
                         calendarId: obj.calendarId.toString(),
@@ -122,7 +122,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
                         language: Globals.selectedLanguage,
@@ -138,7 +138,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                         isiFrame: true,
                         title: obj.titleC!,
                         url: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
@@ -170,7 +170,7 @@ class _CommonGridWidgetState extends State<CommonGridWidget> {
                     appBarTitle: obj.titleC!,
                     obj: obj,
                     isSubmenu: true,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     isAbout: true,
                     language: Globals.selectedLanguage,
                   )));

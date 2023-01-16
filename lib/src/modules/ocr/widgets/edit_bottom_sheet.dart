@@ -27,11 +27,12 @@ class EditBottomSheet extends StatefulWidget {
       this.textFileTitleThree,
       this.sheetHeight,
       required this.isSubjectScreen,
+      required this.pointPossible,
       this.onTap,
       this.valueChanged,
-      required this.textFieldControllerOne,
-      required this.textFieldControllerTwo,
-      required this.textFieldControllerthree,
+      required this.studentNameController,
+      required this.studentEmailIdController,
+      required this.studentGradeController,
       required this.update})
       : super(key: key);
 
@@ -45,11 +46,12 @@ class EditBottomSheet extends StatefulWidget {
   final String? textFileTitleThree;
   final double? sheetHeight;
   final bool? isSubjectScreen;
+  final String pointPossible;
   final VoidCallback? onTap;
   final ValueChanged? valueChanged;
-  final TextEditingController textFieldControllerOne;
-  final TextEditingController textFieldControllerTwo;
-  final TextEditingController textFieldControllerthree;
+  final TextEditingController studentNameController;
+  final TextEditingController studentEmailIdController;
+  final TextEditingController studentGradeController;
   final Function(
       {required TextEditingController name,
       required TextEditingController id,
@@ -68,10 +70,29 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
   final ValueNotifier<dynamic> indexColor = ValueNotifier<dynamic>(2);
   final ValueNotifier<String> pointScored = ValueNotifier<String>('2');
   final ValueNotifier<bool> rubricNotDetected = ValueNotifier<bool>(false);
-  List<String> pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
+
+  // ScrollController scrollControllerName = new ScrollController();
+  // ScrollController scrollControllerId = new ScrollController();
+
+  final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
+  final ValueNotifier<String> isStudentIdFilled = ValueNotifier<String>('');
+
+  List pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
   bool isSelected = true;
   RegExp regex = new RegExp(
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+  void initState() {
+    super.initState();
+    if (widget.isMcqSheet != true) {
+      widget.pointPossible == '3'
+          ? pointsEarnedList = ['0', '1', '2', '3']
+          : widget.pointPossible == '4'
+              ? pointsEarnedList = ['0', '1', '2', '3', '4']
+              : pointsEarnedList = ['0', '1', '2'];
+    } else {
+      pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +111,11 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
           color: Color(0xff000000) != Theme.of(context).backgroundColor
               ? Color(0xffF7F8F9)
               : Color(0xff111C20),
-          borderRadius: BorderRadius.circular(15),
+          // borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(15),
+            topLeft: Radius.circular(15),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -163,14 +188,74 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                           )),
                                 ),
                                 Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                    ),
-                                    child: _textFiled(
-                                        whichContoller: 1,
-                                        msg: "field is required ",
-                                        controller:
-                                            widget.textFieldControllerOne))
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  child: textFormField(
+                                      controller: widget.studentNameController,
+                                      hintText: 'Student Name',
+                                      inputFormatters: <TextInputFormatter>[
+                                        //To capitalize first letter of the textfield
+                                        UpperCaseTextFormatter()
+                                      ],
+                                      // keyboardType: TextInputType.,
+                                      isFailure: true,
+                                      onSaved: (String value) {},
+                                      validator: (String? value) {
+                                        isStudentNameFilled.value = value!;
+                                        return widget.studentNameController.text
+                                                    .isEmpty ||
+                                                widget.studentNameController
+                                                        .text.length <
+                                                    3
+                                            ? ''
+                                            : null;
+                                      }),
+                                ),
+                                ValueListenableBuilder(
+                                    valueListenable:
+                                        widget.studentNameController,
+                                    // child: Container(),
+                                    builder: (BuildContext context,
+                                        dynamic value, Widget? child) {
+                                      return widget.studentNameController.text
+                                                  .length <
+                                              3
+                                          ? Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20, vertical: 0),
+                                              alignment: Alignment.centerLeft,
+                                              child: TranslationWidget(
+                                                  message: Overrides
+                                                                  .STANDALONE_GRADED_APP ==
+                                                              true &&
+                                                          (widget
+                                                              .studentNameController
+                                                              .text
+                                                              .isEmpty)
+                                                      ? 'Student Name is required'
+                                                      // : widget.studentNameController
+                                                      //             .text.length <
+                                                      //         3
+                                                      //     ? 'Make Sure The Student Name Contains More Than 3 Character'
+                                                      //     : null
+                                                      // )?
+                                                      : widget.studentNameController
+                                                                  .text.length <
+                                                              3
+                                                          ? 'Make Sure The Student Name Contains More Than 3 Character'
+                                                          : null,
+                                                  fromLanguage: "en",
+                                                  toLanguage:
+                                                      Globals.selectedLanguage,
+                                                  builder: (translatedMessage) {
+                                                    return Text(
+                                                      translatedMessage,
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    );
+                                                  }),
+                                            )
+                                          : Container();
+                                    }),
                               ])
                         : Container(),
                     widget.textFieldTitleTwo != null
@@ -197,17 +282,119 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                             )),
                                   ),
                                   Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 20),
-                                      child: _textFiled(
-                                          whichContoller: 2,
-                                          msg:
-                                              Overrides.STANDALONE_GRADED_APP ==
-                                                      true
-                                                  ? 'enter a valid Email'
-                                                  : "field is required",
-                                          controller:
-                                              widget.textFieldControllerTwo)),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    child: ValueListenableBuilder(
+                                        valueListenable:
+                                            widget.studentEmailIdController,
+                                        child: Container(),
+                                        builder: (BuildContext context,
+                                            dynamic value, Widget? child) {
+                                          return Wrap(
+                                            children: [
+                                              textFormField(
+                                                  controller: widget
+                                                      .studentEmailIdController,
+                                                  hintText:
+                                                      'Student Id/Student Email',
+                                                  inputFormatters: [],
+                                                  maxNineDigit:
+                                                      Utility.checkForInt(widget
+                                                              .studentEmailIdController
+                                                              .text)
+                                                          ? true
+                                                          : false, //true
+                                                  isFailure: true,
+                                                  onSaved: (String value) {},
+                                                  validator: (String? value) {
+                                                    return Overrides
+                                                                .STANDALONE_GRADED_APP ==
+                                                            true
+                                                        ?
+                                                        //Check email format
+                                                        (widget.studentEmailIdController
+                                                                .text.isEmpty
+                                                            ? ''
+                                                            : (!regex.hasMatch(widget
+                                                                    .studentEmailIdController
+                                                                    .text))
+                                                                ? ''
+                                                                : null)
+                                                        : widget.studentEmailIdController
+                                                                .text.isEmpty
+                                                            ? ''
+                                                            : Utility.checkForInt(
+                                                                    widget
+                                                                        .studentEmailIdController
+                                                                        .text)
+                                                                ? (widget.studentEmailIdController.text.length != 9
+                                                                    ? ''
+                                                                    : (widget.studentEmailIdController.text[0] != '2' && widget.studentEmailIdController.text[0] != '1'
+                                                                        ? ''
+                                                                        : null))
+                                                                : (!regex.hasMatch(widget
+                                                                        .studentEmailIdController
+                                                                        .text))
+                                                                    ? ''
+                                                                    : null;
+                                                  }),
+                                              //Validation Messages
+                                              Container(
+                                                child: TranslationWidget(
+                                                    message: Overrides.STANDALONE_GRADED_APP ==
+                                                            true
+                                                        ? (widget.studentEmailIdController.text ==
+                                                                ''
+                                                            ? 'Student Email Is Required'
+                                                            : (!regex.hasMatch(widget
+                                                                    .studentEmailIdController
+                                                                    .text))
+                                                                ? 'Please Enter valid Email'
+                                                                : '')
+                                                        : widget.studentEmailIdController
+                                                                .text.isEmpty
+                                                            ? 'Please Enter Valid Email ID or Student ID'
+                                                            : Utility.checkForInt(widget
+                                                                    .studentEmailIdController
+                                                                    .text)
+                                                                ? (widget.studentEmailIdController.text.length != 9
+                                                                    ? 'Student Id should be 9 digit'
+                                                                    : (widget.studentEmailIdController.text[0] != '2' && widget.studentEmailIdController.text[0] != '1'
+                                                                        ? 'Student Id should be start for 1 or 2'
+                                                                        : ''))
+                                                                : (!regex.hasMatch(widget
+                                                                        .studentEmailIdController
+                                                                        .text))
+                                                                    ? 'Please Enter valid Email'
+                                                                    : '',
+
+                                                    // (isStudentIdFilled.value == ""
+                                                    //     ? 'Student ID/Email Is Required'
+                                                    //     : ''),
+                                                    fromLanguage: "en",
+                                                    toLanguage:
+                                                        Globals.selectedLanguage,
+                                                    builder: (translatedMessage) {
+                                                      return Text(
+                                                        translatedMessage,
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      );
+                                                    }),
+                                              ),
+                                            ],
+                                          );
+                                        }),
+                                    // _textFiled(
+                                    //     // whichContoller: 2,
+                                    //     msg:
+                                    //         Overrides.STANDALONE_GRADED_APP ==
+                                    //                 true
+                                    //             ? 'enter a valid Email'
+                                    //             : "field is required",
+                                    //     controller:
+                                    //         widget.studentEmailIdController)
+                                  ),
                                   if (Overrides.STANDALONE_GRADED_APP == true)
                                     SizedBox(
                                       height: 20,
@@ -241,25 +428,26 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                                   : Color(0xff000000),
                                             )),
                                   ),
-                                  widget.isMcqSheet == true
-                                      ? Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: pointsEarnedButton(
-                                              widget.studentSelection,
-                                              isSuccessState: true),
-                                        )
-                                      : Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: _textFiled(
-                                              whichContoller: 3,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              maxNineDigit: 1,
-                                              msg: "field is required ",
-                                              controller: widget
-                                                  .textFieldControllerthree)),
+                                  // widget.isMcqSheet == true
+                                  //     ?
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    child: pointsEarnedButton(
+                                        widget.studentSelection,
+                                        isSuccessState: true),
+                                  )
+                                  // : Container(
+                                  //     padding: EdgeInsets.symmetric(
+                                  //         horizontal: 20),
+                                  //     child: _textFiled(
+                                  //         // whichContoller: 3,
+                                  //         keyboardType:
+                                  //             TextInputType.number,
+                                  //         maxNineDigit: 1,
+                                  //         msg: "field is required ",
+                                  //         controller: widget
+                                  //             .studentGradeController)),
                                 ]),
                           )
                         : Container(),
@@ -339,17 +527,17 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                           onPressed: () async {
                             //  dnakhfkahj
                             if (_formKey.currentState!.validate()) {
-                              widget.textFieldControllerthree.text =
+                              widget.studentGradeController.text =
                                   widget.isMcqSheet == true
                                       ? (widget.selectedAnswer ==
                                               indexColor.value.toString()
                                           ? '1'
                                           : '0')
-                                      : widget.textFieldControllerthree.text;
+                                      : widget.studentGradeController.text;
                               widget.update(
-                                  name: widget.textFieldControllerOne,
-                                  id: widget.textFieldControllerTwo,
-                                  score: widget.textFieldControllerthree,
+                                  name: widget.studentNameController,
+                                  id: widget.studentEmailIdController,
+                                  score: widget.studentGradeController,
                                   studentResonance: widget.isMcqSheet == true
                                       ? indexColor.value.toString()
                                       : 'NA');
@@ -433,10 +621,11 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                             'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
                         operationResult: 'Success');
                     pointScored.value = index.toString();
+                    widget.studentGradeController.text = index.toString();
                     // if (isSuccessState) {}
                     isSelected = false;
-                    //   rubricNotDetected.value = false;
-                    indexColor.value = index;
+                    rubricNotDetected.value = false;
+                    indexColor.value = index.toString();
                   },
                   child: AnimatedContainer(
                     duration: Duration(microseconds: 100),
@@ -450,9 +639,12 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                   ? AppTheme.kSelectedColor
                                   : Colors.grey //AppTheme.kButtonColor
                               : index == indexColor.value
-                                  ? AppTheme.kSelectedColor
+                                  ? rubricNotDetected.value == true &&
+                                          isSelected == true
+                                      ? Colors.red
+                                      : AppTheme.kSelectedColor
                                   : Colors.grey
-                          : index == indexColor.value
+                          : index.toString() == indexColor.value
                               ? AppTheme.kSelectedColor
                               : Colors.grey,
                       borderRadius: BorderRadius.all(
@@ -489,10 +681,10 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                         ? AppTheme.kSelectedColor
                                         : Colors.grey //AppTheme.kButtonColor
                                     : index == indexColor.value
-                                        ? Colors.grey
-                                        : index == indexColor.value
-                                            ? AppTheme.kSelectedColor
-                                            : Colors.grey
+                                        ? isSelected == true
+                                            ? Colors.red
+                                            : AppTheme.kSelectedColor
+                                        : Colors.grey
                                 : Colors.grey,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -508,7 +700,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                             style: Theme.of(context).textTheme.headline1!.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: widget.isMcqSheet == true
-                                    ? (index == widget.selectedAnswer
+                                    ? (index.toString() == widget.selectedAnswer
                                         ? AppTheme.kButtonColor
                                         : indexColor.value == index
                                             ?
@@ -518,7 +710,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                             //     ? Colors.red
                                             Colors.red //AppTheme.kSelectedColor
                                             : Colors.grey)
-                                    : (indexColor.value == index
+                                    : (indexColor.value == index.toString()
                                         ?
                                         // rubricNotDetected.value == true &&
                                         //         isSelected == true
@@ -599,7 +791,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
   }
 
   Widget _textFiled({
-   required int whichContoller,
+    required int whichContoller,
     required String msg,
     required TextEditingController controller,
     int? maxNineDigit,
@@ -661,5 +853,83 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
       ),
       onChanged: (vlaue) {},
     );
+  }
+
+  Widget textFormField({
+    required TextEditingController controller,
+    onSaved,
+    required validator,
+    TextInputType? keyboardType,
+    required bool? isFailure,
+    String? errormsg,
+    List<TextInputFormatter>? inputFormatters,
+    bool? maxNineDigit,
+    String? hintText,
+  }) {
+    return ValueListenableBuilder(
+        valueListenable: controller,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return ValueListenableBuilder(
+              valueListenable: controller,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                if (controller.text.length != 0) {
+                  //!=0
+                  controller.selection = TextSelection.fromPosition(
+                      TextPosition(offset: controller.text.length));
+                }
+
+                return TextFormField(
+                    maxLength: maxNineDigit == true &&
+                            Overrides.STANDALONE_GRADED_APP == false
+                        ? 9
+                        : null,
+                    // ? null
+                    // Overrides.STANDALONE_GRADED_APP == true
+                    //     ? null
+                    //     : maxNineDigit == true
+                    //         ? 9
+                    //         : null,
+                    textAlign: TextAlign.start,
+                    inputFormatters:
+                        inputFormatters == null ? null : inputFormatters,
+                    autovalidateMode: AutovalidateMode.always,
+                    keyboardType: keyboardType ?? null,
+                    //        //textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                    controller: controller,
+                    cursorColor: Theme.of(context).colorScheme.primaryVariant,
+                    decoration: InputDecoration(
+                      counterStyle: TextStyle(
+                          color: Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffFFFFFF)
+                              : Color(0xff000000)),
+                      fillColor: Colors.transparent,
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppTheme.kButtonColor,
+                        ),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppTheme
+                              .kButtonColor, // Theme.of(context).colorScheme.primaryVariant,
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppTheme.kButtonColor,
+                        ),
+                      ),
+                    ),
+                    onChanged: onSaved,
+                    validator: validator);
+              });
+        });
   }
 }

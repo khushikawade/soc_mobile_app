@@ -43,3 +43,10 @@ class SocialAction extends SocialEvent {
   @override
   List<Object> get props => [id!, title!, like!, thanks!, helpful!, shared!];
 }
+
+//Using for Social RSS FEED Pagination
+class UpdateSocialList extends SocialEvent {
+  final List<Item>? list;
+  UpdateSocialList({this.list});
+  List<Object> get props => [];
+}

@@ -17,7 +17,7 @@ class SubListPage extends StatefulWidget {
   final obj;
   final recordId;
   final String? module;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String appBarTitle;
   final String? language;
 
@@ -26,7 +26,7 @@ class SubListPage extends StatefulWidget {
     required this.obj,
     this.recordId,
     required this.module,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.appBarTitle,
     required this.language,
   }) : super(key: key);
@@ -42,7 +42,7 @@ class _SubListPageState extends State<SubListPage> {
   StaffBloc _staffBloc = StaffBloc();
   AboutBloc _aboutBloc = AboutBloc();
   CustomBloc _customBloc = CustomBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final ScrollController _scrollController = ScrollController();
@@ -256,12 +256,12 @@ class _SubListPageState extends State<SubListPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
+                if (isErrorState == true) {
                   refreshPage();
-                  iserrorstate = false;
+                  isErrorState = false;
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               //return _body(connected);

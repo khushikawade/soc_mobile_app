@@ -33,7 +33,7 @@ class _AboutPageState extends State<AboutPage> {
   AboutBloc _bloc = AboutBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   List<String?> department = [];
   final ScrollController _scrollController = ScrollController();
 
@@ -70,12 +70,12 @@ class _AboutPageState extends State<AboutPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
+                if (isErrorState == true) {
                   _bloc.add(AboutStaffDirectoryEvent());
-                  iserrorstate = false;
+                  isErrorState = false;
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               return ListView(

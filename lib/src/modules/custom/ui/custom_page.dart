@@ -42,7 +42,7 @@ class _CustomPagesState extends State<CustomPages> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   var pdfViewerKey = UniqueKey();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   @override
   void initState() {
@@ -73,11 +73,11 @@ class _CustomPagesState extends State<CustomPages> {
               final bool connected = connectivity != ConnectivityResult.none;
 
               if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
+                if (isErrorState == true) {
+                  isErrorState = false;
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               return
@@ -148,7 +148,7 @@ class _CustomPagesState extends State<CustomPages> {
                   : InAppUrlLauncer(
                       title: obj.sectionTitleC!, // "no scaffold",
                       url: obj.appUrlC,
-                      isbuttomsheet: true,
+                      isBottomSheet: true,
                       language: Globals.selectedLanguage,
                       isCustomMainPageWebView: true,
                     )
@@ -170,7 +170,7 @@ class _CustomPagesState extends State<CustomPages> {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? AboutusPage(
               htmlText: obj.rtfHTMLC.toString(),
-              isbuttomsheet: true,
+              isBottomSheet: true,
               ishtml: true,
               isAppBar: false,
               language: Globals.selectedLanguage,
@@ -189,7 +189,7 @@ class _CustomPagesState extends State<CustomPages> {
               title: obj.sectionTitleC!,
               url: obj.rtfHTMLC,
               // obj.appUrlC,
-              isbuttomsheet: false,
+              isBottomSheet: false,
               language: Globals.selectedLanguage,
             )
           : NoDataFoundErrorWidget(
@@ -218,7 +218,7 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.sectionTemplate == "Contact") {
       return ContactPage(
         obj: Globals.appSetting,
-        isbuttomsheet: true,
+        isBottomSheet: true,
         isAppBar: false,
         language: Globals.selectedLanguage ?? "English",
         appBarTitle: '',
@@ -228,7 +228,7 @@ class _CustomPagesState extends State<CustomPages> {
           ? EventPage(
               appBarTitle: '',
               isAppBar: false,
-              isbuttomsheet: true,
+              isBottomSheet: true,
               language: Globals.selectedLanguage,
               calendarId: obj.calendarId.toString(),
             )
@@ -253,7 +253,7 @@ class _CustomPagesState extends State<CustomPages> {
         // staffDirectoryCategoryId: obj.id,
         appBarTitle: obj.sectionTitleC!,
         obj: widget.customObj,
-        isbuttomsheet: true,
+        isBottomSheet: true,
         isAbout: false,
         isSubmenu: null, //To omit the appbar
         language: Globals.selectedLanguage,

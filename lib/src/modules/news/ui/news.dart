@@ -40,7 +40,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   NewsBloc bloc = new NewsBloc();
   NewsBloc _countBloc = new NewsBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  bool iserrorstate = false;
+  bool isErrorState = false;
   final HomeBloc _homeBloc = new HomeBloc();
   String newsTimeStamp = '';
   // late AppLifecycleState _notification;
@@ -128,12 +128,12 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                               ? newsMainList
                               : list,
                           currentIndex: index,
-                          issocialpage: false,
+                          isSocialPage: false,
                           isAboutSDPage: false,
                           // iseventpage: false,
                           isNewsPage: true,
                           date: "$newsTimeStamp",
-                          isbuttomsheet: true,
+                          isBottomSheet: true,
                           language: Globals.selectedLanguage,
                         )));
             //lock screen orientation
@@ -339,16 +339,16 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
               final bool connected = connectivity != ConnectivityResult.none;
 
               if (connected) {
-                if (iserrorstate == true) {
+                if (isErrorState == true) {
                   bloc.add(FetchNotificationList());
                   isActionAPICalled = false;
                   _countBloc.add(FetchActionCountList(
                     isDetailPage: false,
                   ));
-                  iserrorstate = false;
+                  isErrorState = false;
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
                 _countBloc.add(FetchActionCountList(isDetailPage: false));
                 // _countBloc.add(FetchActionCountList());
               }

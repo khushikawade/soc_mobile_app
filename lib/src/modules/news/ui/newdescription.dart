@@ -2,7 +2,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -20,14 +19,14 @@ class Newdescription extends StatefulWidget {
     Key? key,
     required this.obj,
     required this.date,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.language,
     required this.connected,
   }) : super(key: key);
 
   final NotificationList obj;
   final String date;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String? language;
   final bool? connected;
 
@@ -72,7 +71,7 @@ class _NewdescriptionState extends State<Newdescription> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.obj.headings["en"].toString(),
                     url: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }

@@ -41,7 +41,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   static const double _kMargin = 16.0;
   final _controller = TextEditingController();
   // final refreshKey = GlobalKey<RefreshIndicatorState>();
-  bool iserrorstate = false;
+  bool isErrorState = false;
   final GoogleDriveBloc googleBloc = new GoogleDriveBloc();
   FocusNode myFocusNode = new FocusNode();
   final _debouncer = Debouncer(milliseconds: 500);
@@ -706,11 +706,11 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                       connectivity != ConnectivityResult.none;
 
                   if (connected) {
-                    if (iserrorstate == true) {
-                      iserrorstate = false;
+                    if (isErrorState == true) {
+                      isErrorState = false;
                     }
                   } else if (!connected) {
-                    iserrorstate = true;
+                    isErrorState = true;
                   }
 
                   return

@@ -51,7 +51,7 @@ class BottomSheetWidget extends StatefulWidget {
 }
 
 class _BottomSheetWidgetState extends State<BottomSheetWidget> {
-  final textFieldControllerOne = TextEditingController();
+  final studentNameController = TextEditingController();
   final textFieldController2 = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   File? imageFile;
@@ -151,7 +151,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                         ),
                         child: TextFieldWidget(
                             msg: "Field is required",
-                            controller: textFieldControllerOne,
+                            controller: studentNameController,
                             onSaved: (String value) {}),
                       ),
                       widget.textFieldTitleTwo != null
@@ -267,7 +267,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         if (widget.isSubjectScreen!) {
-                          widget.valueChanged!(textFieldControllerOne);
+                          widget.valueChanged!(studentNameController);
                           Utility.updateLogs(
                               activityId: '21',
                               description: 'Teacher added custom subject ',
@@ -284,13 +284,13 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                             String imageB64 = base64Encode(imageBytes);
 
                             RubricScoreList.scoringList.add(CustomRubricModal(
-                                name: textFieldControllerOne.text,
+                                name: studentNameController.text,
                                 score: textFieldController2.text,
                                 imgBase64: imageB64,
                                 filePath: imageFile!.path.toString(),
                                 customOrStandardRubic: "Custom"));
                             // Globals.scoringRubric =
-                            //     '${textFieldControllerOne.text} ${textFieldController2.text}';
+                            //     '${studentNameController.text} ${textFieldController2.text}';
                             //print("calling get img url");
                             _googleBloc.add(ImageToAwsBucked(
                                 imgBase64:
@@ -303,7 +303,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 description: 'Teacher added custom rubric ',
                                 operationResult: 'Success');
                             RubricScoreList.scoringList.add(CustomRubricModal(
-                                name: textFieldControllerOne.text,
+                                name: studentNameController.text,
                                 score: textFieldController2.text,
                                 customOrStandardRubic: "Custom"));
                           }

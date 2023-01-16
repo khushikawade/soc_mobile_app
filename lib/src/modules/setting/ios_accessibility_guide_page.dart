@@ -72,7 +72,7 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) => InAppUrlLauncer(
-                                isbuttomsheet: true,
+                                isBottomSheet: true,
                                 language: Globals.selectedLanguage,
                                 url: 'https://www.apple.com/accessibility/',
                                 title: 'Accessibility',

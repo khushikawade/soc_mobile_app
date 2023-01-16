@@ -32,7 +32,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   ResourcesBloc _bloc = ResourcesBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -69,12 +69,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
+                if (isErrorState == true) {
                   _bloc.add(ResourcesListEvent());
-                  iserrorstate = false;
+                  isErrorState = false;
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               return

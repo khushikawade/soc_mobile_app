@@ -37,7 +37,7 @@ class GoogleAuthWebview extends StatefulWidget {
 }
 
 class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   bool isLoading = true;
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
@@ -86,11 +86,11 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
           final bool connected = connectivity != ConnectivityResult.none;
 
           if (connected) {
-            if (iserrorstate == true) {
-              iserrorstate = false;
+            if (isErrorState == true) {
+              isErrorState = false;
             }
           } else if (!connected) {
-            iserrorstate = true;
+            isErrorState = true;
           }
 
           return connected
