@@ -367,8 +367,8 @@ class _ActionInteractionButtonWidgetState
           context: context,
           scaffoldKey: scaffoldKey,
           id: widget.obj
-              .guid['\$t'], //widget.obj.id.toString() + widget.obj.guid['\$t'],
-          title: widget.title.toString(),
+              .id, //widget.obj.id.toString() + widget.obj.guid['\$t'],
+          title: widget.title,
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,

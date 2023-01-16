@@ -41,7 +41,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
   // static const double _kLabelSpacing = 16.0;
   SchoolDirectoryBloc bloc = new SchoolDirectoryBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  bool iserrorstate = false;
+  bool isErrorState = false;
   final HomeBloc _homeBloc = new HomeBloc();
   final ScrollController _scrollController = ScrollController();
 
@@ -77,16 +77,16 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
-                  if (iserrorstate == true) {
+                  if (isErrorState == true) {
                     bloc.add(SchoolDirectoryListEvent(
                         customRecordId: widget.isStandardPage != false
                             ? null
                             : widget.obj.id,
                         isSubMenu: widget.isSubmenu));
-                    iserrorstate = false;
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
                 return Stack(
                   children: [

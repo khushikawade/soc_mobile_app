@@ -77,7 +77,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                     MaterialPageRoute(
                         builder: (context) => InformationPage(
                               appbarTitle: 'Information',
-                              isbuttomsheet: true,
+                              isBottomSheet: true,
                               ishtml: true,
                             )))
                 : Utility.showSnackBar(
@@ -89,7 +89,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 MaterialPageRoute(
                     builder: (context) => SettingPage(
                           appbarTitle: '',
-                          isbuttomsheet: true,
+                          isBottomSheet: true,
                         )));
 
             break;

@@ -21,10 +21,10 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String appbarTitle;
   SettingPage(
-      {Key? key, required this.isbuttomsheet, required this.appbarTitle})
+      {Key? key, required this.isBottomSheet, required this.appbarTitle})
       : super(key: key);
   @override
   _SettingPageState createState() => _SettingPageState();
@@ -40,7 +40,7 @@ class _SettingPageState extends State<SettingPage> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   bool? isloadingstate = false;
 
   @override

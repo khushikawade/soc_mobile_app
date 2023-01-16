@@ -70,7 +70,7 @@ class AppsFolderPageState extends State<AppsFolderPage>
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC!,
                     url: obj.appUrlC!,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }

@@ -51,7 +51,7 @@ class _StaffPageState extends State<StaffPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   StaffBloc _bloc = StaffBloc();
   final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   OcrBloc ocrBloc = new OcrBloc();
   bool? authSuccess = false;
   dynamic userData;
@@ -122,12 +122,12 @@ class _StaffPageState extends State<StaffPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
+                if (isErrorState == true) {
+                  isErrorState = false;
                   _bloc.add(StaffPageEvent());
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               return

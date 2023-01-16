@@ -14,11 +14,11 @@ class SocialPageWebview extends StatefulWidget {
     Key? key,
     required this.link,
     required this.isSocialpage,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
   }) : super(key: key);
   final String link;
   final bool isSocialpage;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
 
   @override
   _SocialPageWebviewState createState() => _SocialPageWebviewState();
@@ -30,7 +30,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   WebViewController? _webViewController;
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   @override
   void initState() {

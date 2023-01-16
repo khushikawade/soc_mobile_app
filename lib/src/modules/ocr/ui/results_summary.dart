@@ -101,7 +101,8 @@ class studentRecordList extends State<ResultsSummary> {
 
   final editingStudentNameController = TextEditingController();
   final editingStudentIdController = TextEditingController();
-  final editingStudentScoreController = TextEditingController();
+  final studentScoreController = TextEditingController();
+  String pointPossiable = '2';
 
   // ValueNotifier<List<StudentAssessmentInfo>> studentRecordList =
   //     ValueNotifier([]);
@@ -1721,18 +1722,23 @@ class studentRecordList extends State<ResultsSummary> {
 
       editingStudentNameController.text = studentInfo[index].studentName!;
       editingStudentIdController.text = studentInfo[index].studentId!;
-      editingStudentScoreController.text = widget.isMcqSheet == true
+      studentScoreController.text = widget.isMcqSheet == true
           ? studentInfo[index].studentResponseKey!
           : studentInfo[index].studentGrade!;
+      // pointPossiable = studentInfo[index].pointpossible ?? "2";
       String answerKey = studentInfo[index].answerKey!;
-      String studentSelection = studentInfo[index].studentResponseKey!;
+      String studentSelectedAlphabetAnswerKey =
+          studentInfo[index].studentResponseKey!;
 
       editBottomSheet(
-          studentSelection: studentSelection,
+          studentSelection: widget.isMcqSheet == true
+              ? studentSelectedAlphabetAnswerKey
+              : studentScoreController.value.text,
+          pointPossible: pointPossiable,
           answerKey: answerKey,
           controllerOne: editingStudentNameController,
           controllerTwo: editingStudentIdController,
-          controllerThree: editingStudentScoreController,
+          controllerThree: studentScoreController,
           index: index);
     } else {
       //  Globals.studentInfo!.length > 2
@@ -1753,6 +1759,7 @@ class studentRecordList extends State<ResultsSummary> {
       required TextEditingController controllerTwo,
       required TextEditingController controllerThree,
       required int index,
+      required String pointPossible,
       required String answerKey,
       required String studentSelection}) {
     showModalBottomSheet(
@@ -1766,11 +1773,12 @@ class studentRecordList extends State<ResultsSummary> {
         context: context,
         builder: (context) => EditBottomSheet(
               studentSelection: studentSelection,
+              pointPossible: pointPossible,
               selectedAnswer: answerKey,
               isMcqSheet: widget.isMcqSheet,
-              textFieldControllerthree: controllerThree,
-              textFieldControllerOne: controllerOne,
-              textFieldControllerTwo: controllerTwo,
+              studentGradeController: controllerThree,
+              studentNameController: controllerOne,
+              studentEmailIdController: controllerTwo,
               sheetHeight: MediaQuery.of(context).size.height * 0.6,
               title: 'Edit Student Details',
               isImageField: false,

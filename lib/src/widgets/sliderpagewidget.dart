@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
-import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -16,11 +15,11 @@ import 'package:html/parser.dart' show parse;
 class SliderWidget extends StatefulWidget {
   final obj;
   int currentIndex;
-  bool? issocialpage;
+  bool? isSocialPage;
   bool? isAboutSDPage;
   bool? isNewsPage;
   String date;
-  bool isbuttomsheet;
+  bool isBottomSheet;
   String? language;
   // final iseventpage;
   bool? connected;
@@ -30,9 +29,9 @@ class SliderWidget extends StatefulWidget {
       required this.currentIndex,
       // required this.iseventpage,
       required this.date,
-      required this.isbuttomsheet,
+      required this.isBottomSheet,
       required this.language,
-      this.issocialpage,
+      this.isSocialPage,
       this.isAboutSDPage,
       this.isNewsPage});
 
@@ -78,11 +77,11 @@ class _SliderWidgetState extends State<SliderWidget>
       isDeviceBackButton = false;
       // bool isNewsPage =
       //     // widget.iseventpage == false ||
-      //     widget.issocialpage == true ? true : false;
+      //     widget.isSocialPage == true ? true : false;
       Navigator.of(context).pop(widget.isNewsPage == true
           ? widget.isNewsPage
-          : widget.issocialpage == true
-              ? widget.issocialpage
+          : widget.isSocialPage == true
+              ? widget.isSocialPage
               : null);
       return true;
     }
@@ -105,12 +104,12 @@ class _SliderWidgetState extends State<SliderWidget>
               BackButtonWidget(
             isNewsPage: widget.isNewsPage == true
                 ? widget.isNewsPage
-                : widget.issocialpage == true
-                    ? widget.issocialpage
+                : widget.isSocialPage == true
+                    ? widget.isSocialPage
                     : null,
 
             // widget.iseventpage == false ||
-            // widget.issocialpage == true ? true : false,
+            // widget.isSocialPage == true ? true : false,
           ),
           title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             AppLogoWidget(
@@ -177,7 +176,7 @@ class _SliderWidgetState extends State<SliderWidget>
               // }
             },
             itemBuilder: (BuildContext context, int index) {
-              return widget.issocialpage!
+              return widget.isSocialPage!
                   ? SocialDescription(
                       object: object[pageinitialIndex],
                       language: Globals.selectedLanguage,
@@ -190,7 +189,7 @@ class _SliderWidgetState extends State<SliderWidget>
                       ? Newdescription(
                           obj: object[pageinitialIndex],
                           date: widget.date,
-                          isbuttomsheet: true,
+                          isBottomSheet: true,
                           language: Globals.selectedLanguage,
                           connected: widget.connected,
                         )
@@ -201,7 +200,7 @@ class _SliderWidgetState extends State<SliderWidget>
                           // : widget.iseventpage             //Removed due to new UI
                           //     ? EventDescription(
                           //         obj: object[pageinitialIndex],
-                          //         isbuttomsheet: true,
+                          //         isBottomSheet: true,
                           //         language: Globals.selectedLanguage,
                           //       )
                           : EmptyContainer();

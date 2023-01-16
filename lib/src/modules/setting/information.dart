@@ -16,7 +16,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
 
 class InformationPage extends StatefulWidget {
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final bool ishtml;
   final String appbarTitle;
   final bool? isloadingstate = false;
@@ -24,7 +24,7 @@ class InformationPage extends StatefulWidget {
   @override
   InformationPage({
     Key? key,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.ishtml,
     required this.appbarTitle,
   }) : super(key: key);
@@ -38,7 +38,7 @@ class _InformationPageState extends State<InformationPage> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _bloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   bool? isloadingstate = false;
 
@@ -197,7 +197,7 @@ class _InformationPageState extends State<InformationPage> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.appbarTitle.toString(),
                     url: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }

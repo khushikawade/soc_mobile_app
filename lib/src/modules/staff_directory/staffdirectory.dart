@@ -23,7 +23,7 @@ class StaffDirectory extends StatefulWidget {
   final bool isCustom;
   final bool? isSubmenu;
   final obj;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String appBarTitle;
   final String? language;
   final String?
@@ -33,7 +33,7 @@ class StaffDirectory extends StatefulWidget {
   StaffDirectory(
       {Key? key,
       required this.obj,
-      required this.isbuttomsheet,
+      required this.isBottomSheet,
       required this.appBarTitle,
       required this.language,
       required this.isAbout,
@@ -55,7 +55,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
   UrlLauncherWidget objurl = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -90,12 +90,12 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 builder: (context) => SliderWidget(
                       obj: list,
                       currentIndex: index,
-                      issocialpage: false,
+                      isSocialPage: false,
                       isAboutSDPage: widget.isAbout, // true,
                       isNewsPage: false,
                       // iseventpage: false,
                       date: "",
-                      isbuttomsheet: true,
+                      isBottomSheet: true,
                       language: Globals.selectedLanguage,
                     )));
         //lock screen orientation
@@ -261,8 +261,8 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                 final bool connected = connectivity != ConnectivityResult.none;
 
                 if (connected) {
-                  if (iserrorstate == true) {
-                    iserrorstate = false;
+                  if (isErrorState == true) {
+                    isErrorState = false;
                     if (widget.staffDirectoryCategoryId != null) {
                       _bloc.add(
                           SDevent(categoryId: widget.staffDirectoryCategoryId));
@@ -275,7 +275,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
                     }
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return

@@ -104,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       MaterialPageRoute(
                                           builder: (context) => InformationPage(
                                                 appbarTitle: 'Information',
-                                                isbuttomsheet: true,
+                                                isBottomSheet: true,
                                                 ishtml: true,
                                               )))
                                   : Utility.currentScreenSnackBar(
@@ -127,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   MaterialPageRoute(
                                       builder: (context) => SettingPage(
                                             appbarTitle: 'Settings',
-                                            isbuttomsheet: true,
+                                            isBottomSheet: true,
                                           )));
                             },
                             title: 'Settings'),

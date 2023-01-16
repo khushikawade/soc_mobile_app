@@ -40,7 +40,7 @@ class _FamilyPageState extends State<FamilyPage> {
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   bool? isCustomApp;
   final ScrollController _scrollController = ScrollController();
 
@@ -83,12 +83,12 @@ class _FamilyPageState extends State<FamilyPage> {
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
-                  if (iserrorstate == true) {
+                  if (isErrorState == true) {
                     _bloc.add(FamiliesEvent());
-                    iserrorstate = false;
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return

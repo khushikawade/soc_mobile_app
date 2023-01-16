@@ -33,7 +33,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc homebloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   static const double _kboxborderwidth = 0.75;
   bool? isloadingstate = false;
 

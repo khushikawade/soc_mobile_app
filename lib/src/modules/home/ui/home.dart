@@ -579,7 +579,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             isAbout: false,
             isCustom: true,
             isSubmenu: false,
-            isbuttomsheet: true,
+            isBottomSheet: true,
             language: Globals.selectedLanguage,
             obj: Globals.customSetting![i],
           ));

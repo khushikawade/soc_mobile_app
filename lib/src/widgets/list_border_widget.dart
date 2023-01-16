@@ -23,7 +23,7 @@ class _ListBorderWidgetState extends State<ListBorderWidget> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc homebloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   Widget build(BuildContext context) {
     return Padding(
