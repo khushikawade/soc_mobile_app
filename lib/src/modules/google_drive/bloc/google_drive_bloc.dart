@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/fetch_google_sheet.dart';
@@ -8,7 +9,7 @@ import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart'
 import 'package:Soc/src/modules/google_drive/model/spreadsheet_model.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/overrides.dart';
+import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -195,12 +196,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           );
 
           //To add one or more blank slides in Google Presentation
-          await createBlankSlidesOnDrive(
+          await createBlankSlidesInGooglePresentation(
               googleSlideId,
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               isFromHistoryAssessment: false, //event.isFromHistoryAssessment,
-              list: assessmentData);
+              studentRecordList: assessmentData);
 
           //To update scanned images in the Google Slides
           await updateAssessmentImageToSlidesOnDrive(
@@ -233,11 +234,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
           if (list.isNotEmpty) {
             //To create Google Presentation
-            await createBlankSlidesOnDrive(
+            await createBlankSlidesInGooglePresentation(
                 event.slidePresentationId,
                 _userProfileLocalData[0].authorizationToken,
                 _userProfileLocalData[0].refreshToken,
-                list: list,
+                studentRecordList: list,
                 isFromHistoryAssessment: event.isFromHistoryAssessment);
 
             //To update scanned images in the Google Slides
@@ -794,8 +795,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        String result = await createBlankSlidesOnDrive(
-            event.slidepresentationId!,
+        String result = await createBlankSlidesInGooglePresentation(
+            event.slidePresentationId!,
             _userProfileLocalData[0].authorizationToken,
             _userProfileLocalData[0].refreshToken,
             isFromHistoryAssessment: false);
@@ -866,7 +867,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
 
         String result = await updateAssessmentImageToSlidesOnDrive(
-            event.slidepresentationId!,
+            event.slidePresentationId!,
             _userProfileLocalData[0].authorizationToken,
             _userProfileLocalData[0].refreshToken,
             assessmentData);
@@ -874,6 +875,29 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (result == "Done") {
           yield GoogleAssessmentImagesOnSlidesUpdated();
         } else {}
+      } catch (e) {
+        yield ErrorState(errorMsg: e.toString());
+      }
+    }
+
+    if (event is UpdateAssignmentDetailsOnSlide) {
+      try {
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        //Used to update assessment detail on very slide of the google presentation
+        String result = await _updateAssignmentDetailsOnSlide(
+            event.slidePresentationId,
+            _userProfileLocalData[0].authorizationToken,
+            _userProfileLocalData[0].refreshToken,
+            '12345',
+            event.studentAssessmentInfoObj);
+
+        if (result == "Done") {
+          yield UpdateAssignmentDetailsOnSlideSuccess();
+        } else {
+          ErrorState(errorMsg: result);
+        }
       } catch (e) {
         yield ErrorState(errorMsg: e.toString());
       }
@@ -1988,14 +2012,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future createBlankSlidesOnDrive(
+  Future createBlankSlidesInGooglePresentation(
       String? presentationId, String? accessToken, String? refreshToken,
-      {List<StudentAssessmentInfo>? list,
+      {List<StudentAssessmentInfo>? studentRecordList,
       required bool isFromHistoryAssessment}) async {
     try {
       Map body = {
-        "requests": await getSlideObjects(
-            list: list, isFromHistoryAssessment: isFromHistoryAssessment)
+        //Adding no. of blank slides as per the length of student records
+        "requests": await prepareEachSlideObjects(
+            list: studentRecordList,
+            isFromHistoryAssessment: isFromHistoryAssessment)
       };
 
       Map<String, String> headers = {
@@ -2016,11 +2042,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
-          String result = await createBlankSlidesOnDrive(
+          String result = await createBlankSlidesInGooglePresentation(
               presentationId,
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
-              list: list,
+              studentRecordList: studentRecordList,
               isFromHistoryAssessment: isFromHistoryAssessment);
           return result;
         } else {
@@ -2039,7 +2065,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String? refreshToken,
       List<StudentAssessmentInfo> assessmentData) async {
     try {
-      Map body = {"requests": _getUpdateBody(assessmentData: assessmentData)};
+      Map body = {
+        "requests":
+            prepareRequestBodyToUpdateSlideImage(assessmentData: assessmentData)
+      };
 
       Map<String, String> headers = {
         'Authorization': 'Bearer $accessToken',
@@ -2074,11 +2103,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  List<Map> _getUpdateBody(
+  List<Map> prepareRequestBodyToUpdateSlideImage(
       {required List<StudentAssessmentInfo> assessmentData}) {
     List<Map> body = [];
     assessmentData.asMap().forEach((index, element) {
-      if (element.slideObjectId != "AlredyUpdated") {
+      if (element.slideObjectId != "AlreadyUpdated") {
         Map obj = {
           "createImage": {
             "url": element.assessmentImage,
@@ -2095,7 +2124,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return body;
   }
 
-  Future<List<Map>> getSlideObjects(
+  Future<List<Map>> prepareEachSlideObjects(
       {List<StudentAssessmentInfo>? list,
       required bool isFromHistoryAssessment}) async {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
@@ -2105,26 +2134,162 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     List<StudentAssessmentInfo> assessmentData =
         list == null ? await _studentInfoDb.getData() : list;
 
-    List<Map> slideObjects = [];
+    //Preparing very slide to add assignment details //Blank slide with the type mentioned // request body will be blank in case of history as details already added
+    List<Map> slideObjects = isFromHistoryAssessment
+        ? []
+        : [
+            {
+              "createSlide": {
+                "objectId": "Slide1",
+                "slideLayoutReference": {"predefinedLayout": "TITLE_ONLY"},
+                "placeholderIdMappings": [
+                  {
+                    "layoutPlaceholder": {"type": "TITLE"},
+                    "objectId": "Title1"
+                  }
+                ]
+              }
+            }
+          ];
 
     assessmentData.asMap().forEach((index, element) async {
       if (element.slideObjectId == null || element.slideObjectId!.isEmpty) {
         String uniqueId = DateTime.now().microsecondsSinceEpoch.toString();
 
+        // Preparing blank slide type to add assessment images
         Map slideObject = {
           "createSlide": {
             "objectId": uniqueId,
             "slideLayoutReference": {"predefinedLayout": "BLANK"}
           }
         };
+
         slideObjects.add(slideObject);
         element.slideObjectId = uniqueId;
+
+        //updating local database with slideObjectId
         await _studentInfoDb.putAt(index, element);
       } else {
-        element.slideObjectId = "AlredyUpdated";
+        element.slideObjectId = "AlreadyUpdated";
         await _studentInfoDb.putAt(index, element);
       }
     });
     return slideObjects;
+  }
+
+//Used to update assessment detail on very slide of the google presentation
+  Future<String> _updateAssignmentDetailsOnSlide(
+      String? presentationId,
+      String? accessToken,
+      String? refreshToken,
+      String? slideObjectId,
+      StudentAssessmentInfo studentAssessmentInfoObj) async {
+    try {
+      var body = {
+        "requests": await _getListOfAssignmentDetails(
+            assignmentName: Globals.assessmentName,
+            studentAssessmentInfoObj: studentAssessmentInfoObj)
+      };
+
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json'
+      };
+
+      final ResponseModel response = await _dbServices.postApi(
+          'https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
+          body: body,
+          headers: headers,
+          isGoogleApi: true);
+      if (response.statusCode == 200) {
+        return 'Done';
+      } else if (response.statusCode == 401 && _totalRetry < 3) {
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        if (result == true) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+          String result = await _updateAssignmentDetailsOnSlide(
+              presentationId,
+              _userProfileLocalData[0].authorizationToken,
+              _userProfileLocalData[0].refreshToken,
+              slideObjectId,
+              studentAssessmentInfoObj);
+          return result;
+        } else {
+          return 'ReAuthentication is required';
+        }
+      }
+      return response.statusCode.toString();
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<List<Map>> _getListOfAssignmentDetails(
+      {required String? assignmentName,
+      required StudentAssessmentInfo studentAssessmentInfoObj}) async {
+    // List of title for slide details table
+    List<String> listOfFields = [
+      'Subject',
+      'Grade',
+      'Class',
+      'Domain',
+      'Sub-Domain'
+    ];
+
+    // start adding request objects in list
+    List<Map> body = [
+      //to update the assignment title
+      {
+        "insertText": {"objectId": "Title1", "text": "$assignmentName"}
+      },
+
+      //prepare blank table on slide
+      {
+        "createTable": {
+          "objectId": "123456",
+          "elementProperties": {"pageObjectId": "Slide1"},
+          "rows": listOfFields.length, //pass no. of names
+          "columns": 2 //key:value
+        }
+      }
+    ];
+
+// To update table cells with title and value
+    listOfFields.asMap().forEach((rowIndex, value) {
+      for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
+        body.add(
+          {
+            "insertText": {
+              "objectId": "123456",
+              "cellLocation": {
+                "rowIndex": rowIndex,
+                "columnIndex": columnIndex
+              },
+              "text": columnIndex == 0
+                  ? listOfFields[rowIndex] //Keys
+                  : prepareTableCellValue(
+                      studentAssessmentInfoObj, rowIndex) //Values
+            }
+          },
+        );
+      }
+    });
+
+    return body;
+  }
+
+  String prepareTableCellValue(
+      StudentAssessmentInfo studentAssessmentInfoObj, int index) {
+    // detail update on cell in slide table
+    Map map = {
+      0: studentAssessmentInfoObj.subject ?? 'NA',
+      1: studentAssessmentInfoObj.grade ?? 'NA',
+      2: studentAssessmentInfoObj.className ?? 'NA',
+      3: studentAssessmentInfoObj.learningStandard ?? 'NA',
+      4: studentAssessmentInfoObj.subLearningStandard ?? 'NA',
+    };
+
+    return map[index] ?? 'NA';
   }
 }

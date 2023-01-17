@@ -246,7 +246,8 @@ class _CameraScreenState extends State<CameraScreen>
                       child: Container(),
                       listener: (context, state) async {
                         if (state is ShowLoadingDialog) {
-                          Utility.showLoadingDialog(context, true);
+                          Utility.showLoadingDialog(
+                              context: context, isOCR: true);
                         }
                         if (state is GoogleSuccess) {
                           Navigator.of(context).pop();
@@ -333,7 +334,7 @@ class _CameraScreenState extends State<CameraScreen>
                         }
                         if (state is AddBlankSlidesOnDriveSuccess) {
                           _driveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
-                              slidepresentationId:
+                              slidePresentationId:
                                   Globals.googleSlidePresentationId));
                         }
                         if (state is GoogleAssessmentImagesOnSlidesUpdated) {
@@ -443,7 +444,7 @@ class _CameraScreenState extends State<CameraScreen>
                                     .isFromHistoryAssessmentScanMore &&
                                 widget.isScanMore == true) {
                               _driveBloc.add(AddBlankSlidesOnDrive(
-                                  slidepresentationId:
+                                  slidePresentationId:
                                       Globals.googleSlidePresentationId));
                             }
 

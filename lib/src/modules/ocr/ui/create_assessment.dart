@@ -10,7 +10,7 @@ import 'package:Soc/src/modules/ocr/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -670,10 +670,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     bloc: _googleDriveBloc,
                     child: Container(),
                     listener: (context, state) async {
-                      print(
-                          "$state is received -------------> on create assessment screen");
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context, true);
+                        Utility.showLoadingDialog(
+                            context: context, isOCR: true);
                       }
 
                       if (state is ExcelSheetCreated) {
@@ -756,7 +755,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: Container(),
                     listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context, true);
+                        Utility.showLoadingDialog(
+                            context: context, isOCR: true);
                       }
 
                       if (state is QuestionImageSuccess) {
@@ -812,9 +812,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
   void _navigateToSubjectSection(String? questionImageUrl) async {
     for (int i = 0; i < widget.classSuggestions.length; i++) {
-      classController.text == widget.classSuggestions[i]
-          ? widget.classSuggestions.removeAt(i)
-          : print("nothing ---------->");
+      if (classController.text == widget.classSuggestions[i])
+        widget.classSuggestions.removeAt(i);
     }
 
     widget.classSuggestions.insert(0, classController.text);

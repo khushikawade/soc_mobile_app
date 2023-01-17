@@ -149,21 +149,21 @@ packages:
       name: cached_network_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.3"
+    version: "3.2.1"
   cached_network_image_platform_interface:
     dependency: transitive
     description:
       name: cached_network_image_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "1.0.0"
   cached_network_image_web:
     dependency: transitive
     description:
       name: cached_network_image_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.1"
   calendar_view:
     dependency: "direct main"
     description:
@@ -233,7 +233,7 @@ packages:
       name: checked_yaml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.1"
   chewie:
     dependency: transitive
     description:
@@ -317,7 +317,7 @@ packages:
       name: convert
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.0"
   cross_file:
     dependency: transitive
     description:
@@ -967,7 +967,7 @@ packages:
       name: network_info_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.2"
+    version: "2.1.4+1"
   network_info_plus_linux:
     dependency: transitive
     description:
@@ -1205,7 +1205,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.0.0"
   photo_view:
     dependency: "direct main"
     description:

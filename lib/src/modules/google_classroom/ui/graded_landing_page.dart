@@ -380,7 +380,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                           listener: (context, state) async {
                                             if (state is GoogleDriveLoading) {
                                               Utility.showLoadingDialog(
-                                                  context, true);
+                                                  context: context,
+                                                  isOCR: true);
                                             }
                                             if (state is GoogleSuccess) {
                                               Navigator.of(context).pop();

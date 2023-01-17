@@ -11,7 +11,7 @@ import '../../../services/local_database/local_db.dart';
 import '../../google_drive/model/user_profile.dart';
 import '../../google_drive/overrides.dart';
 import '../../ocr/modal/user_info.dart';
-import '../../ocr/overrides.dart';
+import '../../ocr/graded_overrides.dart';
 part 'google_classroom_event.dart';
 part 'google_classroom_state.dart';
 

@@ -1,6 +1,6 @@
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/overrides.dart';
+import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';

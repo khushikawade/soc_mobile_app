@@ -854,7 +854,8 @@ class _SearchPageState extends State<SearchPage> {
                                     null);
                               }
                             } else if (state is RefrenceSearchLoading) {
-                              return Utility.showLoadingDialog(context, false);
+                              return Utility.showLoadingDialog(
+                                  context: context, isOCR: false);
                             } else if (state is HomeErrorReceived) {}
                           },
                           child: EmptyContainer()),

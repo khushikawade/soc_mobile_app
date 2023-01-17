@@ -150,7 +150,8 @@ class _OpticalCharacterRecognitionPageState
                       },
                       listener: (BuildContext context, Object? state) {
                         if (state is OcrLoading) {
-                          Utility.showLoadingDialog(context, true);
+                          Utility.showLoadingDialog(
+                              context: context, isOCR: true);
                         }
                         if (state is GetRubricPdfSuccess) {
                           Navigator.pop(context);
