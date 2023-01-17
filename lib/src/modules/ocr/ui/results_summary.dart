@@ -102,7 +102,7 @@ class studentRecordList extends State<ResultsSummary> {
   final editingStudentNameController = TextEditingController();
   final editingStudentIdController = TextEditingController();
   final studentScoreController = TextEditingController();
-  String pointPossiable = '2';
+  String? pointPossible;
 
   // ValueNotifier<List<StudentAssessmentInfo>> studentRecordList =
   //     ValueNotifier([]);
@@ -1726,7 +1726,7 @@ class studentRecordList extends State<ResultsSummary> {
       studentScoreController.text = widget.isMcqSheet == true
           ? studentInfo[index].studentResponseKey!
           : studentInfo[index].studentGrade!;
-      // pointPossiable = studentInfo[index].pointpossible ?? "2";
+      pointPossible = studentInfo[index].pointPossible;
       String answerKey = studentInfo[index].answerKey!;
       String studentSelectedAlphabetAnswerKey =
           studentInfo[index].studentResponseKey!;
@@ -1735,7 +1735,7 @@ class studentRecordList extends State<ResultsSummary> {
           studentSelection: widget.isMcqSheet == true
               ? studentSelectedAlphabetAnswerKey
               : studentScoreController.value.text,
-          pointPossible: pointPossiable,
+          pointPossible: pointPossible ?? "2",
           answerKey: answerKey,
           controllerOne: editingStudentNameController,
           controllerTwo: editingStudentIdController,
