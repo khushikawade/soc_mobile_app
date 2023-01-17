@@ -261,7 +261,7 @@ packages:
       name: clock
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.0"
   code_builder:
     dependency: transitive
     description:
@@ -946,7 +946,7 @@ packages:
       name: mime
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.3"
   mime_type:
     dependency: "direct main"
     description:
@@ -1420,14 +1420,14 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.3"
+    version: "2.0.3+1"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.0"
   stack_trace:
     dependency: transitive
     description:
@@ -1469,7 +1469,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.0+3"
   term_glyph:
     dependency: transitive
     description:
