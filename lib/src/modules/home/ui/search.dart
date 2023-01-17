@@ -419,7 +419,7 @@
 //               mainAxisSize: MainAxisSize.max,
 //               children: <Widget>[
 //                 _buildLeading(items[index]),
-//                 HorzitalSpacerWidget(_kLabelSpacing),
+//                 HorizontalSpacerWidget(_kLabelSpacing),
 //                 TranslationWidget(
 //                   message: items[index].objectName == 'Staff_Directory_App__c'
 //                       ? (items[index].name != null &&
@@ -617,7 +617,7 @@
 //       mainAxisAlignment: MainAxisAlignment.start,
 //       crossAxisAlignment: CrossAxisAlignment.center,
 //       children: [
-//         HorzitalSpacerWidget(_kLabelSpacing / 2),
+//         HorizontalSpacerWidget(_kLabelSpacing / 2),
 //         TranslationWidget(
 //           message: "Search",
 //           toLanguage: Globals.selectedLanguage,
@@ -638,7 +638,7 @@
 //     return Row(
 //       mainAxisAlignment: MainAxisAlignment.start,
 //       children: [
-//         HorzitalSpacerWidget(_kLabelSpacing / 2),
+//         HorizontalSpacerWidget(_kLabelSpacing / 2),
 //         TranslationWidget(
 //           message: "Recent Search",
 //           toLanguage: Globals.selectedLanguage,

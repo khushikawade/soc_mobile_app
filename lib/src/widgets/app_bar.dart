@@ -14,8 +14,8 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     required this.isSearch,
     required this.isShare,
     required this.appBarTitle,
-    required this.sharedpopUpheaderText,
-    required this.sharedpopBodytext,
+    required this.sharedPopUpHeaderText,
+    required this.sharedPopBodyText,
     this.onTap,
     this.isCenterIcon,
     this.ishtmlpage,
@@ -28,8 +28,8 @@ class CustomAppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   String appBarTitle;
   bool? isSearch;
   bool? isShare;
-  String? sharedpopBodytext;
-  String? sharedpopUpheaderText;
+  String? sharedPopBodyText;
+  String? sharedPopUpHeaderText;
   bool? ishtmlpage;
   bool? isCenterIcon;
   String? language;
@@ -81,16 +81,16 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
               ),
         widget.isShare == true &&
                 widget.isShare == true &&
-                widget.sharedpopBodytext != 'null'
+                widget.sharedPopBodyText != 'null'
             ? IconButton(
                 onPressed: () {
-                  widget.sharedpopBodytext != null &&
-                          widget.sharedpopUpheaderText != 'null' &&
-                          widget.sharedpopBodytext!.length > 1
+                  widget.sharedPopBodyText != null &&
+                          widget.sharedPopUpHeaderText != 'null' &&
+                          widget.sharedPopBodyText!.length > 1
                       ? shareobj.callFunction(
                           context,
-                          widget.sharedpopBodytext.toString(),
-                          widget.sharedpopUpheaderText.toString())
+                          widget.sharedPopBodyText.toString(),
+                          widget.sharedPopUpHeaderText.toString())
                       : print("null");
                 },
                 icon: Icon(
@@ -99,7 +99,7 @@ class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
                 ),
               )
             : Container(),
-        HorzitalSpacerWidget(_kLabelSpacing / 3)
+        HorizontalSpacerWidget(_kLabelSpacing / 3)
       ],
     );
   }

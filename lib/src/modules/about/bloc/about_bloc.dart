@@ -33,7 +33,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         if (_localData.isEmpty) {
           yield AboutLoading();
         } else {
-          yield AboutDataSucess(obj: _localData);
+          yield AboutDataSuccess(obj: _localData);
         }
         // Local database end.
 
@@ -48,7 +48,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield AboutLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield AboutDataSucess(obj: list);
+        yield AboutDataSuccess(obj: list);
       } catch (e) {
         // Fetching data from the local database instead.
         LocalDatabase<SharedList> _localDb =
@@ -60,7 +60,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         yield AboutLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield AboutDataSucess(obj: _localData);
+        yield AboutDataSuccess(obj: _localData);
         // yield ErrorLoading(err: e);
       }
     }
@@ -76,7 +76,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         if (_localData.isEmpty) {
           yield AboutLoading();
         } else {
-          yield AboutSublistSucess(obj: _localData);
+          yield AboutSublistSuccess(obj: _localData);
         }
         // Local database end
 
@@ -91,7 +91,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         yield AboutLoading(); // To mimic the state change
-        yield AboutSublistSucess(obj: list);
+        yield AboutSublistSuccess(obj: list);
       } catch (e) {
         // Fetching data from the local database instead.
         String? _objectName = "${Strings.aboutSubListObjectName}${event.id}";
@@ -102,7 +102,7 @@ class AboutBloc extends Bloc<AboutEvent, AboutState> {
         _localDb.close();
 
         yield AboutLoading(); // To mimic the state change
-        yield AboutSublistSucess(obj: _localData);
+        yield AboutSublistSuccess(obj: _localData);
       }
     }
   }

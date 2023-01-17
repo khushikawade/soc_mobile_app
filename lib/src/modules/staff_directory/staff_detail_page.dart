@@ -10,7 +10,6 @@ import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -28,10 +27,10 @@ class AboutSDDetailPage extends StatefulWidget {
 
 class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   static const double _kLabelSpacing = 16.0;
-  static const double _kIconSize = 48.0;
-  bool issuccesstate = false;
+  // static const double _kIconSize = 48.0;
+  // bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  UrlLauncherWidget urlobj = new UrlLauncherWidget();
+  // UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc homebloc = new HomeBloc();
   bool? isErrorState = false;
   static const double _kboxborderwidth = 0.75;
@@ -141,7 +140,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                       ),
                 ),
               ),
-              HorzitalSpacerWidget(_kLabelSpacing / 2),
+              HorizontalSpacerWidget(_kLabelSpacing / 2),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: InkWell(
@@ -214,7 +213,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                               fontWeight: FontWeight.w500,
                             ),
                       ),
-                HorzitalSpacerWidget(_kLabelSpacing / 2),
+                HorizontalSpacerWidget(_kLabelSpacing / 2),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: InkWell(

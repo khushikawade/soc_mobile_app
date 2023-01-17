@@ -40,14 +40,14 @@ class StaffDataSuccess extends StaffState {
   List<Object> get props => [];
 }
 
-class StaffSubListSucess extends StaffState {
+class StaffSubListSuccess extends StaffState {
   final List<SharedList>? obj;
   final List<SharedList>? subFolder;
 
-  StaffSubListSucess({this.obj, this.subFolder});
+  StaffSubListSuccess({this.obj, this.subFolder});
 
-  StaffSubListSucess copyWith({final obj, final subFolder}) {
-    return StaffSubListSucess(
+  StaffSubListSuccess copyWith({final obj, final subFolder}) {
+    return StaffSubListSuccess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }
 

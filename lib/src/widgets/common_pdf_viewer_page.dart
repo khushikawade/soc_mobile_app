@@ -104,8 +104,8 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
   //                   isSearch: false,
   //                   isShare: true,
   //                   appBarTitle: widget.tittle!,
-  //                   sharedpopBodytext: widget.url.toString(),
-  //                   sharedpopUpheaderText: "Please check out this",
+  //                   sharedPopBodyText: widget.url.toString(),
+  //                   sharedPopUpHeaderText: "Please check out this",
   //                   language: Globals.selectedLanguage,
   //                 ),
   //       body: widget.url != null && widget.url != ""
@@ -195,8 +195,8 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
                     isSearch: false,
                     isShare: true,
                     appBarTitle: widget.tittle!,
-                    sharedpopBodytext: widget.url.toString(),
-                    sharedpopUpheaderText: "Please check out this",
+                    sharedPopBodyText: widget.url.toString(),
+                    sharedPopUpHeaderText: "Please check out this",
                     language: Globals.selectedLanguage,
                   ),
         body: ValueListenableBuilder(

@@ -24,7 +24,8 @@ class SDlist {
   String? status;
   @HiveField(9)
   String? darkModeIconC;
-
+  @HiveField(10)
+  String? groupingC;
   SDlist(
       {
       // this.attributes,
@@ -37,22 +38,25 @@ class SDlist {
       this.sortOrderC,
       this.phoneC,
       this.status,
-      this.darkModeIconC});
+      this.darkModeIconC,
+      this.groupingC});
 
   factory SDlist.fromJson(Map<String, dynamic> json) => SDlist(
-      // attributes: json['attributes'] == null
-      //     ? null
-      //     : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
-      designation: json['Title__c'],
-      imageUrlC: json['Image_URL__c'] as String?,
-      id: json['Id'] as String?,
-      name: json['Name__c'] as String?,
-      descriptionC: json['Description__c'],
-      emailC: json['Email__c'] as String?,
-      sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
-      phoneC: json['Phone__c'] as String?,
-      status: json['Active_Status__c'] ?? 'Show',
-      darkModeIconC: json['Dark_Mode_Icon__c']);
+        // attributes: json['attributes'] == null
+        //     ? null
+        //     : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
+        designation: json['Title__c'],
+        imageUrlC: json['Image_URL__c'] as String?,
+        id: json['Id'] as String?,
+        name: json['Name__c'] as String?,
+        descriptionC: json['Description__c'],
+        emailC: json['Email__c'] as String?,
+        sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
+        phoneC: json['Phone__c'] as String?,
+        status: json['Active_Status__c'] ?? 'Show',
+        darkModeIconC: json['Dark_Mode_Icon__c'],
+        groupingC: json['Grouping__c'],
+      );
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -65,6 +69,7 @@ class SDlist {
         'Sort_Order__c': sortOrderC,
         'Phone__c': phoneC,
         'Active_Status__c': status,
-        'Dark_Mode_Icon__c': darkModeIconC
+        'Dark_Mode_Icon__c': darkModeIconC,
+        'Grouping__c': groupingC
       };
 }

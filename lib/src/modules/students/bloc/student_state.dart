@@ -25,14 +25,14 @@ class StudentError extends StudentState {
   List<Object> get props => [err];
 }
 
-class StudentDataSucess extends StudentState {
+class StudentDataSuccess extends StudentState {
   final List<StudentApp>? obj;
   final List<StudentApp>? subFolder;
 
-  StudentDataSucess({this.obj, this.subFolder});
+  StudentDataSuccess({this.obj, this.subFolder});
 
-  StudentDataSucess copyWith({final obj, final subFolder}) {
-    return StudentDataSucess(
+  StudentDataSuccess copyWith({final obj, final subFolder}) {
+    return StudentDataSuccess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }
 

@@ -153,7 +153,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
                   .copyWith(color: Colors.black),
             ),
           ),
-          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          HorizontalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
             child: TranslationWidget(
               message: list["version"].toString(),
@@ -278,8 +278,8 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
           isSearch: false,
           isShare: false,
           appBarTitle: "Licence Detail",
-          sharedpopUpheaderText: '',
-          sharedpopBodytext: '',
+          sharedPopUpHeaderText: '',
+          sharedPopBodyText: '',
           language: Globals.selectedLanguage,
         ),
         body: RefreshIndicator(

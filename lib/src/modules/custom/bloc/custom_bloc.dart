@@ -48,7 +48,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
           yield CustomLoading();
         } else {
           getCalendarId(_localData);
-          yield CustomDataSucess(obj: _localData);
+          yield CustomDataSuccess(obj: _localData);
         }
 
         List<SharedList> list = await getCustomList(event.id);
@@ -61,7 +61,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield CustomLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield CustomDataSucess(obj: list);
+        yield CustomDataSuccess(obj: list);
       } catch (e) {
         String? _objectName = "${Strings.customObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
@@ -72,7 +72,7 @@ class CustomBloc extends Bloc<CustomEvent, CustomState> {
         getCalendarId(_localData);
 
         yield CustomLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield CustomDataSucess(obj: _localData);
+        yield CustomDataSuccess(obj: _localData);
         // yield ErrorLoading();
       }
     }

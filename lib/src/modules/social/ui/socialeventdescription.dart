@@ -152,7 +152,7 @@ class SocialDescription extends StatelessWidget {
   Widget _buildBottomSection(BuildContext context) {
     return Column(
       children: [
-        HorzitalSpacerWidget(_kPadding / 4),
+        HorizontalSpacerWidget(_kPadding / 4),
         (object.mediaContent != null &&
                     object.mediaContent != "" &&
                     object.mediaContent != null &&
