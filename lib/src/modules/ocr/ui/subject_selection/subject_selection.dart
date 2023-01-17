@@ -123,8 +123,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           ));
     } else {
       // if user come from state selection page or create assesment page
-      SubjectSelectionAPIAndMethods.fetchSubjectDetails('subject',
-          widget.selectedClass, widget.selectedClass, widget.stateName, '', '');
+      fetchSubjectDetails('subject', widget.selectedClass, widget.selectedClass,
+          widget.stateName, '', '');
       // _ocrBloc.add(FetchSubjectDetails(
       //     type: 'subject',
       //     grade: widget.selectedClass,
@@ -166,13 +166,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           subjectIndex1.value = 0;
           isSubmitButton.value = false;
 
-          SubjectSelectionAPIAndMethods.fetchSubjectDetails(
-              'subject',
-              widget.selectedClass,
-              widget.selectedClass,
-              widget.stateName,
-              '',
-              '');
+          fetchSubjectDetails('subject', widget.selectedClass,
+              widget.selectedClass, widget.stateName, '', '');
 
           // _ocrBloc.add(FetchSubjectDetails(
           //     type: 'subject',
@@ -279,7 +274,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           scaffoldKey: _scaffoldKey);
 
                       //calling API
-                      SubjectSelectionAPIAndMethods.updateDocOnDrive(
+                      updateDocOnDrive(
                           widget.isMcqSheet, widget.questionImageUrl);
 
                       // _googleDriveBloc.add(
@@ -1109,7 +1104,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           await updateList(
               subjectName: controller.text, classNo: widget.selectedClass!);
 
-          SubjectSelectionAPIAndMethods.fetchSubjectDetails(
+          fetchSubjectDetails(
               'subject',
               widget.selectedClass,
               widget.selectedClass,
@@ -1221,10 +1216,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                   scaffoldKey: _scaffoldKey);
 
                                           //calling API
-                                          SubjectSelectionAPIAndMethods
-                                              .updateDocOnDrive(
-                                                  widget.isMcqSheet,
-                                                  widget.questionImageUrl);
+                                          updateDocOnDrive(widget.isMcqSheet,
+                                              widget.questionImageUrl);
                                           // _googleDriveBloc.add(
                                           //   UpdateDocOnDrive(
                                           //       isMcqSheet:
@@ -1372,10 +1365,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                     scaffoldKey: _scaffoldKey);
 
                                             //calling API
-                                            SubjectSelectionAPIAndMethods
-                                                .updateDocOnDrive(
-                                                    widget.isMcqSheet,
-                                                    widget.questionImageUrl);
+
+                                            updateDocOnDrive(widget.isMcqSheet,
+                                                widget.questionImageUrl);
 
                                             // _googleDriveBloc.add(
                                             //   UpdateDocOnDrive(
@@ -1601,8 +1593,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       _customSubjectlocalDb.addData(e);
     });
     // Calling event to update subject page --------
-    SubjectSelectionAPIAndMethods.fetchSubjectDetails('subject',
-        widget.selectedClass, widget.selectedClass, widget.stateName, '', '');
+
+    fetchSubjectDetails('subject', widget.selectedClass, widget.selectedClass,
+        widget.stateName, '', '');
 
     // _ocrBloc.add(FetchSubjectDetails(
     //     type: 'subject',
@@ -1686,8 +1679,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             state: (p0) => {showDialogSetState = p0});
 
         //calling API
-        SubjectSelectionAPIAndMethods.updateDocOnDrive(
-            widget.isMcqSheet, widget.questionImageUrl);
+        updateDocOnDrive(widget.isMcqSheet, widget.questionImageUrl);
 
         // _googleDriveBloc.add(
         //   UpdateDocOnDrive(
@@ -1705,5 +1697,38 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         // );
       }
     }
+  }
+
+  fetchSubjectDetails(String? type, String? grade, String? selectedKeyword,
+      String? stateName, String? subjectSelected, String? subjectId) {
+    _ocrBloc.add(FetchSubjectDetails(
+        type: type,
+        grade: grade,
+        // empty because no subject selected yet
+        subjectId: subjectId,
+        subjectSelected: subjectSelected,
+        selectedKeyword: selectedKeyword,
+        stateName: stateName));
+  }
+
+  void updateDocOnDrive(
+    bool? isMCQSheet,
+    String? questionImageURL,
+  ) async {
+    _googleDriveBloc.add(
+      UpdateDocOnDrive(
+          isMcqSheet: isMCQSheet ?? false,
+          questionImage:
+              questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
+          createdAsPremium: Globals.isPremiumUser,
+          assessmentName: Globals.assessmentName,
+          fileId: Globals.googleExcelSheetId,
+          isLoading: true,
+          studentData:
+              await Utility.getStudentInfoList(tableName: 'student_info')
+          //list2
+          //Globals.studentInfo!
+          ),
+    );
   }
 }

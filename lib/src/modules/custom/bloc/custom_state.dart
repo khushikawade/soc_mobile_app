@@ -25,15 +25,15 @@ class ErrorLoading extends CustomState {
   List<Object> get props => [err];
 }
 
-class CustomDataSucess extends CustomState {
+class CustomDataSuccess extends CustomState {
   final List<SharedList>? obj;
-  CustomDataSucess({
+  CustomDataSuccess({
     this.obj,
   });
-  CustomDataSucess copyWith({
+  CustomDataSuccess copyWith({
     obj,
   }) {
-    return CustomDataSucess(obj: obj ?? this.obj);
+    return CustomDataSuccess(obj: obj ?? this.obj);
   }
 
   @override

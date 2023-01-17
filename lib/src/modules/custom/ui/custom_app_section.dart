@@ -120,7 +120,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                           if (state is CustomInitial ||
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
-                          } else if (state is CustomDataSucess) {
+                          } else if (state is CustomDataSuccess) {
                             return Container(
                               height: MediaQuery.of(context).size.height,
                               child: CustomPages(

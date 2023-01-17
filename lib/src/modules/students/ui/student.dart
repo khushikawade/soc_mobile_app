@@ -331,7 +331,7 @@ class _StudentPageState extends State<StudentPage> {
                               child: CircularProgressIndicator(
                             color: Theme.of(context).colorScheme.primaryVariant,
                           ));
-                        } else if (state is StudentDataSucess) {
+                        } else if (state is StudentDataSuccess) {
                           return state.obj != null && state.obj!.length > 0
                               ? Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5),

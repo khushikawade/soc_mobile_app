@@ -107,7 +107,7 @@ class _FamilyPageState extends State<FamilyPage> {
                               color:
                                   Theme.of(context).colorScheme.primaryVariant,
                             ));
-                          } else if (state is FamiliesDataSucess) {
+                          } else if (state is FamiliesDataSuccess) {
                             return widget.customObj != null &&
                                     widget.customObj!.sectionTemplate ==
                                         "Grid Menu"

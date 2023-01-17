@@ -571,6 +571,7 @@ class _OpticalCharacterRecognitionPageState
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
+
     _ocrBlocLogs.add(LogUserActivityEvent(
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,

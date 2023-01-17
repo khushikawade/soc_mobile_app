@@ -204,7 +204,7 @@ class _SettingPageState extends State<SettingPage> {
       _buildHeading("App Version"),
       _appVersion(), _buildHeading("App Store"),
       _storOnTap('Go To Store'),
-      HorzitalSpacerWidget(_kLabelSpacing * 20),
+      HorizontalSpacerWidget(_kLabelSpacing * 20),
       SizedBox(
           width: MediaQuery.of(context).size.width * 1,
           height: 100.0,
@@ -220,8 +220,8 @@ class _SettingPageState extends State<SettingPage> {
           appBarTitle: 'Settings',
           isSearch: false,
           isShare: false,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
+          sharedPopBodyText: '',
+          sharedPopUpHeaderText: '',
           language: Globals.selectedLanguage,
         ),
         body: RefreshIndicator(

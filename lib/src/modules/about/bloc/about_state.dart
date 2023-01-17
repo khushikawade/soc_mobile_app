@@ -25,30 +25,30 @@ class ErrorLoading extends AboutState {
   List<Object> get props => [err];
 }
 
-class AboutDataSucess extends AboutState {
+class AboutDataSuccess extends AboutState {
   final List<SharedList>? obj;
-  AboutDataSucess({
+  AboutDataSuccess({
     this.obj,
   });
-  AboutDataSucess copyWith({
+  AboutDataSuccess copyWith({
     final obj,
   }) {
-    return AboutDataSucess(obj: obj ?? this.obj);
+    return AboutDataSuccess(obj: obj ?? this.obj);
   }
 
   @override
   List<Object> get props => [];
 }
 
-class AboutSublistSucess extends AboutState {
+class AboutSublistSuccess extends AboutState {
   final List<SharedList>? obj;
-  AboutSublistSucess({
+  AboutSublistSuccess({
     this.obj,
   });
-  AboutSublistSucess copyWith({
+  AboutSublistSuccess copyWith({
     final obj,
   }) {
-    return AboutSublistSucess(obj: obj ?? this.obj);
+    return AboutSublistSuccess(obj: obj ?? this.obj);
   }
 
   @override

@@ -91,7 +91,7 @@ class _SubListPageState extends State<SubListPage> {
                                       .colorScheme
                                       .primaryVariant,
                                 ));
-                          } else if (state is FamiliesSublistSucess) {
+                          } else if (state is FamiliesSublistSuccess) {
                             return CommonListWidget(
                                 scrollController: _scrollController,
                                 scaffoldKey: _scaffoldKey,
@@ -119,7 +119,7 @@ class _SubListPageState extends State<SubListPage> {
                                           .colorScheme
                                           .primaryVariant,
                                     ));
-                              } else if (state is StaffSubListSucess) {
+                              } else if (state is StaffSubListSuccess) {
                                 return CommonListWidget(
                                     scrollController: _scrollController,
                                     scaffoldKey: _scaffoldKey,
@@ -149,7 +149,7 @@ class _SubListPageState extends State<SubListPage> {
                                               .colorScheme
                                               .primaryVariant,
                                         ));
-                                  } else if (state is ResourcesSubListSucess) {
+                                  } else if (state is ResourcesSubListSuccess) {
                                     return CommonListWidget(
                                         scrollController: _scrollController,
                                         scaffoldKey: _scaffoldKey,
@@ -180,7 +180,7 @@ class _SubListPageState extends State<SubListPage> {
                                                   .colorScheme
                                                   .primaryVariant,
                                             ));
-                                      } else if (state is AboutSublistSucess) {
+                                      } else if (state is AboutSublistSuccess) {
                                         return CommonListWidget(
                                             scrollController: _scrollController,
                                             scaffoldKey: _scaffoldKey,
@@ -244,8 +244,8 @@ class _SubListPageState extends State<SubListPage> {
           isSearch: true,
           isShare: false,
           appBarTitle: widget.appBarTitle,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
+          sharedPopBodyText: '',
+          sharedPopUpHeaderText: '',
           language: Globals.selectedLanguage,
         ),
         body: OfflineBuilder(

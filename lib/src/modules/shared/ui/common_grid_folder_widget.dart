@@ -275,7 +275,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                               .primaryVariant,
                                         ));
                                       } else if (state
-                                          is FamiliesSublistSucess) {
+                                          is FamiliesSublistSuccess) {
                                         return state.obj != null &&
                                                 state.obj!.length > 0
                                             ? Container(
@@ -314,7 +314,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                   .primaryVariant,
                                             ));
                                           } else if (state
-                                              is StaffSubListSucess) {
+                                              is StaffSubListSuccess) {
                                             return state.obj != null &&
                                                     state.obj!.length > 0
                                                 ? Container(
@@ -356,7 +356,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                       .primaryVariant,
                                                 ));
                                               } else if (state
-                                                  is ResourcesSubListSucess) {
+                                                  is ResourcesSubListSuccess) {
                                                 return state.obj != null &&
                                                         state.obj!.length > 0
                                                     ? Container(
@@ -400,7 +400,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                           .primaryVariant,
                                                     ));
                                                   } else if (state
-                                                      is AboutSublistSucess) {
+                                                      is AboutSublistSuccess) {
                                                     return state.obj != null &&
                                                             state.obj!.length >
                                                                 0

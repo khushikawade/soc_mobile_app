@@ -136,10 +136,10 @@ class _InformationPageState extends State<InformationPage> {
           isShare: false,
           appBarTitle: widget.appbarTitle,
           ishtmlpage: widget.ishtml,
-          sharedpopBodytext: Globals.appSetting.appInformationC!
+          sharedPopBodyText: Globals.appSetting.appInformationC!
               .replaceAll(exp, '')
               .toString(),
-          sharedpopUpheaderText: "Please checkout this ",
+          sharedPopUpHeaderText: "Please checkout this ",
           language: Globals.selectedLanguage,
         ),
         body: RefreshIndicator(

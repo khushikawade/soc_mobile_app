@@ -50,7 +50,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
           yield FamilyLoading();
         } else {
           getCalendarId(_localData);
-          yield FamiliesDataSucess(obj: _localData);
+          yield FamiliesDataSuccess(obj: _localData);
         }
 
         List<SharedList> list = await getFamilyList();
@@ -64,7 +64,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield FamiliesDataSucess(obj: list);
+        yield FamiliesDataSuccess(obj: list);
       } catch (e) {
         LocalDatabase<SharedList> _localDb =
             LocalDatabase(Strings.familiesObjectName);
@@ -76,7 +76,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         getCalendarId(_localData);
 
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield FamiliesDataSucess(obj: _localData);
+        yield FamiliesDataSuccess(obj: _localData);
         // yield ErrorLoading();
       }
     }
@@ -94,7 +94,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         if (_localData.isEmpty) {
           yield FamilyLoading();
         } else {
-          yield FamiliesSublistSucess(obj: _localData);
+          yield FamiliesSublistSuccess(obj: _localData);
         }
 
         List<SharedList> list = await getFamilySubList(event.id);
@@ -106,7 +106,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield FamiliesSublistSucess(obj: list);
+        yield FamiliesSublistSuccess(obj: list);
       } catch (e) {
         String? _objectName = "${Strings.familiesSubListObjectName}${event.id}";
         LocalDatabase<SharedList> _localDb = LocalDatabase(_objectName);
@@ -116,7 +116,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         _localDb.close();
 
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield FamiliesSublistSucess(obj: _localData);
+        yield FamiliesSublistSuccess(obj: _localData);
         // yield ErrorLoading(err: e);
       }
     }
@@ -125,20 +125,36 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       try {
         // yield FamilyLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         String? _objectName =
-            "${Strings.staffDirectoryObjectName}_${event.categoryId ?? event.customRecordId ?? ''}";
+            "${Strings.staffDirectoryObjectName}_${event.categoryId ?? event.customerRecordId ?? ''}";
         LocalDatabase<SDlist> _localDb = LocalDatabase(_objectName);
-        List<SDlist>? _localData = await _localDb.getData();
-        _localData.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
+        List<SDlist> _localData = await _localDb.getData();
+
+        // _localData.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
+
+        //Clear staff directory local data to manage loading issue
+        SharedPreferences clearStaffDirectory =
+            await SharedPreferences.getInstance();
+        final clearCacheResult =
+            clearStaffDirectory.getBool('delete_local_staff_directory');
+
+        if (clearCacheResult != true) {
+          await _localDb.clear();
+          await clearStaffDirectory.setBool(
+              'delete_local_staff_directory', true);
+        }
 
         if (_localData.isEmpty) {
           yield FamilyLoading();
         } else {
-          yield SDDataSucess(obj: _localData);
+          yield SDDataSuccess(
+              obj: _localData.groupListsBy((element) => element.groupingC));
         }
         // Local database end
 
         List<SDlist> list =
-            await getStaffList(event.categoryId, event.customRecordId);
+            await getStaffList(event.categoryId, event.customerRecordId);
+
+        list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
         // Syncing the remote data to the local database.
         await _localDb.clear();
         list.forEach((SDlist e) {
@@ -146,20 +162,24 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         });
         // Sync end
 
-        list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
         yield FamilyLoading(); //
-        yield SDDataSucess(obj: list);
+
+        yield SDDataSuccess(
+            obj: list.groupListsBy((element) => element.groupingC));
       } catch (e) {
+        print(e);
         // yield ErrorLoading(err: e);
         String? _objectName =
-            "${Strings.staffDirectoryObjectName}_${event.categoryId ?? event.customRecordId ?? ''}";
+            "${Strings.staffDirectoryObjectName}_${event.categoryId ?? event.customerRecordId ?? ''}";
         LocalDatabase<SDlist> _localDb = LocalDatabase(_objectName);
         List<SDlist>? _localData = await _localDb.getData();
-        _localData.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
+        // _localData.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
         _localDb.close();
 
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield SDDataSucess(obj: _localData);
+
+        yield SDDataSuccess(
+            obj: _localData.groupListsBy((element) => element.groupingC));
       }
     }
 
@@ -356,21 +376,28 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     }
   }
 
-  Future<List<SDlist>> getStaffList(categoryId, customrecordId) async {
+  Future<List<SDlist>> getStaffList(categoryId, customerRecordId) async {
     try {
-      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(customrecordId !=
-              null
-          ? //'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&Custom_App_Menu__c=$customrecordId'
-          'getSubRecords?parentId=$customrecordId&parentName=Custom_App_Menu__c&objectName=Staff_Directory_App__c'
-          : categoryId != null
-              ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId'
-              : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c'));
+      final ResponseModel response =
+          await _dbServices.getApi(Uri.encodeFull(customerRecordId != null
+              ? //'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&Custom_App_Menu__c=$customerRecordId'
+
+              //To fetch records from custom object architecture
+              'getSubRecords?parentId=$customerRecordId&parentName=Custom_App_Menu__c&objectName=Staff_Directory_App__c'
+
+              //To fetch records for About object (District Apps)
+              : categoryId != null
+                  ? 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c&About_App__c_Id=$categoryId'
+
+                  //Fetch records for standard apps
+                  : 'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_Directory_App__c'));
 
       if (response.statusCode == 200) {
         List<SDlist> _list = response.data['body']
             .map<SDlist>((i) => SDlist.fromJson(i))
             .toList();
 
+        //Removing hide records from the list
         _list.removeWhere((SDlist element) => element.status == 'Hide');
 
         return _list;
