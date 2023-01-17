@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/bottom_icon_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
@@ -1522,14 +1523,15 @@ class studentRecordList extends State<ResultsSummary> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: iconsList
-              .map<Widget>((element) => _iconButton(
-                  iconsList.indexOf(element), iconName,
-                  webContentLink: webContentLink))
+          children: BottomIcon.bottomIconModalList
+              .map<Widget>((element) => _bottomIcon(element))
               .toList(),
-          // [
-          //  // Container()
-          // ]
+
+          //  iconsList
+          //     .map<Widget>((element) => _iconButton(
+          //         iconsList.indexOf(element), iconName,
+          //         webContentLink: webContentLink))
+          //     .toList(),
         ));
   }
 
@@ -2385,6 +2387,20 @@ class studentRecordList extends State<ResultsSummary> {
             child: child,
           ),
         )
+      ],
+    );
+  }
+
+  Widget _bottomIcon(BottomIcon element) {
+    return Column(
+      children: [
+        Text(element.title!),
+        SvgPicture.asset(
+          element.svgPath!,
+          width: Globals.deviceType == "phone" ? 28 : 50,
+          height: Globals.deviceType == "phone" ? 28 : 50,
+          fit: BoxFit.fitWidth,
+        ),
       ],
     );
   }
