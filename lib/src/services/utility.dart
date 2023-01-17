@@ -616,7 +616,7 @@ class Utility {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: FittedBox(
                                 child: Utility.textWidget(
                                     text: GradedGlobals.loadingMessage ??
@@ -642,22 +642,25 @@ class Utility {
                             SizedBox(
                               height: 10,
                             ),
-                            Center(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    CircularProgressIndicator(
-                                      color:
-                                          isOCR! ? AppTheme.kButtonColor : null,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                  ]),
+                            // Center(
+                            //   child: Row(
+                            //       mainAxisAlignment: MainAxisAlignment.center,
+                            //       children: [
+                            //         SizedBox(
+                            //           width: 10,
+                            //         ),
+                            Container(
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: CircularProgressIndicator(
+                                color: isOCR! ? AppTheme.kButtonColor : null,
+                              ),
                             ),
+                            //         SizedBox(
+                            //           width: 10,
+                            //         ),
+                            //       ]),
+                            // ),
                           ],
                         ),
                       )
