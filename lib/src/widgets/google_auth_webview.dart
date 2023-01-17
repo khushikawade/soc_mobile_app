@@ -68,8 +68,8 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                     isSearch: false,
                     isShare: widget.hideShare != true ? true : false,
                     appBarTitle: widget.title,
-                    sharedpopBodytext: widget.url.toString(),
-                    sharedpopUpheaderText: "Please checkout this link",
+                    sharedPopBodyText: widget.url.toString(),
+                    sharedPopUpHeaderText: "Please checkout this link",
                     language: Globals.selectedLanguage,
                   )
                 : null,

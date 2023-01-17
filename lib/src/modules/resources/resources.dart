@@ -94,7 +94,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                     .colorScheme
                                     .primaryVariant,
                               ));
-                        } else if (state is ResourcesDataSucess) {
+                        } else if (state is ResourcesDataSuccess) {
                           return widget.customObj != null &&
                                   widget.customObj!.sectionTemplate ==
                                       "Grid Menu"

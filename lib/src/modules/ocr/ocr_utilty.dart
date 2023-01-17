@@ -3,10 +3,9 @@ import 'package:Soc/src/modules/ocr/modal/individualStudentModal.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 
-class OcrUtility{
-
-
-  static Future<bool> checkEmailFromGoogleClassroom({required String studentEmail}) async {
+class OcrUtility {
+  static Future<bool> checkEmailFromGoogleClassroom(
+      {required String studentEmail}) async {
     try {
       LocalDatabase<GoogleClassroomCourses> _localDb =
           LocalDatabase(Strings.googleClassroomCoursesList);
@@ -30,8 +29,7 @@ class OcrUtility{
     }
   }
 
-
-   static Future<List<StudentClassroomInfo>> getStudentList() async {
+  static Future<List<StudentClassroomInfo>> getStudentList() async {
     try {
       List<StudentClassroomInfo> studentList = [];
       LocalDatabase<GoogleClassroomCourses> _localDb =

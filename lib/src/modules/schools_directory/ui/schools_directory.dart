@@ -51,7 +51,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     //Utility.setLocked();
     super.initState();
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStandardPage != false ? null : widget.obj.id,
+        customerRecordId: widget.isStandardPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("school_directory_page");
@@ -79,7 +79,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                 if (connected) {
                   if (isErrorState == true) {
                     bloc.add(SchoolDirectoryListEvent(
-                        customRecordId: widget.isStandardPage != false
+                        customerRecordId: widget.isStandardPage != false
                             ? null
                             : widget.obj.id,
                         isSubMenu: widget.isSubmenu));
@@ -103,7 +103,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                                       .colorScheme
                                       .primaryVariant,
                                 ));
-                          } else if (state is SchoolDirectoryDataSucess) {
+                          } else if (state is SchoolDirectoryDataSuccess) {
                             return CommonSchoolDirectoryWidget(
                               scrollController: _scrollController,
                               data: state.obj!,
@@ -156,8 +156,8 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                 ? CustomAppBarWidget(
                     isSearch: true,
                     isShare: false,
-                    sharedpopBodytext: '',
-                    sharedpopUpheaderText: '',
+                    sharedPopBodyText: '',
+                    sharedPopUpHeaderText: '',
                     appBarTitle: widget.title ?? '',
                     language: Globals.selectedLanguage,
                   )
@@ -188,7 +188,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStandardPage != false ? null : widget.obj.id,
+        customerRecordId: widget.isStandardPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
     _homeBloc.add(FetchStandardNavigationBar());
   }

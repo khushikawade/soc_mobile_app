@@ -92,7 +92,7 @@ class _AboutPageState extends State<AboutPage> {
                                     .colorScheme
                                     .primaryVariant,
                               ));
-                        } else if (state is AboutDataSucess) {
+                        } else if (state is AboutDataSuccess) {
                           return widget.customObj != null &&
                                   widget.customObj!.sectionTemplate ==
                                       "Grid Menu"

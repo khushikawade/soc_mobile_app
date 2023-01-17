@@ -54,7 +54,7 @@ class _ListBorderWidgetState extends State<ListBorderWidget> {
                       ),
                 ),
               ),
-              HorzitalSpacerWidget(_kLabelSpacing / 2),
+              HorizontalSpacerWidget(_kLabelSpacing / 2),
               Container(
                 child: widget.child,
               )

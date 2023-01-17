@@ -81,10 +81,10 @@ class _AboutusPageState extends State<AboutusPage> {
               isShare: true,
               appBarTitle: widget.appbarTitle,
               ishtmlpage: widget.ishtml,
-              sharedpopBodytext: Utility.parseHtml(widget.htmlText
+              sharedPopBodyText: Utility.parseHtml(widget.htmlText
                   .replaceAll('<img src=', ' ')
                   .replaceAll('data-imageguid=', '</')),
-              sharedpopUpheaderText: "Please checkout this link",
+              sharedPopUpHeaderText: "Please checkout this link",
               language: Globals.selectedLanguage,
             ),
       body: ListView(children: [

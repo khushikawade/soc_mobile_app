@@ -213,7 +213,7 @@ class _ContactPageState extends State<ContactPage> {
               textAlign: TextAlign.center,
             ),
           ),
-          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          HorizontalSpacerWidget(_kLabelSpacing / 2),
           Expanded(
             child: GestureDetector(
               onTap: _launchMapsUrl,
@@ -247,7 +247,7 @@ class _ContactPageState extends State<ContactPage> {
                   ),
             ),
           ),
-          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          HorizontalSpacerWidget(_kLabelSpacing / 2),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: InkWell(
@@ -306,7 +306,7 @@ class _ContactPageState extends State<ContactPage> {
                   ),
             ),
           ),
-          HorzitalSpacerWidget(_kLabelSpacing / 2),
+          HorizontalSpacerWidget(_kLabelSpacing / 2),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0),
             child: InkWell(
@@ -354,8 +354,8 @@ class _ContactPageState extends State<ContactPage> {
                 isSearch: true,
                 isShare: false,
                 appBarTitle: widget.appBarTitle,
-                sharedpopBodytext: '',
-                sharedpopUpheaderText: '',
+                sharedPopBodyText: '',
+                sharedPopUpHeaderText: '',
                 language: Globals.selectedLanguage,
                 marginLeft: 30,
               ),

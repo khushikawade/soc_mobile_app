@@ -70,7 +70,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
                 : Container(
                     height: 0,
                   ),
-            HorzitalSpacerWidget(_kPadding / 1.2),
+            HorizontalSpacerWidget(_kPadding / 1.2),
             widget.isSocialpage
                 ? IconButton(
                     padding: EdgeInsets.zero,
@@ -89,7 +89,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
                 : Container(
                     height: 0,
                   ),
-            HorzitalSpacerWidget(_kPadding / 1.2),
+            HorizontalSpacerWidget(_kPadding / 1.2),
             widget.isSocialpage
                 ? IconButton(
                     padding: EdgeInsets.zero,
@@ -104,7 +104,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
                       size: Globals.deviceType == "phone" ? 20 : 28,
                     ))
                 : Container(height: 0),
-            HorzitalSpacerWidget(_kPadding / 1.5),
+            HorizontalSpacerWidget(_kPadding / 1.5),
           ],
         ),
         body: Container(

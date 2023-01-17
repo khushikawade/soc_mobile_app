@@ -82,7 +82,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         if (_localData.isEmpty) {
           yield StaffLoading();
         } else {
-          yield StaffSubListSucess(obj: _localData);
+          yield StaffSubListSuccess(obj: _localData);
         }
         //Local Database End
 
@@ -96,7 +96,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield StaffLoading();
-        yield StaffSubListSucess(
+        yield StaffSubListSuccess(
           obj: list,
         );
       } catch (e) {
@@ -109,7 +109,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         _localDb.close();
 
         yield StaffLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield StaffSubListSucess(obj: _localData);
+        yield StaffSubListSuccess(obj: _localData);
         // yield ErrorInStaffLoading(err: e);
       }
     }

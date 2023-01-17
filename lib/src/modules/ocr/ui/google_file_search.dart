@@ -615,7 +615,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // HorzitalSpacerWidget(_kLabelSpacing / 2),
+          // HorizontalSpacerWidget(_kLabelSpacing / 2),
           TranslationWidget(
             message: title, //"Google File Search",
             toLanguage: Globals.selectedLanguage,
