@@ -224,7 +224,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                   child: Container(),
                   listener: (context, state) async {
                     if (state is GoogleDriveLoading) {
-                      Utility.showLoadingDialog(context, true);
+                      Utility.showLoadingDialog(context:context,isOCR: true);
                     }
                     if (state is GoogleSuccess) {
                       if (state.assessmentSection == true) {

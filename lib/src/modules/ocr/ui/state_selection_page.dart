@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
@@ -143,7 +143,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                           bloc: _ocrBloc,
                           listener: (context, state) async {
                             if (state is OcrLoading) {
-                              Utility.showLoadingDialog(context, true);
+                              Utility.showLoadingDialog(
+                                  context: context, isOCR: true);
                             } else if (state
                                 is SubjectDetailsListSaveSuccessfully) {
                               Navigator.pop(context);
@@ -152,7 +153,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SubjectSelection(
-                                       isMcqSheet:widget.isMcqSheet ,selectedAnswer: widget.selectedAnswer ,
+                                          isMcqSheet: widget.isMcqSheet,
+                                          selectedAnswer: widget.selectedAnswer,
                                           // isCommonCore: selectedIndex.value == 0
                                           //     ? true
                                           //     : false,
@@ -260,7 +262,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => SubjectSelection(
-                               isMcqSheet:widget.isMcqSheet ,selectedAnswer: widget.selectedAnswer ,
+                                  isMcqSheet: widget.isMcqSheet,
+                                  selectedAnswer: widget.selectedAnswer,
                                   stateName: list[index],
                                   // isCommonCore: selectedIndex.value == 0
                                   //     ? true

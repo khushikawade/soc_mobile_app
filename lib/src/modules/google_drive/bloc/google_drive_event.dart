@@ -157,8 +157,8 @@ class GetAssessmentSearchDetails extends GoogleDriveEvent {
 
 // ignore: must_be_immutable
 class AddBlankSlidesOnDrive extends GoogleDriveEvent {
-  String? slidepresentationId;
-  AddBlankSlidesOnDrive({required this.slidepresentationId});
+  String? slidePresentationId;
+  AddBlankSlidesOnDrive({required this.slidePresentationId});
 
   @override
   List<Object> get props => [];
@@ -188,8 +188,19 @@ class UpdateGoogleSlideOnScanMore extends GoogleDriveEvent {
 }
 
 class UpdateAssessmentImageToSlidesOnDrive extends GoogleDriveEvent {
-  final String? slidepresentationId;
-  UpdateAssessmentImageToSlidesOnDrive({required this.slidepresentationId});
+  final String? slidePresentationId;
+  UpdateAssessmentImageToSlidesOnDrive({required this.slidePresentationId});
+
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateAssignmentDetailsOnSlide extends GoogleDriveEvent {
+  final String? slidePresentationId;
+  final StudentAssessmentInfo studentAssessmentInfoObj;
+  UpdateAssignmentDetailsOnSlide(
+      {required this.slidePresentationId,
+      required this.studentAssessmentInfoObj});
 
   @override
   List<Object> get props => [];

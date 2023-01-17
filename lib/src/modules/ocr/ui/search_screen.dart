@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
@@ -581,7 +581,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                             child: Container(),
                             listener: (context, state) async {
                               if (state is GoogleDriveLoading) {
-                                Utility.showLoadingDialog(context, true);
+                                Utility.showLoadingDialog(
+                                    context: context, isOCR: true);
                               }
                               if (state is GoogleSuccess) {
                                 Globals.currentAssessmentId = '';

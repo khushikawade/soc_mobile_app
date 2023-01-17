@@ -139,7 +139,7 @@ class _StudentPageState extends State<StudentPage> {
       listener: (context, state) {
         print(state);
         if (state is CalenderLoading) {
-          Utility.showLoadingDialog(context, false);
+          Utility.showLoadingDialog(context: context, isOCR: false);
         }
         if (state is CalenderSuccess) {
           Navigator.pop(context, false);

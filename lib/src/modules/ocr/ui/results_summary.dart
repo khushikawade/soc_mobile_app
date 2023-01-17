@@ -463,7 +463,8 @@ class studentRecordList extends State<ResultsSummary> {
                                   child: Container(),
                                   listener: (context, state) async {
                                     if (state is GoogleDriveLoading) {
-                                      Utility.showLoadingDialog(context, true);
+                                      Utility.showLoadingDialog(
+                                          context: context, isOCR: true);
                                     }
                                     if (state is GoogleSuccess) {
                                       Navigator.of(context).pop();

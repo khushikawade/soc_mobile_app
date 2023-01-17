@@ -164,3 +164,9 @@ class RecallTheEvent extends GoogleDriveState {
   @override
   List<Object> get props => [];
 }
+
+class UpdateAssignmentDetailsOnSlideSuccess extends GoogleDriveState {
+  UpdateAssignmentDetailsOnSlideSuccess();
+  @override
+  List<Object> get props => [];
+}
