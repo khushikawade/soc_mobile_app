@@ -1567,7 +1567,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //       studentId: fields[i][0].toString().replaceFirst(" ", ""),
         //       studentName: fields[i][1].toString().replaceFirst(" ", ""),
         //       studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
-        //       pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+        //       pointPossible: fields[i][3].toString().replaceFirst(" ", ""),
         //       questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
         //       grade: fields[i][5].toString().replaceFirst(" ", ""),
         //       className: fields[i][6].toString().replaceFirst(" ", ""),
@@ -1603,7 +1603,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //       grade: csvList[i].grade.toString().replaceFirst(" ", ""),
         //       learningStandard:
         //           csvList[i].learningStandard.toString().replaceFirst(" ", ""),
-        //       pointpossible:
+        //       pointPossible:
         //           csvList[i].pointPossible.toString().replaceFirst(" ", ""),
         //       questionImgUrl: csvList[i]
         //           .assessmentQuestionImg
@@ -1649,7 +1649,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //             studentId: fields[i][0].toString().replaceFirst(" ", ""),
   //             studentName: fields[i][1].toString().replaceFirst(" ", ""),
   //             studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
-  //             pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+  //             pointPossible: fields[i][3].toString().replaceFirst(" ", ""),
   //             questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
   //             grade: fields[i][5].toString().replaceFirst(" ", ""),
   //             className: fields[i][6].toString().replaceFirst(" ", ""),
@@ -1677,7 +1677,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //             studentId: fields[i][0].toString().replaceFirst(" ", ""),
   //             studentName: fields[i][1].toString().replaceFirst(" ", ""),
   //             studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
-  //             pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+  //             pointPossible: fields[i][3].toString().replaceFirst(" ", ""),
   //             questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
   //             grade: fields[i][5].toString().replaceFirst(" ", ""),
   //             className: fields[i][6].toString().replaceFirst(" ", ""),
@@ -1705,7 +1705,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //             studentId: fields[i][0].toString().replaceFirst(" ", ""),
   //             studentName: fields[i][1].toString().replaceFirst(" ", ""),
   //             studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
-  //             pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+  //             pointPossible: fields[i][3].toString().replaceFirst(" ", ""),
   //             questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
   //             grade: fields[i][5].toString().replaceFirst(" ", ""),
   //             className: fields[i][6].toString().replaceFirst(" ", ""),
@@ -1733,7 +1733,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //             studentId: fields[i][0].toString().replaceFirst(" ", ""),
   //             studentName: fields[i][1].toString().replaceFirst(" ", ""),
   //             studentGrade: fields[i][2].toString().replaceFirst(" ", ""),
-  //             pointpossible: fields[i][3].toString().replaceFirst(" ", ""),
+  //             pointPossible: fields[i][3].toString().replaceFirst(" ", ""),
   //             questionImgUrl: fields[i][4].toString().replaceFirst(" ", ""),
   //             grade: fields[i][5].toString().replaceFirst(" ", ""),
   //             className: fields[i][6].toString().replaceFirst(" ", ""),
@@ -1759,7 +1759,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   //             //studentId: fields[i][0].toString().replaceFirst(" ", ""),
   //             studentName: fields[i][0].toString().replaceFirst(" ", ""),
   //             studentGrade: fields[i][1].toString().replaceFirst(" ", ""),
-  //             pointpossible: fields[i][2].toString().replaceFirst(" ", ""),
+  //             pointPossible: fields[i][2].toString().replaceFirst(" ", ""),
   //             questionImgUrl: fields[i][3].toString().replaceFirst(" ", ""),
   //             grade: fields[i][4].toString().replaceFirst(" ", ""),
   //             className: fields[i][5].toString().replaceFirst(" ", ""),

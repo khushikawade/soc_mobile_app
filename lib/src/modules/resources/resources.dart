@@ -41,9 +41,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
     super.initState();
     _bloc.add(ResourcesListEvent());
 
-    FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("resources_page");
     FirebaseAnalyticsService.setCurrentScreen(
-        screenTitle: 'google_login', screenClass: 'GoogleLogin');
+        screenTitle: 'resources_page', screenClass: 'ResourcesPage');
   }
 
   @override

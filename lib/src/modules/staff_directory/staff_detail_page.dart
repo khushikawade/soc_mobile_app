@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -35,6 +36,15 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   bool? isErrorState = false;
   static const double _kboxborderwidth = 0.75;
   bool? isloadingstate = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    FirebaseAnalyticsService.addCustomAnalyticsEvent('about_sd_detail_page');
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'about_sd_detail_page', screenClass: 'AboutSDDetailPage');
+    super.initState();
+  }
 
   Widget _sdImage() {
     return Container(

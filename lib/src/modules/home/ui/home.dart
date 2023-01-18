@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             : Globals.isNewTap == true
                 ? Globals.newsIndex ?? 0
                 : (widget.isFromOcrSection == true
-                    ? Globals.lastindex
+                    ? Globals.lastIndex
                     : Globals.homeIndex ?? 0));
     // initialIndex:
     Globals.isNewTap = false;

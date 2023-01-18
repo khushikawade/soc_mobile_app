@@ -1428,7 +1428,7 @@ class studentRecordList extends State<ResultsSummary> {
                       widget.obj!.isCreatedAsPremium == "true") {
                     createdAsPremium = true;
                   }
-                  String pointPossible = await _getPointPossible(
+                  String pointPossible = await _getpointPossible(
                       tableName: widget.assessmentDetailPage == true
                           ? 'history_student_info'
                           : 'student_info');
@@ -2345,7 +2345,7 @@ class studentRecordList extends State<ResultsSummary> {
     );
   }
 
-  Future<String> _getPointPossible({required String tableName}) async {
+  Future<String> _getpointPossible({required String tableName}) async {
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: tableName);
     return studentInfo.first.pointPossible ?? '2';

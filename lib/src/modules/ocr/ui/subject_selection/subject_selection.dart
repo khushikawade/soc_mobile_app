@@ -238,6 +238,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     //   Utility.showLoadingDialog(context, true);
                   }
                   if (state is AddBlankSlidesOnDriveSuccess) {
+                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "blank_slide_added");
+
                     _googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
                         slidePresentationId:
                             Globals.googleSlidePresentationId));
@@ -1402,6 +1405,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                           }
                                         }
                                         if (state is GoogleSlideCreated) {
+                                          FirebaseAnalyticsService
+                                              .addCustomAnalyticsEvent(
+                                                  "google_slide_presentation_added");
+
                                           Globals.googleSlidePresentationId =
                                               state.slideFiledId;
 
@@ -1417,6 +1424,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                                         if (state
                                             is UpdateAssignmentDetailsOnSlideSuccess) {
+                                          FirebaseAnalyticsService
+                                              .addCustomAnalyticsEvent(
+                                                  "assessment_detail_added_first_slide");
+
                                           Globals.currentAssessmentId = '';
                                           showDialogSetState!(() {
                                             GradedGlobals.loadingMessage =
@@ -1474,14 +1485,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         if (state is AssessmentIdSuccess) {
                                           GradedGlobals.loadingMessage = null;
                                           Navigator.of(context).pop();
+
                                           Utility.updateLogs(
                                               // ,
                                               activityId: '14',
                                               description: 'Save to drive',
                                               operationResult: 'Success');
                                           _googleDriveBloc.close();
-                                          print(
-                                              "Navigate to ResultsSummary Screen");
+
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(

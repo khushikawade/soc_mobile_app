@@ -568,8 +568,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   // }
 
   void deleteRecentSearchItem(String localDatalogName) async {
-    int itemcount = await HiveDbServices().getListLength(localDatalogName);
-    if (itemcount > 5) {
+    int itemCount = await HiveDbServices().getListLength(localDatalogName);
+    if (itemCount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);
     }
   }

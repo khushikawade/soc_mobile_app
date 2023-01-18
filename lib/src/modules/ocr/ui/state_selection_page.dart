@@ -282,6 +282,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                       });
                     }
 
+                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "state_updated_${list[index]}");
                     // _ocrBloc.add(SaveSubjectListDetailsToLocalDb(
                     //     selectedState: list[index]));
                   },

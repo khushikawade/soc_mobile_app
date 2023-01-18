@@ -1,6 +1,6 @@
-import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -8,7 +8,6 @@ import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
-
 import '../../widgets/empty_container_widget.dart';
 
 class StaffDirectoryFolderSubMenu extends StatefulWidget {
@@ -31,6 +30,18 @@ class _StaffDirectoryFolderSubMenuState
   static const double _kLabelSpacing = 16.0;
   static const double _kIconSize = 45.0;
   static const double _kButtonMinSize = 45.0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        'staff_directory_folder_list');
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'staff_directory_folder_list',
+        screenClass: 'StaffDirectoryFolderSubMenu');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

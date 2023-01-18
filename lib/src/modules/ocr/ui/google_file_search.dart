@@ -114,8 +114,8 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   }
 
   deleteItem(String localDatalogName) async {
-    int itemcount = await HiveDbServices().getListLength(localDatalogName);
-    if (itemcount > 5) {
+    int itemCount = await HiveDbServices().getListLength(localDatalogName);
+    if (itemCount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);
     }
   }

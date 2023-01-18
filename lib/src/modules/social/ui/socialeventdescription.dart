@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -40,28 +41,32 @@ class SocialDescription extends StatelessWidget {
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
-  int objectindex = 0;
-  int? itemcount;
-  int pageindex = 0;
+  // int objectindex = 0;
+  int? itemCount;
+  int pageIndex = 0;
   String heading1 = '';
   String heading2 = '';
   String heading3 = '';
-  int initailindex = 0;
-  int currentindex = 0;
-  int firstindex = 0;
-  late int lastindex;
+  // int initailIndex = 0;
+  int currentIndex = 0;
+  // int firstindex = 0;
+  late int lastIndex;
 
   var date;
   var link;
   var link2;
-  int pageviewItem = 0;
-  int indexpostion = 0;
+  // int pageviewItem = 0;
+  // int indexpostion = 0;
 
   void increasIndexValue() {
-    this.currentindex++;
+    this.currentIndex++;
   }
 
   Widget _buildItem(BuildContext context) {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent('social_description');
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'social_description', screenClass: 'SocialDescription');
+
     return RefreshIndicator(
       key: refreshKey,
       child: ListView(padding: const EdgeInsets.all(_kPadding), children: [

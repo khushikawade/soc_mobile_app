@@ -35,6 +35,16 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
   final ValueNotifier<String> selectedAnswerKey = ValueNotifier<String>('');
   int myTimeStamp = DateTime.now().microsecondsSinceEpoch;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("state_selection_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'state_selection_page', screenClass: 'StateSelectionPage');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -109,6 +119,9 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => OpticalCharacterRecognition()));
                 }
+
+                FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                    "assessment_type_selected_${selectedAnswerKey.value}");
               },
               child: Stack(
                 alignment: Alignment.center,
@@ -224,7 +237,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                   child: Container(),
                   listener: (context, state) async {
                     if (state is GoogleDriveLoading) {
-                      Utility.showLoadingDialog(context:context,isOCR: true);
+                      Utility.showLoadingDialog(context: context, isOCR: true);
                     }
                     if (state is GoogleSuccess) {
                       if (state.assessmentSection == true) {

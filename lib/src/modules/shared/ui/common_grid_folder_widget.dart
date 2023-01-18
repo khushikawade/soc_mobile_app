@@ -79,6 +79,10 @@ class CommonGridFolderState extends State<CommonGridFolder>
     });
 
     controller!.forward();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("grid_folder");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'grid_folder', screenClass: 'CommonGridFolder');
   }
 
   @override

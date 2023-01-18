@@ -1540,7 +1540,7 @@
 //         studentAssessmentInfo.studentGrade = widget.isMcqSheet == true
 //             ? (widget.selectedAnswer == indexColor.value.toString() ? '1' : '0')
 //             : indexColor.value.toString(); //pointScored.value;
-//         // studentAssessmentInfo.pointpossible = Globals.pointpossible;
+//         // studentAssessmentInfo.pointPossible = Globals.pointPossible;
 //         studentAssessmentInfo.assessmentImgPath =
 //             widget.imgPath.path.toString();
 //         studentAssessmentInfo.answerKey =
@@ -1626,9 +1626,9 @@
 //                   ? '1'
 //                   : '0')
 //               : indexColor.value.toString(); //ointScored.value;
-//           studentAssessmentInfo.pointpossible =
-//               Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
-//                   ? Globals.pointpossible
+//           studentAssessmentInfo.pointPossible =
+//               Globals.pointPossible != null || Globals.pointPossible!.isNotEmpty
+//                   ? Globals.pointPossible
 //                   : '2';
 //           studentAssessmentInfo.assessmentImgPath =
 //               widget.imgPath.path.toString();
@@ -1657,9 +1657,9 @@
 //                   ? '1'
 //                   : '0')
 //               : indexColor.value.toString(); //pointScored.value;
-//           studentAssessmentInfo.pointpossible =
-//               Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
-//                   ? Globals.pointpossible
+//           studentAssessmentInfo.pointPossible =
+//               Globals.pointPossible != null || Globals.pointPossible!.isNotEmpty
+//                   ? Globals.pointPossible
 //                   : '2';
 //           studentAssessmentInfo.assessmentImgPath =
 //               widget.imgPath.path.toString();
@@ -1693,10 +1693,10 @@
 //                     ? '1'
 //                     : '0')
 //                 : indexColor.value.toString(); //pointScored.value;
-//             studentAssessmentInfo.pointpossible =
-//                 Globals.pointpossible != null ||
-//                         Globals.pointpossible!.isNotEmpty
-//                     ? Globals.pointpossible
+//             studentAssessmentInfo.pointPossible =
+//                 Globals.pointPossible != null ||
+//                         Globals.pointPossible!.isNotEmpty
+//                     ? Globals.pointPossible
 //                     : '2';
 //             studentAssessmentInfo.assessmentImgPath =
 //                 widget.imgPath.path.toString();

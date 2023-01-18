@@ -44,8 +44,8 @@ class _SliderWidgetState extends State<SliderWidget>
   var _controller = new PageController();
   static const _kDuration = const Duration(milliseconds: 400);
   int pageinitialIndex = 0;
-  int pageViewCurrentIndex = 0;
-  int pageviewLastIndex = 10;
+  int pageViewcurrentIndex = 0;
+  int pageviewlastIndex = 10;
   static const _kCurve = Curves.ease;
   var object;
   var link;
@@ -163,7 +163,7 @@ class _SliderWidgetState extends State<SliderWidget>
               //   pageinitialIndex <= sliderIndex
               //       ? ++widget.currentIndex
               //       : --widget.currentIndex;
-              //   pageViewCurrentIndex = sliderIndex;
+              //   pageViewcurrentIndex = sliderIndex;
               //   first = false;
               // } else {
               //   if (sliderIndex > widget.currentIndex &&

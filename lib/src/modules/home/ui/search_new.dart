@@ -100,8 +100,8 @@ class _SearchPageState extends State<SearchPage> {
   // }
 
   deleteItem(String localDatalogName) async {
-    int itemcount = await HiveDbServices().getListLength(localDatalogName);
-    if (itemcount > 5) {
+    int itemCount = await HiveDbServices().getListLength(localDatalogName);
+    if (itemCount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);
     }
   }
@@ -111,9 +111,9 @@ class _SearchPageState extends State<SearchPage> {
   // }
 
   // deleteItemReference() async {
-  //   int itemcount =
+  //   int itemCount =
   //       await HiveDbServices().getListLength(Strings.hiveReferenceLogName);
-  //   if (itemcount > 5) {
+  //   if (itemCount > 5) {
   //     await HiveDbServices().deleteData(Strings.hiveReferenceLogName, 0);
   //   }
   // }

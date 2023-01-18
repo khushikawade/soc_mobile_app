@@ -546,7 +546,7 @@ class _OpticalCharacterRecognitionPageState
 
   Future<void> _beforenavigateOnCameraSection() async {
     //Rubric selection comparision
-    Globals.pointpossible = (Globals.scoringRubric == 'None'
+    Globals.pointPossible = (Globals.scoringRubric == 'None'
         //Point possible index comparision
         ? pointPossibleSelectedColor.value == 1
             ? "2"
@@ -711,7 +711,7 @@ class _OpticalCharacterRecognitionPageState
           onlyForPicture: false,
           scaffoldKey: _scaffoldKey,
           isScanMore: false,
-          pointPossible: Globals.pointpossible,
+          pointPossible: Globals.pointPossible,
           isFlashOn: ValueNotifier<bool>(false),
         ),
         // settings: RouteSettings(name: "/home")

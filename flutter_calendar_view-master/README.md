@@ -18,10 +18,10 @@ For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github
 
    Get the latest version in the 'Installing' tab on [pub.dev](https://pub.dev/packages/calendar_view/install)
 
-    ```yaml
-    dependencies:
-        calendar_view: <latest-version>
-    ```
+   ```yaml
+   dependencies:
+     calendar_view: <latest-version>
+   ```
 
 2. Run pub get.
 
@@ -31,48 +31,48 @@ For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github
 
 3. Import package.
 
-    ```dart
-    import 'package:calendar_view/calendar_view.dart';
-    ```
+   ```dart
+   import 'package:calendar_view/calendar_view.dart';
+   ```
 
 ## Implementation
 
 1. Wrap `MaterialApp` with `CalendarControllerProvider` and assign `EventController` to it.
 
-    ```dart
-    CalendarControllerProvider(
-        controller: EventController(),
-        child: MaterialApp(
-            // Your initialization for material app.
-        ),
-    )
-    ```
+   ```dart
+   CalendarControllerProvider(
+       controller: EventController(),
+       child: MaterialApp(
+           // Your initialization for material app.
+       ),
+   )
+   ```
 
 2. Add calendar views.
 
    For Month View
 
-    ```dart
-    Scaffold(
-        body: MonthView(),
-    );
-    ```
+   ```dart
+   Scaffold(
+       body: MonthView(),
+   );
+   ```
 
    For Day View
 
-    ```dart
-    Scaffold(
-        body: DayView(),
-    );
-    ```
+   ```dart
+   Scaffold(
+       body: DayView(),
+   );
+   ```
 
    For Week view
 
-    ```dart
-    Scaffold(
-        body: WeekView(),
-    );
-    ```
+   ```dart
+   Scaffold(
+       body: WeekView(),
+   );
+   ```
 
    For more info on properties visit [documentation](https://pub.dev/documentation/calendar_view/latest/calendar_view/calendar_view-library.html).
 
@@ -80,14 +80,14 @@ For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github
 
    To Add event:
 
-    ```dart
-    final event = CalendarEventData(
-        date: DateTime(2021, 8, 10),
-        event: "Event 1",
-    );
+   ```dart
+   final event = CalendarEventData(
+       date: DateTime(2021, 8, 10),
+       event: "Event 1",
+   );
 
-    CalendarControllerProvider.of(context).controller.add(event);
-    ```
+   CalendarControllerProvider.of(context).controller.add(event);
+   ```
 
    To Add events in range of dates:
 
@@ -103,9 +103,9 @@ For web demo visit [Calendar View Example](https://simformsolutionspvtltd.github
 
    To Remove event:
 
-    ```dart
-    CalendarControllerProvider.of(context).controller.remove(event);
-    ```
+   ```dart
+   CalendarControllerProvider.of(context).controller.remove(event);
+   ```
 
    As soon as you add or remove events from the controller, it will automatically update the calendar view assigned to that controller. See, [Use of EventController](#use-of-eventcontroller) for more info
 
@@ -192,12 +192,12 @@ To see the list of all parameters and detailed description of parameters visit [
 
 Methods provided by `EventController`
 
-| Name           | Parameters | Description |
-|----------------|-----------|--------------|
-| add            |CalendarEventData\<T\> event | Adds one event in controller and rebuilds view. |
+| Name           | Parameters                            | Description                                          |
+| -------------- | ------------------------------------- | ---------------------------------------------------- |
+| add            | CalendarEventData\<T\> event          | Adds one event in controller and rebuilds view.      |
 | addAll         | List\<CalendarEventData\<T\>\> events | Adds list of events in controller and rebuilds view. |
-| remove         | CalendarEventData\<T\> event | Removes an event from controller and rebuilds view. |
-| getEventsOnDay | DateTime date | Returns list of events on `date` |
+| remove         | CalendarEventData\<T\> event          | Removes an event from controller and rebuilds view.  |
+| getEventsOnDay | DateTime date                         | Returns list of events on `date`                     |
 
 ### Use of `GlobalKey`
 
@@ -207,35 +207,35 @@ By assigning global keys to calendar views you can access methods and fields def
 
 Methods defined by `MonthViewState` class:
 
-| Name | Parameters | Description |
-|------|------------|-------------|
-| nextPage | none | Jumps to next page. |
-| previousPage | none | Jumps to the previous page. |
-| jumpToPage | int page | Jumps to page index defined by `page`. |
-| animateToPage | int page | Animate to page index defined by `page`. |
-| jumpToMonth | DateTime month | Jumps to the page that has a calendar for month defined by `month` |
+| Name           | Parameters     | Description                                                          |
+| -------------- | -------------- | -------------------------------------------------------------------- |
+| nextPage       | none           | Jumps to next page.                                                  |
+| previousPage   | none           | Jumps to the previous page.                                          |
+| jumpToPage     | int page       | Jumps to page index defined by `page`.                               |
+| animateToPage  | int page       | Animate to page index defined by `page`.                             |
+| jumpToMonth    | DateTime month | Jumps to the page that has a calendar for month defined by `month`   |
 | animateToMonth | DateTime month | Animate to the page that has a calendar for month defined by `month` |
 
 Methods defined by `DayViewState` class.
 
-| Name | Parameters | Description |
-|------|------------|-------------|
-| nextPage | none | Jumps to next page. |
-| previousPage | none | Jumps to the previous page. |
-| jumpToPage | int page | Jumps to page index defined by `page`. |
-| animateToPage | int page | Animate to page index defined by `page`. |
-| jumpToDate | DateTime date | Jumps to the page that has a calendar for month defined by `date` |
+| Name          | Parameters    | Description                                                         |
+| ------------- | ------------- | ------------------------------------------------------------------- |
+| nextPage      | none          | Jumps to next page.                                                 |
+| previousPage  | none          | Jumps to the previous page.                                         |
+| jumpToPage    | int page      | Jumps to page index defined by `page`.                              |
+| animateToPage | int page      | Animate to page index defined by `page`.                            |
+| jumpToDate    | DateTime date | Jumps to the page that has a calendar for month defined by `date`   |
 | animateToDate | DateTime date | Animate to the page that has a calendar for month defined by `date` |
 
 Methods defined by `WeekViewState` class.
 
-| Name | Parameters | Description |
-|------|------------|-------------|
-| nextPage | none | Jumps to next page. |
-| previousPage | none | Jumps to the previous page. |
-| jumpToPage | int page | Jumps to page index defined by `page`. |
-| animateToPage | int page | Animate to page index defined by `page`. |
-| jumpToWeek | DateTime week | Jumps to the page that has a calendar for month defined by `week` |
+| Name          | Parameters    | Description                                                         |
+| ------------- | ------------- | ------------------------------------------------------------------- |
+| nextPage      | none          | Jumps to next page.                                                 |
+| previousPage  | none          | Jumps to the previous page.                                         |
+| jumpToPage    | int page      | Jumps to page index defined by `page`.                              |
+| animateToPage | int page      | Animate to page index defined by `page`.                            |
+| jumpToWeek    | DateTime week | Jumps to the page that has a calendar for month defined by `week`   |
 | animateToWeek | DateTime week | Animate to the page that has a calendar for month defined by `week` |
 
 ### Synchronize events between calendar views
@@ -264,9 +264,7 @@ WeekView(
 
 Above code will create `WeekView` with only five days, from monday to friday.
 
-
 ## Main Contributors
-
 
 <table>
   <tr>

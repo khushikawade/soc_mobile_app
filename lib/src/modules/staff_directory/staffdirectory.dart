@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory_submenu.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -75,6 +76,10 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               : null));
     }
     Globals.callsnackbar = true;
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent('staff_directory');
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'staff_directory', screenClass: 'StaffDirectory');
   }
 
   @override

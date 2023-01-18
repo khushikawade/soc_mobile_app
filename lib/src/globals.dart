@@ -75,7 +75,7 @@ class Globals {
   //OCR Feature Globals
   static List pointsList = [2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
-  static int lastindex = 0;
+  static int lastIndex = 0;
   static String teacherEmailId = '';
   static String teacherId = '';
   static String sessionId = '';
@@ -133,7 +133,7 @@ class Globals {
   static String? googleDriveFolderPath;
   static String? googleExcelSheetId;
   static String? shareableLink;
-  static String? pointpossible = '2';
+  static String? pointPossible = '2';
   static String? assessmentName;
   static int? scanMoreStudentInfoLength;
   static String currentAssessmentId = '';
