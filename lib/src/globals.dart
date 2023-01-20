@@ -119,7 +119,7 @@ class Globals {
   static List ocrResultIconsName = Overrides.STANDALONE_GRADED_APP == true
       ? ["History", "Drive", "Sheet", "Share"]
       : ["Share", "Drive", "History", "Dashboard", "Slide"];
-      
+
   //  ? ["Share", "Drive", "History", "Sheet"]
   // : ["Share", "Drive", "History", "Dashboard"];
   // static List finishedList = [
