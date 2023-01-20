@@ -62,6 +62,7 @@ class _OpticalCharacterRecognitionPageState
 
   @override
   void initState() {
+    //Globals.isPremiumUser = true;
     // Globals.questionImgUrl = '';
     getAllRubricList();
     Globals.questionImgFilePath = null;
