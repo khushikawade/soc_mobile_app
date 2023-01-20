@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
@@ -167,7 +168,7 @@ class studentRecordList extends State<ResultsSummary> {
     } else {
       if (widget.isScanMore != true) {
         print("Shared Link called");
-        _driveBloc.add(GetShareLink(fileId: widget.fileId, slideLink: false));
+        _driveBloc.add(GetShareLink(fileId: widget.fileId, slideLink: true));
       } else {
         //TODO : REMOVE GLOBAL ACCESS : IMPROVE
         widget.shareLink = Globals.shareableLink;
@@ -962,7 +963,9 @@ class studentRecordList extends State<ResultsSummary> {
                                   ? BlocConsumer(
                                       bloc: _driveBloc,
                                       builder: (context, state) {
+                                        print(state);
                                         if (state is ShareLinkReceived) {
+                                          print("is share link is recived");
                                           widget.shareLink = state.shareLink;
 
                                           return Icon(
@@ -1527,9 +1530,6 @@ class studentRecordList extends State<ResultsSummary> {
                   iconsList.indexOf(element), iconName,
                   webContentLink: webContentLink))
               .toList(),
-          // [
-          //  // Container()
-          // ]
         ));
   }
 

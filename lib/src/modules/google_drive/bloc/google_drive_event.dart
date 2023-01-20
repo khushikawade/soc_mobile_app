@@ -157,8 +157,10 @@ class GetAssessmentSearchDetails extends GoogleDriveEvent {
 
 // ignore: must_be_immutable
 class AddBlankSlidesOnDrive extends GoogleDriveEvent {
+  bool? isScanMore;
   String? slidePresentationId;
-  AddBlankSlidesOnDrive({required this.slidePresentationId});
+  AddBlankSlidesOnDrive(
+      {required this.slidePresentationId, required this.isScanMore});
 
   @override
   List<Object> get props => [];

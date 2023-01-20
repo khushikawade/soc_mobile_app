@@ -105,7 +105,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   initState() {
     // To Fetch Subject Name Accoding to state seletion
 
-    SubjectSelectionAPIAndMethods.googleSlidesPreparation();
+    // SubjectSelectionAPIAndMethods.googleSlidesPreparation();
+    googleSlidesPreparation();
     if (widget.isSearchPage == true) {
       isSkipButton.value = true;
       _ocrBloc.add(FetchSubjectDetails(
@@ -234,9 +235,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 bloc: _googleDriveBloc,
                 child: Container(),
                 listener: (context, state) async {
-                  if (state is GoogleDriveLoading) {
-                    //   Utility.showLoadingDialog(context, true);
-                  }
+                  print("googgggggggggle state 2 ----->$state");
                   if (state is AddBlankSlidesOnDriveSuccess) {
                     FirebaseAnalyticsService.addCustomAnalyticsEvent(
                         "blank_slide_added");
@@ -305,13 +304,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                   if (state is ShareLinkReceived) {
                     Globals.googleSlidePresentationLink = state.shareLink;
-
                     _googleDriveBloc.add(AddBlankSlidesOnDrive(
+                        isScanMore: false,
                         slidePresentationId:
                             Globals.googleSlidePresentationId));
                   }
-
-                  if (state is GoogleAssessmentImagesOnSlidesUpdated) {}
                 }),
           ],
         ),
@@ -1166,6 +1163,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     bloc: _googleDriveBloc,
                                     child: Container(),
                                     listener: (context, state) async {
+                                      print(
+                                          "googgggggggggle state 2 ----->$state");
                                       if (state is GoogleDriveLoading) {
                                         // Utility.showLoadingDialog(
                                         //     context, true);
@@ -1741,5 +1740,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           //Globals.studentInfo!
           ),
     );
+  }
+
+  googleSlidesPreparation() {
+    if (Globals.googleSlidePresentationId!.isNotEmpty) {
+      _googleDriveBloc.add(GetShareLink(
+          fileId: Globals.googleSlidePresentationId, slideLink: true));
+    } else {
+      // _googleDriveBloc
+      //     .add(CreateSlideToDrive(fileTitle: Globals.assessmentName));
+    }
   }
 }

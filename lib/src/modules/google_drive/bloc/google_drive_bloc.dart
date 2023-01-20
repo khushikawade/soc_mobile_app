@@ -41,6 +41,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Stream<GoogleDriveState> mapEventToState(
     GoogleDriveEvent event,
   ) async* {
+    print("googgggggggggle event ----->$event");
+
     // --------------------Event To Get Google Drive Folder ID------------------
     if (event is GetDriveFolderIdEvent) {
       try {
@@ -201,7 +203,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               isFromHistoryAssessment: false, //event.isFromHistoryAssessment,
-              studentRecordList: assessmentData);
+              studentRecordList: assessmentData,
+              isScanMore: false);
 
           //To update scanned images in the Google Slides
           await updateAssessmentImageToSlidesOnDrive(
@@ -239,7 +242,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 _userProfileLocalData[0].authorizationToken,
                 _userProfileLocalData[0].refreshToken,
                 studentRecordList: list,
-                isFromHistoryAssessment: event.isFromHistoryAssessment);
+                isFromHistoryAssessment: event.isFromHistoryAssessment,
+                isScanMore: true);
 
             //To update scanned images in the Google Slides
             await updateAssessmentImageToSlidesOnDrive(
@@ -260,22 +264,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     // --------------------Event To Update Excel Sheet On Drive------------------
     if (event is UpdateDocOnDrive) {
-      try {
-        if (event.isLoading) {
-          yield GoogleDriveLoading();
-        }
-        List<UserInformation> _userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
-        LocalDatabase<CustomRubricModal> customRubicLocalDb =
-            LocalDatabase('custom_rubic');
-        List<CustomRubricModal>? customRubicLocalData =
-            await customRubicLocalDb.getData();
+      if (event.isLoading) {
+        yield GoogleDriveLoading();
+      }
+      List<UserInformation> _userProfileLocalData =
+          await UserGoogleProfile.getUserProfile();
+      LocalDatabase<CustomRubricModal> customRubicLocalDb =
+          LocalDatabase('custom_rubic');
+      List<CustomRubricModal>? customRubicLocalData =
+          await customRubicLocalDb.getData();
 
-        List<StudentAssessmentInfo>? assessmentData = event.studentData;
-        checkForGoogleExcelId(); //To check for excel sheet id
-        if (assessmentData!.length > 0 && assessmentData[0].studentId == 'Id') {
-          assessmentData.removeAt(0);
-        }
+      List<StudentAssessmentInfo>? assessmentData = event.studentData;
+      checkForGoogleExcelId(); //To check for excel sheet id
+      if (assessmentData!.length > 0 && assessmentData[0].studentId == 'Id') {
+        assessmentData.removeAt(0);
+      }
+
+      try {
         for (int i = 0; i < assessmentData.length; i++) {
           // Checking for 'Assessment Sheets Image' to get URL for specific index if not exist
           if (assessmentData[i].assessmentImage == null ||
@@ -361,21 +366,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 element.customRubricImage = customRubicModal!.imgUrl;
               });
             } else {
-              File assessmentImageFile = File(customRubicModal.filePath!);
-              String imgExtension = assessmentImageFile.path
-                  .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
+              //If custom rubric image url not exist and path exist, uploading again the image to get the image URL
+              if (customRubicModal.filePath != null &&
+                  customRubicModal.filePath!.isNotEmpty) {
+                File assessmentImageFile = File(customRubicModal.filePath!);
+                String imgExtension = assessmentImageFile.path
+                    .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
 
-              String imgUrl = await _uploadImgB64AndGetUrl(
-                  imgBase64: customRubicModal.imgBase64,
-                  imgExtension: imgExtension,
-                  section: 'rubric-score');
-              if (imgUrl != '') {
-                customRubicModal.imgUrl = imgUrl;
-                await customRubicLocalDb.putAt(
-                    localCustomRubricIndex!, customRubicModal);
-                assessmentData.forEach((element) {
-                  element.customRubricImage = imgUrl;
-                });
+                String imgUrl = await _uploadImgB64AndGetUrl(
+                    imgBase64: customRubicModal.imgBase64,
+                    imgExtension: imgExtension,
+                    section: 'rubric-score');
+                if (imgUrl != '') {
+                  customRubicModal.imgUrl = imgUrl;
+                  await customRubicLocalDb.putAt(
+                      localCustomRubricIndex!, customRubicModal);
+                  assessmentData.forEach((element) {
+                    element.customRubricImage = imgUrl;
+                  });
+                }
               }
             }
           }
@@ -677,7 +686,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             imgExtension: Utility.getBase64FileExtension(
                 event.customRubricModal.imgBase64!),
             section: 'rubric-score');
-       
+
         if (!event.getImageUrl! && imgUrl.isNotEmpty) {
           RubricScoreList.scoringList.last.imgUrl = imgUrl;
         } else if (event.getImageUrl! && imgUrl.isNotEmpty) {
@@ -762,9 +771,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (link != '' && link != 'ReAuthentication is required') {
           if (!event.slideLink) {
             Globals.shareableLink = link;
+          } else {
+            yield ShareLinkReceived(shareLink: link);
           }
-
-          yield ShareLinkReceived(shareLink: link);
         } else if (link == 'ReAuthentication is required') {
           yield ErrorState(errorMsg: 'ReAuthentication is required');
         }
@@ -801,11 +810,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             event.slidePresentationId!,
             _userProfileLocalData[0].authorizationToken,
             _userProfileLocalData[0].refreshToken,
-            isFromHistoryAssessment: false);
+            isFromHistoryAssessment: false,
+            isScanMore: event.isScanMore);
 
         if (result == "Done") {
           yield AddBlankSlidesOnDriveSuccess();
-        } else {}
+        } else {
+          yield ErrorState(errorMsg: result.toString());
+        }
       } catch (e) {
         yield ErrorState(errorMsg: e.toString());
       }
@@ -2018,13 +2030,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future createBlankSlidesInGooglePresentation(
       String? presentationId, String? accessToken, String? refreshToken,
       {List<StudentAssessmentInfo>? studentRecordList,
-      required bool isFromHistoryAssessment}) async {
+      required bool isFromHistoryAssessment,
+      required bool? isScanMore}) async {
     try {
       Map body = {
         //Adding no. of blank slides as per the length of student records
         "requests": await prepareEachSlideObjects(
             list: studentRecordList,
-            isFromHistoryAssessment: isFromHistoryAssessment)
+            isFromHistoryAssessment: isFromHistoryAssessment,
+            isScanMore: isScanMore)
       };
 
       Map<String, String> headers = {
@@ -2038,7 +2052,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isGoogleApi: true);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.data["statusCode"] == 200) {
         return 'Done';
       } else if (response.statusCode == 401 && _totalRetry < 3) {
         var result = await _toRefreshAuthenticationToken(refreshToken!);
@@ -2050,7 +2064,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               studentRecordList: studentRecordList,
-              isFromHistoryAssessment: isFromHistoryAssessment);
+              isFromHistoryAssessment: isFromHistoryAssessment,
+              isScanMore: isScanMore);
           return result;
         } else {
           return 'ReAuthentication is required';
@@ -2129,7 +2144,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   Future<List<Map>> prepareEachSlideObjects(
       {List<StudentAssessmentInfo>? list,
-      required bool isFromHistoryAssessment}) async {
+      required bool isFromHistoryAssessment,
+      required bool? isScanMore}) async {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb = LocalDatabase(
         isFromHistoryAssessment == true
             ? 'history_student_info'
@@ -2137,8 +2153,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     List<StudentAssessmentInfo> assessmentData =
         list == null ? await _studentInfoDb.getData() : list;
 
-    //Preparing very slide to add assignment details //Blank slide with the type mentioned // request body will be blank in case of history as details already added
-    List<Map> slideObjects = isFromHistoryAssessment
+    //Preparing very first slide to add assignment details //Blank slide with the type mentioned // request body will be blank in case of history as details already added
+    List<Map> slideObjects = isFromHistoryAssessment || isScanMore == true
         ? []
         : [
             {
@@ -2154,7 +2170,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               }
             }
           ];
-
+    print(slideObjects);
     assessmentData.asMap().forEach((index, element) async {
       if (element.slideObjectId == null || element.slideObjectId!.isEmpty) {
         String uniqueId = DateTime.now().microsecondsSinceEpoch.toString();
