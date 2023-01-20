@@ -324,10 +324,10 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         final data2 = _allSocial as List;
         return data2.map((i) {
           return Item(
-              title: i["Title"] ?? '',
-              description: i["Description"] ?? '',
+              title: Utility.utf8convert(i["Title"] ?? ''),
+              description: Utility.utf8convert(i["Description"] ?? ''),
               link: i["Link"] ?? '',
-              creator: i['Creator'] ?? '',
+              creator: Utility.utf8convert(i['Creator'] ?? ''),
               pubDate: Utility.convertTimestampToDate(i['Date'] ?? ''),
               mediaContent: i['Media'] ?? '',
               id: i['Id']);

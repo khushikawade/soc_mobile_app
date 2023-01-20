@@ -152,11 +152,11 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           title: obj.headings!.length > 0 &&
                   obj.headings != "" &&
                   obj.headings != null
-              ? '${obj.headings["en"].toString()}'
-              : obj.contents["en"] ?? '-',
+              ? Utility.utf8convert(obj.headings["en"] ?? '')
+              : Utility.utf8convert(obj.contents["en"] ?? '-'),
           description: obj.url == null
-              ? '${obj.contents["en"].toString()}'
-              : '${obj.contents["en"].toString()}\n${obj.url}',
+              ? Utility.utf8convert(obj.contents["en"] ?? '')
+              : "${Utility.utf8convert(obj.contents["en"] ?? '')}\n${obj.url}",
           titleIcon: CalendraIconWidget(
             dateTime: obj.completedAt,
             color: Color(0xff89A7D7),
