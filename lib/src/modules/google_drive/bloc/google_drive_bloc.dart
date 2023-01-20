@@ -333,8 +333,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           //     }
           //   }
           // }
-
-          // Checking for 'Custom rubric score Image' to get URL for specific index if not exist
           if ((assessmentData[i].customRubricImage == null ||
               assessmentData[i].customRubricImage!.isEmpty)) {
             int? localCustomRubricIndex = 0;
@@ -350,7 +348,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                           ' ' +
                           '${customRubicLocalData[customRubricIndex].score}' ==
                       Globals.scoringRubric) {
-                //Checking index for the custom rubric
                 localCustomRubricIndex = customRubricIndex;
                 customRubicModal = customRubicLocalData[customRubricIndex];
                 break;
@@ -364,7 +361,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 element.customRubricImage = customRubicModal!.imgUrl;
               });
             } else {
-              //If custom rubric image url not exist and path exist, uploading again the image to get the image URL
               File assessmentImageFile = File(customRubicModal.filePath!);
               String imgExtension = assessmentImageFile.path
                   .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
@@ -673,20 +669,26 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
     }
 
-    if (event is ImageToAwsBucked) {
+    if (event is ImageToAwsBucket) {
       try {
+        print(event.getImageUrl);
         String imgUrl = await _uploadImgB64AndGetUrl(
-            imgBase64: event.imgBase64,
-            imgExtension: event.imgExtension,
+            imgBase64: event.customRubricModal.imgBase64,
+            imgExtension: Utility.getBase64FileExtension(
+                event.customRubricModal.imgBase64!),
             section: 'rubric-score');
-
-        imgUrl != ""
-            ? RubricScoreList.scoringList.last.imgUrl = imgUrl
-            : _uploadImgB64AndGetUrl(
-                imgBase64: event.imgBase64,
-                imgExtension: event.imgExtension,
-                section: 'rubric-score');
+       
+        if (!event.getImageUrl! && imgUrl.isNotEmpty) {
+          RubricScoreList.scoringList.last.imgUrl = imgUrl;
+        } else if (event.getImageUrl! && imgUrl.isNotEmpty) {
+          yield ImageToAwsBucketSuccess(
+              bucketImageUrl: imgUrl,
+              customRubricModal: event.customRubricModal);
+        } else {
+          yield ErrorState(errorMsg: "image URL Not received ");
+        }
       } catch (e) {
+        yield ErrorState(errorMsg: e.toString());
         throw e;
       }
     }
@@ -1870,7 +1872,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       {required String? imgBase64,
       required String? imgExtension,
       required String? section}) async {
-    //  //print(imgBase64);
+    print(imgExtension);
     Map body = {
       "bucket": "graded/$section",
       "fileExtension": imgExtension,
@@ -1889,12 +1891,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (response.statusCode != 401 &&
         response.statusCode == 200 &&
         response.data['statusCode'] != 500) {
+      print("image response recived");
       return response.data['body']['Location'];
     } else if ((response.statusCode == 401 ||
             response.data['statusCode'] == 500) &&
         _totalRetry < 3) {
       _totalRetry++;
-      await _uploadImgB64AndGetUrl(
+      return await _uploadImgB64AndGetUrl(
           imgBase64: imgBase64, imgExtension: imgExtension, section: section);
     }
     return "";

@@ -1033,4 +1033,21 @@ class Utility {
       return '';
     }
   }
+
+  static String getBase64FileExtension(String base64String) {
+    switch (base64String.characters.first) {
+      case '/':
+        return 'jpeg';
+      case 'i':
+        return 'png';
+      case 'R':
+        return 'gif';
+      case 'U':
+        return 'webp';
+      case 'J':
+        return 'pdf';
+      default:
+        return 'unknown';
+    }
+  }
 }

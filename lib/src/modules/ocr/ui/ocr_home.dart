@@ -188,12 +188,39 @@ class _OpticalCharacterRecognitionPageState
               ],
             ),
           ),
+
           // ],
           // ),
           floatingActionButton: scanButton(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         ),
+        BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: _googleDriveBloc,
+            child: Container(),
+            listener: (BuildContext contxt, GoogleDriveState state) {
+              if (state is ImageToAwsBucketSuccess) {
+                Navigator.pop(context);
+                int index = 0;
+                for (int i = 0; i < RubricScoreList.scoringList.length; i++) {
+                  if (RubricScoreList.scoringList[i].name ==
+                          state.customRubricModal.name &&
+                      RubricScoreList.scoringList[i].score ==
+                          state.customRubricModal.score) {
+                    RubricScoreList.scoringList[i].imgUrl =
+                        state.bucketImageUrl;
+                    index = i;
+                    break;
+                  }
+
+                  showCustomRubricImage(RubricScoreList.scoringList[index]);
+                }
+              }
+              if (state is ErrorState) {
+                Navigator.pop(context);
+                Utility.currentScreenSnackBar(state.errorMsg.toString(), null);
+              }
+            }),
       ],
     );
   }
@@ -384,7 +411,6 @@ class _OpticalCharacterRecognitionPageState
                                 RubricScoreList.scoringList[index]);
                           },
                           onTap: () {
-                            print(Globals.scoringRubric);
                             rubricScoreSelectedColor.value = index;
 
                             if (RubricScoreList.scoringList[index].name ==
@@ -508,15 +534,24 @@ class _OpticalCharacterRecognitionPageState
     }
   }
 
-  void showCustomRubricImage(CustomRubricModal customScoreObj) {
-    customScoreObj.imgUrl != null
-        ? showDialog(
-            context: context,
-            builder: (_) => ImagePopup(
-                // Implemented Dark mode image
-                imageURL: customScoreObj.imgUrl!))
-        : Utility.showSnackBar(_scaffoldKey,
-            'Image not found for the selected scoring rubric', context, null);
+  Future<void> showCustomRubricImage(
+    CustomRubricModal customScoreObj,
+  ) async {
+    if (customScoreObj.imgUrl != null) {
+      showDialog(
+          context: context,
+          builder: (_) => ImagePopup(
+              // Implemented Dark mode image
+              imageURL: customScoreObj.imgUrl!));
+    } else if (customScoreObj.imgBase64 != null &&
+        customScoreObj.imgBase64!.isNotEmpty) {
+      Utility.showLoadingDialog(context:    context,isOCR:  true);
+      _googleDriveBloc.add(ImageToAwsBucket(
+          customRubricModal: customScoreObj, getImageUrl: true));
+    } else {
+      Utility.currentScreenSnackBar(
+          'Image not found for the selected scoring rubric', null);
+    }
   }
 
   Future updateLocalDb() async {

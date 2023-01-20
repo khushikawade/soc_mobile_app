@@ -277,8 +277,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
 
                           //print("calling submit");
                           if (imageFile != null) {
-                            String imgExtension = imageFile!.path.substring(
-                                imageFile!.path.lastIndexOf(".") + 1);
+                            // String imgExtension = imageFile!.path.substring(
+                            //     imageFile!.path.lastIndexOf(".") + 1);
                             //print('Image Extension : $imgExtension');
                             List<int> imageBytes = imageFile!.readAsBytesSync();
                             String imageB64 = base64Encode(imageBytes);
@@ -292,10 +292,10 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                             // Globals.scoringRubric =
                             //     '${studentNameController.text} ${textFieldController2.text}';
                             //print("calling get img url");
-                            _googleBloc.add(ImageToAwsBucked(
-                                imgBase64:
-                                    RubricScoreList.scoringList.last.imgBase64,
-                                imgExtension: imgExtension));
+                            _googleBloc.add(ImageToAwsBucket(
+                                customRubricModal:
+                                    RubricScoreList.scoringList.last,
+                                getImageUrl: false));
                           } else {
                             //print("save score and name on local db");
                             Utility.updateLogs(

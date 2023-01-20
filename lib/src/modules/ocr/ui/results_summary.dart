@@ -2388,4 +2388,41 @@ class studentRecordList extends State<ResultsSummary> {
       ],
     );
   }
+
+  Widget _slidableDecorationWidget(
+      {required String label, required IconData icon}) {
+    final children = <Widget>[];
+
+    children.add(
+      Icon(icon),
+    );
+
+    children.add(
+      SizedBox(height: 4),
+    );
+
+    children.add(
+      TranslationWidget(
+          message: label,
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) {
+            return Text(
+              translatedMessage,
+              overflow: TextOverflow.ellipsis,
+            );
+          }),
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...children.map(
+          (child) => Flexible(
+            child: child,
+          ),
+        )
+      ],
+    );
+  }
 }
