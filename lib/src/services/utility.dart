@@ -355,6 +355,7 @@ class Utility {
     }
   }
 
+  // To parse emojis and unicodes from PostgreSQL response.
   static String utf8convert(String? text) {
     try {
       List<int> bytes = text.toString().codeUnits;
