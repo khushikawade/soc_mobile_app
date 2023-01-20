@@ -3158,9 +3158,8 @@ class _SuccessScreenState extends State<SuccessScreen>
                 }),
 
             suggestionWidget(isNameList: false),
-            SpacerWidget(_KVerticalSpace / 2),
+            // SpacerWidget(_KVerticalSpace / 2),
             Center(child: imagePreviewWidget()),
-
             SpacerWidget(_KVerticalSpace / 3),
             Center(
               child: Utility.textWidget(
@@ -3190,12 +3189,12 @@ class _SuccessScreenState extends State<SuccessScreen>
                   children: [
                     Utility.textWidget(
                         text: widget.isMcqSheet == true
-                            ? 'Successful Scan! '
+                            ? 'Successful Scan '
                             : 'All Good!',
                         context: context,
                         textTheme: Theme.of(context)
                             .textTheme
-                            .headline6!
+                            .headline5!
                             .copyWith(fontWeight: FontWeight.bold)),
                     Icon(
                       IconData(0xe878,
@@ -3337,13 +3336,13 @@ class _SuccessScreenState extends State<SuccessScreen>
                                 widget.isMcqSheet == true
                                     ? MediaQuery.of(context).size.height *
                                         //  0.085, //:MediaQuery.of(context).size.height*0.2,
-                                        0.075
+                                        0.073
                                     : MediaQuery.of(context).size.height *
                                         0.085,
                             width:
                                 //Globals.pointsEarnedList.length>3?
                                 widget.isMcqSheet == true
-                                    ? MediaQuery.of(context).size.width * 0.14
+                                    ? MediaQuery.of(context).size.width * 0.133
                                     : MediaQuery.of(context).size.width * 0.17,
                             //:MediaQuery.of(context).size.width*0.2,
                             padding: EdgeInsets.symmetric(
@@ -3489,7 +3488,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                             .copyWith(fontWeight: FontWeight.bold)
                         : Theme.of(context)
                             .textTheme
-                            .headline6!
+                            .headline5!
                             .copyWith(fontWeight: FontWeight.bold),
                     controller: controller,
                     cursorColor: Theme.of(context).colorScheme.primaryVariant,
