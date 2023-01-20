@@ -444,6 +444,7 @@ class _CameraScreenState extends State<CameraScreen>
                                     .isFromHistoryAssessmentScanMore &&
                                 widget.isScanMore == true) {
                               _driveBloc.add(AddBlankSlidesOnDrive(
+                                  isScanMore: widget.isScanMore, //true,
                                   slidePresentationId:
                                       Globals.googleSlidePresentationId));
                             }

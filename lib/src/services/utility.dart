@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
@@ -1031,6 +1032,23 @@ class Utility {
     } catch (e) {
       print(e);
       return '';
+    }
+  }
+
+  static String getBase64FileExtension(String base64String) {
+    switch (base64String.characters.first) {
+      case '/':
+        return 'jpeg';
+      case 'i':
+        return 'png';
+      case 'R':
+        return 'gif';
+      case 'U':
+        return 'webp';
+      case 'J':
+        return 'pdf';
+      default:
+        return 'unknown';
     }
   }
 }

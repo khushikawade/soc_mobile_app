@@ -188,12 +188,39 @@ class _OpticalCharacterRecognitionPageState
               ],
             ),
           ),
+
           // ],
           // ),
           floatingActionButton: scanButton(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         ),
+        BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: _googleDriveBloc,
+            child: Container(),
+            listener: (BuildContext contxt, GoogleDriveState state) {
+              if (state is ImageToAwsBucketSuccess) {
+                Navigator.pop(context);
+                int index = 0;
+                for (int i = 0; i < RubricScoreList.scoringList.length; i++) {
+                  if (RubricScoreList.scoringList[i].name ==
+                          state.customRubricModal.name &&
+                      RubricScoreList.scoringList[i].score ==
+                          state.customRubricModal.score) {
+                    RubricScoreList.scoringList[i].imgUrl =
+                        state.bucketImageUrl;
+                    index = i;
+                    break;
+                  }
+
+                  showCustomRubricImage(RubricScoreList.scoringList[index]);
+                }
+              }
+              if (state is ErrorState) {
+                Navigator.pop(context);
+                Utility.currentScreenSnackBar(state.errorMsg.toString(), null);
+              }
+            }),
       ],
     );
   }
@@ -226,10 +253,10 @@ class _OpticalCharacterRecognitionPageState
                       //clears scan more list
                       Globals.scanMoreStudentInfoLength = null;
 
-                      if (Globals.googleDriveFolderId!.isEmpty) {
-                        _triggerDriveFolderEvent(false);
-                      } else {
+                      if (Globals.googleDriveFolderId!.isNotEmpty) {
                         _beforenavigateOnCameraSection();
+                      } else {
+                        _triggerDriveFolderEvent(false);
                       }
                     }
                   },
@@ -250,6 +277,36 @@ class _OpticalCharacterRecognitionPageState
             child: Container(),
           );
         }),
+        BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: _googleDriveBloc,
+            child: Container(),
+            listener: (context, state) async {
+              if (state is GoogleDriveLoading) {
+                Utility.showLoadingDialog(context: context, isOCR: true);
+              }
+              if (state is GoogleSuccess) {
+                if (Globals.googleDriveFolderId != null &&
+                    Globals.googleDriveFolderId!.isNotEmpty) {
+                  Navigator.of(context).pop();
+                  _beforenavigateOnCameraSection();
+                }
+              }
+              if (state is ErrorState) {
+                Navigator.of(context).pop();
+                if (state.errorMsg == 'ReAuthentication is required') {
+                  await Utility.refreshAuthenticationToken(
+                      isNavigator: true,
+                      errorMsg: state.errorMsg!,
+                      context: context,
+                      scaffoldKey: _scaffoldKey);
+
+                  _triggerDriveFolderEvent(false);
+                } else {
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.", null);
+                }
+              }
+            }),
       ],
     );
   }
@@ -384,7 +441,6 @@ class _OpticalCharacterRecognitionPageState
                                 RubricScoreList.scoringList[index]);
                           },
                           onTap: () {
-                            print(Globals.scoringRubric);
                             rubricScoreSelectedColor.value = index;
 
                             if (RubricScoreList.scoringList[index].name ==
@@ -508,15 +564,24 @@ class _OpticalCharacterRecognitionPageState
     }
   }
 
-  void showCustomRubricImage(CustomRubricModal customScoreObj) {
-    customScoreObj.imgUrl != null
-        ? showDialog(
-            context: context,
-            builder: (_) => ImagePopup(
-                // Implemented Dark mode image
-                imageURL: customScoreObj.imgUrl!))
-        : Utility.showSnackBar(_scaffoldKey,
-            'Image not found for the selected scoring rubric', context, null);
+  Future<void> showCustomRubricImage(
+    CustomRubricModal customScoreObj,
+  ) async {
+    if (customScoreObj.imgUrl != null) {
+      showDialog(
+          context: context,
+          builder: (_) => ImagePopup(
+              // Implemented Dark mode image
+              imageURL: customScoreObj.imgUrl!));
+    } else if (customScoreObj.imgBase64 != null &&
+        customScoreObj.imgBase64!.isNotEmpty) {
+      Utility.showLoadingDialog(context:    context,isOCR:  true);
+      _googleDriveBloc.add(ImageToAwsBucket(
+          customRubricModal: customScoreObj, getImageUrl: true));
+    } else {
+      Utility.currentScreenSnackBar(
+          'Image not found for the selected scoring rubric', null);
+    }
   }
 
   Future updateLocalDb() async {
@@ -546,7 +611,7 @@ class _OpticalCharacterRecognitionPageState
 
   Future<void> _beforenavigateOnCameraSection() async {
     //Rubric selection comparision
-    Globals.pointpossible = (Globals.scoringRubric == 'None'
+    Globals.pointPossible = (Globals.scoringRubric == 'None'
         //Point possible index comparision
         ? pointPossibleSelectedColor.value == 1
             ? "2"
@@ -711,7 +776,7 @@ class _OpticalCharacterRecognitionPageState
           onlyForPicture: false,
           scaffoldKey: _scaffoldKey,
           isScanMore: false,
-          pointPossible: Globals.pointpossible,
+          pointPossible: Globals.pointPossible,
           isFlashOn: ValueNotifier<bool>(false),
         ),
         // settings: RouteSettings(name: "/home")

@@ -4,7 +4,6 @@ import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/answer_key_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
-import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -12,8 +11,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/common_ocr_appbar.dart';
@@ -29,7 +26,12 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
   @override
   void initState() {
     // TODO: implement initState
-    Globals.pointpossible = '1';
+    Globals.pointPossible = '1';
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("multiple_choice_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'multiple_choice_screen',
+        screenClass: 'MultipleChoiceSection');
     super.initState();
   }
 
@@ -224,7 +226,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
           isFromHistoryAssessmentScanMore: false,
           onlyForPicture: false,
           isScanMore: false,
-          pointPossible: Globals.pointpossible,
+          pointPossible: Globals.pointPossible,
           isFlashOn: ValueNotifier<bool>(false),
         ),
         // settings: RouteSettings(name: "/home")
@@ -257,6 +259,8 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
       child: GestureDetector(
           onTap: () {
             selectedAnswerKey.value = value.title!;
+            FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                "answer_key_selected_${value.title}");
           },
           child: Container(
             height: 100,

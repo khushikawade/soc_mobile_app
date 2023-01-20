@@ -90,8 +90,8 @@
 //   }
 
 //   deleteItem() async {
-//     int itemcount = await HiveDbServices().getListLength(Strings.hiveLogName);
-//     if (itemcount > 5) {
+//     int itemCount = await HiveDbServices().getListLength(Strings.hiveLogName);
+//     if (itemCount > 5) {
 //       await HiveDbServices().deleteData(Strings.hiveLogName, 0);
 //     }
 //   }

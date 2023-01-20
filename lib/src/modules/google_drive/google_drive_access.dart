@@ -197,7 +197,6 @@ class GoogleDriveAccess {
         //             .cell(CellIndex.indexByColumnRow(columnIndex: 8, rowIndex: row))
         //             .value = data[row].subLearningStandard;
         //       }
-
       }
 
       var fileBytes = excel.save();

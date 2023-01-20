@@ -97,6 +97,7 @@ dependencies:
   fluttertoast: ^8.0.9 #Used to show toast messages
   firebase_core: ^2.3.0 #^1.24.0
   firebase_analytics: ^10.0.6 #^9.3.8
+  firebase_crashlytics: ^3.0.10
   # flutter_colorpicker: ^1.0.3
 
   #advance_pdf_viewer: 2.0.0

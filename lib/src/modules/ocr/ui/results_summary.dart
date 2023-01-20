@@ -168,7 +168,7 @@ class studentRecordList extends State<ResultsSummary> {
     } else {
       if (widget.isScanMore != true) {
         print("Shared Link called");
-        _driveBloc.add(GetShareLink(fileId: widget.fileId, slideLink: false));
+        _driveBloc.add(GetShareLink(fileId: widget.fileId, slideLink: true));
       } else {
         //TODO : REMOVE GLOBAL ACCESS : IMPROVE
         widget.shareLink = Globals.shareableLink;
@@ -963,7 +963,9 @@ class studentRecordList extends State<ResultsSummary> {
                                   ? BlocConsumer(
                                       bloc: _driveBloc,
                                       builder: (context, state) {
+                                        print(state);
                                         if (state is ShareLinkReceived) {
+                                          print("is share link is recived");
                                           widget.shareLink = state.shareLink;
 
                                           return Icon(
@@ -1429,7 +1431,7 @@ class studentRecordList extends State<ResultsSummary> {
                       widget.obj!.isCreatedAsPremium == "true") {
                     createdAsPremium = true;
                   }
-                  String pointPossible = await _getPointPossible(
+                  String pointPossible = await _getpointPossible(
                       tableName: widget.assessmentDetailPage == true
                           ? 'history_student_info'
                           : 'student_info');
@@ -2343,7 +2345,7 @@ class studentRecordList extends State<ResultsSummary> {
     );
   }
 
-  Future<String> _getPointPossible({required String tableName}) async {
+  Future<String> _getpointPossible({required String tableName}) async {
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: tableName);
     return studentInfo.first.pointPossible ?? '2';
@@ -2351,6 +2353,43 @@ class studentRecordList extends State<ResultsSummary> {
 
   // Custom Slidable Widget use to translation wrapping issue
   Widget customSlidableDecorationWidget(
+      {required String label, required IconData icon}) {
+    final children = <Widget>[];
+
+    children.add(
+      Icon(icon),
+    );
+
+    children.add(
+      SizedBox(height: 4),
+    );
+
+    children.add(
+      TranslationWidget(
+          message: label,
+          fromLanguage: "en",
+          toLanguage: Globals.selectedLanguage,
+          builder: (translatedMessage) {
+            return Text(
+              translatedMessage,
+              overflow: TextOverflow.ellipsis,
+            );
+          }),
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...children.map(
+          (child) => Flexible(
+            child: child,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _slidableDecorationWidget(
       {required String label, required IconData icon}) {
     final children = <Widget>[];
 

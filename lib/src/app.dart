@@ -1,3 +1,4 @@
+import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 import 'package:Soc/src/modules/schedule/modal/event.dart';

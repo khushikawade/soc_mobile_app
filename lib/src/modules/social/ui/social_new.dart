@@ -51,7 +51,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
     bloc.add(SocialPageEvent(action: "initial"));
     FirebaseAnalyticsService.addCustomAnalyticsEvent("social");
     FirebaseAnalyticsService.setCurrentScreen(
-        screenTitle: 'social', screenClass: 'SocialNewPage');
+        screenTitle: 'social', screenClass: 'SocialPage');
   }
 
   @override

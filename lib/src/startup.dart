@@ -42,12 +42,12 @@ class StartupPage extends StatefulWidget {
 
 class _StartupPageState extends State<StartupPage> {
   bool flag = true;
-  bool showlogin = true;
+  // bool showlogin = true;
   final HomeBloc _bloc = new HomeBloc();
   final NewsBloc _newsBloc = new NewsBloc();
   AndroidDeviceInfo? androidInfo;
   IosDeviceInfo? ios;
-  bool? isnetworkisuue = false;
+  // bool? isnetworkisuue = false;
   final SharedPreferencesFn _sharedPref = SharedPreferencesFn();
 
   void initState() {

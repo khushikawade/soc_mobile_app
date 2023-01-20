@@ -91,11 +91,11 @@ class UpdateHistoryAssessmentFromDrive extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
-class ImageToAwsBucked extends GoogleDriveEvent {
-  final String? imgBase64;
-  final String? imgExtension;
-
-  ImageToAwsBucked({required this.imgBase64, required this.imgExtension});
+class ImageToAwsBucket extends GoogleDriveEvent {
+  CustomRubricModal customRubricModal;
+  final bool? getImageUrl;
+  ImageToAwsBucket(
+      {required this.customRubricModal, required this.getImageUrl});
 
   @override
   List<Object> get props => [];
@@ -157,8 +157,10 @@ class GetAssessmentSearchDetails extends GoogleDriveEvent {
 
 // ignore: must_be_immutable
 class AddBlankSlidesOnDrive extends GoogleDriveEvent {
+  bool? isScanMore;
   String? slidePresentationId;
-  AddBlankSlidesOnDrive({required this.slidePresentationId});
+  AddBlankSlidesOnDrive(
+      {required this.slidePresentationId, required this.isScanMore});
 
   @override
   List<Object> get props => [];

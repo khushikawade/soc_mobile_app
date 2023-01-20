@@ -295,7 +295,7 @@ class _StaffPageState extends State<StaffPage> {
                     // );
                     // return;
                     // Globals.localUserInfo.clear(); // COMMENT
-                    Globals.lastindex = Globals.controller!.index;
+                    Globals.lastIndex = Globals.controller!.index;
 
                     List<UserInformation> _profileData =
                         await UserGoogleProfile.getUserProfile();

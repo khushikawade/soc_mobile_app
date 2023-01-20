@@ -126,6 +126,17 @@ class RefreshAuthenticationTokenSuccessState extends GoogleDriveState {
   List<Object> get props => [];
 }
 
+class ImageToAwsBucketSuccess extends GoogleDriveState {
+  final String? bucketImageUrl;
+  CustomRubricModal customRubricModal;
+  ImageToAwsBucketSuccess(
+      {required this.bucketImageUrl, required this.customRubricModal});
+      
+        @override
+        // TODO: implement props
+        List<Object?> get props => throw UnimplementedError();
+}
+
 class GoogleSlideCreated extends GoogleDriveState {
   final String? slideFiledId;
   GoogleSlideCreated({required this.slideFiledId});

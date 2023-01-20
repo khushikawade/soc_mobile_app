@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -54,6 +55,10 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           position: LatLng(double.parse(widget.obj.latitude ?? "0.0"),
               double.parse(widget.obj.longitude ?? "0.0"))));
     }
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("school_detail_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'school_detail_page', screenClass: 'SchoolDetailPage');
   }
 
   @override
