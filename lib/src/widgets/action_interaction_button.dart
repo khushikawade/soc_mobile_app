@@ -366,8 +366,8 @@ class _ActionInteractionButtonWidgetState
       _socialBloc.add(SocialAction(
           context: context,
           scaffoldKey: scaffoldKey,
-          id: widget.obj
-              .id, //widget.obj.id.toString() + widget.obj.guid['\$t'],
+          id: widget
+              .obj.id, //widget.obj.id.toString() + widget.obj.guid['\$t'],
           title: widget.title,
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
@@ -623,16 +623,12 @@ class _ActionInteractionButtonWidgetState
           SizedBox(
             width: 10,
           ),
-          TranslationWidget(
-              message: title,
-              fromLanguage: "en",
-              toLanguage: Globals.selectedLanguage,
-              builder: (translatedMessage) {
-                return Text(translatedMessage.toString(),
-                    style: Theme.of(context).textTheme.headline1!.copyWith(
-                        // color:,
-                        ));
-              }),
+          Container(
+              width: MediaQuery.of(context).size.width / 5,
+              child: Utility.textWidget(
+                  context: context,
+                  text: title.toString(),
+                  textTheme: Theme.of(context).textTheme.headline1!)),
         ],
       ),
       onPressed: onPressed,

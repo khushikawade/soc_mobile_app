@@ -1950,6 +1950,8 @@ class studentRecordList extends State<ResultsSummary> {
                             obj.customRubricImage = _list[0].customRubricImage;
                             obj.grade = _list[0].grade;
                             obj.questionImgUrl = _list[0].questionImgUrl;
+                            obj.googleSlidePresentationURL =
+                                _list[0].googleSlidePresentationURL;
                             _studentInfoDb.putAt(0, obj);
                           }
                           _studentInfoDb.deleteAt(index);
