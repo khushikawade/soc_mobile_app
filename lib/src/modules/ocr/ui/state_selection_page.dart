@@ -53,7 +53,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
 
   @override
   void initState() {
-    _ocrBloc.add(FetchStateListEvant(
+    _ocrBloc.add(FetchStateListEvent(
         fromCreateAssesment: widget.isFromCreateAssessmentScreen ?? false));
     super.initState();
     FirebaseAnalyticsService.addCustomAnalyticsEvent("state_selection_page");
@@ -129,7 +129,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                             controller: searchController,
                             onSaved: (String value) {
                               if (searchController.text.isEmpty) {
-                                _ocrBloc.add(FetchStateListEvant(
+                                _ocrBloc.add(FetchStateListEvent(
                                     fromCreateAssesment:
                                         widget.isFromCreateAssessmentScreen ??
                                             false));
@@ -164,7 +164,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                         )),
                               );
 
-                              _ocrBloc.add(FetchStateListEvant(
+                              _ocrBloc.add(FetchStateListEvent(
                                   fromCreateAssesment:
                                       widget.isFromCreateAssessmentScreen ??
                                           false));
@@ -385,7 +385,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
       atTop: false,
     );
     await Future.delayed(Duration(seconds: 2));
-    _ocrBloc.add(FetchStateListEvant(
+    _ocrBloc.add(FetchStateListEvent(
         fromCreateAssesment: widget.isFromCreateAssessmentScreen ?? false));
   }
 }

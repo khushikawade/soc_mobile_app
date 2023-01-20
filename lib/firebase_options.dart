@@ -65,6 +65,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'graded-plus-standalone.appspot.com',
     iosClientId:
         '789027884162-i7i04sf17custt7medidefqsebdcrcc9.apps.googleusercontent.com',
-    iosBundleId: 'com.app.a1f4W000008SzlXQAS',
+    iosBundleId: 'com.jhs151hh6432q',
   );
 }

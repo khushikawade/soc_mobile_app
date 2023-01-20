@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:csv/csv.dart';
@@ -560,7 +561,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'GetHistoryAssessmentFromDrive Event');
+
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : throw (e);

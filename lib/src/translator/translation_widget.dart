@@ -35,16 +35,16 @@ class _TranslationWidgetState extends State<TranslationWidget> {
   ConnectivityResult? connectivity;
   String? translation;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    FirebaseAnalyticsService.addCustomAnalyticsEvent(
-        "language_translation_screen");
-    FirebaseAnalyticsService.setCurrentScreen(
-        screenTitle: 'language_translation_screen',
-        screenClass: 'LanguageTranslation');
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  // TODO: implement initState
+  // FirebaseAnalyticsService.addCustomAnalyticsEvent(
+  //     "language_translation_screen");
+  // FirebaseAnalyticsService.setCurrentScreen(
+  //     screenTitle: 'language_translation_screen',
+  //     screenClass: 'LanguageTranslation');
+  // super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {

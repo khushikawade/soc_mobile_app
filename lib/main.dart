@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
@@ -24,16 +25,18 @@ import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:camera/camera.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show PlatformDispatcher, kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/modules/google_drive/model/assessment.dart';
@@ -52,6 +55,8 @@ void main() async {
   // Initializing Fieebase Starts
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  FirebaseAnalyticsService.firebaseCrashlytics(null, null, null);
   // Initializing Fieebase Ends
 
   if (!kIsWeb) {
@@ -123,7 +128,6 @@ disableDarkMode() async {
         await _hivedb.getSingleData('disableDarkMode', 'darkMode');
     // //print('-------------------dark mode disable----------------------');
     // //print(Globals.disableDarkMode);
-
   } catch (e) {}
 }
 

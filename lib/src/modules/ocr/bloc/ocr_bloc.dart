@@ -10,13 +10,14 @@ import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/utility.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,7 +100,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
                 studentName: data[2]);
           }
         }
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'FetchTextFromImage Event');
+
         yield FetchTextFromImageFailure(
             studentId: '', grade: '', studentName: '');
         //print(e);
@@ -113,7 +117,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             className: event.className,
             subjectName: event.subjectName);
         yield RecentListSuccess(obj: recentDetails);
-      } catch (e) {}
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'FetchRecentSearch Event');
+        throw (e);
+      }
     }
 
     if (event is FetchStudentDetails) {
@@ -123,7 +131,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         StudentDetails data = await fetchStudentDetails(event.ossId);
         yield SuccessStudentDetails(
             studentName: "${data.firstNameC} ${data.lastNameC}");
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'FetchStudentDetails Event');
+
+        throw (e);
         //print(e);
       }
     }
@@ -207,7 +219,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             obj: list,
           );
         }
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'SearchSubjectDetails Event');
+
         List<SubjectDetailList> list = [];
         yield SearchSubjectDetailsSuccess(
           obj: list,
@@ -219,12 +234,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       try {
         saveStudentToSalesforce(
             studentName: event.studentName, studentId: event.studentId);
-      } on SocketException catch (e) {
+      } on SocketException catch (e, s) {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'SaveStudentDetails Method');
+
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
@@ -240,12 +258,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         if (!result) {
           await verifyUserWithDatabase(email: event.email.toString());
         }
-      } on SocketException catch (e) {
+      } on SocketException catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'VerifyUserWithDatabase SocketException');
+
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'VerifyUserWithDatabase Event');
+
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
@@ -359,7 +383,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             obj: updatedList,
           );
         }
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'FetchSubjectDetails Event');
+
         yield OcrErrorReceived(err: e);
       }
     }
@@ -428,7 +455,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           String standardId;
           var standardObject;
           if (event.isHistoryAssessmentSection == true) {
-            standardObject = await _getstandardIdAndsubjectId(
+            standardObject = await _getStandardIdAndsubjectId(
                 grade: event.resultList.first.grade ?? '',
                 subLearningCode:
                     event.resultList.first.subLearningStandard ?? '',
@@ -473,12 +500,15 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             throw ('something went wrong');
           }
         }
-      } on SocketException catch (e) {
+      } on SocketException catch (e, s) {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
         rethrow;
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'SaveAssessmentToDashboard Event');
+
         e == 'NO_CONNECTION'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
             : print(e);
@@ -524,7 +554,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               Overrides.STANDALONE_GRADED_APP ? "Standalone" : "Standard"
         };
         await activityLog(body: body);
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'SaveAssessmentToDashboardAndGetId Event');
+
         throw Exception('Something went wrong');
       }
     }
@@ -541,7 +574,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
         yield AssessmentDashboardStatus(
             resultRecordCount: null, assessmentId: null);
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'GetDashBoardStatus Event');
+
         yield AssessmentDashboardStatus(
             resultRecordCount: null, assessmentId: null);
       }
@@ -560,7 +596,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           );
         }
         //Fetch overall list from API
-        List<RubricPdfModal> pdfList = await getRubicPdfList();
+        List<RubricPdfModal> pdfList = await getRubricPdfList();
         if (pdfList.length > 0) {
           //Sort pdf list app wise (Standard/Standalone)
           sepratedList = await sortRubricPDFList(pdfList);
@@ -578,7 +614,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         } else if (sepratedList.isEmpty && _localData.isEmpty) {
           yield NoRubricAvailable();
         }
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'GetRubricPdf Event');
+
         yield OcrErrorReceived(err: e);
       }
     }
@@ -618,13 +657,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     //     });
 
     //     yield SubjectDetailsListSaveSuccessfully();
-    //   } on SocketException catch (e) {
+    //   } on SocketException catch (e,s) {
     //     e.message == 'Connection failed'
     //         ? Utility.currentScreenSnackBar("No Internet Connection")
     //         : print(e);
     //     yield OcrErrorReceived();
     //     rethrow;
-    //   } catch (e) {
+    //   } catch (e,s) {
     //     e == 'NO_CONNECTION'
     //         ? Utility.currentScreenSnackBar("No Internet Connection")
     //         : print(e);
@@ -634,12 +673,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     //   // try {
     //   //   bool result = await saveSubjectListDetails();
-    //   // } on SocketException catch (e) {
+    //   // } on SocketException catch (e,s) {
     //   //   e.message == 'Connection failed'
     //   //       ? Utility.currentScreenSnackBar("No Internet Connection")
     //   //       : print(e);
     //   //   rethrow;
-    //   // } catch (e) {
+    //   // } catch (e,s) {
     //   //   e == 'NO_CONNECTION'
     //   //       ? Utility.currentScreenSnackBar("No Internet Connection")
     //   //       : print(e);
@@ -649,7 +688,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     // }
 
     // ---------- Event to Fetch State List for Api ----------
-    if (event is FetchStateListEvant) {
+    if (event is FetchStateListEvent) {
       try {
         // To get local data if exist
         LocalDatabase<StateListObject> _localDb =
@@ -688,7 +727,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             fromCreateAssesmentpage: event.fromCreateAssesment);
         //stateList.add("Common Core");
         yield StateListFetchSuccessfully(stateList: updatedStateList);
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'FetchStateListEvent Event');
         // In case of error or no internet Showing data from Local DB
         // To get local data if exist
         LocalDatabase<StateListObject> _localDb =
@@ -723,7 +764,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
         yield OcrLoading2();
         yield LocalStateSearchResult(stateList: searchList);
-      } catch (e) {
+      } catch (e, s) {
+        FirebaseAnalyticsService.firebaseCrashlytics(
+            e, s, 'LocalStateSearchEvent Event');
         // In case of error or no internet Showing data from Local DB
         // To get local data if exist
         LocalDatabase<StateListObject> _localDb =
@@ -781,7 +824,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
 
       return stateList;
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'updateStateList Method');
       // In case of any error return the same list
       return stateList;
     }
@@ -800,7 +845,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       }
       return _subjectList;
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'extractStateName Method');
+
       throw (e);
     }
   }
@@ -830,7 +878,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         return _list;
       }
       return [];
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'fetchStateObjectList Method');
+
       throw (e);
     }
   }
@@ -872,7 +923,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       });
 
       return list;
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'addRecentDateTimeDetails Method');
+
       // In case of any error return the same list
       return list;
     }
@@ -912,7 +966,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return [];
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'addRecentDateTimeDetails Method');
+
       throw (e);
     }
   }
@@ -931,7 +988,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       );
 
       if (response.statusCode == 200) {}
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(e, s, 'activityLog Method');
+
       throw Exception("Something went wrong");
     }
   }
@@ -964,25 +1023,34 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   //     } else {
   //       throw ('something_went_wrong');
   //     }
-  //   } catch (e) {
+  //   } catch (e,s) {
   //     throw (e);
   //   }
   // }
   // ---------  To Fetch local subject added by user -----------
-  Future<List<StateListObject>> fatchLocalSubject(String classNo,
+  Future<List<StateListObject>> fetchLocalSubject(String classNo,
       {required String stateName}) async {
-    LocalDatabase<StateListObject> _localDb =
-        LocalDatabase('Subject_list$stateName$classNo');
-    //Clear subject local data to resolve loading issue
-    SharedPreferences clearSubjectCache = await SharedPreferences.getInstance();
-    final clearChacheResult = clearSubjectCache.getBool('Clear_local_Subject');
+    try {
+      LocalDatabase<StateListObject> _localDb =
+          LocalDatabase('Subject_list$stateName$classNo');
+      //Clear subject local data to resolve loading issue
+      SharedPreferences clearSubjectCache =
+          await SharedPreferences.getInstance();
+      final clearChacheResult =
+          clearSubjectCache.getBool('Clear_local_Subject');
 
-    if (clearChacheResult != true) {
-      _localDb.clear();
-      await clearSubjectCache.setBool('Clear_local_Subject', true);
+      if (clearChacheResult != true) {
+        _localDb.clear();
+        await clearSubjectCache.setBool('Clear_local_Subject', true);
+      }
+      List<StateListObject>? _localData = await _localDb.getData();
+      return _localData;
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'fetchLocalSubject Method');
+
+      throw (e);
     }
-    List<StateListObject>? _localData = await _localDb.getData();
-    return _localData;
   }
 
   // --------- Fuction to sort and extract data as per requirement -----------
@@ -1137,7 +1205,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //   }
       // }
       // return subjectDetailList;
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'sortSubjectDetails Method');
       throw (e);
     }
   }
@@ -1171,7 +1241,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             return '';
           }
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(e, s, 'getMcqAnswer Method');
       return '';
     }
   }
@@ -1227,7 +1298,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return ['', '', ''];
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'processMcqSheet Method');
       print(e);
       return ['', '', ''];
     }
@@ -1283,8 +1356,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return ['', '', ''];
       }
-    } catch (e) {
+    } catch (e, s) {
       print(e);
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'processAssessmentSheet Method');
     }
   }
 
@@ -1328,7 +1403,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return false;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseCrashlytics.instance.log("saveStudentToSalesforce Method, $e");
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'saveStudentToSalesforce Method');
       throw (e);
     }
   }
@@ -1408,11 +1486,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
 
         return true;
+
         // return data;
       } else {
         return false;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'verifyUserWithDatabase Method');
       throw (e);
     }
   }
@@ -1452,7 +1533,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return false;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'createContactToSalesforce Method');
+
       throw (e);
     }
   }
@@ -1476,7 +1560,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return false;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'updateContactToSalesforce Method');
       throw (e);
     }
   }
@@ -1541,7 +1627,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
         return "";
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'saveAssessmentToDatabase Method');
+
       throw (e);
     }
   }
@@ -1575,7 +1664,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       for (int i = 0; i < studentDetails.length; i++) {
         //To bypass the titles saving in the dashboard
         if (studentDetails[i].studentId != 'Id') {
-          bodyContent.add(recordtoJson(
+          bodyContent.add(recordToJson(
               assessmentId,
               Utility.getCurrentDate(DateTime.now()),
               studentDetails[i].studentGrade ?? '',
@@ -1623,12 +1712,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return false;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'saveResultToDashboard Method');
       throw (e);
     }
   }
 
-  Map<String, String> recordtoJson(assessmentId, currentDate, pointsEarned,
+  Map<String, String> recordToJson(assessmentId, currentDate, pointsEarned,
       studentOsisId, assessmentImageURl, sudentName) {
     try {
       Map<String, String> body = {
@@ -1640,7 +1731,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Student_Name__c": sudentName
       };
       return body;
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(e, s, 'recordToJson Method');
       throw (e);
     }
   }
@@ -1660,7 +1752,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         if (studentResultDetails[i].studentId == "Id") {
           studentResultDetails.remove(i);
         }
-        bodyContent.add(recordtoJson(
+        bodyContent.add(recordToJson(
             assessmentId,
             Utility.getCurrentDate(DateTime.now()),
             studentResultDetails[i].studentGrade ?? '',
@@ -1687,12 +1779,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return false;
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, '_sendEmailToAdmin Method');
       throw (e);
     }
   }
 
-  _getstandardIdAndsubjectId(
+  _getStandardIdAndsubjectId(
       {required String grade,
       required String subjectName,
       required String subLearningCode}) async {
@@ -1703,7 +1797,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       if (response.statusCode == 200) {
         return response.data['body'].length > 0 ? response.data['body'][0] : '';
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, '_getStandardIdAndsubjectId Method');
+
       throw (e);
     }
   }
@@ -1720,7 +1817,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   //     } else {
   //       throw ('something_went_wrong');
   //     }
-  //   } catch (e) {
+  //   } catch (e,s) {
   //     throw (e);
   //   }
   // }
@@ -1753,7 +1850,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         throw ('something_went_wrong');
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'fetchStudentDetails Method');
+
       throw (e);
     }
   }
@@ -1775,7 +1875,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       }
       return [0, ''];
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, '_getTheDashBoardStatus Method');
+
       throw ('something_went_wrong');
     }
   }
@@ -1792,7 +1895,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
       }
       return 0;
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, '_getAssessmentRecord Method');
+
       throw ('something_went_wrong');
     }
   }
@@ -1808,7 +1914,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
       List<SubjectDetailList>? _localData = await _localDb.getData();
       return _localData;
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'fetchRecentList Method');
       throw (e);
     }
   }
@@ -1818,21 +1926,28 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     required String stateName,
     required String keyword,
   }) async {
-    List<StateListObject> subjectList = [];
-    // to get state list object from localDb
-    LocalDatabase<StateListObject> _localDb =
-        LocalDatabase(Strings.stateObjectName);
-    List<StateListObject>? _localData = await _localDb.getData();
-    for (int i = 0; i < _localData.length; i++) {
-      if (_localData[i].stateC == stateName) {
-        subjectList.add(_localData[i]);
+    try {
+      List<StateListObject> subjectList = [];
+      // to get state list object from localDb
+      LocalDatabase<StateListObject> _localDb =
+          LocalDatabase(Strings.stateObjectName);
+      List<StateListObject>? _localData = await _localDb.getData();
+      for (int i = 0; i < _localData.length; i++) {
+        if (_localData[i].stateC == stateName) {
+          subjectList.add(_localData[i]);
+        }
       }
+      // Calling Function to fetch Local subject created by user
+      List<StateListObject> list =
+          await fetchLocalSubject(keyword, stateName: stateName);
+      subjectList.addAll(list);
+      return subjectList;
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'getSubjectName Method');
+
+      throw (e);
     }
-    // Calling Function to fetch Local subject created by user
-    List<StateListObject> list =
-        await fatchLocalSubject(keyword, stateName: stateName);
-    subjectList.addAll(list);
-    return subjectList;
   }
 
   Future<List> emailDetectionApi({required String base64}) async {
@@ -1861,8 +1976,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         return ['', ''];
       }
-    } catch (e) {
+    } catch (e, s) {
       print(e);
+
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'emailDetectionApi Method');
       return ['', ''];
       // throw (e);
     }
@@ -1948,8 +2066,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //   }
       // }
 
-      return ['', ''];
-    } catch (e) {
+      // return ['', ''];
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'checkEmailInsideRoster Method');
       return ['', ''];
     }
   }
@@ -1957,49 +2077,54 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   List<String> extractEmailsFromString(String string) {
     //String newString = string.replaceAll(RegExp(r"\s+"), '');
     // newString
-
-    List<String> respoanceTextList = string.split(' ');
-    string = '';
-    for (int i = 0; i < respoanceTextList.length; i++) {
-      //  string = '';
-      if (respoanceTextList[i].toString().contains('@')) {
-        string = '$string${respoanceTextList[i].toString()}';
-      } else {
-        string = "$string ${respoanceTextList[i].toString()}";
-      }
-    }
-
-    final emailPattern = RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b',
-        caseSensitive: false, multiLine: true);
-    string = string.replaceAll(",", "");
-    final matches = emailPattern.allMatches(string);
-    final List<String> emails = [];
-    if (matches != null) {
-      for (final Match match in matches) {
-        emails.add(string.substring(match.start, match.end));
-      }
-    }
-    if (emails.isEmpty) {
+    try {
       List<String> respoanceTextList = string.split(' ');
-      for (var i = 0; i < respoanceTextList.length; i++) {
-        if (respoanceTextList[i].contains('@')) {
-          emails.add(respoanceTextList[i]);
+      string = '';
+      for (int i = 0; i < respoanceTextList.length; i++) {
+        //  string = '';
+        if (respoanceTextList[i].toString().contains('@')) {
+          string = '$string${respoanceTextList[i].toString()}';
+        } else {
+          string = "$string ${respoanceTextList[i].toString()}";
         }
       }
 
-      // final test = RegExp('@',
-      //   caseSensitive: false, multiLine: true);
-      //   final data = test.allMatches(string);
-      // for (final Match match in data) {
-      //   emails.add(string.substring(match.start, match.end));
+      final emailPattern = RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b',
+          caseSensitive: false, multiLine: true);
+      string = string.replaceAll(",", "");
+      final matches = emailPattern.allMatches(string);
+      final List<String> emails = [];
+      if (matches != null) {
+        for (final Match match in matches) {
+          emails.add(string.substring(match.start, match.end));
+        }
+      }
+      if (emails.isEmpty) {
+        List<String> respoanceTextList = string.split(' ');
+        for (var i = 0; i < respoanceTextList.length; i++) {
+          if (respoanceTextList[i].contains('@')) {
+            emails.add(respoanceTextList[i]);
+          }
+        }
 
-      // }
+        // final test = RegExp('@',
+        //   caseSensitive: false, multiLine: true);
+        //   final data = test.allMatches(string);
+        // for (final Match match in data) {
+        //   emails.add(string.substring(match.start, match.end));
+
+        // }
+      }
+
+      return emails;
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'extractEmailsFromString Method');
+      throw (e);
     }
-
-    return emails;
   }
 
-  Future<List<RubricPdfModal>> getRubicPdfList() async {
+  Future<List<RubricPdfModal>> getRubricPdfList() async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           Uri.encodeFull(
@@ -2015,28 +2140,36 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       } else {
         throw ('something_went_wrong');
       }
-    } catch (e) {
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'getRubricPdfList Method');
       throw (e);
     }
   }
 
   Future<List<RubricPdfModal>> sortRubricPDFList(
       List<RubricPdfModal> list) async {
-    List<RubricPdfModal> newList = [];
-    for (int i = 0; i < list.length; i++) {
-      if (Overrides.STANDALONE_GRADED_APP == true) {
-        //Create list to show standalone rubric pdf
-        if (list[i].usedInC != 'Schools') {
-          newList.add(list[i]);
-        }
-      } else {
-        //Create list to show school rubric pdf
-        if (list[i].usedInC != 'Standalone') {
-          newList.add(list[i]);
+    try {
+      List<RubricPdfModal> newList = [];
+      for (int i = 0; i < list.length; i++) {
+        if (Overrides.STANDALONE_GRADED_APP == true) {
+          //Create list to show standalone rubric pdf
+          if (list[i].usedInC != 'Schools') {
+            newList.add(list[i]);
+          }
+        } else {
+          //Create list to show school rubric pdf
+          if (list[i].usedInC != 'Standalone') {
+            newList.add(list[i]);
+          }
         }
       }
-    }
 
-    return newList;
+      return newList;
+    } catch (e, s) {
+      FirebaseAnalyticsService.firebaseCrashlytics(
+          e, s, 'sortRubricPDFList Method');
+      throw (e);
+    }
   }
 }
