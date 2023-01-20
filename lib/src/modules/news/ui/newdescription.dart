@@ -108,10 +108,10 @@ class _NewdescriptionState extends State<Newdescription> {
                   message: widget.obj.headings != "" &&
                           widget.obj.headings != null &&
                           widget.obj.headings.length > 0
-                      ? widget.obj.headings["en"].toString()
+                      ? Utility.utf8convert(widget.obj.headings["en"] ?? '')
                       : widget.obj.contents["en"].toString().split(" ").length >
                               1
-                          ? widget.obj.contents["en"]
+                          ? Utility.utf8convert(widget.obj.contents["en"]
                                   .toString()
                                   .replaceAll("\n", " ")
                                   .split(" ")[0] +
@@ -121,8 +121,8 @@ class _NewdescriptionState extends State<Newdescription> {
                                   .replaceAll("\n", " ")
                                   .split(" ")[1]
                                   .split("\n")[0] +
-                              "..."
-                          : widget.obj.contents["en"],
+                              "..." )
+                          : Utility.utf8convert(widget.obj.contents["en"] ?? ''),
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => SelectableLinkify(
@@ -157,7 +157,8 @@ class _NewdescriptionState extends State<Newdescription> {
               child: Wrap(
                 children: [
                   TranslationWidget(
-                    message: widget.obj.contents["en"].toString(),
+                    message:
+                        Utility.utf8convert(widget.obj.contents["en"] ?? ''),
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => SelectableLinkify(
