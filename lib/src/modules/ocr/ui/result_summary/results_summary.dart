@@ -1,9 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-
 import 'package:Soc/src/modules/ocr/modal/bottom_icon_modal.dart';
-
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
@@ -130,7 +128,7 @@ class studentRecordList extends State<ResultsSummary> {
   void initState() {
     _futureMethod();
     if (widget.assessmentDetailPage!) {
-      isShareLinkReceived.value = true;
+      // isShareLinkReceived.value = true;
       // Globals.historyStudentInfo = [];
       _historyStudentInfoDb.clear();
       if (widget.historySecondTime == true) {
@@ -170,6 +168,7 @@ class studentRecordList extends State<ResultsSummary> {
       if (!Overrides.STANDALONE_GRADED_APP) {
         _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
       }
+      _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
     } else {
       if (widget.isScanMore != true) {
         print("Shared Link called");
@@ -814,6 +813,10 @@ class studentRecordList extends State<ResultsSummary> {
                   bloc: _driveBloc3,
                   listener: (context, state) async {
                     if (state is ShareLinkReceived) {
+                      print("LINK RECIVED -------------->");
+                      if (!widget.assessmentDetailPage!) {
+                        Globals.shareableLink = state.shareLink;
+                      }
                       isShareLinkReceived.value = true;
                       widget.shareLink = state.shareLink;
                     }

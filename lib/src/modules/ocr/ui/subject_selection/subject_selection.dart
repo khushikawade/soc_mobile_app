@@ -7,7 +7,7 @@ import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/graded_overrides.dart';
-import 'package:Soc/src/modules/ocr/ui/search_screen.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_search_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_api_methods.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -235,7 +235,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 bloc: _googleDriveBloc,
                 child: Container(),
                 listener: (context, state) async {
-                  print("googgggggggggle state 2 ----->$state");
                   if (state is AddBlankSlidesOnDriveSuccess) {
                     FirebaseAnalyticsService.addCustomAnalyticsEvent(
                         "blank_slide_added");
@@ -336,15 +335,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => SearchScreenPage(
-                                  isMcqSheet: widget.isMcqSheet,
-                                  selectedAnswer: widget.selectedAnswer,
-                                  questionImage: widget.questionImageUrl ?? '',
-                                  selectedKeyword: selectedKeyword,
-                                  grade: widget.selectedClass,
-                                  selectedSubject: subject,
-                                  stateName: widget.stateName,
-                                  subjectId: subjectId,
-                                )),
+                                isMcqSheet: widget.isMcqSheet,
+                                selectedAnswer: widget.selectedAnswer,
+                                questionImage: widget.questionImageUrl ?? '',
+                                selectedKeyword: selectedKeyword,
+                                grade: widget.selectedClass,
+                                selectedSubject: subject,
+                                stateName: widget.stateName,
+                                subjectId: subjectId,
+                                googleDriveBloc: _googleDriveBloc)),
                       );
                     }
                   },
@@ -396,15 +395,15 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => SearchScreenPage(
-                                  isMcqSheet: widget.isMcqSheet,
-                                  selectedAnswer: widget.selectedAnswer,
-                                  questionImage: widget.questionImageUrl ?? '',
-                                  selectedKeyword: selectedKeyword,
-                                  grade: widget.selectedClass,
-                                  selectedSubject: subject,
-                                  stateName: widget.stateName,
-                                  subjectId: subjectId,
-                                )),
+                                isMcqSheet: widget.isMcqSheet,
+                                selectedAnswer: widget.selectedAnswer,
+                                questionImage: widget.questionImageUrl ?? '',
+                                selectedKeyword: selectedKeyword,
+                                grade: widget.selectedClass,
+                                selectedSubject: subject,
+                                stateName: widget.stateName,
+                                subjectId: subjectId,
+                                googleDriveBloc: _googleDriveBloc)),
                       );
                     }
                   });
@@ -1163,8 +1162,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                     bloc: _googleDriveBloc,
                                     child: Container(),
                                     listener: (context, state) async {
-                                      print(
-                                          "googgggggggggle state 2 ----->$state");
+                                      // print(
+                                      //     "googgggggggggle state 2 ----->$state");
                                       if (state is GoogleDriveLoading) {
                                         // Utility.showLoadingDialog(
                                         //     context, true);
