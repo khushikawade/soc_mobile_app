@@ -339,8 +339,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           //     }
           //   }
           // }
+
           if ((assessmentData[i].customRubricImage == null ||
-              assessmentData[i].customRubricImage!.isEmpty)) {
+              assessmentData[i].customRubricImage!.isEmpty &&
+                  customRubicLocalData.isNotEmpty)) {
             int? localCustomRubricIndex = 0;
             CustomRubricModal? customRubicModal = customRubicLocalData[0];
 

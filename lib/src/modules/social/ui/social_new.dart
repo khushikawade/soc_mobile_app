@@ -11,7 +11,9 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/allCaughtUp_widget.dart';
+import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
+import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -235,12 +237,12 @@ class _SocialNewPageState extends State<SocialNewPage> {
       return iconWidget(FontAwesomeIcons.facebook, Color(0xff4267B2));
     } else if (link.contains('youtube')) {
       return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000));
+    } else if (link.contains('pinterest')) {
+      return iconWidget(FontAwesomeIcons.pinterest, Color(0xffFF0000));
     }
 
-    return Icon(
-      Icons.ac_unit,
-      size: MediaQuery.of(context).size.width * 0.07,
-    );
+    return CustomIconWidget(
+        darkModeIconUrl: null, iconUrl: Globals.appSetting.appLogoC);
   }
 
   Widget iconWidget(icon, color) {

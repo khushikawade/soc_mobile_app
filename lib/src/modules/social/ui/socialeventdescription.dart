@@ -345,6 +345,8 @@ class SocialDescription extends StatelessWidget {
               FontAwesomeIcons.facebook, Color(0xff4267B2), context));
     } else if (link.contains('youtube')) {
       return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000), context);
+    } else if (link.contains('pinterest')) {
+      return iconWidget(FontAwesomeIcons.pinterest, Color(0xffFF0000), context);
     }
 
     return Container();
