@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:isolate';
+import 'package:Soc/firebase_options.dart';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
@@ -47,16 +48,18 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
 
+  // Initializing Fieebase Starts
+  // await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   const standaloneGradedApp = String.fromEnvironment("STANDALONE_GRADED_APP");
   if (standaloneGradedApp == "true") {
     Overrides.STANDALONE_GRADED_APP = true;
   }
 
-  // Initializing Fieebase Starts
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
-  FirebaseAnalyticsService.firebaseCrashlytics(null, null, null);
+  // await FirebaseAnalyticsService.firebaseCrashlytics(null, null, null);
   // Initializing Fieebase Ends
 
   if (!kIsWeb) {
