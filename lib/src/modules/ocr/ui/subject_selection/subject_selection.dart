@@ -11,7 +11,7 @@ import 'package:Soc/src/modules/ocr/ui/search_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_api_methods.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
-import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
+import 'package:Soc/src/modules/ocr/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/ocr/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
