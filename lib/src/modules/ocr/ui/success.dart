@@ -2537,10 +2537,14 @@ class _SuccessScreenState extends State<SuccessScreen>
         scanFailure.value = 'Failure';
       }
 
-      if (isStudentIdFilled.value.isNotEmpty &&
+      if (idController.text.isNotEmpty &&
               Overrides.STANDALONE_GRADED_APP == true
-          ? (regex.hasMatch(isStudentIdFilled.value))
-          : isStudentIdFilled.value.isNotEmpty) {
+          ? (regex.hasMatch(idController.text))
+          : (Utility.checkForInt(idController.text)
+              ? (idController.text.length == 9 &&
+                  ((idController.text[0] == '2' ||
+                      idController.text[0] == '1')))
+              : (regex.hasMatch(idController.text)))) {
         if (Overrides.STANDALONE_GRADED_APP == true) {
           bool result = await OcrUtility.checkEmailFromGoogleClassroom(
               studentEmail:
@@ -2825,17 +2829,13 @@ class _SuccessScreenState extends State<SuccessScreen>
                                     : (!regex.hasMatch(idController.text))
                                         ? 'Please Enter valid Email'
                                         : '')
-                                : isStudentIdFilled.value.isEmpty
+                                : idController.text.isEmpty
                                     ? 'Please Enter Valid Email ID or Student ID'
-                                    : Utility.checkForInt(
-                                            isStudentIdFilled.value)
-                                        ? (isStudentIdFilled.value.length != 9
+                                    : Utility.checkForInt(idController.text)
+                                        ? (idController.text.length != 9
                                             ? 'Student Id should be 9 digit'
-                                            : (isStudentIdFilled.value[0] !=
-                                                        '2' &&
-                                                    isStudentIdFilled
-                                                            .value[0] !=
-                                                        '1'
+                                            : (idController.text[0] != '2' &&
+                                                    idController.text[0] != '1'
                                                 ? 'Student Id should be start for 1 or 2'
                                                 : ''))
                                         : (!regex.hasMatch(idController.text))
@@ -2897,7 +2897,9 @@ class _SuccessScreenState extends State<SuccessScreen>
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return suggestionNameListLenght.value == 0 &&
-                  suggestionEmailListLenght.value == 0
+                      suggestionEmailListLenght.value == 0 ||
+                  (suggestionNameListLenght.value == 0 && isNameList == true) ||
+                  (suggestionEmailListLenght.value == 0 && isNameList != true)
               ? Container()
               : Container(
                   margin: EdgeInsets.symmetric(vertical: 6),
