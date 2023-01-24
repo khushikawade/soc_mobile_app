@@ -51,6 +51,7 @@ void main() async {
   // Initializing Fieebase Starts
   // await Firebase.initializeApp();
   await Firebase.initializeApp(
+    name: 'SOC',
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
