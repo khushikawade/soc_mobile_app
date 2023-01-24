@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -6,6 +8,7 @@ import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/empty_container_widget.dart';
@@ -54,13 +57,22 @@ class _StaffDirectoryFolderSubMenuState
         language: Globals.selectedLanguage,
         marginLeft: 30,
       ),
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemCount: widget.list!.length,
-        itemBuilder: (BuildContext context, int index) {
-          return listItem(widget.list, widget.list![index], index);
-        },
-      ),
+      body: widget.list!.length == null || widget.list!.length == 0
+          ? Center(
+              child: NoDataFoundErrorWidget(
+                isResultNotFoundMsg: false,
+                isNews: false,
+                isEvents: false,
+                connected: true,
+              ),
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: widget.list!.length,
+              itemBuilder: (BuildContext context, int index) {
+                return listItem(widget.list, widget.list![index], index);
+              },
+            ),
     );
   }
 
