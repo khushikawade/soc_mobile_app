@@ -96,11 +96,11 @@ class FirebaseAnalyticsService {
 
     // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
 
-    PlatformDispatcher.instance.onError = (err, stk) {
-      FirebaseCrashlytics.instance
-          .recordError(error ?? err, stack ?? stk, fatal: true, reason: reason);
-      return true;
-    };
+    // PlatformDispatcher.instance.onError = (err, stk) {
+    //   FirebaseCrashlytics.instance
+    //       .recordError(error ?? err, stack ?? stk, fatal: true, reason: reason);
+    //   return true;
+    // };
 
 // To catch errors that happen outside of the Flutter context, install an error listener on the current Isolate:
     Isolate.current.addErrorListener(RawReceivePort((pair) async {
