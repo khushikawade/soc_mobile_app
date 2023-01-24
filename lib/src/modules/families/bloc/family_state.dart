@@ -58,7 +58,7 @@ class FamiliesSublistSuccess extends FamilyState {
 }
 
 class SDDataSuccess extends FamilyState {
-  final Map<String?, List<SDlist>>? obj;
+  final Map<String, List<SDlist>> obj;
   SDDataSuccess({
     required this.obj,
   });

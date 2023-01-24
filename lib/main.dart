@@ -50,10 +50,17 @@ void main() async {
 
   // Initializing Fieebase Starts
   // await Firebase.initializeApp();
-  await Firebase.initializeApp(
-    name: 'SOC',
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (Platform.isAndroid) {
+    await Firebase.initializeApp(
+      name: 'SOC',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else if (Platform.isIOS) {
+    await Firebase.initializeApp(
+      // name: 'SOC',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   const standaloneGradedApp = String.fromEnvironment("STANDALONE_GRADED_APP");
   if (standaloneGradedApp == "true") {

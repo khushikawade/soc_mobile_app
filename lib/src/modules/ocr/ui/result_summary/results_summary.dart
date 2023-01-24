@@ -128,8 +128,6 @@ class studentRecordList extends State<ResultsSummary> {
   void initState() {
     _futureMethod();
     if (widget.assessmentDetailPage!) {
-      // isShareLinkReceived.value = true;
-      // Globals.historyStudentInfo = [];
       _historyStudentInfoDb.clear();
       if (widget.historySecondTime == true) {
         widget.assessmentName = Globals.historyAssessmentName;
@@ -140,27 +138,6 @@ class studentRecordList extends State<ResultsSummary> {
         Globals.historyAssessmentName = widget.assessmentName;
         Globals.historyAssessmentFileId = widget.fileId;
       }
-
-      // iconsList = Overrides.STANDALONE_GRADED_APP
-      //     ? [
-      //         0xe871,
-      //         0xe803,
-      //         0xe876,
-      //       ]
-      //     : [0xe876, 0xe871, 0xe87a, 0xe80d];
-      // iconsName = Overrides.STANDALONE_GRADED_APP
-      //     ? [
-      //         "Drive",
-      //         "Sheet",
-      //         "Share",
-      //       ]
-      //     : ["Share", "Drive", "Dashboard", "Slides"];
-
-      // if (Overrides.STANDALONE_GRADED_APP) {
-      //   // Disable the Save to Dashboard option in case of Graded+ standalone app.
-      //   iconsList.removeLast();
-      //   iconsName.removeLast();
-      // }
 
       _driveBloc
           .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
@@ -182,16 +159,10 @@ class studentRecordList extends State<ResultsSummary> {
 
       iconsList = Globals.ocrResultIcons;
       iconsName = Globals.ocrResultIconsName;
-      // if (Overrides.STANDALONE_GRADED_APP == true) {
-      //   iconsList.removeLast();
-      //   iconsName.removeLast();
-      // }
+
       _method();
     }
-    //Checking in case of scan more if data is already saved to the dashboard for previously scanned sheets
-    // if (Globals.studentInfo!.length == Globals.scanMoreStudentInfoLength) {
-    //   dashboardState.value = 'Success';
-    // }
+
     _scrollController.addListener(_scrollListener);
     super.initState();
 

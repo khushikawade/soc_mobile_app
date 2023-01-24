@@ -562,11 +562,11 @@ class _ActionInteractionButtonWidgetState
                 orientation: orientation,
                 context: context,
                 message:
-                    'For any query or support, get in touch via email or call',
+                    "Have a question? Select an option below to contact us",
                 title: 'Contact Us',
                 actionWidget: supportActionWidget(
                     contactNumber: Globals.appSetting.contactPhoneC,
-                    email: Globals.appSetting.contactEmailC),
+                    email: Globals.appSetting.parentCoordinatorEmailc),
                 clearButton: true,
                 titleStyle: Theme.of(context)
                     .textTheme
@@ -619,6 +619,7 @@ class _ActionInteractionButtonWidgetState
         children: [
           Icon(
             iconData,
+            size: Globals.deviceType == 'phone' ? 34 : 40,
           ),
           SizedBox(
             width: 10,
