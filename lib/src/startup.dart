@@ -280,7 +280,7 @@ class _StartupPageState extends State<StartupPage> {
                     child: BlocListener<NewsBloc, NewsState>(
                       bloc: _newsBloc,
                       listener: (context, state) async {
-                        if (state is NewsCountLenghtSuccess) {
+                        if (state is NewsCountLengthSuccess) {
                           // SharedPreferences prefs =
                           //     await SharedPreferences.getInstance();
                           // SharedPreferences intPrefs =

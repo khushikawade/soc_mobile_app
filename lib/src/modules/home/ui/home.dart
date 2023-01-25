@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return BlocListener<NewsBloc, NewsState>(
       bloc: _newsBloc,
       listener: (context, state) async {
-        if (state is NewsCountLenghtSuccess) {
+        if (state is NewsCountLengthSuccess) {
           // SharedPreferences prefs = await SharedPreferences.getInstance();
           // SharedPreferences intPrefs = await SharedPreferences.getInstance();
           // String? _objectName = "${Strings.newsObjectName}";

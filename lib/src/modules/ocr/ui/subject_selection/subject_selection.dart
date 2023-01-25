@@ -78,6 +78,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   String? subLearningStandard;
   String? subjectId;
   String? standardId;
+  String? standardDescription;
 
   StateSetter? showDialogSetState;
 
@@ -181,6 +182,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           nycSubIndex1.value = -1;
           nycIndex1.value = 0;
           learningStandard = '';
+          standardDescription = '';
           subLearningStandard = '';
           isSubmitButton.value = false;
           isSkipButton.value = true;
@@ -646,6 +648,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     onTap: () {
                       subLearningStandard =
                           list[index].standardAndDescriptionC!.split(' - ')[0];
+                      standardDescription =
+                          list[index].standardAndDescriptionC!.split(' - ')[1];
                       standardId = list[index].id ?? '';
                       if (pageIndex.value == 2) {
                         nycSubIndex1.value = index;
@@ -1652,10 +1656,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             learningStandard == null || learningStandard == ''
                 ? "NA"
                 : learningStandard;
-        element.subLearningStandard =
-            subLearningStandard == null || subLearningStandard == ''
-                ? "NA"
-                : subLearningStandard;
+        element.subLearningStandard = subLearningStandard == null ||
+                subLearningStandard == '' //standardDescription
+            ? "NA"
+            : subLearningStandard;
+        element.standardDescription = standardDescription == null ||
+                standardDescription == '' //standardDescription
+            ? "NA"
+            : standardDescription;
         element.scoringRubric =
             widget.isMcqSheet == true ? '0-1' : Globals.scoringRubric;
         element.className = Globals.assessmentName!.split("_")[1];
