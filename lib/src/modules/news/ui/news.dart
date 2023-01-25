@@ -567,7 +567,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 Utility.textWidget(
                     context: context,
                     text:
-                        'All Notifications Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                        'News Feeds Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.background ==
@@ -578,7 +578,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 SpacerWidget(10),
                 Utility.textWidget(
                     context: context,
-                    text: 'You\'ve fetched all the available News notification',
+                    text: 'You\'ve fetched all the available News Feeds',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: Colors.grey, //AppTheme.kButtonColor,
