@@ -1,10 +1,12 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/ocr/ui/results_summary.dart';
+import 'package:Soc/src/modules/ocr/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
@@ -16,6 +18,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
+import 'package:Soc/src/widgets/graded_globals.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +33,7 @@ class SearchScreenPage extends StatefulWidget {
   final String? selectedSubject;
   final String? subjectId;
   final String? stateName;
-
+  GoogleDriveBloc googleDriveBloc;
   SearchScreenPage(
       {Key? key,
       this.isMcqSheet,
@@ -40,7 +43,8 @@ class SearchScreenPage extends StatefulWidget {
       required this.selectedSubject,
       required this.questionImage,
       required this.stateName,
-      required this.subjectId})
+      required this.subjectId,
+      required this.googleDriveBloc})
       : super(key: key);
 
   @override
@@ -53,7 +57,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
       ValueNotifier<int>(5000); //To bypass the default selection
   final ValueNotifier<int> listLength =
       ValueNotifier<int>(5000); //To bypass the default selection
-  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
 
   static const double _KVertcalSpace = 60.0;
   OcrBloc _ocrBloc = OcrBloc();
@@ -62,7 +65,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _debouncer = Debouncer(milliseconds: 10);
   List<SubjectDetailList> searchList = [];
-  int standerdLearningLength = 0;
+  int standardLearningLength = 0;
   String? learningStandard;
   String? subLearningStandard;
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
@@ -71,6 +74,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
   final ScrollController _scrollController = ScrollController();
+
+  StateSetter? showDialogSetState;
 
   @override
   void initState() {
@@ -198,7 +203,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                   listener: (context, state) {
                     if (state is RecentListSuccess) {
                       searchList.insertAll(0, state.obj!);
-                      standerdLearningLength = state.obj!.length;
+                      standardLearningLength = state.obj!.length;
                       listLength.value = searchList.length;
                       isRecentList.value = true;
                     } else if (state is SearchSubjectDetailsSuccess) {
@@ -213,7 +218,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       }
                       //print(searchList[0].standardAndDescriptionC);
                       searchList.insertAll(0, list);
-                      standerdLearningLength = list.length;
+                      standardLearningLength = list.length;
                       listLength.value = searchList.length;
                       isRecentList.value = false;
                     }
@@ -227,6 +232,122 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
             ),
           ),
         ),
+        //Updating Excel Sheet and Google Slide From Google Search List
+        BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: widget.googleDriveBloc,
+            child: Container(),
+            listener: (context, state) async {
+              if (state is GoogleDriveLoading) {
+                Utility.showLoadingDialog(context: context, isOCR: true);
+              }
+              if (state is GoogleSuccess) {
+                showDialogSetState!(() {
+                  GradedGlobals.loadingMessage = 'Preparing Google Slide';
+                });
+
+                List<StudentAssessmentInfo> getStudentInfoList =
+                    await Utility.getStudentInfoList(tableName: 'student_info');
+
+                //Updating very first slide with the assignment details
+                widget.googleDriveBloc.add(UpdateAssignmentDetailsOnSlide(
+                    slidePresentationId: Globals.googleSlidePresentationId,
+                    studentAssessmentInfoObj: getStudentInfoList[0]));
+
+                // Globals.currentAssessmentId = '';
+                // _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
+                //     isMcqSheet: widget.isMcqSheet ?? false,
+                //     assessmentQueImage: widget.questionImage ?? 'NA',
+                //     assessmentName: Globals.assessmentName ?? 'Assessment Name',
+                //     rubricScore: Globals.scoringRubric ?? '2',
+                //     subjectName: widget.selectedSubject ??
+                //         '', //Student Id will not be there in case of custom subject
+                //     domainName: learningStandard ?? '',
+                //     subDomainName: subLearningStandard ?? '',
+                //     grade: widget.grade ?? '',
+                //     schoolId: Globals.appSetting.schoolNameC ?? '',
+                //     standardId: standardId ?? '',
+                //     scaffoldKey: _scaffoldKey,
+                //     context: context,
+                //     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
+                //     sessionId: Globals.sessionId,
+                //     teacherContactId: Globals.teacherId,
+                //     teacherEmail: Globals.teacherEmailId));
+              }
+              if (state is ErrorState) {
+                if (state.errorMsg == 'ReAuthentication is required') {
+                  await Utility.refreshAuthenticationToken(
+                      isNavigator: true,
+                      errorMsg: state.errorMsg!,
+                      context: context,
+                      scaffoldKey: _scaffoldKey);
+
+                  widget.googleDriveBloc.add(
+                    UpdateDocOnDrive(
+                      isMcqSheet: widget.isMcqSheet ?? false,
+                      questionImage: widget.questionImage == ''
+                          ? 'NA'
+                          : widget.questionImage ?? 'NA',
+                      createdAsPremium: Globals.isPremiumUser,
+                      assessmentName: Globals.assessmentName,
+                      fileId: Globals.googleExcelSheetId,
+                      isLoading: true,
+                      studentData:
+                          //list2
+                          await Utility.getStudentInfoList(
+                              tableName: 'student_info'),
+                    ),
+                  );
+                } else {
+                  Navigator.of(context).pop();
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.", null);
+                }
+              }
+              if (state is ShareLinkReceived) {
+                Globals.googleSlidePresentationLink = state.shareLink;
+                widget.googleDriveBloc.add(AddBlankSlidesOnDrive(
+                    isScanMore: false,
+                    slidePresentationId: Globals.googleSlidePresentationId));
+              }
+              if (state is AddBlankSlidesOnDriveSuccess) {
+                FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                    "blank_slide_added");
+
+                widget.googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
+                    slidePresentationId: Globals.googleSlidePresentationId));
+              }
+              if (state is UpdateAssignmentDetailsOnSlideSuccess) {
+                FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                    "assessment_detail_added_first_slide");
+
+                Globals.currentAssessmentId = '';
+                showDialogSetState!(() {
+                  GradedGlobals.loadingMessage =
+                      'Assignment Detail is Updating';
+                });
+
+                Globals.currentAssessmentId = '';
+                //Save Assessment To  Postgres Database
+                _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
+                    isMcqSheet: widget.isMcqSheet ?? false,
+                    assessmentQueImage: widget.questionImage ?? 'NA',
+                    assessmentName: Globals.assessmentName ?? 'Assessment Name',
+                    rubricScore: Globals.scoringRubric ?? '2',
+                    subjectName: widget.selectedSubject ??
+                        '', //Student Id will not be there in case of custom subject
+                    domainName: learningStandard ?? '',
+                    subDomainName: subLearningStandard ?? '',
+                    grade: widget.grade ?? '',
+                    schoolId: Globals.appSetting.schoolNameC ?? '',
+                    standardId: standardId ?? '',
+                    scaffoldKey: _scaffoldKey,
+                    context: context,
+                    fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
+                    sessionId: Globals.sessionId,
+                    teacherContactId: Globals.teacherId,
+                    teacherEmail: Globals.teacherEmailId));
+              }
+            }),
       ],
     );
   }
@@ -302,7 +423,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                     fontWeight:
                                                         FontWeight.bold)))
                                     : Container(),
-                                index == 0 && standerdLearningLength != 0
+                                index == 0 && standardLearningLength != 0
                                     ? Container(
                                         padding: EdgeInsets.only(bottom: 10),
                                         child: Utility.textWidget(
@@ -316,7 +437,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                 .copyWith(
                                                     fontWeight:
                                                         FontWeight.bold)))
-                                    : (index == standerdLearningLength && list.length != 0
+                                    : (index == standardLearningLength && list.length != 0
                                         ? Container(
                                             padding:
                                                 EdgeInsets.only(bottom: 10),
@@ -336,7 +457,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                       //subLearningStandard = list[index].standardAndDescriptionC;
                                       //if (pageIndex.value == 2) {
                                       nycSubIndex1.value = index;
-                                      if (index < standerdLearningLength) {
+                                      if (index < standardLearningLength) {
                                         isSubmitButton.value = false;
                                         addToRecentList(
                                             type: 'nyc',
@@ -403,7 +524,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                       child: Container(
                                         padding: EdgeInsets.all(15),
                                         alignment: Alignment.centerLeft,
-                                        child: index < standerdLearningLength
+                                        child: index < standardLearningLength
                                             ? Utility.textWidget(
                                                 text: list[index].domainNameC!,
                                                 context: context,
@@ -522,10 +643,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           break;
                           // rubricScore = null;
                         }
-                        // if (_localData[i].name == Globals.scoringRubric &&
-                        //     _localData[i].customOrStandardRubic == "Custom") {
-                        //   // rubricScore = _localData[i].score;
-                        // }
+                     
                         else {
                           rubricImgUrl = 'NA';
                           // rubricScore = 'NA';
@@ -560,7 +678,15 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           Globals.googleSlidePresentationLink;
                       await _studentInfoDb.putAt(0, element);
 
-                      _googleDriveBloc.add(UpdateDocOnDrive(
+                      GradedGlobals.loadingMessage =
+                          'Preparing Student Excel Sheet';
+
+                      Utility.showLoadingDialog(
+                          context: context,
+                          isOCR: true,
+                          state: (p0) => {showDialogSetState = p0});
+
+                      widget.googleDriveBloc.add(UpdateDocOnDrive(
                           isMcqSheet: widget.isMcqSheet ?? false,
                           questionImage: widget.questionImage == ''
                               ? 'NA'
@@ -576,72 +702,6 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                     },
                     label: Row(
                       children: [
-                        BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                            bloc: _googleDriveBloc,
-                            child: Container(),
-                            listener: (context, state) async {
-                              if (state is GoogleDriveLoading) {
-                                Utility.showLoadingDialog(
-                                    context: context, isOCR: true);
-                              }
-                              if (state is GoogleSuccess) {
-                                Globals.currentAssessmentId = '';
-                                _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
-                                    isMcqSheet: widget.isMcqSheet ?? false,
-                                    assessmentQueImage:
-                                        widget.questionImage ?? 'NA',
-                                    assessmentName: Globals.assessmentName ??
-                                        'Assessment Name',
-                                    rubricScore: Globals.scoringRubric ?? '2',
-                                    subjectName: widget.selectedSubject ??
-                                        '', //Student Id will not be there in case of custom subject
-                                    domainName: learningStandard ?? '',
-                                    subDomainName: subLearningStandard ?? '',
-                                    grade: widget.grade ?? '',
-                                    schoolId:
-                                        Globals.appSetting.schoolNameC ?? '',
-                                    standardId: standardId ?? '',
-                                    scaffoldKey: _scaffoldKey,
-                                    context: context,
-                                    fileId: Globals.googleExcelSheetId ??
-                                        'Excel Id not found',
-                                    sessionId: Globals.sessionId,
-                                    teacherContactId: Globals.teacherId,
-                                    teacherEmail: Globals.teacherEmailId));
-                              }
-                              if (state is ErrorState) {
-                                if (state.errorMsg ==
-                                    'ReAuthentication is required') {
-                                  await Utility.refreshAuthenticationToken(
-                                      isNavigator: true,
-                                      errorMsg: state.errorMsg!,
-                                      context: context,
-                                      scaffoldKey: _scaffoldKey);
-
-                                  _googleDriveBloc.add(
-                                    UpdateDocOnDrive(
-                                      isMcqSheet: widget.isMcqSheet ?? false,
-                                      questionImage: widget.questionImage == ''
-                                          ? 'NA'
-                                          : widget.questionImage ?? 'NA',
-                                      createdAsPremium: Globals.isPremiumUser,
-                                      assessmentName: Globals.assessmentName,
-                                      fileId: Globals.googleExcelSheetId,
-                                      isLoading: true,
-                                      studentData:
-                                          //list2
-                                          await Utility.getStudentInfoList(
-                                              tableName: 'student_info'),
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.of(context).pop();
-                                  Utility.currentScreenSnackBar(
-                                      "Something Went Wrong. Please Try Again.",
-                                      null);
-                                }
-                              }
-                            }),
                         BlocListener<OcrBloc, OcrState>(
                             bloc: _ocrBloc,
                             child: Container(),
@@ -651,6 +711,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               }
                               if (state is AssessmentIdSuccess) {
                                 Navigator.of(context).pop();
+                                GradedGlobals.loadingMessage = null;
+                                widget.googleDriveBloc.close();
                                 Utility.updateLogs(
                                     // ,
                                     activityId: '14',

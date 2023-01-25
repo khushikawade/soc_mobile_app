@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/fetch_google_sheet.dart';
@@ -339,8 +338,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           //     }
           //   }
           // }
+
           if ((assessmentData[i].customRubricImage == null ||
-              assessmentData[i].customRubricImage!.isEmpty)) {
+              assessmentData[i].customRubricImage!.isEmpty &&
+                  customRubicLocalData.isNotEmpty)) {
             int? localCustomRubricIndex = 0;
             CustomRubricModal? customRubicModal = customRubicLocalData[0];
 

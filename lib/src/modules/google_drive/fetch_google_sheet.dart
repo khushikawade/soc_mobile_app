@@ -20,8 +20,7 @@ class FetchGoogleSheet {
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
             case 'Name':
-              studentAssessmentInfo.studentName =
-                  fields[j][i].toString().replaceFirst(" ", "");
+              studentAssessmentInfo.studentName = fields[j][i].toString();
               break;
             case 'Points Earned':
               studentAssessmentInfo.studentGrade =
