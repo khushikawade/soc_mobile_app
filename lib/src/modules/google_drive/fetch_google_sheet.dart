@@ -54,12 +54,25 @@ class FetchGoogleSheet {
               studentAssessmentInfo.subject =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
-            case 'Learning Standard':
+            case 'NY Next Generation Learning Standard':
+              studentAssessmentInfo.subLearningStandard =
+                  fields[j][i].toString().replaceFirst(" ", "");
+              break;
+
+            case 'Domain':
               studentAssessmentInfo.learningStandard =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
-            case 'NY Next Generation Learning Standard':
+            case 'Learning Standard':
               studentAssessmentInfo.subLearningStandard =
+                  fields[j][i].toString().replaceFirst(" ", "");
+              break;
+            // case 'NY Next Generation Learning Standard':
+            //   studentAssessmentInfo.subLearningStandard =
+            //       fields[j][i].toString().replaceFirst(" ", "");
+            //   break;
+            case 'Standard Description':
+              studentAssessmentInfo.standardDescription =
                   fields[j][i].toString().replaceFirst(" ", "");
               break;
             case 'Scoring Rubric':

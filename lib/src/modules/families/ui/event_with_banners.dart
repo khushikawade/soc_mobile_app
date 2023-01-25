@@ -406,7 +406,7 @@ class _EventPageState extends State<EventPage>
       children: [
         Container(
             margin: EdgeInsets.all(10.0),
-            child: CalendraIconWidget(
+            child: CalendarIconWidget(
               color: Colors.red,
               dateTime: _methodDate(i),
             )),
