@@ -1252,10 +1252,13 @@ class studentRecordList extends State<ResultsSummary> {
                                   return Text(translatedMessage.toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5!
+                                          .headline4!
                                           .copyWith(
-                                            color: AppTheme.kButtonColor,
-                                          ));
+                                              color: AppTheme.kButtonColor,
+                                              fontSize:
+                                                  Globals.deviceType == 'phone'
+                                                      ? 20
+                                                      : 22));
                                 }),
                           ),
                           onPressed: () {
@@ -1278,13 +1281,16 @@ class studentRecordList extends State<ResultsSummary> {
                                   return Text(translatedMessage.toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5!
+                                          .headline4!
                                           .copyWith(
-                                            color: yesActionText ==
-                                                    'Yes, Take Me There'
-                                                ? Colors.red
-                                                : AppTheme.kButtonColor,
-                                          ));
+                                              color: yesActionText ==
+                                                      'Yes, Take Me There'
+                                                  ? Colors.red
+                                                  : AppTheme.kButtonColor,
+                                              fontSize:
+                                                  Globals.deviceType == 'phone'
+                                                      ? 20
+                                                      : 22));
                                 }),
                           ),
                           onPressed: () async {

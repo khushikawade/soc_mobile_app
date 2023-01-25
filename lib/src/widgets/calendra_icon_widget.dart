@@ -3,10 +3,10 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
-class CalendraIconWidget extends StatelessWidget {
+class CalendarIconWidget extends StatelessWidget {
   final dateTime;
   final color;
-  CalendraIconWidget({Key? key, required this.dateTime, this.color})
+  CalendarIconWidget({Key? key, required this.dateTime, this.color})
       : super(key: key);
 
   static const double _kPhoneIcon = 36.0;

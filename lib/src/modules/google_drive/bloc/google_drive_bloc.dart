@@ -418,10 +418,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 grade: "Grade",
                 className: "Class Name",
                 subject: "Subject",
-                learningStandard: "Learning Standard",
-                subLearningStandard: "NY Next Generation Learning Standard",
+                learningStandard:
+                    "Domain", // Update as shared by client "Learning Standard",
+                subLearningStandard:  "Learning Standard", // Update as shared by client , "NY Next Generation Learning Standard",
                 scoringRubric: "Scoring Rubric",
                 customRubricImage: "Custom Rubric Image",
+                standardDescription: "Standard Description",
                 assessmentImage: Overrides.STANDALONE_GRADED_APP == true
                     ? "Student Work Image"
                     : "Assessment Image",
@@ -1216,13 +1218,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 12 : 10)
-                : (isMcqSheet == true ? 13 : 11),
+                ? (isMcqSheet == true ? 13 : 11)
+                : (isMcqSheet == true ? 14 : 12),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 13 : 11)
-                : (isMcqSheet == true ? 14 : 12),
+                ? (isMcqSheet == true ? 14 : 12)
+                : (isMcqSheet == true ? 15 : 13),
             sheetId: sheetID,
             imageLink: assessmentData[1].customRubricImage));
       }
@@ -1236,13 +1238,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 14 : 12)
-                : (isMcqSheet == true ? 15 : 13),
+                ? (isMcqSheet == true ? 15 : 13)
+                : (isMcqSheet == true ? 16 : 14),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 15 : 13)
-                : (isMcqSheet == true ? 16 : 14),
+                ? (isMcqSheet == true ? 16 : 14)
+                : (isMcqSheet == true ? 17 : 15),
             sheetId: sheetID,
             imageLink: assessmentData[1].googleSlidePresentationURL));
       }
@@ -1256,13 +1258,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 13 : 11)
-                : (isMcqSheet == true ? 14 : 12),
+                ? (isMcqSheet == true ? 14 : 12)
+                : (isMcqSheet == true ? 15 : 13),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
                     Globals.isPremiumUser == false
-                ? (isMcqSheet == true ? 14 : 12)
-                : (isMcqSheet == true ? 15 : 13),
+                ? (isMcqSheet == true ? 15 : 13)
+                : (isMcqSheet == true ? 16 : 14),
             sheetId: sheetID,
             imageLink: assessmentData[i].assessmentImage));
       }

@@ -34,6 +34,12 @@ class Item {
   int? shareCount;
   @HiveField(14)
   int? supportCount;
+  @HiveField(15)
+  String? image;
+  @HiveField(16)
+  dynamic completedAt;
+  @HiveField(17)
+  dynamic completedAtTimestamp;
   // @HiveField(14)
   // dynamic completedAt;
 
@@ -48,6 +54,9 @@ class Item {
       this.mediaContent,
       this.enclosure,
       this.id,
+      this.completedAt,
+      this.completedAtTimestamp,
+      this.image,
       this.likeCount = 0,
       // this.completedAt,
       this.thanksCount = 0,

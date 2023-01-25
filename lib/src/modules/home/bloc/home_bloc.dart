@@ -464,7 +464,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _socialBloc.add(SocialPageEvent(action: 'initial'));
         } else if (element.contains('news')) {
           NewsBloc _newsBloc = NewsBloc();
-          _newsBloc.add(FetchNotificationList());
+          _newsBloc.add(FetchNotificationList(action: 'initial'));
         } else if (element.contains('families')) {
           FamilyBloc _familyBloc = FamilyBloc();
           _familyBloc.add(FamiliesEvent());

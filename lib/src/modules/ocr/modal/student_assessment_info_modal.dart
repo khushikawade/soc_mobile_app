@@ -45,6 +45,8 @@ class StudentAssessmentInfo {
   String? studentResponseKey;
   @HiveField(18)
   String? googleSlidePresentationURL;
+  @HiveField(19)
+  String? standardDescription;
 
   StudentAssessmentInfo(
       {this.studentName,
@@ -65,6 +67,7 @@ class StudentAssessmentInfo {
       this.slideObjectId,
       this.googleSlidePresentationURL,
       this.answerKey,
+      this.standardDescription,
       //this.presentationURL,
       this.studentResponseKey});
 
@@ -93,5 +96,6 @@ class StudentAssessmentInfo {
           isSavedOnDashBoard: json['Saved on Dashboard'],
           answerKey: json['Answer Key'],
           googleSlidePresentationURL: json['Presentation URL'],
-          studentResponseKey: json['Student Response Key']);
+          studentResponseKey: json['Student Response Key'],
+          standardDescription: json['Standard Description']);
 }

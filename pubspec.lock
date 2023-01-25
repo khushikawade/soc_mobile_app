@@ -946,7 +946,11 @@ packages:
       name: material_color_utilities
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "0.1.4"
+=======
+    version: "0.1.5"
+>>>>>>> 9f090c7c21d3ee2ee5f58186b3ab2823e741d500
   meta:
     dependency: transitive
     description:
@@ -1420,7 +1424,11 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "1.8.2"
+=======
+    version: "1.9.0"
+>>>>>>> 9f090c7c21d3ee2ee5f58186b3ab2823e741d500
   speech_bubble:
     dependency: "direct main"
     description:
@@ -1497,7 +1505,11 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "0.4.9"
+=======
+    version: "0.4.12"
+>>>>>>> 9f090c7c21d3ee2ee5f58186b3ab2823e741d500
   timing:
     dependency: transitive
     description:

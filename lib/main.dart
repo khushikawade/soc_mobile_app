@@ -57,7 +57,6 @@ void main() async {
     );
   } else if (Platform.isIOS) {
     await Firebase.initializeApp(
-      // name: 'SOC',
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
