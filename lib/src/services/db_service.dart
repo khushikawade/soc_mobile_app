@@ -11,6 +11,7 @@ class DbServices {
     headers,
   }) async {
     try {
+      print('${Overrides.API_BASE_URL}$api');
       final response = await httpClient.get(
           // baseURLExist == true
           //     ? Uri.parse('$api')

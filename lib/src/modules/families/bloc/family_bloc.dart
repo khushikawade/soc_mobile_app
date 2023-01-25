@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/modal/calendar_banner_image_modal.dart';
@@ -137,8 +139,17 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         final clearCacheResult =
             clearStaffDirectory.getBool('delete_local_staff_directory');
 
+        //**********************************************************************Comment the Code*************************************************************** */
+        // await _localDb.clear();
+        //***************************************************************************************************************************************************** */
+
         if (clearCacheResult != true) {
+          //clear local database
+          _localData.clear();
+
+          //clear list
           await _localDb.clear();
+
           await clearStaffDirectory.setBool(
               'delete_local_staff_directory', true);
         }
@@ -146,15 +157,13 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         if (_localData.isEmpty) {
           yield FamilyLoading();
         } else {
-          yield SDDataSuccess(
-              obj: _localData.groupListsBy((element) => element.groupingC));
+          yield SDDataSuccess(obj: getSeparateList(list: _localData));
         }
         // Local database end
 
         List<SDlist> list =
             await getStaffList(event.categoryId, event.customerRecordId);
 
-        list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
         // Syncing the remote data to the local database.
         await _localDb.clear();
         list.forEach((SDlist e) {
@@ -164,8 +173,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         yield FamilyLoading(); //
 
-        yield SDDataSuccess(
-            obj: list.groupListsBy((element) => element.groupingC));
+        yield SDDataSuccess(obj: getSeparateList(list: list));
       } catch (e) {
         print(e);
         // yield ErrorLoading(err: e);
@@ -178,8 +186,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         yield FamilyLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
 
-        yield SDDataSuccess(
-            obj: _localData.groupListsBy((element) => element.groupingC));
+        yield SDDataSuccess(obj: getSeparateList(list: _localData));
       }
     }
 
@@ -399,7 +406,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
 
         //Removing hide records from the list
         _list.removeWhere((SDlist element) => element.status == 'Hide');
-
+        _list.sort((a, b) => a.sortOrderC.compareTo(b.sortOrderC));
+        print(_list);
         return _list;
       } else {
         throw ('something_went_wrong');
@@ -480,6 +488,29 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       return [];
     } catch (e) {
       throw (e);
+    }
+  }
+
+  Map<String, List<SDlist>> getSeparateList({required List<SDlist> list}) {
+    try {
+      List<SDlist> folderList = [];
+      List<SDlist> subFolderList = [];
+
+      list.forEach((SDlist element) {
+        //Main List Separation
+        if (element.isFolderC == 'true' ||
+            element.appFolderC == null ||
+            element.appFolderC!.isEmpty) {
+          folderList.add(element);
+        } else {
+          //Main List Separation
+          subFolderList.add(element);
+        }
+      });
+
+      return {'Folder': folderList, 'SubFolder': subFolderList} ?? {};
+    } catch (e) {
+      return {};
     }
   }
 }

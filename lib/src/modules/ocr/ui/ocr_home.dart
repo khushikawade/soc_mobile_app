@@ -576,7 +576,7 @@ class _OpticalCharacterRecognitionPageState
               imageURL: customScoreObj.imgUrl!));
     } else if (customScoreObj.imgBase64 != null &&
         customScoreObj.imgBase64!.isNotEmpty) {
-      Utility.showLoadingDialog(context:    context,isOCR:  true);
+      Utility.showLoadingDialog(context: context, isOCR: true);
       _googleDriveBloc.add(ImageToAwsBucket(
           customRubricModal: customScoreObj, getImageUrl: true));
     } else {
