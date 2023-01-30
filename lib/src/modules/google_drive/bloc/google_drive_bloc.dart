@@ -420,7 +420,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 subject: "Subject",
                 learningStandard:
                     "Domain", // Update as shared by client "Learning Standard",
-                subLearningStandard:  "Learning Standard", // Update as shared by client , "NY Next Generation Learning Standard",
+                subLearningStandard:
+                    "Learning Standard", // Update as shared by client , "NY Next Generation Learning Standard",
                 scoringRubric: "Scoring Rubric",
                 customRubricImage: "Custom Rubric Image",
                 standardDescription: "Standard Description",
