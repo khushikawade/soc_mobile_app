@@ -1,4 +1,3 @@
-import 'dart:core';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
@@ -258,14 +257,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
 
         // yield HomeErrorReceived(err: e);
-
       }
     }
   }
 
   Future fetchCustomNavigationBar() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
+      final ResponseModel response = await _dbServices.getApi(
         Uri.encodeFull(
             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Custom_App_Section__c'),
       );
@@ -292,7 +290,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future fetchStandardNavigationBar() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
+      final ResponseModel response = await _dbServices.getApi(
         Uri.encodeFull(
             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       );
@@ -440,7 +438,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future getGlobalSearch(keyword) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
+      final ResponseModel response = await _dbServices.getApi(
           'searchRecords?schoolId=${Overrides.SCHOOL_ID}&keyword=$keyword');
       if (response.statusCode == 200) {
         return response.data["body"]
@@ -517,7 +515,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       String? recordId, String? objectName, String recordType) async {
     try {
       final ResponseModel response =
-          await _dbServices.getapi('getRecord/$objectName/$recordId');
+          await _dbServices.getApi('getRecord/$objectName/$recordId');
       if (response.statusCode == 200) {
         dynamic data;
         if (objectName == "Staff_Directory_App__c") {
@@ -570,8 +568,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   // }
 
   void deleteRecentSearchItem(String localDatalogName) async {
-    int itemcount = await HiveDbServices().getListLength(localDatalogName);
-    if (itemcount > 5) {
+    int itemCount = await HiveDbServices().getListLength(localDatalogName);
+    if (itemCount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);
     }
   }

@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -25,12 +26,18 @@ class _ProfilePageState extends State<ProfilePage> {
   int counter = 0;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("Profile_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'Profile_page', screenClass: 'ProfilePage');
+  }
+
   @override
   Widget build(BuildContext context) {
-    //  appBar: AppBar(
-    //     backgroundColor: Colors.transparent,
-    //     actions: [IconButton(onPressed: () {}, icon: Icon(Icons.logout))],
-    //   ),
     return Stack(
       children: [
         CommonBackGroundImgWidget(),
@@ -39,16 +46,12 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
             isSuccessState: ValueNotifier<bool>(true),
-            isbackOnSuccess: isBackFromCamera,
+            isBackOnSuccess: isBackFromCamera,
             key: GlobalKey(),
             isBackButton: true,
             isProfilePage: true,
           ),
-          //  AppBar(
-          //   elevation: 0,
-          //   backgroundColor: Colors.transparent,
-          //   actions: [IconButton(onPressed: () {}, icon: Icon(Icons.logout))],
-          // ),
+
           body: ListView(
             physics: NeverScrollableScrollPhysics(),
             children: [
@@ -101,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       MaterialPageRoute(
                                           builder: (context) => InformationPage(
                                                 appbarTitle: 'Information',
-                                                isbuttomsheet: true,
+                                                isBottomSheet: true,
                                                 ishtml: true,
                                               )))
                                   : Utility.currentScreenSnackBar(
@@ -124,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   MaterialPageRoute(
                                       builder: (context) => SettingPage(
                                             appbarTitle: 'Settings',
-                                            isbuttomsheet: true,
+                                            isBottomSheet: true,
                                           )));
                             },
                             title: 'Settings'),
@@ -148,9 +151,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               StateSelectionPage(
-                                                isFromCreateAssesmentScreen:
+                                                isFromCreateAssessmentScreen:
                                                     false,
-                                                questionimageUrl: '',
+                                                questionImageUrl: '',
                                                 selectedClass: '',
                                               )));
                                 },
@@ -225,140 +228,3 @@ class _ProfilePageState extends State<ProfilePage> {
         onTap: onTap);
   }
 }
-
-
-
-
-// Row(
-//                           mainAxisAlignment: MainAxisAlignment.start,
-//                           children: [
-//                             Icon(
-//                               Icons.home,
-//                               color: Colors.blueAccent[400],
-//                               size: 35,
-//                             ),
-//                             SizedBox(
-//                               width: 20.0,
-//                             ),
-//                             Column(
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 Text(
-//                                   "Guild",
-//                                   style: TextStyle(
-//                                     fontSize: 15.0,
-//                                   ),
-//                                 ),
-//                                 Text(
-//                                   "FairyTail, Magnolia",
-//                                   style: TextStyle(
-//                                     fontSize: 12.0,
-//                                     color: Colors.grey[400],
-//                                   ),
-//                                 )
-//                               ],
-//                             )
-//                           ],
-//                         ),
-//                         SizedBox(
-//                           height: 20.0,
-//                         ),
-//                         Row(
-//                           mainAxisAlignment: MainAxisAlignment.start,
-//                           children: [
-//                             Icon(
-//                               Icons.auto_awesome,
-//                               color: Colors.yellowAccent[400],
-//                               size: 35,
-//                             ),
-//                             SizedBox(
-//                               width: 20.0,
-//                             ),
-//                             Column(
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 Text(
-//                                   "Magic",
-//                                   style: TextStyle(
-//                                     fontSize: 15.0,
-//                                   ),
-//                                 ),
-//                                 Text(
-//                                   "Spatial & Sword Magic, Telekinesis",
-//                                   style: TextStyle(
-//                                     fontSize: 12.0,
-//                                     color: Colors.grey[400],
-//                                   ),
-//                                 )
-//                               ],
-//                             )
-//                           ],
-//                         ),
-//                         SizedBox(
-//                           height: 20.0,
-//                         ),
-//                         Row(
-//                           mainAxisAlignment: MainAxisAlignment.start,
-//                           children: [
-//                             Icon(
-//                               Icons.favorite,
-//                               color: Colors.pinkAccent[400],
-//                               size: 35,
-//                             ),
-//                             SizedBox(
-//                               width: 20.0,
-//                             ),
-//                             Column(
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 Text(
-//                                   "Loves",
-//                                   style: TextStyle(
-//                                     fontSize: 15.0,
-//                                   ),
-//                                 ),
-//                                 Text(
-//                                   "Eating cakes",
-//                                   style: TextStyle(
-//                                     fontSize: 12.0,
-//                                     color: Colors.grey[400],
-//                                   ),
-//                                 )
-//                               ],
-//                             )
-//                           ],
-//                         ),
-//                         SizedBox(
-//                           height: 20.0,
-//                         ),
-//                         Row(
-//                           mainAxisAlignment: MainAxisAlignment.start,
-//                           children: [
-//                             Icon(
-//                               Icons.people,
-//                               color: Colors.lightGreen[400],
-//                               size: 35,
-//                             ),
-//                             SizedBox(
-//                               width: 20.0,
-//                             ),
-//                             Column(
-//                               crossAxisAlignment: CrossAxisAlignment.start,
-//                               children: [
-//                                 Text(
-//                                   "Team",
-//                                   style: TextStyle(
-//                                     fontSize: 15.0,
-//                                   ),
-//                                 ),
-//                                 Text(
-//                                   "Team Natsu",
-//                                   style: TextStyle(
-//                                     fontSize: 12.0,
-//                                     color: Colors.grey[400],
-//                                   ),
-//                                 )
-//                               ],
-//                             )
-//                           ],
-//                         ),

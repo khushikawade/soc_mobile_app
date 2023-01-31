@@ -1,6 +1,9 @@
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/ocr/graded_overrides.dart';
+import 'package:Soc/src/modules/ocr/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +21,17 @@ import '../bloc/ocr_bloc.dart';
 
 class GoogleLogin {
   //To authenticate the user via google
-  static launchURL(String? title, context, _scaffoldKey, bool? isStandAloneApp,
-      String? buttonPressed) async {
+  static launchURL(
+    String? title,
+    context,
+    _scaffoldKey,
+    bool? isStandAloneApp,
+    String? buttonPressed,
+  ) async {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'google_login', screenClass: 'GoogleLogin');
+
     final OcrBloc _ocrBlocLogs = new OcrBloc();
     int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
     var themeColor = Theme.of(context).backgroundColor == Color(0xff000000)
@@ -39,9 +51,9 @@ class GoogleLogin {
                 '?' +
                 themeColor.toString().split('0xff')[1].split(')')[0])
             : Overrides.STANDALONE_GRADED_APP
-                ? Overrides.googleClassroomAuthURL!
-                : Overrides.googleDriveAuthURL!,
-        isbuttomsheet: true,
+                ? OcrOverrides.googleClassroomAuthURL!
+                : OcrOverrides.googleDriveAuthURL!,
+        isBottomSheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
         hideShare: true,
@@ -76,13 +88,13 @@ class GoogleLogin {
       value = value.split('?')[1] ?? '';
       //Save user profile
       await saveUserProfile(value);
-      List<UserInformation> _userprofilelocalData =
+      List<UserInformation> _userProfileLocalData =
           await UserGoogleProfile.getUserProfile();
 
-      verifyUserAndGetDriveFolder(_userprofilelocalData);
+      verifyUserAndGetDriveFolder(_userProfileLocalData);
 
       Globals.teacherEmailId =
-          _userprofilelocalData[0].userEmail!.split('@')[0];
+          _userProfileLocalData[0].userEmail!.split('@')[0];
 
       // Log Firebase Event
       FirebaseAnalyticsService.setUserId(id: Globals.teacherEmailId);
@@ -115,7 +127,10 @@ class GoogleLogin {
         if (Overrides.STANDALONE_GRADED_APP != true) {
           pushNewScreen(
             context,
-            screen: OpticalCharacterRecognition(),
+            screen: SelectAssessmentType(),
+            // isMcqSheet == true
+            //     ? MultipleChoiceSection()
+            //     : OpticalCharacterRecognition(),
             withNavBar: false,
           );
           // Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -156,20 +171,20 @@ class GoogleLogin {
   }
 
   static verifyUserAndGetDriveFolder(
-      List<UserInformation> _userprofilelocalData) async {
+      List<UserInformation> _userProfileLocalData) async {
     OcrBloc _ocrBloc = new OcrBloc();
     GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
     //Verifying with Salesforce if user exist in contact
     _ocrBloc
-        .add(VerifyUserWithDatabase(email: _userprofilelocalData[0].userEmail));
+        .add(VerifyUserWithDatabase(email: _userProfileLocalData[0].userEmail));
 
     //Creating a assessment folder in users google drive to maintain all the assessments together at one place
     Globals.googleDriveFolderId = '';
     _googleDriveBloc.add(GetDriveFolderIdEvent(
         isFromOcrHome: false,
         //  filePath: file,
-        token: _userprofilelocalData[0].authorizationToken,
+        token: _userProfileLocalData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _userprofilelocalData[0].refreshToken));
+        refreshToken: _userProfileLocalData[0].refreshToken));
   }
 }

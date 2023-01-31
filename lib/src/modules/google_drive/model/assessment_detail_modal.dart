@@ -20,7 +20,7 @@ class AssessmentDetails {
       this.googleFileId,
       this.sessionId,
       this.teacherEmail,
-      this.teacherContactId,this.createdAsPremium});
+      this.teacherContactId,this.createdAsPremium,this.assessmentType});
   @HiveField(0)
   String? name;
   @HiveField(1)
@@ -55,6 +55,12 @@ class AssessmentDetails {
   String? teacherContactId;
   @HiveField(16)
   String? createdAsPremium;
+  @HiveField(17)
+  String? assessmentType;
+  
+
+
+
 
   factory AssessmentDetails.fromRawJson(String str) =>
       AssessmentDetails.fromJson(json.decode(str));
@@ -79,6 +85,7 @@ class AssessmentDetails {
         teacherContactId: json["Teacher_Contact_Id"],
         teacherEmail: json["Teacher_Email"],
         createdAsPremium:json["Created_As_Premium"] ?? "false", 
+        assessmentType: json["Assessment_Type"] ?? 'Constructed Response',
       );
 
   Map<String, dynamic> toJson() => {
@@ -97,6 +104,7 @@ class AssessmentDetails {
         "Session_Id": sessionId,
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
-        "Created_As_Premium":createdAsPremium
+        "Created_As_Premium":createdAsPremium,
+        "Assessment_Type":assessmentType
       };
 }

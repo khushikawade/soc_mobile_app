@@ -33,9 +33,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 
 class SearchPage extends StatefulWidget {
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String? language;
-  SearchPage({Key? key, required this.isbuttomsheet, required this.language})
+  SearchPage({Key? key, required this.isBottomSheet, required this.language})
       : super(key: key);
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -47,7 +47,7 @@ class _SearchPageState extends State<SearchPage> {
   static const double _kMargin = 16.0;
   final _controller = TextEditingController();
   // final refreshKey = GlobalKey<RefreshIndicatorState>();
-  bool iserrorstate = false;
+  bool isErrorState = false;
   final HomeBloc _homeBloc = new HomeBloc();
   final HomeBloc _homeBloc2 = new HomeBloc();
   FocusNode myFocusNode = new FocusNode();
@@ -100,8 +100,8 @@ class _SearchPageState extends State<SearchPage> {
   // }
 
   deleteItem(String localDatalogName) async {
-    int itemcount = await HiveDbServices().getListLength(localDatalogName);
-    if (itemcount > 5) {
+    int itemCount = await HiveDbServices().getListLength(localDatalogName);
+    if (itemCount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);
     }
   }
@@ -111,9 +111,9 @@ class _SearchPageState extends State<SearchPage> {
   // }
 
   // deleteItemReference() async {
-  //   int itemcount =
+  //   int itemCount =
   //       await HiveDbServices().getListLength(Strings.hiveReferenceLogName);
-  //   if (itemcount > 5) {
+  //   if (itemCount > 5) {
   //     await HiveDbServices().deleteData(Strings.hiveReferenceLogName, 0);
   //   }
   // }
@@ -132,7 +132,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => ContactPage(
                         obj: Globals.appSetting,
                         //  Globals.homeObject,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         appBarTitle: obj.titleC!,
                         language: Globals.selectedLanguage!,
                       )))
@@ -148,7 +148,7 @@ class _SearchPageState extends State<SearchPage> {
     //               builder: (BuildContext context) => ContactPage(
     //                     obj: Globals.appSetting,
     //                     //  Globals.homeObject,
-    //                     isbuttomsheet: true,
+    //                     isBottomSheet: true,
     //                     appBarTitle: obj.titleC!,
     //                     language: Globals.selectedLanguage!,
     //                   )));
@@ -164,12 +164,12 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context) => SliderWidget(
                     obj: newObj,
                     currentIndex: 0,
-                    issocialpage: false,
+                    isSocialPage: false,
                     isAboutSDPage: true,
                     isNewsPage: false,
                     // iseventpage: false,
                     date: "",
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     } else if (objectType == "Form") {
@@ -182,7 +182,7 @@ class _SearchPageState extends State<SearchPage> {
                   isAbout: true,
                   appBarTitle: obj.titleC!,
                   obj: obj,
-                  isbuttomsheet: true,
+                  isBottomSheet: true,
                   language: Globals.selectedLanguage,
                   isSubmenu: false)));
     } else if (objectType == "SchoolDirectoryApp") {
@@ -203,7 +203,7 @@ class _SearchPageState extends State<SearchPage> {
                     isAbout: true,
                     appBarTitle: obj.titleC!,
                     obj: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
@@ -215,7 +215,7 @@ class _SearchPageState extends State<SearchPage> {
     //             builder: (BuildContext context) => InAppUrlLauncer(
     //                   title: obj.titleC!,
     //                   url: obj.appURLC!,
-    //                   isbuttomsheet: true,
+    //                   isBottomSheet: true,
     //                   language: Globals.selectedLanguage,
     //                 )));
     //   } else {
@@ -238,7 +238,7 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
                         language: Globals.selectedLanguage,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
                       )))
@@ -254,7 +254,7 @@ class _SearchPageState extends State<SearchPage> {
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                         isOCRFeature: false,
                       )))
@@ -267,7 +267,7 @@ class _SearchPageState extends State<SearchPage> {
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => EventPage(
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
                         calendarId: obj.calendarId.toString(),
@@ -291,7 +291,7 @@ class _SearchPageState extends State<SearchPage> {
                                     : obj.name.toString().contains("CAM")
                                         ? "Custom"
                                         : "",
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage,
                   )));
@@ -321,7 +321,7 @@ class _SearchPageState extends State<SearchPage> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC ?? "",
                     url: obj.appUrlC,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
       // _setLocked();
@@ -476,7 +476,7 @@ class _SearchPageState extends State<SearchPage> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 _buildLeading(items[index]),
-                HorzitalSpacerWidget(_kLabelSpacing),
+                HorizontalSpacerWidget(_kLabelSpacing),
                 TranslationWidget(
                   message: items[index].objectName == 'Staff_Directory_App__c'
                       ? (items[index].name != null &&
@@ -690,7 +690,7 @@ class _SearchPageState extends State<SearchPage> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        HorzitalSpacerWidget(_kLabelSpacing / 2),
+        HorizontalSpacerWidget(_kLabelSpacing / 2),
         TranslationWidget(
           message: "Search",
           toLanguage: Globals.selectedLanguage,
@@ -711,7 +711,7 @@ class _SearchPageState extends State<SearchPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        HorzitalSpacerWidget(_kLabelSpacing / 2),
+        HorizontalSpacerWidget(_kLabelSpacing / 2),
         TranslationWidget(
           message: "Recent Search",
           toLanguage: Globals.selectedLanguage,
@@ -790,11 +790,11 @@ class _SearchPageState extends State<SearchPage> {
                 final bool connected = connectivity != ConnectivityResult.none;
 
                 if (connected) {
-                  if (iserrorstate == true) {
-                    iserrorstate = false;
+                  if (isErrorState == true) {
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return
@@ -854,7 +854,8 @@ class _SearchPageState extends State<SearchPage> {
                                     null);
                               }
                             } else if (state is RefrenceSearchLoading) {
-                              return Utility.showLoadingDialog(context, false);
+                              return Utility.showLoadingDialog(
+                                  context: context, isOCR: false);
                             } else if (state is HomeErrorReceived) {}
                           },
                           child: EmptyContainer()),
@@ -939,7 +940,7 @@ class _SearchPageState extends State<SearchPage> {
 //                                   : obj.name.toString().contains("CAM")
 //                                       ? "Custom"
 //                                       : "",
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   appBarTitle: obj.titleC!,
 //                   language: Globals.selectedLanguage,
 //                 )));
@@ -954,7 +955,7 @@ class _SearchPageState extends State<SearchPage> {
 //                   builder: (BuildContext context) => ContactPage(
 //                         obj: Globals.appSetting,
 //                         //  Globals.homeObject,
-//                         isbuttomsheet: true,
+//                         isBottomSheet: true,
 //                         appBarTitle: obj.titleC!,
 //                         language: Globals.selectedLanguage!,
 //                       )))
@@ -984,7 +985,7 @@ class _SearchPageState extends State<SearchPage> {
 //                     isNewsPage: false,
 //                     // iseventpage: false,
 //                     date: "",
-//                     isbuttomsheet: true,
+//                     isBottomSheet: true,
 //                     language: Globals.selectedLanguage,
 //                   )));
 //     } else if (obj.typeC == "URL") {
@@ -1003,7 +1004,7 @@ class _SearchPageState extends State<SearchPage> {
 //             builder: (BuildContext context) => ContactPage(
 //                   obj: Globals.appSetting,
 //                   //  Globals.homeObject,
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   appBarTitle: obj.titleC!,
 //                   language: Globals.selectedLanguage!,
 //                 )));
@@ -1017,7 +1018,7 @@ class _SearchPageState extends State<SearchPage> {
 //                   isAbout: true,
 //                   appBarTitle: obj.titleC!,
 //                   obj: obj,
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   language: Globals.selectedLanguage,
 //                 )));
 //   } else if (obj.typeC == "SchoolDirectoryApp") {
@@ -1037,7 +1038,7 @@ class _SearchPageState extends State<SearchPage> {
 //                   isAbout: true,
 //                   appBarTitle: obj.titleC!,
 //                   obj: obj,
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   language: Globals.selectedLanguage,
 //                 )));
 //   }
@@ -1049,7 +1050,7 @@ class _SearchPageState extends State<SearchPage> {
 //   //             builder: (BuildContext context) => InAppUrlLauncer(
 //   //                   title: obj.titleC!,
 //   //                   url: obj.appURLC!,
-//   //                   isbuttomsheet: true,
+//   //                   isBottomSheet: true,
 //   //                   language: Globals.selectedLanguage,
 //   //                 )));
 //   //   } else {
@@ -1071,7 +1072,7 @@ class _SearchPageState extends State<SearchPage> {
 //                 builder: (BuildContext context) => AboutusPage(
 //                       htmlText: obj.rtfHTMLC.toString(),
 //                       language: Globals.selectedLanguage,
-//                       isbuttomsheet: true,
+//                       isBottomSheet: true,
 //                       ishtml: true,
 //                       appbarTitle: obj.titleC!,
 //                     )))
@@ -1086,7 +1087,7 @@ class _SearchPageState extends State<SearchPage> {
 //                       isHomePage: false,
 //                       url: obj.pdfURL,
 //                       tittle: obj.titleC,
-//                       isbuttomsheet: true,
+//                       isBottomSheet: true,
 //                       language: Globals.selectedLanguage,
 //                     )))
 //         : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
@@ -1097,7 +1098,7 @@ class _SearchPageState extends State<SearchPage> {
 //             context,
 //             MaterialPageRoute(
 //                 builder: (BuildContext context) => EventPage(
-//                       isbuttomsheet: true,
+//                       isBottomSheet: true,
 //                       appBarTitle: obj.titleC,
 //                       language: Globals.selectedLanguage,
 //                       calendarId: obj.calendarId.toString(),
@@ -1121,7 +1122,7 @@ class _SearchPageState extends State<SearchPage> {
 //                                   : obj.name.toString().contains("CAM")
 //                                       ? "Custom"
 //                                       : "",
-//                   isbuttomsheet: true,
+//                   isBottomSheet: true,
 //                   appBarTitle: obj.titleC!,
 //                   language: Globals.selectedLanguage,
 //                 )));

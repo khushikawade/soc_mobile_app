@@ -25,12 +25,12 @@ import '../modal/calendar_event_list.dart';
 class EventPage extends StatefulWidget {
   final bool? isAppBar;
   final String? language;
-  final bool? isbuttomsheet;
+  final bool? isBottomSheet;
   final String? appBarTitle;
   final String calendarId;
 
   EventPage({
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.appBarTitle,
     required this.language,
     required this.calendarId,
@@ -47,7 +47,7 @@ class _EventPageState extends State<EventPage>
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final refreshKey1 = GlobalKey<RefreshIndicatorState>();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   final keyImage = GlobalKey();
   // String? lastMonth;
@@ -218,8 +218,8 @@ class _EventPageState extends State<EventPage>
                 marginLeft: 30,
                 appBarTitle: widget.appBarTitle!,
                 isSearch: true,
-                sharedpopBodytext: '',
-                sharedpopUpheaderText: '',
+                sharedPopBodyText: '',
+                sharedPopUpHeaderText: '',
                 isShare: false,
                 isCenterIcon: true,
                 language: Globals.selectedLanguage,
@@ -237,12 +237,12 @@ class _EventPageState extends State<EventPage>
                 Globals.isNetworkError = !connected;
 
                 if (connected) {
-                  if (iserrorstate == true) {
+                  if (isErrorState == true) {
                     _eventBloc.add(CalendarListEvent(widget.calendarId));
-                    iserrorstate = false;
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return BlocBuilder<FamilyBloc, FamilyState>(

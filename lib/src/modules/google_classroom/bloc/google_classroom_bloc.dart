@@ -11,7 +11,7 @@ import '../../../services/local_database/local_db.dart';
 import '../../google_drive/model/user_profile.dart';
 import '../../google_drive/overrides.dart';
 import '../../ocr/modal/user_info.dart';
-import '../../ocr/overrides.dart';
+import '../../ocr/graded_overrides.dart';
 part 'google_classroom_event.dart';
 part 'google_classroom_state.dart';
 
@@ -59,7 +59,7 @@ class GoogleClassroomBloc
           coursesList.forEach((GoogleClassroomCourses e) {
             _localDb.addData(e);
           });
-          Utility.updateLoges(
+          Utility.updateLogs(
               activityId: '24',
               // sessionId: widget.assessmentDetailPage == true
               //     ? widget.obj!.sessionId
@@ -72,7 +72,7 @@ class GoogleClassroomBloc
           yield GoogleClassroomCourseListSuccess(obj: coursesList);
         } else {
           yield GoogleClassroomErrorState(
-            errorMsg: 'Reauthentication is required',
+            errorMsg: 'ReAuthentication is required',
           );
         }
       } catch (e) {
@@ -123,7 +123,7 @@ class GoogleClassroomBloc
     //       yield GoogleClassroomStudentListSuccess(obj: coursesList);
     //     } else {
     //       yield GoogleClassroomErrorState(
-    //         errorMsg: 'Reauthentication is required',
+    //         errorMsg: 'ReAuthentication is required',
     //       );
     //     }
     //   } catch (e) {
@@ -174,23 +174,23 @@ class GoogleClassroomBloc
         var result = await _toRefreshAuthenticationToken(refreshToken!);
 
         if (result == true) {
-          List<UserInformation> _userprofilelocalData =
+          List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
           List responseList = await getAllGoogleClassroomCourses(
-              accessToken: _userprofilelocalData[0].authorizationToken,
-              refreshToken: _userprofilelocalData[0].refreshToken);
+              accessToken: _userProfileLocalData[0].authorizationToken,
+              refreshToken: _userProfileLocalData[0].refreshToken);
           return responseList;
         } else {
           List<GoogleClassroomCourses> data = [];
-          return [data, 'Reauthentication is required'];
+          return [data, 'ReAuthentication is required'];
         }
       } else {
         List<GoogleClassroomCourses> data = [];
-        return [data, 'Reauthentication is required'];
+        return [data, 'ReAuthentication is required'];
       }
     } catch (e) {
-      Utility.updateLoges(
+      Utility.updateLogs(
           activityId: '24',
           // sessionId: widget.assessmentDetailPage == true
           //     ? widget.obj!.sessionId
@@ -254,18 +254,18 @@ class GoogleClassroomBloc
   //       var result = await _toRefreshAuthenticationToken(refreshToken!);
 
   //       if (result == true) {
-  //         List<UserInformation> _userprofilelocalData =
+  //         List<UserInformation> _userProfileLocalData =
   //             await UserGoogleProfile.getUserProfile();
 
   //         String result = await getClassroomStudentsByCoursesId(
   //             courseId: courseId,
-  //             accessToken: _userprofilelocalData[0].authorizationToken,
-  //             refreshToken: _userprofilelocalData[0].refreshToken);
+  //             accessToken: _userProfileLocalData[0].authorizationToken,
+  //             refreshToken: _userProfileLocalData[0].refreshToken);
   //         print(result);
   //         return;
   //       } else {
   //         List<GoogleClassroomStudents> data = [];
-  //         return [data, 'Reauthentication is required'];
+  //         return [data, 'ReAuthentication is required'];
   //       }
   //       // return [];
   //     }
@@ -278,7 +278,7 @@ class GoogleClassroomBloc
   Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
     try {
       final body = {"refreshToken": refreshToken};
-      final ResponseModel response = await _dbServices.postapi(
+      final ResponseModel response = await _dbServices.postApi(
           "${OcrOverrides.OCR_API_BASE_URL}/refreshGoogleAuthentication",
           body: body,
           isGoogleApi: true);
@@ -288,14 +288,14 @@ class GoogleClassroomBloc
         var newToken = response.data['body']; //["access_token"]
         //!=null?response.data['body']["access_token"]:response.data['body']["error"];
         if (newToken["access_token"] != null) {
-          List<UserInformation> _userprofilelocalData =
+          List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
           UserInformation updatedObj = UserInformation(
-              userName: _userprofilelocalData[0].userName,
-              userEmail: _userprofilelocalData[0].userEmail,
-              profilePicture: _userprofilelocalData[0].profilePicture,
-              refreshToken: _userprofilelocalData[0].refreshToken,
+              userName: _userProfileLocalData[0].userName,
+              userEmail: _userProfileLocalData[0].userEmail,
+              profilePicture: _userProfileLocalData[0].profilePicture,
+              refreshToken: _userProfileLocalData[0].refreshToken,
               authorizationToken: newToken["access_token"]);
 
           await UserGoogleProfile.updateUserProfile(updatedObj);

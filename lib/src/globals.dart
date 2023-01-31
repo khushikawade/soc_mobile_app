@@ -25,7 +25,7 @@ class Globals {
   static bool? isCustomNavbar = false;
   static int? newsIndex;
   static Locale? myLocale;
-  static int? notiCount;
+  static int? notiCount = 0;
   static String? selectedLanguage = 'en';
   static String? appLogo;
   static bool? isnetworkexception = false;
@@ -58,8 +58,8 @@ class Globals {
   static bool? isDarkTheme;
   static bool? systemTheme;
   static String? themeType;
-  static List icons = [0xe823, 0xe824, 0xe825, 0xe829];
-  static List iconsName = ["Like", "Thanks", "Helpful", "Share"];
+  static List icons = [0xe823, 0xe824, 0xe825, 0xe829, 0xe863];
+  static List iconsName = ["Like", "Thanks", "Helpful", "Share", "Support"];
   static List<NotificationList> notificationList = [];
   static List<Item> socialList = [];
   static PackageInfo? packageInfo;
@@ -75,7 +75,7 @@ class Globals {
   //OCR Feature Globals
   static List pointsList = [2, 3, 4];
   static List pointsEarnedList = [0, 1, 2];
-  static int lastindex = 0;
+  static int lastIndex = 0;
   static String teacherEmailId = '';
   static String teacherId = '';
   static String sessionId = '';
@@ -113,12 +113,13 @@ class Globals {
   // ];
   static List ocrResultIcons = Overrides.STANDALONE_GRADED_APP == true
       ? [0xe873, 0xe871, 0xe803, 0xe876]
-      : [0xe876, 0xe871, 0xe873, 0xe87a];
+      : [0xe876, 0xe871, 0xe873, 0xe87a, 0xe80d];
   // ? [0xe876, 0xe871, 0xe873, 0xe803]
   // : [0xe876, 0xe871, 0xe873, 0xe87a];
   static List ocrResultIconsName = Overrides.STANDALONE_GRADED_APP == true
       ? ["History", "Drive", "Sheet", "Share"]
-      : ["Share", "Drive", "History", "Dashboard"];
+      : ["Share", "Drive", "History", "Dashboard", "Slide"];
+
   //  ? ["Share", "Drive", "History", "Sheet"]
   // : ["Share", "Drive", "History", "Dashboard"];
   // static List finishedList = [
@@ -133,7 +134,7 @@ class Globals {
   static String? googleDriveFolderPath;
   static String? googleExcelSheetId;
   static String? shareableLink;
-  static String? pointpossible = '2';
+  static String? pointPossible = '2';
   static String? assessmentName;
   static int? scanMoreStudentInfoLength;
   static String currentAssessmentId = '';
@@ -146,5 +147,8 @@ class Globals {
   static String? historyAssessmentName = '';
   static String? historyAssessmentFileId = '';
   static late TabController tabController;
+  static String? googleSlidePresentationId;
+  static String? googleSlidePresentationLink;
+  static String selectedFilterValue = 'All';
 //  static EventController scheduleController = EventController();
 }

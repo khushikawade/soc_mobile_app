@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/google_login.dart';
@@ -68,14 +69,13 @@ class _CoursesListScreenState extends State<CoursesListScreen>
   Widget build(BuildContext context) {
     return Stack(children: [
       CommonBackGroundImgWidget(),
-
       Scaffold(
         backgroundColor: Colors.transparent,
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         appBar: CustomOcrAppBarWidget(
           isSuccessState: ValueNotifier<bool>(true),
-          isbackOnSuccess: ValueNotifier<bool>(false),
+          isBackOnSuccess: ValueNotifier<bool>(false),
           key: GlobalKey(),
           isBackButton: true,
           assessmentDetailPage: true,
@@ -185,7 +185,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                     }
                   }
                   if (state is GoogleClassroomErrorState) {
-                    if (state.errorMsg == 'Reauthentication is required') {
+                    if (state.errorMsg == 'ReAuthentication is required') {
                       await Utility.refreshAuthenticationToken(
                           isNavigator: false,
                           errorMsg: state.errorMsg!,
@@ -202,39 +202,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                 }),
           ],
         ),
-        // floatingActionButtonLocation:
-        //     FloatingActionButtonLocation.,
-        // floatingActionButton: scanAssessmentButton(),
       ),
-
-      //  FloatingActionButton(
-      //   backgroundColor: AppTheme.kButtonColor,
-      //   child: Padding(
-      //     padding: EdgeInsets.only(right: 5),
-      //     child: Icon(
-      //         IconData(0xe875,
-      //             fontFamily: Overrides.kFontFam,
-      //             fontPackage: Overrides.kFontPkg),
-      //         color: Theme.of(context).backgroundColor,
-      //         size: 20),
-      //   ),
-      //   onPressed: () async {
-      //     List<UserInformation> _userprofilelocalData =
-      //         await UserGoogleProfile.getUserProfile();
-      //     GoogleLogin.verifyUserAndGetDriveFolder(_userprofilelocalData);
-
-      //     Navigator.of(context).push(
-      //       MaterialPageRoute(
-      //           builder: (context) => OpticalCharacterRecognition()),
-      //     );
-      //   },
-      //   // icon: Container(
-      //   //   alignment: Alignment.center,
-      //   //   child: Icon(Icons.add,
-      //   //       size: Globals.deviceType == 'tablet' ? 30 : null,
-      //   //       color: Theme.of(context).backgroundColor),
-      //   // ),
-      // ))
       scanAssessmentButton(),
     ]);
   }
@@ -269,15 +237,16 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                           title: 'Roster',
                           message: 'Please import the Roster first');
                     } else {
-                      List<UserInformation> _userprofilelocalData =
+                      List<UserInformation> _userProfileLocalData =
                           await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(
-                          _userprofilelocalData);
+                          _userProfileLocalData);
                       ScaffoldMessenger.of(context).removeCurrentSnackBar();
                       Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) =>
-                                OpticalCharacterRecognition()),
+                                SelectAssessmentType() //OpticalCharacterRecognition()
+                            ),
                       );
                     }
                   },

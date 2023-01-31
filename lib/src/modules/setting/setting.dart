@@ -17,13 +17,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 // import 'package:open_store/open_store.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingPage extends StatefulWidget {
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String appbarTitle;
   SettingPage(
-      {Key? key, required this.isbuttomsheet, required this.appbarTitle})
+      {Key? key, required this.isBottomSheet, required this.appbarTitle})
       : super(key: key);
   @override
   _SettingPageState createState() => _SettingPageState();
@@ -39,7 +40,7 @@ class _SettingPageState extends State<SettingPage> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   bool? isloadingstate = false;
 
   @override
@@ -203,7 +204,7 @@ class _SettingPageState extends State<SettingPage> {
       _buildHeading("App Version"),
       _appVersion(), _buildHeading("App Store"),
       _storOnTap('Go To Store'),
-      HorzitalSpacerWidget(_kLabelSpacing * 20),
+      HorizontalSpacerWidget(_kLabelSpacing * 20),
       SizedBox(
           width: MediaQuery.of(context).size.width * 1,
           height: 100.0,
@@ -219,8 +220,8 @@ class _SettingPageState extends State<SettingPage> {
           appBarTitle: 'Settings',
           isSearch: false,
           isShare: false,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
+          sharedPopBodyText: '',
+          sharedPopUpHeaderText: '',
           language: Globals.selectedLanguage,
         ),
         body: RefreshIndicator(
@@ -267,6 +268,11 @@ class _SettingPageState extends State<SettingPage> {
     //   androidAppBundleId:
     //       packageInfo.packageName, // Android app bundle package name
     // );
+    if (Overrides.Android_Store_URL.isEmpty &&
+        Overrides.Apple_Store_URL.isEmpty) {
+      Utility.currentScreenSnackBar('Link in not available', null);
+      return;
+    }
     Utility.launchUrlOnExternalBrowser(Globals.isAndroid == true
         ? Overrides.Android_Store_URL
         : //'https://apps.apple.com/us/app/j-h-s-151-lou-gehrig-academy/id1510021584'
@@ -274,14 +280,33 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _storOnTap(String text) {
-    return InkWell(
+    return ListTile(
       onTap: _appStoreOnTap,
-      child: Container(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.headline2!,
-          )),
+      leading: Text(
+        text,
+        style: Theme.of(context).textTheme.headline2!,
+      ),
+      trailing: Padding(
+        padding: const EdgeInsets.only(left: 2),
+        child: IconButton(
+            onPressed: () {
+              if (Overrides.Android_Store_URL.isEmpty &&
+                  Overrides.Apple_Store_URL.isEmpty) {
+                Utility.currentScreenSnackBar('Link in not available', null);
+                return;
+              }
+
+              Share.share(Globals.isAndroid == true
+                  ? Overrides.Android_Store_URL
+                  : //'https://apps.apple.com/us/app/j-h-s-151-lou-gehrig-academy/id1510021584'
+                  Overrides.Apple_Store_URL);
+            },
+            icon: Icon(
+              Icons.share,
+              color: Theme.of(context).primaryColor,
+              size: 20,
+            )),
+      ),
     );
   }
 

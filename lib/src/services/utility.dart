@@ -2,13 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
+import 'package:Soc/src/widgets/graded_globals.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -115,7 +118,7 @@ class Utility {
     }
   }
 
-  static bool updateLoges(
+  static bool updateLogs(
       {required String activityId,
       //  required String accountType,
       required String description,
@@ -352,6 +355,7 @@ class Utility {
     }
   }
 
+  // To parse emojis and unicodes from PostgreSQL response.
   static String utf8convert(String? text) {
     try {
       List<int> bytes = text.toString().codeUnits;
@@ -470,6 +474,7 @@ class Utility {
 
   static bool? currentScreenSnackBar(String msg, height,
       {double? marginFromBottom}) {
+    Fluttertoast.cancel();
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_LONG,
@@ -580,67 +585,89 @@ class Utility {
   //       });
   // }
 
-  static void showLoadingDialog(BuildContext context, bool? isOCR) async {
+  static void showLoadingDialog(
+      {BuildContext? context,
+      bool? isOCR,
+      Function(StateSetter)? state}) async {
     return showDialog<void>(
         useRootNavigator: false,
-        context: context,
+        context: context!,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return new WillPopScope(
-              onWillPop: () async => false,
-              child: SimpleDialog(
-                  backgroundColor:
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color(0xff111C20)
-                          : Color(0xffF7F8F9), //Colors.black54,
-                  children: <Widget>[
-                    Container(
-                      height: Globals.deviceType == 'phone' ? 80 : 100,
-                      width: Globals.deviceType == 'phone'
-                          ? MediaQuery.of(context).size.width * 0.4
-                          : MediaQuery.of(context).size.width * 0.5,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Utility.textWidget(
-                              text: 'Please Wait...',
-                              context: context,
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(
-                                    color: Color(0xff000000) !=
-                                            Theme.of(context).backgroundColor
-                                        ? Color(0xffFFFFFF)
-                                        : Color(0xff000000),
-                                    fontSize: Globals.deviceType == "phone"
-                                        ? AppTheme.kBottomSheetTitleSize
-                                        : AppTheme.kBottomSheetTitleSize * 1.3,
-                                  )),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  CircularProgressIndicator(
-                                    color:
-                                        isOCR! ? AppTheme.kButtonColor : null,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                ]),
-                          ),
-                        ],
-                      ),
-                    )
-                  ]));
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            if (state != null) {
+              state(setState);
+            }
+            return new WillPopScope(
+                onWillPop: () async => false,
+                child: SimpleDialog(
+                    backgroundColor:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9), //Colors.black54,
+                    children: <Widget>[
+                      Container(
+                        height: Globals.deviceType == 'phone' ? 80 : 100,
+                        width: Globals.deviceType == 'phone'
+                            ? MediaQuery.of(context).size.width * 0.4
+                            : MediaQuery.of(context).size.width * 0.5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: FittedBox(
+                                child: Utility.textWidget(
+                                    text: GradedGlobals.loadingMessage ??
+                                        'Please Wait...',
+                                    context: context,
+                                    textTheme: Theme.of(context)
+                                        .textTheme
+                                        .headline6!
+                                        .copyWith(
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xffFFFFFF)
+                                              : Color(0xff000000),
+                                          fontSize: Globals.deviceType ==
+                                                  "phone"
+                                              ? AppTheme.kBottomSheetTitleSize
+                                              : AppTheme.kBottomSheetTitleSize *
+                                                  1.3,
+                                        )),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            // Center(
+                            //   child: Row(
+                            //       mainAxisAlignment: MainAxisAlignment.center,
+                            //       children: [
+                            //         SizedBox(
+                            //           width: 10,
+                            //         ),
+                            Container(
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: CircularProgressIndicator(
+                                color: isOCR! ? AppTheme.kButtonColor : null,
+                              ),
+                            ),
+                            //         SizedBox(
+                            //           width: 10,
+                            //         ),
+                            //       ]),
+                            // ),
+                          ],
+                        ),
+                      )
+                    ]));
+          });
         });
   }
 
@@ -686,9 +713,9 @@ class Utility {
                     '?' +
                     themeColor.toString().split('0xff')[1].split(')')[0])
                 : Overrides.STANDALONE_GRADED_APP
-                    ? Overrides.googleClassroomAuthURL!
-                    : Overrides.googleDriveAuthURL!,
-        isbuttomsheet: true,
+                    ? OcrOverrides.googleClassroomAuthURL!
+                    : OcrOverrides.googleDriveAuthURL!,
+        isBottomSheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
         hideShare: true,
@@ -898,6 +925,12 @@ class Utility {
     // }
   }
 
+  static Future clearStudentInfo({required String tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    await _studentInfoDb.clear();
+  }
+
   static Future<List<StudentAssessmentInfo>> getStudentInfoList(
       {required String tableName}) async {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
@@ -1000,6 +1033,23 @@ class Utility {
     } catch (e) {
       print(e);
       return '';
+    }
+  }
+
+  static String getBase64FileExtension(String base64String) {
+    switch (base64String.characters.first) {
+      case '/':
+        return 'jpeg';
+      case 'i':
+        return 'png';
+      case 'R':
+        return 'gif';
+      case 'U':
+        return 'webp';
+      case 'J':
+        return 'pdf';
+      default:
+        return 'unknown';
     }
   }
 }

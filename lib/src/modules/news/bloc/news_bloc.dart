@@ -36,6 +36,18 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
 
+        //Clear news notification local data to manage loading issue
+        SharedPreferences clearNewsCache =
+            await SharedPreferences.getInstance();
+        final clearCacheResult =
+            clearNewsCache.getBool('delete_local_news_notification_cache');
+
+        if (clearCacheResult != true) {
+          _localData.clear();
+          await clearNewsCache.setBool(
+              'delete_local_news_notification_cache', true);
+        }
+
         _localData.forEach((element) {
           if (element.completedAtTimestamp != null) {
             _localData.sort((a, b) =>
@@ -49,11 +61,16 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           //Adding push notification local data to global list
           Globals.notificationList.clear();
           Globals.notificationList.addAll(_localData);
-          yield NewsLoaded(obj: _localData);
+          yield NewsLoaded(
+            obj: _localData,
+            isloading: true,
+            isFromUpdatedNewsList: false,
+          );
         }
         // Local database end.
-        List<NotificationList> _list = await fetchNotificationList();
+        List<NotificationList> _list = await fetchNotificationList(0, 50);
         // Syncing to local database
+
         await _localDb.clear();
         _list.forEach((NotificationList e) {
           _localDb.addData(e);
@@ -76,13 +93,19 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsLoading(); // Mimic state change
         yield NewsLoaded(
           obj: _list,
+          isloading: true,
+          isFromUpdatedNewsList: false,
         );
       } catch (e) {
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
 
-        yield NewsLoaded(obj: _localData);
+        yield NewsLoaded(
+          obj: _localData,
+          isloading: false,
+          isFromUpdatedNewsList: false,
+        );
         // yield NewsErrorReceived(err: e);
       }
     }
@@ -97,7 +120,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           "Thanks__c": "${event.thanks}",
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
-          "Test_School__c": "${Globals.appSetting.isTestSchool}"
+          "Test_School__c": "${Globals.appSetting.isTestSchool}",
+          "Support__c": "${event.support}"
         });
         yield NewsActionSuccess(
           obj: data,
@@ -119,16 +143,21 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     if (event is NewsCountLength) {
       try {
-        List<NotificationList> _list = await fetchNotificationList();
+        List<NotificationList> _list = await fetchNotificationList(0, 50);
+
+        // print("list length $event================> ${_list.length}");
+        Globals.notiCount = _list.length;
         String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
-        if (_localData.length < _list.length && _localData.isNotEmpty) {
+        //check the new Notification to show indicator on app startup
+        if (_localData.isNotEmpty &&
+            _list.isNotEmpty &&
+            _localData[0].id != _list[0].id) {
           Globals.indicator.value = true;
         }
-        yield NewsCountLenghtSuccess(
-          obj: _list,
-        );
+
+        yield NewsCountLenghtSuccess(obj: _list);
       } catch (e) {
         yield NewsErrorReceived(err: e);
       }
@@ -139,6 +168,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         yield NewsLoading();
         String? _objectName = "news_action";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+
         List<NotificationList> _localData = await _localDb.getData();
 
         if (event.isDetailPage == false) {
@@ -171,7 +201,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                     likeCount: list[j].likeCount,
                     thanksCount: list[j].thanksCount,
                     helpfulCount: list[j].helpfulCount,
-                    shareCount: list[j].shareCount));
+                    shareCount: list[j].shareCount,
+                    supportCount: list[j].supportCount));
                 break;
               }
 
@@ -187,7 +218,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                     likeCount: 0,
                     thanksCount: 0,
                     helpfulCount: 0,
-                    shareCount: 0));
+                    shareCount: 0,
+                    supportCount: 0));
               }
             }
           }
@@ -199,14 +231,54 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
         yield ActionCountSuccess(obj: newList);
       } catch (e) {
-        //print(e);
+        print(e);
         // yield NewsErrorReceived(err: e);
         String? _objectName = "news_action";
         // String? _objectName = "${Strings.newsObjectName}";
         LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
         List<NotificationList> _localData = await _localDb.getData();
         // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-        yield ActionCountSuccess(obj: _localData);
+        if (event.isDetailPage == false) {
+          yield ActionCountSuccess(obj: _localData);
+        }
+      }
+    }
+
+    if (event is UpdateNotificationList) {
+      try {
+        List<NotificationList> existingNotificationList = event.list!;
+
+        List<NotificationList> _list =
+            await fetchNotificationList(event.list!.length, 50); //offset,limit
+
+        //Adding newly fetched notification to the existing list
+        existingNotificationList.addAll(_list);
+
+        //Sending the loading indicator to UI to show at last index of the list
+        bool isLoading = true;
+
+        if (_list.isEmpty) {
+          isLoading = false;
+        }
+
+        //Sorting the notification by date
+        existingNotificationList.forEach((element) {
+          if (element.completedAtTimestamp != null) {
+            existingNotificationList.sort((a, b) =>
+                b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+          }
+        });
+
+        //To mimic the state
+        yield NewsLoading2();
+
+        yield NewsLoaded(
+          obj: existingNotificationList,
+          isloading: isLoading,
+          isFromUpdatedNewsList: true,
+        );
+      } catch (e) {
+        print(e);
       }
     }
   }
@@ -225,23 +297,25 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
-  Future<List<NotificationList>> fetchNotificationList() async {
+  Future<List<NotificationList>> fetchNotificationList(
+      int offset, int limit) async {
     try {
       final response = await http.get(
           Uri.parse(
-              "https://onesignal.com/api/v1/notifications?app_id=${Overrides.PUSH_APP_ID}"),
+              "https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/getNotifications?appId=${Overrides.PUSH_APP_ID}&offset=${offset}&limit=${limit}"),
           headers: {
             'Authorization': 'Basic ${Overrides.REST_API_KEY}',
           });
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        Globals.notiCount = data["total_count"];
-        final _allNotifications = data["notifications"];
+        // Globals.notiCount = data["total_count"];
+
+        final _allNotifications = data['body'] ?? [];
         // Filtering the scheduled notifications. Only delivered notifications should display in the list.
         final data1 =
             _allNotifications.where((e) => e['completed_at'] != null).toList();
         final data2 = data1 as List;
+
         return data2.map((i) {
           return NotificationList(
               id: i["id"],
@@ -259,7 +333,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       if (e.toString().contains("Failed host lookup")) {
         throw ("No Internet Connection.");
       } else {
-        //print(e);
+        print(e);
         throw (e);
       }
     }
@@ -267,7 +341,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future addNewsAction(body) async {
     try {
-      final ResponseModel response = await _dbServices.postapimain(
+      final ResponseModel response = await _dbServices.postApimain(
           "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News",
           body: body);
 
@@ -285,7 +359,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
   Future<List<ActionCountList>> fetchNewsActionCount() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.parse(
+      final ResponseModel response = await _dbServices.getApi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=News'));
 
       if (response.statusCode == 200) {

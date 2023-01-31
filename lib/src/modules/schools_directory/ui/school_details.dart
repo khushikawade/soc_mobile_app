@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -37,7 +38,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc homebloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   static const double _kboxborderwidth = 0.75;
   bool? isloadingstate = false;
   final List<Marker> _markers = [];
@@ -54,6 +55,10 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           position: LatLng(double.parse(widget.obj.latitude ?? "0.0"),
               double.parse(widget.obj.longitude ?? "0.0"))));
     }
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("school_detail_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'school_detail_page', screenClass: 'SchoolDetailPage');
   }
 
   @override
@@ -317,8 +322,8 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           isShare: false,
           isCenterIcon: true,
           appBarTitle: "",
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
+          sharedPopBodyText: '',
+          sharedPopUpHeaderText: '',
           language: Globals.selectedLanguage,
           marginLeft: 30,
         ),

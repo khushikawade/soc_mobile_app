@@ -33,9 +33,9 @@
 // import 'package:flutter_offline/flutter_offline.dart';
 
 // class SearchPage extends StatefulWidget {
-//   final bool isbuttomsheet;
+//   final bool isBottomSheet;
 //   final String? language;
-//   SearchPage({Key? key, required this.isbuttomsheet, required this.language})
+//   SearchPage({Key? key, required this.isBottomSheet, required this.language})
 //       : super(key: key);
 //   @override
 //   _SearchPageState createState() => _SearchPageState();
@@ -47,7 +47,7 @@
 //   static const double _kMargin = 16.0;
 //   final _controller = TextEditingController();
 //   final refreshKey = GlobalKey<RefreshIndicatorState>();
-//   bool iserrorstate = false;
+//   bool isErrorState = false;
 //   final HomeBloc _homeBloc = new HomeBloc();
 //   FocusNode myFocusNode = new FocusNode();
 //   final _debouncer = Debouncer(milliseconds: 500);
@@ -90,8 +90,8 @@
 //   }
 
 //   deleteItem() async {
-//     int itemcount = await HiveDbServices().getListLength(Strings.hiveLogName);
-//     if (itemcount > 5) {
+//     int itemCount = await HiveDbServices().getListLength(Strings.hiveLogName);
+//     if (itemCount > 5) {
 //       await HiveDbServices().deleteData(Strings.hiveLogName, 0);
 //     }
 //   }
@@ -107,7 +107,7 @@
 //                   builder: (BuildContext context) => ContactPage(
 //                         obj: Globals.appSetting,
 //                         //  Globals.homeObject,
-//                         isbuttomsheet: true,
+//                         isBottomSheet: true,
 //                         appBarTitle: obj.titleC!,
 //                         language: Globals.selectedLanguage!,
 //                       )))
@@ -136,7 +136,7 @@
 //                     isNewsPage: false,
 //                     // iseventpage: false,
 //                     date: "",
-//                     isbuttomsheet: true,
+//                     isBottomSheet: true,
 //                     language: Globals.selectedLanguage,
 //                   )));
 //     } else if (obj.typeC == "Form") {
@@ -149,7 +149,7 @@
 //                     isAbout: true,
 //                     appBarTitle: obj.titleC!,
 //                     obj: obj,
-//                     isbuttomsheet: true,
+//                     isBottomSheet: true,
 //                     language: Globals.selectedLanguage,
 //                   )));
 //     } else if (obj.typeC == "SchoolDirectoryApp") {
@@ -169,7 +169,7 @@
 //                     isAbout: true,
 //                     appBarTitle: obj.titleC!,
 //                     obj: obj,
-//                     isbuttomsheet: true,
+//                     isBottomSheet: true,
 //                     language: Globals.selectedLanguage,
 //                   )));
 //     }
@@ -181,7 +181,7 @@
 //     //             builder: (BuildContext context) => InAppUrlLauncer(
 //     //                   title: obj.titleC!,
 //     //                   url: obj.appURLC!,
-//     //                   isbuttomsheet: true,
+//     //                   isBottomSheet: true,
 //     //                   language: Globals.selectedLanguage,
 //     //                 )));
 //     //   } else {
@@ -203,7 +203,7 @@
 //                   builder: (BuildContext context) => AboutusPage(
 //                         htmlText: obj.rtfHTMLC.toString(),
 //                         language: Globals.selectedLanguage,
-//                         isbuttomsheet: true,
+//                         isBottomSheet: true,
 //                         ishtml: true,
 //                         appbarTitle: obj.titleC!,
 //                       )))
@@ -218,7 +218,7 @@
 //                         isHomePage: false,
 //                         url: obj.pdfURL,
 //                         tittle: obj.titleC,
-//                         isbuttomsheet: true,
+//                         isBottomSheet: true,
 //                         language: Globals.selectedLanguage,
 //                       )))
 //           : Utility.showSnackBar(_scaffoldKey, "No pdf available", context);
@@ -229,7 +229,7 @@
 //               context,
 //               MaterialPageRoute(
 //                   builder: (BuildContext context) => EventPage(
-//                         isbuttomsheet: true,
+//                         isBottomSheet: true,
 //                         appBarTitle: obj.titleC,
 //                         language: Globals.selectedLanguage,
 //                         calendarId: obj.calendarId.toString(),
@@ -253,7 +253,7 @@
 //                                     : obj.name.toString().contains("CAM")
 //                                         ? "Custom"
 //                                         : "",
-//                     isbuttomsheet: true,
+//                     isBottomSheet: true,
 //                     appBarTitle: obj.titleC!,
 //                     language: Globals.selectedLanguage,
 //                   )));
@@ -282,7 +282,7 @@
 //                     url: obj.objectName == "Student_App__c"
 //                         ? obj.appURLC
 //                         : obj.urlC,
-//                     isbuttomsheet: true,
+//                     isBottomSheet: true,
 //                     language: Globals.selectedLanguage,
 //                   )));
 //       // _setLocked();
@@ -419,7 +419,7 @@
 //               mainAxisSize: MainAxisSize.max,
 //               children: <Widget>[
 //                 _buildLeading(items[index]),
-//                 HorzitalSpacerWidget(_kLabelSpacing),
+//                 HorizontalSpacerWidget(_kLabelSpacing),
 //                 TranslationWidget(
 //                   message: items[index].objectName == 'Staff_Directory_App__c'
 //                       ? (items[index].name != null &&
@@ -617,7 +617,7 @@
 //       mainAxisAlignment: MainAxisAlignment.start,
 //       crossAxisAlignment: CrossAxisAlignment.center,
 //       children: [
-//         HorzitalSpacerWidget(_kLabelSpacing / 2),
+//         HorizontalSpacerWidget(_kLabelSpacing / 2),
 //         TranslationWidget(
 //           message: "Search",
 //           toLanguage: Globals.selectedLanguage,
@@ -638,7 +638,7 @@
 //     return Row(
 //       mainAxisAlignment: MainAxisAlignment.start,
 //       children: [
-//         HorzitalSpacerWidget(_kLabelSpacing / 2),
+//         HorizontalSpacerWidget(_kLabelSpacing / 2),
 //         TranslationWidget(
 //           message: "Recent Search",
 //           toLanguage: Globals.selectedLanguage,
@@ -693,11 +693,11 @@
 //                 final bool connected = connectivity != ConnectivityResult.none;
 
 //                 if (connected) {
-//                   if (iserrorstate == true) {
-//                     iserrorstate = false;
+//                   if (isErrorState == true) {
+//                     isErrorState = false;
 //                   }
 //                 } else if (!connected) {
-//                   iserrorstate = true;
+//                   isErrorState = true;
 //                 }
 
 //                 return

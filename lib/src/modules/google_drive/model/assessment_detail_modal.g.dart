@@ -33,13 +33,14 @@ class AssessmentDetailsAdapter extends TypeAdapter<AssessmentDetails> {
       teacherEmail: fields[14] as String?,
       teacherContactId: fields[15] as String?,
       createdAsPremium: fields[16] as String?,
+      assessmentType: fields[17] as String?,
     )..name = fields[0] as String?;
   }
 
   @override
   void write(BinaryWriter writer, AssessmentDetails obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -73,7 +74,9 @@ class AssessmentDetailsAdapter extends TypeAdapter<AssessmentDetails> {
       ..writeByte(15)
       ..write(obj.teacherContactId)
       ..writeByte(16)
-      ..write(obj.createdAsPremium);
+      ..write(obj.createdAsPremium)
+      ..writeByte(17)
+      ..write(obj.assessmentType);
   }
 
   @override

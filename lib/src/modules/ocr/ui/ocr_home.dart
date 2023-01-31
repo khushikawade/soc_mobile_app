@@ -12,6 +12,7 @@ import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -57,10 +58,11 @@ class _OpticalCharacterRecognitionPageState
 
   int myTimeStamp = DateTime.now().microsecondsSinceEpoch;
 
-  LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+  LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
 
   @override
   void initState() {
+    //Globals.isPremiumUser = true;
     // Globals.questionImgUrl = '';
     getAllRubricList();
     Globals.questionImgFilePath = null;
@@ -69,10 +71,14 @@ class _OpticalCharacterRecognitionPageState
     super.initState();
     Globals.scoringRubric =
         "${RubricScoreList.scoringList[0].name} ${RubricScoreList.scoringList[0].score}";
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("graded_home");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'graded_home', screenClass: 'OpticalCharacterRecognition');
   }
 
   @override
   void dispose() {
+    // ignore: todo
     // TODO: implement dispose
     super.dispose();
   }
@@ -84,16 +90,18 @@ class _OpticalCharacterRecognitionPageState
         CommonBackGroundImgWidget(),
         Scaffold(
           key: _scaffoldKey,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Color.fromRGBO(0, 0, 0, 0),
           appBar: CustomOcrAppBarWidget(
-            //Show home button in standard app and hide in standalone
-            assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
-            isOcrHome: true,
-            isSuccessState: ValueNotifier<bool>(true),
-            isbackOnSuccess: isBackFromCamera,
-            key: GlobalKey(),
-            isBackButton: Overrides.STANDALONE_GRADED_APP ? true : false,
-          ),
+              //Show home button in standard app and hide in standalone
+              assessmentDetailPage:
+                  Overrides.STANDALONE_GRADED_APP ? true : null,
+              isOcrHome: true,
+              isSuccessState: ValueNotifier<bool>(true),
+              isBackOnSuccess: isBackFromCamera,
+              key: GlobalKey(),
+              isBackButton:
+                  true //Overrides.STANDALONE_GRADED_APP ? true : false,
+              ),
           body: Container(
             padding: EdgeInsets.symmetric(
               horizontal: 15,
@@ -143,7 +151,8 @@ class _OpticalCharacterRecognitionPageState
                       },
                       listener: (BuildContext context, Object? state) {
                         if (state is OcrLoading) {
-                          Utility.showLoadingDialog(context, true);
+                          Utility.showLoadingDialog(
+                              context: context, isOCR: true);
                         }
                         if (state is GetRubricPdfSuccess) {
                           Navigator.pop(context);
@@ -180,12 +189,39 @@ class _OpticalCharacterRecognitionPageState
               ],
             ),
           ),
+
           // ],
           // ),
           floatingActionButton: scanButton(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         ),
+        BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: _googleDriveBloc,
+            child: Container(),
+            listener: (BuildContext contxt, GoogleDriveState state) {
+              if (state is ImageToAwsBucketSuccess) {
+                Navigator.pop(context);
+                int index = 0;
+                for (int i = 0; i < RubricScoreList.scoringList.length; i++) {
+                  if (RubricScoreList.scoringList[i].name ==
+                          state.customRubricModal.name &&
+                      RubricScoreList.scoringList[i].score ==
+                          state.customRubricModal.score) {
+                    RubricScoreList.scoringList[i].imgUrl =
+                        state.bucketImageUrl;
+                    index = i;
+                    break;
+                  }
+
+                  showCustomRubricImage(RubricScoreList.scoringList[index]);
+                }
+              }
+              if (state is ErrorState) {
+                Navigator.pop(context);
+                Utility.currentScreenSnackBar(state.errorMsg.toString(), null);
+              }
+            }),
       ],
     );
   }
@@ -203,6 +239,9 @@ class _OpticalCharacterRecognitionPageState
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (!connected) {
+                      await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                          "start_scanning");
+
                       Utility.currentScreenSnackBar(
                           "No Internet Connection", null);
                     } else {
@@ -215,10 +254,10 @@ class _OpticalCharacterRecognitionPageState
                       //clears scan more list
                       Globals.scanMoreStudentInfoLength = null;
 
-                      if (Globals.googleDriveFolderId!.isEmpty) {
-                        _triggerDriveFolderEvent(false);
-                      } else {
+                      if (Globals.googleDriveFolderId!.isNotEmpty) {
                         _beforenavigateOnCameraSection();
+                      } else {
+                        _triggerDriveFolderEvent(false);
                       }
                     }
                   },
@@ -244,81 +283,30 @@ class _OpticalCharacterRecognitionPageState
             child: Container(),
             listener: (context, state) async {
               if (state is GoogleDriveLoading) {
-                Utility.showLoadingDialog(context, true);
+                Utility.showLoadingDialog(context: context, isOCR: true);
               }
               if (state is GoogleSuccess) {
-                if (state.assessmentSection == true) {
-                  Navigator.of(context).pop();
-                  _beforenavigateOnAssessmentSection();
-                } else {
+                if (Globals.googleDriveFolderId != null &&
+                    Globals.googleDriveFolderId!.isNotEmpty) {
                   Navigator.of(context).pop();
                   _beforenavigateOnCameraSection();
                 }
               }
               if (state is ErrorState) {
-                if (Globals.sessionId == '') {
-                  Globals.sessionId =
-                      "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-                }
-                _ocrBlocLogs.add(LogUserActivityEvent(
-                    sessionId: Globals.sessionId,
-                    teacherId: Globals.teacherId,
-                    activityId: '1',
-                    accountId: Globals.appSetting.schoolNameC,
-                    accountType:
-                        Globals.isPremiumUser == true ? "Premium" : "Free",
-                    dateTime: currentDateTime.toString(),
-                    description: 'Start Scanning Failed',
-                    operationResult: 'Failed'));
-                if (state.errorMsg == 'Reauthentication is required') {
+                Navigator.of(context).pop();
+                if (state.errorMsg == 'ReAuthentication is required') {
                   await Utility.refreshAuthenticationToken(
                       isNavigator: true,
                       errorMsg: state.errorMsg!,
                       context: context,
                       scaffoldKey: _scaffoldKey);
 
-                  _triggerDriveFolderEvent(state.isAssessmentSection);
+                  _triggerDriveFolderEvent(false);
                 } else {
-                  Navigator.of(context).pop();
                   Utility.currentScreenSnackBar(
                       "Something Went Wrong. Please Try Again.", null);
                 }
-                // Utility.refreshAuthenticationToken(
-                //     state.errorMsg!, context, _scaffoldKey);
-
-                //  await _launchURL('Google Authentication');
-
               }
-            }),
-        OfflineBuilder(
-            child: Container(),
-            connectivityBuilder: (BuildContext context,
-                ConnectivityResult connectivity, Widget child) {
-              final bool connected = connectivity != ConnectivityResult.none;
-              return GestureDetector(
-                onTap: () async {
-                  if (!connected) {
-                    Utility.currentScreenSnackBar(
-                        "No Internet Connection", null);
-                    return;
-                  }
-                  if (Globals.googleDriveFolderId!.isEmpty) {
-                    _triggerDriveFolderEvent(true);
-                  } else {
-                    _beforenavigateOnAssessmentSection();
-                  }
-                },
-                child: Container(
-                    padding: EdgeInsets.only(top: 10),
-                    // color: Colors.red,
-                    child: Utility.textWidget(
-                        text: 'Assignment History',
-                        context: context,
-                        textTheme:
-                            Theme.of(context).textTheme.headline2!.copyWith(
-                                  decoration: TextDecoration.underline,
-                                ))),
-              );
             }),
       ],
     );
@@ -353,7 +341,9 @@ class _OpticalCharacterRecognitionPageState
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
           return InkWell(
-              onTap: () {
+              onTap: () async {
+                await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                    "Point_possible_selection");
                 pointPossibleSelectedColor.value = index + 1;
                 //To take the rubric name to result screen and save the same in excel sheet
                 Globals.scoringRubric =
@@ -452,7 +442,6 @@ class _OpticalCharacterRecognitionPageState
                                 RubricScoreList.scoringList[index]);
                           },
                           onTap: () {
-                            print(Globals.scoringRubric);
                             rubricScoreSelectedColor.value = index;
 
                             if (RubricScoreList.scoringList[index].name ==
@@ -484,8 +473,8 @@ class _OpticalCharacterRecognitionPageState
                               Globals.scoringRubric =
                                   '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
                             }
-                            //print(Globals.scoringRubric);
-                            // //print("//printing ----> ${Globals.scoringRubric}");
+                            print(Globals.scoringRubric);
+                            print("//printing ----> ${Globals.scoringRubric}");
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),
@@ -554,7 +543,7 @@ class _OpticalCharacterRecognitionPageState
         textFieldTitleTwo: 'Custom Score',
         isSubjectScreen: false,
         valueChanged: (controller) async {},
-        isPdfInfo: true,
+        section: 'PDF section',
         rubricPdfModalList: infoPdfList,
         tileOnTap: (object) => navigateToPdfViewer(pdfObject: object),
         sheetHeight: MediaQuery.of(context).size.height * 0.50,
@@ -570,28 +559,39 @@ class _OpticalCharacterRecognitionPageState
       updateLocalDb();
       updateRubricList.value = !updateRubricList.value;
       rubricScoreSelectedColor.value = RubricScoreList.scoringList.length - 1;
-      Globals.scoringRubric = RubricScoreList.scoringList.last.name;
+      Globals.scoringRubric =
+          "${RubricScoreList.scoringList.last.name} ${RubricScoreList.scoringList.last.score}";
+      ;
     }
   }
 
-  void showCustomRubricImage(CustomRubicModal customScoreObj) {
-    customScoreObj.imgUrl != null
-        ? showDialog(
-            context: context,
-            builder: (_) => ImagePopup(
-                // Implemented Dark mode image
-                imageURL: customScoreObj.imgUrl!))
-        : Utility.showSnackBar(_scaffoldKey,
-            'Image not found for the selected scoring rubric', context, null);
+  Future<void> showCustomRubricImage(
+    CustomRubricModal customScoreObj,
+  ) async {
+    if (customScoreObj.imgUrl != null) {
+      showDialog(
+          context: context,
+          builder: (_) => ImagePopup(
+              // Implemented Dark mode image
+              imageURL: customScoreObj.imgUrl!));
+    } else if (customScoreObj.imgBase64 != null &&
+        customScoreObj.imgBase64!.isNotEmpty) {
+      Utility.showLoadingDialog(context: context, isOCR: true);
+      _googleDriveBloc.add(ImageToAwsBucket(
+          customRubricModal: customScoreObj, getImageUrl: true));
+    } else {
+      Utility.currentScreenSnackBar(
+          'Image not found for the selected scoring rubric', null);
+    }
   }
 
   Future updateLocalDb() async {
     //Save user profile to locally
-    // LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+    // LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubric');
     //print(RubricScoreList.scoringList);
     await _localDb.clear();
 
-    RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+    RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
       await _localDb.addData(e);
     });
     // ignore: unnecessary_statements
@@ -607,12 +607,12 @@ class _OpticalCharacterRecognitionPageState
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
-  void _beforenavigateOnCameraSection() async {
+  Future<void> _beforenavigateOnCameraSection() async {
     //Rubric selection comparision
-    Globals.pointpossible = Globals.scoringRubric == 'None'
+    Globals.pointPossible = (Globals.scoringRubric == 'None'
         //Point possible index comparision
         ? pointPossibleSelectedColor.value == 1
             ? "2"
@@ -628,7 +628,7 @@ class _OpticalCharacterRecognitionPageState
                     : rubricScoreSelectedColor.value > 4 //Custom selection
                         ? (pointPossibleSelectedColor.value + 1)
                             .toString() //+1 is added for 'index+1' to get right point possible
-                        : '2'; //In case of 'None' or 'Custom rubric' selection
+                        : '2'); //In case of 'None' or 'Custom rubric' selection
 
     Globals.googleExcelSheetId = "";
     //qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
@@ -637,6 +637,7 @@ class _OpticalCharacterRecognitionPageState
     if (Globals.sessionId == '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
+
     _ocrBlocLogs.add(LogUserActivityEvent(
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
@@ -647,37 +648,7 @@ class _OpticalCharacterRecognitionPageState
         description: 'Start Scanning',
         operationResult: 'Success'));
 
-    //  _bloc.add(SaveSubjectListDetails());
-    // //print(Globals.scoringRubric);
-    // UNCOMMENT Below
-    print("navigate to camera");
-    print(Globals.pointpossible);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CameraScreen(
-          isFromHistoryAssessmentScanMore: false,
-          onlyForPicture: false,
-          scaffoldKey: _scaffoldKey,
-          isScanMore: false,
-          pointPossible: Globals.pointpossible,
-          isFlashOn: ValueNotifier<bool>(false),
-        ),
-        // settings: RouteSettings(name: "/home")
-      ),
-    );
-    // End
-    // // COMMENT Below
-    // LocalDatabase<String> _localDb = LocalDatabase('class_suggestions');
-    // List<String> classSuggestions = await _localDb.getData();
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (context) => CreateAssessment(
-    //               classSuggestions: classSuggestions,
-    //               customGrades: [], //Globals.classList,
-    //             )));
-    // End
+    navigateToCamera();
   }
 
   void _beforenavigateOnAssessmentSection() {
@@ -697,6 +668,7 @@ class _OpticalCharacterRecognitionPageState
       context,
       MaterialPageRoute(
           builder: (context) => AssessmentSummary(
+                selectedFilterValue: 'Constructed Response',
                 isFromHomeSection: true,
               )),
     );
@@ -715,7 +687,7 @@ class _OpticalCharacterRecognitionPageState
                     isHomePage: false,
                     url: pdfObject.rubricPdfC,
                     tittle: pdfObject.titleC ?? 'no tittle',
-                    isbuttomsheet: false,
+                    isBottomSheet: false,
                     language: Globals.selectedLanguage,
                   )));
     }
@@ -732,13 +704,15 @@ class _OpticalCharacterRecognitionPageState
         elevation: 10,
         context: context,
         builder: (context) => BottomSheetWidget(
-            update: _update,
-            title: 'Scoring Rubric',
-            isImageField: true,
-            textFieldTitleOne: 'Score Name',
-            textFieldTitleTwo: 'Custom Score',
-            isSubjectScreen: false,
-            valueChanged: (controller) async {}));
+              update: _update,
+              title: 'Scoring Rubric',
+              isImageField: true,
+              textFieldTitleOne: 'Score Name',
+              textFieldTitleTwo: 'Custom Score',
+              isSubjectScreen: false,
+              valueChanged: (controller) async {},
+              submitButton: true,
+            ));
   }
 
   String getScrobingRubric({required int index}) {
@@ -751,9 +725,9 @@ class _OpticalCharacterRecognitionPageState
   }
 
   getAllRubricList() async {
-    List<CustomRubicModal> _localData = await _localDb.getData();
+    List<CustomRubricModal> _localData = await _localDb.getData();
     if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+      RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
         await _localDb.addData(e);
       });
       await _localDb.close();
@@ -762,5 +736,52 @@ class _OpticalCharacterRecognitionPageState
       RubricScoreList.scoringList.addAll(_localData);
       updateRubricList.value = !updateRubricList.value;
     }
+  }
+
+  _selectSectionBeforeNavigate() async {
+    String sectin = '';
+    await showModalBottomSheet(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      elevation: 10,
+      context: context,
+      builder: (context) => BottomSheetWidget(
+        update: _update,
+        title: 'Please select section',
+        isImageField: false,
+        textFieldTitleOne: 'Score Name',
+        textFieldTitleTwo: 'Custom Score',
+        isSubjectScreen: false,
+        valueChanged: (controller) async {},
+        section: 'MCQ Assessment',
+        tileOnTap: (i) {
+          sectin = i;
+        },
+        sheetHeight: MediaQuery.of(context).size.height / 3,
+      ),
+    );
+    return sectin;
+  }
+
+  void navigateToCamera() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(
+          isMcqSheet: false,
+          selectedAnswer: '',
+          isFromHistoryAssessmentScanMore: false,
+          onlyForPicture: false,
+          scaffoldKey: _scaffoldKey,
+          isScanMore: false,
+          pointPossible: Globals.pointPossible,
+          isFlashOn: ValueNotifier<bool>(false),
+        ),
+        // settings: RouteSettings(name: "/home")
+      ),
+    );
   }
 }

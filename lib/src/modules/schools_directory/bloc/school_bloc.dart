@@ -26,7 +26,7 @@ class SchoolDirectoryBloc
       try {
         // yield SchoolDirectoryLoading(); // Should not show loading, instead fetch the data from the Local database and return the list instantly.
         LocalDatabase<SchoolDirectoryList> _localDb = LocalDatabase(
-            '${Strings.schoolDirectoryObjectName}${event.customRecordId}');
+            '${Strings.schoolDirectoryObjectName}${event.customerRecordId}');
 
         List<SchoolDirectoryList>? _localData = await _localDb.getData();
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
@@ -34,12 +34,12 @@ class SchoolDirectoryBloc
         if (_localData.isEmpty) {
           yield SchoolDirectoryLoading();
         } else {
-          yield SchoolDirectoryDataSucess(obj: _localData);
+          yield SchoolDirectoryDataSuccess(obj: _localData);
         }
         //Local database end.
 
         List<SchoolDirectoryList> list = await getSchoolDirectorySDList(
-            event.customRecordId, event.isSubMenu);
+            event.customerRecordId, event.isSubMenu);
 
         // Syncing the Local database with remote data
         await _localDb.clear();
@@ -51,10 +51,10 @@ class SchoolDirectoryBloc
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         yield SchoolDirectoryLoading(); // Mimic state change
-        yield SchoolDirectoryDataSucess(obj: list);
+        yield SchoolDirectoryDataSuccess(obj: list);
       } catch (e) {
         LocalDatabase<SchoolDirectoryList> _localDb = LocalDatabase(
-            '${Strings.schoolDirectoryObjectName}${event.customRecordId}');
+            '${Strings.schoolDirectoryObjectName}${event.customerRecordId}');
 
         List<SchoolDirectoryList>? _localData = await _localDb.getData();
         _localDb.close();
@@ -62,7 +62,7 @@ class SchoolDirectoryBloc
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         yield SchoolDirectoryLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield SchoolDirectoryDataSucess(obj: _localData);
+        yield SchoolDirectoryDataSuccess(obj: _localData);
         // yield SchoolDirectoryErrorLoading(err: e);
       }
     }
@@ -71,7 +71,7 @@ class SchoolDirectoryBloc
   Future<List<SchoolDirectoryList>> getSchoolDirectorySDList(
       parentId, isSubMenu) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(parentId ==
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(parentId ==
               null
           ? "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_Directory_App__c"
           : (isSubMenu == true

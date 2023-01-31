@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -38,7 +39,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
       this.scaffoldKey,
       this.customBackButton,
       this.onTap,
-      required this.isbackOnSuccess,
+      required this.isBackOnSuccess,
       this.isFromResultSection,
       this.navigateBack,
       this.isProfilePage})
@@ -56,7 +57,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   Widget? actionIcon;
   Widget? customBackButton;
   bool? hideStateSelection;
-  ValueListenable<bool>? isbackOnSuccess;
+  ValueListenable<bool>? isBackOnSuccess;
   String? sessionId;
   bool? isFromResultSection;
   bool? navigateBack;
@@ -146,7 +147,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       child:
                           //widget.actionIcon,
                           IconButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          await FirebaseAnalyticsService
+                              .addCustomAnalyticsEvent("home");
                           if (widget.isHomeButtonPopup == true) {
                             _onHomePressed();
                           } else {
@@ -180,10 +183,13 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     )
                   : widget.assessmentPage == true
                       ? GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            await FirebaseAnalyticsService
+                                .addCustomAnalyticsEvent(
+                                    "go_to_drive_assessment_detail");
                             //print(
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
-                            Utility.updateLoges(
+                            Utility.updateLogs(
                                 activityId: '16',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -254,7 +260,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             widget.isResultScreen == true
                         ? widget.actionIcon!
                         : ValueListenableBuilder(
-                            valueListenable: widget.isbackOnSuccess!,
+                            valueListenable: widget.isBackOnSuccess!,
                             builder: (BuildContext context, dynamic value,
                                 Widget? child) {
                               return value == true
@@ -267,6 +273,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                   padding: const EdgeInsets.only(top: 2),
                   child: IconButton(
                       onPressed: () async {
+                        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                            "walkthrough");
                         var result = await Navigator.of(context).push(
                           MaterialPageRoute(
                               builder: (context) => CustomIntroWidget()),
@@ -297,7 +305,9 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               Radius.circular(60),
                             ), //.circular(60),
                             child: GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                await FirebaseAnalyticsService
+                                    .addCustomAnalyticsEvent("profile");
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -329,8 +339,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               ? EdgeInsets.only(right: 10, top: 5)
                               : EdgeInsets.zero,
                         );
-                        //  CupertinoActivityIndicator(
-                        //     animating: true, radius: 10);
                       }),
                 ),
         ]);
@@ -364,7 +372,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
   Widget commonGradedLogo() {
@@ -455,7 +463,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                         color: AppTheme.kButtonColor,
                                       ));
                             }),
-                        onPressed: () {
+                        onPressed: () async {
                           //Globals.iscameraPopup = false;
                           Navigator.pop(context, false);
                         },

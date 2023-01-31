@@ -46,7 +46,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
               }
             }
           }
-          yield StudentDataSucess(obj: appList, subFolder: subList);
+          yield StudentDataSuccess(obj: appList, subFolder: subList);
         }
         // Local Database End
         List<StudentApp> list = await getStudentDetails();
@@ -73,7 +73,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           }
         }
         yield Loading(); // Mimic state change.
-        yield StudentDataSucess(obj: appList, subFolder: subList);
+        yield StudentDataSuccess(obj: appList, subFolder: subList);
       } catch (e) {
         // Fetching the data from the local database instead.
         LocalDatabase<StudentApp> _localDb =
@@ -95,7 +95,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           }
         }
         yield Loading(); // Mimic state change.
-        yield StudentDataSucess(obj: appList, subFolder: subList);
+        yield StudentDataSuccess(obj: appList, subFolder: subList);
         // yield StudentError(err: e);
       }
     }
@@ -103,7 +103,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
   Future<List<StudentApp>> getStudentDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Student_App__c"));
       if (response.statusCode == 200) {
         return response.data['body']

@@ -20,7 +20,7 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       studentName: fields[0] as String?,
       studentId: fields[1] as String?,
       studentGrade: fields[2] as String?,
-      pointpossible: fields[3] as String?,
+      pointPossible: fields[3] as String?,
       grade: fields[4] as String?,
       subject: fields[5] as String?,
       learningStandard: fields[6] as String?,
@@ -32,13 +32,17 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       questionImgUrl: fields[12] as String?,
       isSavedOnDashBoard: fields[13] as bool?,
       assessmentImgPath: fields[14] as String?,
+      slideObjectId: fields[15] as String?,
+      googleSlidePresentationURL: fields[18] as String?,
+      answerKey: fields[16] as String?,
+      studentResponseKey: fields[17] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentAssessmentInfo obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.studentName)
       ..writeByte(1)
@@ -46,7 +50,7 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       ..writeByte(2)
       ..write(obj.studentGrade)
       ..writeByte(3)
-      ..write(obj.pointpossible)
+      ..write(obj.pointPossible)
       ..writeByte(4)
       ..write(obj.grade)
       ..writeByte(5)
@@ -68,7 +72,15 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       ..writeByte(13)
       ..write(obj.isSavedOnDashBoard)
       ..writeByte(14)
-      ..write(obj.assessmentImgPath);
+      ..write(obj.assessmentImgPath)
+      ..writeByte(15)
+      ..write(obj.slideObjectId)
+      ..writeByte(16)
+      ..write(obj.answerKey)
+      ..writeByte(17)
+      ..write(obj.studentResponseKey)
+      ..writeByte(18)
+      ..write(obj.googleSlidePresentationURL);
   }
 
   @override

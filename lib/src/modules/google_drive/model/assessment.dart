@@ -22,6 +22,8 @@ class HistoryAssessment {
   String? sessionId;
   @HiveField(8)
   String? isCreatedAsPremium;
+  @HiveField(9)
+  String? assessmentType;
   HistoryAssessment(
       {this.title,
       this.description,
@@ -31,7 +33,7 @@ class HistoryAssessment {
       this.createdDate,
       this.modifiedDate,
       this.sessionId,
-      this.isCreatedAsPremium});
+      this.isCreatedAsPremium,this.assessmentType});
 
   factory HistoryAssessment.fromJson(Map<String, dynamic> json) =>
       HistoryAssessment(
@@ -44,5 +46,6 @@ class HistoryAssessment {
         modifiedDate: json['modifiedDate'] as String?,
         sessionId: '',
         isCreatedAsPremium: "false",
+        assessmentType: "Constructed Response"
       );
 }

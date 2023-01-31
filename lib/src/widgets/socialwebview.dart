@@ -14,11 +14,11 @@ class SocialPageWebview extends StatefulWidget {
     Key? key,
     required this.link,
     required this.isSocialpage,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
   }) : super(key: key);
   final String link;
   final bool isSocialpage;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
 
   @override
   _SocialPageWebviewState createState() => _SocialPageWebviewState();
@@ -30,7 +30,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
 
   WebViewController? _webViewController;
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   @override
   void initState() {
@@ -70,7 +70,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
                 : Container(
                     height: 0,
                   ),
-            HorzitalSpacerWidget(_kPadding / 1.2),
+            HorizontalSpacerWidget(_kPadding / 1.2),
             widget.isSocialpage
                 ? IconButton(
                     padding: EdgeInsets.zero,
@@ -89,7 +89,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
                 : Container(
                     height: 0,
                   ),
-            HorzitalSpacerWidget(_kPadding / 1.2),
+            HorizontalSpacerWidget(_kPadding / 1.2),
             widget.isSocialpage
                 ? IconButton(
                     padding: EdgeInsets.zero,
@@ -104,7 +104,7 @@ class _SocialPageWebviewState extends State<SocialPageWebview> {
                       size: Globals.deviceType == "phone" ? 20 : 28,
                     ))
                 : Container(height: 0),
-            HorzitalSpacerWidget(_kPadding / 1.5),
+            HorizontalSpacerWidget(_kPadding / 1.5),
           ],
         ),
         body: Container(

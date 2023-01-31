@@ -9,14 +9,15 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
+import 'package:Soc/src/modules/ocr/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/ui/profile_page.dart';
+import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/ocr/widgets/google_login.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -31,7 +32,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class GradedLandingPage extends StatefulWidget {
   final bool? isFromLogoutPage;
-  const GradedLandingPage({Key? key, this.isFromLogoutPage}) : super(key: key);
+  final bool? isMultiplechoice;
+  const GradedLandingPage(
+      {Key? key, this.isFromLogoutPage, this.isMultiplechoice})
+      : super(key: key);
 
   @override
   State<GradedLandingPage> createState() => _GradedLandingPageState();
@@ -182,13 +186,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                       ),
                                     );
                                   }
-                                  return Container(
-                                      // margin: EdgeInsets.all(10),
-                                      // padding:
-                                      //     EdgeInsets.only(right: 10, top: 5)
-                                      );
-                                  //  CupertinoActivityIndicator(
-                                  //     animating: true, radius: 10);
+                                  return Container();
                                 }),
                           );
                         }),
@@ -235,17 +233,6 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     .copyWith(fontWeight: FontWeight.bold),
                               )
                             ])),
-
-                        // Utility.textWidget(
-                        //     text: 'Welcome ${userName.value}',
-                        //     context: context,
-                        //     textTheme: Theme.of(context)
-                        //         .textTheme
-                        //         .headline1!
-                        //         .copyWith(fontWeight: FontWeight.bold))
-
-                        //  Text('Welcome Back',7
-                        //     style: Theme.of(context).textTheme.headline1)
                       );
                     },
                     valueListenable: userName,
@@ -306,7 +293,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                       }
                       if (state is GoogleClassroomErrorState) {
                         rosterImport.value = '';
-                        if (state.errorMsg == 'Reauthentication is required') {
+                        if (state.errorMsg == 'ReAuthentication is required') {
                           await Utility.refreshAuthenticationToken(
                               isNavigator: false,
                               errorMsg: state.errorMsg!,
@@ -393,7 +380,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                           listener: (context, state) async {
                                             if (state is GoogleDriveLoading) {
                                               Utility.showLoadingDialog(
-                                                  context, true);
+                                                  context: context,
+                                                  isOCR: true);
                                             }
                                             if (state is GoogleSuccess) {
                                               Navigator.of(context).pop();
@@ -421,7 +409,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                                       'Start Scanning Failed',
                                                   operationResult: 'Failed'));
                                               if (state.errorMsg ==
-                                                  'Reauthentication is required') {
+                                                  'ReAuthentication is required') {
                                                 await Utility
                                                     .refreshAuthenticationToken(
                                                         isNavigator: true,
@@ -471,6 +459,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
       context,
       MaterialPageRoute(
           builder: (context) => AssessmentSummary(
+                selectedFilterValue: "All",
                 isFromHomeSection: true,
               )),
     );
@@ -486,7 +475,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
-        refreshtoken: _profileData[0].refreshToken));
+        refreshToken: _profileData[0].refreshToken));
   }
 
   Widget button(String? text) {
@@ -511,14 +500,17 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                             // await UserGoogleProfile.clearUserProfile();
                             List<UserInformation> _profileData =
                                 await UserGoogleProfile.getUserProfile();
-                            Utility.updateLoges(
+                            Utility.updateLogs(
                                 activityId: '1',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
                                 //     : '',
                                 description: 'user move to scan assessment',
                                 operationResult: 'Success');
-
+                            await Utility.clearStudentInfo(
+                                tableName: 'student_info');
+                            await Utility.clearStudentInfo(
+                                tableName: 'history_student_info');
                             if (_profileData.isEmpty) {
                               var result = await GoogleLogin.launchURL(
                                   'Google Authentication',
@@ -533,7 +525,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                 Globals.teacherEmailId =
                                     _profileData[0].userEmail!.split('@')[0];
                                 // Analytics start
-                              //  Analytics.setUserId(Globals.teacherEmailId);
+                                //  Analytics.setUserId(Globals.teacherEmailId);
 
                                 // Analytics end
 
@@ -563,7 +555,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                       .add(GetClassroomCourses());
                                 }
                               } else if (text == 'View Imported Roster') {
-                                Utility.updateLoges(
+                                Utility.updateLogs(
                                     activityId: '25',
                                     // sessionId: widget.assessmentDetailPage == true
                                     //     ? widget.obj!.sessionId
@@ -577,10 +569,10 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                         googleClassroomCourseList:
                                             googleCourseList.value)));
                               } else {
-                                List<UserInformation> _userprofilelocalData =
+                                List<UserInformation> _userProfileLocalData =
                                     await UserGoogleProfile.getUserProfile();
                                 GoogleLogin.verifyUserAndGetDriveFolder(
-                                    _userprofilelocalData);
+                                    _userProfileLocalData);
                                 Globals.teacherEmailId =
                                     _profileData[0].userEmail!.split('@')[0];
 
@@ -597,11 +589,13 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     description: 'Graded+ Accessed(Login)',
                                     operationResult: 'Success'));
 
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          OpticalCharacterRecognition()),
-                                );
+                                Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            SelectAssessmentType())
+                                    // widget.isMultiplechoice == true
+                                    //     ? MultipleChoiceSection()
+                                    //     :         OpticalCharacterRecognition()),
+                                    );
                               }
                             }
                           }

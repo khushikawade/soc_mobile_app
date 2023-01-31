@@ -82,7 +82,13 @@ class SaveSubjectListDetailsToLocalDb extends OcrEvent {
 class FetchTextFromImage extends OcrEvent {
   final String base64;
   final String pointPossible;
-  FetchTextFromImage({required this.base64, required this.pointPossible});
+  final bool isMcqSheet;
+  final String? selectedAnswer;
+  FetchTextFromImage(
+      {required this.base64,
+      required this.pointPossible,
+      required this.isMcqSheet,
+      this.selectedAnswer});
 
   @override
   List<Object> get props => [base64, pointPossible];
@@ -142,6 +148,7 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
   final String teacherContactId;
   final String teacherEmail;
   final String assessmentQueImage;
+  final bool isMcqSheet;
 
   SaveAssessmentToDashboardAndGetId(
       {required this.assessmentName,
@@ -158,7 +165,8 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
       required this.fileId,
       required this.teacherContactId,
       required this.teacherEmail,
-      required this.assessmentQueImage});
+      required this.assessmentQueImage,
+      required this.isMcqSheet});
 
   @override
   List<Object> get props => [];
@@ -234,9 +242,9 @@ class GetRubricPdf extends OcrEvent {
 }
 
 // ---------- Event to Fetch State List for Api ----------
-class FetchStateListEvant extends OcrEvent {
+class FetchStateListEvent extends OcrEvent {
   final bool fromCreateAssesment;
-  FetchStateListEvant({required this.fromCreateAssesment});
+  FetchStateListEvent({required this.fromCreateAssesment});
 
   @override
   List<Object> get props => [];

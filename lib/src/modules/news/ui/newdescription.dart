@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/widgets/action_button_basic.dart';
+import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -19,14 +19,14 @@ class Newdescription extends StatefulWidget {
     Key? key,
     required this.obj,
     required this.date,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.language,
     required this.connected,
   }) : super(key: key);
 
   final NotificationList obj;
   final String date;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String? language;
   final bool? connected;
 
@@ -71,7 +71,7 @@ class _NewdescriptionState extends State<Newdescription> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.obj.headings["en"].toString(),
                     url: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
@@ -108,10 +108,10 @@ class _NewdescriptionState extends State<Newdescription> {
                   message: widget.obj.headings != "" &&
                           widget.obj.headings != null &&
                           widget.obj.headings.length > 0
-                      ? widget.obj.headings["en"].toString()
+                      ? Utility.utf8convert(widget.obj.headings["en"] ?? '')
                       : widget.obj.contents["en"].toString().split(" ").length >
                               1
-                          ? widget.obj.contents["en"]
+                          ? Utility.utf8convert(widget.obj.contents["en"]
                                   .toString()
                                   .replaceAll("\n", " ")
                                   .split(" ")[0] +
@@ -121,8 +121,8 @@ class _NewdescriptionState extends State<Newdescription> {
                                   .replaceAll("\n", " ")
                                   .split(" ")[1]
                                   .split("\n")[0] +
-                              "..."
-                          : widget.obj.contents["en"],
+                              "..." )
+                          : Utility.utf8convert(widget.obj.contents["en"] ?? ''),
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => SelectableLinkify(
@@ -157,7 +157,8 @@ class _NewdescriptionState extends State<Newdescription> {
               child: Wrap(
                 children: [
                   TranslationWidget(
-                    message: widget.obj.contents["en"].toString(),
+                    message:
+                        Utility.utf8convert(widget.obj.contents["en"] ?? ''),
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => SelectableLinkify(
@@ -224,7 +225,7 @@ class _NewdescriptionState extends State<Newdescription> {
         SpacerWidget(AppTheme.kBodyPadding),
         Container(
           alignment: Alignment.centerLeft,
-          child: UserActionBasic(
+          child: ActionInteractionButtonWidget(
             page: "news",
             obj: widget.obj,
             title: widget.obj.headings['en'],
