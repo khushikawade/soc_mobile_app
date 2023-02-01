@@ -679,7 +679,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         //Create Google Presentation once Spreadsheet created
                         _googleDriveBloc.add(CreateSlideToDrive(
                             fileTitle:
-                                "${assessmentController.text}_${classController.text}"));
+                                "${assessmentController.text}_${classController.text}",
+                            excelSheetId: Globals.googleExcelSheetId));
                       }
                       if (state is ErrorState) {
                         if (state.errorMsg == 'ReAuthentication is required') {
