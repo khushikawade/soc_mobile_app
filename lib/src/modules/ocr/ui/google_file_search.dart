@@ -79,7 +79,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     WidgetsBinding.instance.addObserver(this);
     print('Google Search Page');
     _setLocked();
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
     getListLength();
     selectedValue.value = widget.selectedFilterValue;
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_file_search_page");

@@ -135,7 +135,7 @@ class _CameraScreenState extends State<CameraScreen>
     // widget.isFlashOn!.value = widget.isFlashOn;
     Wakelock.enable();
 
-    Globals.iscameraPopup
+    Globals.isCameraPopup
         ? WidgetsBinding.instance
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
@@ -931,7 +931,7 @@ class _CameraScreenState extends State<CameraScreen>
                                     ));
                           }),
                       onPressed: () async {
-                        Globals.iscameraPopup = false;
+                        Globals.isCameraPopup = false;
                         SharedPreferences pref =
                             await SharedPreferences.getInstance();
                         pref.setBool("camera_popup", false);

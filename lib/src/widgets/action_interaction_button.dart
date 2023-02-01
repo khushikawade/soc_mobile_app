@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:share/share.dart';
 import '../translator/language_list.dart';
 
@@ -68,12 +69,29 @@ class _ActionInteractionButtonWidgetState
   void initState() {
     super.initState();
     // print('inside inistate ------------------------------------>');
+    // closePopup();
     like.value = widget.obj.likeCount ?? 0;
     thanks.value = widget.obj.thanksCount ?? 0;
     helpful.value = widget.obj.helpfulCount ?? 0;
     share.value = widget.obj.shareCount ?? 0;
     support.value = widget.obj.supportCount ?? 0;
   }
+
+  // closePopup() {
+  //   OneSignal.shared.setNotificationWillShowInForegroundHandler(
+  //       (OSNotificationReceivedEvent notification) async {
+  //     notification.complete(notification.notification);
+  //     // setState(() {
+  //     //   Globals.indicator.value = true;
+  //     // });
+  //     await Future.delayed(Duration(milliseconds: 1500));
+
+  //     // bloc.add(FetchNotificationList());
+  //     // Utility.scrollToTop(scrollController: _scrollController);
+
+  //     //
+  //   });
+  // }
 
   @override
   void didUpdateWidget(ActionInteractionButtonWidget oldWidget) {
@@ -356,7 +374,7 @@ class _ActionInteractionButtonWidgetState
           context: context,
           scaffoldKey: scaffoldKey,
           notificationId: widget.obj.id,
-          notificationTitle: widget.title,
+          notificationTitle: widget.title ?? '',
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,
@@ -549,6 +567,7 @@ class _ActionInteractionButtonWidgetState
 
   supportPopupModal() async {
     await Future.delayed(Duration(milliseconds: 500));
+    Globals.isNewsContactPopupAppear = widget.page == "news" ? true : false;
     showDialog(
         context: context,
         builder: (context) =>
@@ -573,7 +592,8 @@ class _ActionInteractionButtonWidgetState
                     .headline1!
                     .copyWith(fontWeight: FontWeight.bold),
               );
-            }));
+            })).then((_) => Globals.isNewsContactPopupAppear = false);
+    ;
   }
 
   List<Widget> supportActionWidget(

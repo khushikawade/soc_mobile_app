@@ -1,7 +1,5 @@
 // ignore_for_file: unnecessary_null_comparison
-
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -10,7 +8,6 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/widgets/action_button_basic.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -19,7 +16,6 @@ import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
-import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -95,7 +91,18 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       await Future.delayed(Duration(milliseconds: 1500));
       // bloc.add(FetchNotificationList());
       Utility.scrollToTop(scrollController: _scrollController);
+      //Navigator.pop(context, false);
+      // if (mounted) {
+
+      // }
+
+      //Use to close the contact interaction popup in case of already available to the screen - when new notification arrives
+      if (Globals.isNewsContactPopupAppear) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+
       refreshPage();
+
       isActionAPICalled = false;
     });
   }
@@ -151,7 +158,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           title: obj.title != null && obj.title != "" && obj.title.length > 0
               ? Utility.utf8convert(obj.title ?? '')
               : Utility.utf8convert(obj.description ?? '-'),
-          description: obj.link == null
+          description: obj.link == null || obj.link == ''
               ? Utility.utf8convert(obj.description ?? '')
               : "${Utility.utf8convert(obj.description ?? '')}\n${obj.link}",
           titleIcon: CalendarIconWidget(
@@ -462,7 +469,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 ],
               );
               // : NoInternetErrorWidget(
-              //     connected: connected, issplashscreen: false);
+              //     connected: connected, isSplashScreen: false);
             },
             child: Container()),
         onRefresh: refreshPage,

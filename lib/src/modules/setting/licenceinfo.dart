@@ -34,7 +34,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   void initState() {
     super.initState();
     _list = obj.ossLicenses.values.toList();
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override

@@ -229,7 +229,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                 (_) => false);
                           }
                         } else {
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                           Navigator.pop(context, false);
                         }
                       },

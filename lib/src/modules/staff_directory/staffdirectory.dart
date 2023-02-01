@@ -13,7 +13,6 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
-import 'package:Soc/src/widgets/custom_image_widget_small.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
@@ -76,7 +75,7 @@ class _StaffDirectoryState extends State<StaffDirectory> {
               ? widget.obj.id
               : null));
     }
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent('staff_directory');
     FirebaseAnalyticsService.setCurrentScreen(

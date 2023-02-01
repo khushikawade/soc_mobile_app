@@ -61,7 +61,7 @@ class _SliderWidgetState extends State<SliderWidget>
     first = true;
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
-    Globals.callsnackbar = false;
+    Globals.callSnackbar = false;
     BackButtonInterceptor.add(updateAction);
   }
 

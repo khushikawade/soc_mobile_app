@@ -43,7 +43,7 @@ class _NewdescriptionState extends State<Newdescription> {
   @override
   void initState() {
     super.initState();
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override

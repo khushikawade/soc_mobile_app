@@ -464,7 +464,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                       ));
                             }),
                         onPressed: () async {
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                           Navigator.pop(context, false);
                         },
                       ),

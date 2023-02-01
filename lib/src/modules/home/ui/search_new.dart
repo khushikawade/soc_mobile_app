@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _setLocked();
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
     getListLength();
   }
 

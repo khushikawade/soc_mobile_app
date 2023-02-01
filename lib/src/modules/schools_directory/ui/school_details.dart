@@ -47,7 +47,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   void initState() {
     super.initState();
     homebloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
     if (widget.obj.latitude != null && widget.obj.longitude != null) {
       _markers.add(Marker(
           markerId: MarkerId("Location"),

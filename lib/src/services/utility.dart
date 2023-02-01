@@ -358,7 +358,7 @@ class Utility {
   // To parse emojis and unicodes from PostgreSQL response.
   static String utf8convert(String? text) {
     try {
-      List<int> bytes = text.toString().codeUnits;
+      List<int> bytes = text!.codeUnits;
       return utf8.decode(bytes);
     } catch (e) {
       return text!;
@@ -870,7 +870,7 @@ class Utility {
                                       ));
                             }),
                         onPressed: () async {
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                           LocalDatabase<UserInformation> _localDb =
                               LocalDatabase('user_profile');
 

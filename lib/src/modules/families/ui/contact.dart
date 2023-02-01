@@ -51,7 +51,7 @@ class _ContactPageState extends State<ContactPage> {
   void initState() {
     super.initState();
     homebloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
     _markers.add(Marker(
         markerId: MarkerId("Your location"),
         draggable: false,

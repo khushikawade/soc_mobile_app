@@ -46,7 +46,7 @@ class _InformationPageState extends State<InformationPage> {
   void initState() {
     super.initState();
     _bloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override

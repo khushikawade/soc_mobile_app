@@ -50,4 +50,5 @@ class Strings {
   // static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
   static final String studentDetailList = 'student_detail_List';
   static final String keyArrowSvgIconPath = "assets/images/arrow.svg";
+  static final String latestNewsId = "last_news_id"; // to maintain news id for showing red indicator
 }

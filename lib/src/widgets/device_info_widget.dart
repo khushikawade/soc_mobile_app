@@ -22,7 +22,7 @@ Future<void> initPlatformState(BuildContext context) async {
       Globals.deviceToken = androidInfo!.androidId;
       Globals.versionRelease = androidInfo!.version.release;
       Globals.myLocale = Localizations.localeOf(context);
-      Globals.countrycode = Localizations.localeOf(context).countryCode!;
+      Globals.countryCode = Localizations.localeOf(context).countryCode!;
     } else if (Platform.isIOS) {
       iosInfo = await DeviceInfoPlugin().iosInfo;
       Globals.iosInfo = iosInfo;
@@ -30,7 +30,7 @@ Future<void> initPlatformState(BuildContext context) async {
       Globals.systemVersion = Globals.release = iosInfo!.systemVersion;
       Globals.model = iosInfo!.name + iosInfo!.model;
       Globals.myLocale = Localizations.localeOf(context);
-      Globals.countrycode = Localizations.localeOf(context).countryCode!;
+      Globals.countryCode = Localizations.localeOf(context).countryCode!;
     }
   } on PlatformException {
     // deviceData = <String, dynamic>{

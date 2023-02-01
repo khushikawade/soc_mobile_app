@@ -36,7 +36,7 @@ class _LicenceDetailPageState extends State<LicenceDetailPage> {
     super.initState();
     list = obj.ossLicenses.values.toList();
     index = int.parse(widget.index.toString());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override

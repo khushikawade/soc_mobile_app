@@ -35,7 +35,7 @@
 //   @override
 //   void initState() {
 //     super.initState();
-//     Globals.callsnackbar = true;
+//     Globals.callSnackbar = true;
 //   }
 
 //   Widget _buildItem(CalendarEventList list) {

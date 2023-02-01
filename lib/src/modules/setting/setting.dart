@@ -53,7 +53,7 @@ class _SettingPageState extends State<SettingPage> {
           .then((value) => {pushState(value!.pushDisabled)});
     }
     _homeBloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override

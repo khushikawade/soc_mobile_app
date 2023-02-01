@@ -147,6 +147,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         // Globals.notificationList.addAll(_list);
 
         yield NewsLoading(); // Mimic state change
+
+        //Store latest news id to manage red dot in case of new notification arrives
+        HiveDbServices _hiveDb = HiveDbServices();
+        _hiveDb.addSingleData('${Strings.latestNewsId}',
+            '${Strings.latestNewsId}', newList[0].id);
+
         yield NewsDataSuccess(
           obj: newList,
           isLoading: true,
@@ -199,19 +205,34 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     if (event is NewsCountLength) {
       try {
-        List<Item> _list = await fetchNotificationList(0, 50);
+        List<Item> _list = await fetchNotificationList(0, 10);
 
         // print("list length $event================> ${_list.length}");
         Globals.notiCount = _list.length;
-        String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-        List<NotificationList> _localData = await _localDb.getData();
-        //check the new Notification to show indicator on app startup
-        if (_localData.isNotEmpty &&
-            _list.isNotEmpty &&
-            _localData[0].id != _list[0].id) {
+
+        HiveDbServices _hiveDb = HiveDbServices();
+        String? newsLatestId = await _hiveDb.getSingleData(
+            '${Strings.latestNewsId}', '${Strings.latestNewsId}');
+
+        _list.forEach((element) {
+          if (element.completedAt != null) {
+            _list.sort((a, b) => b.completedAt.compareTo(a.completedAt));
+          }
+        });
+        // ((newsLatestId == null || newsLatestId == '')&& _list.isNotEmpty) ||
+
+        //Compare latest news id to manage red dot in case of new notification arrives
+        if (_list.isNotEmpty && _list[0].id != newsLatestId) {
           Globals.indicator.value = true;
         }
+        // LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        // List<NotificationList> _localData = await _localDb.getData();
+        //check the new Notification to show indicator on app startup
+        // if (_localData.isNotEmpty &&
+        //     _list.isNotEmpty &&
+        //     _localData[0].id != _list[0].id) {
+        //   Globals.indicator.value = true;
+        // }
 
         yield NewsCountLengthSuccess(obj: _list);
       } catch (e) {
