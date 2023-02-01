@@ -17,10 +17,12 @@ class AssessmentDetails {
       this.typeC,
       this.assessmentId,
       this.id,
-      this.googleFileId,
+      this.googlefileId,
       this.sessionId,
       this.teacherEmail,
-      this.teacherContactId,this.createdAsPremium,this.assessmentType});
+      this.teacherContactId,
+      this.createdAsPremium,
+      this.assessmentType});
   @HiveField(0)
   String? name;
   @HiveField(1)
@@ -46,7 +48,7 @@ class AssessmentDetails {
   @HiveField(11)
   String? id;
   @HiveField(12)
-  String? googleFileId;
+  String? googlefileId;
   @HiveField(13)
   String? sessionId;
   @HiveField(14)
@@ -57,17 +59,14 @@ class AssessmentDetails {
   String? createdAsPremium;
   @HiveField(17)
   String? assessmentType;
-  
-
-
-
 
   factory AssessmentDetails.fromRawJson(String str) =>
       AssessmentDetails.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory AssessmentDetails.fromJson(Map<String, dynamic> json) => AssessmentDetails(
+  factory AssessmentDetails.fromJson(Map<String, dynamic> json) =>
+      AssessmentDetails(
         dateC: json["Date__c"] == null ? null : json["Date__c"],
         nameC: json["Name__c"] == null ? null : json["Name__c"],
         rubricC: json["Rubric__c"] == null ? null : json["Rubric__c"],
@@ -80,11 +79,11 @@ class AssessmentDetails {
         typeC: json["Type__c"],
         assessmentId: json["Assessment_Id"],
         id: json["Id"],
-        googleFileId: json["Google_File_Id"],
+        googlefileId: json["Google_File_Id"],
         sessionId: json["Session_Id"],
         teacherContactId: json["Teacher_Contact_Id"],
         teacherEmail: json["Teacher_Email"],
-        createdAsPremium:json["Created_As_Premium"] ?? "false", 
+        createdAsPremium: json["Created_As_Premium"] ?? "false",
         assessmentType: json["Assessment_Type"] ?? 'Constructed Response',
       );
 
@@ -100,11 +99,11 @@ class AssessmentDetails {
         "Type__c": typeC,
         "Assessment_Id": assessmentId,
         "Id": id,
-        "Google_File_Id": googleFileId,
+        "Google_File_Id": googlefileId,
         "Session_Id": sessionId,
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
-        "Created_As_Premium":createdAsPremium,
-        "Assessment_Type":assessmentType
+        "Created_As_Premium": createdAsPremium,
+        "Assessment_Type": assessmentType
       };
 }

@@ -28,7 +28,7 @@ class AssessmentDetailsAdapter extends TypeAdapter<AssessmentDetails> {
       typeC: fields[9] as String?,
       assessmentId: fields[10] as String?,
       id: fields[11] as String?,
-      googleFileId: fields[12] as String?,
+      googlefileId: fields[12] as String?,
       sessionId: fields[13] as String?,
       teacherEmail: fields[14] as String?,
       teacherContactId: fields[15] as String?,
@@ -66,7 +66,7 @@ class AssessmentDetailsAdapter extends TypeAdapter<AssessmentDetails> {
       ..writeByte(11)
       ..write(obj.id)
       ..writeByte(12)
-      ..write(obj.googleFileId)
+      ..write(obj.googlefileId)
       ..writeByte(13)
       ..write(obj.sessionId)
       ..writeByte(14)

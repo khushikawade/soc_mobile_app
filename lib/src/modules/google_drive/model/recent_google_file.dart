@@ -8,7 +8,7 @@ class RecentGoogleFileSearch {
   @HiveField(1)
   String? description;
   @HiveField(2)
-  String? fileid;
+  String? fileId;
   @HiveField(3)
   final label;
   @HiveField(4)
@@ -29,7 +29,7 @@ class RecentGoogleFileSearch {
   RecentGoogleFileSearch(
       {this.title,
       this.description,
-      this.fileid,
+      this.fileId,
       this.label,
       this.webContentLink,
       this.createdDate,

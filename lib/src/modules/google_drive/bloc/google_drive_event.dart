@@ -168,7 +168,8 @@ class AddBlankSlidesOnDrive extends GoogleDriveEvent {
 
 class CreateSlideToDrive extends GoogleDriveEvent {
   final String? fileTitle;
-  CreateSlideToDrive({required this.fileTitle});
+  final String? excelSheetId;
+  CreateSlideToDrive({required this.fileTitle, required this.excelSheetId});
   @override
   List<Object> get props => [];
 }
