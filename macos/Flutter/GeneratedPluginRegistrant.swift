@@ -12,7 +12,7 @@ import firebase_crashlytics
 import geolocator_apple
 import network_info_plus_macos
 import package_info_plus_macos
-import path_provider_macos
+import path_provider_foundation
 import shared_preferences_foundation
 import sqflite
 import url_launcher_macos

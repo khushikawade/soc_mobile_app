@@ -13,25 +13,38 @@ class NewsLoading extends NewsState {}
 
 class NewsLoading2 extends NewsState {}
 
-class NewsLoaded extends NewsState {
-  final List<NotificationList>? obj;
-  final bool isloading;
-  final bool isFromUpdatedNewsList;
+class NewsDataSuccess extends NewsState {
+  final List<Item>? obj;
+  final bool isLoading;
 
-  NewsLoaded({
+  NewsDataSuccess({
     this.obj,
-    required this.isloading,
-    required this.isFromUpdatedNewsList,
+    required this.isLoading,
   });
-  NewsLoaded copyWith(
-      {final obj,
-      final isloading,
-      final isFromUpdatedLoad,
-      final rfeshnewsSection}) {
-    return NewsLoaded(
+  NewsDataSuccess copyWith({
+    final obj,
+    final isLoading,
+  }) {
+    return NewsDataSuccess(
       obj: obj ?? this.obj,
-      isloading: isloading ?? this.isloading,
-      isFromUpdatedNewsList: isFromUpdatedLoad ?? this.isFromUpdatedNewsList,
+      isLoading: isLoading ?? this.isLoading,
+    );
+  }
+
+  @override
+  List<Object> get props => [];
+}
+
+class NewsInitialState extends NewsState {
+  final List<Item>? obj;
+  NewsInitialState({
+    this.obj,
+  });
+  NewsInitialState copyWith({
+    final obj,
+  }) {
+    return NewsInitialState(
+      obj: obj ?? this.obj,
     );
   }
 
@@ -50,11 +63,11 @@ class NewsActionSuccess extends NewsState {
   List<Object> get props => [];
 }
 
-class NewsCountLenghtSuccess extends NewsState {
-  final List<NotificationList>? obj;
-  NewsCountLenghtSuccess({this.obj});
-  NewsCountLenghtSuccess copyWith({final obj}) {
-    return NewsCountLenghtSuccess(obj: obj ?? this.obj);
+class NewsCountLengthSuccess extends NewsState {
+  final List<Item>? obj;
+  NewsCountLengthSuccess({this.obj});
+  NewsCountLengthSuccess copyWith({final obj}) {
+    return NewsCountLengthSuccess(obj: obj ?? this.obj);
   }
 
   @override

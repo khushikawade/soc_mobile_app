@@ -35,6 +35,7 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       slideObjectId: fields[15] as String?,
       googleSlidePresentationURL: fields[18] as String?,
       answerKey: fields[16] as String?,
+      standardDescription: fields[19] as String?,
       studentResponseKey: fields[17] as String?,
     );
   }
@@ -42,7 +43,7 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
   @override
   void write(BinaryWriter writer, StudentAssessmentInfo obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(20)
       ..writeByte(0)
       ..write(obj.studentName)
       ..writeByte(1)
@@ -80,7 +81,9 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       ..writeByte(17)
       ..write(obj.studentResponseKey)
       ..writeByte(18)
-      ..write(obj.googleSlidePresentationURL);
+      ..write(obj.googleSlidePresentationURL)
+      ..writeByte(19)
+      ..write(obj.standardDescription);
   }
 
   @override

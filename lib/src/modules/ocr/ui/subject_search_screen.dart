@@ -68,6 +68,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   int standardLearningLength = 0;
   String? learningStandard;
   String? subLearningStandard;
+  String? standardDescription;
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
@@ -496,6 +497,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                         subLearningStandard = list[index]
                                             .standardAndDescriptionC!
                                             .split(' - ')[0];
+                                        standardDescription = list[index]
+                                            .standardAndDescriptionC!
+                                            .split(' - ')[1];
                                         standardId = list[index].id;
                                         addToRecentList(
                                             type: 'nycSub',
@@ -642,9 +646,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           rubricImgUrl = _localData[i].imgUrl;
                           break;
                           // rubricScore = null;
-                        }
-                     
-                        else {
+                        } else {
                           rubricImgUrl = 'NA';
                           // rubricScore = 'NA';
                         }
@@ -662,9 +664,16 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               ? "NA"
                               : learningStandard;
                       element.subLearningStandard =
-                          subLearningStandard == null || learningStandard == ''
+                          subLearningStandard == null ||
+                                  subLearningStandard == ''
                               ? "NA"
-                              : subLearningStandard;
+                              : subLearningStandard; //standardDescription
+                      element.standardDescription =
+                          standardDescription == null ||
+                                  standardDescription == ''
+                              ? "NA"
+                              : standardDescription; //standardDescription
+
                       element.scoringRubric = widget.isMcqSheet == true
                           ? '0-1'
                           : Globals.scoringRubric;
