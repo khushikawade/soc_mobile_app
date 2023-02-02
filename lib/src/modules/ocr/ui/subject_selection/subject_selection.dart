@@ -237,14 +237,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 bloc: _googleDriveBloc,
                 child: Container(),
                 listener: (context, state) async {
-                  if (state is AddBlankSlidesOnDriveSuccess) {
-                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        "blank_slide_added");
+                  print(
+                      "subject section ui drive state ---------------->$state");
 
-                    _googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
-                        slidePresentationId:
-                            Globals.googleSlidePresentationId));
-                  }
+                  // if (state is AddBlankSlidesOnDriveSuccess) {
+                  //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                  //       "blank_slide_added");
+
+                  //   _googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
+                  //       slidePresentationId:
+                  //           Globals.googleSlidePresentationId));
+                  // }
 
                   if (state is GoogleSuccess) {
                     showDialogSetState!(() {
@@ -275,9 +278,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
-                          state.errorMsg!.toString(), null);
-                      // Utility.currentScreenSnackBar(
-                      //     "Something Went Wrong. Please Try Again.", null);
+                          state.errorMsg.toString() ?? "", null);
                     }
                   }
 
@@ -292,12 +293,20 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         slideLink: true));
                   }
 
+                  // if (state is ShareLinkReceived) {
+                  //   Globals.googleSlidePresentationLink = state.shareLink;
+                  //   _googleDriveBloc.add(AddBlankSlidesOnDrive(
+                  //       isScanMore: false,
+                  //       slidePresentationId:
+                  //           Globals.googleSlidePresentationId));
+                  // }
+
                   if (state is ShareLinkReceived) {
                     Globals.googleSlidePresentationLink = state.shareLink;
-                    _googleDriveBloc.add(AddBlankSlidesOnDrive(
-                        isScanMore: false,
-                        slidePresentationId:
-                            Globals.googleSlidePresentationId));
+                    _googleDriveBloc.add(
+                        AddAndUpdateAssessmentImageToSlidesOnDrive(
+                            slidePresentationId:
+                                Globals.googleSlidePresentationId));
                   }
 
                   if (state is UpdateAssignmentDetailsOnSlideSuccess) {
