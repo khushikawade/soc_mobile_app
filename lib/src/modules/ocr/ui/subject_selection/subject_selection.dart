@@ -275,7 +275,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
-                          "Something Went Wrong. Please Try Again.", null);
+                          state.errorMsg!.toString(), null);
+                      // Utility.currentScreenSnackBar(
+                      //     "Something Went Wrong. Please Try Again.", null);
                     }
                   }
 
