@@ -164,10 +164,10 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                         )),
                               );
 
-                              _ocrBloc.add(FetchStateListEvent(
-                                  fromCreateAssesment:
-                                      widget.isFromCreateAssessmentScreen ??
-                                          false));
+                              // _ocrBloc.add(FetchStateListEvent(
+                              //     fromCreateAssesment:
+                              //         widget.isFromCreateAssessmentScreen ??
+                              //             false));
                             } else if (state is OcrErrorReceived) {
                               Navigator.pop(context);
                             }
