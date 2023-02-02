@@ -8,7 +8,7 @@ import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_search_screen.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_api_methods.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_selection_methods.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/result_summary/results_summary.dart';
@@ -124,17 +124,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           // subjectSelected: widget.selectedSubject
           ));
     } else {
+      if (!Overrides.STANDALONE_GRADED_APP) {
+        // get state subject list if school or default new york state
+        _ocrBloc.add(FetchStateListEvent(
+            fromCreateAssesment: false, stateName: widget.stateName));
+      } else {
+        //Fetch all data state wise // Standalone
+        fetchSubjectDetails('subject', widget.selectedClass,
+            widget.selectedClass, widget.stateName, '', '');
+      }
+
       // if user come from state selection page or create assesment page
-      fetchSubjectDetails('subject', widget.selectedClass, widget.selectedClass,
-          widget.stateName, '', '');
-      // _ocrBloc.add(FetchSubjectDetails(
-      //     type: 'subject',
-      //     grade: widget.selectedClass,
-      //     // empty because no subject selected yet
-      //     subjectId: '',
-      //     subjectSelected: '',
-      //     selectedKeyword: widget.selectedClass,
-      //     stateName: widget.stateName));
     }
 
     super.initState();
@@ -474,6 +474,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             BlocListener(
               bloc: _ocrBloc,
               listener: (context, state) async {
+                print("---------------------------------->>>>> $state");
                 if (state is SubjectDataSuccess) {
                   pageIndex.value = 0;
                 } else if (state is NycDataSuccess) {
@@ -485,6 +486,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   }
                 } else if (state is NycSubDataSuccess) {
                   pageIndex.value = 2;
+                } else if (state is StateListFetchSuccessfully) {
+                  fetchSubjectDetails('subject', widget.selectedClass,
+                      widget.selectedClass, widget.stateName, '', '');
                 }
               },
               child: Container(),
@@ -608,7 +612,29 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 radius: 20, color: AppTheme.kButtonColor)),
                   );
           }
-          return Container();
+          // else if (state is OcrLoading2) {
+          //   return Container(
+          //     height: MediaQuery.of(context).size.height * 0.6,
+          //     child: Center(
+          //         child: Globals.isAndroid == true
+          //             ? CircularProgressIndicator(
+          //                 color: AppTheme.kButtonColor,
+          //               )
+          //             : CupertinoActivityIndicator(
+          //                 radius: 20, color: AppTheme.kButtonColor)),
+          //   );
+          // }
+
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Center(
+                child: Globals.isAndroid == true
+                    ? CircularProgressIndicator(
+                        color: AppTheme.kButtonColor,
+                      )
+                    : CupertinoActivityIndicator(
+                        radius: 20, color: AppTheme.kButtonColor)),
+          );
           // return widget here based on BlocA's state
         });
   }
@@ -1748,12 +1774,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   }
 
   googleSlidesPreparation() {
-    if (Globals.googleSlidePresentationId!.isNotEmpty) {
+    if (Globals.googleSlidePresentationId!.isNotEmpty &&
+        (Globals.googleSlidePresentationLink == null ||
+            Globals.googleSlidePresentationLink!.isEmpty)) {
       _googleDriveBloc.add(GetShareLink(
           fileId: Globals.googleSlidePresentationId, slideLink: true));
-    } else {
-      // _googleDriveBloc
-      //     .add(CreateSlideToDrive(fileTitle: Globals.assessmentName));
     }
   }
 }

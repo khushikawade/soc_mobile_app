@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/state_selection_page.dart';
@@ -832,9 +833,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
         description: 'Created G-Excel file',
         operationResult: 'Success');
 
-    // To check State is selected or not (if selected then navigate to subject screen otherwise navigate to state selection screen)
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? selectedState = pref.getString('selected_state');
+    // To check State is selected or not only for standalone app (if selected then navigate to subject screen otherwise navigate to state selection screen)
+    String? selectedState;
+    if (Overrides.STANDALONE_GRADED_APP) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      selectedState = pref.getString('selected_state');
+    } else {
+      //for school app default state
+      selectedState = OcrOverrides.defaultStateForSchoolApp;
+    }
+
     isAlreadySelected.value = true;
     if (selectedState != null) {
       Navigator.push(

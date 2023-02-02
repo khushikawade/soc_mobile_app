@@ -243,8 +243,10 @@ class GetRubricPdf extends OcrEvent {
 
 // ---------- Event to Fetch State List for Api ----------
 class FetchStateListEvent extends OcrEvent {
+  String? stateName;
   final bool fromCreateAssesment;
-  FetchStateListEvent({required this.fromCreateAssesment});
+  FetchStateListEvent(
+      {required this.fromCreateAssesment, required this.stateName});
 
   @override
   List<Object> get props => [];
