@@ -278,7 +278,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
-                          state.errorMsg.toString() ?? "", null);
+                          'Something went wrong' ?? "", null);
                     }
                   }
 
