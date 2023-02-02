@@ -693,6 +693,19 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         // To get local data if exist
         LocalDatabase<StateListObject> _localDb =
             LocalDatabase(Strings.stateObjectName);
+
+// Clear  state and subject local data to manage loading issue
+        SharedPreferences clearNewsCache =
+            await SharedPreferences.getInstance();
+        final clearCacheResult =
+            clearNewsCache.getBool('delete_local_state_and_subject_cache');
+
+        if (clearCacheResult != true) {
+          _localDb.clear();
+          await clearNewsCache.setBool(
+              'delete_local_state_and_subject_cache', true);
+        }
+
         List<StateListObject>? _localData = await _localDb.getData();
 
         // Condition to show state list if local data exist
@@ -711,7 +724,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
 
         // Calling Function to fetch State_and_Standards_Gradedplus__c Object data
-        List<StateListObject> stateObjectList = await fetchStateObjectList();
+        List<StateListObject> stateObjectList =
+            await fetchStateObjectList(stateName: event.stateName);
 
         // Syncing the Local database with remote data
         await _localDb.clear();
@@ -854,11 +868,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   }
 
   // ---------- Fuction to fetch StateObjectList From State_and_Standards_Gradedplus__c Object ---------
-  Future<List<StateListObject>> fetchStateObjectList() async {
+  Future<List<StateListObject>> fetchStateObjectList(
+      {required String? stateName}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-        Uri.encodeFull(
-            "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/State_and_Standards_Gradedplus__c"),
+        Uri.encodeFull(stateName == "GetAllState"
+            ? "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/State_and_Standards_Gradedplus__c"
+            : 'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/State_and_Standards_Gradedplus__c/"State__c" = \'$stateName\''),
         headers: {
           'Content-Type': 'application/json',
           // 'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
