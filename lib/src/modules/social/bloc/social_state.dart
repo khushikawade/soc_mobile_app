@@ -123,22 +123,22 @@ class SocialErrorReceived extends SocialState {
 
 // class SocialListLoaded extends SocialState {
 //   final List<Item>? obj;
-//   final bool? isloading;
+//   final bool? isLoading;
 //   final bool isFromUpdatedNewsList;
 
 //   SocialListLoaded({
 //     this.obj,
-//     required this.isloading,
+//     required this.isLoading,
 //     required this.isFromUpdatedNewsList,
 //   });
 //   SocialListLoaded copyWith(
 //       {final obj,
-//       final isloading,
+//       final isLoading,
 //       final isFromUpdatedLoad,
 //       final rfeshnewsSection}) {
 //     return SocialListLoaded(
 //       obj: obj ?? this.obj,
-//       isloading: isloading ?? this.isloading,
+//       isLoading: isLoading ?? this.isLoading,
 //       isFromUpdatedNewsList: isFromUpdatedLoad ?? this.isFromUpdatedNewsList,
 //     );
 //   }

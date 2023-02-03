@@ -323,10 +323,9 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     if (event is UpdateNotificationList) {
       try {
-        List<Item> existingNotificationList = event.list!;
-
         List<Item> _list =
             await fetchNotificationList(event.list!.length, 10); //offset,limit
+        List<Item> existingNotificationList = event.list!;
 
         //Adding newly fetched notification to the existing list
         existingNotificationList.addAll(_list);
@@ -396,13 +395,13 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
         //To mimic the state
 
-        //Sorting the notification by date
-        existingNotificationList.forEach((element) {
-          if (element.completedAt != null) {
-            existingNotificationList
-                .sort((a, b) => b.completedAt.compareTo(a.completedAt));
-          }
-        });
+        // //Sorting the notification by date
+        // existingNotificationList.forEach((element) {
+        //   if (element.completedAt != null) {
+        //     existingNotificationList
+        //         .sort((a, b) => b.completedAt.compareTo(a.completedAt));
+        //   }
+        // });
 
         //To mimic the state
         yield NewsLoading2();
@@ -414,6 +413,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         );
       } catch (e) {
         print(e);
+        throw Exception(e);
       }
     }
   }

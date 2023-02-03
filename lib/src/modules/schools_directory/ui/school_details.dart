@@ -40,7 +40,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   final HomeBloc homebloc = new HomeBloc();
   bool? isErrorState = false;
   static const double _kboxborderwidth = 0.75;
-  bool? isloadingstate = false;
+  bool? isLoadingstate = false;
   final List<Marker> _markers = [];
 
   @override
@@ -333,7 +333,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
             children: [
               Container(
                 height: MediaQuery.of(context).size.height * 0.85,
-                child: isloadingstate!
+                child: isLoadingstate!
                     ? ShimmerLoading(isLoading: true, child: _buildItem())
                     : _buildItem(),
               ),
@@ -342,13 +342,13 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                     bloc: homebloc,
                     listener: (context, state) async {
                       if (state is HomeLoading) {
-                        isloadingstate = true;
+                        isLoadingstate = true;
                       }
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                         Globals.appSetting = AppSetting.fromJson(state.obj);
-                        isloadingstate = false;
+                        isLoadingstate = false;
                         setState(() {});
                       }
                     },

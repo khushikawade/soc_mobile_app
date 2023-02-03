@@ -1404,7 +1404,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       final body = {
         "DBN__c": "05M194",
         "First_Name__c": studentName.split(" ")[0],
-        "last_Name__c": studentName.split(" ")[0].length >= 1
+        "last_Name__c": studentName.split(" ")[0].length > 1
             ? studentName.split(" ")[1]
             : '',
         "School__c": Globals.appSetting.schoolNameC,
@@ -1530,7 +1530,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             : '0014W00002uusl7QAA', //Graded+ Schools
 
         "RecordTypeId":
-            "0124W0000003GVyQAM", //Static to save in a 'Teacher' catagory listview
+            "0124W0000003GVyQAM", //Static to save in a 'Teacher' category listView
         "Assessment_App_User__c": "true",
         "LastName": email, //.split("@")[0],
         "Email": email,
