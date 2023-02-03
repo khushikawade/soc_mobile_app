@@ -402,8 +402,8 @@ class _ActionInteractionButtonWidgetState
       setState(() {
         _downloadingFile = true;
       });
-      String _title = Utility.convertHtmlTOText(widget.title) ?? "";
-      String _description = Utility.convertHtmlTOText(widget.description) ?? "";
+      String _title = Utility.convertHtmlTOText(widget.title ?? "");
+      String _description = Utility.convertHtmlTOText(widget.description ?? "");
 
       String _imageUrl;
       if (fallBackImageUrl != null) {
