@@ -229,7 +229,7 @@ class _NewdescriptionState extends State<Newdescription> {
             obj: widget.obj,
             title: widget.obj.description,
             description: widget.obj.description,
-            imageUrl: widget.obj.image,
+            imageUrl: widget.obj.link,
           ),
         ),
       ],

@@ -329,18 +329,24 @@ class Utility {
     }
   }
 
-  static Future<File> createFileFromUrl(_url, imageExtType) async {
+  static Future<File?> createFileFromUrl(_url, imageExtType) async {
     try {
       Uri _imgUrl = Uri.parse(_url);
       // String _fileExt = _imgUrl.query != ""
       //     ? _imgUrl.query.split('format=')[1].split("&")[0]
       //     : _imgUrl.path.split('.').last;
-
-      String _fileExt = imageExtType != "" && imageExtType != null
-          ? imageExtType.split('/').last
-          : _imgUrl.query != ""
-              ? _imgUrl.query.split('format=')[1].split("&")[0]
-              : _imgUrl.path.split('.').last;
+      String _fileExt = '';
+      try {
+        _fileExt = imageExtType != "" && imageExtType != null
+            ? imageExtType.split('/').last
+            : _imgUrl.query != ""
+                ? _imgUrl.query.split('format=')[1].split("&")[0]
+                : _imgUrl.path.split('.').last;
+      } catch (e) {
+        _fileExt = imageExtType != "" && imageExtType != null
+            ? imageExtType.split('/').last
+            : _imgUrl.path.split('.').last;
+      }
       String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
       Response<List<int>> rs = await Dio().get<List<int>>(
         _url,
@@ -351,7 +357,8 @@ class Utility {
       await file.writeAsBytes(rs.data!);
       return file;
     } catch (e) {
-      throw Exception('Something went wrong');
+      //throw Exception(e);
+      return null;
     }
   }
 
