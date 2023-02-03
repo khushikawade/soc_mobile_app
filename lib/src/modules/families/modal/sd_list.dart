@@ -58,11 +58,11 @@ class SDlist {
       // attributes: json['attributes'] == null
       //     ? null
       //     : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
-      designation: Utility.utf8convert(json['Title__c']),
+      designation: Utility.utf8convert(json['Title__c'] ?? ''),
       imageUrlC: json['Image_URL__c'] as String?,
       id: json['Id'] as String?,
-      name: Utility.utf8convert(json['Name__c'] as String?),
-      descriptionC: Utility.utf8convert(json['Description__c']),
+      name: Utility.utf8convert(json['Name__c'] ?? ''),
+      descriptionC: Utility.utf8convert(json['Description__c']?? ''),
       emailC: json['Email__c'] as String?,
       sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
       phoneC: json['Phone__c'] as String?,

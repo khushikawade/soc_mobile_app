@@ -368,7 +368,7 @@ class Utility {
       List<int> bytes = text!.codeUnits;
       return utf8.decode(bytes);
     } catch (e) {
-      return text!;
+      return text ?? '';
     }
   }
 
