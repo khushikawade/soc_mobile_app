@@ -99,11 +99,11 @@ class NewsErrorReceived extends NewsState {
 
 class UpdatedNewsLoaded extends NewsState {
   final List<NotificationList>? obj;
-  final bool isloading;
-  UpdatedNewsLoaded({this.obj, required this.isloading});
-  UpdatedNewsLoaded copyWith({final obj, final isloading}) {
+  final bool isLoading;
+  UpdatedNewsLoaded({this.obj, required this.isLoading});
+  UpdatedNewsLoaded copyWith({final obj, final isLoading}) {
     return UpdatedNewsLoaded(
-        obj: obj ?? this.obj, isloading: isloading ?? this.isloading);
+        obj: obj ?? this.obj, isLoading: isLoading ?? this.isLoading);
   }
 
   @override

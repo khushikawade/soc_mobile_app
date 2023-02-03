@@ -434,6 +434,7 @@ class _CameraScreenState extends State<CameraScreen>
                             if (widget.isFromHistoryAssessmentScanMore ==
                                 true) {
                               _driveBloc.add(UpdateGoogleSlideOnScanMore(
+                                  isMcqSheet: widget.isMcqSheet ?? false,
                                   assessmentName: widget.assessmentName ?? '',
                                   isFromHistoryAssessment:
                                       widget.isFromHistoryAssessmentScanMore,

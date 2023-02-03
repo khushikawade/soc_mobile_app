@@ -165,9 +165,7 @@ flutter:
     - family: SOC_CustomIcons
       fonts:
         - asset: fonts/CustomFlutterIcons.ttf
-    # - family: ActionInteractionIcons
-    #   fonts:
-    #     - asset: fonts/ActionInteractionIcons.ttf
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

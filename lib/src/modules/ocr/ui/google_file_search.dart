@@ -55,7 +55,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
 
   onItemChanged(String? searchKey) {
-    // issuggestionList = true;
+    // suggestionsList = true;
     // setState(() {
     if (searchKey != "") {
       issuggestionList = true;
@@ -64,8 +64,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     if (issuggestionList == true) {
       _debouncer.run(() {
         // _homeBloc.add(GlobalSearchEvent(keyword: value));
-        googleBloc
-            .add(GetHistoryAssessmentFromDrive(searchKeyword: searchKey!));
+        googleBloc.add(GetHistoryAssessmentFromDrive(
+          isSearchPage: true,
+            searchKeyword: searchKey!, filterType: selectedValue.value));
         updateTheUi.value = !updateTheUi.value;
         // setState(() {});
       });
