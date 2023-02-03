@@ -451,11 +451,12 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               children: [
                 Utility.textWidget(
                     context: context,
-                    text: selectedValue.value == 'All'
-                        ? 'All Assignment Caught Up'
-                        : selectedValue.value == 'Constructed Response'
-                            ? 'All Constructed Assignment Caught Up'
-                            : 'All MCQ Assignment Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                    text: "You're All Caught Up",
+                    // selectedValue.value == 'All'
+                    //     ? 'All Assignment Caught Up'
+                    //     : selectedValue.value == 'Constructed Response'
+                    //         ? 'All Constructed Assignment Caught Up'
+                    //         : 'All MCQ Assignment Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.background ==
@@ -467,7 +468,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 Utility.textWidget(
                     context: context,
                     text:
-                        'You\'ve fetched all the available ${selectedValue.value == 'All' ? '' : selectedValue.value} files from Graded+ Assignment',
+                        //     'You\'ve fetched all the available ${selectedValue.value == 'All' ? '' : selectedValue.value} files from Graded+ Assignment',
+                        "You've seen all available assignments",
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: Colors.grey, //AppTheme.kButtonColor,

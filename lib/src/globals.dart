@@ -56,7 +56,8 @@ class Globals {
   static bool? isDarkTheme;
   static bool? systemTheme;
   static String? themeType;
-  static List icons = [0xe823, 0xe824, 0xe825, 0xe829, 0xe863];
+  // static List icons = [0xe823, 0xe824, 0xe825, 0xe829, 0xe863];
+  static List icons = [0xe87e, 0xe87f, 0xe880, 0xe829, 0xe863];
   static List iconsName = ["Like", "Thanks", "Helpful", "Share", "Support"];
   static List<NotificationList> notificationList = [];
   static List<Item> socialList = [];

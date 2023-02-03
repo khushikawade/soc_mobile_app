@@ -310,9 +310,7 @@ class _ActionInteractionButtonWidgetState
                                       : Theme.of(context)
                                           .colorScheme
                                           .primaryVariant,
-                      size: Globals.deviceType == "phone"
-                          ? (index == 0 || index == 4 ? 26 : 22)
-                          : (index == 0 || index == 4 ? 30 : 25),
+                      size: Globals.deviceType == "phone" ? 22 : 25,
                     );
             },
           ),

@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+
 import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/allCaughtUp_widget.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
@@ -105,8 +106,9 @@ class _SocialNewPageState extends State<SocialNewPage> {
                             ),
                     ))
                 : AllCaughtUpWidget(
-                    title: 'RSS Feeds Caught Up',
-                    msg: 'You\'ve fetched all the available RSS Feeds',
+                    title: "You're All Caught Up", // 'RSS Feeds Caught Up',
+                    msg:
+                        "You've seen all new posts.", //    'You\'ve fetched all the available RSS Feeds',
                     gradientColor: LinearGradient(colors: [
                       Theme.of(context).primaryColor,
                       AppTheme.kSelectedColor,

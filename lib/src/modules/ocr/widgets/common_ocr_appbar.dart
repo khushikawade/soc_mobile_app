@@ -84,35 +84,31 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         elevation: 0,
         leadingWidth: 300, //widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
-        leading: Container(
-          margin: EdgeInsets.only(top: 7),
-          child: Row(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              widget.customBackButton != null
-                  ? widget.customBackButton!
-                  : widget.isBackButton == true
-                      ? IconButton(
-                          onPressed: () {
-                            //To dispose the snackbar message before navigating back if exist
-                            ScaffoldMessenger.of(context)
-                                .removeCurrentSnackBar();
-                            Navigator.pop(context, widget.navigateBack);
-                          },
-                          icon: Icon(
-                            IconData(0xe80d,
-                                fontFamily: Overrides.kFontFam,
-                                fontPackage: Overrides.kFontPkg),
-                            color: AppTheme.kButtonColor,
-                          ),
-                        )
-                      : Container(
-                          height: 0,
-                          width: 0,
+        leading: Row(
+          // mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            widget.customBackButton != null
+                ? widget.customBackButton!
+                : widget.isBackButton == true
+                    ? IconButton(
+                        onPressed: () {
+                          //To dispose the snackbar message before navigating back if exist
+                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                          Navigator.pop(context, widget.navigateBack);
+                        },
+                        icon: Icon(
+                          IconData(0xe80d,
+                              fontFamily: Overrides.kFontFam,
+                              fontPackage: Overrides.kFontPkg),
+                          color: AppTheme.kButtonColor,
                         ),
-              commonGradedLogo()
-            ],
-          ),
+                      )
+                    : Container(
+                        height: 0,
+                        width: 0,
+                      ),
+            commonGradedLogo()
+          ],
         ),
         title: GestureDetector(
             onTap: widget.onTap,
@@ -128,9 +124,11 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     //  WarningPopupModel();
 
                     popupModal(
-                        message:
-                            'You are about to Signout from the google account. This may restricts you to use the app without google SignIn. \n\nContinue Signout?',
-                        title: 'Signout');
+                        message: "Are you sure you want to log out of GRADED+?",
+                        //  'You are about to Signout from the google account. This may restricts you to use the app without google SignIn. \n\nContinue Signout?',
+                        title: "Log Out"
+                        //'Signout'
+                        );
                   },
                   icon: Container(
                       padding: EdgeInsets.only(right: 10),
@@ -204,11 +202,11 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                 : getGoogleFolderPath();
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Image(
                               alignment: Alignment.center,
-                              width: Globals.deviceType == "phone" ? 34 : 32,
-                              height: Globals.deviceType == "phone" ? 34 : 32,
+                              width: Globals.deviceType == "phone" ? 32 : 34,
+                              height: Globals.deviceType == "phone" ? 32 : 34,
                               image: AssetImage(
                                 "assets/images/drive_ico.png",
                               ),
@@ -216,8 +214,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                           ),
                         )
                       : widget.assessmentDetailPage == null
-                          ? Container(
-                              child: IconButton(
+                          ? IconButton(
+                              iconSize: 32,
                               onPressed: () {
                                 if (widget.isHomeButtonPopup == true) {
                                   _onHomePressed();
@@ -246,9 +244,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                     fontFamily: Overrides.kFontFam,
                                     fontPackage: Overrides.kFontPkg),
                                 color: AppTheme.kButtonColor,
-                                size: 30,
                               ),
-                            ))
+                            )
                           : Container(),
           widget.assessmentDetailPage == true
               ? Container()
@@ -269,78 +266,65 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             });
                   }),
           widget.isOcrHome == true && Overrides.STANDALONE_GRADED_APP != true
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: IconButton(
-                      onPressed: () async {
-                        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                            "walkthrough");
-                        var result = await Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => CustomIntroWidget()),
-                        );
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.help,
-                        size: 32,
-                        color: AppTheme.kButtonColor,
-                      )),
-                )
+              ? IconButton(
+                  iconSize: 32,
+                  onPressed: () async {
+                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "walkthrough");
+                    var result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => CustomIntroWidget()),
+                    );
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.help,
+                    //  size: 32,
+                    color: AppTheme.kButtonColor,
+                  ))
               : Container(),
           widget.isProfilePage == true
               ? Container()
-              : Container(
-                  margin: EdgeInsets.all(10),
-                  padding: widget.isSuccessState!.value != false
-                      ? EdgeInsets.only(right: 10, top: 5)
-                      : EdgeInsets.zero,
-                  child: FutureBuilder(
-                      future: getUserProfile(),
-                      builder:
-                          (context, AsyncSnapshot<UserInformation> snapshot) {
-                        if (snapshot.hasData) {
-                          return ClipRRect(
+              : FutureBuilder(
+                  future: getUserProfile(),
+                  builder: (context, AsyncSnapshot<UserInformation> snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        child: IconButton(
+                          icon: ClipRRect(
                             borderRadius: BorderRadius.all(
-                              Radius.circular(60),
-                            ), //.circular(60),
-                            child: GestureDetector(
-                              onTap: () async {
-                                await FirebaseAnalyticsService
-                                    .addCustomAnalyticsEvent("profile");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProfilePage(
-                                            hideStateSelection:
-                                                widget.hideStateSelection ??
-                                                    false,
-                                            profile: snapshot.data!,
-                                          )),
-                                );
-
-                                // _showPopUp(snapshot.data!);
-                                //print("profile url");
-                              },
-                              child: CachedNetworkImage(
-                                // height: 30,
-                                fit: BoxFit.cover,
-                                imageUrl: snapshot.data!.profilePicture!,
-                                placeholder: (context, url) =>
-                                    CupertinoActivityIndicator(
-                                        animating: true, radius: 10),
-                              ),
+                              Radius.circular(50),
                             ),
-                          );
-                        }
-                        return Container(
-                          margin: EdgeInsets.all(10),
-                          padding: widget.isSuccessState!.value != false
-                              ? EdgeInsets.only(right: 10, top: 5)
-                              : EdgeInsets.zero,
-                        );
-                      }),
-                ),
+                            child: CachedNetworkImage(
+                              height: 28,
+                              width: 28,
+                              imageUrl: snapshot.data!.profilePicture!,
+                              placeholder: (context, url) =>
+                                  CupertinoActivityIndicator(
+                                      animating: true, radius: 10),
+                            ),
+                          ),
+                          onPressed: () async {
+                            await FirebaseAnalyticsService
+                                .addCustomAnalyticsEvent("profile");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilePage(
+                                        hideStateSelection:
+                                            widget.hideStateSelection ?? false,
+                                        profile: snapshot.data!,
+                                      )),
+                            );
+
+                            // _showPopUp(snapshot.data!);
+                            //print("profile url");
+                          },
+                        ),
+                      );
+                    }
+                    return IconButton(icon: Container(), onPressed: (() {}));
+                  }),
         ]);
   }
 
@@ -379,7 +363,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
     return Expanded(
       child: Container(
         padding: widget.isBackButton == true
-            ? EdgeInsets.only(left: 0)
+            ? EdgeInsets.all(1)
             : EdgeInsets.only(left: 18),
         alignment: Alignment.centerLeft,
         child: Image(
