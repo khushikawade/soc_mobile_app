@@ -11,6 +11,7 @@ import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/calendra_icon_widget.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -24,8 +25,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../widgets/action_interaction_button.dart';
 
 class NewsPage extends StatefulWidget {
   @override
@@ -574,7 +573,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 Utility.textWidget(
                     context: context,
                     text:
-                        'News Feeds Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                        "You're All Caught Up", // 'News Feeds Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.background ==
@@ -585,7 +584,8 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                 SpacerWidget(10),
                 Utility.textWidget(
                     context: context,
-                    text: 'You\'ve fetched all the available News Feeds',
+                    text: "You've seen all new posts.",
+                    // 'You\'ve fetched all the available News Feeds',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: Colors.grey, //AppTheme.kButtonColor,

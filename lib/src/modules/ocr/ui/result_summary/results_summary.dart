@@ -214,9 +214,11 @@ class studentRecordList extends State<ResultsSummary> {
               isBackButton: widget.assessmentDetailPage,
               assessmentDetailPage: widget.assessmentDetailPage,
               actionIcon: Container(
-                  padding: EdgeInsets.only(right: 5),
+                  padding: EdgeInsets.all(8),
                   child: TextButton(
-                      style: ButtonStyle(alignment: Alignment.center),
+                      style: ButtonStyle(
+                        alignment: Alignment.center,
+                      ),
                       child: TranslationWidget(
                           message: "DONE",
                           fromLanguage: "en",
@@ -1436,9 +1438,12 @@ class studentRecordList extends State<ResultsSummary> {
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
                   : 'Student Id/Student Email',
-              textFileTitleThree: widget.isMcqSheet == true
-                  ? "Student Selection"
-                  : "Student Grade",
+              textFileTitleThree:
+                  //   widget.isMcqSheet == true
+                  // ? "Student Selection"
+                  // /// : "Student Grade",
+                  // :
+                  'Points Earned',
               isSubjectScreen: false,
               update: (
                   {required TextEditingController name,
@@ -2131,7 +2136,11 @@ class studentRecordList extends State<ResultsSummary> {
                           InkWell(
                             child: SvgPicture.asset(element.svgPath!,
                                 width: Globals.deviceType == "phone" ? 28 : 50,
-                                height: Globals.deviceType == "phone" ? 28 : 50,
+                                height: Globals.deviceType == "phone"
+                                    ? element.title == "Drive"
+                                        ? 30
+                                        : 28
+                                    : 50,
                                 color: Theme.of(context).backgroundColor ==
                                             Color(0xff000000) &&
                                         element.title == "Dashboard"

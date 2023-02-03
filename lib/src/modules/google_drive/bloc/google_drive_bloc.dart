@@ -308,41 +308,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 : print("error");
           }
 
-          // if (event.isCustomRubricSelcted == true &&
-          //     (assessmentData[i].customRubricImage == null ||
-          //         assessmentData[i].customRubricImage!.isEmpty) &&
-          //     event.selectedRubric != 0 &&
-          //     customRubicLocalData[event.selectedRubric!].filePath != null &&
-          //     customRubicLocalData[event.selectedRubric!]
-          //         .filePath!
-          //         .isNotEmpty) {
-          //   if (customRubicLocalData[event.selectedRubric!].imgUrl != null ||
-          //       customRubicLocalData[event.selectedRubric!]
-          //           .imgUrl!
-          //           .isNotEmpty) {
-          //     assessmentData.forEach((element) {
-          //       element.customRubricImage =
-          //           customRubicLocalData[event.selectedRubric!].imgUrl;
-          //     });
-          //   } else {
-          //     File assessmentImageFile =
-          //         File(customRubicLocalData[event.selectedRubric!].filePath!);
-          //     String imgExtension = assessmentImageFile.path
-          //         .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
-
-          //     String imgUrl = await _uploadImgB64AndGetUrl(
-          //         imgBase64:
-          //             customRubicLocalData[event.selectedRubric!].imgBase64,
-          //         imgExtension: imgExtension,
-          //         section: 'rubric-score');
-          //     if (imgUrl != '') {
-          //       assessmentData.forEach((element) {
-          //         element.customRubricImage = imgUrl;
-          //       });
-          //     }
-          //   }
-          // }
-
           if ((assessmentData[i].customRubricImage == null ||
                   assessmentData[i].customRubricImage!.isEmpty) &&
               customRubicLocalData.isNotEmpty) {

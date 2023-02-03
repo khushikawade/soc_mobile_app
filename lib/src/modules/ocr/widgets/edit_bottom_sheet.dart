@@ -605,6 +605,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
 
   Widget pointsButton(index, dynamic grade, {required bool isSuccessState}) {
     isSelected ? indexColor.value = grade : null;
+
     return ValueListenableBuilder(
         valueListenable: rubricNotDetected,
         builder: (BuildContext context, dynamic value, Widget? child) {
@@ -634,18 +635,20 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                     ),
                     decoration: BoxDecoration(
                       color: widget.isMcqSheet == true
-                          ? index == widget.selectedAnswer
-                              ? index == indexColor.value
-                                  ? AppTheme.kSelectedColor
-                                  : Colors.grey //AppTheme.kButtonColor
-                              : index == indexColor.value
+                          ? (index == widget.selectedAnswer &&
+                                  indexColor.value == index
+                              ? Colors.green.shade300
+                              : indexColor.value == index
                                   ? rubricNotDetected.value == true &&
                                           isSelected == true
                                       ? Colors.red
-                                      : AppTheme.kSelectedColor
-                                  : Colors.grey
-                          : index.toString() == indexColor.value
-                              ? AppTheme.kSelectedColor
+                                      : Colors.red
+                                  : Colors.grey)
+                          : index == indexColor.value
+                              ? rubricNotDetected.value == true &&
+                                      isSelected == true
+                                  ? Colors.red
+                                  : AppTheme.kSelectedColor
                               : Colors.grey,
                       borderRadius: BorderRadius.all(
                         Radius.circular(8),
@@ -676,16 +679,21 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                               : Color(0xff111C20),
                           border: Border.all(
                             color: widget.isMcqSheet == true
-                                ? index == widget.selectedAnswer
-                                    ? index == indexColor.value
-                                        ? AppTheme.kSelectedColor
-                                        : Colors.grey //AppTheme.kButtonColor
-                                    : index == indexColor.value
-                                        ? isSelected == true
+                                ? (index == widget.selectedAnswer &&
+                                        indexColor.value == index
+                                    ? Colors.green.shade300
+                                    : indexColor.value == index
+                                        ? rubricNotDetected.value == true &&
+                                                isSelected == true
                                             ? Colors.red
-                                            : AppTheme.kSelectedColor
-                                        : Colors.grey
-                                : Colors.grey,
+                                            : Colors.red
+                                        : Colors.grey)
+                                : index == indexColor.value
+                                    ? rubricNotDetected.value == true &&
+                                            isSelected == true
+                                        ? Colors.red
+                                        : AppTheme.kSelectedColor
+                                    : Colors.grey,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
@@ -697,27 +705,22 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                           fromLanguage: "en",
                           builder: (translatedMessage) => Text(
                             translatedMessage.toString(),
-                            style: Theme.of(context).textTheme.headline1!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: widget.isMcqSheet == true
-                                    ? (index.toString() == widget.selectedAnswer
-                                        ? AppTheme.kButtonColor
-                                        : indexColor.value == index
-                                            ?
-                                            // rubricNotDetected.value ==
-                                            //             true &&
-                                            //         isSelected == true
-                                            //     ? Colors.red
-                                            Colors.red //AppTheme.kSelectedColor
-                                            : Colors.grey)
-                                    : (indexColor.value == index.toString()
-                                        ?
-                                        // rubricNotDetected.value == true &&
-                                        //         isSelected == true
-                                        //     ? Colors.red
-                                        //     :
-                                        AppTheme.kSelectedColor
-                                        : Colors.grey)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: widget.isMcqSheet == true
+                                        ? (index.toString() ==
+                                                widget.selectedAnswer
+                                            ? Colors.green.shade300
+                                            : indexColor.value == index
+                                                ? Colors
+                                                    .red //AppTheme.kSelectedColor
+                                                : Colors.grey)
+                                        : (indexColor.value == index.toString()
+                                            ? AppTheme.kSelectedColor
+                                            : Colors.grey)),
                           ),
                         )),
                   ));
