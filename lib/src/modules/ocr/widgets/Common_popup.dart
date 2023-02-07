@@ -143,9 +143,10 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                 teacherId: Globals.teacherId,
                                 activityId: '2',
                                 accountId: Globals.appSetting.schoolNameC,
-                                accountType: Globals.isPremiumUser == true
-                                    ? "Premium"
-                                    : "Free",
+                                accountType:
+                                    Globals.appSetting.isPremiumUser == true
+                                        ? "Premium"
+                                        : "Free",
                                 dateTime: currentDateTime.toString(),
                                 description: 'Logout',
                                 operationResult: 'Success'));

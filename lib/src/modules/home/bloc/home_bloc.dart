@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
+import 'package:Soc/src/modules/home/models/accountObjectModal.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
@@ -257,6 +260,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
 
         // yield HomeErrorReceived(err: e);
+      }
+    }
+    if (event is VerifyUserWithDatabase) {
+      try {
+        _verifyUserWithDatabase(accountId: event.acountId!);
+      } catch (e) {
+        throw (e);
       }
     }
   }
@@ -576,5 +586,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void addRecordDetailtoLocalDb(dynamic log) async {
     await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
+  }
+
+  Future _verifyUserWithDatabase({required String accountId}) async {
+    print(accountId);
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          Uri.encodeFull(
+              'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Account/$accountId'),
+          isCompleteUrl: true);
+      // print("response is recived --------->>>");
+      if (response.statusCode == 200) {
+        var data = response.data['body'];
+        // var isGradedPreminumC = jsonDecode(data["GRADED_Premium__c"]);
+        // if (isGradedPreminumC == true) {
+        //   Globals.appSetting.isPremiumUser = true;
+        // }
+        AccountObjectModal accountObejct = AccountObjectModal.fromJson(data);
+        Globals.appSetting.dbnC = accountObejct.dBNC ?? '';
+
+        Globals.appSetting.isPremiumUser =
+            accountObejct.gRADEDPremiumC == 'true' ? true : false;
+      } else {
+        _verifyUserWithDatabase(accountId: accountId);
+      }
+    } catch (e) {
+      throw (e);
+    }
   }
 }

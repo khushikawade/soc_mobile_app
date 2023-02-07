@@ -288,7 +288,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       questionImage: widget.questionImage == ''
                           ? 'NA'
                           : widget.questionImage ?? 'NA',
-                      createdAsPremium: Globals.isPremiumUser,
+                      createdAsPremium: Globals.appSetting.isPremiumUser,
                       assessmentName: Globals.assessmentName,
                       fileId: Globals.googleExcelSheetId,
                       isLoading: true,
@@ -710,7 +710,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           questionImage: widget.questionImage == ''
                               ? 'NA'
                               : widget.questionImage ?? 'NA',
-                          createdAsPremium: Globals.isPremiumUser,
+                          createdAsPremium: Globals.appSetting.isPremiumUser,
                           assessmentName: Globals.assessmentName!,
                           fileId: Globals.googleExcelSheetId,
                           isLoading: true,

@@ -1410,7 +1410,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
       };
       final body = {
-        "DBN__c": "05M194",
+        "DBN__c": Globals.appSetting.dbnC ?? "",
         "First_Name__c": studentName.split(" ")[0],
         "last_Name__c": studentName.split(" ")[0].length > 1
             ? studentName.split(" ")[1]
@@ -1463,34 +1463,35 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         } else {
           Globals.teacherId = data['Id'];
-          if (data['Assessment_App_User__c'] != 'true') {
-            var userType = data["GRADED_Premium__c"];
-            if (userType == "true") {
-              Globals.isPremiumUser = true;
-            } else {
-              if (Overrides.STANDALONE_GRADED_APP == true) {
-                Globals.isPremiumUser = true;
-              } else {
-                Globals.isPremiumUser = false;
-              }
-            }
 
-            Globals.teacherId = data['Id'];
-            bool result = await updateContactToSalesforce(recordId: data['Id']);
-            if (!result) {
-              await updateContactToSalesforce(recordId: data['Id']);
-            }
-          } else {
-            if (Overrides.STANDALONE_GRADED_APP == true) {
-              Globals.isPremiumUser = true;
-            } else {
-              if (Overrides.STANDALONE_GRADED_APP == true) {
-                Globals.isPremiumUser = true;
-              } else {
-                Globals.isPremiumUser = false;
-              }
-            }
-          }
+          // if (data['Assessment_App_User__c'] != 'true') {
+          //   var userType = data["GRADED_Premium__c"];
+          //   if (userType == "true") {
+          //     Globals.isPremiumUser = true;
+          //   } else {
+          //     if (Overrides.STANDALONE_GRADED_APP == true) {
+          //       Globals.isPremiumUser = true;
+          //     } else {
+          //       Globals.isPremiumUser = false;
+          //     }
+          //   }
+
+          //   Globals.teacherId = data['Id'];
+          //   bool result = await updateContactToSalesforce(recordId: data['Id']);
+          //   if (!result) {
+          //     await updateContactToSalesforce(recordId: data['Id']);
+          //   }
+          // } else {
+          //   if (Overrides.STANDALONE_GRADED_APP == true) {
+          //     Globals.isPremiumUser = true;
+          //   } else {
+          //     if (Overrides.STANDALONE_GRADED_APP == true) {
+          //       Globals.isPremiumUser = true;
+          //     } else {
+          //       Globals.isPremiumUser = false;
+          //     }
+          //   }
+          // }
           if (data['Assessment_App_User__c'] != 'true') {
             Globals.teacherId = data['Id'];
             bool result = await updateContactToSalesforce(recordId: data['Id']);
@@ -1632,7 +1633,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Session_Id": sessionId,
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
-        "Created_As_Premium": Globals.isPremiumUser.toString(),
+        "Created_As_Premium": Globals.appSetting.isPremiumUser.toString(),
         "Assessment_Que_Image__c": assessmentQueImage,
         "Assessment_Type":
             isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response'

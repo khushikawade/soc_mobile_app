@@ -255,7 +255,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                           teacherId: Globals.teacherId,
                           activityId: '1',
                           accountId: Globals.appSetting.schoolNameC,
-                          accountType: Globals.isPremiumUser == true
+                          accountType: Globals.appSetting.isPremiumUser == true
                               ? "Premium"
                               : "Free",
                           dateTime: currentDateTime.toString(),
@@ -343,7 +343,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
         teacherId: Globals.teacherId,
         activityId: '4',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+        accountType: Globals.appSetting.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
         description: 'Assessment History page for home page',
         operationResult: 'Success'));

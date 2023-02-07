@@ -243,7 +243,9 @@ class _StartupPageState extends State<StartupPage> {
 
                               var isOldUser = await _hiveDbServices
                                   .getSingleData('new_user', 'new_user');
-
+                              if (Overrides.STANDALONE_GRADED_APP == true) {
+                               Globals.appSetting.isPremiumUser = true;
+                              }
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(
                                 builder: (context) => isOldUser == true
@@ -257,6 +259,12 @@ class _StartupPageState extends State<StartupPage> {
                               ));
                               //         );
                             } else {
+                              if (Globals.appSetting.schoolNameC != null &&
+                                  Globals.appSetting.schoolNameC!.isNotEmpty) {
+                                _bloc.add(VerifyUserWithDatabase(
+                                    acountId: Globals.appSetting.schoolNameC));
+                              }
+
                               Navigator.of(context)
                                   .pushReplacement(_createRoute(state.obj));
                             }

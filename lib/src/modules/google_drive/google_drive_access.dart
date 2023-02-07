@@ -15,7 +15,8 @@ class GoogleDriveAccess {
       final sheet = excel[excel.getDefaultSheet()!];
       for (int row = 0; row < data.length; row++) {
         //  if(row==0){ cellStyle.isBold=true;} //Default is false
-        if (Globals.isPremiumUser == true || createdAsPremium == true) {
+        if (Globals.appSetting.isPremiumUser == true ||
+            createdAsPremium == true) {
           sheet
               .cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row))
               .value = data[row].studentId;
@@ -23,16 +24,16 @@ class GoogleDriveAccess {
 
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex:
-                    Globals.isPremiumUser == true && createdAsPremium == true
-                        ? 1
-                        : 0,
+                columnIndex: Globals.appSetting.isPremiumUser == true &&
+                        createdAsPremium == true
+                    ? 1
+                    : 0,
                 rowIndex: row))
             .value = data[row].studentName;
 
         sheet
                 .cell(CellIndex.indexByColumnRow(
-                    columnIndex: Globals.isPremiumUser == true &&
+                    columnIndex: Globals.appSetting.isPremiumUser == true &&
                             createdAsPremium == true
                         ? 2
                         : 1,
@@ -42,7 +43,7 @@ class GoogleDriveAccess {
 
         sheet
                 .cell(CellIndex.indexByColumnRow(
-                    columnIndex: Globals.isPremiumUser == true &&
+                    columnIndex: Globals.appSetting.isPremiumUser == true &&
                             createdAsPremium == true
                         ? 3
                         : 2,
@@ -53,18 +54,18 @@ class GoogleDriveAccess {
         if (isMcqSheet == true) {
           sheet
               .cell(CellIndex.indexByColumnRow(
-                  columnIndex:
-                      Globals.isPremiumUser == true && createdAsPremium == true
-                          ? 4
-                          : 3,
+                  columnIndex: Globals.appSetting.isPremiumUser == true &&
+                          createdAsPremium == true
+                      ? 4
+                      : 3,
                   rowIndex: row))
               .value = data[row].answerKey ?? 'NA';
           sheet
               .cell(CellIndex.indexByColumnRow(
-                  columnIndex:
-                      Globals.isPremiumUser == true && createdAsPremium == true
-                          ? 5
-                          : 4,
+                  columnIndex: Globals.appSetting.isPremiumUser == true &&
+                          createdAsPremium == true
+                      ? 5
+                      : 4,
                   rowIndex: row))
               .value = data[row].studentResponseKey ?? 'NA';
         }
@@ -72,25 +73,25 @@ class GoogleDriveAccess {
         if (isMcqSheet == true) {
           sheet
               .cell(CellIndex.indexByColumnRow(
-                  columnIndex:
-                      Globals.isPremiumUser == true && createdAsPremium == true
-                          ? 4
-                          : 3,
+                  columnIndex: Globals.appSetting.isPremiumUser == true &&
+                          createdAsPremium == true
+                      ? 4
+                      : 3,
                   rowIndex: row))
               .value = data[row].answerKey ?? 'NA';
           sheet
               .cell(CellIndex.indexByColumnRow(
-                  columnIndex:
-                      Globals.isPremiumUser == true && createdAsPremium == true
-                          ? 5
-                          : 4,
+                  columnIndex: Globals.appSetting.isPremiumUser == true &&
+                          createdAsPremium == true
+                      ? 5
+                      : 4,
                   rowIndex: row))
               .value = data[row].studentResponseKey ?? 'NA';
         }
 
         sheet
                 .cell(CellIndex.indexByColumnRow(
-                    columnIndex: Globals.isPremiumUser == true &&
+                    columnIndex: Globals.appSetting.isPremiumUser == true &&
                             createdAsPremium == true
                         ? (isMcqSheet == true ? 6 : 4)
                         : (isMcqSheet == true ? 5 : 3),
@@ -100,19 +101,19 @@ class GoogleDriveAccess {
 
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex:
-                    Globals.isPremiumUser == true && createdAsPremium == true
-                        ? (isMcqSheet == true ? 7 : 5)
-                        : (isMcqSheet == true ? 6 : 4),
+                columnIndex: Globals.appSetting.isPremiumUser == true &&
+                        createdAsPremium == true
+                    ? (isMcqSheet == true ? 7 : 5)
+                    : (isMcqSheet == true ? 6 : 4),
                 rowIndex: row))
             .value = row == 0 ? data[row].grade : data[1].grade;
 
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex:
-                    Globals.isPremiumUser == true && createdAsPremium == true
-                        ? (isMcqSheet == true ? 8 : 6)
-                        : (isMcqSheet == true ? 7 : 5),
+                columnIndex: Globals.appSetting.isPremiumUser == true &&
+                        createdAsPremium == true
+                    ? (isMcqSheet == true ? 8 : 6)
+                    : (isMcqSheet == true ? 7 : 5),
                 rowIndex: row))
             .value = row == 0 ? data[row].className : data[1].className;
         // sheet
@@ -120,14 +121,14 @@ class GoogleDriveAccess {
         //     .value = data[row].className;
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex:
-                    Globals.isPremiumUser == true && createdAsPremium == true
-                        ? (isMcqSheet == true ? 9 : 7)
-                        : (isMcqSheet == true ? 8 : 6),
+                columnIndex: Globals.appSetting.isPremiumUser == true &&
+                        createdAsPremium == true
+                    ? (isMcqSheet == true ? 9 : 7)
+                    : (isMcqSheet == true ? 8 : 6),
                 rowIndex: row))
             .value = row == 0 ? data[row].subject : data[1].subject;
 
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: Globals.isPremiumUser == true && createdAsPremium == true ? (isMcqSheet == true ? 10 : 8) : (isMcqSheet == true ? 9 : 7), rowIndex: row)).value =
+        sheet.cell(CellIndex.indexByColumnRow(columnIndex: Globals.appSetting.isPremiumUser == true && createdAsPremium == true ? (isMcqSheet == true ? 10 : 8) : (isMcqSheet == true ? 9 : 7), rowIndex: row)).value =
             row == 0
                 ? data[row].learningStandard == "" ||
                         data[row].learningStandard == null
@@ -140,7 +141,7 @@ class GoogleDriveAccess {
 
         sheet
                 .cell(CellIndex.indexByColumnRow(
-                    columnIndex: Globals.isPremiumUser == true &&
+                    columnIndex: Globals.appSetting.isPremiumUser == true &&
                             createdAsPremium == true
                         ? (isMcqSheet == true ? 11 : 9)
                         : (isMcqSheet == true ? 10 : 8),
@@ -149,7 +150,7 @@ class GoogleDriveAccess {
             row == 0
                 ? data[row].subLearningStandard
                 : data[1].subLearningStandard;
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: Globals.isPremiumUser == true && createdAsPremium == true ? (isMcqSheet == true ? 12 : 10) : (isMcqSheet == true ? 11 : 9), rowIndex: row)).value =
+        sheet.cell(CellIndex.indexByColumnRow(columnIndex: Globals.appSetting.isPremiumUser == true && createdAsPremium == true ? (isMcqSheet == true ? 12 : 10) : (isMcqSheet == true ? 11 : 9), rowIndex: row)).value =
             row == 0
                 ? data[row].standardDescription == "" ||
                         data[row].standardDescription == null
@@ -161,16 +162,16 @@ class GoogleDriveAccess {
                     : data[1].standardDescription;
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex:
-                    Globals.isPremiumUser == true && createdAsPremium == true
-                        ? (isMcqSheet == true ? 13 : 11)
-                        : (isMcqSheet == true ? 12 : 10),
+                columnIndex: Globals.appSetting.isPremiumUser == true &&
+                        createdAsPremium == true
+                    ? (isMcqSheet == true ? 13 : 11)
+                    : (isMcqSheet == true ? 12 : 10),
                 rowIndex: row))
             .value = row == 0 ? data[row].scoringRubric : data[1].scoringRubric;
 
         sheet
                 .cell(CellIndex.indexByColumnRow(
-                    columnIndex: Globals.isPremiumUser == true &&
+                    columnIndex: Globals.appSetting.isPremiumUser == true &&
                             createdAsPremium == true
                         ? (isMcqSheet == true ? 14 : 12)
                         : (isMcqSheet == true ? 13 : 11),
@@ -180,19 +181,19 @@ class GoogleDriveAccess {
 
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex:
-                    Globals.isPremiumUser == true && createdAsPremium == true
-                        ? (isMcqSheet == true ? 15 : 13)
-                        : (isMcqSheet == true ? 14 : 12),
+                columnIndex: Globals.appSetting.isPremiumUser == true &&
+                        createdAsPremium == true
+                    ? (isMcqSheet == true ? 15 : 13)
+                    : (isMcqSheet == true ? 14 : 12),
                 rowIndex: row))
             .value = data[row].assessmentImage;
 
         sheet
             .cell(CellIndex.indexByColumnRow(
-                columnIndex:
-                    Globals.isPremiumUser == true && createdAsPremium == true
-                        ? (isMcqSheet == true ? 16 : 14)
-                        : (isMcqSheet == true ? 15 : 13),
+                columnIndex: Globals.appSetting.isPremiumUser == true &&
+                        createdAsPremium == true
+                    ? (isMcqSheet == true ? 16 : 14)
+                    : (isMcqSheet == true ? 15 : 13),
                 rowIndex: row))
             .value = data[row].googleSlidePresentationURL ?? 'NA';
         // sheet

@@ -78,7 +78,7 @@ class Globals {
   static String teacherEmailId = '';
   static String teacherId = '';
   static String sessionId = '';
-  static bool isPremiumUser = false;
+  // static bool isPremiumUser = false;
 
   static List ocrResultIcons = Overrides.STANDALONE_GRADED_APP == true
       ? [0xe873, 0xe871, 0xe803, 0xe876]

@@ -6,9 +6,7 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_search_screen.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_selection_methods.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/result_summary/results_summary.dart';
@@ -1761,7 +1759,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           isMcqSheet: isMCQSheet ?? false,
           questionImage:
               questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
-          createdAsPremium: Globals.isPremiumUser,
+          createdAsPremium: Globals.appSetting.isPremiumUser,
           assessmentName: Globals.assessmentName,
           fileId: Globals.googleExcelSheetId,
           isLoading: true,

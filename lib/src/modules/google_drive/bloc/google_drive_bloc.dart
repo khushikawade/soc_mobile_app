@@ -44,7 +44,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Stream<GoogleDriveState> mapEventToState(
     GoogleDriveEvent event,
   ) async* {
-    print("drive bloc event recived ---------------->> $event");
+    // print("drive bloc event recived ---------------->> $event");
 
     // --------------------Event To Get Google Drive Folder ID------------------
     if (event is GetDriveFolderIdEvent) {
@@ -1332,12 +1332,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             endRowIndex: assessmentData.length,
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
+                    Globals.appSetting.isPremiumUser == false
                 ? (isMcqSheet == true ? 5 : 3)
                 : (isMcqSheet == true ? 6 : 4),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
+                    Globals.appSetting.isPremiumUser == false
                 ? (isMcqSheet == true ? 6 : 4)
                 : (isMcqSheet == true ? 7 : 5),
             sheetId: sheetID,
@@ -1353,12 +1353,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             endRowIndex: assessmentData.length,
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
+                    Globals.appSetting.isPremiumUser == false
                 ? (isMcqSheet == true ? 13 : 11)
                 : (isMcqSheet == true ? 14 : 12),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
+                    Globals.appSetting.isPremiumUser == false
                 ? (isMcqSheet == true ? 14 : 12)
                 : (isMcqSheet == true ? 15 : 13),
             sheetId: sheetID,
@@ -1373,12 +1373,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             endRowIndex: assessmentData.length,
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
+                    Globals.appSetting.isPremiumUser == false
                 ? (isMcqSheet == true ? 15 : 13)
                 : (isMcqSheet == true ? 16 : 14),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
+                    Globals.appSetting.isPremiumUser == false
                 ? (isMcqSheet == true ? 16 : 14)
                 : (isMcqSheet == true ? 17 : 15),
             sheetId: sheetID,
@@ -1393,12 +1393,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             endRowIndex: i + 1,
             startColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
+                    Globals.appSetting.isPremiumUser == false
                 ? (isMcqSheet == true ? 14 : 12)
                 : (isMcqSheet == true ? 15 : 13),
             endColumnIndex: assessmentData[1].studentId == null ||
                     assessmentData[1].studentId == '' ||
-                    Globals.isPremiumUser == false
+                    Globals.appSetting.isPremiumUser == false
                 ? (isMcqSheet == true ? 15 : 13)
                 : (isMcqSheet == true ? 16 : 14),
             sheetId: sheetID,
