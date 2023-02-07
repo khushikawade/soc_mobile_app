@@ -147,7 +147,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
     WidgetsBinding.instance.addObserver(this);
-    _checkNewVersion();
+    if (widget.isFromOcrSection != true) {
+      _checkNewVersion();
+    }
   }
 
   _checkVersionUpdateStatus(NewVersion newVersion) async {

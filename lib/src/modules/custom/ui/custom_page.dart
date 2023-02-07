@@ -226,6 +226,7 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.sectionTemplate == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
           ? EventPage(
+            isMainPage: true,
               appBarTitle: '',
               isAppBar: false,
               isBottomSheet: true,

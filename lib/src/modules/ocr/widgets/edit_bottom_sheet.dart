@@ -574,23 +574,36 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
           height: MediaQuery.of(context).size.height * 0.1,
           width: MediaQuery.of(context).size.width,
           child: pointsEarnedList.length > 4
-              ? ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Center(
-                        child: pointsButton(
-                            widget.isMcqSheet == true
-                                ? pointsEarnedList[index]
-                                : index,
-                            grade,
-                            isSuccessState: isSuccessState));
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      width: 12,
-                    );
-                  },
-                  itemCount: pointsEarnedList.length)
+              ? Row(
+                  // scrollDirection: Axis.horizontal,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: pointsEarnedList
+                      .map<Widget>((element) => pointsButton(
+                          widget.isMcqSheet == true
+                              ? element
+                              : pointsEarnedList.indexOf(element),
+                          grade,
+                          isSuccessState: true))
+                      .toList(),
+                )
+
+              //  ListView.separated(
+              //     scrollDirection: Axis.horizontal,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       return Center(
+              //           child: pointsButton(
+              //               widget.isMcqSheet == true
+              //                   ? pointsEarnedList[index]
+              //                   : index,
+              //               grade,
+              //               isSuccessState: isSuccessState));
+              //     },
+              //     separatorBuilder: (BuildContext context, int index) {
+              //       return SizedBox(
+              //         width: 12,
+              //       );
+              //     },
+              //     itemCount: pointsEarnedList.length)
               : Row(
                   // scrollDirection: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -936,4 +949,3 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
         });
   }
 }
-

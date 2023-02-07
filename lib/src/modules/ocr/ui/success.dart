@@ -2875,14 +2875,13 @@ class _SuccessScreenState extends State<SuccessScreen>
                           .withOpacity(0.3))),
             ),
             SpacerWidget(_KVerticalSpace / 4),
-            Center(
-                child: pointsEarnedButton(
-                    widget.isMcqSheet == true
-                        ? grade == ''
-                            ? 'NA'
-                            : grade
-                        : (grade == '' ? 2 : int.parse(grade)),
-                    isSuccessState: false)),
+            pointsEarnedButton(
+                widget.isMcqSheet == true
+                    ? grade == ''
+                        ? 'NA'
+                        : grade
+                    : (grade == '' ? 2 : int.parse(grade)),
+                isSuccessState: false),
           ],
         ),
       ),
@@ -3176,10 +3175,9 @@ class _SuccessScreenState extends State<SuccessScreen>
                           .withOpacity(0.3))),
             ),
             SpacerWidget(_KVerticalSpace / 4),
-            Center(
-                child: pointsEarnedButton(
-                    widget.isMcqSheet == true ? grade : int.parse(grade),
-                    isSuccessState: true)),
+            pointsEarnedButton(
+                widget.isMcqSheet == true ? grade : int.parse(grade),
+                isSuccessState: true),
 
             Container(
                 padding: EdgeInsets.only(top: 10),
@@ -3246,38 +3244,70 @@ class _SuccessScreenState extends State<SuccessScreen>
 
   Widget pointsEarnedButton(dynamic grade, {required bool isSuccessState}) {
     return FittedBox(
+      //  alignment: Alignment.center,
       child: Container(
-          alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height * 0.18,
-          width: MediaQuery.of(context).size.width,
-          child: Globals.pointsEarnedList.length > 4
-              ? ListView.separated(
-                  physics: NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Center(
-                        child: pointsButton(
-                            widget.isMcqSheet == true
-                                ? Globals.pointsEarnedList[index]
-                                : index,
-                            grade,
-                            isSuccessState: isSuccessState));
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      width: 12,
-                    );
-                  },
-                  itemCount: Globals.pointsEarnedList.length)
-              : Row(
-                  // scrollDirection: Axis.horizontal,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: Globals.pointsEarnedList
-                      .map<Widget>((element) => pointsButton(
-                          Globals.pointsEarnedList.indexOf(element), grade,
-                          isSuccessState: true))
-                      .toList(),
-                )),
+        //color: Colors.blue,
+        alignment: Alignment.center,
+        height: MediaQuery.of(context).size.height * 0.18,
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          // scrollDirection: Axis.horizontal,
+
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: Globals.pointsEarnedList
+              .map<Widget>((element) => pointsButton(
+                  widget.isMcqSheet == true
+                      ? element
+                      : Globals.pointsEarnedList.indexOf(element),
+                  grade,
+                  isSuccessState: true))
+              .toList(),
+        ),
+
+        // Globals.pointsEarnedList.length > 4
+        //     ? Row(
+        //         // scrollDirection: Axis.horizontal,
+
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         children: Globals.pointsEarnedList
+        //             .map<Widget>((element) => pointsButton(
+        //                 widget.isMcqSheet == true
+        //                     ? element
+        //                     : Globals.pointsEarnedList.indexOf(element),
+        //                 grade,
+        //                 isSuccessState: true))
+        //             .toList(),
+        //       )
+
+        //     //  ListView.separated(
+        //     //     physics: NeverScrollableScrollPhysics(),
+        //     //     scrollDirection: Axis.horizontal,
+        //     //     itemBuilder: (BuildContext context, int index) {
+        //     //       return Center(
+        //     //           child: pointsButton(
+        //     //               widget.isMcqSheet == true
+        //     //                   ? Globals.pointsEarnedList[index]
+        //     //                   : index,
+        //     //               grade,
+        //     //               isSuccessState: isSuccessState));
+        //     //     },
+        //     //     separatorBuilder: (BuildContext context, int index) {
+        //     //       return SizedBox(
+        //     //         width: 12,
+        //     //       );
+        //     //     },
+        //     //     itemCount: Globals.pointsEarnedList.length)
+        //     : Row(
+        //         // scrollDirection: Axis.horizontal,
+
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         children: Globals.pointsEarnedList
+        //             .map<Widget>((element) => pointsButton(
+        //                 Globals.pointsEarnedList.indexOf(element), grade,
+        //                 isSuccessState: true))
+        //             .toList(),
+        //       )
+      ),
     );
   }
 
