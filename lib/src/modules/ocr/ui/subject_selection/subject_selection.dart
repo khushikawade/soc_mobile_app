@@ -1759,7 +1759,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           isMcqSheet: isMCQSheet ?? false,
           questionImage:
               questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
-          createdAsPremium: Globals.appSetting.isPremiumUser,
+          createdAsPremium: Globals.isPremiumUser,
           assessmentName: Globals.assessmentName,
           fileId: Globals.googleExcelSheetId,
           isLoading: true,

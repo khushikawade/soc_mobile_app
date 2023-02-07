@@ -144,7 +144,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                 activityId: '2',
                                 accountId: Globals.appSetting.schoolNameC,
                                 accountType:
-                                    Globals.appSetting.isPremiumUser == true
+                                    Globals.isPremiumUser == true
                                         ? "Premium"
                                         : "Free",
                                 dateTime: currentDateTime.toString(),

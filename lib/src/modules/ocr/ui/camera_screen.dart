@@ -386,7 +386,7 @@ class _CameraScreenState extends State<CameraScreen>
                               isMcqSheet: widget.isMcqSheet ?? false,
                               questionImage: widget.questionImageLink ?? 'NA',
                               createdAsPremium: widget.createdAsPremium ??
-                                  Globals.appSetting.isPremiumUser,
+                                  Globals.isPremiumUser,
                               assessmentName: Globals.historyAssessmentName,
                               fileId: Globals.historyAssessmentFileId,
                               isLoading: true,

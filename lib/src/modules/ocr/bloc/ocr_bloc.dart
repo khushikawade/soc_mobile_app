@@ -1409,8 +1409,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         'Content-Type': 'application/json;charset=UTF-8',
         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
       };
+      // print(Globals.schoolDbnC);
+      // print(Globals.isPremiumUser);
       final body = {
-        "DBN__c": Globals.appSetting.dbnC ?? "",
+        "DBN__c": Globals.schoolDbnC ?? "",
         "First_Name__c": studentName.split(" ")[0],
         "last_Name__c": studentName.split(" ")[0].length > 1
             ? studentName.split(" ")[1]
@@ -1633,7 +1635,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Session_Id": sessionId,
         "Teacher_Contact_Id": teacherContactId,
         "Teacher_Email": teacherEmail,
-        "Created_As_Premium": Globals.appSetting.isPremiumUser.toString(),
+        "Created_As_Premium": Globals.isPremiumUser.toString(),
         "Assessment_Que_Image__c": assessmentQueImage,
         "Assessment_Type":
             isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response'
