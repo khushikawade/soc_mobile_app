@@ -66,7 +66,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     fatchProfileData();
 
     if (Overrides.STANDALONE_GRADED_APP) {
-      Globals.appSetting.isPremiumUser = true;
+      Globals.isPremiumUser = true;
     }
     if (Globals.sessionId != '') {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
@@ -399,7 +399,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                                   accountId: Globals
                                                       .appSetting.schoolNameC,
                                                   accountType:
-                                                     Globals.appSetting.isPremiumUser ==
+                                                      Globals.isPremiumUser ==
                                                               true
                                                           ? "Premium"
                                                           : "Free",
@@ -451,7 +451,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
         teacherId: Globals.teacherId,
         activityId: '4',
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.appSetting.isPremiumUser== true ? "Premium" : "Free",
+        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
         description: 'Assessment History page for home page',
         operationResult: 'Success'));
@@ -582,7 +582,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     teacherId: Globals.teacherId,
                                     activityId: '2',
                                     accountId: Globals.appSetting.schoolNameC,
-                                    accountType: Globals.appSetting.isPremiumUser== true
+                                    accountType: Globals.isPremiumUser == true
                                         ? "Premium"
                                         : "Free",
                                     dateTime: currentDateTime.toString(),

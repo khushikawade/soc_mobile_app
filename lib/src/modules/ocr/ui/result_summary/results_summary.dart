@@ -1043,12 +1043,12 @@ class studentRecordList extends State<ResultsSummary> {
                   //     Globals.studentInfo!.length;
                   if ((widget.assessmentDetailPage == true) &&
                       ((widget.createdAsPremium == true &&
-                              Globals.appSetting.isPremiumUser != true) ||
+                              Globals.isPremiumUser != true) ||
                           (widget.createdAsPremium == false &&
-                              Globals.appSetting.isPremiumUser == true))) {
+                              Globals.isPremiumUser == true))) {
                     popupModal(
                         title: 'Alert!',
-                        message: Globals.appSetting.isPremiumUser == true
+                        message: Globals.isPremiumUser == true
                             ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
                             : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
                     return;
@@ -1089,7 +1089,7 @@ class studentRecordList extends State<ResultsSummary> {
                               createdAsPremium:
                                   widget.assessmentDetailPage == true
                                       ? createdAsPremium
-                                      : Globals.appSetting.isPremiumUser,
+                                      : Globals.isPremiumUser,
                               oneTimeCamera: widget.assessmentDetailPage!,
                               isFromHistoryAssessmentScanMore:
                                   widget.assessmentDetailPage!,
@@ -1478,7 +1478,7 @@ class studentRecordList extends State<ResultsSummary> {
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
                   questionImage: questionImageUrl ?? "NA",
-                  createdAsPremium: Globals.appSetting.isPremiumUser,
+                  createdAsPremium: Globals.isPremiumUser,
                   assessmentName: Globals.assessmentName!,
                   fileId: Globals.googleExcelSheetId,
                   isLoading: true,
@@ -1639,7 +1639,7 @@ class studentRecordList extends State<ResultsSummary> {
                               isMcqSheet: widget.isMcqSheet,
                               questionImage: questionImageUrl ?? "NA",
                               createdAsPremium:
-                                  Globals.appSetting.isPremiumUser,
+                                  Globals.isPremiumUser,
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
@@ -1794,7 +1794,7 @@ class studentRecordList extends State<ResultsSummary> {
                 return;
               }
 
-              if (Globals.appSetting.isPremiumUser == true) {
+              if (Globals.isPremiumUser == true) {
                 if (widget.assessmentDetailPage == true &&
                     widget.createdAsPremium == false) {
                   Utility.updateLogs(
@@ -2217,7 +2217,7 @@ class studentRecordList extends State<ResultsSummary> {
             yesActionText: 'Yes, Take Me There');
         break;
       case 'Dashboard':
-        if (Globals.appSetting.isPremiumUser!) {
+        if (Globals.isPremiumUser!) {
           if (widget.assessmentDetailPage == true &&
               widget.createdAsPremium == false) {
             Utility.updateLogs(

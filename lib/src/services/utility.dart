@@ -134,7 +134,7 @@ class Utility {
         teacherId: Globals.teacherId,
         activityId: activityId,
         accountId: Globals.appSetting.schoolNameC,
-        accountType: Globals.appSetting.isPremiumUser == true ? "Premium" : "Free",
+        accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
         description: description,
         operationResult: operationResult));
