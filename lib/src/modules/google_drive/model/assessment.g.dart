@@ -27,8 +27,9 @@ class HistoryAssessmentAdapter extends TypeAdapter<HistoryAssessment> {
       sessionId: fields[7] as String?,
       assessmentId: fields[10] as String?,
       isCreatedAsPremium: fields[8] as String?,
+      presentationLink: fields[11] as String?,
       assessmentType: fields[9] as String?,
-    )..presentationLink = fields[11] as String?;
+    );
   }
 
   @override

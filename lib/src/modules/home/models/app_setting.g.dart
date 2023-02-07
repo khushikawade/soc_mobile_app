@@ -72,15 +72,16 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       authenticationURL: fields[52] as String?,
       enableGraded: fields[53] as String?,
       darkmodeIconColor: fields[54] as String?,
-      isPremiumUser: fields[55] as bool?,
-      dbnC: fields[56] as String?,
+      isPremiumUser: fields[56] as bool?,
+      dbnC: fields[57] as String?,
+      parentCoordinatorEmailc: fields[55] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppSetting obj) {
     writer
-      ..writeByte(57)
+      ..writeByte(58)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -192,8 +193,10 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       ..writeByte(54)
       ..write(obj.darkmodeIconColor)
       ..writeByte(55)
-      ..write(obj.isPremiumUser)
+      ..write(obj.parentCoordinatorEmailc)
       ..writeByte(56)
+      ..write(obj.isPremiumUser)
+      ..writeByte(57)
       ..write(obj.dbnC);
   }
 
