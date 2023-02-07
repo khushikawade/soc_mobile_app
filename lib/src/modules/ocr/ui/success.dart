@@ -134,11 +134,11 @@ class _SuccessScreenState extends State<SuccessScreen>
       duration: Duration(milliseconds: 1000),
     );
 
-    _animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
-        parent: _controller, curve: Curves.linearToEaseOut)) //easeInOut
-      ..addListener(() {
-        setState(() {});
-      });
+    // _animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+    //     parent: _controller, curve: Curves.linearToEaseOut)) //easeInOut
+    //   ..addListener(() {
+    //      setState(() {});
+    //   });
 
     _controller.repeat();
   }
