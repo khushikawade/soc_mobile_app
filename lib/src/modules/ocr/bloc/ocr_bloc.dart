@@ -1414,9 +1414,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       final body = {
         "DBN__c": Globals.schoolDbnC ?? "",
         "First_Name__c": studentName.split(" ")[0],
-        "last_Name__c": studentName.split(" ")[0].length > 1
-            ? studentName.split(" ")[1]
-            : '',
+        "last_Name__c":
+            studentName.split(" ").length > 1 ? studentName.split(" ")[1] : '',
         "School__c": Globals.appSetting.schoolNameC,
         "Student_ID__c": studentId,
         "Teacher_added__c": true
