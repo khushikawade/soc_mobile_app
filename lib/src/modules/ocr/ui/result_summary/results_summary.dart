@@ -2134,11 +2134,7 @@ class studentRecordList extends State<ResultsSummary> {
                           InkWell(
                             child: SvgPicture.asset(element.svgPath!,
                                 width: Globals.deviceType == "phone" ? 28 : 50,
-                                height: Globals.deviceType == "phone"
-                                    ? element.title == "Drive"
-                                        ? 30
-                                        : 28
-                                    : 50,
+                                height: Globals.deviceType == "phone" ? 28 : 50,
                                 color: Theme.of(context).backgroundColor ==
                                             Color(0xff000000) &&
                                         element.title == "Dashboard"
