@@ -1059,6 +1059,7 @@ class Utility {
         return 'unknown';
     }
   }
+
   // Function to update assessment details to dataBase
   static updateAssessmentToDb(
       {required List<StudentAssessmentInfo> studentInfoList,
@@ -1066,8 +1067,10 @@ class Utility {
     OcrBloc _ocrAssessmentBloc = OcrBloc();
     List<StudentAssessmentInfo> _list = studentInfoList;
     print("assessment ID $assessmentId");
-    _list.removeWhere(
-        (element) => element.uniqueId == null || element.uniqueId == ''); // avoid to update older assessment sheet in case of scan more 
+    _list.removeWhere((element) =>
+        element.uniqueId == null ||
+        element.uniqueId ==
+            ''); // avoid to update older assessment sheet in case of scan more
     print(_list.length);
     _list.isNotEmpty
         ? _ocrAssessmentBloc.add(UploadAssessmentToDB(
