@@ -2341,12 +2341,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             "objectId": DateTime.now().microsecondsSinceEpoch.toString()
           }
         };
-
+        String tableObjectId = DateTime.now().microsecondsSinceEpoch.toString();
         Map table = {
           "createTable": {
             "rows": listOfFields.length, //pass no. of names
             "columns": 2, //key:value
-            "objectId": "table$index",
+            "objectId": tableObjectId,
             "elementProperties": {
               "pageObjectId": element.slideObjectId,
               "size": {
@@ -2370,7 +2370,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             body.add(
               {
                 "insertText": {
-                  "objectId": "table$index",
+                  "objectId": tableObjectId,
                   "cellLocation": {
                     "rowIndex": rowIndex,
                     "columnIndex": columnIndex
