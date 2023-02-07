@@ -2562,7 +2562,8 @@ class _SuccessScreenState extends State<SuccessScreen>
                 widget.isFromHistoryAssessmentScanMore);
 
         if (idController.text.isNotEmpty) {
-          if (Overrides.STANDALONE_GRADED_APP != true) {
+          if (Overrides.STANDALONE_GRADED_APP != true &&
+              nameController.text.isNotEmpty) {
             _bloc.add(SaveStudentDetails(
                 studentName: nameController.text,
                 studentId: idController.text));

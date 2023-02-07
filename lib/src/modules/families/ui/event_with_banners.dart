@@ -202,7 +202,7 @@ class _EventPageState extends State<EventPage>
       child: ListView.builder(
           scrollDirection: Axis.vertical,
           padding: widget.isMainPage == true
-              ? EdgeInsets.only(bottom: 180)
+              ? EdgeInsets.only(bottom: 160)
               : !Platform.isAndroid
                   ? EdgeInsets.only(
                       bottom: MediaQuery.of(context).size.height * 0.1)

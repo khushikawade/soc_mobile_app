@@ -107,7 +107,7 @@ class _ActionInteractionButtonWidgetState
 
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.of(context).size.width * 0.84,
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.07
             : MediaQuery.of(context).size.width * 0.07,
