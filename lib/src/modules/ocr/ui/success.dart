@@ -129,25 +129,30 @@ class _SuccessScreenState extends State<SuccessScreen>
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'success_screen', screenClass: 'SuccessScreen');
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 1000),
-    );
+    if (widget.isMcqSheet == true) {
+      _controller = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 1000),
+      );
 
-    // _animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
-    //     parent: _controller, curve: Curves.linearToEaseOut)) //easeInOut
-    //   ..addListener(() {
-    //      setState(() {});
-    //   });
+      _animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+          parent: _controller, curve: Curves.linearToEaseOut)) //easeInOut
+        ..addListener(() {
+          setState(() {});
+        });
 
-    _controller.repeat();
+      _controller.repeat();
+    }
   }
 
   @override
   void dispose() {
     scrollControlledName.dispose();
     scrollControllerId.dispose();
-    _controller.dispose();
+
+    if (widget.isMcqSheet == true) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
@@ -2133,6 +2138,7 @@ class _SuccessScreenState extends State<SuccessScreen>
   }
 
   Widget animatedArrowWidget() {
+    // print(_animation);
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       mainAxisSize: MainAxisSize.min,
