@@ -2670,11 +2670,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
-          String result = await updateAssessmentImageToSlidesOnDrive(
+          String result = await addAndUpdateAssessmentImageToSlidesOnDrive(
               presentationId,
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
-              assessmentData);
+              assessmentData,
+              _studentInfoDb);
           return result;
         } else {
           return 'ReAuthentication is required';
