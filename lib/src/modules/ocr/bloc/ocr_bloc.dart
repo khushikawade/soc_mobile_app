@@ -34,7 +34,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   OcrState get initialState => OcrInitial();
   String grade = '';
   String selectedSubject = '';
-  // String? DeshboardId;
+  // String? DashboardId;
 
   @override
   Stream<OcrState> mapEventToState(
@@ -140,7 +140,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
-    // ------------ Event to Search keyword in Standerd object -------------------
+    // ------------ Event to Search keyword in Standard object -------------------
     if (event is SearchSubjectDetails) {
       try {
         List<SubjectDetailList> list = [];
@@ -151,7 +151,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           LocalDatabase<SubjectDetailList> _localDb =
               LocalDatabase("${event.stateName}_${event.subjectSelected}");
           List<SubjectDetailList>? _localData = await _localDb.getData();
-          // fatch
+          // fetch
 
           //Check is usign to differentiate the list at search screen
           if (event.type == 'nyc') {
@@ -175,7 +175,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           } else {
             List<SubjectDetailList> updatedList = await sortSubjectDetails(
                 gradeNo: event.grade!,
-                // isSearchPage true only case of nycsub  details ------------
+                // isSearchPage true only case of nycSub  details ------------
                 isSearchPage: true,
                 keyword: event.selectedKeyword!,
                 list: _localData,
@@ -200,7 +200,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           LocalDatabase<SubjectDetailList> _localDb =
               LocalDatabase("${event.stateName}_${event.subjectSelected}");
           List<SubjectDetailList>? _localData = await _localDb.getData();
-          // To fatch and sort data as per requirement ================
+          // To fetch and sort data as per requirement ================
           List<SubjectDetailList> updatedList = await sortSubjectDetails(
               gradeNo: event.grade!,
               keyword: event.selectedKeyword!,
@@ -284,7 +284,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             LocalDatabase('recent_option_subject');
 
         if (event.type == 'subject') {
-          List<SubjectDetailList> recentSubjectlist =
+          List<SubjectDetailList> recentSubjectList =
               await recentOptionDB.getData();
           await recentOptionDB.close();
           List<StateListObject> subjectList = await getSubjectName(
@@ -292,12 +292,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             stateName: event.stateName!,
           );
 
-          if (recentSubjectlist.isNotEmpty) {
+          if (recentSubjectList.isNotEmpty) {
             for (int i = 0; i < subjectList.length; i++) {
-              for (int j = 0; j < recentSubjectlist.length; j++) {
+              for (int j = 0; j < recentSubjectList.length; j++) {
                 if (subjectList[i].titleC ==
-                    recentSubjectlist[j].subjectNameC) {
-                  subjectList[i].dateTime = recentSubjectlist[j].dateTime;
+                    recentSubjectList[j].subjectNameC) {
+                  subjectList[i].dateTime = recentSubjectList[j].dateTime;
                 } else {
                   // if (data[i].dateTime == null)
                   // FIX SUBJECT ISSUE
@@ -320,7 +320,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             }
           });
 
-          // Calling fuction to get subject list From the State Object List
+          // Calling function to get subject list From the State Object List
 
           yield OcrLoading2();
           yield SubjectDataSuccess(obj: subjectList);
@@ -328,7 +328,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           LocalDatabase<SubjectDetailList> _localDb =
               LocalDatabase("${event.stateName}_${event.subjectSelected}");
           List<SubjectDetailList>? _localData = await _localDb.getData();
-          // To check perticular subject exist in local database on not
+          // To check particular subject exist in local database on not
           if (_localData.isEmpty) {
             yield OcrLoading();
           } else {
@@ -347,10 +347,10 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             return;
           }
 
-          // calling function for getting perticular subject related data
+          // calling function for getting particular subject related data
           List<SubjectDetailList> _list =
               await saveSubjectListDetails(id: event.subjectId!);
-          // calling function for getting perticular subject related data
+          // calling function for getting particular subject related data
           List<SubjectDetailList> updatedList = await sortSubjectDetails(
               gradeNo: event.grade!,
               keyword: event.selectedKeyword!,
@@ -365,7 +365,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           // Adding DateTime field for recent list IN main List
           List<SubjectDetailList> recentAddedList =
               await addRecentDateTimeDetails(list: updatedList);
-          // returning state after successfully fatch data from Api
+          // returning state after successfully fetch data from Api
           yield NycDataSuccess(
             obj: recentAddedList,
           );
@@ -373,7 +373,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           LocalDatabase<SubjectDetailList> _localDb =
               LocalDatabase("${event.stateName}_${event.subjectSelected}");
           List<SubjectDetailList>? _localData = await _localDb.getData();
-          // fatch
+          // fetch
           List<SubjectDetailList> updatedList = await sortSubjectDetails(
               gradeNo: event.grade!,
               keyword: event.selectedKeyword!,
@@ -522,7 +522,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           assessmentQueImage: event.assessmentQueImage,
           fileId: event.fileId,
           assessmentName: event.assessmentName,
-          rubicScore: await rubricPickList(event.rubricScore),
+          rubricScore: await rubricPickList(event.rubricScore),
           subjectName: event.subjectName,
           grade: event.grade,
           domainName: event.domainName,
@@ -537,6 +537,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         Globals.currentAssessmentId = dashboardId;
         yield AssessmentIdSuccess(obj: dashboardId);
       }
+    }
+    // Event call to  update assessment to DB --------
+    if (event is UploadAssessmentToDB) {
+      yield OcrLoading();
+      await updateImageUrlToDB(
+          assessmentId: event.assessmentId,
+          studentDetails:
+              event.studentDetails); // Function will always open ended
     }
     if (event is LogUserActivityEvent) {
       //yield OcrLoading();
@@ -585,9 +593,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
     if (event is GetRubricPdf) {
       LocalDatabase<RubricPdfModal> _localDb =
-          LocalDatabase(Strings.rubicPdfObjectName);
+          LocalDatabase(Strings.rubricPdfObjectName);
       List<RubricPdfModal>? _localData = await _localDb.getData();
-      List<RubricPdfModal> sepratedList = [];
+      List<RubricPdfModal> separatedList = [];
       try {
         yield OcrLoading();
         if (_localData.isNotEmpty) {
@@ -599,19 +607,19 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<RubricPdfModal> pdfList = await getRubricPdfList();
         if (pdfList.length > 0) {
           //Sort pdf list app wise (Standard/Standalone)
-          sepratedList = await sortRubricPDFList(pdfList);
+          separatedList = await sortRubricPDFList(pdfList);
         }
 
         await _localDb.clear();
-        sepratedList.forEach((element) async {
+        separatedList.forEach((element) async {
           await _localDb.addData(element);
         });
 
-        if (sepratedList.isNotEmpty && _localData.isEmpty) {
+        if (separatedList.isNotEmpty && _localData.isEmpty) {
           yield GetRubricPdfSuccess(
-            objList: sepratedList,
+            objList: separatedList,
           );
-        } else if (sepratedList.isEmpty && _localData.isEmpty) {
+        } else if (separatedList.isEmpty && _localData.isEmpty) {
           yield NoRubricAvailable();
         }
       } catch (e, s) {
@@ -718,7 +726,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           // stateList.add("Common Core");
           List<String> updatedStateList = await updateStateList(
               stateList: stateList,
-              fromCreateAssesmentpage: event.fromCreateAssesment);
+              fromCreateAssessmentPage: event.fromCreateAssessment);
 
           yield StateListFetchSuccessfully(stateList: updatedStateList);
         }
@@ -738,7 +746,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             extractStateName(stateObjectList: stateObjectList);
         List<String> updatedStateList = await updateStateList(
             stateList: stateList,
-            fromCreateAssesmentpage: event.fromCreateAssesment);
+            fromCreateAssessmentPage: event.fromCreateAssessment);
         //stateList.add("Common Core");
         yield StateListFetchSuccessfully(stateList: updatedStateList);
       } catch (e, s) {
@@ -797,14 +805,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   // ---------- Function to update stateList according to to user location and last selection ---------
   Future<List<String>> updateStateList(
       {required List<String> stateList,
-      required bool fromCreateAssesmentpage}) async {
+      required bool fromCreateAssessmentPage}) async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       String? stateName = pref.getString('selected_state');
-      // For loop to sort accoding to last selection
-      if (fromCreateAssesmentpage == true) {
-        String stateName = await Utility.getUserlocation();
-        // Conditions to update list accoding to state name
+      // For loop to sort according to last selection
+      if (fromCreateAssessmentPage == true) {
+        String stateName = await Utility.getUserLocation();
+        // Conditions to update list according to state name
         if (stateName == '' || !stateList.contains(stateName)) {
           stateList.removeWhere((element) => element == 'Common Core');
           stateList.insert(0, 'Common Core');
@@ -846,12 +854,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  // ---------- Fuction to Extract State name from State Object List ---------
+  // ---------- Function to Extract State name from State Object List ---------
   List<String> extractStateName(
       {required List<StateListObject> stateObjectList}) {
     try {
       List<String> _subjectList = [];
-      // For loop for extarcting state name
+      // For loop for extracting state name
       for (int i = 0; i < stateObjectList.length; i++) {
         if (stateObjectList[i].stateC != null &&
             !_subjectList.contains(stateObjectList[i].stateC)) {
@@ -909,14 +917,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       LocalDatabase<SubjectDetailList> learningRecentOptionDB =
           LocalDatabase('recent_option_learning_standard');
 
-      List<SubjectDetailList> recentLearninglist =
+      List<SubjectDetailList> recentLearningList =
           await learningRecentOptionDB.getData();
 
-      if (recentLearninglist.isNotEmpty) {
+      if (recentLearningList.isNotEmpty) {
         for (int i = 0; i < list.length; i++) {
-          for (int j = 0; j < recentLearninglist.length; j++) {
-            if (list[i].domainNameC == recentLearninglist[j].domainNameC) {
-              list[i].dateTime = recentLearninglist[j].dateTime;
+          for (int j = 0; j < recentLearningList.length; j++) {
+            if (list[i].domainNameC == recentLearningList[j].domainNameC) {
+              list[i].dateTime = recentLearningList[j].dateTime;
             } else {
               if (list[i].dateTime == null) {
                 //Using old/random date to make sue none of the record contains null date
@@ -1072,7 +1080,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  // --------- Fuction to sort and extract data as per requirement -----------
+  // --------- Function to sort and extract data as per requirement -----------
   Future<List<SubjectDetailList>> sortSubjectDetails(
       {required List<SubjectDetailList> list,
       required String type,
@@ -1083,7 +1091,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     try {
       // condition to get learning standard
       if (type == 'nyc') {
-        //Using a seperate list to check only 'Learning Standard' whether already exist or not.
+        //Using a separate list to check only 'Learning Standard' whether already exist or not.
         List learningStdList = [];
         List<SubjectDetailList> subjectDetailList = [];
         selectedSubject = keyword;
@@ -1100,7 +1108,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         }
         return subjectDetailList;
       } else {
-        //Using a seperate list to check only 'Sub Learning Standard' whether already exist or not.
+        //Using a separate list to check only 'Sub Learning Standard' whether already exist or not.
         List learningStdList = [];
         List<SubjectDetailList> subjectDetailList = [];
         for (int i = 0; i < list.length; i++) {
@@ -1330,14 +1338,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     try {
       final ResponseModel response = await _dbServices.postApi(
         // Url for Production
-        // Uri.encodeFull(
-        //     'https://f63f-111-118-246-106.in.ngrok.io/processAssessmentSheet'),
-        // Url For testing and development
-        Uri.encodeFull(
-            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
-        // Url For testing and development
+        //  Uri.encodeFull(
+        //     'https://da70-111-118-246-106.in.ngrok.io/processAssessmentSheet'),
+        //  Url For testing and development
         // Uri.encodeFull(
         //     'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheetDev'),
+        // Url For testing and development
+        Uri.encodeFull(
+            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/processAssessmentSheet'),
 
         body: {
           'data': '$base64',
@@ -1348,7 +1356,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       );
 
       if (response.statusCode == 200) {
-        // ***********  Process The respoance and collecting OSSIS ID  ***********
+        // ***********  Process The response and collecting OSSIS ID  ***********
         var result = response.data;
         List<StudentDetailsModal> _list = jsonDecode(
                 jsonEncode(response.data['studentListDetails']))
@@ -1588,7 +1596,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<String> saveAssessmentToDatabase(
       {required String? assessmentName,
-      required String? rubicScore,
+      required String? rubricScore,
       required String? subjectName,
       required String? grade,
       required String? domainName,
@@ -1612,7 +1620,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       final body = {
         "Date__c": currentDate,
         "Name__c": assessmentName,
-        "Rubric__c": rubicScore != '' ? rubicScore : null,
+        "Rubric__c": rubricScore != '' ? rubricScore : null,
         "School__c": schoolId,
         "School_year__c": currentDate.split("-")[0],
         "Standard__c": standardId != '' ? standardId : null,
@@ -1990,7 +1998,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         String data =
             response.data["responses"][0]["textAnnotations"][0]["description"];
 
-        List nameAndemail = await checkEmailInsideRoster(respoanceText: data);
+        List nameAndemail = await checkEmailInsideRoster(responseText: data);
         return [nameAndemail[0], nameAndemail[1]];
       } else {
         return ['', ''];
@@ -2005,7 +2013,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<List> checkEmailInsideRoster({required String respoanceText}) async {
+  Future<List> checkEmailInsideRoster({required String responseText}) async {
     try {
       LocalDatabase<GoogleClassroomCourses> _localDb =
           LocalDatabase(Strings.googleClassroomCoursesList);
@@ -2024,11 +2032,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //   "rupeshparmar@gmail.com",
       //   "techadmin@solvedconsulting.com"
       // ];
-      List<String> respoanceTextList = respoanceText.split(' ');
+      // List<String> resonanceTextList = responseText.split(' ');
       String pattern =
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regex = new RegExp(pattern);
-      List result = extractEmailsFromString(respoanceText);
+      List result = extractEmailsFromString(responseText);
 
       List<String> emails = [];
 
@@ -2188,6 +2196,61 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, 'sortRubricPDFList Method');
+      throw (e);
+    }
+  }
+
+  // Function to update all images to PostgresSQL database (For automatic modal training)
+  Future<bool> updateImageUrlToDB({
+    required String assessmentId,
+    required List<StudentAssessmentInfo> studentDetails,
+  }) async {
+    try {
+      List<Map> bodyContent = [];
+
+      for (int i = 0; i < studentDetails.length; i++) {
+        //To bypass the titles saving in the dashboard
+        if (studentDetails[i].studentId != 'Id') {
+          bodyContent.add(objectToJson(
+              uniqueId: studentDetails[i].uniqueId!,
+              assessmentId: assessmentId,
+              assessmentImage: studentDetails[i].assessmentImage!,
+              resultC: studentDetails[i].studentGrade!,
+              scoreChanged: studentDetails[i].isRubricChanged!));
+        }
+      }
+      final ResponseModel response = await _dbServices.postApi(
+        "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Assessment_Scans",
+        isGoogleApi: true,
+        body: bodyContent,
+      );
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  // Function to create body for updateImageUrlToDB function
+  Map<String, String> objectToJson(
+      {required String assessmentId,
+      required String uniqueId,
+      required String resultC,
+      required String assessmentImage,
+      required String scoreChanged}) {
+    try {
+      Map<String, String> body = {
+        "Assessment_Id": assessmentId,
+        "Result__c": resultC,
+        "Assessment_Image__c": assessmentImage,
+        "Score_Changed": scoreChanged,
+        "Id": uniqueId
+      };
+      return body;
+    } catch (e) {
       throw (e);
     }
   }

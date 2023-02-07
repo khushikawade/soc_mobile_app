@@ -191,6 +191,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         assessmentData.forEach((StudentAssessmentInfo e) {
           _studentInfoDb.addData(e);
         });
+        List<StudentAssessmentInfo> newList = [];
+        newList.addAll(assessmentData);
+        Utility.updateAssessmentToDb(
+          studentInfoList: newList,
+          assessmentId: Globals.historyAssessmentId,
+        );
 
         // Create new Google presentation in case already not exist // Will work for all the existing assessment which are not having already google slide presentation in case of scan more
         if (event.slidePresentationId == 'NA') {
@@ -1542,6 +1548,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _list[i].sessionId = assessmentList[j].sessionId;
               _list[i].isCreatedAsPremium = assessmentList[j].createdAsPremium;
               _list[i].assessmentType = assessmentList[j].assessmentType;
+              _list[i].assessmentId = assessmentList[j].assessmentId;
             }
           }
         }

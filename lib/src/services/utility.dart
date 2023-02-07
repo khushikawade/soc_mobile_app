@@ -1015,7 +1015,7 @@ class Utility {
         duration: const Duration(milliseconds: 400), curve: Curves.linear);
   }
 
-  static Future<String> getUserlocation() async {
+  static Future<String> getUserLocation() async {
     try {
       // Position? userLocation;
 
@@ -1058,5 +1058,21 @@ class Utility {
       default:
         return 'unknown';
     }
+  }
+  // Function to update assessment details to dataBase
+  static updateAssessmentToDb(
+      {required List<StudentAssessmentInfo> studentInfoList,
+      required String assessmentId}) async {
+    OcrBloc _ocrAssessmentBloc = OcrBloc();
+    List<StudentAssessmentInfo> _list = studentInfoList;
+    print("assessment ID $assessmentId");
+    _list.removeWhere(
+        (element) => element.uniqueId == null || element.uniqueId == ''); // avoid to update older assessment sheet in case of scan more 
+    print(_list.length);
+    _list.isNotEmpty
+        ? _ocrAssessmentBloc.add(UploadAssessmentToDB(
+            assessmentId: assessmentId, studentDetails: _list))
+        // ignore: unnecessary_statements
+        : null;
   }
 }

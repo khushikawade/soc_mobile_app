@@ -110,6 +110,7 @@ class Globals {
   static String? googleSlidePresentationId;
   static String? googleSlidePresentationLink;
   static String selectedFilterValue = 'All';
+  static String historyAssessmentId = '';
   static bool isNewsContactPopupAppear = false; // when news popUp is on
 
 //  static EventController scheduleController = EventController();
