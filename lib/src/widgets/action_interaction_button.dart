@@ -68,7 +68,7 @@ class _ActionInteractionButtonWidgetState
   @override
   void initState() {
     super.initState();
-    // print('inside inistate ------------------------------------>');
+    // print('inside instate ------------------------------------>');
     // closePopup();
     like.value = widget.obj.likeCount ?? 0;
     thanks.value = widget.obj.thanksCount ?? 0;
@@ -107,7 +107,7 @@ class _ActionInteractionButtonWidgetState
 
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.width * 0.65,
+        width: MediaQuery.of(context).size.width * 0.8,
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.07
             : MediaQuery.of(context).size.width * 0.07,
