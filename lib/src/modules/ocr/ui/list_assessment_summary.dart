@@ -532,6 +532,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             if (list[index].isCreatedAsPremium == "true") {
               createdAsPremium = true;
             }
+            Globals.historyAssessmentId = list[index].assessmentId!;
 
             await _historyStudentInfoDb.clear();
             Navigator.push(

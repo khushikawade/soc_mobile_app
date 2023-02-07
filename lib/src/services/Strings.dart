@@ -36,7 +36,7 @@ class Strings {
   static final String scheduleObjectDetails = 'schedule_object_details';
   static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
 
-  static final String rubicPdfObjectName = 'rubic_pdf_object_name';
+  static final String rubricPdfObjectName = 'rubic_pdf_object_name';
 //Using in Graded+
   static final String googleDrive = 'google_drive';
   static final String ocrSubjectObjectName = 'selected_state_subject_details';

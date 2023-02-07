@@ -127,7 +127,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
       if (!Overrides.STANDALONE_GRADED_APP) {
         // get state subject list if school or default new york state
         _ocrBloc.add(FetchStateListEvent(
-            fromCreateAssesment: false, stateName: widget.stateName));
+            fromCreateAssessment: false, stateName: widget.stateName));
       } else {
         //Fetch all data state wise // Standalone
         fetchSubjectDetails('subject', widget.selectedClass,

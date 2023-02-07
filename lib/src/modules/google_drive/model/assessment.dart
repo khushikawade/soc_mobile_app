@@ -25,6 +25,8 @@ class HistoryAssessment {
   @HiveField(9)
   String? assessmentType;
   @HiveField(10)
+  String? assessmentId;
+  @HiveField(11)
   String? presentationLink;
   HistoryAssessment(
       {this.title,
@@ -35,20 +37,23 @@ class HistoryAssessment {
       this.createdDate,
       this.modifiedDate,
       this.sessionId,
+      this.assessmentId,
       this.isCreatedAsPremium,
-      this.assessmentType,
-      this.presentationLink});
+      this.presentationLink,
+      this.assessmentType});
 
   factory HistoryAssessment.fromJson(Map<String, dynamic> json) =>
       HistoryAssessment(
-          title: Utility.utf8convert(json['title'] as String?),
-          description: json['description'] as String?,
-          fileId: json['id'] as String?,
-          label: json['labels'],
-          webContentLink: json['alternateLink'] as String?,
-          createdDate: json['createdDate'] as String?,
-          modifiedDate: json['modifiedDate'] as String?,
-          sessionId: '',
-          isCreatedAsPremium: "false",
-          assessmentType: "Constructed Response");
+        title: Utility.utf8convert(json['title'] as String?),
+        description: json['description'] as String?,
+        fileId: json['id'] as String?,
+        label: json['labels'],
+        webContentLink: json['alternateLink'] as String?,
+        createdDate: json['createdDate'] as String?,
+        modifiedDate: json['modifiedDate'] as String?,
+        sessionId: '',
+        isCreatedAsPremium: "false",
+        assessmentType: "Constructed Response",
+        assessmentId: json['Assessment_Id'] as String?,
+      );
 }

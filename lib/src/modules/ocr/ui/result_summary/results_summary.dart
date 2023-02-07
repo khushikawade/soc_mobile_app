@@ -75,7 +75,10 @@ class studentRecordList extends State<ResultsSummary> {
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
+  OcrBloc _ocrAssessmentBloc =
+      OcrBloc(); // bloc instance only use for save assessment to database
   int lastAssessmentLength = 0;
+
   // int? assessmentCount;
   //ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
@@ -127,6 +130,7 @@ class studentRecordList extends State<ResultsSummary> {
   @override
   void initState() {
     _futureMethod();
+
     if (widget.assessmentDetailPage!) {
       _historyStudentInfoDb.clear();
       if (widget.historySecondTime == true) {
@@ -147,6 +151,7 @@ class studentRecordList extends State<ResultsSummary> {
       }
       _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
     } else {
+      updateAssessmentToDb();
       if (widget.isScanMore != true) {
         print("Shared Link called");
         _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
@@ -164,6 +169,7 @@ class studentRecordList extends State<ResultsSummary> {
     }
 
     _scrollController.addListener(_scrollListener);
+
     super.initState();
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("results_summary");
@@ -540,6 +546,9 @@ class studentRecordList extends State<ResultsSummary> {
                                                 questionImageUrl = snapshot
                                                     .data![0].questionImgUrl;
                                               }
+                                              // updateAssessmentToDb(
+                                              //     studentInfoList:
+                                              //         snapshot.data);
                                               return listView(snapshot.data!);
                                             }
                                             return Container(
@@ -649,6 +658,7 @@ class studentRecordList extends State<ResultsSummary> {
 
                                 assessmentCount.value = state.obj.length;
                               }
+                              updateAssessmentToDb();
                               isGoogleSheetStateReceived.value = true;
                             } else if (state is ErrorState) {
                               if (state.errorMsg ==
@@ -744,6 +754,7 @@ class studentRecordList extends State<ResultsSummary> {
 
                               savedRecordCount = state.resultRecordCount;
                               historyAssessmentId = state.assessmentId;
+                              //Globals.historyAssessmentId = state.assessmentId!;
                             }
                           }
                           if (state is OcrLoading2) {
@@ -2077,6 +2088,16 @@ class studentRecordList extends State<ResultsSummary> {
           ),
         )
       ],
+    );
+  }
+
+  updateAssessmentToDb() async {
+    Utility.updateAssessmentToDb(
+      studentInfoList: await Utility.getStudentInfoList(
+          tableName: widget.assessmentDetailPage == true
+              ? 'history_student_info'
+              : 'student_info'),
+      assessmentId: Globals.currentAssessmentId,
     );
   }
 

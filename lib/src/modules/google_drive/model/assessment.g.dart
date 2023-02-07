@@ -25,16 +25,16 @@ class HistoryAssessmentAdapter extends TypeAdapter<HistoryAssessment> {
       createdDate: fields[5] as String?,
       modifiedDate: fields[6] as String?,
       sessionId: fields[7] as String?,
+      assessmentId: fields[10] as String?,
       isCreatedAsPremium: fields[8] as String?,
       assessmentType: fields[9] as String?,
-      presentationLink: fields[10] as String?,
-    );
+    )..presentationLink = fields[11] as String?;
   }
 
   @override
   void write(BinaryWriter writer, HistoryAssessment obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -56,6 +56,8 @@ class HistoryAssessmentAdapter extends TypeAdapter<HistoryAssessment> {
       ..writeByte(9)
       ..write(obj.assessmentType)
       ..writeByte(10)
+      ..write(obj.assessmentId)
+      ..writeByte(11)
       ..write(obj.presentationLink);
   }
 

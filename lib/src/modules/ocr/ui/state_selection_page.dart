@@ -55,7 +55,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
   void initState() {
     _ocrBloc.add(FetchStateListEvent(
         stateName: "GetAllState",
-        fromCreateAssesment: widget.isFromCreateAssessmentScreen ?? false));
+        fromCreateAssessment: widget.isFromCreateAssessmentScreen ?? false));
     super.initState();
     FirebaseAnalyticsService.addCustomAnalyticsEvent("state_selection_page");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -132,7 +132,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                               if (searchController.text.isEmpty) {
                                 _ocrBloc.add(FetchStateListEvent(
                                     stateName: "GetAllState",
-                                    fromCreateAssesment:
+                                    fromCreateAssessment:
                                         widget.isFromCreateAssessmentScreen ??
                                             false));
                               } else {
@@ -390,6 +390,6 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
     await Future.delayed(Duration(seconds: 2));
     _ocrBloc.add(FetchStateListEvent(
         stateName: "GetAllState",
-        fromCreateAssesment: widget.isFromCreateAssessmentScreen ?? false));
+        fromCreateAssessment: widget.isFromCreateAssessmentScreen ?? false));
   }
 }
