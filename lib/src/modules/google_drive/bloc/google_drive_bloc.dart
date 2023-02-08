@@ -2511,6 +2511,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future<List<Map>> _getListOfAssignmentDetails(
       {required String? assignmentName,
       required StudentAssessmentInfo studentAssessmentInfoObj}) async {
+    // check if question image is available or not
+    bool? isQuestionImgUrlUpdate =
+        studentAssessmentInfoObj.questionImgUrl != null &&
+            studentAssessmentInfoObj.questionImgUrl!.isNotEmpty &&
+            studentAssessmentInfoObj.questionImgUrl! != "NA";
+
     // List of title for slide details table
     // List<String> listOfFields = [
     //   'Subject',
@@ -2554,7 +2560,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             "transform": {
               "scaleX": 1,
               "scaleY": 1,
-              "translateX": 3005000,
+              "translateX": isQuestionImgUrlUpdate ? 3005000 : 1505000,
               "translateY": 280000,
               "unit": "EMU",
             }
@@ -2564,9 +2570,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     ];
 
 // check if question image is available or not
-    if (studentAssessmentInfoObj.questionImgUrl != null &&
-        studentAssessmentInfoObj.questionImgUrl! != "NA" &&
-        studentAssessmentInfoObj.questionImgUrl!.isNotEmpty) {
+    if (isQuestionImgUrlUpdate) {
 //adding question image on slide request
       body.add({
         "createImage": {
