@@ -1012,8 +1012,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       );
 
       if (response.statusCode == 200) {
-        print('Activity Log Success');
-        print(response.data);
+        // print('Activity Log Success');
+        // print(response.data);
       }
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(e, s, 'activityLog Method');
