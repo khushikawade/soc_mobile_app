@@ -50,6 +50,13 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
   final OcrBloc _ocrBlocLogs = new OcrBloc();
   DateTime currentDateTime = DateTime.now();
 
+
+ @override
+  void dispose() {
+    super.dispose();
+  
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

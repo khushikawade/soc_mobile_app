@@ -568,38 +568,38 @@ class _ActionInteractionButtonWidgetState
     Globals.isNewsContactPopupAppear = widget.page == "news" ? true : false;
     showDialog(
         context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return CommonPopupWidget(
-                backgroundColor: Theme.of(context).colorScheme.background ==
-                        Color(0xff000000)
-                    ? Color(0xff162429)
-                    : null,
-                isLogout: true,
-                orientation: orientation,
-                context: context,
-                message:
-                    "Have a question? Select an option below to contact us",
-                title: 'Contact Us',
-                actionWidget: supportActionWidget(
-                    contactNumber: Globals.appSetting.contactPhoneC,
-                    email: Globals.appSetting.parentCoordinatorEmailc),
-                clearButton: true,
-                titleStyle: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(fontWeight: FontWeight.bold),
-              );
-            })).then((_) => Globals.isNewsContactPopupAppear = false);
+        builder: (showDialogContext) => CommonPopupWidget(
+              backgroundColor:
+                  Theme.of(showDialogContext).colorScheme.background == Color(0xff000000)
+                      ? Color(0xff162429)
+                      : null,
+              isLogout: true,
+              orientation: MediaQuery.of(showDialogContext).orientation,
+              context: showDialogContext,
+              message: "Have a question? Select an option below to contact us",
+              title: 'Contact Us',
+              actionWidget: supportActionWidget(
+                  contactNumber: Globals.appSetting.contactPhoneC,
+                  email: Globals.appSetting.parentCoordinatorEmailc,
+                  showDialogContext: showDialogContext),
+              clearButton: true,
+              titleStyle: Theme.of(showDialogContext)
+                  .textTheme
+                  .headline1!
+                  .copyWith(fontWeight: FontWeight.bold),
+            )).then((_) => Globals.isNewsContactPopupAppear = false);
     ;
   }
 
   List<Widget> supportActionWidget(
-      {required String? email, required String? contactNumber}) {
+      {required String? email,
+      required String? contactNumber,
+      required BuildContext showDialogContext}) {
     return [
       // Row(
       //   children: [
       textButtonWidget(
+          showDialogContext: showDialogContext,
           title: 'Email',
           iconData: Icons.email,
           onPressed: () async {
@@ -616,6 +616,7 @@ class _ActionInteractionButtonWidgetState
         color: Colors.grey.withOpacity(0.2),
       ),
       textButtonWidget(
+          showDialogContext: showDialogContext,
           title: 'Call',
           iconData: Icons.call,
           onPressed: () async {
@@ -631,7 +632,8 @@ class _ActionInteractionButtonWidgetState
   Widget textButtonWidget(
       {required String title,
       required IconData iconData,
-      required void Function()? onPressed}) {
+      required void Function()? onPressed,
+      required BuildContext showDialogContext}) {
     return TextButton(
       child: Row(
         children: [
@@ -643,11 +645,11 @@ class _ActionInteractionButtonWidgetState
             width: 10,
           ),
           Container(
-              width: MediaQuery.of(context).size.width / 5,
+              width: MediaQuery.of(showDialogContext).size.width / 5,
               child: Utility.textWidget(
-                  context: context,
+                  context: showDialogContext,
                   text: title.toString(),
-                  textTheme: Theme.of(context).textTheme.headline1!)),
+                  textTheme: Theme.of(showDialogContext).textTheme.headline1!)),
         ],
       ),
       onPressed: onPressed,
