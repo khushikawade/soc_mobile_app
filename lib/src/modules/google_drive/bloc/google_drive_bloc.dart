@@ -159,6 +159,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             LocalDatabase('history_student_info');
         List<StudentAssessmentInfo> assessmentData =
             await _studentInfoDb.getData();
+
         for (var i = 0; i < assessmentData.length; i++) {
           if (assessmentData[i].assessmentImage == null ||
               assessmentData[i].assessmentImage!.isEmpty) {
@@ -246,9 +247,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           List<StudentAssessmentInfo> list = [];
 
           list.addAll(assessmentData);
-          list.removeRange(0, event.lastAssessmentLength);
+          //   list.removeRange(0, event.lastAssessmentLength);
 
           if (list.isNotEmpty) {
+            for (int i = 0; i < event.lastAssessmentLength; i++) {
+              list[i].slideObjectId = 'AlreadyUpdated';
+            }
             //To create Google Presentation
             await createBlankSlidesInGooglePresentation(
                 event.slidePresentationId,
@@ -2322,6 +2326,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   List<Map> prepareStudentAssessmentImageRequestBody(
       {required List<StudentAssessmentInfo> assessmentData}) {
+    print(assessmentData);
     List<String> listOfFields = [
       'Student Name',
       'Student ID',
@@ -2332,6 +2337,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     List<Map> body = [];
     assessmentData.asMap().forEach((index, element) {
       if (element.slideObjectId != "AlreadyUpdated") {
+        print(element);
         Map obj = {
           "createImage": {
             "url": element.assessmentImage,
@@ -2377,8 +2383,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   },
                   "text": columnIndex == 0
                       ? listOfFields[rowIndex] //Keys
-                      : prepareAssignmentTableCellValue(
-                          element, rowIndex) //Values
+                      : prepareAssignmentTableCellValue(element, rowIndex,
+                          assessmentData[0].pointPossible) //Values
                 }
               },
             );
@@ -2626,12 +2632,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }
 
   prepareAssignmentTableCellValue(
-      StudentAssessmentInfo studentAssessmentInfoObj, int index) {
+      StudentAssessmentInfo studentAssessmentInfoObj,
+      int index,
+      String? pointPossible) {
     Map map = {
       0: studentAssessmentInfoObj.studentName ?? '',
       1: studentAssessmentInfoObj.studentId ?? '',
       2: studentAssessmentInfoObj.studentGrade ?? '',
-      3: studentAssessmentInfoObj.pointPossible ?? '',
+      3: pointPossible ?? '',
     };
 
     return map[index] ?? 'NA';
@@ -2690,6 +2698,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   prepareAddAndUpdateSlideRequestBody(
       {required List<StudentAssessmentInfo> assessmentData,
       required LocalDatabase<StudentAssessmentInfo> studentInfoDb}) {
+    print(studentInfoDb);
+    print(assessmentData);
     List<String> listOfFields = [
       'Student Name',
       'Student ID',
@@ -2771,8 +2781,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                     },
                     "text": columnIndex == 0
                         ? listOfFields[rowIndex] //Keys
-                        : prepareAssignmentTableCellValue(
-                            element, rowIndex) //Values
+                        : prepareAssignmentTableCellValue(element, rowIndex,
+                            assessmentData[0].pointPossible) //Values
                   }
                 },
               );
