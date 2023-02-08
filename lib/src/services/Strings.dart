@@ -24,7 +24,7 @@ class Strings {
   static final String aboutSubListObjectName = 'about_sub_list';
   static final String schoolDirectoryObjectName = 'school_directory';
   static final String studentsObjectName = 'students';
-  static final String newsObjectName = 'news';
+  static final String newsObjectName = 'news_new';
   static final String newsActionObjectName = 'news_action';
   static final String socialObjectName = 'social';
   static final String socialActionObjectName = 'social_action';
@@ -36,7 +36,7 @@ class Strings {
   static final String scheduleObjectDetails = 'schedule_object_details';
   static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
 
-  static final String rubicPdfObjectName = 'rubic_pdf_object_name';
+  static final String rubricPdfObjectName = 'rubic_pdf_object_name';
 //Using in Graded+
   static final String googleDrive = 'google_drive';
   static final String ocrSubjectObjectName = 'selected_state_subject_details';
@@ -50,4 +50,5 @@ class Strings {
   // static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
   static final String studentDetailList = 'student_detail_List';
   static final String keyArrowSvgIconPath = "assets/images/arrow.svg";
+  static final String latestNewsId = "last_news_id"; // to maintain news id for showing red indicator
 }

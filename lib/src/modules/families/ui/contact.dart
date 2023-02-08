@@ -44,14 +44,14 @@ class _ContactPageState extends State<ContactPage> {
   final HomeBloc homebloc = new HomeBloc();
   bool? isErrorState = false;
   static const double _kboxborderwidth = 0.75;
-  bool? isloadingstate = false;
+  bool? isLoadingstate = false;
   final List<Marker> _markers = [];
 
   @override
   void initState() {
     super.initState();
     homebloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
     _markers.add(Marker(
         markerId: MarkerId("Your location"),
         draggable: false,
@@ -367,7 +367,7 @@ class _ContactPageState extends State<ContactPage> {
             Column(
               children: [
                 Expanded(
-                    child: isloadingstate!
+                    child: isLoadingstate!
                         ? ShimmerLoading(isLoading: true, child: _buildItem())
                         : _buildItem()),
                 Container(
@@ -377,12 +377,12 @@ class _ContactPageState extends State<ContactPage> {
                       bloc: homebloc,
                       listener: (context, state) async {
                         if (state is HomeLoading) {
-                          isloadingstate = true;
+                          isLoadingstate = true;
                         }
                         if (state is BottomNavigationBarSuccess) {
                           AppTheme.setDynamicTheme(Globals.appSetting, context);
                           Globals.appSetting = AppSetting.fromJson(state.obj);
-                          isloadingstate = false;
+                          isLoadingstate = false;
                           setState(() {});
                         }
                       },

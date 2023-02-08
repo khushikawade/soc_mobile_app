@@ -41,7 +41,7 @@ class _SettingPageState extends State<SettingPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
   bool? isErrorState = false;
-  bool? isloadingstate = false;
+  bool? isLoadingstate = false;
 
   @override
   void initState() {
@@ -53,7 +53,7 @@ class _SettingPageState extends State<SettingPage> {
           .then((value) => {pushState(value!.pushDisabled)});
     }
     _homeBloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override
@@ -230,7 +230,7 @@ class _SettingPageState extends State<SettingPage> {
               child: Column(
             children: [
               Expanded(
-                  child: isloadingstate!
+                  child: isLoadingstate!
                       ? ShimmerLoading(isLoading: true, child: _buildItem())
                       : _buildItem()),
               Container(
@@ -240,14 +240,14 @@ class _SettingPageState extends State<SettingPage> {
                     bloc: _homeBloc,
                     listener: (context, state) async {
                       if (state is HomeLoading) {
-                        isloadingstate = true;
+                        isLoadingstate = true;
                       }
 
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                         Globals.appSetting = AppSetting.fromJson(state.obj);
-                        isloadingstate = false;
+                        isLoadingstate = false;
                         setState(() {});
                       }
                     },

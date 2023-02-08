@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:share/share.dart';
 import '../translator/language_list.dart';
 
@@ -67,13 +68,30 @@ class _ActionInteractionButtonWidgetState
   @override
   void initState() {
     super.initState();
-    // print('inside inistate ------------------------------------>');
+    // print('inside instate ------------------------------------>');
+    // closePopup();
     like.value = widget.obj.likeCount ?? 0;
     thanks.value = widget.obj.thanksCount ?? 0;
     helpful.value = widget.obj.helpfulCount ?? 0;
     share.value = widget.obj.shareCount ?? 0;
     support.value = widget.obj.supportCount ?? 0;
   }
+
+  // closePopup() {
+  //   OneSignal.shared.setNotificationWillShowInForegroundHandler(
+  //       (OSNotificationReceivedEvent notification) async {
+  //     notification.complete(notification.notification);
+  //     // setState(() {
+  //     //   Globals.indicator.value = true;
+  //     // });
+  //     await Future.delayed(Duration(milliseconds: 1500));
+
+  //     // bloc.add(FetchNotificationList());
+  //     // Utility.scrollToTop(scrollController: _scrollController);
+
+  //     //
+  //   });
+  // }
 
   @override
   void didUpdateWidget(ActionInteractionButtonWidget oldWidget) {
@@ -89,7 +107,7 @@ class _ActionInteractionButtonWidgetState
 
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.width * 0.65,
+        width: MediaQuery.of(context).size.width * 0.84,
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.07
             : MediaQuery.of(context).size.width * 0.07,
@@ -292,9 +310,7 @@ class _ActionInteractionButtonWidgetState
                                       : Theme.of(context)
                                           .colorScheme
                                           .primaryVariant,
-                      size: Globals.deviceType == "phone"
-                          ? (index == 0 || index == 4 ? 26 : 22)
-                          : (index == 0 || index == 4 ? 30 : 25),
+                      size: Globals.deviceType == "phone" ? 22 : 25,
                     );
             },
           ),
@@ -356,7 +372,7 @@ class _ActionInteractionButtonWidgetState
           context: context,
           scaffoldKey: scaffoldKey,
           notificationId: widget.obj.id,
-          notificationTitle: widget.title,
+          notificationTitle: widget.title ?? '',
           like: index == 0 ? 1 : 0,
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,
@@ -386,8 +402,8 @@ class _ActionInteractionButtonWidgetState
       setState(() {
         _downloadingFile = true;
       });
-      String _title = Utility.convertHtmlTOText(widget.title) ?? "";
-      String _description = Utility.convertHtmlTOText(widget.description) ?? "";
+      String _title = Utility.convertHtmlTOText(widget.title ?? "");
+      String _description = Utility.convertHtmlTOText(widget.description ?? "");
 
       String _imageUrl;
       if (fallBackImageUrl != null) {
@@ -549,39 +565,41 @@ class _ActionInteractionButtonWidgetState
 
   supportPopupModal() async {
     await Future.delayed(Duration(milliseconds: 500));
+    Globals.isNewsContactPopupAppear = widget.page == "news" ? true : false;
     showDialog(
         context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return CommonPopupWidget(
-                backgroundColor: Theme.of(context).colorScheme.background ==
-                        Color(0xff000000)
-                    ? Color(0xff162429)
-                    : null,
-                isLogout: true,
-                orientation: orientation,
-                context: context,
-                message:
-                    "Have a question? Select an option below to contact us",
-                title: 'Contact Us',
-                actionWidget: supportActionWidget(
-                    contactNumber: Globals.appSetting.contactPhoneC,
-                    email: Globals.appSetting.parentCoordinatorEmailc),
-                clearButton: true,
-                titleStyle: Theme.of(context)
-                    .textTheme
-                    .headline1!
-                    .copyWith(fontWeight: FontWeight.bold),
-              );
-            }));
+        builder: (showDialogContext) => CommonPopupWidget(
+              backgroundColor:
+                  Theme.of(showDialogContext).colorScheme.background == Color(0xff000000)
+                      ? Color(0xff162429)
+                      : null,
+              isLogout: true,
+              orientation: MediaQuery.of(showDialogContext).orientation,
+              context: showDialogContext,
+              message: "Have a question? Select an option below to contact us",
+              title: 'Contact Us',
+              actionWidget: supportActionWidget(
+                  contactNumber: Globals.appSetting.contactPhoneC,
+                  email: Globals.appSetting.parentCoordinatorEmailc,
+                  showDialogContext: showDialogContext),
+              clearButton: true,
+              titleStyle: Theme.of(showDialogContext)
+                  .textTheme
+                  .headline1!
+                  .copyWith(fontWeight: FontWeight.bold),
+            )).then((_) => Globals.isNewsContactPopupAppear = false);
+    ;
   }
 
   List<Widget> supportActionWidget(
-      {required String? email, required String? contactNumber}) {
+      {required String? email,
+      required String? contactNumber,
+      required BuildContext showDialogContext}) {
     return [
       // Row(
       //   children: [
       textButtonWidget(
+          showDialogContext: showDialogContext,
           title: 'Email',
           iconData: Icons.email,
           onPressed: () async {
@@ -598,6 +616,7 @@ class _ActionInteractionButtonWidgetState
         color: Colors.grey.withOpacity(0.2),
       ),
       textButtonWidget(
+          showDialogContext: showDialogContext,
           title: 'Call',
           iconData: Icons.call,
           onPressed: () async {
@@ -613,7 +632,8 @@ class _ActionInteractionButtonWidgetState
   Widget textButtonWidget(
       {required String title,
       required IconData iconData,
-      required void Function()? onPressed}) {
+      required void Function()? onPressed,
+      required BuildContext showDialogContext}) {
     return TextButton(
       child: Row(
         children: [
@@ -625,11 +645,11 @@ class _ActionInteractionButtonWidgetState
             width: 10,
           ),
           Container(
-              width: MediaQuery.of(context).size.width / 5,
+              width: MediaQuery.of(showDialogContext).size.width / 5,
               child: Utility.textWidget(
-                  context: context,
+                  context: showDialogContext,
                   text: title.toString(),
-                  textTheme: Theme.of(context).textTheme.headline1!)),
+                  textTheme: Theme.of(showDialogContext).textTheme.headline1!)),
         ],
       ),
       onPressed: onPressed,

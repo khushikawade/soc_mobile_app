@@ -235,6 +235,12 @@ class LogUserActivityEvent extends OcrEvent {
   List<Object> get props => [];
 }
 
+class UploadAssessmentToDB extends OcrEvent {
+  final List<StudentAssessmentInfo> studentDetails;
+  final String assessmentId;
+  UploadAssessmentToDB({required this.studentDetails,required this.assessmentId});
+}
+
 class GetRubricPdf extends OcrEvent {
   GetRubricPdf();
   @override
@@ -243,8 +249,10 @@ class GetRubricPdf extends OcrEvent {
 
 // ---------- Event to Fetch State List for Api ----------
 class FetchStateListEvent extends OcrEvent {
-  final bool fromCreateAssesment;
-  FetchStateListEvent({required this.fromCreateAssesment});
+  String? stateName;
+  final bool fromCreateAssessment;
+  FetchStateListEvent(
+      {required this.fromCreateAssessment, required this.stateName});
 
   @override
   List<Object> get props => [];

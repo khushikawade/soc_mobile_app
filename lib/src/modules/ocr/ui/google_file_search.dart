@@ -11,13 +11,13 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
-import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share/share.dart';
 import '../../../services/utility.dart';
 import '../../google_drive/model/recent_google_file.dart';
@@ -55,7 +55,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('All');
 
   onItemChanged(String? searchKey) {
-    // issuggestionList = true;
+    // suggestionsList = true;
     // setState(() {
     if (searchKey != "") {
       issuggestionList = true;
@@ -64,8 +64,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     if (issuggestionList == true) {
       _debouncer.run(() {
         // _homeBloc.add(GlobalSearchEvent(keyword: value));
-        googleBloc
-            .add(GetHistoryAssessmentFromDrive(searchKeyword: searchKey!));
+        googleBloc.add(GetHistoryAssessmentFromDrive(
+          isSearchPage: true,
+            searchKeyword: searchKey!, filterType: selectedValue.value));
         updateTheUi.value = !updateTheUi.value;
         // setState(() {});
       });
@@ -79,7 +80,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
     WidgetsBinding.instance.addObserver(this);
     print('Google Search Page');
     _setLocked();
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
     getListLength();
     selectedValue.value = widget.selectedFilterValue;
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_file_search_page");
@@ -363,7 +364,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                               reversedRecentDetailDbList[index].title!,
                           shareLink:
                               reversedRecentDetailDbList[index].webContentLink,
-                          fileId: reversedRecentDetailDbList[index].fileid,
+                          fileId: reversedRecentDetailDbList[index].fileId,
                           assessmentDetailPage: true,
                         )),
               );
@@ -486,36 +487,38 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                                         data.modifiedDate!),
                                                     "MM/dd/yy")
                                             : ""),
-                                    trailing: GestureDetector(
-                                      onTap: () {
-                                        Utility.updateLogs(
-                                            activityId: '13',
-                                            sessionId: data.sessionId != ''
-                                                ? data.sessionId
-                                                : '',
-                                            description:
-                                                'Teacher tap on Share Button on assessment summery page',
-                                            operationResult: 'Success');
+                                    trailing: trailingRowBuilder(element: data),
 
-                                        if (data.webContentLink != null &&
-                                            data.webContentLink != '') {
-                                          Share.share(data.webContentLink!);
-                                        }
-                                      },
-                                      child: Icon(
-                                        IconData(0xe876,
-                                            fontFamily: Overrides.kFontFam,
-                                            fontPackage: Overrides.kFontPkg),
-                                        color: Color(0xff000000) !=
-                                                Theme.of(context)
-                                                    .backgroundColor
-                                            ? Color(0xff111C20)
-                                            : Color(0xffF7F8F9),
-                                        size: Globals.deviceType == 'phone'
-                                            ? 28
-                                            : 38,
-                                      ),
-                                    ),
+                                    //  GestureDetector(
+                                    //   onTap: () {
+                                    //     Utility.updateLogs(
+                                    //         activityId: '13',
+                                    //         sessionId: data.sessionId != ''
+                                    //             ? data.sessionId
+                                    //             : '',
+                                    //         description:
+                                    //             'Teacher tap on Share Button on assessment summery page',
+                                    //         operationResult: 'Success');
+
+                                    //     if (data.webContentLink != null &&
+                                    //         data.webContentLink != '') {
+                                    //       Share.share(data.webContentLink!);
+                                    //     }
+                                    //   },
+                                    //   child: Icon(
+                                    //     IconData(0xe876,
+                                    //         fontFamily: Overrides.kFontFam,
+                                    //         fontPackage: Overrides.kFontPkg),
+                                    //     color: Color(0xff000000) !=
+                                    //             Theme.of(context)
+                                    //                 .backgroundColor
+                                    //         ? Color(0xff111C20)
+                                    //         : Color(0xffF7F8F9),
+                                    //     size: Globals.deviceType == 'phone'
+                                    //         ? 28
+                                    //         : 38,
+                                    //   ),
+                                    // ),
                                     onTap: () async {
                                       List itemListData = await getListData(
                                           Strings.googleRecentSearch);
@@ -525,10 +528,10 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                         for (int i = 0;
                                             i < itemListData.length;
                                             i++) {
-                                          idList.add(itemListData[i].fileid);
+                                          idList.add(itemListData[i].fileId);
                                         }
                                       }
-                                      if (!idList.contains(data.fileid)) {
+                                      if (!idList.contains(data.fileId)) {
                                         if (data != null) {
                                           deleteItem(
                                               Strings.googleRecentSearch);
@@ -538,7 +541,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                                   hiveobjid: 1,
                                                   createdDate: data.createdDate,
                                                   description: data.description,
-                                                  fileid: data.fileid,
+                                                  fileId: data.fileId,
                                                   isCreatedAsPremium:
                                                       data.isCreatedAsPremium,
                                                   label: data.label,
@@ -571,7 +574,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                                   assessmentName: data.title!,
                                                   shareLink:
                                                       data.webContentLink,
-                                                  fileId: data.fileid,
+                                                  fileId: data.fileId,
                                                   assessmentDetailPage: true,
                                                 )),
                                       );
@@ -790,5 +793,51 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                 selectedValue.value = filterValue!;
               },
             ));
+  }
+
+  Widget trailingRowBuilder({required HistoryAssessment element}) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      if (element.presentationLink != null &&
+          element.presentationLink!.isNotEmpty)
+        GestureDetector(
+            onTap: () {
+              Utility.updateLogs(
+                  activityId: '31',
+                  sessionId: element.sessionId != null ? element.sessionId : '',
+                  description: 'Slide Icon Pressed - Google Search List',
+                  operationResult: 'Success');
+
+              Utility.launchUrlOnExternalBrowser(element.presentationLink!);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: SvgPicture.asset(
+                'assets/ocr_result_section_bottom_button_icons/Slide.svg',
+                width: Globals.deviceType == "phone" ? 28 : 40,
+                height: Globals.deviceType == "phone" ? 28 : 40,
+              ),
+            )),
+      GestureDetector(
+        onTap: () {
+          Utility.updateLogs(
+              activityId: '13',
+              sessionId: element.sessionId != null ? element.sessionId : '',
+              description: 'Teacher tap on Share Button - Google Search List',
+              operationResult: 'Success');
+
+          if (element.webContentLink != null && element.webContentLink != '') {
+            Share.share(element.webContentLink!);
+          }
+        },
+        child: Icon(
+          IconData(0xe876,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          color: Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Color(0xff111C20)
+              : Color(0xffF7F8F9),
+          size: Globals.deviceType == 'phone' ? 28 : 38,
+        ),
+      ),
+    ]);
   }
 }

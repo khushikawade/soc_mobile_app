@@ -9,7 +9,7 @@ class HistoryAssessment {
   @HiveField(1)
   String? description;
   @HiveField(2)
-  String? fileid;
+  String? fileId;
   @HiveField(3)
   final label;
   @HiveField(4)
@@ -24,28 +24,36 @@ class HistoryAssessment {
   String? isCreatedAsPremium;
   @HiveField(9)
   String? assessmentType;
+  @HiveField(10)
+  String? assessmentId;
+  @HiveField(11)
+  String? presentationLink;
   HistoryAssessment(
       {this.title,
       this.description,
-      this.fileid,
+      this.fileId,
       this.label,
       this.webContentLink,
       this.createdDate,
       this.modifiedDate,
       this.sessionId,
-      this.isCreatedAsPremium,this.assessmentType});
+      this.assessmentId,
+      this.isCreatedAsPremium,
+      this.presentationLink,
+      this.assessmentType});
 
   factory HistoryAssessment.fromJson(Map<String, dynamic> json) =>
       HistoryAssessment(
         title: Utility.utf8convert(json['title'] as String?),
         description: json['description'] as String?,
-        fileid: json['id'] as String?,
+        fileId: json['id'] as String?,
         label: json['labels'],
         webContentLink: json['alternateLink'] as String?,
         createdDate: json['createdDate'] as String?,
         modifiedDate: json['modifiedDate'] as String?,
         sessionId: '',
         isCreatedAsPremium: "false",
-        assessmentType: "Constructed Response"
+        assessmentType: "Constructed Response",
+        assessmentId: json['Assessment_Id'] as String?,
       );
 }

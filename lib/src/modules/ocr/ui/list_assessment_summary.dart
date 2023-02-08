@@ -21,6 +21,7 @@ import 'package:share/share.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AssessmentSummary extends StatefulWidget {
   final bool isFromHomeSection;
@@ -36,7 +37,11 @@ class AssessmentSummary extends StatefulWidget {
 
 class _AssessmentSummaryState extends State<AssessmentSummary> {
   static const double _KVertcalSpace = 60.0;
-  GoogleDriveBloc _driveBloc = GoogleDriveBloc();
+  GoogleDriveBloc _driveBloc = GoogleDriveBloc(); // For All Assessment
+  GoogleDriveBloc _driveMcqBloc =
+      GoogleDriveBloc(); // For Multiple Choice Assessment
+  GoogleDriveBloc _driveConstructiveBloc =
+      GoogleDriveBloc(); // For Constructive response
   // GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<HistoryAssessment> lastHistoryAssess = [];
@@ -57,7 +62,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
   @override
   void initState() {
     _scrollController = ScrollController()..addListener(_scrollListener);
-    _driveBloc.add(GetHistoryAssessmentFromDrive());
+    // _driveBloc
+    //     .add(GetHistoryAssessmentFromDrive(filterType: selectedValue.value));
     // selectedValue.value = widget.selectedFilterValue;
 
     // SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -65,7 +71,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
     // });
     SchedulerBinding.instance.addPostFrameCallback((_) {
       selectedValue.value = Globals.selectedFilterValue;
-      refreshPage(isFromPullToRefresh: false);
+      refreshPage(isFromPullToRefresh: false, delayInSeconds: 0);
     });
 
     // _driveBloc.add(GetHistoryAssessmentFromDrive());
@@ -209,123 +215,160 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         valueListenable: isSearch,
                         builder:
                             (BuildContext context, bool value, Widget? child) {
-                          return BlocConsumer(
-                              bloc:
-                                  // isSearch.value == false
-                                  // ?
-                                  _driveBloc,
+                          return ValueListenableBuilder(
+                              valueListenable: selectedValue,
+                              builder: (BuildContext context, String value,
+                                  Widget? child) {
+                                return BlocConsumer(
+                                    bloc:
+                                        selectedValue.value == 'Multiple Choice'
+                                            ? _driveMcqBloc
+                                            : (selectedValue.value ==
+                                                    'Constructed Response'
+                                                ? _driveConstructiveBloc
+                                                : _driveBloc),
 
-                              // : _driveBloc2,
-                              builder: (BuildContext context,
-                                  GoogleDriveState state) {
-                                if (state is GoogleDriveGetSuccess) {
-                                  nextPageUrl = state.nextPageLink;
-                                  bool isloading = true;
-                                  if (state.nextPageLink == '') {
-                                    isloading = false;
-                                  }
-                                  // bool isloading
-                                  lastAssessmentHistoryListbj = state.obj;
-                                  return state.obj != null &&
-                                          state.obj.length > 0
-                                      ? ValueListenableBuilder(
-                                          valueListenable: selectedValue,
-                                          child: Container(),
-                                          builder: (
-                                            BuildContext context,
-                                            dynamic value,
-                                            Widget? child,
-                                          ) {
-                                            List<HistoryAssessment> list = [];
-                                            list.addAll(state.obj);
+                                    // : _driveBloc2,
+                                    builder: (BuildContext context,
+                                        GoogleDriveState state) {
+                                      print(state);
+                                      if (state is GoogleDriveGetSuccess) {
+                                        nextPageUrl = state.nextPageLink;
+                                        bool isLoading = true;
+                                        if (state.nextPageLink == '') {
+                                          isLoading = false;
+                                        }
+                                        // bool isLoading
+                                        lastAssessmentHistoryListbj = state.obj;
+                                        if (nextPageUrl != '') {
+                                          isLoading = true;
+                                        }
+                                        // if (selectedValue.value ==
+                                        //     'Multiple Choice') {
+                                        //   for (var i = 0;
+                                        //       i < list.length;
+                                        //       i++) {
+                                        //     if (DateTime.parse(state
+                                        //             .obj.last.createdDate!)
+                                        //         .isBefore(DateTime.utc(
+                                        //             2022, 20, 12))) {
+                                        //       isLoading = false;
+                                        //     }
+                                        //   }
+                                        // }
+                                        // return list.length > 0
+                                        //     ?
+                                        return state.obj != null &&
+                                                state.obj.length > 0
+                                            ? listView(state.obj, isLoading)
 
-                                            if (selectedValue.value ==
-                                                'Multiple Choice') {
-                                              list.removeWhere((element) =>
-                                                  element.assessmentType !=
-                                                  selectedValue.value);
-                                            } else if (selectedValue.value ==
-                                                'Constructed Response') {
-                                              list.removeWhere((element) =>
-                                                  element.assessmentType !=
-                                                  selectedValue.value);
-                                            }
-                                            if (list.length < 6 &&
-                                                isloading == true) {
-                                              isloading = false;
-                                            } else if (nextPageUrl != '') {
-                                              isloading = true;
-                                            }
-                                            if (selectedValue.value ==
-                                                'Multiple Choice') {
-                                              for (var i = 0;
-                                                  i < list.length;
-                                                  i++) {
-                                                if (DateTime.parse(state
-                                                        .obj.last.createdDate!)
-                                                    .isBefore(DateTime.utc(
-                                                        2022, 20, 12))) {
-                                                  isloading = false;
-                                                }
-                                              }
-                                            }
-                                            return list.length > 0
-                                                ? listView(list, isloading)
-                                                : NoDataFoundErrorWidget(
-                                                    isResultNotFoundMsg: true,
-                                                    isNews: false,
-                                                    isEvents: false);
-                                          })
-                                      : NoDataFoundErrorWidget(
-                                          isResultNotFoundMsg: true,
-                                          isNews: false,
-                                          isEvents: false);
-                                } else if (state is GoogleDriveLoading) {
-                                  return Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.7,
-                                    child: Center(
-                                        child: CircularProgressIndicator(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                    )),
-                                  );
-                                }
+                                            //  ValueListenableBuilder(
+                                            //     valueListenable: selectedValue,
+                                            //     child: Container(),
+                                            //     builder: (
+                                            //       BuildContext context,
+                                            //       dynamic value,
+                                            //       Widget? child,
+                                            //     ) {
+                                            //       List<HistoryAssessment> list = [];
+                                            //       list.addAll(state.obj);
 
-                                return Container();
-                              },
-                              listener: (BuildContext contxt,
-                                  GoogleDriveState state) async {
-                                if (state is ErrorState) {
-                                  if (state.errorMsg ==
-                                      'ReAuthentication is required') {
-                                    await Utility.refreshAuthenticationToken(
-                                        isNavigator: false,
-                                        errorMsg: state.errorMsg!,
-                                        context: context,
-                                        scaffoldKey: _scaffoldKey);
+                                            //       // if (selectedValue.value ==
+                                            //       //     'Multiple Choice') {
+                                            //       //   list.removeWhere((element) =>
+                                            //       //       element.assessmentType !=
+                                            //       //       selectedValue.value);
+                                            //       // } else if (selectedValue.value ==
+                                            //       //     'Constructed Response') {
+                                            //       //   list.removeWhere((element) =>
+                                            //       //       element.assessmentType !=
+                                            //       //       selectedValue.value);
+                                            //       // }
+                                            //       if (list.length < 6 &&
+                                            //           isLoading == true) {
+                                            //         isLoading = false;
+                                            //       } else if (nextPageUrl != '') {
+                                            //         isLoading = true;
+                                            //       }
+                                            //       if (selectedValue.value ==
+                                            //           'Multiple Choice') {
+                                            //         for (var i = 0;
+                                            //             i < list.length;
+                                            //             i++) {
+                                            //           if (DateTime.parse(state
+                                            //                   .obj.last.createdDate!)
+                                            //               .isBefore(DateTime.utc(
+                                            //                   2022, 20, 12))) {
+                                            //             isLoading = false;
+                                            //           }
+                                            //         }
+                                            //       }
+                                            //       return list.length > 0
+                                            //           ? listView(list, isLoading)
+                                            //           : NoDataFoundErrorWidget(
+                                            //               isResultNotFoundMsg: true,
+                                            //               isNews: false,
+                                            //               isEvents: false);
+                                            //     })
+                                            : NoDataFoundErrorWidget(
+                                                isResultNotFoundMsg: true,
+                                                isNews: false,
+                                                isEvents: false);
+                                      } else if (state is GoogleDriveLoading) {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.7,
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                          )),
+                                        );
+                                      }
 
-                                    _driveBloc
-                                        .add(GetHistoryAssessmentFromDrive());
-                                  } else {
-                                    Navigator.of(context).pop();
-                                    Utility.currentScreenSnackBar(
-                                        "Something Went Wrong. Please Try Again.",
-                                        null);
-                                  }
-                                } else if (state is GoogleDriveLoading) {
-                                  Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.7,
-                                    child: Center(
-                                        child: CircularProgressIndicator(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                    )),
-                                  );
-                                }
+                                      return Container();
+                                    },
+                                    listener: (BuildContext contxt,
+                                        GoogleDriveState state) async {
+                                      if (state is ErrorState) {
+                                        if (state.errorMsg ==
+                                            'ReAuthentication is required') {
+                                          await Utility
+                                              .refreshAuthenticationToken(
+                                                  isNavigator: false,
+                                                  errorMsg: state.errorMsg!,
+                                                  context: context,
+                                                  scaffoldKey: _scaffoldKey);
+
+                                          _driveBloc.add(
+                                              GetHistoryAssessmentFromDrive(
+                                                  isSearchPage: false,
+                                                  filterType:
+                                                      selectedValue.value));
+                                        } else {
+                                          Navigator.of(context).pop();
+                                          Utility.currentScreenSnackBar(
+                                              "Something Went Wrong. Please Try Again.",
+                                              null);
+                                        }
+                                      } else if (state is GoogleDriveLoading) {
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.7,
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryVariant,
+                                          )),
+                                        );
+                                      }
+                                    });
                               });
                         }),
                   ),
@@ -450,11 +493,12 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               children: [
                 Utility.textWidget(
                     context: context,
-                    text: selectedValue.value == 'All'
-                        ? 'All Assignment Caught Up'
-                        : selectedValue.value == 'Constructed Response'
-                            ? 'All Constructed Assignment Caught Up'
-                            : 'All MCQ Assignment Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
+                    text: "You're All Caught Up",
+                    // text: selectedValue.value == 'All'
+                    //     ? 'All Assignment Caught Up'
+                    //     : selectedValue.value == 'Constructed Response'
+                    //         ? 'All Constructed Assignment Caught Up'
+                    //         : 'All MCQ Assignment Caught Up', //'You\'re All Caught Up', //'Yay! Assessment Result List Updated',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.headline1!.copyWith(
                         color: Theme.of(context).colorScheme.background ==
@@ -465,8 +509,8 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                 SpacerWidget(10),
                 Utility.textWidget(
                     context: context,
-                    text:
-                        'You\'ve fetched all the available ${selectedValue.value == 'All' ? '' : selectedValue.value} files from Graded+ Assignment',
+                    text: "You've seen all available assignments",
+                    // 'You\'ve fetched all the available ${selectedValue.value == 'All' ? '' : selectedValue.value} files from Graded+ Assignment',
                     textAlign: TextAlign.center,
                     textTheme: Theme.of(context).textTheme.subtitle2!.copyWith(
                           color: Colors.grey, //AppTheme.kButtonColor,
@@ -488,6 +532,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             if (list[index].isCreatedAsPremium == "true") {
               createdAsPremium = true;
             }
+            Globals.historyAssessmentId = list[index].assessmentId!;
 
             await _historyStudentInfoDb.clear();
             Navigator.push(
@@ -498,7 +543,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         obj: list[index],
                         assessmentName: list[index].title!,
                         shareLink: list[index].webContentLink,
-                        fileId: list[index].fileid,
+                        fileId: list[index].fileId,
                         assessmentDetailPage: true,
                       )),
             );
@@ -517,92 +562,129 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                         ? Color(0xff111C20)
                         : Color(0xffE9ECEE)),
             child: ListTile(
-                leading: Container(
-                  padding: EdgeInsets.only(top: 8),
-                  //color: Colors.amber,
-                  child: Icon(
-                      IconData(
-                          list[index].assessmentType == 'Multiple Choice'
-                              ? 0xe833
-                              : 0xe87c,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      size: Globals.deviceType == 'phone'
-                          ? (list[index].assessmentType == 'Multiple Choice'
-                              ? 30
-                              : 28)
-                          : 38,
-                      color: AppTheme.kButtonColor),
-                ),
-                minLeadingWidth: 0,
-                visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-                subtitle: Utility.textWidget(
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .subtitle2!
-                        .copyWith(color: Colors.grey.shade500),
-                    text: list[index].modifiedDate != null
-                        ? Utility.convertTimestampToDateFormat(
-                            DateTime.parse(list[index].modifiedDate!),
-                            "MM/dd/yy")
-                        : ""),
-                title: Utility.textWidget(
-                    text: list[index].title == null
-                        ? 'Asssessment Name not found'
-                        : list[index].title!,
-                    context: context,
-                    textTheme: Theme.of(context).textTheme.headline2),
-                // subtitle:
-                trailing: GestureDetector(
-                  onTap: () {
-                    Utility.updateLogs(
-                        activityId: '13',
-                        sessionId: list[index].sessionId != null
-                            ? list[index].sessionId
-                            : '',
-                        description:
-                            'Teacher tap on Share Button on Assignment summery page',
-                        operationResult: 'Success');
-
-                    if (list[index].webContentLink != null &&
-                        list[index].webContentLink != '') {
-                      Share.share(list[index].webContentLink!);
-                    }
-                    // : print("no web link $index");
-                  },
-                  child: Icon(
-                    IconData(0xe876,
+              leading: Container(
+                padding: EdgeInsets.only(top: 8),
+                //color: Colors.amber,
+                child: Icon(
+                    IconData(
+                        list[index].assessmentType == 'Multiple Choice'
+                            ? 0xe833
+                            : 0xe87c,
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
-                    color:
-                        Color(0xff000000) != Theme.of(context).backgroundColor
-                            ? Color(0xff111C20)
-                            : Color(0xffF7F8F9),
-                    size: Globals.deviceType == 'phone' ? 28 : 38,
-                  ),
-                )),
+                    size: Globals.deviceType == 'phone'
+                        ? (list[index].assessmentType == 'Multiple Choice'
+                            ? 30
+                            : 28)
+                        : 38,
+                    color: AppTheme.kButtonColor),
+              ),
+              minLeadingWidth: 0,
+              visualDensity: VisualDensity(horizontal: 0, vertical: 0),
+              subtitle: Utility.textWidget(
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .subtitle2!
+                      .copyWith(color: Colors.grey.shade500),
+                  text: list[index].modifiedDate != null &&
+                          list[index].modifiedDate != ''
+                      ? Utility.convertTimestampToDateFormat(
+                          DateTime.parse(list[index].modifiedDate!), "MM/dd/yy")
+                      : ""),
+              title: Utility.textWidget(
+                  text: list[index].title == null
+                      ? 'Assignment Name not found'
+                      : list[index].title!,
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline2),
+              // subtitle:
+              trailing: trailingRowBuilder(element: list[index]),
+
+              //  [
+              //   if (list[index].presentationLink != null &&
+              //       list[index].presentationLink!.isNotEmpty)
+              //     _iconBuilder(
+              //         svgIconPath:
+              //             'assets/ocr_result_section_bottom_button_icons/Slide.svg'),
+              //   GestureDetector(
+              //     onTap: () {
+              //       Utility.updateLogs(
+              //           activityId: '13',
+              //           sessionId: list[index].sessionId != null
+              //               ? list[index].sessionId
+              //               : '',
+              //           description:
+              //               'Teacher tap on Share Button on Assignment summery page',
+              //           operationResult: 'Success');
+
+              //       if (list[index].webContentLink != null &&
+              //           list[index].webContentLink != '') {
+              //         Share.share(list[index].webContentLink!);
+              //       }
+              //       // : print("no web link $index");
+              //     },
+              //     child: Icon(
+              //       IconData(0xe876,
+              //           fontFamily: Overrides.kFontFam,
+              //           fontPackage: Overrides.kFontPkg),
+              //       color: Color(0xff000000) !=
+              //               Theme.of(context).backgroundColor
+              //           ? Color(0xff111C20)
+              //           : Color(0xffF7F8F9),
+              //       size: Globals.deviceType == 'phone' ? 28 : 38,
+              //     ),
+              //   ),
+              // ],
+            ),
           ),
         ),
       ],
     );
   }
 
-  Future refreshPage({required bool isFromPullToRefresh}) async {
+  Future refreshPage(
+      {required bool isFromPullToRefresh, int? delayInSeconds}) async {
     refreshKey.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(
+        Duration(seconds: delayInSeconds == null ? 2 : delayInSeconds));
     if (isFromPullToRefresh == true) {
-      _driveBloc.add(GetHistoryAssessmentFromDrive());
+      if (selectedValue.value == 'Multiple Choice') {
+        _driveMcqBloc.add(GetHistoryAssessmentFromDrive(
+            filterType: selectedValue.value, isSearchPage: false));
+      } else if (selectedValue.value == 'Constructed Response') {
+        _driveConstructiveBloc.add(GetHistoryAssessmentFromDrive(
+            filterType: selectedValue.value, isSearchPage: false));
+      } else {
+        _driveBloc.add(GetHistoryAssessmentFromDrive(
+            filterType: selectedValue.value, isSearchPage: false));
+      }
     }
   }
 
   _scrollListener() {
     ////print(_controller.position.extentAfter);
     if (_scrollController.position.atEdge &&
+        //  _scrollController.position.extentAfter < 300 &&
         nextPageUrl != '' &&
         nextPageUrl != null) {
-      _driveBloc.add(UpdateHistoryAssessmentFromDrive(
-          obj: lastAssessmentHistoryListbj, nextPageUrl: nextPageUrl!));
+      if (selectedValue.value == 'Multiple Choice') {
+        _driveMcqBloc.add(UpdateHistoryAssessmentFromDrive(
+            filterType: selectedValue.value,
+            obj: lastAssessmentHistoryListbj,
+            nextPageUrl: nextPageUrl!));
+      } else if (selectedValue.value == 'Constructed Response') {
+        _driveConstructiveBloc.add(UpdateHistoryAssessmentFromDrive(
+            filterType: selectedValue.value,
+            obj: lastAssessmentHistoryListbj,
+            nextPageUrl: nextPageUrl!));
+      } else {
+        _driveBloc.add(UpdateHistoryAssessmentFromDrive(
+            filterType: selectedValue.value,
+            obj: lastAssessmentHistoryListbj,
+            nextPageUrl: nextPageUrl!));
+      }
+
       nextPageUrl = '';
     }
   }
@@ -621,9 +703,61 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               title: 'Filter Assignment',
               selectedValue: selectedValue.value,
               update: ({String? filterValue}) async {
-                selectedValue.value = filterValue!;
+                if (selectedValue.value != filterValue!) {
+                  if (filterValue == 'Multiple Choice') {
+                    _driveMcqBloc.add(GetHistoryAssessmentFromDrive(
+                        filterType: filterValue, isSearchPage: false));
+                  } else if (filterValue == 'Constructed Response') {
+                    _driveConstructiveBloc.add(GetHistoryAssessmentFromDrive(
+                        filterType: filterValue, isSearchPage: false));
+                  } else {
+                    _driveBloc.add(GetHistoryAssessmentFromDrive(
+                        filterType: filterValue, isSearchPage: false));
+                  }
+                }
+                selectedValue.value = filterValue;
                 Globals.selectedFilterValue = selectedValue.value;
               },
             ));
+  }
+
+  Widget trailingRowBuilder({required HistoryAssessment element}) {
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      if (element.presentationLink != null &&
+          element.presentationLink!.isNotEmpty)
+        GestureDetector(
+            onTap: (() =>
+                Utility.launchUrlOnExternalBrowser(element.presentationLink!)),
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: SvgPicture.asset(
+                'assets/ocr_result_section_bottom_button_icons/Slide.svg',
+                width: Globals.deviceType == "phone" ? 28 : 40,
+                height: Globals.deviceType == "phone" ? 28 : 40,
+              ),
+            )),
+      GestureDetector(
+        onTap: () {
+          Utility.updateLogs(
+              activityId: '13',
+              sessionId: element.sessionId != null ? element.sessionId : '',
+              description:
+                  'Teacher tap on Share Button on Assignment summery page',
+              operationResult: 'Success');
+
+          if (element.webContentLink != null && element.webContentLink != '') {
+            Share.share(element.webContentLink!);
+          }
+        },
+        child: Icon(
+          IconData(0xe876,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          color: Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Color(0xff111C20)
+              : Color(0xffF7F8F9),
+          size: Globals.deviceType == 'phone' ? 28 : 38,
+        ),
+      ),
+    ]);
   }
 }

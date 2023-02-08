@@ -28,6 +28,7 @@ class EventPage extends StatefulWidget {
   final bool? isBottomSheet;
   final String? appBarTitle;
   final String calendarId;
+  final bool? isMainPage;
 
   EventPage({
     required this.isBottomSheet,
@@ -35,6 +36,7 @@ class EventPage extends StatefulWidget {
     required this.language,
     required this.calendarId,
     this.isAppBar,
+    this.isMainPage,
   });
 
   @override
@@ -195,18 +197,24 @@ class _EventPageState extends State<EventPage>
     eventsList,
     state,
   ) {
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        padding: !Platform.isAndroid
-            ? EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1)
-            : MediaQuery.of(context).orientation != Orientation.portrait
-                ? EdgeInsets.only(bottom: 120)
-                : EdgeInsets.only(bottom: 20),
-        itemCount: eventsList!.length,
-        itemBuilder: (BuildContext context, int index) {
-          String key = eventsList.keys.elementAt(index);
-          return _buildListNew(key, eventsList[key], context, state);
-        });
+    return Container(
+      color: Colors.amber,
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          padding: widget.isMainPage == true
+              ? EdgeInsets.only(bottom: 160)
+              : !Platform.isAndroid
+                  ? EdgeInsets.only(
+                      bottom: MediaQuery.of(context).size.height * 0.1)
+                  : MediaQuery.of(context).orientation != Orientation.portrait
+                      ? EdgeInsets.only(bottom: 120)
+                      : EdgeInsets.only(bottom: 20),
+          itemCount: eventsList!.length,
+          itemBuilder: (BuildContext context, int index) {
+            String key = eventsList.keys.elementAt(index);
+            return _buildListNew(key, eventsList[key], context, state);
+          }),
+    );
   }
 
   @override
@@ -406,7 +414,7 @@ class _EventPageState extends State<EventPage>
       children: [
         Container(
             margin: EdgeInsets.all(10.0),
-            child: CalendraIconWidget(
+            child: CalendarIconWidget(
               color: Colors.red,
               dateTime: _methodDate(i),
             )),

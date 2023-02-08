@@ -105,9 +105,10 @@ class _SocialNewPageState extends State<SocialNewPage> {
                             ),
                     ))
                 : AllCaughtUpWidget(
-                    title: 'All Notification Caught Up',
-                    msg:
-                        'You\'ve fetched all the available Social notification',
+                    // title: 'RSS Feeds Caught Up',
+                    title: "You're All Caught Up",
+                    msg: "You've seen all new posts.",
+                    // msg: 'You\'ve fetched all the available RSS Feeds',
                     gradientColor: LinearGradient(colors: [
                       Theme.of(context).primaryColor,
                       AppTheme.kSelectedColor,

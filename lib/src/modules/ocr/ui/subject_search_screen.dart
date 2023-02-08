@@ -68,6 +68,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   int standardLearningLength = 0;
   String? learningStandard;
   String? subLearningStandard;
+  String? standardDescription;
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
@@ -303,19 +304,29 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       "Something Went Wrong. Please Try Again.", null);
                 }
               }
+              // if (state is ShareLinkReceived) {
+              //   Globals.googleSlidePresentationLink = state.shareLink;
+              //   widget.googleDriveBloc.add(AddBlankSlidesOnDrive(
+              //       isScanMore: false,
+              //       slidePresentationId: Globals.googleSlidePresentationId));
+              // }
+
               if (state is ShareLinkReceived) {
                 Globals.googleSlidePresentationLink = state.shareLink;
-                widget.googleDriveBloc.add(AddBlankSlidesOnDrive(
-                    isScanMore: false,
-                    slidePresentationId: Globals.googleSlidePresentationId));
-              }
-              if (state is AddBlankSlidesOnDriveSuccess) {
-                FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                    "blank_slide_added");
 
-                widget.googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
-                    slidePresentationId: Globals.googleSlidePresentationId));
+                widget.googleDriveBloc.add(
+                    AddAndUpdateAssessmentImageToSlidesOnDrive(
+                        slidePresentationId:
+                            Globals.googleSlidePresentationId));
               }
+
+              // if (state is AddBlankSlidesOnDriveSuccess) {
+              //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              //       "blank_slide_added");
+
+              //   widget.googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
+              //       slidePresentationId: Globals.googleSlidePresentationId));
+              // }
               if (state is UpdateAssignmentDetailsOnSlideSuccess) {
                 FirebaseAnalyticsService.addCustomAnalyticsEvent(
                     "assessment_detail_added_first_slide");
@@ -496,6 +507,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                         subLearningStandard = list[index]
                                             .standardAndDescriptionC!
                                             .split(' - ')[0];
+                                        standardDescription = list[index]
+                                            .standardAndDescriptionC!
+                                            .split(' - ')[1];
                                         standardId = list[index].id;
                                         addToRecentList(
                                             type: 'nycSub',
@@ -642,9 +656,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           rubricImgUrl = _localData[i].imgUrl;
                           break;
                           // rubricScore = null;
-                        }
-                     
-                        else {
+                        } else {
                           rubricImgUrl = 'NA';
                           // rubricScore = 'NA';
                         }
@@ -662,9 +674,16 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               ? "NA"
                               : learningStandard;
                       element.subLearningStandard =
-                          subLearningStandard == null || learningStandard == ''
+                          subLearningStandard == null ||
+                                  subLearningStandard == ''
                               ? "NA"
-                              : subLearningStandard;
+                              : subLearningStandard; //standardDescription
+                      element.standardDescription =
+                          standardDescription == null ||
+                                  standardDescription == ''
+                              ? "NA"
+                              : standardDescription; //standardDescription
+
                       element.scoringRubric = widget.isMcqSheet == true
                           ? '0-1'
                           : Globals.scoringRubric;

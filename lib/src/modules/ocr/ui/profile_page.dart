@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/setting/information.dart';
 import 'package:Soc/src/modules/setting/setting.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -141,7 +142,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
                           // Colors.grey[300],
                         ),
-                        widget.hideStateSelection == true
+                        widget.hideStateSelection == true ||
+                                !Overrides.STANDALONE_GRADED_APP
                             ? Container()
                             : listTile(
                                 icon: Icons.location_pin,
@@ -158,7 +160,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                               )));
                                 },
                                 title: 'States'),
-                        widget.hideStateSelection == true
+                        widget.hideStateSelection == true ||
+                                !Overrides.STANDALONE_GRADED_APP
                             ? Container()
                             : Divider(
                                 height: 5,

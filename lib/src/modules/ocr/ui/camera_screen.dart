@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/result_summary/results_summary.dart';
@@ -135,7 +136,7 @@ class _CameraScreenState extends State<CameraScreen>
     // widget.isFlashOn!.value = widget.isFlashOn;
     Wakelock.enable();
 
-    Globals.iscameraPopup
+    Globals.isCameraPopup
         ? WidgetsBinding.instance
             .addPostFrameCallback((_) => _showStartDialog())
         : null;
@@ -432,7 +433,9 @@ class _CameraScreenState extends State<CameraScreen>
                           if (studentInfoDb.length > 0) {
                             if (widget.isFromHistoryAssessmentScanMore ==
                                 true) {
+                              
                               _driveBloc.add(UpdateGoogleSlideOnScanMore(
+                                  isMcqSheet: widget.isMcqSheet ?? false,
                                   assessmentName: widget.assessmentName ?? '',
                                   isFromHistoryAssessment:
                                       widget.isFromHistoryAssessmentScanMore,
@@ -798,25 +801,31 @@ class _CameraScreenState extends State<CameraScreen>
       switch (e.code) {
         case 'CameraAccessDenied':
           showPopup(
-              message:
-                  'You have denied the camera access. To continue use the Graded+, Camera permission is required.  Please go to the \'App Settings\' to enable the camera access.',
-              title: 'Permission Required!');
+              message: OcrOverrides.cameraPermissionMessage!,
+              //  'You have denied the camera access. To continue use the Graded+, Camera permission is required.  Please go to the \'App Settings\' to enable the camera access.',
+              title: OcrOverrides.cameraPermissionTitle
+              //'Permission Required!'
+              );
           break;
 
         case 'CameraAccessDeniedWithoutPrompt':
           // iOS only
           showPopup(
-              message:
-                  'Camera Access Denied. To continue use the Graded+, Camera permission is required. Please go to the \'App Settings\' to enable the camera access.',
-              title: 'Permission Required!');
+              message: OcrOverrides.cameraPermissionMessage!,
+              //'Camera Access Denied. To continue use the Graded+, Camera permission is required. Please go to the \'App Settings\' to enable the camera access.',
+              title: OcrOverrides.cameraPermissionTitle
+              //'Permission Required!'
+              );
           break;
 
         case 'CameraAccessRestricted':
           // iOS only
           showPopup(
-              message:
-                  'Camera Access is Restricted. To continue use the Graded+, Camera access is required. Please go to the \'App Settings\' to enable the camera access.',
-              title: 'Permission Required!');
+              message: OcrOverrides.cameraPermissionMessage!,
+              //      'Camera Access is Restricted. To continue use the Graded+, Camera access is required. Please go to the \'App Settings\' to enable the camera access.',
+              title: OcrOverrides.cameraPermissionTitle
+              //'Permission Required!'
+              );
           break;
 
         default:
@@ -931,7 +940,7 @@ class _CameraScreenState extends State<CameraScreen>
                                     ));
                           }),
                       onPressed: () async {
-                        Globals.iscameraPopup = false;
+                        Globals.isCameraPopup = false;
                         SharedPreferences pref =
                             await SharedPreferences.getInstance();
                         pref.setBool("camera_popup", false);

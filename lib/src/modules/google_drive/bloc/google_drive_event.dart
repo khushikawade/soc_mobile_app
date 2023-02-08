@@ -6,6 +6,7 @@ abstract class GoogleDriveEvent extends Equatable {
 
 class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? token;
+  final String? filterType;
   final String? folderName;
   final bool? fetchHistory;
   final String? refreshToken;
@@ -15,6 +16,7 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
   GetDriveFolderIdEvent(
       {required this.token,
       required this.folderName, //required this.filePath
+      this.filterType,
       this.fetchHistory,
       this.refreshToken,
       required this.isFromOcrHome,
@@ -26,7 +28,8 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
 
 class CreateExcelSheetToDrive extends GoogleDriveEvent {
   final String? name;
-  CreateExcelSheetToDrive({this.name});
+  final bool? isMcqSheet;
+  CreateExcelSheetToDrive({this.isMcqSheet, this.name});
   @override
   List<Object> get props => [];
 }
@@ -58,8 +61,13 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
 
 class GetHistoryAssessmentFromDrive extends GoogleDriveEvent {
   final String? searchKeyword;
+  final String filterType;
+  final bool isSearchPage;
 
-  GetHistoryAssessmentFromDrive({this.searchKeyword});
+  GetHistoryAssessmentFromDrive(
+      {this.searchKeyword,
+      required this.filterType,
+      required this.isSearchPage});
   @override
   List<Object> get props => [];
 }
@@ -83,9 +91,10 @@ class GetAssessmentDetail extends GoogleDriveEvent {
 
 class UpdateHistoryAssessmentFromDrive extends GoogleDriveEvent {
   final List<HistoryAssessment> obj;
+  final filterType;
   final String nextPageUrl;
   UpdateHistoryAssessmentFromDrive(
-      {required this.obj, required this.nextPageUrl});
+      {required this.obj, required this.nextPageUrl, required this.filterType});
 
   @override
   List<Object> get props => [];
@@ -168,13 +177,19 @@ class AddBlankSlidesOnDrive extends GoogleDriveEvent {
 
 class CreateSlideToDrive extends GoogleDriveEvent {
   final String? fileTitle;
-  CreateSlideToDrive({required this.fileTitle});
+  final String? excelSheetId;
+  final bool isMcqSheet;
+  CreateSlideToDrive(
+      {required this.fileTitle,
+      required this.excelSheetId,
+      required this.isMcqSheet});
   @override
   List<Object> get props => [];
 }
 
 // Event To Update Google Slide On Scan More -----------------------------------//
 class UpdateGoogleSlideOnScanMore extends GoogleDriveEvent {
+  final bool isMcqSheet;
   final bool isFromHistoryAssessment;
   final String slidePresentationId;
   final String assessmentName;
@@ -184,7 +199,8 @@ class UpdateGoogleSlideOnScanMore extends GoogleDriveEvent {
       {required this.slidePresentationId,
       required this.lastAssessmentLength,
       required this.isFromHistoryAssessment,
-      required this.assessmentName});
+      required this.assessmentName,
+      required this.isMcqSheet});
   @override
   List<Object> get props => [];
 }
@@ -203,6 +219,15 @@ class UpdateAssignmentDetailsOnSlide extends GoogleDriveEvent {
   UpdateAssignmentDetailsOnSlide(
       {required this.slidePresentationId,
       required this.studentAssessmentInfoObj});
+
+  @override
+  List<Object> get props => [];
+}
+
+class AddAndUpdateAssessmentImageToSlidesOnDrive extends GoogleDriveEvent {
+  final String? slidePresentationId;
+  AddAndUpdateAssessmentImageToSlidesOnDrive(
+      {required this.slidePresentationId});
 
   @override
   List<Object> get props => [];

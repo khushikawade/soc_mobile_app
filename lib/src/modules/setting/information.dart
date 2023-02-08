@@ -19,7 +19,7 @@ class InformationPage extends StatefulWidget {
   final bool isBottomSheet;
   final bool ishtml;
   final String appbarTitle;
-  final bool? isloadingstate = false;
+  final bool? isLoadingstate = false;
 
   @override
   InformationPage({
@@ -40,13 +40,13 @@ class _InformationPageState extends State<InformationPage> {
   final HomeBloc _bloc = new HomeBloc();
   bool? isErrorState = false;
 
-  bool? isloadingstate = false;
+  bool? isLoadingstate = false;
 
   @override
   void initState() {
     super.initState();
     _bloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override
@@ -147,7 +147,7 @@ class _InformationPageState extends State<InformationPage> {
           child: Column(
             children: [
               Expanded(
-                child: isloadingstate!
+                child: isLoadingstate!
                     ? ShimmerLoading(
                         isLoading: true,
                         child: _buildContent1(),
@@ -161,14 +161,14 @@ class _InformationPageState extends State<InformationPage> {
                   bloc: _bloc,
                   listener: (context, state) async {
                     if (state is HomeLoading) {
-                      isloadingstate = true;
+                      isLoadingstate = true;
                     }
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                       Globals.appSetting = AppSetting.fromJson(state.obj);
                       setState(() {
-                        isloadingstate = false;
+                        isLoadingstate = false;
                       });
                     }
                   },

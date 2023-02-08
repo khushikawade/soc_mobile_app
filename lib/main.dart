@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:isolate';
 import 'package:Soc/firebase_options.dart';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
@@ -26,13 +25,11 @@ import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/translator/translation_modal.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:camera/camera.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -57,7 +54,6 @@ void main() async {
     );
   } else if (Platform.isIOS) {
     await Firebase.initializeApp(
-      // name: 'SOC',
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }

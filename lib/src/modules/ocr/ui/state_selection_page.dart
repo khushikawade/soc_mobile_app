@@ -54,7 +54,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
   @override
   void initState() {
     _ocrBloc.add(FetchStateListEvent(
-        fromCreateAssesment: widget.isFromCreateAssessmentScreen ?? false));
+        stateName: "GetAllState",
+        fromCreateAssessment: widget.isFromCreateAssessmentScreen ?? false));
     super.initState();
     FirebaseAnalyticsService.addCustomAnalyticsEvent("state_selection_page");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -130,7 +131,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                             onSaved: (String value) {
                               if (searchController.text.isEmpty) {
                                 _ocrBloc.add(FetchStateListEvent(
-                                    fromCreateAssesment:
+                                    stateName: "GetAllState",
+                                    fromCreateAssessment:
                                         widget.isFromCreateAssessmentScreen ??
                                             false));
                               } else {
@@ -164,10 +166,11 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                         )),
                               );
 
-                              _ocrBloc.add(FetchStateListEvent(
-                                  fromCreateAssesment:
-                                      widget.isFromCreateAssessmentScreen ??
-                                          false));
+                              // _ocrBloc.add(FetchStateListEvent(
+                              //     stateName: "GetAllState",
+                              //     fromCreateAssesment:
+                              //         widget.isFromCreateAssessmentScreen ??
+                              //             false));
                             } else if (state is OcrErrorReceived) {
                               Navigator.pop(context);
                             }
@@ -386,6 +389,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
     );
     await Future.delayed(Duration(seconds: 2));
     _ocrBloc.add(FetchStateListEvent(
-        fromCreateAssesment: widget.isFromCreateAssessmentScreen ?? false));
+        stateName: "GetAllState",
+        fromCreateAssessment: widget.isFromCreateAssessmentScreen ?? false));
   }
 }

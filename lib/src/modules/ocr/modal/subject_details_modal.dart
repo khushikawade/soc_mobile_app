@@ -8,23 +8,22 @@ part 'subject_details_modal.g.dart';
 
 @HiveType(typeId: 19)
 class SubjectDetailList {
-  SubjectDetailList({
-    this.descriptionC,
-    this.lastModifiedById,
-    this.ownerId,
-    this.name,
-    this.domainCodeC,
-    this.subjectC, //subject id
-    this.titleC,
-    this.id, //standard id
-    this.gradeC,
-    this.domainNameC,
-    this.subDomainC,
-    this.subSubDomainC,
-    this.standardAndDescriptionC,
-    this.subjectNameC,
-    this.dateTime
-  });
+  SubjectDetailList(
+      {this.descriptionC,
+      this.lastModifiedById,
+      this.ownerId,
+      this.name,
+      this.domainCodeC,
+      this.subjectC, //subject id
+      this.titleC,
+      this.id, //standard id
+      this.gradeC,
+      this.domainNameC,
+      this.subDomainC,
+      this.subSubDomainC,
+      this.standardAndDescriptionC,
+      this.subjectNameC,
+      this.dateTime});
   @HiveField(0)
   String? descriptionC;
   @HiveField(1)
@@ -53,8 +52,9 @@ class SubjectDetailList {
   String? standardAndDescriptionC;
   @HiveField(13)
   String? subjectNameC;
-   @HiveField(14)
+  @HiveField(14)
   DateTime? dateTime;
+ 
 
   factory SubjectDetailList.fromRawJson(String str) =>
       SubjectDetailList.fromJson(json.decode(str));

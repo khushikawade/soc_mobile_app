@@ -4,7 +4,6 @@ import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
@@ -12,9 +11,7 @@ import 'package:Soc/src/modules/social/ui/social_new.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
-import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -89,7 +86,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return BlocListener<NewsBloc, NewsState>(
       bloc: _newsBloc,
       listener: (context, state) async {
-        if (state is NewsCountLenghtSuccess) {
+        if (state is NewsCountLengthSuccess) {
           // SharedPreferences prefs = await SharedPreferences.getInstance();
           // SharedPreferences intPrefs = await SharedPreferences.getInstance();
           // String? _objectName = "${Strings.newsObjectName}";
@@ -150,7 +147,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
     WidgetsBinding.instance.addObserver(this);
-    _checkNewVersion();
+    if (widget.isFromOcrSection != true) {
+      _checkNewVersion();
+    }
   }
 
   _checkVersionUpdateStatus(NewVersion newVersion) async {

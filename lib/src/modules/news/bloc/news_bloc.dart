@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/model/action_count_list.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -29,57 +30,112 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Stream<NewsState> mapEventToState(
     NewsEvent event,
   ) async* {
+    print("news_event-------------------$event");
     if (event is FetchNotificationList) {
       try {
-        // yield NewsLoading();// Should not show loading, instead fetch the data from the Local database and return the list instantly.
+        // Fetch local data for News feed to show data
         String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-        List<NotificationList> _localData = await _localDb.getData();
+        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
+        List<Item> _localData = await _localDb.getData();
 
         //Clear news notification local data to manage loading issue
-        SharedPreferences clearNewsCache =
-            await SharedPreferences.getInstance();
-        final clearCacheResult =
-            clearNewsCache.getBool('delete_local_news_notification_cache');
+        // SharedPreferences clearNewsCache =
+        //     await SharedPreferences.getInstance();
+        // final clearCacheResult =
+        //     clearNewsCache.getBool('delete_local_news_notification_cache');
 
-        if (clearCacheResult != true) {
-          _localData.clear();
-          await clearNewsCache.setBool(
-              'delete_local_news_notification_cache', true);
-        }
+        // if (clearCacheResult != true) {
+        //   _localData.clear();
+        //   await clearNewsCache.setBool(
+        //       'delete_local_news_notification_cache', true);
+        // }
 
         _localData.forEach((element) {
-          if (element.completedAtTimestamp != null) {
-            _localData.sort((a, b) =>
-                b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+          if (element.completedAt != null) {
+            _localData.sort((a, b) => b.completedAt.compareTo(a.completedAt));
           }
         });
 
         if (_localData.isEmpty) {
           yield NewsLoading();
         } else {
-          //Adding push notification local data to global list
-          Globals.notificationList.clear();
-          Globals.notificationList.addAll(_localData);
-          yield NewsLoaded(
+          //isLoading is used to manage the pagination on UI
+          yield NewsDataSuccess(
             obj: _localData,
-            isloading: true,
-            isFromUpdatedNewsList: false,
+            isLoading: true,
           );
         }
-        // Local database end.
-        List<NotificationList> _list = await fetchNotificationList(0, 50);
-        // Syncing to local database
 
+        List<Item> NewsFeedList = [];
+        if (event.action!.contains("initial")) {
+          //Fetching the records with offset and limit = 10
+          NewsFeedList = await fetchNotificationList(0, 10);
+          if (_localData.isEmpty) {
+            yield NewsInitialState(obj: NewsFeedList);
+          }
+        } else {
+          NewsFeedList = _localData;
+        }
+        // Local database end.
+        // List<Item> _list = await fetchNotificationList(0, 50);
+        // Syncing to local database
+        // User Interaction count list
+        List<ActionCountList> list = await fetchNewsActionCount();
+        List<Item> newList = [];
+
+        newList.clear();
+        if (list.length == 0) {
+          //If no action added yet for school, Adding onsignal list as it is with no action counts
+          newList.addAll(NewsFeedList);
+        } else {
+          for (int i = 0; i < NewsFeedList.length; i++) {
+            for (int j = 0; j < list.length; j++) {
+              //Comparing Id and mapping data to the list if exist in action API
+              if ("${NewsFeedList[i].id}${Overrides.SCHOOL_ID}" ==
+                  list[j].notificationId) {
+                newList.add(Item(
+                    id: NewsFeedList[i].id,
+                    completedAt: NewsFeedList[i].completedAt,
+                    description: NewsFeedList[i].description,
+                    completedAtTimestamp: NewsFeedList[i].completedAtTimestamp,
+                    title: NewsFeedList[i].title,
+                    image: NewsFeedList[i].image,
+                    link: NewsFeedList[i].link,
+                    likeCount: list[j].likeCount,
+                    thanksCount: list[j].thanksCount,
+                    helpfulCount: list[j].helpfulCount,
+                    shareCount: list[j].shareCount,
+                    supportCount: list[j].supportCount));
+                break;
+              }
+
+              //Mapping action counts 0 if the record doesn't exist in action API
+              if (list.length - 1 == j) {
+                newList.add(Item(
+                    id: NewsFeedList[i].id,
+                    completedAt: NewsFeedList[i].completedAt,
+                    completedAtTimestamp: NewsFeedList[i].completedAtTimestamp,
+                    description: NewsFeedList[i].description,
+                    title: NewsFeedList[i].title,
+                    image: NewsFeedList[i].image,
+                    link: NewsFeedList[i].link,
+                    likeCount: 0,
+                    thanksCount: 0,
+                    helpfulCount: 0,
+                    shareCount: 0,
+                    supportCount: 0));
+              }
+            }
+          }
+        }
         await _localDb.clear();
-        _list.forEach((NotificationList e) {
+        newList.forEach((Item e) {
           _localDb.addData(e);
         });
 
-        _list.forEach((element) {
-          if (element.completedAtTimestamp != null) {
-            _list.sort((a, b) =>
-                b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
+        newList.forEach((element) {
+          if (element.completedAt != null) {
+            newList.sort((a, b) => b.completedAt.compareTo(a.completedAt));
           }
         });
 
@@ -87,24 +143,30 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         //     (a, b) => b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
         // Syncing end.
         //Adding push notification list data to global list
-        Globals.notificationList.clear();
-        Globals.notificationList.addAll(_list);
+        // Globals.notificationList.clear();
+        // Globals.notificationList.addAll(_list);
 
         yield NewsLoading(); // Mimic state change
-        yield NewsLoaded(
-          obj: _list,
-          isloading: true,
-          isFromUpdatedNewsList: false,
+
+        //Store latest news id to manage red dot in case of new notification arrives
+        HiveDbServices _hiveDb = HiveDbServices();
+        _hiveDb.addSingleData('${Strings.latestNewsId}',
+            '${Strings.latestNewsId}', newList[0].id);
+
+        yield NewsDataSuccess(
+          obj: newList,
+          isLoading: true,
+          // isFromUpdatedNewsList: false,
         );
       } catch (e) {
         String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-        List<NotificationList> _localData = await _localDb.getData();
+        LocalDatabase<Item> _localDb = LocalDatabase(_objectName);
+        List<Item> _localData = await _localDb.getData();
 
-        yield NewsLoaded(
+        yield NewsDataSuccess(
           obj: _localData,
-          isloading: false,
-          isFromUpdatedNewsList: false,
+          isLoading: false,
+          //  isFromUpdatedNewsList: false,
         );
         // yield NewsErrorReceived(err: e);
       }
@@ -143,78 +205,175 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     if (event is NewsCountLength) {
       try {
-        List<NotificationList> _list = await fetchNotificationList(0, 50);
+        List<Item> _list = await fetchNotificationList(0, 10);
 
         // print("list length $event================> ${_list.length}");
         Globals.notiCount = _list.length;
-        String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-        List<NotificationList> _localData = await _localDb.getData();
-        //check the new Notification to show indicator on app startup
-        if (_localData.isNotEmpty &&
-            _list.isNotEmpty &&
-            _localData[0].id != _list[0].id) {
+
+        HiveDbServices _hiveDb = HiveDbServices();
+        String? newsLatestId = await _hiveDb.getSingleData(
+            '${Strings.latestNewsId}', '${Strings.latestNewsId}');
+
+        _list.forEach((element) {
+          if (element.completedAt != null) {
+            _list.sort((a, b) => b.completedAt.compareTo(a.completedAt));
+          }
+        });
+        // ((newsLatestId == null || newsLatestId == '')&& _list.isNotEmpty) ||
+
+        //Compare latest news id to manage red dot in case of new notification arrives
+        if (_list.isNotEmpty && _list[0].id != newsLatestId) {
           Globals.indicator.value = true;
         }
+        // LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        // List<NotificationList> _localData = await _localDb.getData();
+        //check the new Notification to show indicator on app startup
+        // if (_localData.isNotEmpty &&
+        //     _list.isNotEmpty &&
+        //     _localData[0].id != _list[0].id) {
+        //   Globals.indicator.value = true;
+        // }
 
-        yield NewsCountLenghtSuccess(obj: _list);
+        yield NewsCountLengthSuccess(obj: _list);
       } catch (e) {
         yield NewsErrorReceived(err: e);
       }
     }
 
-    if (event is FetchActionCountList) {
+    // if (event is FetchActionCountList) {
+    //   try {
+    //     yield NewsLoading();
+    //     String? _objectName = "news_action";
+    //     LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+
+    //     List<NotificationList> _localData = await _localDb.getData();
+
+    //     if (event.isDetailPage == false) {
+    //       if (_localData.isEmpty) {
+    //         yield NewsLoading();
+    //       } else {
+    //         yield ActionCountSuccess(obj: _localData);
+    //       }
+    //     }
+    //     List<ActionCountList> list = await fetchNewsActionCount();
+    //     List<NotificationList> newList = [];
+
+    //     newList.clear();
+    //     if (list.length == 0) {
+    //       //If no action added yet for school, Adding onsignal list as it is with no action counts
+    //       newList.addAll(Globals.notificationList);
+    //     } else {
+    //       for (int i = 0; i < Globals.notificationList.length; i++) {
+    //         for (int j = 0; j < list.length; j++) {
+    //           //Comparing Id and mapping data to the list if exist in action API
+    //           if ("${Globals.notificationList[i].id}${Overrides.SCHOOL_ID}" ==
+    //               list[j].notificationId) {
+    //             newList.add(NotificationList(
+    //                 id: Globals.notificationList[i].id,
+    //                 completedAt: Globals.notificationList[i].completedAt,
+    //                 contents: Globals.notificationList[i].contents,
+    //                 headings: Globals.notificationList[i].headings,
+    //                 image: Globals.notificationList[i].image,
+    //                 url: Globals.notificationList[i].url,
+    //                 likeCount: list[j].likeCount,
+    //                 thanksCount: list[j].thanksCount,
+    //                 helpfulCount: list[j].helpfulCount,
+    //                 shareCount: list[j].shareCount,
+    //                 supportCount: list[j].supportCount));
+    //             break;
+    //           }
+
+    //           //Mapping action counts 0 if the record doesn't exist in action API
+    //           if (list.length - 1 == j) {
+    //             newList.add(NotificationList(
+    //                 id: Globals.notificationList[i].id,
+    //                 completedAt: Globals.notificationList[i].completedAt,
+    //                 contents: Globals.notificationList[i].contents,
+    //                 headings: Globals.notificationList[i].headings,
+    //                 image: Globals.notificationList[i].image,
+    //                 url: Globals.notificationList[i].url,
+    //                 likeCount: 0,
+    //                 thanksCount: 0,
+    //                 helpfulCount: 0,
+    //                 shareCount: 0,
+    //                 supportCount: 0));
+    //           }
+    //         }
+    //       }
+    //     }
+    //     await _localDb.clear();
+    //     newList.forEach((NotificationList e) {
+    //       _localDb.addData(e);
+    //     });
+    //     //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+    //     yield ActionCountSuccess(obj: newList);
+    //   } catch (e) {
+    //     print(e);
+    //     // yield NewsErrorReceived(err: e);
+    //     String? _objectName = "news_action";
+    //     // String? _objectName = "${Strings.newsObjectName}";
+    //     LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+    //     List<NotificationList> _localData = await _localDb.getData();
+    //     // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
+    //     if (event.isDetailPage == false) {
+    //       yield ActionCountSuccess(obj: _localData);
+    //     }
+    //   }
+    // }
+
+    if (event is UpdateNotificationList) {
       try {
-        yield NewsLoading();
-        String? _objectName = "news_action";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
+        List<Item> _list =
+            await fetchNotificationList(event.list!.length, 10); //offset,limit
+        List<Item> existingNotificationList = event.list!;
 
-        List<NotificationList> _localData = await _localDb.getData();
+        //Adding newly fetched notification to the existing list
+        existingNotificationList.addAll(_list);
 
-        if (event.isDetailPage == false) {
-          if (_localData.isEmpty) {
-            yield NewsLoading();
-          } else {
-            yield ActionCountSuccess(obj: _localData);
-          }
-        }
-        List<ActionCountList> list = await fetchNewsActionCount();
-        List<NotificationList> newList = [];
+        // Action count list
+        // For fetching the action count of the updated list
+        List<ActionCountList> listActionCount = await fetchNewsActionCount();
 
-        newList.clear();
-        if (list.length == 0) {
-          //If no action added yet for school, Adding onsignal list as it is with no action counts
-          newList.addAll(Globals.notificationList);
+        List<Item> newList = [];
+        // newList.clear();
+        if (listActionCount.length == 0) {
+          newList
+              .addAll(existingNotificationList); //Add 0 counts to all the post
         } else {
-          for (int i = 0; i < Globals.notificationList.length; i++) {
-            for (int j = 0; j < list.length; j++) {
-              //Comparing Id and mapping data to the list if exist in action API
-              if ("${Globals.notificationList[i].id}${Overrides.SCHOOL_ID}" ==
-                  list[j].notificationId) {
-                newList.add(NotificationList(
-                    id: Globals.notificationList[i].id,
-                    completedAt: Globals.notificationList[i].completedAt,
-                    contents: Globals.notificationList[i].contents,
-                    headings: Globals.notificationList[i].headings,
-                    image: Globals.notificationList[i].image,
-                    url: Globals.notificationList[i].url,
-                    likeCount: list[j].likeCount,
-                    thanksCount: list[j].thanksCount,
-                    helpfulCount: list[j].helpfulCount,
-                    shareCount: list[j].shareCount,
-                    supportCount: list[j].supportCount));
+          //Check with the existing length of social list
+          for (int i = 0; i < existingNotificationList.length; i++) {
+            //Check with the length of social existing interaction
+            for (int j = 0; j < listActionCount.length; j++) {
+              if ("${existingNotificationList[i].id}${Overrides.SCHOOL_ID}" ==
+                  listActionCount[j].notificationId) {
+                newList.add(Item(
+                    id: existingNotificationList[i].id,
+                    completedAt: existingNotificationList[i].completedAt,
+                    description: existingNotificationList[i].description,
+                    title: existingNotificationList[i].title,
+                    image: existingNotificationList[i].image,
+                    link: existingNotificationList[i].link,
+                    completedAtTimestamp:
+                        existingNotificationList[i].completedAtTimestamp,
+                    likeCount: listActionCount[j].likeCount,
+                    thanksCount: listActionCount[j].thanksCount,
+                    helpfulCount: listActionCount[j].helpfulCount,
+                    shareCount: listActionCount[j].shareCount,
+                    supportCount: listActionCount[j].supportCount));
                 break;
               }
 
-              //Mapping action counts 0 if the record doesn't exist in action API
-              if (list.length - 1 == j) {
-                newList.add(NotificationList(
-                    id: Globals.notificationList[i].id,
-                    completedAt: Globals.notificationList[i].completedAt,
-                    contents: Globals.notificationList[i].contents,
-                    headings: Globals.notificationList[i].headings,
-                    image: Globals.notificationList[i].image,
-                    url: Globals.notificationList[i].url,
+              // If Interaction count list length ends, Add all the remaining RSS feed interaction count = 0
+              if (listActionCount.length - 1 == j) {
+                newList.add(Item(
+                    id: existingNotificationList[i].id,
+                    completedAt: existingNotificationList[i].completedAt,
+                    description: existingNotificationList[i].description,
+                    title: existingNotificationList[i].title,
+                    image: existingNotificationList[i].image,
+                    link: existingNotificationList[i].link,
+                    completedAtTimestamp:
+                        existingNotificationList[i].completedAtTimestamp,
                     likeCount: 0,
                     thanksCount: 0,
                     helpfulCount: 0,
@@ -224,61 +383,37 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
             }
           }
         }
-        await _localDb.clear();
-        newList.forEach((NotificationList e) {
-          _localDb.addData(e);
-        });
-        //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-        yield ActionCountSuccess(obj: newList);
-      } catch (e) {
-        print(e);
-        // yield NewsErrorReceived(err: e);
-        String? _objectName = "news_action";
-        // String? _objectName = "${Strings.newsObjectName}";
-        LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-        List<NotificationList> _localData = await _localDb.getData();
-        // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-        if (event.isDetailPage == false) {
-          yield ActionCountSuccess(obj: _localData);
-        }
-      }
-    }
 
-    if (event is UpdateNotificationList) {
-      try {
-        List<NotificationList> existingNotificationList = event.list!;
-
-        List<NotificationList> _list =
-            await fetchNotificationList(event.list!.length, 50); //offset,limit
-
-        //Adding newly fetched notification to the existing list
-        existingNotificationList.addAll(_list);
-
-        //Sending the loading indicator to UI to show at last index of the list
+        //isLoading is used to manage the pagination loading on UI
         bool isLoading = true;
 
         if (_list.isEmpty) {
           isLoading = false;
         }
+        //Commented due to double state found with same logic
+        // yield SocialReload(isLoading: isLoading, obj: newList);
 
-        //Sorting the notification by date
-        existingNotificationList.forEach((element) {
-          if (element.completedAtTimestamp != null) {
-            existingNotificationList.sort((a, b) =>
-                b.completedAtTimestamp.compareTo(a.completedAtTimestamp));
-          }
-        });
+        //To mimic the state
+
+        // //Sorting the notification by date
+        // existingNotificationList.forEach((element) {
+        //   if (element.completedAt != null) {
+        //     existingNotificationList
+        //         .sort((a, b) => b.completedAt.compareTo(a.completedAt));
+        //   }
+        // });
 
         //To mimic the state
         yield NewsLoading2();
 
-        yield NewsLoaded(
-          obj: existingNotificationList,
-          isloading: isLoading,
-          isFromUpdatedNewsList: true,
+        yield NewsDataSuccess(
+          obj: newList,
+          isLoading: isLoading,
+          //isFromUpdatedNewsList: true,
         );
       } catch (e) {
         print(e);
+        throw Exception(e);
       }
     }
   }
@@ -297,8 +432,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     }
   }
 
-  Future<List<NotificationList>> fetchNotificationList(
-      int offset, int limit) async {
+  Future<List<Item>> fetchNotificationList(int offset, int limit) async {
     try {
       final response = await http.get(
           Uri.parse(
@@ -317,11 +451,11 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         final data2 = data1 as List;
 
         return data2.map((i) {
-          return NotificationList(
+          return Item(
               id: i["id"],
-              contents: i["contents"],
-              headings: i["headings"],
-              url: i["url"],
+              description: i["contents"]["en"],
+              title: i["headings"]["en"],
+              link: i["url"],
               image: i["global_image"] ?? getImageUrl(i),
               completedAt: Utility.convertTimestampToDate(i["completed_at"]),
               completedAtTimestamp: i["completed_at"]);

@@ -209,7 +209,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                                 (_) => false);
                           }
 
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                         },
                       ),
                     ),

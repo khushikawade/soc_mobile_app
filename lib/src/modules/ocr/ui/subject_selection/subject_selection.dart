@@ -6,9 +6,7 @@ import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_search_screen.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_api_methods.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/ui/result_summary/results_summary.dart';
@@ -78,6 +76,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   String? subLearningStandard;
   String? subjectId;
   String? standardId;
+  String? standardDescription;
 
   StateSetter? showDialogSetState;
 
@@ -123,17 +122,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           // subjectSelected: widget.selectedSubject
           ));
     } else {
+      if (!Overrides.STANDALONE_GRADED_APP) {
+        // get state subject list if school or default new york state
+        _ocrBloc.add(FetchStateListEvent(
+            fromCreateAssessment: false, stateName: widget.stateName));
+      } else {
+        //Fetch all data state wise // Standalone
+        fetchSubjectDetails('subject', widget.selectedClass,
+            widget.selectedClass, widget.stateName, '', '');
+      }
+
       // if user come from state selection page or create assesment page
-      fetchSubjectDetails('subject', widget.selectedClass, widget.selectedClass,
-          widget.stateName, '', '');
-      // _ocrBloc.add(FetchSubjectDetails(
-      //     type: 'subject',
-      //     grade: widget.selectedClass,
-      //     // empty because no subject selected yet
-      //     subjectId: '',
-      //     subjectSelected: '',
-      //     selectedKeyword: widget.selectedClass,
-      //     stateName: widget.stateName));
     }
 
     super.initState();
@@ -181,6 +180,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
           nycSubIndex1.value = -1;
           nycIndex1.value = 0;
           learningStandard = '';
+          standardDescription = '';
           subLearningStandard = '';
           isSubmitButton.value = false;
           isSkipButton.value = true;
@@ -235,14 +235,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 bloc: _googleDriveBloc,
                 child: Container(),
                 listener: (context, state) async {
-                  if (state is AddBlankSlidesOnDriveSuccess) {
-                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        "blank_slide_added");
+                  print(
+                      "subject section ui drive state ---------------->$state");
 
-                    _googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
-                        slidePresentationId:
-                            Globals.googleSlidePresentationId));
-                  }
+                  // if (state is AddBlankSlidesOnDriveSuccess) {
+                  //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                  //       "blank_slide_added");
+
+                  //   _googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
+                  //       slidePresentationId:
+                  //           Globals.googleSlidePresentationId));
+                  // }
 
                   if (state is GoogleSuccess) {
                     showDialogSetState!(() {
@@ -273,7 +276,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
-                          "Something Went Wrong. Please Try Again.", null);
+                          'Something went wrong' ?? "", null);
                     }
                   }
 
@@ -288,12 +291,20 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         slideLink: true));
                   }
 
+                  // if (state is ShareLinkReceived) {
+                  //   Globals.googleSlidePresentationLink = state.shareLink;
+                  //   _googleDriveBloc.add(AddBlankSlidesOnDrive(
+                  //       isScanMore: false,
+                  //       slidePresentationId:
+                  //           Globals.googleSlidePresentationId));
+                  // }
+
                   if (state is ShareLinkReceived) {
                     Globals.googleSlidePresentationLink = state.shareLink;
-                    _googleDriveBloc.add(AddBlankSlidesOnDrive(
-                        isScanMore: false,
-                        slidePresentationId:
-                            Globals.googleSlidePresentationId));
+                    _googleDriveBloc.add(
+                        AddAndUpdateAssessmentImageToSlidesOnDrive(
+                            slidePresentationId:
+                                Globals.googleSlidePresentationId));
                   }
 
                   if (state is UpdateAssignmentDetailsOnSlideSuccess) {
@@ -461,6 +472,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             BlocListener(
               bloc: _ocrBloc,
               listener: (context, state) async {
+                print("---------------------------------->>>>> $state");
                 if (state is SubjectDataSuccess) {
                   pageIndex.value = 0;
                 } else if (state is NycDataSuccess) {
@@ -472,6 +484,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   }
                 } else if (state is NycSubDataSuccess) {
                   pageIndex.value = 2;
+                } else if (state is StateListFetchSuccessfully) {
+                  fetchSubjectDetails('subject', widget.selectedClass,
+                      widget.selectedClass, widget.stateName, '', '');
                 }
               },
               child: Container(),
@@ -595,7 +610,29 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 radius: 20, color: AppTheme.kButtonColor)),
                   );
           }
-          return Container();
+          // else if (state is OcrLoading2) {
+          //   return Container(
+          //     height: MediaQuery.of(context).size.height * 0.6,
+          //     child: Center(
+          //         child: Globals.isAndroid == true
+          //             ? CircularProgressIndicator(
+          //                 color: AppTheme.kButtonColor,
+          //               )
+          //             : CupertinoActivityIndicator(
+          //                 radius: 20, color: AppTheme.kButtonColor)),
+          //   );
+          // }
+
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Center(
+                child: Globals.isAndroid == true
+                    ? CircularProgressIndicator(
+                        color: AppTheme.kButtonColor,
+                      )
+                    : CupertinoActivityIndicator(
+                        radius: 20, color: AppTheme.kButtonColor)),
+          );
           // return widget here based on BlocA's state
         });
   }
@@ -646,6 +683,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     onTap: () {
                       subLearningStandard =
                           list[index].standardAndDescriptionC!.split(' - ')[0];
+                      standardDescription =
+                          list[index].standardAndDescriptionC!.split(' - ')[1];
                       standardId = list[index].id ?? '';
                       if (pageIndex.value == 2) {
                         nycSubIndex1.value = index;
@@ -1652,10 +1691,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             learningStandard == null || learningStandard == ''
                 ? "NA"
                 : learningStandard;
-        element.subLearningStandard =
-            subLearningStandard == null || subLearningStandard == ''
-                ? "NA"
-                : subLearningStandard;
+        element.subLearningStandard = subLearningStandard == null ||
+                subLearningStandard == '' //standardDescription
+            ? "NA"
+            : subLearningStandard;
+        element.standardDescription = standardDescription == null ||
+                standardDescription == '' //standardDescription
+            ? "NA"
+            : standardDescription;
         element.scoringRubric =
             widget.isMcqSheet == true ? '0-1' : Globals.scoringRubric;
         element.className = Globals.assessmentName!.split("_")[1];
@@ -1729,12 +1772,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   }
 
   googleSlidesPreparation() {
-    if (Globals.googleSlidePresentationId!.isNotEmpty) {
+    if (Globals.googleSlidePresentationId!.isNotEmpty &&
+        (Globals.googleSlidePresentationLink == null ||
+            Globals.googleSlidePresentationLink!.isEmpty)) {
       _googleDriveBloc.add(GetShareLink(
           fileId: Globals.googleSlidePresentationId, slideLink: true));
-    } else {
-      // _googleDriveBloc
-      //     .add(CreateSlideToDrive(fileTitle: Globals.assessmentName));
     }
   }
 }

@@ -181,3 +181,9 @@ class UpdateAssignmentDetailsOnSlideSuccess extends GoogleDriveState {
   @override
   List<Object> get props => [];
 }
+class AddAndUpdateAssessmentImageToSlidesOnDriveSuccess extends GoogleDriveState {
+  AddAndUpdateAssessmentImageToSlidesOnDriveSuccess();
+
+  @override
+  List<Object> get props => [];
+}

@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -77,7 +75,10 @@ class studentRecordList extends State<ResultsSummary> {
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
+  OcrBloc _ocrAssessmentBloc =
+      OcrBloc(); // bloc instance only use for save assessment to database
   int lastAssessmentLength = 0;
+
   // int? assessmentCount;
   //ScrollController _scrollController = new ScrollController();
   final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(false);
@@ -129,6 +130,7 @@ class studentRecordList extends State<ResultsSummary> {
   @override
   void initState() {
     _futureMethod();
+
     if (widget.assessmentDetailPage!) {
       _historyStudentInfoDb.clear();
       if (widget.historySecondTime == true) {
@@ -149,6 +151,7 @@ class studentRecordList extends State<ResultsSummary> {
       }
       _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
     } else {
+      updateAssessmentToDb();
       if (widget.isScanMore != true) {
         print("Shared Link called");
         _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
@@ -166,6 +169,7 @@ class studentRecordList extends State<ResultsSummary> {
     }
 
     _scrollController.addListener(_scrollListener);
+
     super.initState();
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("results_summary");
@@ -214,9 +218,11 @@ class studentRecordList extends State<ResultsSummary> {
               isBackButton: widget.assessmentDetailPage,
               assessmentDetailPage: widget.assessmentDetailPage,
               actionIcon: Container(
-                  padding: EdgeInsets.only(right: 5),
+                  padding: EdgeInsets.all(8),
                   child: TextButton(
-                      style: ButtonStyle(alignment: Alignment.center),
+                      style: ButtonStyle(
+                        alignment: Alignment.center,
+                      ),
                       child: TranslationWidget(
                           message: "DONE",
                           fromLanguage: "en",
@@ -540,6 +546,9 @@ class studentRecordList extends State<ResultsSummary> {
                                                 questionImageUrl = snapshot
                                                     .data![0].questionImgUrl;
                                               }
+                                              // updateAssessmentToDb(
+                                              //     studentInfoList:
+                                              //         snapshot.data);
                                               return listView(snapshot.data!);
                                             }
                                             return Container(
@@ -649,6 +658,7 @@ class studentRecordList extends State<ResultsSummary> {
 
                                 assessmentCount.value = state.obj.length;
                               }
+                              updateAssessmentToDb();
                               isGoogleSheetStateReceived.value = true;
                             } else if (state is ErrorState) {
                               if (state.errorMsg ==
@@ -744,6 +754,7 @@ class studentRecordList extends State<ResultsSummary> {
 
                               savedRecordCount = state.resultRecordCount;
                               historyAssessmentId = state.assessmentId;
+                              //Globals.historyAssessmentId = state.assessmentId!;
                             }
                           }
                           if (state is OcrLoading2) {
@@ -1252,10 +1263,13 @@ class studentRecordList extends State<ResultsSummary> {
                                   return Text(translatedMessage.toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5!
+                                          .headline4!
                                           .copyWith(
-                                            color: AppTheme.kButtonColor,
-                                          ));
+                                              color: AppTheme.kButtonColor,
+                                              fontSize:
+                                                  Globals.deviceType == 'phone'
+                                                      ? 20
+                                                      : 22));
                                 }),
                           ),
                           onPressed: () {
@@ -1278,13 +1292,16 @@ class studentRecordList extends State<ResultsSummary> {
                                   return Text(translatedMessage.toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5!
+                                          .headline4!
                                           .copyWith(
-                                            color: yesActionText ==
-                                                    'Yes, Take Me There'
-                                                ? Colors.red
-                                                : AppTheme.kButtonColor,
-                                          ));
+                                              color: yesActionText ==
+                                                      'Yes, Take Me There'
+                                                  ? Colors.red
+                                                  : AppTheme.kButtonColor,
+                                              fontSize:
+                                                  Globals.deviceType == 'phone'
+                                                      ? 20
+                                                      : 22));
                                 }),
                           ),
                           onPressed: () async {
@@ -1430,9 +1447,12 @@ class studentRecordList extends State<ResultsSummary> {
               textFieldTitleTwo: Overrides.STANDALONE_GRADED_APP == true
                   ? 'Student Email'
                   : 'Student Id/Student Email',
-              textFileTitleThree: widget.isMcqSheet == true
-                  ? "Student Selection"
-                  : "Student Grade",
+              textFileTitleThree:
+                  //   widget.isMcqSheet == true
+                  // ? "Student Selection"
+                  // /// : "Student Grade",
+                  // :
+                  'Points Earned',
               isSubjectScreen: false,
               update: (
                   {required TextEditingController name,
@@ -1618,7 +1638,8 @@ class studentRecordList extends State<ResultsSummary> {
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
                               questionImage: questionImageUrl ?? "NA",
-                              createdAsPremium: Globals.isPremiumUser,
+                              createdAsPremium:
+                                  Globals.isPremiumUser,
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
@@ -1773,7 +1794,7 @@ class studentRecordList extends State<ResultsSummary> {
                 return;
               }
 
-              if (Globals.isPremiumUser) {
+              if (Globals.isPremiumUser == true) {
                 if (widget.assessmentDetailPage == true &&
                     widget.createdAsPremium == false) {
                   Utility.updateLogs(
@@ -2071,6 +2092,16 @@ class studentRecordList extends State<ResultsSummary> {
     );
   }
 
+  updateAssessmentToDb() async {
+    Utility.updateAssessmentToDb(
+      studentInfoList: await Utility.getStudentInfoList(
+          tableName: widget.assessmentDetailPage == true
+              ? 'history_student_info'
+              : 'student_info'),
+      assessmentId: Globals.currentAssessmentId,
+    );
+  }
+
   Widget bottomIcon(BottomIcon element) {
     return Expanded(
       child: ValueListenableBuilder(
@@ -2186,7 +2217,7 @@ class studentRecordList extends State<ResultsSummary> {
             yesActionText: 'Yes, Take Me There');
         break;
       case 'Dashboard':
-        if (Globals.isPremiumUser) {
+        if (Globals.isPremiumUser!) {
           if (widget.assessmentDetailPage == true &&
               widget.createdAsPremium == false) {
             Utility.updateLogs(

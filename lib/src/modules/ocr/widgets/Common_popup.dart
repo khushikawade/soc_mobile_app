@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dar
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -46,6 +47,16 @@ class CommonPopupWidget extends StatefulWidget {
 }
 
 class _CommonPopupWidgetState extends State<CommonPopupWidget> {
+  final OcrBloc _ocrBlocLogs = new OcrBloc();
+  DateTime currentDateTime = DateTime.now();
+
+
+ @override
+  void dispose() {
+    super.dispose();
+  
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -132,6 +143,20 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                             Utility.clearStudentInfo(tableName: 'student_info');
                             Utility.clearStudentInfo(
                                 tableName: 'history_student_info');
+
+                            //Log Activity to database
+                            _ocrBlocLogs.add(LogUserActivityEvent(
+                                sessionId: '',
+                                teacherId: Globals.teacherId,
+                                activityId: '2',
+                                accountId: Globals.appSetting.schoolNameC,
+                                accountType:
+                                    Globals.isPremiumUser == true
+                                        ? "Premium"
+                                        : "Free",
+                                dateTime: currentDateTime.toString(),
+                                description: 'Logout',
+                                operationResult: 'Success'));
 
                             Utility.updateLogs(
                                 // ,
@@ -229,7 +254,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                 (_) => false);
                           }
                         } else {
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                           Navigator.pop(context, false);
                         }
                       },
