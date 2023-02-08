@@ -6,18 +6,12 @@ import 'package:Soc/src/modules/schedule/common_widget/common_header.dart';
 import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
 import 'package:Soc/src/modules/schedule/ui/schedule_event_builder.dart';
-
-import 'package:Soc/src/modules/schedule/ui/week_view.dart';
-import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:calendar_view/calendar_view.dart';
-
 // import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-
-import '../modal/event.dart';
 import '../modal/schedule_modal.dart';
 
 class MonthViewPage extends StatefulWidget {
@@ -39,7 +33,9 @@ class MonthViewPage extends StatefulWidget {
 }
 
 class _MonthViewPageState extends State<MonthViewPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  AppLifecycleState? state;
+
   bool isAnimationContainerOpen = false;
 
   DateTime _date = DateTime.now();
@@ -52,13 +48,27 @@ class _MonthViewPageState extends State<MonthViewPage>
     super.initState();
 
     _callEventBuilder(_date);
+    WidgetsBinding.instance.addObserver(this);
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("month_view_calendar");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'month_view_calendar', screenClass: 'MonthViewPage');
   }
 
   @override
   void dispose() {
     // TODO: implement dispose\
     _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _calenderBloc.add(CalenderPageEvent(
+          studentProfile: widget.studentProfile, pullToRefresh: true));
+    }
   }
 
   @override

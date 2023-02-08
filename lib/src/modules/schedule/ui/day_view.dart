@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/schedule/common_widget/common_header.dart';
 import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/schedule_event_builder.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,8 @@ class DayViewPage extends StatefulWidget {
 }
 
 class _DayViewPageState extends State<DayViewPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  AppLifecycleState? state;
   bool showViewChangeArea = false;
   bool isAnimationContainerOpen = false;
   EventController _controller = EventController();
@@ -45,6 +47,19 @@ class _DayViewPageState extends State<DayViewPage>
           date: widget.date!.value,
           scheduleDates: widget.schedulesList,
           blackoutDates: widget.blackoutDateList);
+    }
+    WidgetsBinding.instance.addObserver(this);
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("day_view_calendar");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'day_view_calendar', screenClass: 'DayViewPage');
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _calenderBloc.add(CalenderPageEvent(
+          studentProfile: widget.studentProfile, pullToRefresh: true));
     }
   }
 
@@ -66,6 +81,7 @@ class _DayViewPageState extends State<DayViewPage>
   @override
   void dispose() {
     _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

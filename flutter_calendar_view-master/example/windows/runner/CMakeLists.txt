@@ -11,7 +11,7 @@ add_executable(${BINARY_NAME} WIN32
   "Runner.rc"
   "runner.exe.manifest"
 )
-apply_standard_settings(${BINARY_NAME})
+apply_standard_settings(${BINARY_NAME});
 target_compile_definitions(${BINARY_NAME} PRIVATE "NOMINMAX")
 target_link_libraries(${BINARY_NAME} PRIVATE flutter flutter_wrapper_app)
 target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")

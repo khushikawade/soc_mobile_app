@@ -37,7 +37,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           yield StaffLoading();
         } else {
           getCalendarId(_localData);
-          yield StaffDataSucess(obj: _localData);
+          yield StaffDataSuccess(obj: _localData);
         }
 
         List<SharedList> list = await getStaffDetails();
@@ -51,7 +51,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield StaffLoading();
-        yield StaffDataSucess(
+        yield StaffDataSuccess(
           obj: list,
         );
       } catch (e) {
@@ -65,7 +65,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         _localDb.close();
         getCalendarId(_localData);
         yield StaffLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield StaffDataSucess(obj: _localData);
+        yield StaffDataSuccess(obj: _localData);
       }
     }
 
@@ -82,7 +82,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         if (_localData.isEmpty) {
           yield StaffLoading();
         } else {
-          yield StaffSubListSucess(obj: _localData);
+          yield StaffSubListSuccess(obj: _localData);
         }
         //Local Database End
 
@@ -96,7 +96,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield StaffLoading();
-        yield StaffSubListSucess(
+        yield StaffSubListSuccess(
           obj: list,
         );
       } catch (e) {
@@ -109,7 +109,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
         _localDb.close();
 
         yield StaffLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield StaffSubListSucess(obj: _localData);
+        yield StaffSubListSuccess(obj: _localData);
         // yield ErrorInStaffLoading(err: e);
       }
     }
@@ -126,7 +126,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
   Future<List<SharedList>> getStaffDetails() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Staff_App__c'));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']
@@ -144,7 +144,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
 
   Future<List<SharedList>> getStaffSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=Staff_App__c&objectName=Staff_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']

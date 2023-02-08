@@ -2,13 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/google_auth_webview.dart';
+import 'package:Soc/src/widgets/graded_globals.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -115,7 +118,7 @@ class Utility {
     }
   }
 
-  static bool updateLoges(
+  static bool updateLogs(
       {required String activityId,
       //  required String accountType,
       required String description,
@@ -326,18 +329,24 @@ class Utility {
     }
   }
 
-  static Future<File> createFileFromUrl(_url, imageExtType) async {
+  static Future<File?> createFileFromUrl(_url, imageExtType) async {
     try {
       Uri _imgUrl = Uri.parse(_url);
       // String _fileExt = _imgUrl.query != ""
       //     ? _imgUrl.query.split('format=')[1].split("&")[0]
       //     : _imgUrl.path.split('.').last;
-
-      String _fileExt = imageExtType != "" && imageExtType != null
-          ? imageExtType.split('/').last
-          : _imgUrl.query != ""
-              ? _imgUrl.query.split('format=')[1].split("&")[0]
-              : _imgUrl.path.split('.').last;
+      String _fileExt = '';
+      try {
+        _fileExt = imageExtType != "" && imageExtType != null
+            ? imageExtType.split('/').last
+            : _imgUrl.query != ""
+                ? _imgUrl.query.split('format=')[1].split("&")[0]
+                : _imgUrl.path.split('.').last;
+      } catch (e) {
+        _fileExt = imageExtType != "" && imageExtType != null
+            ? imageExtType.split('/').last
+            : _imgUrl.path.split('.').last;
+      }
       String _fileName = DateTime.now().millisecondsSinceEpoch.toString();
       Response<List<int>> rs = await Dio().get<List<int>>(
         _url,
@@ -348,16 +357,18 @@ class Utility {
       await file.writeAsBytes(rs.data!);
       return file;
     } catch (e) {
-      throw Exception('Something went wrong');
+      //throw Exception(e);
+      return null;
     }
   }
 
+  // To parse emojis and unicodes from PostgreSQL response.
   static String utf8convert(String? text) {
     try {
-      List<int> bytes = text.toString().codeUnits;
+      List<int> bytes = text!.codeUnits;
       return utf8.decode(bytes);
     } catch (e) {
-      return text!;
+      return text ?? '';
     }
   }
 
@@ -470,6 +481,7 @@ class Utility {
 
   static bool? currentScreenSnackBar(String msg, height,
       {double? marginFromBottom}) {
+    Fluttertoast.cancel();
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_LONG,
@@ -580,67 +592,89 @@ class Utility {
   //       });
   // }
 
-  static void showLoadingDialog(BuildContext context, bool? isOCR) async {
+  static void showLoadingDialog(
+      {BuildContext? context,
+      bool? isOCR,
+      Function(StateSetter)? state}) async {
     return showDialog<void>(
         useRootNavigator: false,
-        context: context,
+        context: context!,
         barrierDismissible: true,
         builder: (BuildContext context) {
-          return new WillPopScope(
-              onWillPop: () async => false,
-              child: SimpleDialog(
-                  backgroundColor:
-                      Color(0xff000000) != Theme.of(context).backgroundColor
-                          ? Color(0xff111C20)
-                          : Color(0xffF7F8F9), //Colors.black54,
-                  children: <Widget>[
-                    Container(
-                      height: Globals.deviceType == 'phone' ? 80 : 100,
-                      width: Globals.deviceType == 'phone'
-                          ? MediaQuery.of(context).size.width * 0.4
-                          : MediaQuery.of(context).size.width * 0.5,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Utility.textWidget(
-                              text: 'Please Wait...',
-                              context: context,
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(
-                                    color: Color(0xff000000) !=
-                                            Theme.of(context).backgroundColor
-                                        ? Color(0xffFFFFFF)
-                                        : Color(0xff000000),
-                                    fontSize: Globals.deviceType == "phone"
-                                        ? AppTheme.kBottomSheetTitleSize
-                                        : AppTheme.kBottomSheetTitleSize * 1.3,
-                                  )),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  CircularProgressIndicator(
-                                    color:
-                                        isOCR! ? AppTheme.kButtonColor : null,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                ]),
-                          ),
-                        ],
-                      ),
-                    )
-                  ]));
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            if (state != null) {
+              state(setState);
+            }
+            return new WillPopScope(
+                onWillPop: () async => false,
+                child: SimpleDialog(
+                    backgroundColor:
+                        Color(0xff000000) != Theme.of(context).backgroundColor
+                            ? Color(0xff111C20)
+                            : Color(0xffF7F8F9), //Colors.black54,
+                    children: <Widget>[
+                      Container(
+                        height: Globals.deviceType == 'phone' ? 80 : 100,
+                        width: Globals.deviceType == 'phone'
+                            ? MediaQuery.of(context).size.width * 0.4
+                            : MediaQuery.of(context).size.width * 0.5,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: FittedBox(
+                                child: Utility.textWidget(
+                                    text: GradedGlobals.loadingMessage ??
+                                        'Please Wait...',
+                                    context: context,
+                                    textTheme: Theme.of(context)
+                                        .textTheme
+                                        .headline6!
+                                        .copyWith(
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xffFFFFFF)
+                                              : Color(0xff000000),
+                                          fontSize: Globals.deviceType ==
+                                                  "phone"
+                                              ? AppTheme.kBottomSheetTitleSize
+                                              : AppTheme.kBottomSheetTitleSize *
+                                                  1.3,
+                                        )),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            // Center(
+                            //   child: Row(
+                            //       mainAxisAlignment: MainAxisAlignment.center,
+                            //       children: [
+                            //         SizedBox(
+                            //           width: 10,
+                            //         ),
+                            Container(
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: CircularProgressIndicator(
+                                color: isOCR! ? AppTheme.kButtonColor : null,
+                              ),
+                            ),
+                            //         SizedBox(
+                            //           width: 10,
+                            //         ),
+                            //       ]),
+                            // ),
+                          ],
+                        ),
+                      )
+                    ]));
+          });
         });
   }
 
@@ -686,9 +720,9 @@ class Utility {
                     '?' +
                     themeColor.toString().split('0xff')[1].split(')')[0])
                 : Overrides.STANDALONE_GRADED_APP
-                    ? Overrides.googleClassroomAuthURL!
-                    : Overrides.googleDriveAuthURL!,
-        isbuttomsheet: true,
+                    ? OcrOverrides.googleClassroomAuthURL!
+                    : OcrOverrides.googleDriveAuthURL!,
+        isBottomSheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
         hideShare: true,
@@ -843,7 +877,7 @@ class Utility {
                                       ));
                             }),
                         onPressed: () async {
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                           LocalDatabase<UserInformation> _localDb =
                               LocalDatabase('user_profile');
 
@@ -896,6 +930,12 @@ class Utility {
     //   }
     //   return true;
     // }
+  }
+
+  static Future clearStudentInfo({required String tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    await _studentInfoDb.clear();
   }
 
   static Future<List<StudentAssessmentInfo>> getStudentInfoList(
@@ -975,7 +1015,7 @@ class Utility {
         duration: const Duration(milliseconds: 400), curve: Curves.linear);
   }
 
-  static Future<String> getUserlocation() async {
+  static Future<String> getUserLocation() async {
     try {
       // Position? userLocation;
 
@@ -1001,5 +1041,41 @@ class Utility {
       print(e);
       return '';
     }
+  }
+
+  static String getBase64FileExtension(String base64String) {
+    switch (base64String.characters.first) {
+      case '/':
+        return 'jpeg';
+      case 'i':
+        return 'png';
+      case 'R':
+        return 'gif';
+      case 'U':
+        return 'webp';
+      case 'J':
+        return 'pdf';
+      default:
+        return 'unknown';
+    }
+  }
+
+  // Function to update assessment details to dataBase
+  static updateAssessmentToDb(
+      {required List<StudentAssessmentInfo> studentInfoList,
+      required String assessmentId}) async {
+    OcrBloc _ocrAssessmentBloc = OcrBloc();
+    List<StudentAssessmentInfo> _list = studentInfoList;
+    print("assessment ID $assessmentId");
+    _list.removeWhere((element) =>
+        element.uniqueId == null ||
+        element.uniqueId ==
+            ''); // avoid to update older assessment sheet in case of scan more
+    print(_list.length);
+    _list.isNotEmpty
+        ? _ocrAssessmentBloc.add(UploadAssessmentToDB(
+            assessmentId: assessmentId, studentDetails: _list))
+        // ignore: unnecessary_statements
+        : null;
   }
 }

@@ -6,12 +6,11 @@ import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
-import 'package:Soc/src/modules/schedule/ui/school_calender.dart';
 import 'package:Soc/src/modules/students/bloc/student_bloc.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/modules/students/ui/apps_folder.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/marquee.dart';
-//import 'package:Soc/src/modules/students/ui/demo.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -26,9 +25,7 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:marquee/marquee.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-
 import '../../../services/local_database/local_db.dart';
 import '../../schedule/modal/blackOutDate_modal.dart';
 
@@ -47,7 +44,7 @@ class _StudentPageState extends State<StudentPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   StudentBloc _bloc = StudentBloc();
   ScrollController _scrollController = ScrollController();
@@ -59,6 +56,9 @@ class _StudentPageState extends State<StudentPage> {
     super.initState();
     //_scrollController = ScrollController()..addListener(_scrollListener);
     _bloc.add(StudentPageEvent());
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("students");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student', screenClass: 'StudentPage');
   }
 
   @override
@@ -120,13 +120,12 @@ class _StudentPageState extends State<StudentPage> {
                   builder: (BuildContext context) => InAppUrlLauncer(
                         title: obj.titleC!,
                         url: obj.appUrlC!,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )));
         }
       }
       //lock screen orientation
-
     } else {
       Utility.showSnackBar(_scaffoldKey, "No URL available", context, null);
     }
@@ -140,7 +139,7 @@ class _StudentPageState extends State<StudentPage> {
       listener: (context, state) {
         print(state);
         if (state is CalenderLoading) {
-          Utility.showLoadingDialog(context, false);
+          Utility.showLoadingDialog(context: context, isOCR: false);
         }
         if (state is CalenderSuccess) {
           Navigator.pop(context, false);
@@ -236,38 +235,7 @@ class _StudentPageState extends State<StudentPage> {
                                                           ? 16
                                                           : 24),
                                         ),
-                                      )
-
-                                        // child: Marquee(
-                                        //   text: translatedMessage.toString(),
-                                        //   style: Theme.of(context)
-                                        //       .textTheme
-                                        //       .bodyText1!
-                                        //       .copyWith(
-                                        //           fontSize: Globals.deviceType ==
-                                        //                   "phone"
-                                        //               ? 16
-                                        //               : 24),
-                                        //   scrollAxis: Axis.horizontal,
-                                        //   velocity: 30.0,
-                                        //   crossAxisAlignment:
-                                        //       CrossAxisAlignment.start,
-                                        //   blankSpace: 50,
-                                        //   //MediaQuery.of(context).size.width
-                                        //   // velocity: 100.0,
-                                        //   pauseAfterRound: Duration(seconds: 5),
-                                        //   showFadingOnlyWhenScrolling: true,
-                                        //   startPadding: 10.0,
-                                        //   accelerationDuration:
-                                        //       Duration(seconds: 1),
-                                        //   accelerationCurve: Curves.linear,
-                                        //   decelerationDuration:
-                                        //       Duration(milliseconds: 500),
-                                        //   decelerationCurve: Curves.bounceIn,
-                                        //   numberOfRounds: 1,
-                                        //   startAfter: Duration.zero,
-                                        // ),
-                                        )
+                                      ))
                                     : MediaQuery.of(context).orientation ==
                                                 Orientation.landscape &&
                                             translatedMessage
@@ -289,40 +257,7 @@ class _StudentPageState extends State<StudentPage> {
                                                               ? 16
                                                               : 24),
                                             ),
-                                          )
-
-                                            //    Marquee(
-                                            //   text: translatedMessage.toString(),
-                                            //   style: Theme.of(context)
-                                            //       .textTheme
-                                            //       .bodyText1!
-                                            //       .copyWith(
-                                            //           fontSize:
-                                            //               Globals.deviceType ==
-                                            //                       "phone"
-                                            //                   ? 16
-                                            //                   : 24),
-                                            //   scrollAxis: Axis.horizontal,
-                                            //   velocity: 30.0,
-                                            //   crossAxisAlignment:
-                                            //       CrossAxisAlignment.start,
-
-                                            //   blankSpace:
-                                            //       50, //MediaQuery.of(context).size.width
-                                            //   // velocity: 100.0,
-                                            //   pauseAfterRound: Duration(seconds: 5),
-                                            //   showFadingOnlyWhenScrolling: true,
-                                            //   startPadding: 10.0,
-                                            //   accelerationDuration:
-                                            //       Duration(seconds: 1),
-                                            //   accelerationCurve: Curves.linear,
-                                            //   decelerationDuration:
-                                            //       Duration(milliseconds: 500),
-                                            //   decelerationCurve: Curves.easeOut,
-                                            //   numberOfRounds: 1,
-                                            // )
-
-                                            )
+                                          ))
                                         : SingleChildScrollView(
                                             scrollDirection: Axis.horizontal,
                                             child: Text(
@@ -354,7 +289,6 @@ class _StudentPageState extends State<StudentPage> {
             ),
     );
   }
-  //sfjhjjsfdjkfjdjsdjdjjhksfdssfjkdjdjkjsdsjkdkdjsdjkjkjsdjhkjsdjkjsdjkjfjhfdhjhfjnbfjnnnmnccnmbxzfjksldaqpwoieruyt;adjkjhkhdfghvbsd
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
@@ -375,12 +309,12 @@ class _StudentPageState extends State<StudentPage> {
             final bool connected = connectivity != ConnectivityResult.none;
 
             if (connected) {
-              if (iserrorstate == true) {
-                iserrorstate = false;
+              if (isErrorState == true) {
+                isErrorState = false;
                 _bloc.add(StudentPageEvent());
               }
             } else if (!connected) {
-              iserrorstate = true;
+              isErrorState = true;
             }
 
             return ListView(
@@ -397,7 +331,7 @@ class _StudentPageState extends State<StudentPage> {
                               child: CircularProgressIndicator(
                             color: Theme.of(context).colorScheme.primaryVariant,
                           ));
-                        } else if (state is StudentDataSucess) {
+                        } else if (state is StudentDataSuccess) {
                           return state.obj != null && state.obj!.length > 0
                               ? Container(
                                   padding: EdgeInsets.symmetric(horizontal: 5),
@@ -499,7 +433,7 @@ class _StudentPageState extends State<StudentPage> {
         title: title!,
         url:
             'https://anl2h22jc4.execute-api.us-east-2.amazonaws.com/production/student-login/auth',
-        isbuttomsheet: true,
+        isBottomSheet: true,
         language: Globals.selectedLanguage,
         hideAppbar: false,
         hideShare: true,
@@ -523,7 +457,6 @@ class _StudentPageState extends State<StudentPage> {
       return _studentProfile;
       // _calenderBloc.add(CalenderPageEvent(email: _studentProfile.userEmail!));
       // loggedIn = true;
-
     }
     return UserInformation(userName: null);
   }

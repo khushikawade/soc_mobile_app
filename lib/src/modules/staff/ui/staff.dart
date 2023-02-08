@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/startup.dart';
@@ -51,7 +51,7 @@ class _StaffPageState extends State<StaffPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   StaffBloc _bloc = StaffBloc();
   final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   OcrBloc ocrBloc = new OcrBloc();
   bool? authSuccess = false;
   dynamic userData;
@@ -72,6 +72,9 @@ class _StaffPageState extends State<StaffPage> {
     if (widget.isFromOcr) {
       _homeBloc.add(FetchStandardNavigationBar());
     }
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("staff");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'staff', screenClass: 'StaffPage');
     // _scrollController.addListener(_scrollListener);
     //  globalKey.currentState!.innerController.addListener(_scrollListener);
   }
@@ -110,9 +113,7 @@ class _StaffPageState extends State<StaffPage> {
     await _localDb.close();
   }
 
-  Widget _body(String key) => RefreshIndicator(
-      key: refreshKey,
-      child: Stack(children: [
+  Widget _body(String key) => Stack(children: [
         OfflineBuilder(
             connectivityBuilder: (
               BuildContext context,
@@ -121,82 +122,84 @@ class _StaffPageState extends State<StaffPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
+                if (isErrorState == true) {
+                  isErrorState = false;
                   _bloc.add(StaffPageEvent());
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               return
                   // connected?
-                  Container(
-                child: ListView(shrinkWrap: true,
-                    //   mainAxisSize: MainAxisSize.max,
-                    children: [
-                      BlocBuilder<StaffBloc, StaffState>(
-                          bloc: _bloc,
-                          builder: (BuildContext contxt, StaffState state) {
-                            if (state is StaffInitial ||
-                                state is StaffLoading) {
-                              return Center(
-                                  child: CircularProgressIndicator(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryVariant,
-                              ));
-                            } else if (state is StaffDataSucess) {
-                              return widget.customObj != null &&
-                                      widget.customObj!.sectionTemplate ==
-                                          "Grid Menu"
-                                  ? CommonGridWidget(
-                                      scrollController: _scrollController,
-                                      scaffoldKey: _scaffoldKey,
-                                      bottomPadding: 60,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "staff")
-                                  : CommonListWidget(
-                                      scrollController: _scrollController,
-                                      bottomPadding: 80,
-                                      key: ValueKey(key),
-                                      scaffoldKey: _scaffoldKey,
-                                      connected: connected,
-                                      data: state.obj!,
-                                      sectionName: "staff");
-                            } else if (state is ErrorInStaffLoading) {
-                              return ListView(children: [ErrorMsgWidget()]);
-                            } else {
-                              return ErrorMsgWidget();
-                            }
-                          }),
-                      Container(
-                        height: 0,
-                        width: 0,
-                        child: BlocListener<HomeBloc, HomeState>(
-                            bloc: _homeBloc,
-                            listener: (context, state) async {
-                              if (state is BottomNavigationBarSuccess) {
-                                AppTheme.setDynamicTheme(
-                                    Globals.appSetting, context);
-                                Globals.appSetting =
-                                    AppSetting.fromJson(state.obj);
-                                setState(() {});
-                              }
-                            },
-                            child: EmptyContainer()),
+                  RefreshIndicator(
+                      key: refreshKey,
+                      child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: ListView(
+                          children: [
+                            BlocBuilder<StaffBloc, StaffState>(
+                                bloc: _bloc,
+                                builder:
+                                    (BuildContext contxt, StaffState state) {
+                                  if (state is StaffInitial ||
+                                      state is StaffLoading) {
+                                    return Center(
+                                        child: CircularProgressIndicator(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ));
+                                  } else if (state is StaffDataSuccess) {
+                                    return widget.customObj != null &&
+                                            widget.customObj!.sectionTemplate ==
+                                                "Grid Menu"
+                                        ? CommonGridWidget(
+                                            scrollController: _scrollController,
+                                            scaffoldKey: _scaffoldKey,
+                                            bottomPadding: 60,
+                                            connected: connected,
+                                            data: state.obj!,
+                                            sectionName: "staff")
+                                        : CommonListWidget(
+                                            scrollController: _scrollController,
+                                            bottomPadding: 80,
+                                            key: ValueKey(key),
+                                            scaffoldKey: _scaffoldKey,
+                                            connected: connected,
+                                            data: state.obj!,
+                                            sectionName: "staff");
+                                  } else if (state is ErrorInStaffLoading) {
+                                    return ListView(
+                                        children: [ErrorMsgWidget()]);
+                                  } else {
+                                    return ErrorMsgWidget();
+                                  }
+                                }),
+                          ],
+                        ),
                       ),
-                    ]),
-              );
+                      onRefresh: refreshPage);
             },
             child: Container()),
-        // cameraButton()
+        Container(
+          height: 0,
+          width: 0,
+          child: BlocListener<HomeBloc, HomeState>(
+              bloc: _homeBloc,
+              listener: (context, state) async {
+                if (state is BottomNavigationBarSuccess) {
+                  AppTheme.setDynamicTheme(Globals.appSetting, context);
+                  Globals.appSetting = AppSetting.fromJson(state.obj);
+                  setState(() {});
+                }
+              },
+              child: EmptyContainer()),
+        ),
         Globals.appSetting.enableGraded == 'false'
             ? Container()
-            : cameraButton(),
-      ]),
-      onRefresh: refreshPage);
+            : ocrSectionButton(),
+      ]);
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -242,7 +245,7 @@ class _StaffPageState extends State<StaffPage> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  Widget cameraButton() {
+  Widget ocrSectionButton() {
     return ValueListenableBuilder<bool>(
         valueListenable: isScrolling,
         child: Container(),
@@ -266,6 +269,22 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
+                    await Utility.clearStudentInfo(tableName: 'student_info');
+                    await Utility.clearStudentInfo(
+                        tableName: 'history_student_info');
+
+                    // else if (selectedField == 'Multiple choice Assignment') {
+                    //   await Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => MultipleChoiceSection()),
+                    //   );
+                    // } else {
+                    //   navigateToCamera();
+                    // }
+                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "assignment");
+
+                    FirebaseAnalyticsService.logLogin();
                     // pushNewScreen(
                     //   context,
                     //   screen: StartupPage(
@@ -276,7 +295,7 @@ class _StaffPageState extends State<StaffPage> {
                     // );
                     // return;
                     // Globals.localUserInfo.clear(); // COMMENT
-                    Globals.lastindex = Globals.controller!.index;
+                    Globals.lastIndex = Globals.controller!.index;
 
                     List<UserInformation> _profileData =
                         await UserGoogleProfile.getUserProfile();
@@ -286,7 +305,7 @@ class _StaffPageState extends State<StaffPage> {
                       await GoogleLogin.launchURL('Google Authentication',
                           context, _scaffoldKey, true, '');
                     } else {
-                      // List<UserInformation> _userprofilelocalData =
+                      // List<UserInformation> _userProfileLocalData =
                       //     await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
@@ -300,17 +319,19 @@ class _StaffPageState extends State<StaffPage> {
                           teacherId: Globals.teacherId,
                           activityId: '2',
                           accountId: Globals.appSetting.schoolNameC,
-                          accountType: Globals.isPremiumUser == true
+                          accountType: Globals.isPremiumUser  == true
                               ? "Premium"
                               : "Free",
                           dateTime: currentDateTime.toString(),
                           description: 'Graded+ Accessed(Login)',
                           operationResult: 'Success'));
                       //    await _getLocalDb();
+
                       pushNewScreen(
                         context,
                         screen: StartupPage(
                           isOcrSection: true, //since always opens OCR
+                          isMultipleChoice: false,
                         ),
                         withNavBar: false,
                       );
@@ -353,12 +374,12 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   _getLocalDb() async {
-    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+    LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
 
-    List<CustomRubicModal> _localData = await _localDb.getData();
+    List<CustomRubricModal> _localData = await _localDb.getData();
 
     if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+      RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
         await _localDb.addData(e);
       });
       await _localDb.close();

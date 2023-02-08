@@ -17,7 +17,7 @@ class SubListPage extends StatefulWidget {
   final obj;
   final recordId;
   final String? module;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String appBarTitle;
   final String? language;
 
@@ -26,7 +26,7 @@ class SubListPage extends StatefulWidget {
     required this.obj,
     this.recordId,
     required this.module,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.appBarTitle,
     required this.language,
   }) : super(key: key);
@@ -42,7 +42,7 @@ class _SubListPageState extends State<SubListPage> {
   StaffBloc _staffBloc = StaffBloc();
   AboutBloc _aboutBloc = AboutBloc();
   CustomBloc _customBloc = CustomBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final ScrollController _scrollController = ScrollController();
@@ -91,7 +91,7 @@ class _SubListPageState extends State<SubListPage> {
                                       .colorScheme
                                       .primaryVariant,
                                 ));
-                          } else if (state is FamiliesSublistSucess) {
+                          } else if (state is FamiliesSublistSuccess) {
                             return CommonListWidget(
                                 scrollController: _scrollController,
                                 scaffoldKey: _scaffoldKey,
@@ -119,7 +119,7 @@ class _SubListPageState extends State<SubListPage> {
                                           .colorScheme
                                           .primaryVariant,
                                     ));
-                              } else if (state is StaffSubListSucess) {
+                              } else if (state is StaffSubListSuccess) {
                                 return CommonListWidget(
                                     scrollController: _scrollController,
                                     scaffoldKey: _scaffoldKey,
@@ -149,7 +149,7 @@ class _SubListPageState extends State<SubListPage> {
                                               .colorScheme
                                               .primaryVariant,
                                         ));
-                                  } else if (state is ResourcesSubListSucess) {
+                                  } else if (state is ResourcesSubListSuccess) {
                                     return CommonListWidget(
                                         scrollController: _scrollController,
                                         scaffoldKey: _scaffoldKey,
@@ -180,7 +180,7 @@ class _SubListPageState extends State<SubListPage> {
                                                   .colorScheme
                                                   .primaryVariant,
                                             ));
-                                      } else if (state is AboutSublistSucess) {
+                                      } else if (state is AboutSublistSuccess) {
                                         return CommonListWidget(
                                             scrollController: _scrollController,
                                             scaffoldKey: _scaffoldKey,
@@ -244,8 +244,8 @@ class _SubListPageState extends State<SubListPage> {
           isSearch: true,
           isShare: false,
           appBarTitle: widget.appBarTitle,
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
+          sharedPopBodyText: '',
+          sharedPopUpHeaderText: '',
           language: Globals.selectedLanguage,
         ),
         body: OfflineBuilder(
@@ -256,12 +256,12 @@ class _SubListPageState extends State<SubListPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
+                if (isErrorState == true) {
                   refreshPage();
-                  iserrorstate = false;
+                  isErrorState = false;
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               //return _body(connected);

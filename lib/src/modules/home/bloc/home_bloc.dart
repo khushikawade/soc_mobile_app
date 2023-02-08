@@ -1,9 +1,11 @@
-import 'dart:core';
+import 'dart:convert';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/bloc/custom_bloc.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/sd_list.dart';
+import 'package:Soc/src/modules/home/models/accountObjectModal.dart';
 import 'package:Soc/src/modules/home/models/search_list.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
@@ -258,14 +260,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
 
         // yield HomeErrorReceived(err: e);
-
+      }
+    }
+    if (event is VerifyUserWithDatabase) {
+      try {
+        _verifyUserWithDatabase(accountId: event.acountId!);
+      } catch (e) {
+        throw (e);
       }
     }
   }
 
   Future fetchCustomNavigationBar() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
+      final ResponseModel response = await _dbServices.getApi(
         Uri.encodeFull(
             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Custom_App_Section__c'),
       );
@@ -292,7 +300,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future fetchStandardNavigationBar() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
+      final ResponseModel response = await _dbServices.getApi(
         Uri.encodeFull(
             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       );
@@ -440,7 +448,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future getGlobalSearch(keyword) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(
+      final ResponseModel response = await _dbServices.getApi(
           'searchRecords?schoolId=${Overrides.SCHOOL_ID}&keyword=$keyword');
       if (response.statusCode == 200) {
         return response.data["body"]
@@ -466,7 +474,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _socialBloc.add(SocialPageEvent(action: 'initial'));
         } else if (element.contains('news')) {
           NewsBloc _newsBloc = NewsBloc();
-          _newsBloc.add(FetchNotificationList());
+          _newsBloc.add(FetchNotificationList(action: 'initial'));
         } else if (element.contains('families')) {
           FamilyBloc _familyBloc = FamilyBloc();
           _familyBloc.add(FamiliesEvent());
@@ -517,7 +525,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       String? recordId, String? objectName, String recordType) async {
     try {
       final ResponseModel response =
-          await _dbServices.getapi('getRecord/$objectName/$recordId');
+          await _dbServices.getApi('getRecord/$objectName/$recordId');
       if (response.statusCode == 200) {
         dynamic data;
         if (objectName == "Staff_Directory_App__c") {
@@ -570,13 +578,40 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   // }
 
   void deleteRecentSearchItem(String localDatalogName) async {
-    int itemcount = await HiveDbServices().getListLength(localDatalogName);
-    if (itemcount > 5) {
+    int itemCount = await HiveDbServices().getListLength(localDatalogName);
+    if (itemCount > 5) {
       await HiveDbServices().deleteData(localDatalogName, 0);
     }
   }
 
   void addRecordDetailtoLocalDb(dynamic log) async {
     await HiveDbServices().addData(log, Strings.hiveReferenceLogName);
+  }
+
+  Future _verifyUserWithDatabase({required String accountId}) async {
+    print(accountId);
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          Uri.encodeFull(
+              'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Account/$accountId'),
+          isCompleteUrl: true);
+      // print("response is recived --------->>>");
+      if (response.statusCode == 200) {
+        var data = response.data['body'];
+        // var isGradedPreminumC = jsonDecode(data["GRADED_Premium__c"]);
+        // if (isGradedPreminumC == true) {
+        //   Globals.appSetting.isPremiumUser = true;
+        // }
+        AccountObjectModal accountObejct = AccountObjectModal.fromJson(data);
+        Globals.schoolDbnC = accountObejct.dBNC ?? '';
+
+        Globals.isPremiumUser =
+            accountObejct.gRADEDPremiumC == 'true' ? true : false;
+      } else {
+        _verifyUserWithDatabase(accountId: accountId);
+      }
+    } catch (e) {
+      throw (e);
+    }
   }
 }

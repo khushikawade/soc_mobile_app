@@ -2,7 +2,8 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/widgets/action_button_basic.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -19,14 +20,14 @@ class Newdescription extends StatefulWidget {
     Key? key,
     required this.obj,
     required this.date,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.language,
     required this.connected,
   }) : super(key: key);
 
-  final NotificationList obj;
+  final Item obj;
   final String date;
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String? language;
   final bool? connected;
 
@@ -42,7 +43,7 @@ class _NewdescriptionState extends State<Newdescription> {
   @override
   void initState() {
     super.initState();
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override
@@ -69,9 +70,9 @@ class _NewdescriptionState extends State<Newdescription> {
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => InAppUrlLauncer(
-                    title: widget.obj.headings["en"].toString(),
+                    title: widget.obj.title.toString(),
                     url: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
@@ -105,24 +106,23 @@ class _NewdescriptionState extends State<Newdescription> {
               children: <Widget>[
                 Expanded(
                     child: TranslationWidget(
-                  message: widget.obj.headings != "" &&
-                          widget.obj.headings != null &&
-                          widget.obj.headings.length > 0
-                      ? widget.obj.headings["en"].toString()
-                      : widget.obj.contents["en"].toString().split(" ").length >
-                              1
-                          ? widget.obj.contents["en"]
+                  message: widget.obj.title != "" &&
+                          widget.obj.title != null &&
+                          widget.obj.title.length > 0
+                      ? Utility.utf8convert(widget.obj.title ?? '')
+                      : widget.obj.title.toString().split(" ").length > 1
+                          ? Utility.utf8convert(widget.obj.description
                                   .toString()
                                   .replaceAll("\n", " ")
                                   .split(" ")[0] +
                               " " +
-                              widget.obj.contents["en"]
+                              widget.obj.description
                                   .toString()
                                   .replaceAll("\n", " ")
                                   .split(" ")[1]
                                   .split("\n")[0] +
-                              "..."
-                          : widget.obj.contents["en"],
+                              "...")
+                          : Utility.utf8convert(widget.obj.description ?? ''),
                   toLanguage: Globals.selectedLanguage,
                   fromLanguage: "en",
                   builder: (translatedMessage) => SelectableLinkify(
@@ -157,7 +157,7 @@ class _NewdescriptionState extends State<Newdescription> {
               child: Wrap(
                 children: [
                   TranslationWidget(
-                    message: widget.obj.contents["en"].toString(),
+                    message: Utility.utf8convert(widget.obj.description ?? ''),
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => SelectableLinkify(
@@ -178,11 +178,11 @@ class _NewdescriptionState extends State<Newdescription> {
               ),
             ),
             GestureDetector(
-              child: widget.obj.url != null
+              child: widget.obj.link != null
                   ? Wrap(
                       children: [
                         TranslationWidget(
-                          message: widget.obj.url.toString(),
+                          message: widget.obj.link.toString(),
                           toLanguage: Globals.selectedLanguage,
                           fromLanguage: "en",
                           builder: (translatedMessage) => SelectableLinkify(
@@ -224,12 +224,12 @@ class _NewdescriptionState extends State<Newdescription> {
         SpacerWidget(AppTheme.kBodyPadding),
         Container(
           alignment: Alignment.centerLeft,
-          child: UserActionBasic(
+          child: ActionInteractionButtonWidget(
             page: "news",
             obj: widget.obj,
-            title: widget.obj.headings['en'],
-            description: widget.obj.contents['en'],
-            imageUrl: widget.obj.image,
+            title: widget.obj.description,
+            description: widget.obj.description,
+            imageUrl: widget.obj.link,
           ),
         ),
       ],

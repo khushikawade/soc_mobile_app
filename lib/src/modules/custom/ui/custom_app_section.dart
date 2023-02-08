@@ -30,7 +30,7 @@ class CustomAppSection extends StatefulWidget {
 }
 
 class _CustomAppSectionState extends State<CustomAppSection> {
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   CustomBloc _bloc = CustomBloc();
   HomeBloc _homeBloc = HomeBloc();
@@ -100,12 +100,12 @@ class _CustomAppSectionState extends State<CustomAppSection> {
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
-                  if (iserrorstate == true) {
+                  if (isErrorState == true) {
                     _bloc.add(CustomEvents(id: widget.customObj.id));
-                    iserrorstate = false;
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return
@@ -120,7 +120,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                           if (state is CustomInitial ||
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
-                          } else if (state is CustomDataSucess) {
+                          } else if (state is CustomDataSuccess) {
                             return Container(
                               height: MediaQuery.of(context).size.height,
                               child: CustomPages(

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:Soc/firebase_options.dart';
 import 'package:Soc/src/app.dart';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
@@ -33,7 +34,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show PlatformDispatcher, kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/modules/families/modal/calendar_event_list.dart';
 import 'src/modules/google_drive/model/assessment.dart';
@@ -44,14 +45,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
 
+  // Initializing Fieebase Starts
+  // await Firebase.initializeApp();
+  if (Platform.isAndroid) {
+    await Firebase.initializeApp(
+      name: 'SOC',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else if (Platform.isIOS) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
   const standaloneGradedApp = String.fromEnvironment("STANDALONE_GRADED_APP");
   if (standaloneGradedApp == "true") {
     Overrides.STANDALONE_GRADED_APP = true;
   }
 
-  // Initializing Fieebase Starts
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // await FirebaseAnalyticsService.firebaseCrashlytics(null, null, null);
   // Initializing Fieebase Ends
 
   if (!kIsWeb) {
@@ -74,7 +86,7 @@ void main() async {
       ..registerAdapter(UserInformationAdapter())
       ..registerAdapter(SubjectDetailListAdapter())
       ..registerAdapter(HistoryAssessmentAdapter())
-      ..registerAdapter(CustomRubicModalAdapter())
+      ..registerAdapter(CustomRubricModalAdapter())
       ..registerAdapter(TranslationModalAdapter())
       ..registerAdapter(StudentAssessmentInfoAdapter())
       ..registerAdapter(StateListObjectAdapter())
@@ -123,7 +135,6 @@ disableDarkMode() async {
         await _hivedb.getSingleData('disableDarkMode', 'darkMode');
     // //print('-------------------dark mode disable----------------------');
     // //print(Globals.disableDarkMode);
-
   } catch (e) {}
 }
 

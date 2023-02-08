@@ -53,10 +53,10 @@ class CalendarListEvent extends FamilyEvent {
 class SDevent extends FamilyEvent {
   final String? categoryId; //About record Id
 
-  final String? customRecordId; //Custom record Id
+  final String? customerRecordId; //Custom record Id
 
-  SDevent({this.categoryId, this.customRecordId});
+  SDevent({this.categoryId, this.customerRecordId});
 
   @override
-  List<Object> get props => [categoryId!,customRecordId!];
+  List<Object> get props => [categoryId!, customerRecordId!];
 }

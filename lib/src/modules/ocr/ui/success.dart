@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
+import 'package:Soc/src/modules/ocr/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/animation_button.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -15,6 +15,7 @@ import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/suggestion_chip.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/firstLetterUpperCase.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -25,8 +26,13 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:math' as math;
+import 'package:flutter_svg/svg.dart';
 
 class SuccessScreen extends StatefulWidget {
+  final bool? isMcqSheet;
+
+  final String? selectedAnswer;
   final String img64;
   final File imgPath;
   final String? pointPossible;
@@ -36,8 +42,14 @@ class SuccessScreen extends StatefulWidget {
   final HistoryAssessment? obj;
   final String? questionImageUrl;
   final bool isFlashOn;
+  final String? assessmentName;
+  final int? lastAssessmentLength;
   SuccessScreen(
       {Key? key,
+      this.isMcqSheet,
+      this.assessmentName,
+      this.lastAssessmentLength,
+      this.selectedAnswer,
       required this.img64,
       required this.imgPath,
       this.pointPossible,
@@ -53,8 +65,9 @@ class SuccessScreen extends StatefulWidget {
   State<SuccessScreen> createState() => _SuccessScreenState();
 }
 
-class _SuccessScreenState extends State<SuccessScreen> {
-  static const double _KVertcalSpace = 60.0;
+class _SuccessScreenState extends State<SuccessScreen>
+    with TickerProviderStateMixin {
+  static const double _KVerticalSpace = 60.0;
   OcrBloc _bloc = OcrBloc();
   OcrBloc _bloc2 = OcrBloc();
   //bool failure = false;
@@ -74,7 +87,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
   final ValueNotifier<int> suggestionNameListLenght = ValueNotifier<int>(0);
   final ValueNotifier<int> suggestionEmailListLenght = ValueNotifier<int>(0);
   final ValueNotifier<String> scanFailure = ValueNotifier<String>('');
-  final ValueNotifier<int> indexColor = ValueNotifier<int>(2);
+  final ValueNotifier<dynamic> indexColor = ValueNotifier<dynamic>(2);
   final ValueNotifier<String> isStudentNameFilled = ValueNotifier<String>('');
   final ValueNotifier<String> isStudentIdFilled = ValueNotifier<String>('');
   final ValueNotifier<bool> isRetryButton = ValueNotifier<bool>(false);
@@ -90,23 +103,56 @@ class _SuccessScreenState extends State<SuccessScreen> {
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final ValueNotifier<String> pointScored = ValueNotifier<String>('2');
   final ValueNotifier<bool> animationStart = ValueNotifier<bool>(false);
-  ScrollController scrollControlleName = new ScrollController();
+  ScrollController scrollControlledName = new ScrollController();
   ScrollController scrollControllerId = new ScrollController();
   LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
       LocalDatabase('student_info');
   LocalDatabase<StudentAssessmentInfo> _standardStudentDetailsDb =
       LocalDatabase(Strings.studentDetailList);
+  bool isFirstTime = true;
 
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  bool isRubricChanged = false; // boolean to check rubric is change or not
+  String uniqueId = DateTime.now().microsecondsSinceEpoch.toString(); // Unq
+  bool initialCursorPositionAtLast = true; //To manage textfield cursor position
   void initState() {
     super.initState();
+
     _bloc.add(FetchTextFromImage(
-        base64: widget.img64, pointPossible: widget.pointPossible ?? '2'));
+        selectedAnswer: widget.selectedAnswer,
+        isMcqSheet: widget.isMcqSheet ?? false,
+        base64: widget.img64,
+        pointPossible: widget.pointPossible ?? '2'));
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("success_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'success_screen', screenClass: 'SuccessScreen');
+
+    if (widget.isMcqSheet == true) {
+      _controller = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 1000),
+      );
+
+      _animation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+          parent: _controller, curve: Curves.linearToEaseOut)) //easeInOut
+        ..addListener(() {
+          setState(() {});
+        });
+
+      _controller.repeat();
+    }
   }
 
   @override
   void dispose() {
-    scrollControlleName.dispose();
+    scrollControlledName.dispose();
     scrollControllerId.dispose();
+
+    if (widget.isMcqSheet == true) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
@@ -122,9 +168,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
           appBar: CustomOcrAppBarWidget(
             isBackButton: false,
             isSuccessState: isSuccessResult,
-
             isHomeButtonPopup: true,
-            isbackOnSuccess: isBackFromCamera,
+            isBackOnSuccess: isBackFromCamera,
             actionIcon:
                 //  failure == true
                 //     ?
@@ -153,7 +198,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 if (state is OcrLoading) {
                   // isRetryButton.value = false;
                   //updateEmailList();
-                  studentList();
+                  studentInfo = [];
+                  studentInfo =
+                      await OcrUtility.getStudentList(); //studentList();
                   Timer(Duration(seconds: 5), () {
                     isRetryButton.value = true;
                   });
@@ -164,26 +211,33 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   updateStudentDetails();
                   scanFailure.value = 'Success';
                   _performAnimation();
-                  Utility.updateLoges(
+                  Utility.updateLogs(
                       //  ,
                       activityId: '23',
-                      description: 'Scan Assesment sheet successfully',
+                      description: 'Scan Assessment sheet successfully',
                       operationResult: 'Success');
+                  if (widget.isMcqSheet == true) {
+                    Globals.pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
+                  } else {
+                    // widget.pointPossible == '2'
+                    //     ? Globals.pointsEarnedList = [0, 1, 2]
+                    //     :
 
-                  widget.pointPossible == '2'
-                      ? Globals.pointsEarnedList = [0, 1, 2]
-                      : widget.pointPossible == '3'
-                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                          : widget.pointPossible == '4'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                              : Globals.pointsEarnedList.length = 2;
+                    //In case of 2 or default value will always be [0, 1, 2]
+                    widget.pointPossible == '3'
+                        ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                        : widget.pointPossible == '4'
+                            ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                            : Globals.pointsEarnedList = [0, 1, 2];
+                  }
+
                   nameController.text =
                       isStudentNameFilled.value = state.studentName!;
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
                   pointScored.value = state.grade!;
-                  //   reconizeText(pathOfImage);
+                  //   recognizeText(pathOfImage);
                   // });
 
                   // if (_formKey2.currentState!.validate()) {
@@ -211,12 +265,17 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             imgExtension: imgExtension,
                             studentId: idController.text));
                         // }
-                        // COMMENT below section for enableing the camera
+                        // COMMENT below section for enabling the camera
 
                         var result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => CameraScreen(
+                                    assessmentName: widget.assessmentName,
+                                    lastAssessmentLength:
+                                        widget.lastAssessmentLength,
+                                    isMcqSheet: widget.isMcqSheet,
+                                    selectedAnswer: widget.selectedAnswer,
                                     questionImageLink:
                                         widget.questionImageUrl ?? '',
                                     obj: widget.obj,
@@ -232,9 +291,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         );
                         if (result == true) {
                           isBackFromCamera.value = result;
+                          initialCursorPositionAtLast = true;
                         }
 
-                        //UNCOMMENT below section for enableing the camera
+                        //UNCOMMENT below section for enabling the camera
 
                         // Navigator.push(context,
                         //     MaterialPageRoute(builder: (_) => CameraScreen()));
@@ -252,19 +312,29 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   // setState(() {
                   isSuccessResult.value = false;
                   // });
-                  widget.pointPossible == '2'
-                      ? Globals.pointsEarnedList = [0, 1, 2]
-                      : widget.pointPossible == '3'
-                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                          : widget.pointPossible == '4'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                              : Globals.pointsEarnedList.length = 2;
+                  if (widget.isMcqSheet == true) {
+                    Globals.pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
+                  } else {
+                    // widget.pointPossible == '2'
+                    //     ? Globals.pointsEarnedList = [0, 1, 2]
+                    //     :
+
+                    //In case of 2 or default value will always be [0, 1, 2]
+                    widget.pointPossible == '3'
+                        ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                        : widget.pointPossible == '4'
+                            ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                            : Globals.pointsEarnedList = [0, 1, 2];
+                  }
                   if (state.grade == '') {
                     Utility.currentScreenSnackBar(
-                        'Could Not Detect The Right Score', null);
+                        widget.isMcqSheet == true
+                            ? 'Could Not Detect The Right Answer'
+                            : 'Could Not Detect The Right Score',
+                        null);
                   }
 
-                  Utility.updateLoges(
+                  Utility.updateLogs(
                       // ,
                       activityId: '23',
                       description: state.grade == '' && state.studentId == ''
@@ -295,28 +365,28 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       : null;
                   pointScored.value = state.grade!;
                   // updateDetails();
-
                 }
                 // do stuff here based on BlocA's state
               },
               builder: (context, state) {
                 if (state is OcrLoading) {
                   return loadingScreen();
-
-                  // Center(
-                  //   child: CircularProgressIndicator(
-                  //     color: AppTheme.kButtonColor,
-                  //   ),
-                  // );
                 } else if (state is FetchTextFromImageSuccess) {
                   nameController.text = state.studentName!;
-                  widget.pointPossible == '2'
-                      ? Globals.pointsEarnedList = [0, 1, 2]
-                      : widget.pointPossible == '3'
-                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                          : widget.pointPossible == '4'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                              : Globals.pointsEarnedList.length = 2;
+                  if (widget.isMcqSheet == true) {
+                    Globals.pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
+                  } else {
+                    // widget.pointPossible == '2'
+                    //     ? Globals.pointsEarnedList = [0, 1, 2]
+                    //     :
+
+                    //In case of 2 or default value will always be [0, 1, 2]
+                    widget.pointPossible == '3'
+                        ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                        : widget.pointPossible == '4'
+                            ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                            : Globals.pointsEarnedList = [0, 1, 2];
+                  }
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
@@ -330,13 +400,20 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       : state.studentId == ''
                           ? studentId
                           : null;
-                  widget.pointPossible == '2'
-                      ? Globals.pointsEarnedList = [0, 1, 2]
-                      : widget.pointPossible == '3'
-                          ? Globals.pointsEarnedList = [0, 1, 2, 3]
-                          : widget.pointPossible == '4'
-                              ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
-                              : Globals.pointsEarnedList.length = 2;
+                  if (widget.isMcqSheet == true) {
+                    Globals.pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
+                  } else {
+                    // widget.pointPossible == '2'
+                    //     ? Globals.pointsEarnedList = [0, 1, 2]
+                    //     :
+
+                    //In case of 2 or default value will always be [0, 1, 2]
+                    widget.pointPossible == '3'
+                        ? Globals.pointsEarnedList = [0, 1, 2, 3]
+                        : widget.pointPossible == '4'
+                            ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
+                            : Globals.pointsEarnedList = [0, 1, 2];
+                  }
                   onChange == false
                       ? nameController.text = state.studentName ?? ''
                       : null;
@@ -363,7 +440,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         alignment: Alignment.bottomCenter,
                         child: retryButton(
                           onPressed: () {
-                            Utility.updateLoges(
+                            Utility.updateLogs(
                                 // ,
                                 activityId: '9',
                                 description:
@@ -432,12 +509,18 @@ class _SuccessScreenState extends State<SuccessScreen> {
         scanFailure.value = 'Failure';
       }
 
-      if (isStudentIdFilled.value.isNotEmpty &&
+      if (idController.text.isNotEmpty &&
               Overrides.STANDALONE_GRADED_APP == true
-          ? (regex.hasMatch(isStudentIdFilled.value))
-          : isStudentIdFilled.value.isNotEmpty) {
+          ? (regex.hasMatch(idController.text))
+          : (Utility.checkForInt(idController.text)
+              ? (idController.text.length == 9 &&
+                  ((idController.text[0] == '2' ||
+                      idController.text[0] == '1')))
+              : (regex.hasMatch(idController.text)))) {
         if (Overrides.STANDALONE_GRADED_APP == true) {
-          bool result = await checkEmailFromGoogleclassroom();
+          bool result = await OcrUtility.checkEmailFromGoogleClassroom(
+              studentEmail:
+                  idController.value.text); //checkEmailFromGoogleclassroom();
           if (!result) {
             //  Scaffold.of(context).showSnackBar(showSnack('Error. Could not log out'));
             Utility.currentScreenSnackBar(
@@ -451,7 +534,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 widget.isFromHistoryAssessmentScanMore);
 
         if (idController.text.isNotEmpty) {
-          if (Overrides.STANDALONE_GRADED_APP != true) {
+          if (Overrides.STANDALONE_GRADED_APP != true &&
+              nameController.text.isNotEmpty) {
             _bloc.add(SaveStudentDetails(
                 studentName: nameController.text,
                 studentId: idController.text));
@@ -479,7 +563,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       updateDetails(
           isFromHistoryAssessmentScanMore:
               widget.isFromHistoryAssessmentScanMore);
-      Utility.updateLoges(
+      Utility.updateLogs(
           //  ,
           activityId: '10',
           description: 'Next Scan',
@@ -498,6 +582,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => CameraScreen(
+                  assessmentName: widget.assessmentName,
+                  lastAssessmentLength: widget.lastAssessmentLength,
+                  isMcqSheet: widget.isMcqSheet,
+                  selectedAnswer: widget.selectedAnswer,
                   questionImageLink: widget.questionImageUrl ?? '',
                   obj: widget.obj,
                   createdAsPremium: widget.createdAsPremium,
@@ -511,6 +599,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       );
       if (result == true) {
         isBackFromCamera.value = result;
+        initialCursorPositionAtLast = true;
       }
     }
   }
@@ -595,8 +684,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ),
               ],
             ),
-
-            SpacerWidget(_KVertcalSpace * 0.25),
+            SpacerWidget(_KVerticalSpace * 0.25),
             Utility.textWidget(
                 text: 'Student Name',
                 context: context,
@@ -604,10 +692,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     color: Theme.of(context)
                         .colorScheme
                         .primaryVariant
-                        .withOpacity(0.5))),
-
+                        .withOpacity(0.3))),
             textFormField(
-                scrollController: scrollControlleName,
+                scrollController: scrollControlledName,
                 controller: nameController,
                 hintText: 'Student Name',
                 inputFormatters: <TextInputFormatter>[
@@ -627,7 +714,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
                       ? ''
                       : null;
                 }),
-
             ValueListenableBuilder(
                 valueListenable: isStudentNameFilled,
                 child: Container(),
@@ -659,10 +745,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         )
                       : Container();
                 }),
-            SpacerWidget(10),
             suggestionWidget(isNameList: true),
-
-            SpacerWidget(_KVertcalSpace / 3),
+            SpacerWidget(_KVerticalSpace / 3),
             Utility.textWidget(
                 text: Overrides.STANDALONE_GRADED_APP == true
                     ? 'Student Email'
@@ -672,8 +756,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     color: Theme.of(context)
                         .colorScheme
                         .primaryVariant
-                        .withOpacity(0.5))),
-
+                        .withOpacity(0.3))),
             ValueListenableBuilder(
                 valueListenable: isStudentIdFilled,
                 child: Container(),
@@ -682,31 +765,34 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   return Wrap(
                     children: [
                       textFormField(
-                          scrollController: scrollControllerId,
-                          controller: idController,
-                          hintText: Overrides.STANDALONE_GRADED_APP == true
-                              ? 'Student Email'
-                              : 'Student ID/Email',
-                          isFailure: true,
-                          // errormsg:
-                          //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-                          onSaved: (String value) {
-                            studentIdOnSaveFailure(value);
-                          },
-                          validator: (String? value) {
-                            isStudentIdFilled.value = value!;
-                            return Overrides.STANDALONE_GRADED_APP == true
-                                ? isStudentIdFilled.value.isEmpty ||
-                                        !regex.hasMatch(isStudentIdFilled.value)
-                                    ? ''
-                                    : null
-                                : isStudentIdFilled.value.isEmpty
-                                    ? ''
-                                    : null;
-                          },
-                          inputFormatters: [],
-                          maxNineDigit: false //true
-                          ),
+                        scrollController: scrollControllerId,
+                        controller: idController,
+                        hintText: Overrides.STANDALONE_GRADED_APP == true
+                            ? 'Student Email'
+                            : 'Student ID/Email',
+                        isFailure: true,
+                        // errormsg:
+                        //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+                        onSaved: (String value) {
+                          initialCursorPositionAtLast = false;
+                          studentIdOnSaveFailure(value);
+                        },
+                        validator: (String? value) {
+                          isStudentIdFilled.value = value!;
+                          return Overrides.STANDALONE_GRADED_APP == true
+                              ? isStudentIdFilled.value.isEmpty ||
+                                      !regex.hasMatch(isStudentIdFilled.value)
+                                  ? ''
+                                  : null
+                              : isStudentIdFilled.value.isEmpty
+                                  ? ''
+                                  : null;
+                        },
+                        inputFormatters: [],
+                        maxNineDigit: Utility.checkForInt(idController.text)
+                            ? true
+                            : false, //true
+                      ),
                       Container(
                         alignment: Alignment.centerLeft,
                         child: TranslationWidget(
@@ -714,11 +800,24 @@ class _SuccessScreenState extends State<SuccessScreen> {
                                 ? (idController.text == ''
                                     ? 'Student Email Is Required'
                                     : (!regex.hasMatch(idController.text))
-                                        ? 'Please enter valid Email'
+                                        ? 'Please Enter valid Email'
                                         : '')
-                                : (isStudentIdFilled.value == ""
-                                    ? 'Student ID/Email Is Required'
-                                    : ''),
+                                : idController.text.isEmpty
+                                    ? 'Please Enter Valid Email ID or Student ID'
+                                    : Utility.checkForInt(idController.text)
+                                        ? (idController.text.length != 9
+                                            ? 'Student Id should be 9 digit'
+                                            : (idController.text[0] != '2' &&
+                                                    idController.text[0] != '1'
+                                                ? 'Student Id should be start for 1 or 2'
+                                                : ''))
+                                        : (!regex.hasMatch(idController.text))
+                                            ? 'Please Enter valid Email'
+                                            : '',
+
+                            // (isStudentIdFilled.value == ""
+                            //     ? 'Student ID/Email Is Required'
+                            //     : ''),
                             fromLanguage: "en",
                             toLanguage: Globals.selectedLanguage,
                             builder: (translatedMessage) {
@@ -731,30 +830,31 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     ],
                   );
                 }),
-            SpacerWidget(10),
             suggestionWidget(isNameList: false),
-
-            // jklsdjfkl
-            SpacerWidget(_KVertcalSpace / 3),
+            SpacerWidget(_KVerticalSpace / 2),
+            Center(child: imagePreviewWidget()),
+            SpacerWidget(_KVerticalSpace / 3),
             Center(
               child: Utility.textWidget(
                   textAlign: TextAlign.center,
-                  text: 'Points Earned',
+                  text: widget.isMcqSheet == true
+                      ? 'Student Selection'
+                      : 'Points Earned',
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                       color: Theme.of(context)
                           .colorScheme
                           .primaryVariant
-                          .withOpacity(0.5))),
+                          .withOpacity(0.3))),
             ),
-            SpacerWidget(_KVertcalSpace / 4),
-            Center(
-                child: pointsEarnedButton(grade == '' ? 2 : int.parse(grade),
-                    isSuccessState: false)),
-            SpacerWidget(_KVertcalSpace / 2),
-            Center(child: imagePreviewWidget()),
-            SpacerWidget(_KVertcalSpace / 0.9),
-            SpacerWidget(_KVertcalSpace / 1.5),
+            SpacerWidget(_KVerticalSpace / 4),
+            pointsEarnedButton(
+                widget.isMcqSheet == true
+                    ? grade == ''
+                        ? 'NA'
+                        : grade
+                    : (grade == '' ? 2 : int.parse(grade)),
+                isSuccessState: false),
           ],
         ),
       ),
@@ -762,128 +862,121 @@ class _SuccessScreenState extends State<SuccessScreen> {
   }
 
   Widget suggestionWidget({required bool isNameList}) {
-    return
-        // Overrides.STANDALONE_GRADED_APP == true
-        //     ?
-        ValueListenableBuilder(
-            valueListenable: isNameList == true
-                ? suggestionNameListLenght
-                : suggestionEmailListLenght,
-            child: Container(),
-            builder: (BuildContext context, dynamic value, Widget? child) {
-              return suggestionNameListLenght.value == 0 &&
-                      suggestionEmailListLenght.value == 0
-                  ? Container()
-                  : Container(
-                      height: 30,
-                      child: ChipsFilter(
-                          selectedValue: (String value) {
-                            if (value.isNotEmpty) {
-                              if (isNameList == true) {
-                                if (Overrides.STANDALONE_GRADED_APP == true) {
-                                  nameController.text = value;
-                                  for (int i = 0; i < studentInfo.length; i++) {
-                                    if (studentInfo[i].studentName! == value) {
-                                      idController.text =
-                                          studentInfo[i].studentEmail!;
-                                      isNameUpdated.value =
-                                          !isNameUpdated.value;
-                                      isStudentNameFilled.value =
-                                          studentInfo[i].studentName!;
-                                      suggestionNameList = [];
-                                      suggestionNameListLenght.value = 0;
-                                      isStudentIdFilled.value =
-                                          studentInfo[i].studentEmail!;
-                                      suggestionEmailList = [];
-                                      suggestionEmailListLenght.value = 0;
+    return ValueListenableBuilder(
+        valueListenable: isNameList == true
+            ? suggestionNameListLenght
+            : suggestionEmailListLenght,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return suggestionNameListLenght.value == 0 &&
+                      suggestionEmailListLenght.value == 0 ||
+                  (suggestionNameListLenght.value == 0 && isNameList == true) ||
+                  (suggestionEmailListLenght.value == 0 && isNameList != true)
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.symmetric(vertical: 6),
+                  height: 30,
+                  child: ChipsFilter(
+                      selectedValue: (String value) {
+                        if (value.isNotEmpty) {
+                          if (isNameList == true) {
+                            if (Overrides.STANDALONE_GRADED_APP == true) {
+                              nameController.text = value;
+                              for (int i = 0; i < studentInfo.length; i++) {
+                                if (studentInfo[i].studentName! == value) {
+                                  idController.text =
+                                      studentInfo[i].studentEmail!;
+                                  isNameUpdated.value = !isNameUpdated.value;
+                                  isStudentNameFilled.value =
+                                      studentInfo[i].studentName!;
+                                  suggestionNameList = [];
+                                  suggestionNameListLenght.value = 0;
+                                  isStudentIdFilled.value =
+                                      studentInfo[i].studentEmail!;
+                                  suggestionEmailList = [];
+                                  suggestionEmailListLenght.value = 0;
 
-                                      break;
-                                    }
-                                  }
-                                } else {
-                                  nameController.text = value;
-                                  for (int i = 0;
-                                      i < standardStudentDetails.length;
-                                      i++) {
-                                    if (standardStudentDetails[i].name! ==
-                                        value) {
-                                      idController.text =
-                                          standardStudentDetails[i].studentId!;
-                                      isNameUpdated.value =
-                                          !isNameUpdated.value;
-                                      isStudentNameFilled.value =
-                                          standardStudentDetails[i].name!;
-                                      suggestionNameList = [];
-                                      suggestionNameListLenght.value = 0;
-                                      isStudentIdFilled.value =
-                                          standardStudentDetails[i].studentId!;
-                                      suggestionEmailList = [];
-                                      suggestionEmailListLenght.value = 0;
-
-                                      break;
-                                    }
-                                  }
-                                }
-                              } else {
-                                if (Overrides.STANDALONE_GRADED_APP == true) {
-                                  idController.text = value;
-                                  isStudentIdFilled.value = value;
-                                  for (int i = 0; i < studentInfo.length; i++) {
-                                    if (studentInfo[i].studentEmail! == value) {
-                                      nameController.text =
-                                          studentInfo[i].studentName!;
-                                      isNameUpdated.value =
-                                          !isNameUpdated.value;
-                                      isStudentNameFilled.value =
-                                          studentInfo[i].studentName!;
-                                      suggestionEmailList = [];
-                                      suggestionEmailListLenght.value = 0;
-                                      suggestionNameList = [];
-                                      suggestionNameListLenght.value = 0;
-
-                                      break;
-                                    }
-                                  }
-                                } else {
-                                  idController.text = value;
-                                  isStudentIdFilled.value = value;
-                                  for (int i = 0;
-                                      i < standardStudentDetails.length;
-                                      i++) {
-                                    if (standardStudentDetails[i].studentId! ==
-                                            value ||
-                                        standardStudentDetails[i].email! ==
-                                            value) {
-                                      nameController.text =
-                                          standardStudentDetails[i].name!;
-                                      isNameUpdated.value =
-                                          !isNameUpdated.value;
-                                      isStudentNameFilled.value =
-                                          standardStudentDetails[i].name!;
-                                      suggestionEmailList = [];
-                                      suggestionEmailListLenght.value = 0;
-                                      suggestionNameList = [];
-                                      suggestionNameListLenght.value = 0;
-
-                                      break;
-                                    }
-                                  }
+                                  break;
                                 }
                               }
+                            } else {
+                              nameController.text = value;
+                              for (int i = 0;
+                                  i < standardStudentDetails.length;
+                                  i++) {
+                                if (standardStudentDetails[i].name! == value) {
+                                  idController.text =
+                                      standardStudentDetails[i].studentId!;
+                                  isNameUpdated.value = !isNameUpdated.value;
+                                  isStudentNameFilled.value =
+                                      standardStudentDetails[i].name!;
+                                  suggestionNameList = [];
+                                  suggestionNameListLenght.value = 0;
+                                  isStudentIdFilled.value =
+                                      standardStudentDetails[i].studentId!;
+                                  suggestionEmailList = [];
+                                  suggestionEmailListLenght.value = 0;
 
-                              //        _debouncer.run(() async {
-
-                              //   setState(() {});
-                              // });
-
+                                  break;
+                                }
+                              }
                             }
-                          },
-                          selected: 1, // Select the second filter as default
-                          filters: isNameList == true
-                              ? suggestionNameList
-                              : suggestionEmailList),
-                    );
-            });
+                          } else {
+                            if (Overrides.STANDALONE_GRADED_APP == true) {
+                              idController.text = value;
+                              isStudentIdFilled.value = value;
+                              for (int i = 0; i < studentInfo.length; i++) {
+                                if (studentInfo[i].studentEmail! == value) {
+                                  nameController.text =
+                                      studentInfo[i].studentName!;
+                                  isNameUpdated.value = !isNameUpdated.value;
+                                  isStudentNameFilled.value =
+                                      studentInfo[i].studentName!;
+                                  suggestionEmailList = [];
+                                  suggestionEmailListLenght.value = 0;
+                                  suggestionNameList = [];
+                                  suggestionNameListLenght.value = 0;
+
+                                  break;
+                                }
+                              }
+                            } else {
+                              idController.text = value;
+                              isStudentIdFilled.value = value;
+                              for (int i = 0;
+                                  i < standardStudentDetails.length;
+                                  i++) {
+                                if (standardStudentDetails[i].studentId! ==
+                                        value ||
+                                    standardStudentDetails[i].email! == value) {
+                                  nameController.text =
+                                      standardStudentDetails[i].name!;
+                                  isNameUpdated.value = !isNameUpdated.value;
+                                  isStudentNameFilled.value =
+                                      standardStudentDetails[i].name!;
+                                  suggestionEmailList = [];
+                                  suggestionEmailListLenght.value = 0;
+                                  suggestionNameList = [];
+                                  suggestionNameListLenght.value = 0;
+
+                                  break;
+                                }
+                              }
+                            }
+                          }
+
+                          //        _debouncer.run(() async {
+
+                          //   setState(() {});
+                          // });
+                        }
+                      },
+                      selected: 1, // Select the second filter as default
+                      filters: isNameList == true
+                          ? suggestionNameList
+                          : suggestionEmailList),
+                );
+        });
     //   : Container();
   }
 
@@ -896,7 +989,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //  SpacerWidget(_KVertcalSpace / 5),
-            SpacerWidget(_KVertcalSpace * 0.25),
+            SpacerWidget(_KVerticalSpace * 0.25),
             Utility.textWidget(
                 text: 'Student Name',
                 context: context,
@@ -906,7 +999,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         .primaryVariant
                         .withOpacity(0.3))),
             textFormField(
-                scrollController: scrollControlleName,
+                scrollController: scrollControlledName,
                 controller: nameController,
                 inputFormatters: <TextInputFormatter>[
                   //To capitalize first letter of the textfield
@@ -951,113 +1044,141 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         )
                       : Container();
                 }),
-            SpacerWidget(10),
+
             suggestionWidget(isNameList: true),
-            SpacerWidget(_KVertcalSpace / 3),
+            SpacerWidget(_KVerticalSpace / 3),
             Utility.textWidget(
                 text: Overrides.STANDALONE_GRADED_APP == true
                     ? 'Student Email'
                     : 'Student ID/Student Email',
                 context: context,
-                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                textTheme: Theme.of(context).textTheme.headline4!.copyWith(
                     color: Theme.of(context)
                         .colorScheme
                         .primaryVariant
-                        .withOpacity(0.5))),
-            textFormField(
-              scrollController: scrollControllerId,
-              maxNineDigit: false, //true,
-              controller: idController,
-              // keyboardType: Overrides.STANDALONE_GRADED_APP == true
-              //     ? null
-              //     : TextInputType.number,
-              hintText: Overrides.STANDALONE_GRADED_APP == true
-                  ? 'Student Email'
-                  : 'Student ID/Student Email',
-              // errormsg:
-              //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-              isFailure: true,
-              onSaved: (String value) {
-                studentIdOnSaveSuccess(value);
-              },
-              validator: (String? value) {
-                isStudentIdFilled.value = value!;
-              },
-              inputFormatters: [],
-            ),
+                        .withOpacity(0.3))),
             ValueListenableBuilder(
                 valueListenable: isStudentIdFilled,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
-                  return Container(
-                    alignment: Alignment.centerLeft,
-                    child: TranslationWidget(
-                        message: isStudentIdFilled.value == ""
-                            ? (Overrides.STANDALONE_GRADED_APP == true
-                                ? 'Student Email is required'
-                                : 'Student ID/Student Email is required')
-                            : (Overrides.STANDALONE_GRADED_APP == true
-                                ? (regex.hasMatch(isStudentIdFilled.value))
-                                    ? ''
-                                    : 'Please enter valid Email'
-                                : isStudentIdFilled.value.isEmpty
-                                    ? 'Student Email is required'
-                                    : ''),
-                        fromLanguage: "en",
-                        toLanguage: Globals.selectedLanguage,
-                        builder: (translatedMessage) {
-                          return Text(
-                            translatedMessage,
-                            style: TextStyle(color: Colors.red),
-                          );
-                        }),
+                  // return emailTextField();
+                  return Wrap(
+                    children: [
+                      textFormField(
+                        scrollController: scrollControllerId,
+                        controller: idController,
+                        hintText: Overrides.STANDALONE_GRADED_APP == true
+                            ? 'Student Email'
+                            : 'Student ID/Email',
+                        isFailure: true,
+                        // errormsg:
+                        //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+                        onSaved: (String value) {
+                          initialCursorPositionAtLast = false;
+                          studentIdOnSaveFailure(value);
+                        },
+                        validator: (String? value) {
+                          isStudentIdFilled.value = value!;
+                          return Overrides.STANDALONE_GRADED_APP == true
+                              ? isStudentIdFilled.value.isEmpty ||
+                                      !regex.hasMatch(isStudentIdFilled.value)
+                                  ? ''
+                                  : null
+                              : isStudentIdFilled.value.isEmpty
+                                  ? ''
+                                  : null;
+                        },
+                        inputFormatters: [],
+                        maxNineDigit: Utility.checkForInt(idController.text)
+                            ? true
+                            : false, //true
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: TranslationWidget(
+                            message: Overrides.STANDALONE_GRADED_APP == true
+                                ? (idController.text == ''
+                                    ? 'Student Email Is Required'
+                                    : (!regex.hasMatch(idController.text))
+                                        ? 'Please Enter valid Email'
+                                        : '')
+                                : idController.text.isEmpty
+                                    ? 'Please Enter Valid Email ID or Student ID'
+                                    : Utility.checkForInt(idController.text)
+                                        ? (idController.text.length != 9
+                                            ? 'Student Id should be 9 digit'
+                                            : (idController.text[0] != '2' &&
+                                                    idController.text[0] != '1'
+                                                ? 'Student Id should be start for 1 or 2'
+                                                : ''))
+                                        : (!regex.hasMatch(idController.text))
+                                            ? 'Please Enter valid Email'
+                                            : '',
+
+                            // (isStudentIdFilled.value == ""
+                            //     ? 'Student ID/Email Is Required'
+                            //     : ''),
+                            fromLanguage: "en",
+                            toLanguage: Globals.selectedLanguage,
+                            builder: (translatedMessage) {
+                              return Text(
+                                translatedMessage,
+                                style: TextStyle(color: Colors.red),
+                              );
+                            }),
+                      ),
+                    ],
                   );
                 }),
-            SpacerWidget(10),
+
             suggestionWidget(isNameList: false),
-            SpacerWidget(_KVertcalSpace / 3),
+            // SpacerWidget(_KVerticalSpace / 2),
+            Center(child: imagePreviewWidget()),
+            SpacerWidget(_KVerticalSpace / 3),
             Center(
               child: Utility.textWidget(
-                  text: 'Points Earned',
+                  text: widget.isMcqSheet == true
+                      ? 'Student Selection'
+                      : 'Points Earned',
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline2!.copyWith(
                       color: Theme.of(context)
                           .colorScheme
                           .primaryVariant
-                          .withOpacity(0.5))),
+                          .withOpacity(0.3))),
             ),
-            SpacerWidget(_KVertcalSpace / 4),
-            Center(
-                child:
-                    pointsEarnedButton(int.parse(grade), isSuccessState: true)),
-            SpacerWidget(_KVertcalSpace / 2),
-            Center(child: imagePreviewWidget()),
-            SpacerWidget(_KVertcalSpace / 2.8),
-            Center(
-              child: Container(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  // color: Colors.blue,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Utility.textWidget(
-                          text: 'All Good!',
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold)),
-                      Icon(
-                        IconData(0xe878,
-                            fontFamily: Overrides.kFontFam,
-                            fontPackage: Overrides.kFontPkg),
-                        size: 34,
-                        color: AppTheme.kButtonColor,
-                      ),
-                    ],
-                  )),
-            ),
-            SpacerWidget(MediaQuery.of(context).size.height * 0.15),
+            SpacerWidget(_KVerticalSpace / 4),
+            pointsEarnedButton(
+                widget.isMcqSheet == true ? grade : int.parse(grade),
+                isSuccessState: true),
+
+            Container(
+                padding: EdgeInsets.only(top: 10),
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Utility.textWidget(
+                        text: widget.isMcqSheet == true
+                            ? 'Successful Scan '
+                            : 'All Good!',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(fontWeight: FontWeight.bold)),
+                    Icon(
+                      IconData(0xe878,
+                          fontFamily: Overrides.kFontFam,
+                          fontPackage: Overrides.kFontPkg),
+                      size: Globals.deviceType == 'phone' ? 24 : 34,
+                      color: AppTheme.kButtonColor,
+                    ),
+                  ],
+                )),
+            // SpacerWidget(MediaQuery.of(context).size.height * 0.15),
           ],
           // ),
         ),
@@ -1081,8 +1202,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
         showCustomRubricImage();
       },
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.30,
-        width: MediaQuery.of(context).size.width * 0.58,
+        height: MediaQuery.of(context).size.height * 0.195,
+        width: MediaQuery.of(context).size.width * 0.85,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(6.52),
           child: Image.file(
@@ -1094,39 +1215,76 @@ class _SuccessScreenState extends State<SuccessScreen> {
     );
   }
 
-  Widget pointsEarnedButton(int grade, {required bool isSuccessState}) {
+  Widget pointsEarnedButton(dynamic grade, {required bool isSuccessState}) {
     return FittedBox(
+      //  alignment: Alignment.center,
       child: Container(
-          alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height * 0.1,
-          width: MediaQuery.of(context).size.width,
-          child: Globals.pointsEarnedList.length > 4
-              ? ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Center(
-                        child: pointsButton(index, grade,
-                            isSuccessState: isSuccessState));
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      width: 12,
-                    );
-                  },
-                  itemCount: Globals.pointsEarnedList.length)
-              : Row(
-                  // scrollDirection: Axis.horizontal,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: Globals.pointsEarnedList
-                      .map<Widget>((element) => pointsButton(
-                          Globals.pointsEarnedList.indexOf(element), grade,
-                          isSuccessState: true))
-                      .toList(),
-                )),
+        //color: Colors.blue,
+        alignment: Alignment.center,
+        height: MediaQuery.of(context).size.height * 0.18,
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          // scrollDirection: Axis.horizontal,
+
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: Globals.pointsEarnedList
+              .map<Widget>((element) => pointsButton(
+                  widget.isMcqSheet == true
+                      ? element
+                      : Globals.pointsEarnedList.indexOf(element),
+                  grade,
+                  isSuccessState: true))
+              .toList(),
+        ),
+
+        // Globals.pointsEarnedList.length > 4
+        //     ? Row(
+        //         // scrollDirection: Axis.horizontal,
+
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         children: Globals.pointsEarnedList
+        //             .map<Widget>((element) => pointsButton(
+        //                 widget.isMcqSheet == true
+        //                     ? element
+        //                     : Globals.pointsEarnedList.indexOf(element),
+        //                 grade,
+        //                 isSuccessState: true))
+        //             .toList(),
+        //       )
+
+        //     //  ListView.separated(
+        //     //     physics: NeverScrollableScrollPhysics(),
+        //     //     scrollDirection: Axis.horizontal,
+        //     //     itemBuilder: (BuildContext context, int index) {
+        //     //       return Center(
+        //     //           child: pointsButton(
+        //     //               widget.isMcqSheet == true
+        //     //                   ? Globals.pointsEarnedList[index]
+        //     //                   : index,
+        //     //               grade,
+        //     //               isSuccessState: isSuccessState));
+        //     //     },
+        //     //     separatorBuilder: (BuildContext context, int index) {
+        //     //       return SizedBox(
+        //     //         width: 12,
+        //     //       );
+        //     //     },
+        //     //     itemCount: Globals.pointsEarnedList.length)
+        //     : Row(
+        //         // scrollDirection: Axis.horizontal,
+
+        //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        //         children: Globals.pointsEarnedList
+        //             .map<Widget>((element) => pointsButton(
+        //                 Globals.pointsEarnedList.indexOf(element), grade,
+        //                 isSuccessState: true))
+        //             .toList(),
+        //       )
+      ),
     );
   }
 
-  Widget pointsButton(index, int grade, {required bool isSuccessState}) {
+  Widget pointsButton(index, dynamic grade, {required bool isSuccessState}) {
     isSelected ? indexColor.value = grade : null;
     return ValueListenableBuilder(
         valueListenable: rubricNotDetected,
@@ -1134,84 +1292,153 @@ class _SuccessScreenState extends State<SuccessScreen> {
           return ValueListenableBuilder(
             valueListenable: indexColor,
             builder: (BuildContext context, dynamic value, Widget? child) {
-              return InkWell(
-                  onTap: () {
-                    // updateDetails(isUpdateData: true);
-                    Utility.updateLoges(
-                        // ,
-                        activityId: '8',
-                        description:
-                            'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
-                        operationResult: 'Success');
-                    pointScored.value = index.toString();
-                    // if (isSuccessState) {}
-                    isSelected = false;
-                    rubricNotDetected.value = false;
-                    indexColor.value = index;
-                  },
-                  child: AnimatedContainer(
-                    duration: Duration(microseconds: 100),
-                    padding: EdgeInsets.only(
-                      bottom: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: index == indexColor.value
-                          ? rubricNotDetected.value == true &&
-                                  isSelected == true
-                              ? Colors.red
-                              : AppTheme.kSelectedColor
-                          : Colors.grey,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8),
-                      ),
-                    ),
-                    child: Container(
-                        alignment: Alignment.center,
-                        height: //Globals.pointsEarnedList.length>3?
-                            MediaQuery.of(context).size.height *
-                                0.085, //:MediaQuery.of(context).size.height*0.2,
-                        width:
-                            //Globals.pointsEarnedList.length>3?
-                            MediaQuery.of(context).size.width * 0.17,
-                        //:MediaQuery.of(context).size.width*0.2,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical:
-                                15), //horizontal: Globals.pointsEarnedList.length>3?20:30
-                        decoration: BoxDecoration(
-                          color: Color(0xff000000) !=
-                                  Theme.of(context).backgroundColor
-                              ? Color(0xffF7F8F9)
-                              : Color(0xff111C20),
-                          border: Border.all(
-                            color: index == indexColor.value
-                                ? rubricNotDetected.value == true &&
-                                        isSelected == true
-                                    ? Colors.red
-                                    : AppTheme.kSelectedColor
-                                : Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+              return Column(
+                children: [
+                  InkWell(
+                      onTap: () {
+                        // updateDetails(isUpdateData: true);
+                        // Utility.updateLoges(
+                        //     // ,
+                        //     activityId: '8',
+                        //     description:
+                        //         'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
+                        //     operationResult: 'Success');
+                        if (pointScored.value != index.toString()) {
+                          isRubricChanged = true;
+                        }
+                        pointScored.value = index.toString();
+                        // if (isSuccessState) {}
+                        isSelected = false;
+                        rubricNotDetected.value = false;
+                        indexColor.value = index;
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(microseconds: 100),
+                        padding: EdgeInsets.only(
+                          bottom: 5,
                         ),
-                        child: TranslationWidget(
-                          message: Globals.pointsEarnedList[index].toString(),
-                          toLanguage: Globals.selectedLanguage,
-                          fromLanguage: "en",
-                          builder: (translatedMessage) => Text(
-                            translatedMessage.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1!
-                                .copyWith(
-                                    color: indexColor.value == index
+                        decoration: BoxDecoration(
+                          color: widget.isMcqSheet == true
+                              ? (index == widget.selectedAnswer &&
+                                      indexColor.value == index
+                                  ? Colors.green.shade300
+                                  : indexColor.value == index
+                                      ? rubricNotDetected.value == true &&
+                                              isSelected == true
+                                          ? Colors.red
+                                          : Colors.red
+                                      : Colors.grey)
+                              : index == indexColor.value
+                                  ? rubricNotDetected.value == true &&
+                                          isSelected == true
+                                      ? Colors.red
+                                      : AppTheme.kSelectedColor
+                                  : Colors.grey,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: //Globals.pointsEarnedList.length>3?
+                                widget.isMcqSheet == true
+                                    ? MediaQuery.of(context).size.height *
+                                        //  0.085, //:MediaQuery.of(context).size.height*0.2,
+                                        0.073
+                                    : MediaQuery.of(context).size.height *
+                                        0.085,
+                            width:
+                                //Globals.pointsEarnedList.length>3?
+                                widget.isMcqSheet == true
+                                    ? MediaQuery.of(context).size.width * 0.133
+                                    : MediaQuery.of(context).size.width * 0.17,
+                            //:MediaQuery.of(context).size.width*0.2,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical:
+                                    10), //horizontal: Globals.pointsEarnedList.length>3?20:30
+                            decoration: BoxDecoration(
+                              color: Color(0xff000000) !=
+                                      Theme.of(context).backgroundColor
+                                  ? Color(0xffF7F8F9)
+                                  : Color(0xff111C20),
+                              border: Border.all(
+                                color: widget.isMcqSheet == true
+                                    ? (index == widget.selectedAnswer &&
+                                            indexColor.value == index
+                                        ? Colors.green.shade300
+                                        : indexColor.value == index
+                                            ? rubricNotDetected.value == true &&
+                                                    isSelected == true
+                                                ? Colors.red
+                                                : Colors.red
+                                            : Colors.grey)
+                                    : index == indexColor.value
                                         ? rubricNotDetected.value == true &&
                                                 isSelected == true
                                             ? Colors.red
                                             : AppTheme.kSelectedColor
-                                        : Colors.grey),
-                          ),
-                        )),
-                  ));
+                                        : Colors.grey,
+
+                                // index == indexColor.value
+                                //     ? rubricNotDetected.value == true &&
+                                //             isSelected == true
+                                //         ? Colors.red
+                                //         : AppTheme.kSelectedColor
+                                //     : Colors.grey,
+                              ),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                            child: TranslationWidget(
+                              message: widget.isMcqSheet == true
+                                  ? index
+                                  : Globals.pointsEarnedList[index].toString(),
+                              toLanguage: Globals.selectedLanguage,
+                              fromLanguage: "en",
+                              builder: (translatedMessage) => Text(
+                                translatedMessage.toString(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1!
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: widget.isMcqSheet == true
+                                            // ? (index == widget.selectedAnswer
+                                            //     ? AppTheme.kButtonColor
+                                            //     : indexColor.value == index
+                                            //         ? rubricNotDetected.value ==
+                                            //                     true &&
+                                            //                 isSelected == true
+                                            //             ? Colors.red
+                                            //             : Colors
+                                            //                 .red //AppTheme.kSelectedColor
+                                            //         : Colors.grey)
+                                            ? (index == widget.selectedAnswer &&
+                                                    indexColor.value == index
+                                                ? Colors.green.shade300
+                                                : indexColor.value == index
+                                                    ? rubricNotDetected.value ==
+                                                                true &&
+                                                            isSelected == true
+                                                        ? Colors.red
+                                                        : Colors.red
+                                                    : Colors.grey)
+                                            : (indexColor.value == index
+                                                ? rubricNotDetected.value ==
+                                                            true &&
+                                                        isSelected == true
+                                                    ? Colors.red
+                                                    : AppTheme.kSelectedColor
+                                                : Colors.grey)),
+                              ),
+                            )),
+                      )),
+                  //Compare Correct Answer Key
+                  if (index == widget.selectedAnswer)
+                    Expanded(child: animatedArrowWidget())
+                ],
+              );
             },
           );
         });
@@ -1237,19 +1464,26 @@ class _SuccessScreenState extends State<SuccessScreen> {
               valueListenable: isStudentNameFilled,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
-                if (controller.text.length != 0) {
+                if (controller.text.length != 0 &&
+                    initialCursorPositionAtLast == true) {
                   //!=0
                   controller.selection = TextSelection.fromPosition(
                       TextPosition(offset: controller.text.length));
+                  // initialCursorPositionAtLast = false;
                 }
 
                 return TextFormField(
                     scrollController: scrollController,
-                    maxLength: Overrides.STANDALONE_GRADED_APP == true
-                        ? null
-                        : maxNineDigit == true
-                            ? 9
-                            : null,
+                    maxLength: maxNineDigit == true &&
+                            Overrides.STANDALONE_GRADED_APP == false
+                        ? 9
+                        : null,
+                    // ? null
+                    // Overrides.STANDALONE_GRADED_APP == true
+                    //     ? null
+                    //     : maxNineDigit == true
+                    //         ? 9
+                    //         : null,
                     inputFormatters:
                         inputFormatters == null ? null : inputFormatters,
                     autovalidateMode: AutovalidateMode.always,
@@ -1262,7 +1496,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             .copyWith(fontWeight: FontWeight.bold)
                         : Theme.of(context)
                             .textTheme
-                            .headline6!
+                            .headline5!
                             .copyWith(fontWeight: FontWeight.bold),
                     controller: controller,
                     cursorColor: Theme.of(context).colorScheme.primaryVariant,
@@ -1396,11 +1630,19 @@ class _SuccessScreenState extends State<SuccessScreen> {
         studentAssessmentInfo.studentName = nameController.text;
         studentAssessmentInfo.studentId =
             updatedStudentId; // commented to add id case of email //idController.text;
-        studentAssessmentInfo.studentGrade =
-            indexColor.value.toString(); //pointScored.value;
-        // studentAssessmentInfo.pointpossible = Globals.pointpossible;
+        studentAssessmentInfo.studentGrade = widget.isMcqSheet == true
+            ? (widget.selectedAnswer == indexColor.value.toString() ? '1' : '0')
+            : indexColor.value.toString(); //pointScored.value;
+        // studentAssessmentInfo.pointPossible = Globals.pointPossible;
         studentAssessmentInfo.assessmentImgPath =
             widget.imgPath.path.toString();
+        studentAssessmentInfo.answerKey =
+            widget.isMcqSheet == true ? widget.selectedAnswer : 'NA';
+        studentAssessmentInfo.studentResponseKey =
+            widget.isMcqSheet == true ? indexColor.value.toString() : 'NA';
+        studentAssessmentInfo.googleSlidePresentationURL = 'NA';
+        studentAssessmentInfo.uniqueId = uniqueId;
+        studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
 
         //  if (!id.contains(idController.text)) {
         await _historyStudentInfoDb.putAt(
@@ -1425,11 +1667,21 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 : "Unknown";
             studentAssessmentInfo.studentId =
                 updatedStudentId; // commented to add id case of email //idController.text;
-            studentAssessmentInfo.studentGrade =
-                indexColor.value.toString(); //pointScored.value;
+            studentAssessmentInfo.studentGrade = widget.isMcqSheet == true
+                ? (widget.selectedAnswer == indexColor.value.toString()
+                    ? '1'
+                    : '0')
+                : indexColor.value.toString(); //pointScored.value;
 
             studentAssessmentInfo.assessmentImgPath =
                 widget.imgPath.path.toString();
+            studentAssessmentInfo.answerKey =
+                widget.isMcqSheet == true ? widget.selectedAnswer : 'NA';
+            studentAssessmentInfo.studentResponseKey =
+                widget.isMcqSheet == true ? indexColor.value.toString() : 'NA';
+            studentAssessmentInfo.googleSlidePresentationURL = 'NA';
+            studentAssessmentInfo.uniqueId = uniqueId;
+            studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
 
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
@@ -1461,21 +1713,34 @@ class _SuccessScreenState extends State<SuccessScreen> {
       if (isUpdateData == true && studentInfo.isNotEmpty) {
         // final StudentAssessmentInfo studentAssessmentInfo =
         //     StudentAssessmentInfo();
-        studentAssessmentInfo.studentName = nameController.text;
-        studentAssessmentInfo.studentId =
-            updatedStudentId; // commented to add id case of email //idController.text;
-        studentAssessmentInfo.studentGrade =
-            indexColor.value.toString(); //pointScored.value;
-        studentAssessmentInfo.pointpossible =
-            Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
-                ? Globals.pointpossible
-                : '2';
-        studentAssessmentInfo.assessmentImgPath =
-            widget.imgPath.path.toString();
+
+        if (!id.contains(updatedStudentId)) {
+          studentAssessmentInfo.studentName = nameController.text;
+          studentAssessmentInfo.studentId =
+              updatedStudentId; // commented to add id case of email //idController.text;
+          studentAssessmentInfo.studentGrade = widget.isMcqSheet == true
+              ? (widget.selectedAnswer == indexColor.value.toString()
+                  ? '1'
+                  : '0')
+              : indexColor.value.toString(); //ointScored.value;
+          studentAssessmentInfo.pointPossible =
+              Globals.pointPossible != null || Globals.pointPossible!.isNotEmpty
+                  ? Globals.pointPossible
+                  : '2';
+          studentAssessmentInfo.assessmentImgPath =
+              widget.imgPath.path.toString();
+          studentAssessmentInfo.answerKey =
+              widget.isMcqSheet == true ? widget.selectedAnswer : 'NA';
+          studentAssessmentInfo.studentResponseKey =
+              widget.isMcqSheet == true ? indexColor.value.toString() : 'NA';
+          studentAssessmentInfo.googleSlidePresentationURL = 'NA';
+          studentAssessmentInfo.uniqueId = uniqueId;
+          studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
 // To update/edit the scanned details
-        await _studentInfoDb.putAt(
-            studentInfo.length - 1, studentAssessmentInfo);
-        return;
+          await _studentInfoDb.putAt(
+              studentInfo.length - 1, studentAssessmentInfo);
+          return;
+        }
       } else {
         final StudentAssessmentInfo studentAssessmentInfo =
             StudentAssessmentInfo();
@@ -1486,14 +1751,24 @@ class _SuccessScreenState extends State<SuccessScreen> {
               nameController.text.isNotEmpty ? nameController.text : "Unknown";
           studentAssessmentInfo.studentId =
               updatedStudentId; // commented to add id case of email //idController.text;
-          studentAssessmentInfo.studentGrade =
-              indexColor.value.toString(); //pointScored.value;
-          studentAssessmentInfo.pointpossible =
-              Globals.pointpossible != null || Globals.pointpossible!.isNotEmpty
-                  ? Globals.pointpossible
+          studentAssessmentInfo.studentGrade = widget.isMcqSheet == true
+              ? (widget.selectedAnswer == indexColor.value.toString()
+                  ? '1'
+                  : '0')
+              : indexColor.value.toString(); //pointScored.value;
+          studentAssessmentInfo.pointPossible =
+              Globals.pointPossible != null || Globals.pointPossible!.isNotEmpty
+                  ? Globals.pointPossible
                   : '2';
           studentAssessmentInfo.assessmentImgPath =
               widget.imgPath.path.toString();
+          studentAssessmentInfo.answerKey =
+              widget.isMcqSheet == true ? widget.selectedAnswer : 'NA';
+          studentAssessmentInfo.studentResponseKey =
+              widget.isMcqSheet == true ? indexColor.value.toString() : 'NA';
+          studentAssessmentInfo.googleSlidePresentationURL = 'NA';
+          studentAssessmentInfo.uniqueId = uniqueId;
+          studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           await _studentInfoDb.addData(studentAssessmentInfo);
           return;
@@ -1514,15 +1789,25 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 : "Unknown";
             studentAssessmentInfo.studentId =
                 updatedStudentId; // commented to add id case of email //idController.text;
-            studentAssessmentInfo.studentGrade =
-                indexColor.value.toString(); //pointScored.value;
-            studentAssessmentInfo.pointpossible =
-                Globals.pointpossible != null ||
-                        Globals.pointpossible!.isNotEmpty
-                    ? Globals.pointpossible
+            studentAssessmentInfo.studentGrade = widget.isMcqSheet == true
+                ? (widget.selectedAnswer == indexColor.value.toString()
+                    ? '1'
+                    : '0')
+                : indexColor.value.toString(); //pointScored.value;
+            studentAssessmentInfo.pointPossible =
+                Globals.pointPossible != null ||
+                        Globals.pointPossible!.isNotEmpty
+                    ? Globals.pointPossible
                     : '2';
             studentAssessmentInfo.assessmentImgPath =
                 widget.imgPath.path.toString();
+            studentAssessmentInfo.answerKey =
+                widget.isMcqSheet == true ? widget.selectedAnswer : 'NA';
+            studentAssessmentInfo.studentResponseKey =
+                widget.isMcqSheet == true ? indexColor.value.toString() : 'NA';
+            studentAssessmentInfo.googleSlidePresentationURL = 'NA';
+            studentAssessmentInfo.uniqueId = uniqueId;
+            studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
               //print('added in record ----------------->>>>');
@@ -1540,6 +1825,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
+                  assessmentName: widget.assessmentName,
+                  lastAssessmentLength: widget.lastAssessmentLength,
+                  isMcqSheet: widget.isMcqSheet,
+                  selectedAnswer: widget.selectedAnswer,
                   questionImageLink: widget.questionImageUrl ?? '',
                   obj: widget.obj,
                   createdAsPremium: widget.createdAsPremium,
@@ -1552,6 +1841,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 )));
     if (result == true) {
       isBackFromCamera.value = result;
+      initialCursorPositionAtLast = true;
       // isStudentIdFilled.value = idController.text;
     }
   }
@@ -1560,58 +1850,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
     Timer(Duration(milliseconds: 50), () async {
       animationStart.value = true;
     });
-  }
-
-  Future<bool> checkEmailFromGoogleclassroom() async {
-    try {
-      LocalDatabase<GoogleClassroomCourses> _localDb =
-          LocalDatabase(Strings.googleClassroomCoursesList);
-
-      List<GoogleClassroomCourses>? _localData = await _localDb.getData();
-      List<String> studentEmailList = [];
-      for (var i = 0; i < _localData.length; i++) {
-        for (var j = 0; j < _localData[i].studentList!.length; j++) {
-          studentEmailList
-              .add(_localData[i].studentList![j]['profile']['emailAddress']);
-        }
-      }
-
-      if (studentEmailList.contains(idController.value.text)) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<List<StudentClassroomInfo>> studentList() async {
-    try {
-      List<StudentClassroomInfo> studentList = [];
-      LocalDatabase<GoogleClassroomCourses> _localDb =
-          LocalDatabase(Strings.googleClassroomCoursesList);
-
-      List<GoogleClassroomCourses>? _localData = await _localDb.getData();
-      for (var i = 0; i < _localData.length; i++) {
-        for (var j = 0; j < _localData[i].studentList!.length; j++) {
-          StudentClassroomInfo studentClassroomInfo = StudentClassroomInfo();
-          studentClassroomInfo.studentEmail =
-              _localData[i].studentList![j]['profile']['emailAddress'];
-          studentClassroomInfo.studentName =
-              _localData[i].studentList![j]['profile']['name']['fullName'];
-          if (!studentList.contains(studentClassroomInfo)) {
-            studentList.add(studentClassroomInfo);
-          }
-        }
-      }
-      studentInfo = [];
-      studentInfo = studentList;
-      return studentList;
-    } catch (e) {
-      List<StudentClassroomInfo> studentList = [];
-      return studentList;
-    }
   }
 
   Future<List<StudentDetailsModal>> updateStudentDetails() async {
@@ -1657,10 +1895,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
           suggestionEmailList.add(studentInfo[i].studentEmail!);
         }
       }
-
-      // //Assign the length of suggestion emails
-      // suggestionEmailListLenght.value =
-      //     suggestionEmailList.length;
 
       if (regex.hasMatch(value)) {
         for (int i = 0; i < studentInfo.length; i++) {
@@ -1715,11 +1949,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
           }
         }
       }
-    } else {
-      // suggestionEmailList = [];
-      // suggestionEmailListLenght.value =
-      //     suggestionEmailList.length;
-    }
+    } else {}
 
     // //Assign the length of suggestion emails
     suggestionEmailListLenght.value = suggestionEmailList.length;
@@ -1905,5 +2135,31 @@ class _SuccessScreenState extends State<SuccessScreen> {
     }
 
     onChange = true;
+  }
+
+  Widget animatedArrowWidget() {
+    // print(_animation);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          transform: Matrix4.translationValues(0, _animation.value * 5, 0),
+          child: SvgPicture.asset(
+            Strings.keyArrowSvgIconPath,
+            fit: BoxFit.contain,
+            width: Globals.deviceType == "phone" ? 28 : 50,
+            height: Globals.deviceType == "phone" ? 28 : 50,
+          ),
+        ),
+        Utility.textWidget(
+            textAlign: TextAlign.center,
+            text: "Key",
+            context: context,
+            textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                fontWeight: FontWeight.w400,
+                color: Theme.of(context).colorScheme.primaryVariant)),
+      ],
+    );
   }
 }

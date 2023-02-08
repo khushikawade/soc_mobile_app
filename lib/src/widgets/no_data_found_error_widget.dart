@@ -38,54 +38,57 @@ class NoDataFoundErrorWidget extends StatelessWidget {
             connected: connected,
           )
         : OrientationBuilder(builder: (context, orientation) {
-            return ListView(
-              children: [
-                Container(
-                    margin: EdgeInsets.only(
-                      top: isCalendarPageOrientationLandscape == true &&
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: ListView(
+                children: [
+                  Container(
+                      margin: EdgeInsets.only(
+                        top: isCalendarPageOrientationLandscape == true &&
+                                Globals.deviceType == 'phone' &&
+                                isSearchpage == null
+                            ? MediaQuery.of(context).size.height * 0.14
+                            : marginTop ??
+                                MediaQuery.of(context).size.height * 0.20,
+                      ),
+                      alignment: Alignment.center,
+                      child: (isCalendarPageOrientationLandscape == true ||
+                                  orientation == Orientation.landscape) &&
                               Globals.deviceType == 'phone' &&
                               isSearchpage == null
-                          ? MediaQuery.of(context).size.height * 0.14
-                          : marginTop ??
-                              MediaQuery.of(context).size.height * 0.25,
-                    ),
-                    alignment: Alignment.center,
-                    child: (isCalendarPageOrientationLandscape == true ||
-                                orientation == Orientation.landscape) &&
-                            Globals.deviceType == 'phone' &&
-                            isSearchpage == null
-                        ? SvgPicture.asset(
-                            Strings.noDataIconPath,
-                            fit: BoxFit.cover,
-                            height: MediaQuery.of(context).size.height / 6,
-                            width: MediaQuery.of(context).size.height / 6,
-                          )
-                        : SvgPicture.asset(
-                            Strings.noDataIconPath,
-                            fit: BoxFit.cover,
-                          )),
-                SpacerWidget(12),
-                Container(
-                    alignment: Alignment.center,
-                    child: TranslationWidget(
-                      message: isNews!
-                          ? "No Message Yet"
-                          : isEvents!
-                              ? "No Event Found"
-                              : isResultNotFoundMsg
-                                  ? "No result found"
-                                  : isOcrSearch == true
-                                      ? "No recent search"
-                                      : isScheduleFound == true
-                                          ? "Schedule not found"
-                                          : "No data found",
-                      toLanguage: Globals.selectedLanguage,
-                      fromLanguage: "en",
-                      builder: (translatedMessage) => Text(
-                          translatedMessage.toString(),
-                          style: Theme.of(context).textTheme.bodyText1!),
-                    )),
-              ],
+                          ? SvgPicture.asset(
+                              Strings.noDataIconPath,
+                              fit: BoxFit.cover,
+                              height: MediaQuery.of(context).size.height / 6,
+                              width: MediaQuery.of(context).size.height / 6,
+                            )
+                          : SvgPicture.asset(
+                              Strings.noDataIconPath,
+                              fit: BoxFit.cover,
+                            )),
+                  SpacerWidget(12),
+                  Container(
+                      alignment: Alignment.center,
+                      child: TranslationWidget(
+                        message: isNews == true
+                            ? "No Message Yet"
+                            : isEvents == true
+                                ? "No Event Found"
+                                : isResultNotFoundMsg == true
+                                    ? "No result found"
+                                    : isOcrSearch == true
+                                        ? "No recent search"
+                                        : isScheduleFound == true
+                                            ? "Schedule not found"
+                                            : "No data found",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Text(
+                            translatedMessage.toString(),
+                            style: Theme.of(context).textTheme.bodyText1!),
+                      )),
+                ],
+              ),
             );
           });
   }

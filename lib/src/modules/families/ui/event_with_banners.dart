@@ -25,16 +25,18 @@ import '../modal/calendar_event_list.dart';
 class EventPage extends StatefulWidget {
   final bool? isAppBar;
   final String? language;
-  final bool? isbuttomsheet;
+  final bool? isBottomSheet;
   final String? appBarTitle;
   final String calendarId;
+  final bool? isMainPage;
 
   EventPage({
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.appBarTitle,
     required this.language,
     required this.calendarId,
     this.isAppBar,
+    this.isMainPage,
   });
 
   @override
@@ -47,7 +49,7 @@ class _EventPageState extends State<EventPage>
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final refreshKey1 = GlobalKey<RefreshIndicatorState>();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   final keyImage = GlobalKey();
   // String? lastMonth;
@@ -195,18 +197,24 @@ class _EventPageState extends State<EventPage>
     eventsList,
     state,
   ) {
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        padding: !Platform.isAndroid
-            ? EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1)
-            : MediaQuery.of(context).orientation != Orientation.portrait
-                ? EdgeInsets.only(bottom: 120)
-                : EdgeInsets.only(bottom: 20),
-        itemCount: eventsList!.length,
-        itemBuilder: (BuildContext context, int index) {
-          String key = eventsList.keys.elementAt(index);
-          return _buildListNew(key, eventsList[key], context, state);
-        });
+    return Container(
+      color: Colors.amber,
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          padding: widget.isMainPage == true
+              ? EdgeInsets.only(bottom: 160)
+              : !Platform.isAndroid
+                  ? EdgeInsets.only(
+                      bottom: MediaQuery.of(context).size.height * 0.1)
+                  : MediaQuery.of(context).orientation != Orientation.portrait
+                      ? EdgeInsets.only(bottom: 120)
+                      : EdgeInsets.only(bottom: 20),
+          itemCount: eventsList!.length,
+          itemBuilder: (BuildContext context, int index) {
+            String key = eventsList.keys.elementAt(index);
+            return _buildListNew(key, eventsList[key], context, state);
+          }),
+    );
   }
 
   @override
@@ -218,8 +226,8 @@ class _EventPageState extends State<EventPage>
                 marginLeft: 30,
                 appBarTitle: widget.appBarTitle!,
                 isSearch: true,
-                sharedpopBodytext: '',
-                sharedpopUpheaderText: '',
+                sharedPopBodyText: '',
+                sharedPopUpHeaderText: '',
                 isShare: false,
                 isCenterIcon: true,
                 language: Globals.selectedLanguage,
@@ -237,12 +245,12 @@ class _EventPageState extends State<EventPage>
                 Globals.isNetworkError = !connected;
 
                 if (connected) {
-                  if (iserrorstate == true) {
+                  if (isErrorState == true) {
                     _eventBloc.add(CalendarListEvent(widget.calendarId));
-                    iserrorstate = false;
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return BlocBuilder<FamilyBloc, FamilyState>(
@@ -281,7 +289,7 @@ class _EventPageState extends State<EventPage>
 
   Event buildEvent(CalendarEventList list) {
     return Event(
-      title: list.summary!,
+      title: list.summary ?? '',
       description: list.description ?? "",
       startDate: DateTime.parse(list.start.toString().contains('dateTime')
               ? list.start['dateTime'].toString()
@@ -406,7 +414,7 @@ class _EventPageState extends State<EventPage>
       children: [
         Container(
             margin: EdgeInsets.all(10.0),
-            child: CalendraIconWidget(
+            child: CalendarIconWidget(
               color: Colors.red,
               dateTime: _methodDate(i),
             )),

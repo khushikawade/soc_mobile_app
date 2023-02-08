@@ -6,11 +6,9 @@ import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/contweek.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
 import 'package:Soc/src/modules/schedule/ui/schedule_event_builder.dart';
-import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:calendar_view/calendar_view.dart';
-// import 'package:calendar_view/calendar_view.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../modal/event.dart';
@@ -35,7 +33,8 @@ class WeekViewPage extends StatefulWidget {
 }
 
 class _WeekViewPageState extends State<WeekViewPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  AppLifecycleState? state;
   List<CalendarEventData<Event>> staticEventList = [];
   bool showViewChangeArea = false;
   bool showicon = false;
@@ -55,13 +54,27 @@ class _WeekViewPageState extends State<WeekViewPage>
     //  addEvent(_date);
     _callEventBuilder(_date);
     AppConstants.height = isContainer1Open ? 0 : 0;
+    WidgetsBinding.instance.addObserver(this);
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("Week_view_calendar");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'Week_view_calendar', screenClass: 'WeekViewPage');
   }
 
   @override
   void dispose() {
     // TODO: implement dispose\
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _calenderBloc.add(CalenderPageEvent(
+          studentProfile: widget.studentProfile, pullToRefresh: true));
+    }
   }
 
   @override

@@ -153,14 +153,6 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
                   linkStyle: TextStyle(color: Colors.blue),
                   style: Theme.of(context).textTheme.headline2!,
                   text: translatedMessage.toString());
-
-              // Text(
-              //   translatedMessage.toString(),
-              //   style: Theme.of(context)
-              //       .textTheme
-              //       .headline2!
-              //       .copyWith(fontSize: 16),
-              // );
             },
           );
   }
@@ -185,7 +177,7 @@ class _CommonFeedWidgetState extends State<CommonFeedWidget> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.title.toString(),
                     url: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }

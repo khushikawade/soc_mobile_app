@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/marquee.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -78,6 +79,10 @@ class CommonGridFolderState extends State<CommonGridFolder>
     });
 
     controller!.forward();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("grid_folder");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'grid_folder', screenClass: 'CommonGridFolder');
   }
 
   @override
@@ -96,20 +101,22 @@ class CommonGridFolderState extends State<CommonGridFolder>
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: obj.titleC!,
                     url: obj.appUrlC!,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }
   }
 
   _navigate(List<SharedList> list, SharedList obj, index) async {
+    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "${widget.sectionName}_${obj.titleC!}");
     if (obj.typeC == "Contact") {
       await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => ContactPage(
                     obj: Globals.appSetting,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     appBarTitle: obj.titleC!,
                     language: Globals.selectedLanguage ?? "English",
                   )));
@@ -124,7 +131,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
               context,
               MaterialPageRoute(
                   builder: (BuildContext context) => EventPage(
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         appBarTitle: obj.titleC,
                         language: Globals.selectedLanguage,
                         calendarId: obj.calendarId.toString(),
@@ -141,7 +148,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
               MaterialPageRoute(
                   builder: (BuildContext context) => AboutusPage(
                         htmlText: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         ishtml: true,
                         appbarTitle: obj.titleC!,
                         language: Globals.selectedLanguage,
@@ -157,7 +164,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                         isiFrame: true,
                         title: obj.titleC!,
                         url: obj.rtfHTMLC.toString(),
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
@@ -172,7 +179,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                         isHomePage: false,
                         url: obj.pdfURL,
                         tittle: obj.titleC,
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: Globals.selectedLanguage,
                       )))
           : Utility.showSnackBar(
@@ -272,7 +279,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                               .primaryVariant,
                                         ));
                                       } else if (state
-                                          is FamiliesSublistSucess) {
+                                          is FamiliesSublistSuccess) {
                                         return state.obj != null &&
                                                 state.obj!.length > 0
                                             ? Container(
@@ -311,7 +318,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                   .primaryVariant,
                                             ));
                                           } else if (state
-                                              is StaffSubListSucess) {
+                                              is StaffSubListSuccess) {
                                             return state.obj != null &&
                                                     state.obj!.length > 0
                                                 ? Container(
@@ -353,7 +360,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                       .primaryVariant,
                                                 ));
                                               } else if (state
-                                                  is ResourcesSubListSucess) {
+                                                  is ResourcesSubListSuccess) {
                                                 return state.obj != null &&
                                                         state.obj!.length > 0
                                                     ? Container(
@@ -397,7 +404,7 @@ class CommonGridFolderState extends State<CommonGridFolder>
                                                           .primaryVariant,
                                                     ));
                                                   } else if (state
-                                                      is AboutSublistSucess) {
+                                                      is AboutSublistSuccess) {
                                                     return state.obj != null &&
                                                             state.obj!.length >
                                                                 0
