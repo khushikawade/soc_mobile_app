@@ -1995,8 +1995,10 @@ class _SuccessScreenState extends State<SuccessScreen>
       if (value.length > 3) {
         for (int i = 0; i < standardStudentDetails.length; i++) {
           if (standardStudentDetails[i].name! == value) {
-            idController.text = standardStudentDetails[i].name!;
-            isStudentIdFilled.value = standardStudentDetails[i].name!;
+            // idController.text = standardStudentDetails[i].name!;
+            // isStudentIdFilled.value = standardStudentDetails[i].name!;
+            idController.text = standardStudentDetails[i].studentId ?? '';
+            isStudentIdFilled.value = standardStudentDetails[i].studentId ?? '';
           }
         }
       }

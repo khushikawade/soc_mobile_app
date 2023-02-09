@@ -19,9 +19,8 @@ class StudentDetails {
   String toRawJson() => json.encode(toJson());
 
   factory StudentDetails.fromJson(Map<String, dynamic> json) => StudentDetails(
-        firstNameC:
-            json["First_Name__c"] == null ? null : json["First_Name__c"],
-        lastNameC: json["last_Name__c"] == null ? null : json["last_Name__c"],
+        firstNameC: json["First_Name__c"] ?? '' as String,
+        lastNameC: json["last_Name__c"] ?? '' as String,
       );
 
   Map<String, dynamic> toJson() => {
