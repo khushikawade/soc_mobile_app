@@ -59,7 +59,12 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBarWidget(
+      appBar:
+
+          // (widget.customObj!.sectionTemplate == "Calendar/Events")
+          //     ? null
+          //     :
+          AppBarWidget(
         onTap: () {
           Utility.scrollToTop(scrollController: _scrollController);
         },
@@ -69,7 +74,8 @@ class _CustomAppSectionState extends State<CustomAppSection> {
         },
       ),
       body: widget.customObj.customBannerImageC != null &&
-              widget.customObj.customBannerImageC != ''
+              widget.customObj.customBannerImageC != '' &&
+              (widget.customObj!.sectionTemplate != "Calendar/Events")
           ? NestedScrollView(
               controller: _scrollController,
               headerSliverBuilder:
@@ -83,9 +89,13 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                           : Colors.transparent)
                 ];
               },
-              body: _body('body2'),
+              body: _body(
+                'body2',
+              ),
             )
-          : _body('body1'),
+          : _body(
+              'body1',
+            ),
     );
   }
 
