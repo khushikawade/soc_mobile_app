@@ -1,13 +1,16 @@
 import 'dart:io' show Platform;
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/families/bloc/family_bloc.dart';
 import 'package:Soc/src/modules/families/modal/calendar_banner_image_modal.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
+import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/calendra_icon_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
@@ -29,15 +32,16 @@ class EventPage extends StatefulWidget {
   final String? appBarTitle;
   final String calendarId;
   final bool? isMainPage;
+  final CustomSetting? customObj;
 
-  EventPage({
-    required this.isBottomSheet,
-    required this.appBarTitle,
-    required this.language,
-    required this.calendarId,
-    this.isAppBar,
-    this.isMainPage,
-  });
+  EventPage(
+      {required this.isBottomSheet,
+      required this.appBarTitle,
+      required this.language,
+      required this.calendarId,
+      this.isAppBar,
+      this.isMainPage,
+      this.customObj});
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -49,6 +53,7 @@ class _EventPageState extends State<EventPage>
   HomeBloc _homeBloc = HomeBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final refreshKey1 = GlobalKey<RefreshIndicatorState>();
+  final ScrollController _scrollController = ScrollController();
   bool? isErrorState = false;
 
   final keyImage = GlobalKey();
@@ -73,124 +78,11 @@ class _EventPageState extends State<EventPage>
     state,
     bool? currentOrientation,
   ) {
-    return
-        // Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
-        //     Widget>[
-        DefaultTabController(
-            length: 2,
-            initialIndex: 0,
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  TabBar(
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelColor: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant, //should be : Theme.of(context).colorScheme.primary,
-                    indicatorColor: Theme.of(context).colorScheme.primary,
-                    unselectedLabelColor: Globals.themeType == "Dark"
-                        ? Colors.grey
-                        : Colors.black,
-                    unselectedLabelStyle: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.normal,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.primaryVariant,
-                    ),
-                    tabs: [
-                      TranslationWidget(
-                        message: "Upcoming",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Tab(
-                          text: translatedMessage.toString(),
-                        ),
-                      ),
-                      TranslationWidget(
-                        message: "Past",
-                        toLanguage: Globals.selectedLanguage,
-                        fromLanguage: "en",
-                        builder: (translatedMessage) => Tab(
-                          text: translatedMessage.toString(),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        Container(
-                            height: Globals.deviceType == "phone" &&
-                                    MediaQuery.of(context).orientation ==
-                                        Orientation.portrait
-                                ? MediaQuery.of(context).size.height * 0.75
-                                : Globals.deviceType == "phone" &&
-                                        MediaQuery.of(context).orientation ==
-                                            Orientation.landscape
-                                    ? MediaQuery.of(context).size.height * 0.65
-                                    : MediaQuery.of(context).size.height * 0.85,
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    top: BorderSide(
-                                        color: Colors.grey, width: 0.5))),
-                            child: TabBarView(children: <Widget>[
-                              Tab(
-                                  child: new RefreshIndicator(
-                                key: refreshKey,
-                                child: state.futureListobj != null &&
-                                        state.futureListobj!.length > 0
-                                    ? buildTabBody(
-                                        state.futureListobj,
-                                        state,
-                                      )
-                                    : NoDataFoundErrorWidget(
-                                        isCalendarPageOrientationLandscape:
-                                            currentOrientation,
-                                        isResultNotFoundMsg: false,
-                                        isNews: false,
-                                        isEvents: true,
-                                      ),
-                                onRefresh: refreshPage,
-                              )),
-                              Tab(
-                                  child: new RefreshIndicator(
-                                key: refreshKey1,
-                                child: state.pastListobj != null &&
-                                        state.pastListobj!.length > 0
-                                    ? buildTabBody(state.pastListobj, state)
-                                    : NoDataFoundErrorWidget(
-                                        isCalendarPageOrientationLandscape:
-                                            currentOrientation,
-                                        isResultNotFoundMsg: false,
-                                        isNews: false,
-                                        isEvents: true,
-                                      ),
-                                onRefresh: refreshPage,
-                              ))
-                            ])),
-                        Container(
-                          child: BlocListener<HomeBloc, HomeState>(
-                              bloc: _homeBloc,
-                              listener: (context, state) async {
-                                if (state is BottomNavigationBarSuccess) {
-                                  AppTheme.setDynamicTheme(
-                                      Globals.appSetting, context);
-                                  Globals.appSetting =
-                                      AppSetting.fromJson(state.obj);
-                                  setState(() {});
-                                }
-                              },
-                              child: EmptyContainer()),
-                        ),
-                      ],
-                    ),
-                  ),
-                ]));
+    return widget.customObj != null &&
+            widget.customObj!.customBannerImageC != null &&
+            widget.customObj!.customBannerImageC != ''
+        ? silverAppBarBody(state, currentOrientation)
+        : standardTabbarView(state, currentOrientation);
   }
 
   buildTabBody(
@@ -198,17 +90,17 @@ class _EventPageState extends State<EventPage>
     state,
   ) {
     return Container(
-      color: Colors.amber,
       child: ListView.builder(
           scrollDirection: Axis.vertical,
-          padding: widget.isMainPage == true
-              ? EdgeInsets.only(bottom: 160)
-              : !Platform.isAndroid
-                  ? EdgeInsets.only(
-                      bottom: MediaQuery.of(context).size.height * 0.1)
-                  : MediaQuery.of(context).orientation != Orientation.portrait
-                      ? EdgeInsets.only(bottom: 120)
-                      : EdgeInsets.only(bottom: 20),
+          padding: widget.isMainPage == true || !Platform.isAndroid
+              ? EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * 0.1)
+              // : !Platform.isAndroid
+              //     ? EdgeInsets.only(
+              //         bottom: MediaQuery.of(context).size.height * 0.1)
+              : MediaQuery.of(context).orientation != Orientation.portrait
+                  ? EdgeInsets.only(bottom: 120)
+                  : EdgeInsets.only(bottom: 20),
           itemCount: eventsList!.length,
           itemBuilder: (BuildContext context, int index) {
             String key = eventsList.keys.elementAt(index);
@@ -277,6 +169,307 @@ class _EventPageState extends State<EventPage>
               },
               child: Container());
         }));
+  }
+
+  Widget standardTabbarView(state, currentOrientation) {
+    return
+        // Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <
+        //     Widget>[
+        DefaultTabController(
+            length: 2,
+            initialIndex: 0,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  TabBar(
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelColor: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant, //should be : Theme.of(context).colorScheme.primary,
+                    indicatorColor: Theme.of(context).colorScheme.primary,
+                    unselectedLabelColor: Globals.themeType == "Dark"
+                        ? Colors.grey
+                        : Colors.black,
+                    unselectedLabelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                    ),
+                    labelStyle: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.primaryVariant,
+                    ),
+                    tabs: [
+                      TranslationWidget(
+                        message: "Upcoming",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Tab(
+                          text: translatedMessage.toString(),
+                        ),
+                      ),
+                      TranslationWidget(
+                        message: "Past",
+                        toLanguage: Globals.selectedLanguage,
+                        fromLanguage: "en",
+                        builder: (translatedMessage) => Tab(
+                          text: translatedMessage.toString(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        Container(
+                            height: Globals.deviceType == "phone" &&
+                                    MediaQuery.of(context).orientation ==
+                                        Orientation.portrait
+                                ? widget.isMainPage == true
+                                    // ? widget.isBannerEnabled != true
+                                    ? MediaQuery.of(context).size.height * 0.75
+                                    // : MediaQuery.of(context).size.height *
+                                    //     0.75
+                                    : MediaQuery.of(context).size.height * 0.75
+                                : Globals.deviceType == "phone" &&
+                                        MediaQuery.of(context).orientation ==
+                                            Orientation.landscape
+                                    ? MediaQuery.of(context).size.height * 0.65
+                                    : MediaQuery.of(context).size.height * 0.85,
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: BorderSide(
+                                        color: Colors.grey, width: 0.5))),
+                            child: TabBarView(children: <Widget>[
+                              Tab(
+                                  child: new RefreshIndicator(
+                                key: refreshKey,
+                                child: state.futureListobj != null &&
+                                        state.futureListobj!.length > 0
+                                    ? buildTabBody(
+                                        state.futureListobj,
+                                        state,
+                                      )
+                                    : NoDataFoundErrorWidget(
+                                        isCalendarPageOrientationLandscape:
+                                            currentOrientation,
+                                        isResultNotFoundMsg: false,
+                                        isNews: false,
+                                        isEvents: true,
+                                      ),
+                                onRefresh: refreshPage,
+                              )),
+                              Tab(
+                                  child: new RefreshIndicator(
+                                key: refreshKey1,
+                                child: state.pastListobj != null &&
+                                        state.pastListobj!.length > 0
+                                    ? buildTabBody(state.pastListobj, state)
+                                    : NoDataFoundErrorWidget(
+                                        isCalendarPageOrientationLandscape:
+                                            currentOrientation,
+                                        isResultNotFoundMsg: false,
+                                        isNews: false,
+                                        isEvents: true,
+                                      ),
+                                onRefresh: refreshPage,
+                              ))
+                            ])),
+                        Container(
+                          child: BlocListener<HomeBloc, HomeState>(
+                              bloc: _homeBloc,
+                              listener: (context, state) async {
+                                if (state is BottomNavigationBarSuccess) {
+                                  AppTheme.setDynamicTheme(
+                                      Globals.appSetting, context);
+                                  Globals.appSetting =
+                                      AppSetting.fromJson(state.obj);
+                                  setState(() {});
+                                }
+                              },
+                              child: EmptyContainer()),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]));
+  }
+
+  Widget silverAppBarBody(state, currentOrientation) {
+    // Provides a TabController for TabBar and TabBarView
+    return DefaultTabController(
+      length: 2,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          // The flexible app bar with the tabs
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            expandedHeight: Globals.deviceType == "phone"
+                ? Utility.displayHeight(context) *
+                    (12 / //AppTheme.kBannerHeight  //Set default due to overlap of text to banner
+                        (Utility.displayHeight(context) > 900
+                            ? 38
+                            : 30)) //For big size screens
+                : Utility.displayHeight(context) *
+                    (12 * //AppTheme.kBannerHeight  //Set default due to overlap of text to banner
+                        1.3 /
+                        (Utility.displayHeight(context) > 900 ? 90 : 75)),
+            // expandedHeight:
+            //     Utility.displayHeight(context) * (AppTheme.kBannerHeight / 75),
+            floating: false,
+            stretch: true,
+            pinned: true,
+            // title: Container(
+            //   child: Text('Calendar'),
+            // ),
+            flexibleSpace: FlexibleSpaceBar(
+                stretchModes: <StretchMode>[
+                  StretchMode.zoomBackground,
+                  StretchMode.blurBackground,
+                ],
+                centerTitle: true,
+                background: Container(
+                  height: Utility.displayHeight(context) *
+                      (AppTheme.kBannerHeight / 100),
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    color: widget.customObj!.customBannerColorC != null &&
+                            widget.customObj!.customBannerColorC != ''
+                        ? Color(int.parse(
+                            '0xff' + widget.customObj!.customBannerColorC!))
+                        : Colors.white,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.customObj!.customBannerImageC!,
+                      // fit: BoxFit.contain,
+                      placeholder: (BuildContext context, _) => ShimmerLoading(
+                        isLoading: true,
+                        child: SizedBox(
+                          height: Utility.displayHeight(context) *
+                              (AppTheme.kBannerHeight / 100),
+                          width: Utility.displayWidth(context),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) {
+                        return Container();
+                      },
+                    ),
+                  ),
+                )),
+            forceElevated: innerBoxIsScrolled,
+            bottom: TabBar(
+              indicatorSize: TabBarIndicatorSize.label,
+              labelColor: Theme.of(context)
+                  .colorScheme
+                  .primaryVariant, //should be : Theme.of(context).colorScheme.primary,
+              indicatorColor: Theme.of(context).colorScheme.primary,
+              unselectedLabelColor:
+                  Globals.themeType == "Dark" ? Colors.grey : Colors.black,
+              unselectedLabelStyle: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.normal,
+                color: Theme.of(context).colorScheme.primaryVariant,
+              ),
+              labelStyle: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.primaryVariant,
+              ),
+              tabs: [
+                TranslationWidget(
+                  message: "Upcoming",
+                  toLanguage: Globals.selectedLanguage,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Tab(
+                    text: translatedMessage.toString(),
+                  ),
+                ),
+                TranslationWidget(
+                  message: "Past",
+                  toLanguage: Globals.selectedLanguage,
+                  fromLanguage: "en",
+                  builder: (translatedMessage) => Tab(
+                    text: translatedMessage.toString(),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+        // The content of each tab
+        body: Column(
+          // shrinkWrap: true,
+          children: [
+            Container(
+                height: Globals.deviceType == "phone" &&
+                        MediaQuery.of(context).orientation ==
+                            Orientation.portrait
+                    ? widget.isMainPage == true
+                        // ? widget.isBannerEnabled != true
+                        ? MediaQuery.of(context).size.height * 0.8
+                        // : MediaQuery.of(context).size.height *
+                        //     0.75
+                        : MediaQuery.of(context).size.height * 0.75
+                    : Globals.deviceType == "phone" &&
+                            MediaQuery.of(context).orientation ==
+                                Orientation.landscape
+                        ? MediaQuery.of(context).size.height * 0.65
+                        : MediaQuery.of(context).size.height * 0.85,
+                decoration: BoxDecoration(
+                    border: Border(
+                        top: BorderSide(color: Colors.grey, width: 0.5))),
+                child: TabBarView(children: <Widget>[
+                  Tab(
+                      child: new RefreshIndicator(
+                    key: refreshKey,
+                    child: state.futureListobj != null &&
+                            state.futureListobj!.length > 0
+                        ? buildTabBody(
+                            state.futureListobj,
+                            state,
+                          )
+                        : NoDataFoundErrorWidget(
+                            isCalendarPageOrientationLandscape:
+                                currentOrientation,
+                            isResultNotFoundMsg: false,
+                            isNews: false,
+                            isEvents: true,
+                          ),
+                    onRefresh: refreshPage,
+                  )),
+                  Tab(
+                      child: new RefreshIndicator(
+                    key: refreshKey1,
+                    child: state.pastListobj != null &&
+                            state.pastListobj!.length > 0
+                        ? buildTabBody(state.pastListobj, state)
+                        : NoDataFoundErrorWidget(
+                            isCalendarPageOrientationLandscape:
+                                currentOrientation,
+                            isResultNotFoundMsg: false,
+                            isNews: false,
+                            isEvents: true,
+                          ),
+                    onRefresh: refreshPage,
+                  ))
+                ])),
+            Container(
+              child: BlocListener<HomeBloc, HomeState>(
+                  bloc: _homeBloc,
+                  listener: (context, state) async {
+                    if (state is BottomNavigationBarSuccess) {
+                      AppTheme.setDynamicTheme(Globals.appSetting, context);
+                      Globals.appSetting = AppSetting.fromJson(state.obj);
+                      setState(() {});
+                    }
+                  },
+                  child: EmptyContainer()),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future refreshPage() async {
@@ -433,7 +626,7 @@ class _EventPageState extends State<EventPage>
               children: [
                 if (i.summary != null)
                   TranslationWidget(
-                    message: i.summary,
+                    message: Utility.utf8convert(i.summary),
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {

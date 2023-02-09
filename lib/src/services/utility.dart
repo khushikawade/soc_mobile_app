@@ -1078,4 +1078,15 @@ class Utility {
         // ignore: unnecessary_statements
         : null;
   }
+
+//add two strings
+  static String addStrings(String string1, String string2) {
+    if (string1.isEmpty && string2.isEmpty) {
+      return "";
+    } else if (string1.isNotEmpty && string2.isNotEmpty) {
+      return "$string1 $string2";
+    } else {
+      return string1.isNotEmpty ? string1 : string2;
+    }
+  }
 }

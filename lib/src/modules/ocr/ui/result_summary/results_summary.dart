@@ -1638,8 +1638,7 @@ class studentRecordList extends State<ResultsSummary> {
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
                               questionImage: questionImageUrl ?? "NA",
-                              createdAsPremium:
-                                  Globals.isPremiumUser,
+                              createdAsPremium: Globals.isPremiumUser,
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,

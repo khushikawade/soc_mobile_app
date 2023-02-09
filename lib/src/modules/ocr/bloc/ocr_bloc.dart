@@ -129,8 +129,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         //     yield FetchTextFromImageFailure(schoolId: '', grade: '');
         yield OcrLoading();
         StudentDetails data = await fetchStudentDetails(event.ossId);
+        // yield SuccessStudentDetails(
+        //     studentName: "${data.firstNameC} ${data.lastNameC}");
+
+        //adding stduent First name and last Name
         yield SuccessStudentDetails(
-            studentName: "${data.firstNameC} ${data.lastNameC}");
+            studentName: Utility.addStrings(
+                data.firstNameC ?? '', data.lastNameC ?? ''));
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'FetchStudentDetails Event');
@@ -1012,8 +1017,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       );
 
       if (response.statusCode == 200) {
-        // print('Activity Log Success');
-        // print(response.data);
+        print('Activity Log Success');
+        print(response.data);
       }
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(e, s, 'activityLog Method');
