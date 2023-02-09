@@ -83,13 +83,13 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                           : Colors.transparent)
                 ];
               },
-              body: _body('body2', true),
+              body: _body('body2'),
             )
-          : _body('body1', false),
+          : _body('body1'),
     );
   }
 
-  Widget _body(String key, bool? isBannerEnabled) => Container(
+  Widget _body(String key) => Container(
         child: RefreshIndicator(
           key: refreshKey,
           child: OfflineBuilder(
@@ -124,7 +124,6 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                             return Container(
                               height: MediaQuery.of(context).size.height,
                               child: CustomPages(
-                                isBannerEnabled: isBannerEnabled,
                                 scrollController: _scrollController,
                                 customList: state.obj,
                                 customObj: widget.customObj,
