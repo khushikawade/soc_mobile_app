@@ -26,12 +26,12 @@ class CustomPages extends StatefulWidget {
   final CustomSetting? customObj;
   final ScrollController? scrollController;
 
-  CustomPages(
-      {Key? key,
-      this.customList,
-      this.customObj,
-      required this.scrollController})
-      : super(key: key);
+  CustomPages({
+    Key? key,
+    this.customList,
+    this.customObj,
+    required this.scrollController,
+  }) : super(key: key);
 
   @override
   _CustomPagesState createState() => _CustomPagesState();
@@ -62,52 +62,14 @@ class _CustomPagesState extends State<CustomPages> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  Widget _body(String key) => RefreshIndicator(
-        key: refreshKey,
-        child: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
-
-              if (connected) {
-                if (isErrorState == true) {
-                  isErrorState = false;
-                }
-              } else if (!connected) {
-                isErrorState = true;
-              }
-
-              return
-                  // connected?
-                  Stack(
-                fit: StackFit.expand,
-                //   mainAxisSize: MainAxisSize.max,
-                children: [
-                  buildPage(widget.customList!, widget.customObj!, connected),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            Globals.appSetting = AppSetting.fromJson(state.obj);
-                            // setState(() {});
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                ],
-              );
-            },
-            child: Container()),
-        onRefresh: refreshPage,
-      );
+  // Widget _body(String key) =>
+  //     widget.customObj!.sectionTemplate == "Calendar/Events"
+  //         ? bodyView()
+  //         : RefreshIndicator(
+  //             key: refreshKey,
+  //             child: bodyView(),
+  //             onRefresh: refreshPage,
+  //           );
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +81,57 @@ class _CustomPagesState extends State<CustomPages> {
         //     setState(() {});
         //   },
         // ),
-        body: _body('body1'));
+        body: //_body('body1')
+            widget.customObj!.sectionTemplate == "Calendar/Events"
+                ? bodyView()
+                : RefreshIndicator(
+                    key: refreshKey,
+                    child: bodyView(),
+                    onRefresh: refreshPage,
+                  ));
+  }
+
+  Widget bodyView() {
+    return OfflineBuilder(
+        connectivityBuilder: (
+          BuildContext context,
+          ConnectivityResult connectivity,
+          Widget child,
+        ) {
+          final bool connected = connectivity != ConnectivityResult.none;
+
+          if (connected) {
+            if (isErrorState == true) {
+              isErrorState = false;
+            }
+          } else if (!connected) {
+            isErrorState = true;
+          }
+
+          return Stack(
+            fit: StackFit.expand,
+            //   mainAxisSize: MainAxisSize.max,
+            children: [
+              buildPage(widget.customList!, widget.customObj!, connected),
+              Container(
+                height: 0,
+                width: 0,
+                child: BlocListener<HomeBloc, HomeState>(
+                    bloc: _homeBloc,
+                    listener: (context, state) async {
+                      if (state is BottomNavigationBarSuccess) {
+                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+                        Globals.appSetting = AppSetting.fromJson(state.obj);
+                        // setState(() {});
+                      }
+                    },
+                    child: EmptyContainer()),
+              ),
+            ],
+          );
+          // connected?
+        },
+        child: Container());
   }
 
   Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
@@ -226,6 +238,7 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.sectionTemplate == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
           ? EventPage(
+              customObj: widget.customObj,
               isMainPage: true,
               appBarTitle: '',
               isAppBar: false,
