@@ -29,15 +29,16 @@ class EventPage extends StatefulWidget {
   final String? appBarTitle;
   final String calendarId;
   final bool? isMainPage;
+  final bool? isBannerEnabled;
 
-  EventPage({
-    required this.isBottomSheet,
-    required this.appBarTitle,
-    required this.language,
-    required this.calendarId,
-    this.isAppBar,
-    this.isMainPage,
-  });
+  EventPage(
+      {required this.isBottomSheet,
+      required this.appBarTitle,
+      required this.language,
+      required this.calendarId,
+      this.isAppBar,
+      this.isMainPage,
+      this.isBannerEnabled});
 
   @override
   _EventPageState createState() => _EventPageState();
@@ -128,7 +129,12 @@ class _EventPageState extends State<EventPage>
                             height: Globals.deviceType == "phone" &&
                                     MediaQuery.of(context).orientation ==
                                         Orientation.portrait
-                                ? MediaQuery.of(context).size.height * 0.75
+                                ? widget.isMainPage == true
+                                    ? widget.isBannerEnabled != true
+                                        ? MediaQuery.of(context).size.height
+                                        : MediaQuery.of(context).size.height *
+                                            0.75
+                                    : MediaQuery.of(context).size.height * 0.75
                                 : Globals.deviceType == "phone" &&
                                         MediaQuery.of(context).orientation ==
                                             Orientation.landscape
@@ -198,17 +204,17 @@ class _EventPageState extends State<EventPage>
     state,
   ) {
     return Container(
-      color: Colors.amber,
       child: ListView.builder(
           scrollDirection: Axis.vertical,
-          padding: widget.isMainPage == true
-              ? EdgeInsets.only(bottom: 160)
-              : !Platform.isAndroid
-                  ? EdgeInsets.only(
-                      bottom: MediaQuery.of(context).size.height * 0.1)
-                  : MediaQuery.of(context).orientation != Orientation.portrait
-                      ? EdgeInsets.only(bottom: 120)
-                      : EdgeInsets.only(bottom: 20),
+          padding: widget.isMainPage == true || !Platform.isAndroid
+              ? EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * 0.1)
+              // : !Platform.isAndroid
+              //     ? EdgeInsets.only(
+              //         bottom: MediaQuery.of(context).size.height * 0.1)
+              : MediaQuery.of(context).orientation != Orientation.portrait
+                  ? EdgeInsets.only(bottom: 120)
+                  : EdgeInsets.only(bottom: 20),
           itemCount: eventsList!.length,
           itemBuilder: (BuildContext context, int index) {
             String key = eventsList.keys.elementAt(index);

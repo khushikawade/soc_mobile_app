@@ -25,12 +25,14 @@ class CustomPages extends StatefulWidget {
   final List<SharedList>? customList;
   final CustomSetting? customObj;
   final ScrollController? scrollController;
+  final bool? isBannerEnabled;
 
   CustomPages(
       {Key? key,
       this.customList,
       this.customObj,
-      required this.scrollController})
+      required this.scrollController,
+      required this.isBannerEnabled})
       : super(key: key);
 
   @override
@@ -226,7 +228,8 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.sectionTemplate == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
           ? EventPage(
-            isMainPage: true,
+              isBannerEnabled: widget.isBannerEnabled,
+              isMainPage: true,
               appBarTitle: '',
               isAppBar: false,
               isBottomSheet: true,
