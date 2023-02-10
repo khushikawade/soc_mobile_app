@@ -29,7 +29,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   Stream<SocialState> mapEventToState(
     SocialEvent event,
   ) async* {
-    print("event-------------------$event");
+    // print("event-------------------$event");
     if (event is SocialPageEvent) {
       try {
         // yield Loading(); Should not show loading, instead fetch the data from the Local database and return the list instantly.
@@ -349,7 +349,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   // For fecting the action count of the updated list
   Future<List<ActionCountList>> fetchSocialActionCount() async {
     try {
-      print(Overrides.SCHOOL_ID);
+      // print(Overrides.SCHOOL_ID);
       final ResponseModel response = await _dbServices.getApi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {

@@ -153,7 +153,7 @@ class studentRecordList extends State<ResultsSummary> {
     } else {
       updateAssessmentToDb();
       if (widget.isScanMore != true) {
-        print("Shared Link called");
+        // print("Shared Link called");
         _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
       } else {
         //TODO : REMOVE GLOBAL ACCESS : IMPROVE
@@ -803,7 +803,7 @@ class studentRecordList extends State<ResultsSummary> {
                   bloc: _driveBloc3,
                   listener: (context, state) async {
                     if (state is ShareLinkReceived) {
-                      print("LINK RECIVED -------------->");
+                      // print("LINK RECIVED -------------->");
                       if (!widget.assessmentDetailPage!) {
                         Globals.shareableLink = state.shareLink;
                       }

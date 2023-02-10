@@ -487,7 +487,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   _scrollListener() {
     if (_scrollController.position.atEdge && !allCaughtUpFlag!) {
-      print("updating new list ");
+      // print("updating new list ");
       bloc.add(UpdateNotificationList(list: notification_list));
     }
   }

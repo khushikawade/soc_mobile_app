@@ -235,8 +235,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 bloc: _googleDriveBloc,
                 child: Container(),
                 listener: (context, state) async {
-                  print(
-                      "subject section ui drive state ---------------->$state");
+                  // print(
+                  //     "subject section ui drive state ---------------->$state");
 
                   // if (state is AddBlankSlidesOnDriveSuccess) {
                   //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -472,7 +472,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             BlocListener(
               bloc: _ocrBloc,
               listener: (context, state) async {
-                print("---------------------------------->>>>> $state");
+                // print("---------------------------------->>>>> $state");
                 if (state is SubjectDataSuccess) {
                   pageIndex.value = 0;
                 } else if (state is NycDataSuccess) {
