@@ -186,7 +186,7 @@ class _SliderWidgetState extends State<SliderWidget>
                       // },
                     )
                   : widget.isNewsPage!
-                      ? Newdescription(
+                      ? NewsDescription(
                           obj: object[pageinitialIndex],
                           date: widget.date,
                           isBottomSheet: true,

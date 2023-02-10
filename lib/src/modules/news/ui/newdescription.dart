@@ -1,7 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
@@ -15,8 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'dart:io' show Platform;
 
-class Newdescription extends StatefulWidget {
-  Newdescription({
+class NewsDescription extends StatefulWidget {
+  NewsDescription({
     Key? key,
     required this.obj,
     required this.date,
@@ -31,10 +30,10 @@ class Newdescription extends StatefulWidget {
   final String? language;
   final bool? connected;
 
-  _NewdescriptionState createState() => _NewdescriptionState();
+  _NewsDescriptionState createState() => _NewsDescriptionState();
 }
 
-class _NewdescriptionState extends State<Newdescription> {
+class _NewsDescriptionState extends State<NewsDescription> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   static const double _kLabelSpacing = 20.0;
   final HomeBloc _homeBloc = new HomeBloc();
