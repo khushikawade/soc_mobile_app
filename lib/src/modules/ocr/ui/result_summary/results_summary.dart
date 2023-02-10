@@ -2158,19 +2158,25 @@ class studentRecordList extends State<ResultsSummary> {
                 'Assessment do not have slides', null);
         break;
       case "Sheet":
-        if (Overrides.STANDALONE_GRADED_APP == true) {
-          if (widget.shareLink == null) {
-            Utility.currentScreenSnackBar('Please Wait', null,
-                marginFromBottom: 90);
-          } else {
-            String sheetLogMsg =
-                "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
-            FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-            await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-          }
+        // if (Overrides.STANDALONE_GRADED_APP == true) {
+        //   if (widget.shareLink == null) {
+        //     Utility.currentScreenSnackBar('Please Wait', null,
+        //         marginFromBottom: 90);
+        //   } else {
+        //     await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
+        //   }
 
-          return;
+        //   return;
+        // }
+        if (widget.shareLink != null && widget.shareLink!.isNotEmpty) {
+          String sheetLogMsg =
+              "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+          await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
+        } else {
+          Utility.currentScreenSnackBar('Please Wait', null,
+              marginFromBottom: 90);
         }
 
         break;

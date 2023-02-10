@@ -21,9 +21,13 @@ class BottomIcon {
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
+    // BottomIcon(
+    //   title: 'Drive',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
+    // ),
     BottomIcon(
-      title: 'Drive',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
+      title: 'Sheet',
+      svgPath: 'assets/images/google_sheet.svg',
     ),
     BottomIcon(
       title: 'Slides',
@@ -44,9 +48,13 @@ class BottomIcon {
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
+    // BottomIcon(
+    //   title: 'Drive',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
+    // ),
     BottomIcon(
-      title: 'Drive',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
+      title: 'Sheet',
+      svgPath: 'assets/images/google_sheet.svg',
     ),
     BottomIcon(
       title: 'Slides',
@@ -70,7 +78,7 @@ class BottomIcon {
     ),
     BottomIcon(
       title: 'Sheet',
-      svgPath: 'assets/images/google_sheet_old.svg',
+      svgPath: 'assets/images/google_sheet.svg',
     ),
     BottomIcon(
       title: 'Share',
@@ -85,7 +93,7 @@ class BottomIcon {
     ),
     BottomIcon(
       title: 'Sheet',
-      svgPath: 'assets/images/google_sheet_old.svg',
+      svgPath: 'assets/images/google_sheet.svg',
     ),
     BottomIcon(
       title: 'Share',
