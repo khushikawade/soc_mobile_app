@@ -26,6 +26,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   NewsState get initialState => NewsInitial();
   final DbServices _dbServices = DbServices();
   var dataArray;
+  int? apiNewsDataListlimit = 10;
   @override
   Stream<NewsState> mapEventToState(
     NewsEvent event,
@@ -62,14 +63,14 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           //isLoading is used to manage the pagination on UI
           yield NewsDataSuccess(
             obj: _localData,
-            isLoading: true,
+            isLoading: _localData.length == apiNewsDataListlimit,
           );
         }
 
         List<Item> NewsFeedList = [];
         if (event.action!.contains("initial")) {
           //Fetching the records with offset and limit = 10
-          NewsFeedList = await fetchNotificationList(0, 10);
+          NewsFeedList = await fetchNotificationList(0, apiNewsDataListlimit!);
           if (_localData.isEmpty) {
             yield NewsInitialState(obj: NewsFeedList);
           }
@@ -155,7 +156,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
         yield NewsDataSuccess(
           obj: newList,
-          isLoading: true,
+          isLoading: newList.length == apiNewsDataListlimit,
           // isFromUpdatedNewsList: false,
         );
       } catch (e) {
@@ -165,7 +166,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
         yield NewsDataSuccess(
           obj: _localData,
-          isLoading: false,
+          isLoading: _localData.length == apiNewsDataListlimit,
           //  isFromUpdatedNewsList: false,
         );
         // yield NewsErrorReceived(err: e);
@@ -205,7 +206,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
 
     if (event is NewsCountLength) {
       try {
-        List<Item> _list = await fetchNotificationList(0, 10);
+        List<Item> _list =
+            await fetchNotificationList(0, apiNewsDataListlimit!);
 
         // print("list length $event================> ${_list.length}");
         Globals.notiCount = _list.length;
