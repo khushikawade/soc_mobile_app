@@ -1,4 +1,4 @@
-package com.app.p2346HH
+package com.test.solved
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -31,7 +31,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Stream<NewsState> mapEventToState(
     NewsEvent event,
   ) async* {
-    print("news_event-------------------$event");
+    // print("news_event-------------------$event");
     if (event is FetchNotificationList) {
       try {
         // Fetch local data for News feed to show data
