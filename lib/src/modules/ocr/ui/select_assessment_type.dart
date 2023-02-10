@@ -110,11 +110,20 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                 if (selectedAnswerKey.value.isEmpty) {
                   Utility.currentScreenSnackBar("Select the Answer Key", null);
                 } else if (selectedAnswerKey.value == 'Multiple Choice') {
+                  Utility.updateLogs(
+                      activityId: '28',
+                      description: 'MCQ Type Selection',
+                      operationResult: 'Success');
                   Fluttertoast.cancel();
                   Globals.scoringRubric = '0-1';
+
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MultipleChoiceSection()));
                 } else {
+                  Utility.updateLogs(
+                      activityId: '27',
+                      description: 'Constructive Type Selection',
+                      operationResult: 'Success');
                   Fluttertoast.cancel();
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => OpticalCharacterRecognition()));
@@ -345,7 +354,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
         accountId: Globals.appSetting.schoolNameC,
         accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
         dateTime: currentDateTime.toString(),
-        description: 'Assessment History page for home page',
+        description: 'Assignment History page from Select Assignment page',
         operationResult: 'Success'));
     Navigator.push(
       context,

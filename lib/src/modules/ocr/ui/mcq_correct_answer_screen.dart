@@ -261,6 +261,10 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
             selectedAnswerKey.value = value.title!;
             FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 "answer_key_selected_${value.title}");
+            Utility.updateLogs(
+                activityId: '29',
+                description: 'MCQ Selection Answer key selected ${value.title}',
+                operationResult: 'Success');
           },
           child: Container(
             height: 100,

@@ -239,7 +239,6 @@ class _OpticalCharacterRecognitionPageState
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (!connected) {
-                
                       await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                           "start_scanning");
 

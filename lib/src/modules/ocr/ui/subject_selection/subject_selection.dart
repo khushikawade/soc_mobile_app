@@ -1509,7 +1509,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         if (state is AssessmentIdSuccess) {
                                           GradedGlobals.loadingMessage = null;
                                           Navigator.of(context).pop();
-
+                                          FirebaseAnalyticsService
+                                              .addCustomAnalyticsEvent(
+                                                  "save_to_drive_from_subject_selection");
                                           Utility.updateLogs(
                                               // ,
                                               activityId: '14',

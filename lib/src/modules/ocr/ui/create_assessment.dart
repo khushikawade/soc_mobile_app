@@ -79,6 +79,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     Globals.googleSlidePresentationId = '';
     Globals.googleSlidePresentationLink = '';
     //_bloc.add(SaveSubjectListDetails());
+
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'create_assessment', screenClass: 'CreateAssessment');
@@ -813,6 +814,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
       imageFile = photo;
       isImageFilePicked.value = false;
       isImageFilePicked.value = true;
+      String addedAQuestionImgLogMsg = "User Added a Question Image";
+      FirebaseAnalyticsService.addCustomAnalyticsEvent(
+          addedAQuestionImgLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
     }
   }
 
@@ -832,6 +836,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     widget.classSuggestions.forEach((String e) {
       _localDb.addData(e);
     });
+
     Utility.updateLogs(
         activityId: '11',
         description: 'Created G-Excel file',
@@ -848,6 +853,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
     }
 
     isAlreadySelected.value = true;
+
+    // FirebaseAnalyticsService.addCustomAnalyticsEvent(
+    //     "navigate_from_create_assignment_page_to_subject_page");
     if (selectedState != null) {
       Navigator.push(
         context,

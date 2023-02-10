@@ -726,8 +726,15 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       if (element.presentationLink != null &&
           element.presentationLink!.isNotEmpty)
         GestureDetector(
-            onTap: (() =>
-                Utility.launchUrlOnExternalBrowser(element.presentationLink!)),
+            onTap: () {
+              Utility.updateLogs(
+                  activityId: '31',
+                  sessionId: element.sessionId ?? '',
+                  description:
+                      'Slide Action Button Button on Assignment summery page ',
+                  operationResult: 'Success');
+              Utility.launchUrlOnExternalBrowser(element.presentationLink!);
+            },
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: SvgPicture.asset(
