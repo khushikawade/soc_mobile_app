@@ -153,7 +153,7 @@ class studentRecordList extends State<ResultsSummary> {
     } else {
       updateAssessmentToDb();
       if (widget.isScanMore != true) {
-        print("Shared Link called");
+        // print("Shared Link called");
         _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
       } else {
         //TODO : REMOVE GLOBAL ACCESS : IMPROVE
@@ -237,10 +237,16 @@ class studentRecordList extends State<ResultsSummary> {
                           }),
                       onPressed: () {
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        String assignmentCompletedLogMsg =
+                            "Result Summary Done Button Pressed";
+                        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                            assignmentCompletedLogMsg
+                                    .toLowerCase()
+                                    .replaceAll(" ", "_") ??
+                                '');
                         Utility.updateLogs(
                             activityId: '19',
-                            description:
-                                'Teacher Successfully Completed the process and press done ',
+                            description: assignmentCompletedLogMsg,
                             operationResult: 'Success');
                         Fluttertoast.cancel();
                         Navigator.of(context).pushAndRemoveUntil(
@@ -797,7 +803,7 @@ class studentRecordList extends State<ResultsSummary> {
                   bloc: _driveBloc3,
                   listener: (context, state) async {
                     if (state is ShareLinkReceived) {
-                      print("LINK RECIVED -------------->");
+                      // print("LINK RECIVED -------------->");
                       if (!widget.assessmentDetailPage!) {
                         Globals.shareableLink = state.shareLink;
                       }
@@ -1053,16 +1059,18 @@ class studentRecordList extends State<ResultsSummary> {
                             : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
                     return;
                   }
+                  String scanMoreLogMsg =
+                      'Scan more button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
 
+                  FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
                   Utility.updateLogs(
                       //,
                       activityId: '22',
                       sessionId: widget.assessmentDetailPage == true
                           ? widget.obj!.sessionId
                           : '',
-                      description: widget.assessmentDetailPage == true
-                          ? 'Scan more button pressed from Assessment History Detail Page'
-                          : 'Scan more button pressed from Result Summary',
+                      description: scanMoreLogMsg,
                       operationResult: 'Success');
 
                   if (widget.obj != null &&
@@ -1375,10 +1383,14 @@ class studentRecordList extends State<ResultsSummary> {
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: 'student_info');
     if (edit!) {
+      String editingLogMsg = "Teacher edited the record";
+
+      FirebaseAnalyticsService.addCustomAnalyticsEvent(
+          editingLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
       Utility.updateLogs(
           // ,
           activityId: '17',
-          description: 'Teacher edited the record',
+          description: editingLogMsg,
           operationResult: 'Success');
 
       editingStudentNameController.text = studentInfo[index].studentName!;
@@ -1618,11 +1630,16 @@ class studentRecordList extends State<ResultsSummary> {
                             _studentInfoDb.putAt(0, obj);
                           }
                           _studentInfoDb.deleteAt(index);
-
+                          String deletrecordLogMsg =
+                              "Teacher deleted the record successfully";
+                          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                              deletrecordLogMsg
+                                      .toLowerCase()
+                                      .replaceAll(" ", "_") ??
+                                  '');
                           Utility.updateLogs(
                               activityId: '17',
-                              description:
-                                  'Teacher Deleted the record successfully',
+                              description: deletrecordLogMsg,
                               operationResult: 'Success');
 
                           // List _list = await Utility.getStudentInfoList(
@@ -1737,236 +1754,6 @@ class studentRecordList extends State<ResultsSummary> {
         }
       },
     );
-  }
-
-  Widget detailPageActionButtons(iconName, index) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 5.0),
-      //UNCOMMENT
-      //  color: Colors.black,
-      child: IconButton(
-          padding: EdgeInsets.zero,
-          icon: iconsName[index] == 'Share' &&
-                  !widget.assessmentDetailPage! &&
-                  widget.isScanMore == null
-              ? detailsPageActionWithDashboard(index)
-              : detailPageActionsWithoutDashboard(index: index),
-          onPressed: () async {
-            if (iconsName[index] == 'Share') {
-              await FirebaseAnalyticsService.addCustomAnalyticsEvent("share");
-              Utility.updateLogs(
-                  activityId: '13',
-                  sessionId: widget.assessmentDetailPage == true
-                      ? widget.obj!.sessionId
-                      : '',
-                  description: widget.assessmentDetailPage == true
-                      ? 'Share Button pressed from Assessment History Detail Page'
-                      : 'Share Button pressed from Result Summary',
-                  operationResult: 'Success');
-              widget.shareLink != null && widget.shareLink!.isNotEmpty
-                  ? Share.share(widget.shareLink!)
-                  : print("no link ");
-            } else if (iconsName[index] == 'History') {
-              Utility.updateLogs(
-                  activityId: '15',
-                  description: 'History Assessment button pressed',
-                  operationResult: 'Success');
-
-              _showDataSavedPopup(
-                  historyAssessmentSection: true,
-                  title: 'Action Required',
-                  msg:
-                      'If you navigate to the history section, You will not be able to return back to the current screen. \n\nDo you still want to move forward?',
-                  noActionText: 'No',
-                  yesActionText: 'Yes, Take Me There');
-            } else if ((iconName[index] == 'Sheet' ||
-                    iconName[index] == 'Dashboard') &&
-                dashboardState.value == '') {
-              if (Overrides.STANDALONE_GRADED_APP == true) {
-                if (widget.shareLink == null) {
-                  Utility.currentScreenSnackBar('Please Wait', null,
-                      marginFromBottom: 90);
-                } else {
-                  await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-                }
-
-                return;
-              }
-
-              if (Globals.isPremiumUser == true) {
-                if (widget.assessmentDetailPage == true &&
-                    widget.createdAsPremium == false) {
-                  Utility.updateLogs(
-                      // ,
-                      activityId: '14',
-                      description:
-                          'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
-                      operationResult: 'Failed');
-                  popupModal(
-                      title: 'Data Not Saved',
-                      message:
-                          'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
-                  Globals.scanMoreStudentInfoLength =
-                      await Utility.getStudentInfoListLength(
-                              tableName: 'student_info') -
-                          1;
-                } else {
-                  await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      "save_to_dashboard");
-                  List list = await Utility.getStudentInfoList(
-                      tableName: 'student_info');
-                  if (widget.isScanMore == true &&
-                      widget.assessmentListLength != null &&
-                      widget.assessmentListLength! < list.length) {
-                    Utility.updateLogs(
-                        // accountType: 'Free',
-                        activityId: '14',
-                        description:
-                            'Save to dashboard pressed in case for scan more',
-                        operationResult: 'Success');
-                    //print(
-                    // 'if     calling is scanMore -------------------------->');
-                    //print(widget.assessmentListLength);
-                    _ocrBloc.add(SaveAssessmentToDashboard(
-                        assessmentId: !widget.assessmentDetailPage!
-                            ? Globals.currentAssessmentId
-                            : historyAssessmentId ?? '',
-                        assessmentSheetPublicURL: widget.shareLink,
-                        resultList: await Utility.getStudentInfoList(
-                            tableName: widget.assessmentDetailPage == true
-                                ? 'history_student_info'
-                                : 'student_info'),
-                        previouslyAddedListLength: widget.assessmentListLength,
-                        assessmentName: widget.assessmentName!,
-                        rubricScore: widget.rubricScore ?? '',
-                        subjectId: widget.subjectId ?? '',
-                        schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                        // standardId: widget.standardId ?? '',
-                        scaffoldKey: scaffoldKey,
-                        context: context,
-                        isHistoryAssessmentSection:
-                            widget.assessmentDetailPage!));
-                  } else {
-                    //print(
-                    // 'else      calling is normal -------------------------->');
-                    // Adding the non saved record of dashboard in the list
-                    List<StudentAssessmentInfo> _listRecord = [];
-
-                    if (widget.assessmentDetailPage! &&
-                        savedRecordCount != null &&
-                        historyRecordList.length != savedRecordCount!) {
-                      _listRecord = historyRecordList.sublist(
-                          savedRecordCount!, historyRecordList.length);
-                    } else {
-                      //
-                      _listRecord = historyRecordList;
-                    }
-
-                    _ocrBloc.add(SaveAssessmentToDashboard(
-                      assessmentId: !widget.assessmentDetailPage!
-                          ? Globals.currentAssessmentId
-                          : historyAssessmentId ?? '',
-                      assessmentSheetPublicURL: widget.shareLink,
-                      resultList: !widget.assessmentDetailPage!
-                          ? await Utility.getStudentInfoList(
-                              tableName: 'student_info')
-                          : _listRecord,
-                      assessmentName: widget.assessmentName!,
-                      rubricScore: !widget.assessmentDetailPage!
-                          ? widget.rubricScore ?? ''
-                          : sheetRubricScore ?? '',
-                      subjectId: widget.subjectId ?? '',
-                      schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                      // standardId: widget.standardId ?? '',
-                      scaffoldKey: scaffoldKey,
-                      context: context,
-                      isHistoryAssessmentSection: widget.assessmentDetailPage!,
-                      fileId: widget.fileId ?? '',
-                    ));
-                  }
-                }
-              } else {
-                Utility.updateLogs(
-                    // ,
-                    activityId: '14',
-                    description:
-                        'Free User tried to save the data to the dashboard',
-                    operationResult: 'Failed');
-                popupModal(
-                    title: 'Upgrade To Premium',
-                    message:
-                        'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
-              }
-              // }
-            } else if (dashboardState.value == 'Success') {
-              if (Overrides.STANDALONE_GRADED_APP == true) {
-                if (widget.shareLink == null) {
-                  Utility.currentScreenSnackBar('Please Wait', null,
-                      marginFromBottom: 90);
-                } else {
-                  await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-                }
-
-                return;
-              }
-              popupModal(
-                  title: 'Already Saved',
-                  message:
-                      'The data has already been saved to the data dashboard.');
-            }
-          }),
-    );
-  }
-
-  Widget detailPageActionsWithoutDashboard({required int index}) {
-    if (Overrides.STANDALONE_GRADED_APP == true &&
-        iconsName[index] == 'Sheet') {
-      return Container(
-          height: 28,
-
-          // margin: EdgeInsets.only(right: 15, bottom: 1),
-          //padding: EdgeInsets.symmetric(vertical: 9),
-          child: SvgPicture.asset(Strings.googleSheetIcon));
-    } else {
-      return Icon(
-        IconData(
-            (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                    dashboardState.value == 'Success'
-                ? 0xe877
-                : iconsList[index],
-            fontFamily: Overrides.kFontFam,
-            fontPackage: Overrides.kFontPkg),
-        size: (widget.assessmentDetailPage! ? index == 2 : index == 3) &&
-                dashboardState.value == ''
-            ? Globals.deviceType == 'phone'
-                ? 33
-                : 52
-            : Globals.deviceType == 'phone'
-                ? 33
-                : 52,
-        color: iconsName[index] == 'History'
-            ? AppTheme.kButtonbackColor
-            : iconsName[index] == 'Share'
-                ? AppTheme.kButtonColor
-                : (widget.assessmentDetailPage! &&
-                            index == 2 &&
-                            isAssessmentAlreadySaved == 'YES') ||
-                        (widget.assessmentDetailPage! &&
-                            index == 2 &&
-                            dashboardState.value == 'Success')
-                    ? Colors.green
-                    : index == 2 || (index == 3 && dashboardState.value == '')
-                        ? Theme.of(context).backgroundColor == Color(0xff000000)
-                            ? Colors.white
-                            : Colors.black
-                        : (widget.assessmentDetailPage!
-                                    ? index == 2
-                                    : index == 3) &&
-                                dashboardState.value == 'Success'
-                            ? Colors.green
-                            : AppTheme.kButtonColor,
-      );
-    }
   }
 
   void _showPopUp({required StudentAssessmentInfo studentAssessmentInfo}) {
@@ -2173,38 +1960,47 @@ class studentRecordList extends State<ResultsSummary> {
   _bottomIconsOnTap({required String title}) async {
     switch (title) {
       case 'Share':
+        String shareLogMsg =
+            'Share Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            shareLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Utility.updateLogs(
             activityId: '13',
             sessionId: widget.assessmentDetailPage == true
                 ? widget.obj!.sessionId
                 : '',
-            description: widget.assessmentDetailPage == true
-                ? 'Share Button pressed from Assessment History Detail Page'
-                : 'Share Button pressed from Result Summary',
+            description: shareLogMsg,
             operationResult: 'Success');
         widget.shareLink != null && widget.shareLink!.isNotEmpty
             ? Share.share(widget.shareLink!)
             : print("no link ");
         break;
       case 'Drive':
+        String driveLogMsg =
+            'Drive Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            driveLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Fluttertoast.cancel();
         Utility.updateLogs(
             activityId: '16',
             sessionId: widget.assessmentDetailPage == true
                 ? widget.obj!.sessionId
                 : '',
-            description: widget.assessmentDetailPage == true
-                ? 'Drive Button pressed from Assessment History Detail Page'
-                : 'Drive Button pressed from Result Summary',
+            description: driveLogMsg,
             operationResult: 'Success');
         Globals.googleDriveFolderPath != null
             ? Utility.launchUrlOnExternalBrowser(Globals.googleDriveFolderPath!)
             : getGoogleFolderPath();
         break;
       case 'History':
+        String historyLogMsg =
+            'History Assessment button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            historyLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Utility.updateLogs(
             activityId: '15',
-            description: 'History Assessment button pressed',
+            description: historyLogMsg,
             operationResult: 'Success');
 
         _showDataSavedPopup(
@@ -2219,11 +2015,17 @@ class studentRecordList extends State<ResultsSummary> {
         if (Globals.isPremiumUser!) {
           if (widget.assessmentDetailPage == true &&
               widget.createdAsPremium == false) {
+            String dashboardLogMsgNotPremiumAccount =
+                'None premium assessment tried to save from premium account using scan more option from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+            FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                dashboardLogMsgNotPremiumAccount
+                        .toLowerCase()
+                        .replaceAll(" ", "_") ??
+                    '');
             Utility.updateLogs(
                 // ,
                 activityId: '14',
-                description:
-                    'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
+                description: dashboardLogMsgNotPremiumAccount,
                 operationResult: 'Failed');
             popupModal(
                 title: 'Data Not Saved',
@@ -2234,18 +2036,22 @@ class studentRecordList extends State<ResultsSummary> {
                         tableName: 'student_info') -
                     1;
           } else {
-            await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                "save_to_dashboard");
             List list =
                 await Utility.getStudentInfoList(tableName: 'student_info');
             if (widget.isScanMore == true &&
                 widget.assessmentListLength != null &&
                 widget.assessmentListLength! < list.length) {
+              String dashboardLogMsgPremiumAccount =
+                  'Save to dashboard pressed in case for scan more from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+              FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                  dashboardLogMsgPremiumAccount
+                          .toLowerCase()
+                          .replaceAll(" ", "_") ??
+                      '');
               Utility.updateLogs(
                   // accountType: 'Free',
                   activityId: '14',
-                  description:
-                      'Save to dashboard pressed in case for scan more',
+                  description: dashboardLogMsgPremiumAccount,
                   operationResult: 'Success');
 
               _ocrBloc.add(SaveAssessmentToDashboard(
@@ -2303,10 +2109,15 @@ class studentRecordList extends State<ResultsSummary> {
             }
           }
         } else {
+          String dashboardLogMsgForFreeUser =
+              "Free User tried to save the data to the dashboard from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              dashboardLogMsgForFreeUser.toLowerCase().replaceAll(" ", "_") ??
+                  '');
           Utility.updateLogs(
               // ,
               activityId: '14',
-              description: 'Free User tried to save the data to the dashboard',
+              description: dashboardLogMsgForFreeUser,
               operationResult: 'Failed');
           popupModal(
               title: 'Upgrade To Premium',
@@ -2315,16 +2126,30 @@ class studentRecordList extends State<ResultsSummary> {
         }
         break;
       case 'Slides':
+        String slidesLogMsg =
+            "Slide Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            slidesLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Fluttertoast.cancel();
+        // Utility.updateLogs(
+        //     activityId: '16',
+        //     sessionId: widget.assessmentDetailPage == true
+        //         ? widget.obj!.sessionId
+        //         : '',
+        //     description: widget.assessmentDetailPage == true
+        //         ? 'Drive Button pressed from Assessment History Detail Page'
+        //         : 'Drive Button pressed from Result Summary',
+        //     operationResult: 'Success');
+
         Utility.updateLogs(
-            activityId: '16',
+            activityId: '31',
             sessionId: widget.assessmentDetailPage == true
-                ? widget.obj!.sessionId
+                ? widget.obj!.sessionId ?? ''
                 : '',
-            description: widget.assessmentDetailPage == true
-                ? 'Drive Button pressed from Assessment History Detail Page'
-                : 'Drive Button pressed from Result Summary',
+            description: slidesLogMsg,
             operationResult: 'Success');
+
         Globals.googleSlidePresentationLink != null &&
                 Globals.googleSlidePresentationLink!.isNotEmpty
             ? Utility.launchUrlOnExternalBrowser(
@@ -2333,15 +2158,25 @@ class studentRecordList extends State<ResultsSummary> {
                 'Assessment do not have slides', null);
         break;
       case "Sheet":
-        if (Overrides.STANDALONE_GRADED_APP == true) {
-          if (widget.shareLink == null) {
-            Utility.currentScreenSnackBar('Please Wait', null,
-                marginFromBottom: 90);
-          } else {
-            await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-          }
+        // if (Overrides.STANDALONE_GRADED_APP == true) {
+        //   if (widget.shareLink == null) {
+        //     Utility.currentScreenSnackBar('Please Wait', null,
+        //         marginFromBottom: 90);
+        //   } else {
+        //     await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
+        //   }
 
-          return;
+        //   return;
+        // }
+        if (widget.shareLink != null && widget.shareLink!.isNotEmpty) {
+          String sheetLogMsg =
+              "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+          await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
+        } else {
+          Utility.currentScreenSnackBar('Please Wait', null,
+              marginFromBottom: 90);
         }
 
         break;

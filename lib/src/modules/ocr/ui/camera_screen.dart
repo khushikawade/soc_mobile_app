@@ -417,6 +417,7 @@ class _CameraScreenState extends State<CameraScreen>
                           try {
                             await controller!.value.setFlashMode(FlashMode.off);
                           } catch (e) {}
+
                           Utility.updateLogs(
                               activityId: '19',
                               description: 'Assessment scan finished',
@@ -433,7 +434,6 @@ class _CameraScreenState extends State<CameraScreen>
                           if (studentInfoDb.length > 0) {
                             if (widget.isFromHistoryAssessmentScanMore ==
                                 true) {
-                              
                               _driveBloc.add(UpdateGoogleSlideOnScanMore(
                                   isMcqSheet: widget.isMcqSheet ?? false,
                                   assessmentName: widget.assessmentName ?? '',

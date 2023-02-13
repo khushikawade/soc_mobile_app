@@ -71,17 +71,14 @@ class SocialDataSuccess extends SocialState {
 
 class SocialInitialState extends SocialState {
   final List<Item>? obj;
-
-  SocialInitialState({
-    this.obj,
-  });
+  final bool? isLoading;
+  SocialInitialState({this.obj, required this.isLoading});
 
   SocialInitialState copyWith({
     final obj,
   }) {
     return SocialInitialState(
-      obj: obj ?? this.obj,
-    );
+        obj: obj ?? this.obj, isLoading: isLoading ?? this.isLoading);
   }
 
   @override

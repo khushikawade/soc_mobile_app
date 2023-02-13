@@ -65,8 +65,9 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
       _debouncer.run(() {
         // _homeBloc.add(GlobalSearchEvent(keyword: value));
         googleBloc.add(GetHistoryAssessmentFromDrive(
-          isSearchPage: true,
-            searchKeyword: searchKey!, filterType: selectedValue.value));
+            isSearchPage: true,
+            searchKeyword: searchKey!,
+            filterType: selectedValue.value));
         updateTheUi.value = !updateTheUi.value;
         // setState(() {});
       });
@@ -78,7 +79,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    print('Google Search Page');
+    // print('Google Search Page');
     _setLocked();
     Globals.callSnackbar = true;
     getListLength();

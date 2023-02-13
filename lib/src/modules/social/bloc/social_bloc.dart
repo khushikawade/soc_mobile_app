@@ -23,12 +23,13 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   SocialState get initialState => SocialInitial();
   final DbServices _dbServices = DbServices();
   int _totalRetry = 0;
+  int? apiSocialDataListlimit = 10;
 
   @override
   Stream<SocialState> mapEventToState(
     SocialEvent event,
   ) async* {
-    print("event-------------------$event");
+    // print("event-------------------$event");
     if (event is SocialPageEvent) {
       try {
         // yield Loading(); Should not show loading, instead fetch the data from the Local database and return the list instantly.
@@ -55,7 +56,10 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           yield Loading(); //Circular loader for whole content loading (Social + Interactions)
         } else {
           //isLoading is used to manage the pagination on UI
-          yield SocialDataSuccess(obj: _localData, isLoading: true);
+
+          yield SocialDataSuccess(
+              obj: _localData,
+              isLoading: _localData.length == apiSocialDataListlimit);
 
           // yield SocialReload(obj: _localData, isLoading: true);
         }
@@ -66,9 +70,11 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         List<Item> socialRSSFeedList = [];
         if (event.action!.contains("initial")) {
           //Fetching the records with offset and limit = 10
-          socialRSSFeedList = await getEventDetails(0, 10);
+          socialRSSFeedList = await getEventDetails(0, apiSocialDataListlimit!);
           if (_localData.isEmpty) {
-            yield SocialInitialState(obj: socialRSSFeedList);
+            yield SocialInitialState(
+                obj: socialRSSFeedList,
+                isLoading: socialRSSFeedList.length == apiSocialDataListlimit);
           }
         } else {
           socialRSSFeedList = _localData;
@@ -150,7 +156,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             obj:
                 // listActionCount.length == 0 ? _localData :
                 newList,
-            isLoading: true);
+            isLoading: newList.length == apiSocialDataListlimit);
       } catch (e) {
         print("inside catch: $e");
         // Fetching from the local database instead.
@@ -166,7 +172,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
       try {
         //Fetching the data from the list's current length in the bunch of 10 records each time
         List<Item> fetchMoreRecods_RSSFeed =
-            await getEventDetails(event.list!.length, 10);
+            await getEventDetails(event.list!.length, apiSocialDataListlimit!);
         List<Item> existingRecords_RSSFeed = event.list!;
         existingRecords_RSSFeed.addAll(fetchMoreRecods_RSSFeed);
 
@@ -343,7 +349,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
   // For fecting the action count of the updated list
   Future<List<ActionCountList>> fetchSocialActionCount() async {
     try {
-      print(Overrides.SCHOOL_ID);
+      // print(Overrides.SCHOOL_ID);
       final ResponseModel response = await _dbServices.getApi(Uri.parse(
           'getUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social'));
       if (response.statusCode == 200) {

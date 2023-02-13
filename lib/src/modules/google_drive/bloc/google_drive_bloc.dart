@@ -2326,7 +2326,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
   List<Map> prepareStudentAssessmentImageRequestBody(
       {required List<StudentAssessmentInfo> assessmentData}) {
-    print(assessmentData);
+    // print(assessmentData);
     List<String> listOfFields = [
       'Student Name',
       'Student ID',
@@ -2337,7 +2337,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     List<Map> body = [];
     assessmentData.asMap().forEach((index, element) {
       if (element.slideObjectId != "AlreadyUpdated") {
-        print(element);
+        // print(element);
         Map obj = {
           "createImage": {
             "url": element.assessmentImage,
@@ -2694,8 +2694,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   prepareAddAndUpdateSlideRequestBody(
       {required List<StudentAssessmentInfo> assessmentData,
       required LocalDatabase<StudentAssessmentInfo> studentInfoDb}) {
-    print(studentInfoDb);
-    print(assessmentData);
+    // print(studentInfoDb);
+    // print(assessmentData);
     List<String> listOfFields = [
       'Student Name',
       'Student ID',

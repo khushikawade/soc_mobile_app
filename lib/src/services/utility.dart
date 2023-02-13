@@ -475,7 +475,7 @@ class Utility {
       ));
     } catch (e) {
       print(e);
-      print("error");
+      // print("error");
     }
   }
 
@@ -1066,12 +1066,12 @@ class Utility {
       required String assessmentId}) async {
     OcrBloc _ocrAssessmentBloc = OcrBloc();
     List<StudentAssessmentInfo> _list = studentInfoList;
-    print("assessment ID $assessmentId");
+    // print("assessment ID $assessmentId");
     _list.removeWhere((element) =>
         element.uniqueId == null ||
         element.uniqueId ==
             ''); // avoid to update older assessment sheet in case of scan more
-    print(_list.length);
+    // print(_list.length);
     _list.isNotEmpty
         ? _ocrAssessmentBloc.add(UploadAssessmentToDB(
             assessmentId: assessmentId, studentDetails: _list))

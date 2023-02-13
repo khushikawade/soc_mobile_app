@@ -267,6 +267,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   Widget _buildList(List<Item> _list, bool isLoading, bool connected) {
     return Expanded(
       child: ListView.builder(
+        physics: AlwaysScrollableScrollPhysics(),
         controller: _scrollController,
         shrinkWrap: true,
         padding: EdgeInsets.only(bottom: AppTheme.klistPadding),
@@ -487,7 +488,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
   _scrollListener() {
     if (_scrollController.position.atEdge && !allCaughtUpFlag!) {
-      print("updating new list ");
+      // print("updating new list ");
       bloc.add(UpdateNotificationList(list: notification_list));
     }
   }

@@ -239,7 +239,6 @@ class _OpticalCharacterRecognitionPageState
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (!connected) {
-                
                       await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                           "start_scanning");
 
@@ -474,8 +473,8 @@ class _OpticalCharacterRecognitionPageState
                               Globals.scoringRubric =
                                   '${RubricScoreList.scoringList[index].name} ${RubricScoreList.scoringList[index].score}';
                             }
-                            print(Globals.scoringRubric);
-                            print("//printing ----> ${Globals.scoringRubric}");
+                            // print(Globals.scoringRubric);
+                            // print("//printing ----> ${Globals.scoringRubric}");
                           },
                           child: AnimatedContainer(
                             padding: EdgeInsets.only(bottom: 5),

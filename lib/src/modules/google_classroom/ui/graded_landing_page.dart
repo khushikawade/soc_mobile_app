@@ -265,7 +265,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                     listener: (BuildContext contxt,
                         GoogleClassroomState state) async {
                       if (state is GoogleClassroomCourseListSuccess) {
-                        print('Courses list Fetched');
+                        // print('Courses list Fetched');
 
                         googleCourseList.value.clear();
                         Utility.currentScreenSnackBar(

@@ -122,7 +122,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         listTile(
                             icon: Icons.settings,
-                            onTap: () {
+                            onTap: () async {
+                              String settingsSectionLogMsg =
+                                  "Navigate From Graded+ Profile to Settings";
+                              FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                                  settingsSectionLogMsg
+                                          .toLowerCase()
+                                          .replaceAll(" ", "_") ??
+                                      '');
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -147,7 +154,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             ? Container()
                             : listTile(
                                 icon: Icons.location_pin,
-                                onTap: () {
+                                onTap: () async {
+                                  String stateSelectionLogMsg =
+                                      "Navigate From Graded+ Profile to State selection";
+                                  FirebaseAnalyticsService
+                                      .addCustomAnalyticsEvent(
+                                          stateSelectionLogMsg
+                                                  .toLowerCase()
+                                                  .replaceAll(" ", "_") ??
+                                              '');
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

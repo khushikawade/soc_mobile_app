@@ -732,6 +732,10 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                 Navigator.of(context).pop();
                                 GradedGlobals.loadingMessage = null;
                                 widget.googleDriveBloc.close();
+
+                                FirebaseAnalyticsService
+                                    .addCustomAnalyticsEvent(
+                                        "save_to_drive_from_subject_search");
                                 Utility.updateLogs(
                                     // ,
                                     activityId: '14',

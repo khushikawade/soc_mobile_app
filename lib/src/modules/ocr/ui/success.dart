@@ -1305,6 +1305,14 @@ class _SuccessScreenState extends State<SuccessScreen>
                         //     operationResult: 'Success');
                         if (pointScored.value != index.toString()) {
                           isRubricChanged = true;
+                          if (widget.isMcqSheet!) {
+                            Utility.updateLogs(
+                                //  ,
+                                activityId: '30',
+                                description:
+                                    'Answer Key changed from ${pointScored.value} to ${index.toString()}',
+                                operationResult: 'Success');
+                          }
                         }
                         pointScored.value = index.toString();
                         // if (isSuccessState) {}

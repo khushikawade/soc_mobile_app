@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import '../../../services/analytics.dart';
 import '../../../services/firstLetterUpperCase.dart';
 
 // ignore: must_be_immutable
@@ -626,13 +627,16 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
             valueListenable: indexColor,
             builder: (BuildContext context, dynamic value, Widget? child) {
               return InkWell(
-                  onTap: () {
+                  onTap: () async{
                     // updateDetails(isUpdateData: true);
+                    String editScoreOrAnserKeyLogMsg =
+                        'Teacher change ${widget.isMcqSheet == true ? "Answer Key " : "Score rubric"}  from ${pointScored.value.toString()} to ${index.toString()}';
+   FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            editScoreOrAnserKeyLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
                     Utility.updateLogs(
                         // ,
-                        activityId: '8',
-                        description:
-                            'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
+                        activityId: widget.isMcqSheet == true ? "30 " : '8',
+                        description: editScoreOrAnserKeyLogMsg,
                         operationResult: 'Success');
                     pointScored.value = index.toString();
                     widget.studentGradeController.text = index.toString();

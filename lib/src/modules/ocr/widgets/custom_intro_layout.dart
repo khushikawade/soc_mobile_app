@@ -52,7 +52,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                     _currentIndex = index;
                   });
                 }),
-            items: CustomContentModal.onboardingPagesList.map((i) {
+            items: GradedIntroContentModal.onboardingPagesList.map((i) {
               return Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.symmetric(horizontal: 5.0),
@@ -128,8 +128,9 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                   width: MediaQuery.of(context).size.width / 2.1,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: map<Widget>(
-                        CustomContentModal.onboardingPagesList, (index, url) {
+                    children:
+                        map<Widget>(GradedIntroContentModal.onboardingPagesList,
+                            (index, url) {
                       return Container(
                         width: 10.0,
                         height: 10.0,
@@ -146,7 +147,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                   ),
                 ),
                 _currentIndex !=
-                        CustomContentModal.onboardingPagesList.length - 1
+                        GradedIntroContentModal.onboardingPagesList.length - 1
                     ? _button(action: 'Skip')
                     : _button(action: 'Start With Graded+'),
               ],
@@ -186,7 +187,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                 // await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 //     "walkthrough_skip");
                 carouselController.animateToPage(
-                    CustomContentModal.onboardingPagesList.length - 1);
+                    GradedIntroContentModal.onboardingPagesList.length - 1);
               }
             },
             child: Padding(

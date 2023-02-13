@@ -137,7 +137,7 @@ class _StudentPageState extends State<StudentPage> {
     return BlocListener(
       bloc: _scheduleBloc,
       listener: (context, state) {
-        print(state);
+        // print(state);
         if (state is CalenderLoading) {
           Utility.showLoadingDialog(context: context, isOCR: false);
         }
@@ -473,7 +473,7 @@ class _StudentPageState extends State<StudentPage> {
 
     //Save user profile to locally
     LocalDatabase<UserInformation> _localDb = LocalDatabase('student_profile');
-    print(_userInformation);
+    // print(_userInformation);
     await _localDb.addData(_userInformation);
     await _localDb.close();
     return _userInformation;

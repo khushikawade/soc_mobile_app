@@ -78,6 +78,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
 
   Widget makeList(List<Item> obj, reLoad, {bool? isLoading}) {
     return ListView.builder(
+      physics: AlwaysScrollableScrollPhysics(),
       controller: _scrollController,
       shrinkWrap: true,
       scrollDirection: Axis.vertical,

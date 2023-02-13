@@ -589,7 +589,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future _verifyUserWithDatabase({required String accountId}) async {
-    print(accountId);
+    // print(accountId);
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           Uri.encodeFull(
