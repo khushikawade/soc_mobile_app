@@ -70,7 +70,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '971796701109',
     projectId: 'solved-consulting',
     storageBucket: 'solved-consulting.appspot.com',
-    iosClientId: '971796701109-pq4thnvdnug1st0c422nm4crujcmst6c.apps.googleusercontent.com',
-    iosBundleId: 'com.app.a1f4W000007DQaNQAW',
+    iosClientId:
+        '971796701109-pq4thnvdnug1st0c422nm4crujcmst6c.apps.googleusercontent.com',
+    iosBundleId: 'com.jhs151hh6432q',
   );
 }
