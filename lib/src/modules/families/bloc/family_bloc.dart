@@ -137,7 +137,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         SharedPreferences clearStaffDirectory =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            clearStaffDirectory.getBool('delete_local_staff_directory');
+            await clearStaffDirectory.getBool('delete_local_staff_directory');
 
         //**********************************************************************Comment the Code*************************************************************** */
         // await _localDb.clear();
@@ -214,7 +214,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
         SharedPreferences clearCalendarCache =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            clearCalendarCache.getBool('delete_local_calendar_cache');
+            await clearCalendarCache.getBool('delete_local_calendar_cache');
 
         if (clearCacheResult != true) {
           _localData.clear();

@@ -525,8 +525,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         //Clear news notification local data to manage loading issue
         SharedPreferences clearNewsCache =
             await SharedPreferences.getInstance();
-        final clearCacheResult =
-            clearNewsCache.getBool('delete_local_history_assessment_cache');
+        final clearCacheResult = await clearNewsCache
+            .getBool('delete_local_history_assessment_cache');
 
         if (clearCacheResult != true) {
           await _localDb.close();

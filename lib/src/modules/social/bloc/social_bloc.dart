@@ -44,11 +44,11 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
             await SharedPreferences.getInstance();
 
         final clearCacheResult =
-            clearSocialCache.getBool('delete_local_social_cache');
+            await clearSocialCache.getBool('delete_rss_feed_cache');
 
         if (clearCacheResult != true) {
           _localData.clear();
-          await clearSocialCache.setBool('delete_local_social_cache', true);
+          await clearSocialCache.setBool('delete_rss_feed_cache', true);
         }
         //End
 
