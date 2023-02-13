@@ -192,7 +192,26 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         final jsondata = xml2json.toGData();
         final data = json.decode(jsondata);
         final data1 = data["rss"]["channel"]["item"];
-        final data2 = data1 as List;
+        List data2 = [];
+        try {
+          data2 = data1 as List;
+        } catch (e) {
+          Item item = Item(
+              title: data1["title"] ?? '',
+              description: data1["description"] ?? '',
+              link: data1["link"] ?? '',
+              guid: data1['guid'] ?? '',
+              creator: data1['dc\$creator'] ?? '',
+              pubDate: data1['pubDate'] ?? '',
+              content: data1['content'] ?? '',
+              enclosure: data1['enclosure'] ?? '',
+              mediaContent: data1['media\$content'] ?? '',
+              id: Utility.generateUniqueId(data1['pubDate']['\$t']));
+          List<Item> list = [];
+          list.add(item);
+          return list;
+        }
+
         return data2.map((i) {
           return Item(
               title: i["title"] ?? '',
