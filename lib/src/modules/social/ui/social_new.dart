@@ -122,9 +122,27 @@ class _SocialNewPageState extends State<SocialNewPage> {
   }
 
   Widget _buildlist(Item obj, int index, mainObj, bool reLoad) {
-    final document = obj.description != null && obj.description != ""
-        ? parse(obj.description)
-        : parse("");
+    String _desc = '';
+
+    try {
+      if (obj.description.runtimeType.toString().toLowerCase() == 'string') {
+        _desc = obj.description ?? '';
+      } else {
+        try {
+          _desc = obj.description['__cdata'];
+        } catch (e) {
+          _desc = obj.description;
+        }
+      }
+    } catch (e) {
+      _desc = '';
+    }
+
+    final document = parse(_desc);
+    
+    // final document = obj.description != null && obj.description != ""
+    //     ? parse(obj.description)
+    //     : parse("");
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
 
