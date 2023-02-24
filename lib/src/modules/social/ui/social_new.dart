@@ -108,7 +108,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                 : AllCaughtUpWidget(
                     // title: 'RSS Feeds Caught Up',
                     title: "You're All Caught Up",
-                    msg: "You've seen all new posts.",
+                    msg: "You've seen all news posts.",
                     // msg: 'You\'ve fetched all the available RSS Feeds',
                     gradientColor: LinearGradient(colors: [
                       Theme.of(context).primaryColor,
@@ -139,7 +139,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
     }
 
     final document = parse(_desc);
-    
+
     // final document = obj.description != null && obj.description != ""
     //     ? parse(obj.description)
     //     : parse("");
