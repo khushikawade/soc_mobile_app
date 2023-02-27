@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -12,7 +14,6 @@ import 'package:Soc/src/modules/ocr/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -153,7 +154,7 @@ class studentRecordList extends State<ResultsSummary> {
     } else {
       updateAssessmentToDb();
       if (widget.isScanMore != true) {
-        // print("Shared Link called");
+        //   print("Shared Link called");
         _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
       } else {
         //TODO : REMOVE GLOBAL ACCESS : IMPROVE
@@ -454,10 +455,14 @@ class studentRecordList extends State<ResultsSummary> {
                                   bloc: _driveBloc2,
                                   child: Container(),
                                   listener: (context, state) async {
-                                    if (state is GoogleDriveLoading) {
-                                      Utility.showLoadingDialog(
-                                          context: context, isOCR: true);
-                                    }
+                                    print(
+                                        "result screen state is recived -----> $state");
+
+                                    // if (state is GoogleDriveLoading) {
+                                    //   Utility.showLoadingDialog(
+                                    //       context: context, isOCR: true);
+                                    // }
+
                                     if (state is GoogleSuccess) {
                                       Navigator.of(context).pop();
                                     }
@@ -803,7 +808,7 @@ class studentRecordList extends State<ResultsSummary> {
                   bloc: _driveBloc3,
                   listener: (context, state) async {
                     if (state is ShareLinkReceived) {
-                      // print("LINK RECIVED -------------->");
+                      //   print("LINK RECIVED -------------->");
                       if (!widget.assessmentDetailPage!) {
                         Globals.shareableLink = state.shareLink;
                       }
@@ -1486,7 +1491,7 @@ class studentRecordList extends State<ResultsSummary> {
                 _method();
                 disableSlidableAction.value = true;
                 Navigator.pop(context, false);
-
+                Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
                   questionImage: questionImageUrl ?? "NA",
@@ -1499,6 +1504,11 @@ class studentRecordList extends State<ResultsSummary> {
                       await Utility.getStudentInfoList(
                           tableName: 'student_info'),
                 ));
+
+//to update the slides details .
+                _driveBloc.add(EditSlideFromPresentation(
+                    slidePresentationId: Globals.googleSlidePresentationId,
+                    studentAssessmentInfo: studentInfo));
 
                 // assessmentCount.value = await Utility.getStudentInfoListLength(
                 //           tableName: 'student_info');
@@ -1627,6 +1637,7 @@ class studentRecordList extends State<ResultsSummary> {
                             obj.questionImgUrl = _list[0].questionImgUrl;
                             obj.googleSlidePresentationURL =
                                 _list[0].googleSlidePresentationURL;
+
                             _studentInfoDb.putAt(0, obj);
                           }
                           _studentInfoDb.deleteAt(index);
@@ -1651,7 +1662,8 @@ class studentRecordList extends State<ResultsSummary> {
                           Navigator.pop(
                             context,
                           );
-
+                          Utility.showLoadingDialog(
+                              context: context, isOCR: true);
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
                               questionImage: questionImageUrl ?? "NA",
@@ -1661,6 +1673,11 @@ class studentRecordList extends State<ResultsSummary> {
                               isLoading: true,
                               studentData: await Utility.getStudentInfoList(
                                   tableName: 'student_info')));
+
+                          _driveBloc.add(DeleteSlideFromPresentation(
+                              slidePresentationId:
+                                  Globals.googleSlidePresentationId,
+                              slideObjId: _list[index].slideObjectId));
                         },
                       ),
                     ],

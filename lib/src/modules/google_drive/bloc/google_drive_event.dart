@@ -232,3 +232,23 @@ class AddAndUpdateAssessmentImageToSlidesOnDrive extends GoogleDriveEvent {
   @override
   List<Object> get props => [];
 }
+
+class DeleteSlideFromPresentation extends GoogleDriveEvent {
+  final String? slidePresentationId;
+  final String? slideObjId;
+  DeleteSlideFromPresentation(
+      {required this.slidePresentationId, required this.slideObjId});
+
+  @override
+  List<Object> get props => [];
+}
+
+class EditSlideFromPresentation extends GoogleDriveEvent {
+  final String? slidePresentationId;
+  final StudentAssessmentInfo studentAssessmentInfo;
+  EditSlideFromPresentation(
+      {required this.slidePresentationId, required this.studentAssessmentInfo});
+
+  @override
+  List<Object> get props => [];
+}

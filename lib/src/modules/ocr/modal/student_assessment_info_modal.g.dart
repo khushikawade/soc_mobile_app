@@ -39,13 +39,15 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       studentResponseKey: fields[17] as String?,
       isRubricChanged: fields[20] as String?,
       uniqueId: fields[19] as String?,
+      isSlideObjUpdated: fields[22] as bool,
+      slideTableObjId: fields[23] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentAssessmentInfo obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(24)
       ..writeByte(0)
       ..write(obj.studentName)
       ..writeByte(1)
@@ -89,7 +91,11 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       ..writeByte(20)
       ..write(obj.isRubricChanged)
       ..writeByte(21)
-      ..write(obj.standardDescription);
+      ..write(obj.standardDescription)
+      ..writeByte(22)
+      ..write(obj.isSlideObjUpdated)
+      ..writeByte(23)
+      ..write(obj.slideTableObjId);
   }
 
   @override

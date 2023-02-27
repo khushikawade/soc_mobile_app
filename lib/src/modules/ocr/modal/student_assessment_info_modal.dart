@@ -45,13 +45,16 @@ class StudentAssessmentInfo {
   String? studentResponseKey;
   @HiveField(18)
   String? googleSlidePresentationURL;
-   @HiveField(19)
+  @HiveField(19)
   String? uniqueId;
   @HiveField(20)
   String? isRubricChanged;
   @HiveField(21)
   String? standardDescription;
-
+  @HiveField(22)
+  bool isSlideObjUpdated;
+  @HiveField(23)
+  String? slideTableObjId;
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,
@@ -73,7 +76,11 @@ class StudentAssessmentInfo {
       this.answerKey,
       this.standardDescription,
       //this.presentationURL,
-      this.studentResponseKey,this.isRubricChanged,this.uniqueId});
+      this.studentResponseKey,
+      this.isRubricChanged,
+      this.uniqueId,
+      this.isSlideObjUpdated = false,
+      this.slideTableObjId});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(
@@ -101,5 +108,6 @@ class StudentAssessmentInfo {
           answerKey: json['Answer Key'],
           googleSlidePresentationURL: json['Presentation URL'],
           studentResponseKey: json['Student Response Key'],
-          standardDescription: json['Standard Description']);
+          standardDescription: json['Standard Description'],
+          isSlideObjUpdated: true);
 }

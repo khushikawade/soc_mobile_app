@@ -108,7 +108,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
                 : AllCaughtUpWidget(
                     // title: 'RSS Feeds Caught Up',
                     title: "You're All Caught Up",
-                    msg: "You've seen all new posts.",
+                    msg: "You've seen all news posts.",
                     // msg: 'You\'ve fetched all the available RSS Feeds',
                     gradientColor: LinearGradient(colors: [
                       Theme.of(context).primaryColor,
@@ -122,9 +122,27 @@ class _SocialNewPageState extends State<SocialNewPage> {
   }
 
   Widget _buildlist(Item obj, int index, mainObj, bool reLoad) {
-    final document = obj.description != null && obj.description != ""
-        ? parse(obj.description)
-        : parse("");
+    String _desc = '';
+
+    try {
+      if (obj.description.runtimeType.toString().toLowerCase() == 'string') {
+        _desc = obj.description ?? '';
+      } else {
+        try {
+          _desc = obj.description['__cdata'];
+        } catch (e) {
+          _desc = obj.description;
+        }
+      }
+    } catch (e) {
+      _desc = '';
+    }
+
+    final document = parse(_desc);
+
+    // final document = obj.description != null && obj.description != ""
+    //     ? parse(obj.description)
+    //     : parse("");
     dom.Element? link = document.querySelector('img');
     String? imageLink = link != null ? link.attributes['src'] : '';
 

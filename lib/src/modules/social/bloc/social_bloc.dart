@@ -48,7 +48,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         if (clearCacheResult != true) {
           _localData.clear();
-          await clearSocialCache.setBool('delete_rss_feed_cache', true);
+          // await clearSocialCache.setBool('delete_rss_feed_cache', true);
         }
         //End
 
@@ -151,6 +151,12 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
 
         // Syncing end.
         yield Loading(); //To mimic the state
+
+        //Confirming later
+        if (clearCacheResult != true) {
+          print('Clear Local Social Feed');
+          await clearSocialCache.setBool('delete_rss_feed_cache', true);
+        }
 
         yield SocialDataSuccess(
             obj:
