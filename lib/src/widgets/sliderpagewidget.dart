@@ -211,11 +211,11 @@ class _SliderWidgetState extends State<SliderWidget>
     );
   }
 
-  void htmlparser() {
-    final doc = parse(object[0].description["__cdata"]);
-    final element = doc.getElementById('content');
-    debugPrint(element!.querySelectorAll('div').toString());
-  }
+  // void htmlparser() {
+  //   final doc = parse(object[0].description["__cdata"]);
+  //   final element = doc.getElementById('content');
+  //   debugPrint(element!.querySelectorAll('div').toString());
+  // }
 
   @override
   bool get wantKeepAlive => true;

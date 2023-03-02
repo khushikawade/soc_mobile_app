@@ -26,6 +26,7 @@ class NewsAction extends NewsEvent {
   final int? helpful;
   final int? shared;
   final int? support;
+  final int? view;
   NewsAction(
       {required this.notificationId,
       required this.notificationTitle,
@@ -35,11 +36,20 @@ class NewsAction extends NewsEvent {
       this.shared,
       required this.context,
       required this.scaffoldKey,
-      this.support});
+      this.support,
+      this.view});
 
   @override
-  List<Object> get props =>
-      [notificationId!, notificationTitle!, like!, thanks!, helpful!, shared!];
+  List<Object> get props => [
+        notificationId!,
+        notificationTitle!,
+        like!,
+        thanks!,
+        helpful!,
+        shared!,
+        support!,
+        view!
+      ];
 }
 
 class FetchActionCountList extends NewsEvent {

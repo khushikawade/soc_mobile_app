@@ -31,7 +31,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Stream<NewsState> mapEventToState(
     NewsEvent event,
   ) async* {
-    // print("news_event-------------------$event");
     if (event is FetchNotificationList) {
       try {
         // Fetch local data for News feed to show data
@@ -81,6 +80,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         // List<Item> _list = await fetchNotificationList(0, 50);
         // Syncing to local database
         // User Interaction count list
+
         List<ActionCountList> list = await fetchNewsActionCount();
         List<Item> newList = [];
 
@@ -106,7 +106,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                     thanksCount: list[j].thanksCount,
                     helpfulCount: list[j].helpfulCount,
                     shareCount: list[j].shareCount,
-                    supportCount: list[j].supportCount));
+                    supportCount: list[j].supportCount,
+                    viewCount: list[j].viewCount));
                 break;
               }
 
@@ -124,7 +125,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                     thanksCount: 0,
                     helpfulCount: 0,
                     shareCount: 0,
-                    supportCount: 0));
+                    supportCount: 0,
+                    viewCount: 0));
               }
             }
           }
@@ -184,7 +186,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
           "Test_School__c": "${Globals.appSetting.isTestSchool}",
-          "Support__c": "${event.support}"
+          "Support__c": "${event.support}",
+          "View__c": "${event.view}",
         });
         yield NewsActionSuccess(
           obj: data,
@@ -227,101 +230,12 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         if (_list.isNotEmpty && _list[0].id != newsLatestId) {
           Globals.indicator.value = true;
         }
-        // LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-        // List<NotificationList> _localData = await _localDb.getData();
-        //check the new Notification to show indicator on app startup
-        // if (_localData.isNotEmpty &&
-        //     _list.isNotEmpty &&
-        //     _localData[0].id != _list[0].id) {
-        //   Globals.indicator.value = true;
-        // }
 
         yield NewsCountLengthSuccess(obj: _list);
       } catch (e) {
         yield NewsErrorReceived(err: e);
       }
     }
-
-    // if (event is FetchActionCountList) {
-    //   try {
-    //     yield NewsLoading();
-    //     String? _objectName = "news_action";
-    //     LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-
-    //     List<NotificationList> _localData = await _localDb.getData();
-
-    //     if (event.isDetailPage == false) {
-    //       if (_localData.isEmpty) {
-    //         yield NewsLoading();
-    //       } else {
-    //         yield ActionCountSuccess(obj: _localData);
-    //       }
-    //     }
-    //     List<ActionCountList> list = await fetchNewsActionCount();
-    //     List<NotificationList> newList = [];
-
-    //     newList.clear();
-    //     if (list.length == 0) {
-    //       //If no action added yet for school, Adding onsignal list as it is with no action counts
-    //       newList.addAll(Globals.notificationList);
-    //     } else {
-    //       for (int i = 0; i < Globals.notificationList.length; i++) {
-    //         for (int j = 0; j < list.length; j++) {
-    //           //Comparing Id and mapping data to the list if exist in action API
-    //           if ("${Globals.notificationList[i].id}${Overrides.SCHOOL_ID}" ==
-    //               list[j].notificationId) {
-    //             newList.add(NotificationList(
-    //                 id: Globals.notificationList[i].id,
-    //                 completedAt: Globals.notificationList[i].completedAt,
-    //                 contents: Globals.notificationList[i].contents,
-    //                 headings: Globals.notificationList[i].headings,
-    //                 image: Globals.notificationList[i].image,
-    //                 url: Globals.notificationList[i].url,
-    //                 likeCount: list[j].likeCount,
-    //                 thanksCount: list[j].thanksCount,
-    //                 helpfulCount: list[j].helpfulCount,
-    //                 shareCount: list[j].shareCount,
-    //                 supportCount: list[j].supportCount));
-    //             break;
-    //           }
-
-    //           //Mapping action counts 0 if the record doesn't exist in action API
-    //           if (list.length - 1 == j) {
-    //             newList.add(NotificationList(
-    //                 id: Globals.notificationList[i].id,
-    //                 completedAt: Globals.notificationList[i].completedAt,
-    //                 contents: Globals.notificationList[i].contents,
-    //                 headings: Globals.notificationList[i].headings,
-    //                 image: Globals.notificationList[i].image,
-    //                 url: Globals.notificationList[i].url,
-    //                 likeCount: 0,
-    //                 thanksCount: 0,
-    //                 helpfulCount: 0,
-    //                 shareCount: 0,
-    //                 supportCount: 0));
-    //           }
-    //         }
-    //       }
-    //     }
-    //     await _localDb.clear();
-    //     newList.forEach((NotificationList e) {
-    //       _localDb.addData(e);
-    //     });
-    //     //  newsMainList.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-    //     yield ActionCountSuccess(obj: newList);
-    //   } catch (e) {
-    //     print(e);
-    //     // yield NewsErrorReceived(err: e);
-    //     String? _objectName = "news_action";
-    //     // String? _objectName = "${Strings.newsObjectName}";
-    //     LocalDatabase<NotificationList> _localDb = LocalDatabase(_objectName);
-    //     List<NotificationList> _localData = await _localDb.getData();
-    //     // _localData.sort((a, b) => -a.completedAt.compareTo(b.completedAt));
-    //     if (event.isDetailPage == false) {
-    //       yield ActionCountSuccess(obj: _localData);
-    //     }
-    //   }
-    // }
 
     if (event is UpdateNotificationList) {
       try {
@@ -349,19 +263,21 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
               if ("${existingNotificationList[i].id}${Overrides.SCHOOL_ID}" ==
                   listActionCount[j].notificationId) {
                 newList.add(Item(
-                    id: existingNotificationList[i].id,
-                    completedAt: existingNotificationList[i].completedAt,
-                    description: existingNotificationList[i].description,
-                    title: existingNotificationList[i].title,
-                    image: existingNotificationList[i].image,
-                    link: existingNotificationList[i].link,
-                    completedAtTimestamp:
-                        existingNotificationList[i].completedAtTimestamp,
-                    likeCount: listActionCount[j].likeCount,
-                    thanksCount: listActionCount[j].thanksCount,
-                    helpfulCount: listActionCount[j].helpfulCount,
-                    shareCount: listActionCount[j].shareCount,
-                    supportCount: listActionCount[j].supportCount));
+                  id: existingNotificationList[i].id,
+                  completedAt: existingNotificationList[i].completedAt,
+                  description: existingNotificationList[i].description,
+                  title: existingNotificationList[i].title,
+                  image: existingNotificationList[i].image,
+                  link: existingNotificationList[i].link,
+                  completedAtTimestamp:
+                      existingNotificationList[i].completedAtTimestamp,
+                  likeCount: listActionCount[j].likeCount,
+                  thanksCount: listActionCount[j].thanksCount,
+                  helpfulCount: listActionCount[j].helpfulCount,
+                  shareCount: listActionCount[j].shareCount,
+                  supportCount: listActionCount[j].supportCount,
+                  viewCount: listActionCount[j].viewCount,
+                ));
                 break;
               }
 
@@ -380,7 +296,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
                     thanksCount: 0,
                     helpfulCount: 0,
                     shareCount: 0,
-                    supportCount: 0));
+                    supportCount: 0,
+                    viewCount: 0));
               }
             }
           }

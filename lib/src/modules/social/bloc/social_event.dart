@@ -29,6 +29,7 @@ class SocialAction extends SocialEvent {
   final int? helpful;
   final int? shared;
   final int? support;
+  final int? view;
   SocialAction(
       {required this.id,
       required this.title,
@@ -38,10 +39,12 @@ class SocialAction extends SocialEvent {
       this.shared,
       required this.context,
       required this.scaffoldKey,
-      this.support});
+      this.support,
+      this.view});
 
   @override
-  List<Object> get props => [id!, title!, like!, thanks!, helpful!, shared!];
+  List<Object> get props =>
+      [id!, title!, like!, thanks!, helpful!, shared!, view!];
 }
 
 //Using for Social RSS FEED Pagination

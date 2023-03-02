@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'dart:io' show Platform;
+import 'package:visibility_detector/visibility_detector.dart';
 
 class NewsDescription extends StatefulWidget {
   NewsDescription({
@@ -242,7 +243,20 @@ class _NewsDescriptionState extends State<NewsDescription> {
           padding: const EdgeInsets.symmetric(horizontal: _kLabelSpacing / 1.5),
           child: RefreshIndicator(
             key: refreshKey,
+            // child: VisibilityDetector(
+            //     key: Key('news-feed-post'),
+            //     onVisibilityChanged: (visibilityInfo) {
+            //       ActionInteractionButtonWidget(
+            //           isViewInteraction: true,
+            //           title: widget.obj.title,
+            //           description: widget.obj.description,
+            //           imageUrl: widget.obj.image,
+            //           obj: widget.obj,
+            //           page: "news",
+            //           isLoading: false);
+            //     },
             child: _buildNewsDescription(),
+            //  ),
             onRefresh: refreshPage,
           ),
         ));

@@ -1,24 +1,20 @@
 import 'dart:io';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
-
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/action_interaction_button.dart';
 import 'package:Soc/src/widgets/allCaughtUp_widget.dart';
-import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/common_feed_widget.dart';
 import 'package:Soc/src/widgets/custom_icon_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/sliderpagewidget.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +22,7 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:visibility_detector/visibility_detector.dart';
 import '../../home/ui/app_bar_widget.dart';
 
 class SocialNewPage extends StatefulWidget {
@@ -44,13 +41,14 @@ class _SocialNewPageState extends State<SocialNewPage> {
   bool? isCountLoading = true;
   final Globals globals = Globals();
   ScrollController _scrollController = ScrollController();
-
   List<Item> socialList = [];
+  final ValueNotifier<bool> refreshListViewCount = ValueNotifier<bool>(false);
 
   void initState() {
     super.initState();
     _scrollController = ScrollController()..addListener(_scrollListener);
     bloc.add(SocialPageEvent(action: "initial"));
+
     FirebaseAnalyticsService.addCustomAnalyticsEvent("social");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'social', screenClass: 'SocialPage');
@@ -115,7 +113,20 @@ class _SocialNewPageState extends State<SocialNewPage> {
                       AppTheme.kSelectedColor,
                     ]),
                   ))
-            : _buildlist(obj[index], index, obj, reLoad);
+            : VisibilityDetector(
+                key: Key('rss-feed-post'),
+                onVisibilityChanged: (visibilityInfo) {
+                  ActionInteractionButtonWidget(
+                    title: obj[index].title,
+                    description: obj[index].description,
+                    imageUrl: obj[index].mediaContent,
+                    page: "social",
+                    obj: obj[index],
+                    isLoading: true,
+                  );
+                },
+                child: _buildlist(obj[index], index, obj, reLoad));
+
         // return  _buildlist(obj[index], index, obj!, reLoad);
       },
     );
@@ -139,7 +150,6 @@ class _SocialNewPageState extends State<SocialNewPage> {
     }
 
     final document = parse(_desc);
-
     // final document = obj.description != null && obj.description != ""
     //     ? parse(obj.description)
     //     : parse("");
@@ -150,11 +160,11 @@ class _SocialNewPageState extends State<SocialNewPage> {
       color: Theme.of(context).colorScheme.background,
       child: InkWell(
         onTap: () async {
+          refreshListViewCount.value = false;
           bool result = await await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => SliderWidget(
-                        // icons: Globals.icons,
                         obj: mainObj,
                         // iconsName: Globals.iconsName,
                         currentIndex: index,
@@ -167,7 +177,8 @@ class _SocialNewPageState extends State<SocialNewPage> {
                         language: Globals.selectedLanguage,
                       )));
           if (result == true) {
-            setState(() {});
+            refreshListViewCount.value = true;
+            // setState(() {});
           }
         },
         child: CommonFeedWidget(
@@ -176,8 +187,13 @@ class _SocialNewPageState extends State<SocialNewPage> {
           description: obj.title! != null && obj.title!.length > 1
               ? "${obj.title!.toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
               : '',
-          actionIcon:
-              Container(child: actionButton(mainObj, obj, index, reLoad)),
+          actionIcon: Container(
+              child: actionButton(
+            mainObj,
+            obj,
+            index,
+            reLoad,
+          )),
           url: (obj.mediaContent != null &&
                   obj.mediaContent != '' &&
                   obj.mediaContent != null &&
@@ -221,6 +237,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
             child: ShimmerLoading(
                 isLoading: true,
                 child: ActionInteractionButtonWidget(
+                  // view: view,
                   title: list[index].title,
                   description: list[index].description,
                   imageUrl: list[index].mediaContent,
@@ -306,98 +323,111 @@ class _SocialNewPageState extends State<SocialNewPage> {
 
                 return
                     // connected ?
-                    Column(
-                  children: <Widget>[
-                    BlocBuilder<SocialBloc, SocialState>(
-                        bloc: bloc,
-                        builder: (BuildContext context, SocialState state) {
-                          if (state is SocialDataSuccess) {
-                            // _countSocialBloc.add(FetchSocialActionCount());
-                            socialList = [];
-                            socialList.addAll(state.obj!);
+                    ValueListenableBuilder(
+                        builder: (BuildContext context, dynamic value,
+                            Widget? child) {
+                          return Column(
+                            children: <Widget>[
+                              BlocBuilder<SocialBloc, SocialState>(
+                                  bloc: bloc,
+                                  builder: (BuildContext context,
+                                      SocialState state) {
+                                    if (state is SocialDataSuccess) {
+                                      // _countSocialBloc.add(FetchSocialActionCount());
+                                      socialList = [];
+                                      socialList.addAll(state.obj!);
 
-                            return state.obj != null && state.obj!.length > 0
-                                ? Expanded(
-                                    child: makeList(state.obj!, false,
-                                        isLoading: state.isLoading))
-                                : Expanded(
-                                    child: NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: true,
-                                      isNews: false,
-                                      isEvents: false,
-                                      connected: connected,
-                                    ),
-                                  );
-                          } else if (state is SocialInitialState) {
-                            return state.obj != null && state.obj!.length > 0
-                                ? Expanded(child: makeList(state.obj!, true))
-                                : Expanded(
-                                    child: NoDataFoundErrorWidget(
-                                      isResultNotFoundMsg: true,
-                                      isNews: false,
-                                      isEvents: false,
-                                      connected: connected,
-                                    ),
-                                  );
-                          }
-                          //Commented due to double state found with same logic
+                                      return state.obj != null &&
+                                              state.obj!.length > 0
+                                          ? Expanded(
+                                              child: makeList(state.obj!, false,
+                                                  isLoading: state.isLoading))
+                                          : Expanded(
+                                              child: NoDataFoundErrorWidget(
+                                                isResultNotFoundMsg: true,
+                                                isNews: false,
+                                                isEvents: false,
+                                                connected: connected,
+                                              ),
+                                            );
+                                    } else if (state is SocialInitialState) {
+                                      return state.obj != null &&
+                                              state.obj!.length > 0
+                                          ? Expanded(
+                                              child: makeList(state.obj!, true))
+                                          : Expanded(
+                                              child: NoDataFoundErrorWidget(
+                                                isResultNotFoundMsg: true,
+                                                isNews: false,
+                                                isEvents: false,
+                                                connected: connected,
+                                              ),
+                                            );
+                                    }
+                                    //Commented due to double state found with same logic
 
-                          // else if (state is SocialReload) {
-                          //   socialList = [];
-                          //   socialList.addAll(state.obj!);
-                          //   return state.obj != null && state.obj!.length > 0
-                          //       ? Expanded(
-                          //           child: makeList(state.obj, false,
-                          //               isLoading: state.isLoading))
-                          //       : Expanded(
-                          //           child: NoDataFoundErrorWidget(
-                          //             isResultNotFoundMsg: true,
-                          //             isNews: false,
-                          //             isEvents: false,
-                          //             connected: connected,
-                          //           ),
-                          //         );
-                          // }
-                          else if (state is Loading) {
-                            return Expanded(
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                child:
-                                    Center(child: CircularProgressIndicator()),
+                                    // else if (state is SocialReload) {
+                                    //   socialList = [];
+                                    //   socialList.addAll(state.obj!);
+                                    //   return state.obj != null && state.obj!.length > 0
+                                    //       ? Expanded(
+                                    //           child: makeList(state.obj, false,
+                                    //               isLoading: state.isLoading))
+                                    //       : Expanded(
+                                    //           child: NoDataFoundErrorWidget(
+                                    //             isResultNotFoundMsg: true,
+                                    //             isNews: false,
+                                    //             isEvents: false,
+                                    //             connected: connected,
+                                    //           ),
+                                    //         );
+                                    // }
+                                    else if (state is Loading) {
+                                      return Expanded(
+                                        child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.8,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        ),
+                                      );
+                                    } else if (state is SocialError) {
+                                      return ListView(
+                                          shrinkWrap: true,
+                                          children: [ErrorMsgWidget()]);
+                                    }
+                                    return Container();
+                                  }),
+                              Container(
+                                height: 0,
+                                width: 0,
+                                child: BlocListener<HomeBloc, HomeState>(
+                                  bloc: _homeBloc,
+                                  listener: (context, state) async {
+                                    if (state is BottomNavigationBarSuccess) {
+                                      AppTheme.setDynamicTheme(
+                                          Globals.appSetting, context);
+
+                                      setState(() {
+                                        // Globals.homeObject = state.obj;
+                                        Globals.appSetting =
+                                            AppSetting.fromJson(state.obj);
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 0,
+                                    width: 0,
+                                  ),
+                                ),
                               ),
-                            );
-                          } else if (state is SocialError) {
-                            return ListView(
-                                shrinkWrap: true, children: [ErrorMsgWidget()]);
-                          }
-                          return Container();
-                        }),
-                    Container(
-                      height: 0,
-                      width: 0,
-                      child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-
-                            setState(() {
-                              // Globals.homeObject = state.obj;
-                              Globals.appSetting =
-                                  AppSetting.fromJson(state.obj);
-                            });
-                          }
+                            ],
+                          );
                         },
-                        child: Container(
-                          height: 0,
-                          width: 0,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
+                        valueListenable: refreshListViewCount);
                 // : NoInternetErrorWidget(
                 //     connected: connected, issplashscreen: false);
               },

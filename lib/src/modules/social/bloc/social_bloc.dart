@@ -116,7 +116,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
                     thanksCount: listActionCount[j].thanksCount,
                     helpfulCount: listActionCount[j].helpfulCount,
                     shareCount: listActionCount[j].shareCount,
-                    supportCount: listActionCount[j].supportCount));
+                    supportCount: listActionCount[j].supportCount,
+                    viewCount: listActionCount[j].viewCount));
                 break;
               }
               // If Interaction count list length ends, Add all the remaining RSS feed interaction count = 0
@@ -136,7 +137,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
                     thanksCount: 0,
                     helpfulCount: 0,
                     shareCount: 0,
-                    supportCount: 0));
+                    supportCount: 0,
+                    viewCount: 0));
               }
             }
           }
@@ -173,6 +175,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         // yield SocialError(err: e);
       }
     }
+
     //Using the event in case of fetching more data for social database
     if (event is UpdateSocialList) {
       try {
@@ -213,7 +216,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
                     thanksCount: listActionCount[j].thanksCount,
                     helpfulCount: listActionCount[j].helpfulCount,
                     shareCount: listActionCount[j].shareCount,
-                    supportCount: listActionCount[j].supportCount));
+                    supportCount: listActionCount[j].supportCount,
+                    viewCount: listActionCount[j].viewCount));
                 break;
               }
 
@@ -234,7 +238,8 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
                     thanksCount: 0,
                     helpfulCount: 0,
                     shareCount: 0,
-                    supportCount: 0));
+                    supportCount: 0,
+                    viewCount: 0));
               }
             }
           }
@@ -285,6 +290,7 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
           "Helpful__c": "${event.helpful}",
           "Share__c": "${event.shared}",
           "Support__c": "${event.support}",
+          "View__c": "${event.view}",
           "Test_School__c": "${Globals.appSetting.isTestSchool}",
         });
         yield SocialActionSuccess(
