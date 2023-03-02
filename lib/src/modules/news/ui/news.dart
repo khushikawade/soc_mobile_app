@@ -24,6 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../widgets/action_interaction_button.dart';
 
@@ -47,6 +48,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
   bool? result;
   bool? allCaughtUpFlag = false;
   ScrollController _scrollController = ScrollController();
+  final ValueNotifier<bool> refreshListViewCount = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -121,6 +123,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
       color: Theme.of(context).colorScheme.background,
       child: InkWell(
         onTap: () async {
+          refreshListViewCount.value = false;
           // if (isCountLoading == true) {
           //   Utility.showSnackBar(_scaffoldKey,
           //       "Please wait while count is loading", context, null);
@@ -144,6 +147,7 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
           //lock screen orientation
           //   Utility.setLocked();
           if (result == true) {
+            refreshListViewCount.value = true;
             _countBloc.add(FetchActionCountList(
               isDetailPage: true,
             ));
@@ -186,80 +190,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                     obj: obj,
                     page: "news",
                     isLoading: false))
-        // BlocListener<NewsBloc, NewsState>(
-        //   bloc: _countBloc,
-        //   listener: (context, state) async {
-        //     if (state is ActionCountSuccess) {
-        //       newsMainList.clear();
-        //       newsMainList.addAll(state.obj!);
-
-        //       isCountLoading = false;
-        //       Container(
-        //         alignment: Alignment.centerLeft,
-        //         child: ActionInteractionButtonWidget(
-        //             title: state.obj![index].headings['en'],
-        //             description: state.obj![index].contents['en'],
-        //             imageUrl: state.obj![index].image,
-        //             obj: state.obj![index],
-        //             page: "news",
-        //             isLoading: isCountLoading),
-        //       );
-        //     }
-        //   },
-        //   child: Container(),
-        // ),
-        // BlocBuilder(
-        //     bloc: _countBloc,
-        //     builder: (BuildContext context, NewsState state) {
-        //       if (state is ActionCountSuccess) {
-        //         newsMainList.clear();
-        //         newsMainList.addAll(state.obj!);
-        //         isCountLoading = false;
-        //         return Container(
-        //           alignment: Alignment.centerLeft,
-        //           child: state.obj![index] ==
-        //                   null // To make it backward compatible:: If the local database has something different than the real data that has been fetched by the API.
-        //               ? Container()
-        //               : ActionInteractionButtonWidget(
-        //                   title: state.obj![index].headings['en'],
-        //                   description: state.obj![index].contents['en'],
-        //                   imageUrl: state.obj![index].image,
-        //                   obj: state.obj![index],
-        //                   page: "news",
-        //                   isLoading: isCountLoading),
-        //         );
-        //       } else if (state is NewsLoading) {
-        //         return Container(
-        //           alignment: Alignment.centerLeft,
-        //           child: ShimmerLoading(
-        //               isLoading: true,
-        //               child: ActionInteractionButtonWidget(
-        //                   title: Globals.notificationList[index].headings['en'],
-        //                   description:
-        //                       Globals.notificationList[index].contents['en'],
-        //                   imageUrl: Globals.notificationList[index].image,
-        //                   obj: Globals.notificationList[index],
-        //                   page: "news",
-        //                   isLoading: isCountLoading)),
-        //         );
-        //       } else if (state is NewsErrorReceived) {
-        //         return ListView(shrinkWrap: true, children: [ErrorMsgWidget()]);
-        //       } else {
-        //         return Container(
-        //             alignment: Alignment.centerLeft,
-        //             child: ShimmerLoading(
-        //                 isLoading: true,
-        //                 child: ActionInteractionButtonWidget(
-        //                     title:
-        //                         Globals.notificationList[index].headings['en'],
-        //                     description:
-        //                         Globals.notificationList[index].contents['en'],
-        //                     imageUrl: Globals.notificationList[index].image,
-        //                     obj: Globals.notificationList[index],
-        //                     page: "news",
-        //                     isLoading: isCountLoading)));
-        //       }
-        //     }),
       ],
     );
   }
@@ -325,7 +255,19 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                                   ),
                           ))
                       : allCaughtUp()
-              : _buildListItems(_list, _list[index], index, isLoading);
+              : VisibilityDetector(
+                  key: Key('news-feed-post'),
+                  onVisibilityChanged: (visibilityInfo) {
+                    ActionInteractionButtonWidget(
+                        title: _list[index].title,
+                        description: _list[index].description,
+                        imageUrl: _list[index].image,
+                        obj: _list[index],
+                        page: "news",
+                        isLoading: false);
+                  },
+                  child:
+                      _buildListItems(_list, _list[index], index, isLoading));
         },
       ),
     );
@@ -370,105 +312,119 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
 
               return
                   //  connected?
-                  Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BlocListener<NewsBloc, NewsState>(
-                    bloc: bloc,
-                    listener: (context, state) async {
-                      if (state is NewsDataSuccess) {
-                        notification_list = state.obj!;
-                        // _countBloc.add(FetchActionCountList(
-                        //     isDetailPage: state.isFromUpdatedNewsList));
-                        if (isActionAPICalled == false) {
-                          // _countBloc.add(FetchActionCountList(
-                          //     isDetailPage: state.isFromUpdatedNewsList));
-                          isActionAPICalled = true;
-                        }
+                  ValueListenableBuilder(
+                      builder:
+                          (BuildContext context, dynamic value, Widget? child) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            BlocListener<NewsBloc, NewsState>(
+                              bloc: bloc,
+                              listener: (context, state) async {
+                                if (state is NewsDataSuccess) {
+                                  notification_list = state.obj!;
+                                  // _countBloc.add(FetchActionCountList(
+                                  //     isDetailPage: state.isFromUpdatedNewsList));
+                                  if (isActionAPICalled == false) {
+                                    // _countBloc.add(FetchActionCountList(
+                                    //     isDetailPage: state.isFromUpdatedNewsList));
+                                    isActionAPICalled = true;
+                                  }
 
-                        SharedPreferences intPrefs =
-                            await SharedPreferences.getInstance();
-                        if (Globals.notiCount != null) {
-                          intPrefs.getInt("totalCount") == null
-                              ? intPrefs.setInt(
-                                  "totalCount", Globals.notiCount!)
-                              : intPrefs.getInt("totalCount");
-                        }
-                        if (Globals.notiCount != null &&
-                            Globals.notiCount! >
-                                intPrefs.getInt("totalCount")!) {
-                          intPrefs.setInt("totalCount", Globals.notiCount!);
-                        }
-                      }
-                    },
-                    child: Container(),
-                  ),
-                  BlocListener<HomeBloc, HomeState>(
-                      bloc: _homeBloc,
-                      listener: (context, state) async {
-                        if (state is BottomNavigationBarSuccess) {
-                          AppTheme.setDynamicTheme(Globals.appSetting, context);
-
-                          Globals.appSetting = AppSetting.fromJson(state.obj);
-
-                          setState(() {});
-                        } else if (state is HomeErrorReceived) {
-                          ErrorMsgWidget();
-                        }
-                      },
-                      child: EmptyContainer()),
-                  BlocBuilder(
-                      bloc: bloc,
-                      builder: (BuildContext context, NewsState state) {
-                        if (state is NewsDataSuccess) {
-                          // Globals.notificationList.clear();
-                          // Globals.notificationList.addAll(state.obj!);
-                          return state.obj != null && state.obj!.length > 0
-                              ? _buildList(
-                                  state.obj!, state.isLoading, connected)
-                              : Expanded(
-                                  child: NoDataFoundErrorWidget(
-                                    isResultNotFoundMsg: false,
-                                    isNews: true,
-                                    isEvents: false,
-                                  ),
-                                );
-                        }
-                        // else if (state is NewsInitialState) {
-                        //   return state.obj != null && state.obj!.length > 0
-                        //       ? Expanded(
-                        //           child: _buildList(
-                        //           state.obj!,
-                        //           true,
-                        //           connected,
-                        //         ))
-                        //       : Expanded(
-                        //           child: NoDataFoundErrorWidget(
-                        //             isResultNotFoundMsg: true,
-                        //             isNews: false,
-                        //             isEvents: false,
-                        //             connected: connected,
-                        //           ),
-                        //         );
-                        // }
-                        else if (state is NewsLoading) {
-                          return Expanded(
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: Center(child: CircularProgressIndicator()),
+                                  SharedPreferences intPrefs =
+                                      await SharedPreferences.getInstance();
+                                  if (Globals.notiCount != null) {
+                                    intPrefs.getInt("totalCount") == null
+                                        ? intPrefs.setInt(
+                                            "totalCount", Globals.notiCount!)
+                                        : intPrefs.getInt("totalCount");
+                                  }
+                                  if (Globals.notiCount != null &&
+                                      Globals.notiCount! >
+                                          intPrefs.getInt("totalCount")!) {
+                                    intPrefs.setInt(
+                                        "totalCount", Globals.notiCount!);
+                                  }
+                                }
+                              },
+                              child: Container(),
                             ),
-                          );
-                        } else if (state is NewsErrorReceived) {
-                          return ListView(
-                              shrinkWrap: true, children: [ErrorMsgWidget()]);
-                        } else {
-                          return Container();
-                        }
-                      }),
-                ],
-              );
+                            BlocListener<HomeBloc, HomeState>(
+                                bloc: _homeBloc,
+                                listener: (context, state) async {
+                                  if (state is BottomNavigationBarSuccess) {
+                                    AppTheme.setDynamicTheme(
+                                        Globals.appSetting, context);
+
+                                    Globals.appSetting =
+                                        AppSetting.fromJson(state.obj);
+
+                                    setState(() {});
+                                  } else if (state is HomeErrorReceived) {
+                                    ErrorMsgWidget();
+                                  }
+                                },
+                                child: EmptyContainer()),
+                            BlocBuilder(
+                                bloc: bloc,
+                                builder:
+                                    (BuildContext context, NewsState state) {
+                                  if (state is NewsDataSuccess) {
+                                    // Globals.notificationList.clear();
+                                    // Globals.notificationList.addAll(state.obj!);
+                                    return state.obj != null &&
+                                            state.obj!.length > 0
+                                        ? _buildList(state.obj!,
+                                            state.isLoading, connected)
+                                        : Expanded(
+                                            child: NoDataFoundErrorWidget(
+                                              isResultNotFoundMsg: false,
+                                              isNews: true,
+                                              isEvents: false,
+                                            ),
+                                          );
+                                  }
+                                  // else if (state is NewsInitialState) {
+                                  //   return state.obj != null && state.obj!.length > 0
+                                  //       ? Expanded(
+                                  //           child: _buildList(
+                                  //           state.obj!,
+                                  //           true,
+                                  //           connected,
+                                  //         ))
+                                  //       : Expanded(
+                                  //           child: NoDataFoundErrorWidget(
+                                  //             isResultNotFoundMsg: true,
+                                  //             isNews: false,
+                                  //             isEvents: false,
+                                  //             connected: connected,
+                                  //           ),
+                                  //         );
+                                  // }
+                                  else if (state is NewsLoading) {
+                                    return Expanded(
+                                      child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.8,
+                                        child: Center(
+                                            child: CircularProgressIndicator()),
+                                      ),
+                                    );
+                                  } else if (state is NewsErrorReceived) {
+                                    return ListView(
+                                        shrinkWrap: true,
+                                        children: [ErrorMsgWidget()]);
+                                  } else {
+                                    return Container();
+                                  }
+                                }),
+                          ],
+                        );
+                      },
+                      valueListenable: refreshListViewCount);
               // : NoInternetErrorWidget(
               //     connected: connected, isSplashScreen: false);
             },
@@ -536,12 +492,6 @@ class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver {
                             Color(0xff000000)
                         ? Color(0xff111C20)
                         : Color(0xffF7F8F9),
-
-                    // Theme.of(context).colorScheme.background ==
-                    //     Color(0xff000000)
-                    // ? Color(0xffF7F8F9)
-                    // : Color(0xff162429),
-                    // border: Border.all(color: Colors.white),
                     borderRadius: BorderRadius.circular(32),
                   ),
                 ),

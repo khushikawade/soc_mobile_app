@@ -27,6 +27,8 @@ class NotificationList {
   dynamic completedAtTimestamp;
   @HiveField(11)
   int? supportCount;
+  @HiveField(12)
+  int? viewCount;
 
   NotificationList(
       {this.id,
@@ -40,5 +42,6 @@ class NotificationList {
       this.helpfulCount = 0,
       this.shareCount = 0,
       this.completedAtTimestamp,
-      this.supportCount = 0});
+      this.supportCount = 0,
+      this.viewCount = 0});
 }

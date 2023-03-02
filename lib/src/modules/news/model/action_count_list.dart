@@ -8,6 +8,7 @@ class ActionCountList {
   String? title;
   String? id;
   int? supportCount;
+  int? viewCount;
 
   ActionCountList(
       {this.notificationId,
@@ -18,7 +19,8 @@ class ActionCountList {
       this.shareCount,
       this.title,
       this.id,
-      this.supportCount});
+      this.supportCount,
+      this.viewCount});
   factory ActionCountList.fromJson(Map<String, dynamic> json) =>
       ActionCountList(
           notificationId: json['Notification_Id__c'] as String?,
@@ -29,7 +31,8 @@ class ActionCountList {
           shareCount: json['Total_Share__c'] as int?,
           title: json['Title__c'] as String?,
           id: json['UID'] as String?,
-          supportCount: json['Total_Support__c'] as int?);
+          supportCount: json['Total_Support__c'] as int?,
+          viewCount: json['Total_View__c'] as int?);
 
   Map<String, dynamic> toJson() => {
         'Notification_Id__c': notificationId,
@@ -40,6 +43,7 @@ class ActionCountList {
         'Total_Share__c': shareCount,
         'Title__c': title,
         'UID': id,
-        'Total_Support__c': supportCount
+        'Total_Support__c': supportCount,
+        'Total_View__c': viewCount
       };
 }

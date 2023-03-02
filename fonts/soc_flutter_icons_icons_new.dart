@@ -56,6 +56,9 @@ class CustomFlutterIcons {
   static const IconData group_7_2x_2 = IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData group_6_2x_1 = IconData(0xe821, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData group_7_2x_3 = IconData(0xe822, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group_2_copy_2_1x_1 = IconData(0xe823, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData noun_like_70067_1x_1 = IconData(0xe824, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData path_2x_1 = IconData(0xe825, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData blue_2 = IconData(0xe826, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData blue_3 = IconData(0xe827, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData blue_5 = IconData(0xe828, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -121,6 +124,9 @@ class CustomFlutterIcons {
   static const IconData pta_2 = IconData(0xe864, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData sports_2 = IconData(0xe865, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData blue_1 = IconData(0xe866, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData path_2x_2 = IconData(0xe867, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData noun_like_70067_1x_2 = IconData(0xe868, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData group_2_copy_2_1x_2 = IconData(0xe869, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData group_7_2x_4 = IconData(0xe86a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData group_6_2x_2 = IconData(0xe86b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData group_7_2x_1 = IconData(0xe86c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -145,9 +151,6 @@ class CustomFlutterIcons {
   static const IconData thanks = IconData(0xe87f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData help = IconData(0xe880, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData new_support = IconData(0xe882, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData eye_larger = IconData(0xe887, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData bar_2 = IconData(0xe88a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData analytics = IconData(0xe88b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData eye1 = IconData(0xe88c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData eye001 = IconData(0xe892, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData circle_eye = IconData(0xe893, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

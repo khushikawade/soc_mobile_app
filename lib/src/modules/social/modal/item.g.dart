@@ -35,13 +35,14 @@ class ItemAdapter extends TypeAdapter<Item> {
       helpfulCount: fields[12] as int?,
       shareCount: fields[13] as int?,
       supportCount: fields[14] as int?,
+      viewCount: fields[18] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Item obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -77,7 +78,9 @@ class ItemAdapter extends TypeAdapter<Item> {
       ..writeByte(16)
       ..write(obj.completedAt)
       ..writeByte(17)
-      ..write(obj.completedAtTimestamp);
+      ..write(obj.completedAtTimestamp)
+      ..writeByte(18)
+      ..write(obj.viewCount);
   }
 
   @override
