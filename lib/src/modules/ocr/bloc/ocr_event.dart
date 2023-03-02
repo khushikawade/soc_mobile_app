@@ -149,6 +149,8 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
   final String teacherEmail;
   final String assessmentQueImage;
   final bool isMcqSheet;
+  final String classroomCourseId;
+  final String classroomCourseWorkId;
 
   SaveAssessmentToDashboardAndGetId(
       {required this.assessmentName,
@@ -166,7 +168,9 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
       required this.teacherContactId,
       required this.teacherEmail,
       required this.assessmentQueImage,
-      required this.isMcqSheet});
+      required this.isMcqSheet,
+      required this.classroomCourseId,
+      required this.classroomCourseWorkId});
 
   @override
   List<Object> get props => [];
@@ -238,7 +242,8 @@ class LogUserActivityEvent extends OcrEvent {
 class UploadAssessmentToDB extends OcrEvent {
   final List<StudentAssessmentInfo> studentDetails;
   final String assessmentId;
-  UploadAssessmentToDB({required this.studentDetails,required this.assessmentId});
+  UploadAssessmentToDB(
+      {required this.studentDetails, required this.assessmentId});
 }
 
 class GetRubricPdf extends OcrEvent {

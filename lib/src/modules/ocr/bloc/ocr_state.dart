@@ -193,14 +193,14 @@ class AssessmentIdSuccess extends OcrState {
 
 class AssessmentDashboardStatus extends OcrState {
   int? resultRecordCount;
-  String? assessmentId;
+  AssessmentCModal? assessmentObj;
   AssessmentDashboardStatus(
-      {this.resultRecordCount, required this.assessmentId});
+      {this.resultRecordCount, required this.assessmentObj});
   AssessmentDashboardStatus copyWith(
       {final obj, final recordCount, final assessmentId}) {
     return AssessmentDashboardStatus(
         resultRecordCount: recordCount ?? this.resultRecordCount,
-        assessmentId: assessmentId ?? this.assessmentId);
+        assessmentObj: assessmentId ?? this.assessmentObj);
   }
 
   @override

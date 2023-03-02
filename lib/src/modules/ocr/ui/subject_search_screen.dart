@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
@@ -24,6 +25,8 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../google_classroom/bloc/google_classroom_bloc.dart';
+
 class SearchScreenPage extends StatefulWidget {
   final bool? isMcqSheet;
   final String? selectedAnswer;
@@ -34,6 +37,7 @@ class SearchScreenPage extends StatefulWidget {
   final String? subjectId;
   final String? stateName;
   GoogleDriveBloc googleDriveBloc;
+  GoogleClassroomBloc googleClassroomBloc;
   SearchScreenPage(
       {Key? key,
       this.isMcqSheet,
@@ -44,7 +48,8 @@ class SearchScreenPage extends StatefulWidget {
       required this.questionImage,
       required this.stateName,
       required this.subjectId,
-      required this.googleDriveBloc})
+      required this.googleDriveBloc,
+      required this.googleClassroomBloc})
       : super(key: key);
 
   @override
@@ -72,7 +77,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
   final ValueNotifier<bool> isSubmitButton = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isRecentList = ValueNotifier<bool>(true);
-  LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+  LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
       LocalDatabase('student_info');
   final ScrollController _scrollController = ScrollController();
 
@@ -356,9 +361,44 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                     fileId: Globals.googleExcelSheetId ?? 'Excel Id not found',
                     sessionId: Globals.sessionId,
                     teacherContactId: Globals.teacherId,
-                    teacherEmail: Globals.teacherEmailId));
+                    teacherEmail: Globals.teacherEmailId,
+                    classroomCourseId:
+                        GoogleClassroomGlobals?.studentClassRoomObj?.courseId ??
+                            '',
+                    classroomCourseWorkId: GoogleClassroomGlobals
+                            ?.studentClassRoomObj?.courseWorkId ??
+                        ''));
               }
             }),
+
+        BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
+            bloc: widget.googleClassroomBloc,
+            child: Container(),
+            listener: (context, state) async {
+              if (state is CreateClassroomCourseWorkSuccess) {
+                _navigatetoResultSection();
+              }
+              if (state is GoogleClassroomErrorState) {
+                if (state.errorMsg == 'ReAuthentication is required') {
+                  await Utility.refreshAuthenticationToken(
+                      isNavigator: true,
+                      errorMsg: state.errorMsg!,
+                      context: context,
+                      scaffoldKey: _scaffoldKey);
+
+                  widget.googleClassroomBloc.add(CreateClassRoomCourseWork(
+                      studentAssessmentInfoDb: LocalDatabase('student_info'),
+                      pointPossible: Globals.pointPossible ?? '0',
+                      studentClassObj:
+                          GoogleClassroomGlobals.studentClassRoomObj!,
+                      title: Globals.assessmentName!.split("_")[1] ?? ''));
+                } else {
+                  Navigator.of(context).pop();
+                  Utility.currentScreenSnackBar(
+                      state.errorMsg?.toString() ?? "", null);
+                }
+              }
+            })
       ],
     );
   }
@@ -663,11 +703,12 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       }
 
                       //Adding blank fields to the list : Static data
-                      List<StudentAssessmentInfo> studentInfodblist =
+                      List<StudentAssessmentInfo> studentAssessmentInfoDblist =
                           await Utility.getStudentInfoList(
                               tableName: 'student_info');
 
-                      StudentAssessmentInfo element = studentInfodblist[0];
+                      StudentAssessmentInfo element =
+                          studentAssessmentInfoDblist[0];
                       element.subject = widget.selectedKeyword;
                       element.learningStandard =
                           learningStandard == null || learningStandard == ''
@@ -695,7 +736,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                           : widget.questionImage;
                       element.googleSlidePresentationURL =
                           Globals.googleSlidePresentationLink;
-                      await _studentInfoDb.putAt(0, element);
+                      await _studentAssessmentInfoDb.putAt(0, element);
 
                       GradedGlobals.loadingMessage =
                           'Preparing Student Excel Sheet';
@@ -724,40 +765,34 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                         BlocListener<OcrBloc, OcrState>(
                             bloc: _ocrBloc,
                             child: Container(),
-                            listener: (context, state) {
+                            listener: (context, state) async {
                               if (state is OcrLoading) {
                                 //Utility.showLoadingDialog(context);
                               }
                               if (state is AssessmentIdSuccess) {
-                                Navigator.of(context).pop();
-                                GradedGlobals.loadingMessage = null;
-                                widget.googleDriveBloc.close();
-
-                                FirebaseAnalyticsService
-                                    .addCustomAnalyticsEvent(
-                                        "save_to_drive_from_subject_search");
-                                Utility.updateLogs(
-                                    // ,
-                                    activityId: '14',
-                                    description: 'Save to drive',
-                                    operationResult: 'Success');
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ResultsSummary(
-                                            isMcqSheet: widget.isMcqSheet,
-                                            selectedAnswer:
-                                                widget.selectedAnswer,
-                                            fileId: Globals.googleExcelSheetId,
-                                            // subjectId:  ?? '',
-                                            standardId: standardId ?? '',
-                                            assessmentName:
-                                                Globals.assessmentName,
-                                            shareLink: '',
-                                            assessmentDetailPage: false,
-                                          )),
-                                );
+                                if (Overrides.STANDALONE_GRADED_APP &&
+                                    (GoogleClassroomGlobals.studentClassRoomObj
+                                            ?.courseWorkId?.isEmpty ??
+                                        true)) {
+                                  showDialogSetState!(() {
+                                    GradedGlobals.loadingMessage =
+                                        'Adding google class more';
+                                  });
+                                  widget.googleClassroomBloc.add(
+                                      CreateClassRoomCourseWork(
+                                          studentAssessmentInfoDb:
+                                              LocalDatabase('student_info'),
+                                          pointPossible:
+                                              Globals.pointPossible ?? '0',
+                                          studentClassObj:
+                                              GoogleClassroomGlobals
+                                                  .studentClassRoomObj!,
+                                          title: Globals.assessmentName!
+                                                  .split("_")[1] ??
+                                              ''));
+                                } else {
+                                  _navigatetoResultSection();
+                                }
                               }
                             }),
                         Utility.textWidget(
@@ -827,5 +862,35 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
     _localData.forEach((SubjectDetailList e) {
       _localDb.addData(e);
     });
+  }
+
+  void _navigatetoResultSection() {
+    Navigator.of(context).pop();
+
+    GradedGlobals.loadingMessage = null;
+    widget.googleDriveBloc.close();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "save_to_drive_from_subject_search");
+    Utility.updateLogs(
+        // ,
+        activityId: '14',
+        description: 'Save to drive',
+        operationResult: 'Success');
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ResultsSummary(
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
+                fileId: Globals.googleExcelSheetId,
+                // subjectId:  ?? '',
+                standardId: standardId ?? '',
+                assessmentName: Globals.assessmentName,
+                shareLink: '',
+                assessmentDetailPage: false,
+              )),
+    );
   }
 }

@@ -52,8 +52,12 @@ class StudentAssessmentInfo {
   @HiveField(21)
   String? standardDescription;
   @HiveField(22)
-  bool isSlideObjUpdated;
+  String? googleClassRoomStudentProfileId;
   @HiveField(23)
+  bool isgoogleClassRoomStudentProfileUpdated;
+  @HiveField(24)
+  bool isSlideObjUpdated;
+  @HiveField(25)
   String? slideTableObjId;
   StudentAssessmentInfo(
       {this.studentName,
@@ -79,6 +83,8 @@ class StudentAssessmentInfo {
       this.studentResponseKey,
       this.isRubricChanged,
       this.uniqueId,
+      this.googleClassRoomStudentProfileId,
+      this.isgoogleClassRoomStudentProfileUpdated = false,
       this.isSlideObjUpdated = false,
       this.slideTableObjId});
 

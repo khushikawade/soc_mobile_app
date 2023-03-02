@@ -25,13 +25,15 @@ class GoogleClassroomCoursesAdapter
       room: fields[4] as String?,
       studentList: (fields[5] as List?)?.cast<dynamic>(),
       enrollmentCode: fields[6] as String?,
+      courseWorkId: fields[7] as String?,
+      assessmentCId: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, GoogleClassroomCourses obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.courseId)
       ..writeByte(1)
@@ -45,7 +47,11 @@ class GoogleClassroomCoursesAdapter
       ..writeByte(5)
       ..write(obj.studentList)
       ..writeByte(6)
-      ..write(obj.enrollmentCode);
+      ..write(obj.enrollmentCode)
+      ..writeByte(7)
+      ..write(obj.courseWorkId)
+      ..writeByte(8)
+      ..write(obj.assessmentCId);
   }
 
   @override

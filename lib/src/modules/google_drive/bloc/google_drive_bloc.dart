@@ -175,23 +175,24 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
             String imageB64 = base64Encode(imageBytes);
 
-            String imgUrl = await _uploadImgB64AndGetUrl(
+            String imgUrl = await uploadImgB64AndGetUrl(
                 imgBase64: imageB64,
                 imgExtension: imgExtension,
                 section: "assessment-sheet");
 
-            if (imgUrl != "") {
+            if (imgUrl.isNotEmpty) {
               assessmentData[i].assessmentImage = imgUrl;
+              await _studentInfoDb.putAt(i, assessmentData[i]);
             }
           }
         }
         //clear local DB
-        _studentInfoDb.clear();
+        //_studentInfoDb.clear();
 
         //updating local DB with latest data
-        assessmentData.forEach((StudentAssessmentInfo e) {
-          _studentInfoDb.addData(e);
-        });
+        // assessmentData.forEach((StudentAssessmentInfo e) {
+        //   _studentInfoDb.addData(e);
+        // });
         List<StudentAssessmentInfo> newList = [];
         newList.addAll(assessmentData);
         Utility.updateAssessmentToDb(
@@ -315,7 +316,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             List<int> imageBytes = assessmentImageFile.readAsBytesSync();
             String imageB64 = base64Encode(imageBytes);
 
-            String imgUrl = await _uploadImgB64AndGetUrl(
+            String imgUrl = await uploadImgB64AndGetUrl(
                 imgBase64: imageB64,
                 imgExtension: imgExtension,
                 section: "assessment-sheet");
@@ -396,7 +397,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 String imgExtension = assessmentImageFile.path
                     .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
 
-                String imgUrl = await _uploadImgB64AndGetUrl(
+                String imgUrl = await uploadImgB64AndGetUrl(
                     imgBase64: customRubicModal.imgBase64,
                     imgExtension: imgExtension,
                     section: 'rubric-score');
@@ -774,7 +775,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is ImageToAwsBucket) {
       try {
         // print(event.getImageUrl);
-        String imgUrl = await _uploadImgB64AndGetUrl(
+        String imgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.customRubricModal.imgBase64,
             imgExtension: Utility.getBase64FileExtension(
                 event.customRubricModal.imgBase64!),
@@ -796,7 +797,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
     if (event is AssessmentImgToAwsBucked) {
       try {
-        String imgUrl = await _uploadImgB64AndGetUrl(
+        String imgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: "assessment-sheet");
@@ -838,7 +839,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         yield GoogleDriveLoading();
 
-        String questionImgUrl = await _uploadImgB64AndGetUrl(
+        String questionImgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: 'rubric-score');
@@ -965,7 +966,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             List<int> imageBytes = assessmentImageFile.readAsBytesSync();
             String imageB64 = base64Encode(imageBytes);
 
-            String imgUrl = await _uploadImgB64AndGetUrl(
+            String imgUrl = await uploadImgB64AndGetUrl(
                 imgBase64: imageB64,
                 imgExtension: imgExtension,
                 section: "assessment-sheet");
@@ -1038,7 +1039,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             List<int> imageBytes = assessmentImageFile.readAsBytesSync();
             String imageB64 = base64Encode(imageBytes);
 
-            String imgUrl = await _uploadImgB64AndGetUrl(
+            String imgUrl = await uploadImgB64AndGetUrl(
                 imgBase64: imageB64,
                 imgExtension: imgExtension,
                 section: "assessment-sheet");
@@ -2109,7 +2110,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> _uploadImgB64AndGetUrl(
+  Future<String> uploadImgB64AndGetUrl(
       {required String? imgBase64,
       required String? imgExtension,
       required String? section}) async {
@@ -2137,7 +2138,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             response.data['statusCode'] == 500) &&
         _totalRetry < 3) {
       _totalRetry++;
-      return await _uploadImgB64AndGetUrl(
+      return await uploadImgB64AndGetUrl(
           imgBase64: imgBase64, imgExtension: imgExtension, section: section);
     }
     return "";

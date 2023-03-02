@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
+import 'package:Soc/src/modules/ocr/modal/assessment_c_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
@@ -35,7 +36,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   String grade = '';
   String selectedSubject = '';
   // String? DashboardId;
-
+  int _totalRetry = 0;
   @override
   Stream<OcrState> mapEventToState(
     OcrEvent event,
@@ -536,7 +537,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           standardId: event.standardId,
           sessionId: event.sessionId,
           teacherContactId: event.teacherContactId,
-          teacherEmail: event.teacherEmail);
+          teacherEmail: event.teacherEmail,
+          classroomCourseId: event.classroomCourseId,
+          classroomCourseWorkId: event.classroomCourseWorkId);
 
       if (dashboardId.isNotEmpty) {
         Globals.currentAssessmentId = dashboardId;
@@ -578,21 +581,21 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     if (event is GetDashBoardStatus) {
       try {
         yield OcrLoading2();
-        List object;
-        object = await _getTheDashBoardStatus(fileId: event.fileId);
+
+        List object = await _getTheDashBoardStatus(fileId: event.fileId);
         // await Future.delayed(Duration(seconds: 10));
-        if (object[1] != '') {
+        if (object[1].assessmentId!.isNotEmpty) {
           yield AssessmentDashboardStatus(
-              resultRecordCount: object[0], assessmentId: object[1]);
+              resultRecordCount: object[0], assessmentObj: object[1]);
         }
         yield AssessmentDashboardStatus(
-            resultRecordCount: null, assessmentId: null);
+            resultRecordCount: null, assessmentObj: null);
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'GetDashBoardStatus Event');
 
         yield AssessmentDashboardStatus(
-            resultRecordCount: null, assessmentId: null);
+            resultRecordCount: null, assessmentObj: null);
       }
     }
 
@@ -1615,7 +1618,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       required String teacherContactId,
       required String teacherEmail,
       required String assessmentQueImage,
-      required bool isMcqSheet}) async {
+      required bool isMcqSheet,
+      required String? classroomCourseId,
+      required String? classroomCourseWorkId}) async {
     try {
       String currentDate = Utility.getCurrentDate(DateTime.now());
 
@@ -1642,7 +1647,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Created_As_Premium": Globals.isPremiumUser.toString(),
         "Assessment_Que_Image__c": assessmentQueImage,
         "Assessment_Type":
-            isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response'
+            isMcqSheet == true ? 'Multiple Choice' : 'Constructed Response',
+        "Classroom_Course_Id": classroomCourseId,
+        "Classroom_Course_Work_Id": classroomCourseWorkId
       };
 
       final ResponseModel response = await _dbServices.postApi(
@@ -1898,17 +1905,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
           isCompleteUrl: true);
       if (response.statusCode == 200) {
-        if (response.data['body'].length > 0) {
-          String assessmentId = response.data['body'][0]['Assessment_Id'];
+        List<AssessmentCModal> _list = response.data['body']
+            .map<AssessmentCModal>((i) => AssessmentCModal.fromJson(i))
+            .toList();
 
-          if (assessmentId.isNotEmpty) {
-            int result = await _getAssessmentRecord(assessmentId: assessmentId);
-
-            return [result, assessmentId];
-          }
+        if (_list.isNotEmpty && _list[0].assessmentId!.isNotEmpty) {
+          return [
+            await _getAssessmentRecord(assessmentId: _list[0].assessmentId!),
+            _list[0]
+          ];
         }
       }
-      return [0, ''];
+      return [0, AssessmentCModal(assessmentId: '')];
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, '_getTheDashBoardStatus Method');
@@ -2259,6 +2267,40 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       return body;
     } catch (e) {
       throw (e);
+    }
+  }
+
+  Future<bool> updateAssessmentOnDashboardOnHistoryScanMore(
+      {required String? assessmentId,
+      required String? classroomCourseId,
+      required String? classroomCourseWorkId}) async {
+    try {
+      final ResponseModel response = await _dbServices.postApi(
+          "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Assessment__c",
+          isGoogleApi: true,
+          headers: {
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
+            'Content-Type': 'application/json'
+          },
+          body: [
+            {
+              "Assessment_Id": assessmentId,
+              "Classroom_Course_Id": classroomCourseId,
+              "Classroom_Course_Work_Id": classroomCourseWorkId
+            },
+          ]);
+      if (response.statusCode == 200) {
+        return true;
+      } else if (response.statusCode != 200 && _totalRetry < 3) {
+        _totalRetry++;
+        return updateAssessmentOnDashboardOnHistoryScanMore(
+            assessmentId: assessmentId,
+            classroomCourseId: assessmentId,
+            classroomCourseWorkId: assessmentId);
+      }
+      return false;
+    } catch (e) {
+      return false;
     }
   }
 }
