@@ -141,7 +141,7 @@ class GoogleClassroomBloc
               for (GoogleClassroomCourses classroom
                   in _googleClassRoomLocalData) {
                 if ((event.title.split("_")[1] == classroom.name)) {
-                  print("insdie if loopppp");
+                  // print("insdie if loopppp");
                   isClassroomCourseAdded = true;
                   event.studentClassObj.courseId = classroom.courseId;
                   event.studentClassObj.studentList = classroom.studentList;
@@ -157,7 +157,7 @@ class GoogleClassroomBloc
                 for (var student in classroom.studentList!) {
                   if (student['profile']['emailAddress'] ==
                       assessmentData.first.studentId) {
-                    print("insdie second if loop");
+                    // print("insdie second if loop");
                     event.studentClassObj.courseId = classroom.courseId;
                     // event.studentClassObj.studentList is always empty from history screen
                     event.studentClassObj.studentList = classroom.studentList;
@@ -169,7 +169,7 @@ class GoogleClassroomBloc
           }
         }
 
-        print(event.studentClassObj);
+        // print(event.studentClassObj);
         // get local stored classroom course list
         List<dynamic> classRoomCoursesStuentList =
             event.studentClassObj?.studentList ?? [];

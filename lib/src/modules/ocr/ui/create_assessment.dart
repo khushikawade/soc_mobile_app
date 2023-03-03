@@ -655,7 +655,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               ?.courseId?.isEmpty ??
                           true)) {
                     Utility.currentScreenSnackBar(
-                        "No Student Record Available", null);
+                        "None of the scanned student available in the selected classroom course \'${classController.text}\'",
+                        null);
                   } else {
                     Globals.assessmentName =
                         "${assessmentController.text}_${classController.text}";
