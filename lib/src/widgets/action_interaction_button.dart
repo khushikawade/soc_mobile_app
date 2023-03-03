@@ -700,7 +700,7 @@ class _ActionInteractionButtonWidgetState
     if (widget.obj.id != Globals.feedPostId) {
       Globals.feedPostId = widget.obj.id;
 
-      if (view.value < recordObject.viewCount!) {
+      if (view.value < (recordObject.viewCount ?? 0)) {
         view.value = recordObject.viewCount!;
       }
 

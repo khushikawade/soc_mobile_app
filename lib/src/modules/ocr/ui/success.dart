@@ -1297,15 +1297,15 @@ class _SuccessScreenState extends State<SuccessScreen>
                   InkWell(
                       onTap: () {
                         // updateDetails(isUpdateData: true);
-                        // Utility.updateLoges(
-                        //     // ,
-                        //     activityId: '8',
-                        //     description:
-                        //         'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
-                        //     operationResult: 'Success');
+                        Utility.updateLogs(
+                            // ,
+                            activityId: '8',
+                            description:
+                                'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
+                            operationResult: 'Success');
                         if (pointScored.value != index.toString()) {
                           isRubricChanged = true;
-                          if (widget.isMcqSheet!) {
+                          if (widget.isMcqSheet == true) {
                             Utility.updateLogs(
                                 //  ,
                                 activityId: '30',
