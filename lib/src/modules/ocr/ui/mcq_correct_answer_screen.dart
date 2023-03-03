@@ -11,6 +11,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/common_ocr_appbar.dart';
@@ -87,6 +88,50 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         ),
+        BlocListener(
+            bloc: _googleDriveBloc,
+            child: Container(),
+            listener: (context, state) async {
+              if (state is GoogleDriveLoading) {
+                Utility.showLoadingDialog(context: context, isOCR: true);
+              }
+              if (state is GoogleSuccess) {
+                Navigator.of(context).pop();
+                Globals.googleDriveFolderId?.isNotEmpty ?? false
+                    ? _beforeNavigateOnCameraSection()
+                    : Utility.currentScreenSnackBar(
+                        "Something Went Wrong. Please Try Again.", null);
+              }
+              if (state is ErrorState) {
+                if (Globals.sessionId == '') {
+                  Globals.sessionId =
+                      "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+                }
+                _ocrBlocLogs.add(LogUserActivityEvent(
+                    sessionId: Globals.sessionId,
+                    teacherId: Globals.teacherId,
+                    activityId: '1',
+                    accountId: Globals.appSetting.schoolNameC,
+                    accountType:
+                        Globals.isPremiumUser == true ? "Premium" : "Free",
+                    dateTime: currentDateTime.toString(),
+                    description: 'Start Scanning Failed',
+                    operationResult: 'Failed'));
+                if (state.errorMsg == 'ReAuthentication is required') {
+                  await Utility.refreshAuthenticationToken(
+                      isNavigator: true,
+                      errorMsg: state.errorMsg!,
+                      context: context,
+                      scaffoldKey: _scaffoldKey);
+
+                  _triggerDriveFolderEvent(state.isAssessmentSection);
+                } else {
+                  Navigator.of(context).pop();
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.", null);
+                }
+              }
+            })
       ],
     );
   }
@@ -111,11 +156,14 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
                           "Select the Answer Key", null);
                     } else {
                       Fluttertoast.cancel();
-                      if (Globals.googleDriveFolderId!.isEmpty) {
-                        _triggerDriveFolderEvent(false);
-                      } else {
-                        _beforeNavigateOnCameraSection();
-                      }
+                      Globals.googleDriveFolderId?.isEmpty ?? true
+                          ? _triggerDriveFolderEvent(false)
+                          : _beforeNavigateOnCameraSection();
+                      // if (Globals.googleDriveFolderId?.isEmpty ?? true) {
+                      //   _triggerDriveFolderEvent(false);
+                      // } else {
+                      //   _beforeNavigateOnCameraSection();
+                      // }
                       //  navigateToCamera();
                     }
                   },

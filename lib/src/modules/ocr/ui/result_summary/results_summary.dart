@@ -54,7 +54,7 @@ class ResultsSummary extends StatefulWidget {
       required this.shareLink,
       required this.assessmentName,
       this.historySecondTime,
-      this.isMcqSheet,
+      this.isMcqSheet = false,
       this.selectedAnswer})
       : super(key: key);
   final bool? assessmentDetailPage;
@@ -1240,14 +1240,9 @@ class studentRecordList extends State<ResultsSummary> {
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.086
             : MediaQuery.of(context).size.width * 0.086,
-        width: Overrides.STANDALONE_GRADED_APP == true
-            ? (widget.assessmentDetailPage == true
-                ? MediaQuery.of(context).size.width * 0.5
-                : MediaQuery.of(context).size.width * 0.7)
-            : widget.assessmentDetailPage!
-                ? MediaQuery.of(context).size.width * 0.7
-                : MediaQuery.of(context).size.width * 0.9,
-        //  color: Colors.blue,
+        width: widget.assessmentDetailPage!
+            ? MediaQuery.of(context).size.width * 0.7
+            : MediaQuery.of(context).size.width * 0.9,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
