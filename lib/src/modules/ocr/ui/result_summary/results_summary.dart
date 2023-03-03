@@ -1240,9 +1240,13 @@ class studentRecordList extends State<ResultsSummary> {
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.086
             : MediaQuery.of(context).size.width * 0.086,
-        width: widget.assessmentDetailPage!
-            ? MediaQuery.of(context).size.width * 0.7
-            : MediaQuery.of(context).size.width * 0.9,
+        width: Overrides.STANDALONE_GRADED_APP == true
+            ? (widget.assessmentDetailPage == true
+                ? MediaQuery.of(context).size.width * 0.5
+                : MediaQuery.of(context).size.width * 0.7)
+            : widget.assessmentDetailPage!
+                ? MediaQuery.of(context).size.width * 0.7
+                : MediaQuery.of(context).size.width * 0.9,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
