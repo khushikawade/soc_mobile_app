@@ -338,10 +338,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                         teacherContactId: Globals.teacherId,
                         teacherEmail: Globals.teacherEmailId,
                         classroomCourseId: GoogleClassroomGlobals
-                                ?.studentClassRoomObj?.courseId ??
+                                ?.studentAssessmentAndClassroomObj?.courseId ??
                             '',
                         classroomCourseWorkId: GoogleClassroomGlobals
-                                ?.studentClassRoomObj?.courseWorkId ??
+                                ?.studentAssessmentAndClassroomObj
+                                ?.courseWorkId ??
                             ''));
                   }
                 }),
@@ -365,8 +366,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           studentAssessmentInfoDb:
                               LocalDatabase('student_info'),
                           pointPossible: Globals.pointPossible ?? '0',
-                          studentClassObj:
-                              GoogleClassroomGlobals.studentClassRoomObj!,
+                          studentClassObj: GoogleClassroomGlobals
+                              .studentAssessmentAndClassroomObj!,
                           title: Globals.assessmentName!.split("_")[1] ?? ''));
                     } else {
                       Navigator.of(context).pop();
@@ -1331,7 +1332,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                         if (state is AssessmentIdSuccess) {
                                           if (Overrides.STANDALONE_GRADED_APP &&
                                               (GoogleClassroomGlobals
-                                                      .studentClassRoomObj
+                                                      .studentAssessmentAndClassroomObj
                                                       ?.courseWorkId
                                                       ?.isEmpty ??
                                                   true)) {
@@ -1349,7 +1350,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                             '0',
                                                     studentClassObj:
                                                         GoogleClassroomGlobals
-                                                            .studentClassRoomObj!,
+                                                            .studentAssessmentAndClassroomObj!,
                                                     title: Globals
                                                             .assessmentName!
                                                             .split("_")[1] ??

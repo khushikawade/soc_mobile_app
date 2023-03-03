@@ -362,11 +362,11 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                     sessionId: Globals.sessionId,
                     teacherContactId: Globals.teacherId,
                     teacherEmail: Globals.teacherEmailId,
-                    classroomCourseId:
-                        GoogleClassroomGlobals?.studentClassRoomObj?.courseId ??
-                            '',
+                    classroomCourseId: GoogleClassroomGlobals
+                            ?.studentAssessmentAndClassroomObj?.courseId ??
+                        '',
                     classroomCourseWorkId: GoogleClassroomGlobals
-                            ?.studentClassRoomObj?.courseWorkId ??
+                            ?.studentAssessmentAndClassroomObj?.courseWorkId ??
                         ''));
               }
             }),
@@ -389,8 +389,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                   widget.googleClassroomBloc.add(CreateClassRoomCourseWork(
                       studentAssessmentInfoDb: LocalDatabase('student_info'),
                       pointPossible: Globals.pointPossible ?? '0',
-                      studentClassObj:
-                          GoogleClassroomGlobals.studentClassRoomObj!,
+                      studentClassObj: GoogleClassroomGlobals
+                          .studentAssessmentAndClassroomObj!,
                       title: Globals.assessmentName!.split("_")[1] ?? ''));
                 } else {
                   Navigator.of(context).pop();
@@ -771,8 +771,10 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               }
                               if (state is AssessmentIdSuccess) {
                                 if (Overrides.STANDALONE_GRADED_APP &&
-                                    (GoogleClassroomGlobals.studentClassRoomObj
-                                            ?.courseWorkId?.isEmpty ??
+                                    (GoogleClassroomGlobals
+                                            .studentAssessmentAndClassroomObj
+                                            ?.courseWorkId
+                                            ?.isEmpty ??
                                         true)) {
                                   showDialogSetState!(() {
                                     GradedGlobals.loadingMessage =
@@ -784,9 +786,8 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                               LocalDatabase('student_info'),
                                           pointPossible:
                                               Globals.pointPossible ?? '0',
-                                          studentClassObj:
-                                              GoogleClassroomGlobals
-                                                  .studentClassRoomObj!,
+                                          studentClassObj: GoogleClassroomGlobals
+                                              .studentAssessmentAndClassroomObj!,
                                           title: Globals.assessmentName!
                                                   .split("_")[1] ??
                                               ''));

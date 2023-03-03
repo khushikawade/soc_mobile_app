@@ -25,6 +25,12 @@ class RecentGoogleFileSearch {
   int? hiveobjid;
   @HiveField(10)
   String? assessmentType;
+  @HiveField(11)
+  String? assessmentId;
+  @HiveField(12)
+  String? classroomCourseId;
+  @HiveField(13)
+  String? classroomCourseWorkId;
 
   RecentGoogleFileSearch(
       {this.title,
@@ -37,5 +43,8 @@ class RecentGoogleFileSearch {
       this.sessionId,
       this.isCreatedAsPremium,
       this.hiveobjid,
-      this.assessmentType});
+      this.assessmentType,
+      this.assessmentId,
+      this.classroomCourseId,
+      this.classroomCourseWorkId});
 }

@@ -188,12 +188,12 @@ class FetchStudentDetails extends OcrEvent {
 }
 
 class GetDashBoardStatus extends OcrEvent {
-  final String fileId;
-
-  GetDashBoardStatus({required this.fileId});
+  final String? fileId;
+  GoogleClassroomCourses? assessmentObj;
+  GetDashBoardStatus({required this.fileId, required this.assessmentObj});
 
   @override
-  List<Object> get props => [fileId];
+  List<Object> get props => [fileId!, assessmentObj!];
 
   @override
   String toString() => 'GlobalSearchEvent { keyword: $fileId}';

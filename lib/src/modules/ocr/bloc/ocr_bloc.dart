@@ -25,6 +25,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:string_similarity/string_similarity.dart';
+
+import '../../google_drive/model/assessment_detail_modal.dart';
 part 'ocr_event.dart';
 part 'ocr_state.dart';
 
@@ -578,24 +580,53 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
+    // if (event is GetDashBoardStatus) {
+    //   try {
+    //     yield OcrLoading2();
+
+    //     AssessmentDetails object =
+    //         await _getAssessmentIdByGoogleFileId(fileId: event.fileId!);
+    //     // await Future.delayed(Duration(seconds: 10));
+    //     if (object[1].assessmentId!.isNotEmpty) {
+    //       yield AssessmentDashboardStatus(
+    //           resultRecordCount: object[0], assessmentObj: object[1]);
+    //     }
+    //     yield AssessmentDashboardStatus(
+    //         resultRecordCount: null, assessmentObj: null);
+    //   } catch (e, s) {
+    //     FirebaseAnalyticsService.firebaseCrashlytics(
+    //         e, s, 'GetDashBoardStatus Event');
+
+    //     yield AssessmentDashboardStatus(
+    //         resultRecordCount: null, assessmentObj: null);
+    //   }
+    // }
     if (event is GetDashBoardStatus) {
       try {
         yield OcrLoading2();
 
-        List object = await _getTheDashBoardStatus(fileId: event.fileId);
-        // await Future.delayed(Duration(seconds: 10));
-        if (object[1].assessmentId!.isNotEmpty) {
-          yield AssessmentDashboardStatus(
-              resultRecordCount: object[0], assessmentObj: object[1]);
+        if (event.assessmentObj?.assessmentCId?.isEmpty ?? true) {
+          AssessmentDetails obj =
+              await _getAssessmentIdByGoogleFileId(fileId: event.fileId ?? '');
+
+          event.assessmentObj!.assessmentCId = obj.assessmentId;
+          event.assessmentObj!.courseId = obj.classroomCourseId;
+          event.assessmentObj!.courseWorkId = obj.classroomCourseWorkId;
         }
+
         yield AssessmentDashboardStatus(
-            resultRecordCount: null, assessmentObj: null);
+            resultRecordCount: Overrides.STANDALONE_GRADED_APP
+                ? 0
+                //to get save student list from result object
+                : await _getSavedStudentListSavedInDashboardByAssessmentId(
+                    assessmentId: event.assessmentObj!.assessmentCId),
+            assessmentObj: event.assessmentObj);
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'GetDashBoardStatus Event');
 
         yield AssessmentDashboardStatus(
-            resultRecordCount: null, assessmentObj: null);
+            resultRecordCount: 0, assessmentObj: GoogleClassroomCourses());
       }
     }
 
@@ -1899,49 +1930,97 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<List> _getTheDashBoardStatus({required String fileId}) async {
+  // Future<List> _getTheDashBoardStatus({required String fileId}) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
+  //         isCompleteUrl: true);
+  //     if (response.statusCode == 200) {
+  //       List<AssessmentCModal> _list = response.data['body']
+  //           .map<AssessmentCModal>((i) => AssessmentCModal.fromJson(i))
+  //           .toList();
+
+  //       if (_list.isNotEmpty && _list[0].assessmentId!.isNotEmpty) {
+  //         return [
+  //           await _getAssessmentRecord(assessmentId: _list[0].assessmentId!),
+  //           _list[0]
+  //         ];
+  //       }
+  //     }
+  //     return [0, AssessmentCModal(assessmentId: '')];
+  //   } catch (e, s) {
+  //     FirebaseAnalyticsService.firebaseCrashlytics(
+  //         e, s, '_getTheDashBoardStatus Method');
+
+  //     throw ('something_went_wrong');
+  //   }
+  // }
+
+  Future<AssessmentDetails> _getAssessmentIdByGoogleFileId(
+      {required String fileId, int retry = 3}) async {
+    AssessmentDetails data = AssessmentDetails();
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Assessment__c/"Google_File_Id"=\'$fileId\'',
           isCompleteUrl: true);
       if (response.statusCode == 200) {
-        List<AssessmentCModal> _list = response.data['body']
-            .map<AssessmentCModal>((i) => AssessmentCModal.fromJson(i))
-            .toList();
-
-        if (_list.isNotEmpty && _list[0].assessmentId!.isNotEmpty) {
-          return [
-            await _getAssessmentRecord(assessmentId: _list[0].assessmentId!),
-            _list[0]
-          ];
-        }
+        return response?.data['body']?.isNotEmpty ?? false
+            ? AssessmentDetails.fromJson(response.data['body'][0])
+            : data;
+      } else if (retry > 0) {
+        return _getAssessmentIdByGoogleFileId(fileId: fileId, retry: retry - 1);
       }
-      return [0, AssessmentCModal(assessmentId: '')];
+
+      return data;
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, '_getTheDashBoardStatus Method');
+      return data;
+      // throw ('something_went_wrong');
 
-      throw ('something_went_wrong');
     }
   }
 
-  Future<int> _getAssessmentRecord({required String assessmentId}) async {
+  // Future<int> _getAssessmentRecord({required String assessmentId}) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.getApiNew(
+  //         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Result__c/\"Assessment_Id\"='$assessmentId'",
+  //         isCompleteUrl: true);
+  //     if (response.statusCode == 200) {
+  //       var data = response.data["body"];
+  //       if (data.length > 0) {
+  //         return data.length;
+  //       }
+  //     }
+  //     return 0;
+  //   } catch (e, s) {
+  //     FirebaseAnalyticsService.firebaseCrashlytics(
+  //         e, s, '_getAssessmentRecord Method');
+
+  //     throw ('something_went_wrong');
+  //   }
+  // }
+
+  Future<int> _getSavedStudentListSavedInDashboardByAssessmentId(
+      {required String? assessmentId, int retry = 3}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/filterRecords/Result__c/\"Assessment_Id\"='$assessmentId'",
           isCompleteUrl: true);
       if (response.statusCode == 200) {
-        var data = response.data["body"];
-        if (data.length > 0) {
-          return data.length;
-        }
+        return response?.data["body"]?.isNotEmpty ?? false
+            ? response?.data["body"].length
+            : 0;
+      } else if (retry > 0) {
+        return _getSavedStudentListSavedInDashboardByAssessmentId(
+            assessmentId: assessmentId, retry: retry - 1);
       }
       return 0;
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, '_getAssessmentRecord Method');
 
-      throw ('something_went_wrong');
+      return 0;
     }
   }
 
@@ -2273,7 +2352,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   Future<bool> updateAssessmentOnDashboardOnHistoryScanMore(
       {required String? assessmentId,
       required String? classroomCourseId,
-      required String? classroomCourseWorkId}) async {
+      required String? classroomCourseWorkId,
+      int retry = 3}) async {
     try {
       final ResponseModel response = await _dbServices.postApi(
           "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Assessment__c",
@@ -2291,12 +2371,12 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           ]);
       if (response.statusCode == 200) {
         return true;
-      } else if (response.statusCode != 200 && _totalRetry < 3) {
-        _totalRetry++;
+      } else if (retry > 0) {
         return updateAssessmentOnDashboardOnHistoryScanMore(
             assessmentId: assessmentId,
             classroomCourseId: assessmentId,
-            classroomCourseWorkId: assessmentId);
+            classroomCourseWorkId: assessmentId,
+            retry: retry - 1);
       }
       return false;
     } catch (e) {

@@ -74,7 +74,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final addController = TextEditingController();
   @override
   void initState() {
-    GoogleClassroomGlobals.studentClassRoomObj = GoogleClassroomCourses();
+    GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+        GoogleClassroomCourses();
     updateClassName();
     //   wd
     // listScrollController.addListener(_scrollListener);
@@ -650,8 +651,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     assessmentNameError.value.length >= 2 &&
                     classError.value.isNotEmpty) {
                   if (Overrides.STANDALONE_GRADED_APP &&
-                      GoogleClassroomGlobals
-                          .studentClassRoomObj.courseId!.isEmpty) {
+                      (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                              ?.courseId?.isEmpty ??
+                          true)) {
                     Utility.currentScreenSnackBar(
                         "No Student Record Available", null);
                   } else {
@@ -668,8 +670,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         _googleClassroomBloc.add(CreateClassRoomCourseWork(
                             studentAssessmentInfoDb:
                                 LocalDatabase('student_info'),
-                            studentClassObj:
-                                GoogleClassroomGlobals.studentClassRoomObj,
+                            studentClassObj: GoogleClassroomGlobals
+                                .studentAssessmentAndClassroomObj,
                             title: Globals.assessmentName ?? '',
                             pointPossible: Globals.pointPossible ?? "0"));
                       }
@@ -967,7 +969,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   updateClassName() async {
-    GoogleClassroomGlobals.studentClassRoomObj =
+    GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
         GoogleClassroomCourses(courseId: '');
 
     LocalDatabase<GoogleClassroomCourses> _localDb =
@@ -991,7 +993,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
               print(classroom.name);
               classError.value = classroom.name!;
               if (Overrides.STANDALONE_GRADED_APP) {
-                GoogleClassroomGlobals.studentClassRoomObj = classroom;
+                GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+                    classroom;
               }
               if (classController.text?.isEmpty != false) {
                 classController.text = classroom.name!;
@@ -1003,8 +1006,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
       }
     }
     print(_localData);
-    print(GoogleClassroomGlobals.studentClassRoomObj.name);
-    print(GoogleClassroomGlobals.studentClassRoomObj.courseId);
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name);
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
   }
 
   _checkFieldEditable() {

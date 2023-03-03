@@ -37,7 +37,8 @@ class StudentAssessmentInfo {
   @HiveField(14)
   String? assessmentImgPath;
   @HiveField(15)
-  String? slideObjectId;
+  String?
+      slideObjectId; //slides object page ids to update the images , tables and text on slides
   @HiveField(16)
   // String? googleSlidePresentationLink;
   String? answerKey;
@@ -52,13 +53,17 @@ class StudentAssessmentInfo {
   @HiveField(21)
   String? standardDescription;
   @HiveField(22)
-  String? googleClassRoomStudentProfileId;
+  String?
+      googleClassRoomStudentProfileId; // student profile ids to update the classroom
   @HiveField(23)
-  bool isgoogleClassRoomStudentProfileUpdated;
+  bool
+      isgoogleClassRoomStudentProfileUpdated; // Flag indicating whether the student's profile has been updated in Google Classroom or not. True if updated, false otherwise.
   @HiveField(24)
-  bool isSlideObjUpdated;
+  bool
+      isSlideObjUpdated; // Flag indicating whether the student's profile has been updated in Google slides or not. True if updated, false otherwise.
   @HiveField(25)
-  String? slideTableObjId;
+  String?
+      slideTableObjId; //slides table ids for update and edit the student records
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,

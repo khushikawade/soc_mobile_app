@@ -193,7 +193,7 @@ class AssessmentIdSuccess extends OcrState {
 
 class AssessmentDashboardStatus extends OcrState {
   int? resultRecordCount;
-  AssessmentCModal? assessmentObj;
+  GoogleClassroomCourses? assessmentObj;
   AssessmentDashboardStatus(
       {this.resultRecordCount, required this.assessmentObj});
   AssessmentDashboardStatus copyWith(

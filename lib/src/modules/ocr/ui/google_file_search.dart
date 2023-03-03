@@ -20,6 +20,8 @@ import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share/share.dart';
 import '../../../services/utility.dart';
+import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/model/recent_google_file.dart';
 
 class GoogleFileSearchPage extends StatefulWidget {
@@ -350,6 +352,18 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
               List<dynamic> reversedRecentDetailDbList =
                   new List.from(recentDetailDbList.reversed);
 
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+                  GoogleClassroomCourses();
+
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+                  GoogleClassroomCourses(
+                      assessmentCId:
+                          reversedRecentDetailDbList[index].assessmentId,
+                      courseId:
+                          reversedRecentDetailDbList[index].classroomCourseId,
+                      courseWorkId: reversedRecentDetailDbList[index]
+                          .classroomCourseWorkId);
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -553,12 +567,31 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                                   webContentLink:
                                                       data.webContentLink,
                                                   assessmentType:
-                                                      data.assessmentType);
+                                                      data.assessmentType,
+                                                  assessmentId:
+                                                      data.assessmentId,
+                                                  classroomCourseId:
+                                                      data.classroomCourseId,
+                                                  classroomCourseWorkId: data
+                                                      .classroomCourseWorkId);
 
                                           addtoDataBase(recentitem);
                                         }
                                       }
                                       // }
+
+                                      GoogleClassroomGlobals
+                                              .studentAssessmentAndClassroomObj =
+                                          GoogleClassroomCourses();
+
+                                      GoogleClassroomGlobals
+                                              .studentAssessmentAndClassroomObj =
+                                          GoogleClassroomCourses(
+                                              assessmentCId: data.assessmentId,
+                                              courseId: data.classroomCourseId,
+                                              courseWorkId:
+                                                  data.classroomCourseWorkId);
+
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

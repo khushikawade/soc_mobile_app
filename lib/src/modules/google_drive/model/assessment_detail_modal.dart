@@ -22,7 +22,9 @@ class AssessmentDetails {
       this.teacherEmail,
       this.teacherContactId,
       this.createdAsPremium,
-      this.assessmentType});
+      this.assessmentType,
+      this.classroomCourseId,
+      this.classroomCourseWorkId});
   @HiveField(0)
   String? name;
   @HiveField(1)
@@ -59,6 +61,10 @@ class AssessmentDetails {
   String? createdAsPremium;
   @HiveField(17)
   String? assessmentType;
+  @HiveField(18)
+  String? classroomCourseId;
+  @HiveField(19)
+  String? classroomCourseWorkId;
 
   factory AssessmentDetails.fromRawJson(String str) =>
       AssessmentDetails.fromJson(json.decode(str));
@@ -67,25 +73,26 @@ class AssessmentDetails {
 
   factory AssessmentDetails.fromJson(Map<String, dynamic> json) =>
       AssessmentDetails(
-        dateC: json["Date__c"] == null ? null : json["Date__c"],
-        nameC: json["Name__c"] == null ? null : json["Name__c"],
-        rubricC: json["Rubric__c"] == null ? null : json["Rubric__c"],
-        schoolC: json["School__c"] == null ? null : json["School__c"],
-        schoolYearC:
-            json["School_year__c"] == null ? null : json["School_year__c"],
-        standardC: json["Standard__c"],
-        subjectC: json["Subject__c"] == null ? null : json["Subject__c"],
-        teacherC: json["Teacher__c"],
-        typeC: json["Type__c"],
-        assessmentId: json["Assessment_Id"],
-        id: json["Id"],
-        googlefileId: json["Google_File_Id"],
-        sessionId: json["Session_Id"],
-        teacherContactId: json["Teacher_Contact_Id"],
-        teacherEmail: json["Teacher_Email"],
-        createdAsPremium: json["Created_As_Premium"] ?? "false",
-        assessmentType: json["Assessment_Type"] ?? 'Constructed Response',
-      );
+          dateC: json["Date__c"] == null ? null : json["Date__c"],
+          nameC: json["Name__c"] == null ? null : json["Name__c"],
+          rubricC: json["Rubric__c"] == null ? null : json["Rubric__c"],
+          schoolC: json["School__c"] == null ? null : json["School__c"],
+          schoolYearC:
+              json["School_year__c"] == null ? null : json["School_year__c"],
+          standardC: json["Standard__c"],
+          subjectC: json["Subject__c"] == null ? null : json["Subject__c"],
+          teacherC: json["Teacher__c"],
+          typeC: json["Type__c"],
+          assessmentId: json["Assessment_Id"] ?? '',
+          id: json["Id"],
+          googlefileId: json["Google_File_Id"],
+          sessionId: json["Session_Id"],
+          teacherContactId: json["Teacher_Contact_Id"],
+          teacherEmail: json["Teacher_Email"],
+          createdAsPremium: json["Created_As_Premium"] ?? "false",
+          assessmentType: json["Assessment_Type"] ?? 'Constructed Response',
+          classroomCourseId: json['Classroom_Course_Id'] ?? '',
+          classroomCourseWorkId: json['Classroom_Course_Work_Id'] ?? '');
 
   Map<String, dynamic> toJson() => {
         "Date__c": dateC == null ? null : dateC,

@@ -19,6 +19,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share/share.dart';
 import '../../../services/local_database/local_db.dart';
+import '../../google_classroom/google_classroom_globals.dart';
+import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -532,9 +534,17 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             if (list[index].isCreatedAsPremium == "true") {
               createdAsPremium = true;
             }
-            Globals.historyAssessmentId = list[index].assessmentId!;
+            //     Globals.historyAssessmentId = list[index].assessmentId!;
+            GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+                GoogleClassroomCourses();
 
-            await _historyStudentInfoDb.clear();
+            GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+                GoogleClassroomCourses(
+                    assessmentCId: list[index].assessmentId,
+                    courseId: list[index].classroomCourseId,
+                    courseWorkId: list[index].classroomCourseWorkId);
+
+            // await _historyStudentInfoDb.clear();
             Navigator.push(
               context,
               MaterialPageRoute(

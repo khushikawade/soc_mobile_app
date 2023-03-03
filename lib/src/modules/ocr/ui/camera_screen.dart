@@ -137,7 +137,7 @@ class _CameraScreenState extends State<CameraScreen>
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   @override
   void initState() {
-    print(GoogleClassroomGlobals.studentClassRoomObj);
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj);
     // widget.isFlashOn!.value = widget.isFlashOn;
     Wakelock.enable();
 
@@ -261,8 +261,8 @@ class _CameraScreenState extends State<CameraScreen>
                               isFromHistoryAssessmentScanMore:
                                   widget.isFromHistoryAssessmentScanMore,
                               pointPossible: widget.pointPossible ?? '0',
-                              studentClassObj:
-                                  GoogleClassroomGlobals.studentClassRoomObj,
+                              studentClassObj: GoogleClassroomGlobals
+                                  .studentAssessmentAndClassroomObj,
                               title: widget.isFromHistoryAssessmentScanMore
                                   ? Globals.historyAssessmentName ?? ''
                                   : Globals.assessmentName ?? '',
@@ -392,8 +392,8 @@ class _CameraScreenState extends State<CameraScreen>
                               isFromHistoryAssessmentScanMore:
                                   widget.isFromHistoryAssessmentScanMore,
                               pointPossible: widget.pointPossible ?? '0',
-                              studentClassObj:
-                                  GoogleClassroomGlobals.studentClassRoomObj,
+                              studentClassObj: GoogleClassroomGlobals
+                                  .studentAssessmentAndClassroomObj,
                               title: widget.isFromHistoryAssessmentScanMore
                                   ? Globals.historyAssessmentName ?? ''
                                   : Globals.assessmentName ?? '',

@@ -29,13 +29,16 @@ class RecentGoogleFileSearchAdapter
       isCreatedAsPremium: fields[8] as String?,
       hiveobjid: fields[9] as int?,
       assessmentType: fields[10] as String?,
+      assessmentId: fields[11] as String?,
+      classroomCourseId: fields[12] as String?,
+      classroomCourseWorkId: fields[13] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, RecentGoogleFileSearch obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -57,7 +60,13 @@ class RecentGoogleFileSearchAdapter
       ..writeByte(9)
       ..write(obj.hiveobjid)
       ..writeByte(10)
-      ..write(obj.assessmentType);
+      ..write(obj.assessmentType)
+      ..writeByte(11)
+      ..write(obj.assessmentId)
+      ..writeByte(12)
+      ..write(obj.classroomCourseId)
+      ..writeByte(13)
+      ..write(obj.classroomCourseWorkId);
   }
 
   @override

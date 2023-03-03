@@ -25,6 +25,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
+import '../../google_classroom/google_classroom_globals.dart';
 import '../../ocr/modal/custom_rubic_modal.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
 import 'package:dio/dio.dart';
@@ -196,9 +197,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<StudentAssessmentInfo> newList = [];
         newList.addAll(assessmentData);
         Utility.updateAssessmentToDb(
-          studentInfoList: newList,
-          assessmentId: Globals.historyAssessmentId,
-        );
+            studentInfoList: newList,
+            //assessmentId: Globals.historyAssessmentId,
+            assessmentId: GoogleClassroomGlobals
+                .studentAssessmentAndClassroomObj.assessmentCId!);
 
         // Create new Google presentation in case already not exist // Will work for all the existing assessment which are not having already google slide presentation in case of scan more
         if (event.slidePresentationId == 'NA') {
@@ -565,7 +567,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               searchKey: event.searchKeyword ?? "");
           List<HistoryAssessment>? mainListWithSlideAndSheet =
               pair != null && pair.length > 0 ? pair[0] : [];
-
           if (mainListWithSlideAndSheet == null) {
             yield ErrorState(errorMsg: 'ReAuthentication is required');
           } else {
@@ -1593,6 +1594,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _list[i].isCreatedAsPremium = assessmentList[j].createdAsPremium;
               _list[i].assessmentType = assessmentList[j].assessmentType;
               _list[i].assessmentId = assessmentList[j].assessmentId;
+              _list[i].classroomCourseId = assessmentList[j].classroomCourseId;
+              _list[i].classroomCourseWorkId =
+                  assessmentList[j].classroomCourseWorkId;
             }
           }
         }
@@ -2113,7 +2117,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future<String> uploadImgB64AndGetUrl(
       {required String? imgBase64,
       required String? imgExtension,
-      required String? section}) async {
+      required String? section,
+      int retry = 3}) async {
     // print(imgExtension);
     Map body = {
       "bucket": "graded/$section",
@@ -2134,12 +2139,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         response.statusCode == 200 &&
         response.data['statusCode'] != 500) {
       return response.data['body']['Location'];
-    } else if ((response.statusCode == 401 ||
-            response.data['statusCode'] == 500) &&
-        _totalRetry < 3) {
-      _totalRetry++;
+    } else if (retry > 0) {
       return await uploadImgB64AndGetUrl(
-          imgBase64: imgBase64, imgExtension: imgExtension, section: section);
+          retry: retry - 1,
+          imgBase64: imgBase64,
+          imgExtension: imgExtension,
+          section: section);
     }
     return "";
   }
@@ -2148,7 +2153,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       {required String? presentationId,
       required String? accessToken,
       required String? refreshToken,
-      required String? slideObjId}) async {
+      required String? slideObjId,
+      int retry = 3}) async {
     Map body = {
       "requests": [
         {
@@ -2174,9 +2180,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
         return true;
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
+      } else if (retry > 0) {
         _totalRetry++;
 
         //To regenerate fresh access token
@@ -2186,6 +2190,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               await UserGoogleProfile.getUserProfile();
 
           bool result = await deleteSlide(
+            retry: retry - 1,
             slideObjId: slideObjId,
             presentationId: presentationId,
             accessToken: _userProfileLocalData[0].authorizationToken,
@@ -2868,7 +2873,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       {required StudentAssessmentInfo studentAssessmentInfo,
       required String? presentationId,
       required String? refreshToken,
-      required String? accessToken}) async {
+      required String? accessToken,
+      int retry = 3}) async {
     try {
       Map body = {
         "requests": prepareEditAndUpdateSlideRequestBody(
@@ -2889,15 +2895,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
         return 'Done';
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
+      } else if (retry > 0) {
         var result = await _toRefreshAuthenticationToken(refreshToken!);
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
           String result = await _editSlideFromPresentation(
+              retry: retry - 1,
               studentAssessmentInfo: studentAssessmentInfo,
               accessToken: _userProfileLocalData[0].authorizationToken,
               presentationId: presentationId,

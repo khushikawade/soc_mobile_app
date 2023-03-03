@@ -2,6 +2,7 @@
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/classroom_student_profile_modal.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -445,7 +446,7 @@ class studentRecordList extends State<ResultsSummary> {
                                                         'student_info'),
                                                 studentClassObj:
                                                     GoogleClassroomGlobals
-                                                        .studentClassRoomObj,
+                                                        .studentAssessmentAndClassroomObj,
                                                 title: Globals.assessmentName!,
                                                 pointPossible:
                                                     Globals.pointPossible ??
@@ -522,7 +523,7 @@ class studentRecordList extends State<ResultsSummary> {
                                                         'student_info'),
                                                 studentClassObj:
                                                     GoogleClassroomGlobals
-                                                        .studentClassRoomObj,
+                                                        .studentAssessmentAndClassroomObj,
                                                 title: Globals.assessmentName!,
                                                 pointPossible:
                                                     Globals.pointPossible ??
@@ -654,14 +655,16 @@ class studentRecordList extends State<ResultsSummary> {
                                         tableName: 'history_student_info') ==
                                     0) {
                                   state.obj.forEach((e) async {
-                                    if (GoogleClassroomGlobals
-                                            .studentClassRoomObj
-                                            .courseId!
-                                            .isNotEmpty &&
-                                        GoogleClassroomGlobals
-                                            .studentClassRoomObj
-                                            .courseWorkId!
-                                            .isNotEmpty) {
+                                    if ((GoogleClassroomGlobals
+                                                .studentAssessmentAndClassroomObj
+                                                ?.courseId
+                                                ?.isNotEmpty ??
+                                            false) &&
+                                        (GoogleClassroomGlobals
+                                                .studentAssessmentAndClassroomObj
+                                                ?.courseWorkId
+                                                ?.isNotEmpty ??
+                                            false)) {
                                       e.isgoogleClassRoomStudentProfileUpdated =
                                           true;
                                     }
@@ -788,10 +791,9 @@ class studentRecordList extends State<ResultsSummary> {
                             disableSlidableAction.value = false;
                           }
                           if (state is AssessmentDashboardStatus) {
-                            if (state.assessmentObj == null &&
-                                state.resultRecordCount == null) {
-                              dashboardState.value = '';
-                            } else {
+                            if (state
+                                    .assessmentObj?.assessmentCId?.isNotEmpty ??
+                                false) {
                               List list = await Utility.getStudentInfoList(
                                   tableName: 'history_student_info');
 
@@ -809,33 +811,90 @@ class studentRecordList extends State<ResultsSummary> {
                                 for (GoogleClassroomCourses element
                                     in _googleClassroomCourseslocalData) {
                                   if (element.courseId ==
-                                      state.assessmentObj!.classroomCourseId) {
+                                      state.assessmentObj!.courseId) {
                                     //update the classroom course work id in GoogleClassroomGlobals obj
-                                    element.courseWorkId = state
-                                        .assessmentObj!.classroomCourseWorkId!;
+                                    element.courseWorkId =
+                                        state.assessmentObj!.courseWorkId!;
 
-                                    GoogleClassroomGlobals.studentClassRoomObj =
+                                    GoogleClassroomGlobals
+                                            .studentAssessmentAndClassroomObj =
                                         element;
 
                                     break;
                                   }
                                 }
-                                print(
-                                    "printing assessmentId -------->${state.assessmentObj!.assessmentId}");
-                                print(
-                                    "printing classroomCourseWorkId -------->${state.assessmentObj!.classroomCourseWorkId}");
-                                print(
-                                    "printing classroomCourseId -------->${state.assessmentObj!.classroomCourseId}");
-                                GoogleClassroomGlobals
-                                        .studentClassRoomObj.assessmentCId =
-                                    state.assessmentObj!.assessmentId;
+                                // print(
+                                //     "printing assessmentId -------->${state.assessmentObj!.assessmentCId}");
+                                // print(
+                                //     "printing classroomCourseWorkId -------->${state.assessmentObj!.courseWorkId}");
+                                // print(
+                                //     "printing classroomCourseId -------->${state.assessmentObj!.courseId}");
+                                // print(
+                                //     "printing classroomCourseId -------->${state.resultRecordCount}");
+                                // GoogleClassroomGlobals
+                                //         .studentAssessmentAndClassroomObj.assessmentCId =
+                                //     state.assessmentObj!.assessmentCId;
                               }
 
                               savedRecordCount = state.resultRecordCount;
-                              historyAssessmentId =
-                                  state.assessmentObj!.assessmentId;
+                              GoogleClassroomGlobals
+                                      .studentAssessmentAndClassroomObj
+                                      .assessmentCId =
+                                  historyAssessmentId =
+                                      state.assessmentObj!.assessmentCId;
                             }
                           }
+
+//  if (state is AssessmentDashboardStatus) {
+//                             if (state.assessmentObj == null &&
+//                                 state.resultRecordCount == null) {
+//                               dashboardState.value = '';
+//                             } else {
+//                               List list = await Utility.getStudentInfoList(
+//                                   tableName: 'history_student_info');
+
+//                               if (isGoogleSheetStateReceived.value == true) {
+//                                 state.resultRecordCount == list.length
+//                                     ? dashboardState.value = 'Success'
+//                                     : dashboardState.value = '';
+//                               }
+
+//                               if (Overrides.STANDALONE_GRADED_APP) {
+//                                 List<GoogleClassroomCourses>
+//                                     _googleClassroomCourseslocalData =
+//                                     await _googleClassRoomlocalDb.getData();
+
+//                                 for (GoogleClassroomCourses element
+//                                     in _googleClassroomCourseslocalData) {
+//                                   if (element.courseId ==
+//                                       state.assessmentObj!.classroomCourseId) {
+//                                     //update the classroom course work id in GoogleClassroomGlobals obj
+//                                     element.courseWorkId = state
+//                                         .assessmentObj!.classroomCourseWorkId!;
+
+//                                     GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//                                         element;
+
+//                                     break;
+//                                   }
+//                                 }
+//                                 print(
+//                                     "printing assessmentId -------->${state.assessmentObj!.assessmentId}");
+//                                 print(
+//                                     "printing classroomCourseWorkId -------->${state.assessmentObj!.classroomCourseWorkId}");
+//                                 print(
+//                                     "printing classroomCourseId -------->${state.assessmentObj!.classroomCourseId}");
+//                                 GoogleClassroomGlobals
+//                                         .studentAssessmentAndClassroomObj.assessmentCId =
+//                                     state.assessmentObj!.assessmentId;
+//                               }
+
+//                               savedRecordCount = state.resultRecordCount;
+//                               historyAssessmentId =
+//                                   state.assessmentObj!.assessmentId;
+//                             }
+//                           }
+
                           if (state is OcrLoading2) {
                             dashboardState.value = 'Loading';
                           }
@@ -2281,7 +2340,7 @@ class studentRecordList extends State<ResultsSummary> {
 
   Future<void> _initState() async {
     if (widget.assessmentDetailPage!) {
-      GoogleClassroomGlobals.studentClassRoomObj = GoogleClassroomCourses();
+      // GoogleClassroomGlobals.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
       await _historystudentAssessmentInfoDb.clear();
       if (widget.historySecondTime == true) {
         widget.assessmentName = Globals.historyAssessmentName;
@@ -2296,7 +2355,10 @@ class studentRecordList extends State<ResultsSummary> {
       _driveBloc
           .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
 
-      _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
+      _ocrBloc.add(GetDashBoardStatus(
+          fileId: widget.fileId,
+          assessmentObj:
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj));
       _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
     } else {
       updateAssessmentToDb();
