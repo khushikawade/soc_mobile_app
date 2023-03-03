@@ -102,10 +102,11 @@ class _ActionInteractionButtonWidgetState
   }
 
   Widget build(BuildContext context) {
-    return
-        // Column(
-        //   children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         Container(
+            alignment: Alignment.centerLeft,
             width: MediaQuery.of(context).size.width * 0.84,
             height: MediaQuery.of(context).orientation == Orientation.portrait
                 ? MediaQuery.of(context).size.height * 0.07
@@ -117,16 +118,20 @@ class _ActionInteractionButtonWidgetState
                   .map<Widget>(
                       (element) => _iconButton(Globals.icons.indexOf(element)))
                   .toList(),
-            ));
-    // ValueListenableBuilder(
-    //   builder: (BuildContext context, dynamic value, Widget? child) {
-    //     return Container(
-    //         child: Text(f.format(view.value).toString() + ' Views'));
-    //   },
-    //   valueListenable: view,
-    // )
-    // ],
-    // );
+            )),
+        ValueListenableBuilder(
+          builder: (BuildContext context, dynamic value, Widget? child) {
+            return Container(
+                alignment: Alignment.center,
+                child: Text(
+                  view.value.toString() + ' Views',
+                  textAlign: TextAlign.center,
+                ));
+          },
+          valueListenable: view,
+        )
+      ],
+    );
   }
 
   @override
@@ -217,47 +222,49 @@ class _ActionInteractionButtonWidgetState
         return Container(
           child: LikeButton(
             // likeCountAnimationType: LikeCountAnimationType.all,
-            animationDuration: index == 5
-                ? const Duration(milliseconds: 0)
-                : Duration(milliseconds: 1000),
+            animationDuration:
+                //  index == 5
+                //     ? const Duration(milliseconds: 0)
+                //     :
+                Duration(milliseconds: 1000),
             isLiked: null,
             onTap: (onActionButtonTapped) async {
-              if (Globals.icons[index] != 0xe887) {
-                //View analytics cannot be tapped by user
-                if (!connected) {
-                  Utility.currentScreenSnackBar("No Internet Connection", null);
+              // if (Globals.icons[index] != 0xe887) {
+              //View analytics cannot be tapped by user
+              if (!connected) {
+                Utility.currentScreenSnackBar("No Internet Connection", null);
+              } else {
+                if (widget.isLoading == true) {
+                  Utility.showSnackBar(
+                      scaffoldKey, 'Please wait while loading', context, null);
                 } else {
-                  if (widget.isLoading == true) {
-                    Utility.showSnackBar(scaffoldKey,
-                        'Please wait while loading', context, null);
-                  } else {
-                    final toLanguageCode = Translations.supportedLanguagesCodes(
-                        Globals.selectedLanguage!);
-                    //Save translated text locally
-                    await _saveTranslatedTextLocally(
-                        originalText: Globals.iconsName[index],
-                        toLanguageCode: toLanguageCode,
-                        translatedText: TranslationAPI.translate(
-                            Globals.iconsName[index], toLanguageCode, true));
-                    // _debouncer.run(() async {
-                    if (connected) {
-                      if (index == 3) {
-                        await _shareNews();
-                      } else if (index == 4) {
-                        supportPopupModal();
-                      }
-                      return countIncrement(index, scaffoldKey);
-                    } else {
-                      Utility.showSnackBar(
-                          scaffoldKey,
-                          'Make sure you have a proper Internet connection',
-                          context,
-                          null);
+                  final toLanguageCode = Translations.supportedLanguagesCodes(
+                      Globals.selectedLanguage!);
+                  //Save translated text locally
+                  await _saveTranslatedTextLocally(
+                      originalText: Globals.iconsName[index],
+                      toLanguageCode: toLanguageCode,
+                      translatedText: TranslationAPI.translate(
+                          Globals.iconsName[index], toLanguageCode, true));
+                  // _debouncer.run(() async {
+                  if (connected) {
+                    if (index == 3) {
+                      await _shareNews();
+                    } else if (index == 4) {
+                      supportPopupModal();
                     }
-                    // });
+                    return countIncrement(index, scaffoldKey);
+                  } else {
+                    Utility.showSnackBar(
+                        scaffoldKey,
+                        'Make sure you have a proper Internet connection',
+                        context,
+                        null);
                   }
+                  // });
                 }
               }
+              // }
             },
             size: 20,
             circleColor: CircleColor(
@@ -322,14 +329,14 @@ class _ActionInteractionButtonWidgetState
                                       ? Theme.of(context)
                                           .colorScheme
                                           .primaryVariant
-                                      : index == 5
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant
-                                          // Color(0xff379bf0)
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .primaryVariant,
+                                      // : index == 5
+                                      //     ? Theme.of(context)
+                                      //         .colorScheme
+                                      //         .primaryVariant
+                                      // Color(0xff379bf0)
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
                       size: Globals.deviceType == "phone" ? 22 : 25,
                     );
             },
@@ -516,15 +523,15 @@ class _ActionInteractionButtonWidgetState
                                       widget.obj.shareCount == null
                                   ? ""
                                   : f.format(widget.obj.shareCount))
-                          : index == 4
-                              ? support.value != 0
-                                  ? f.format(support.value).toString()
-                                  //.split('.')[0]
-                                  : widget.obj.supportCount == 0 ||
-                                          widget.obj.supportCount == null
-                                      ? ""
-                                      : f.format(widget.obj.supportCount)
-                              : f.format(view.value).toString(),
+                          : //index == 4?
+                          support.value != 0
+                              ? f.format(support.value).toString()
+                              //.split('.')[0]
+                              : widget.obj.supportCount == 0 ||
+                                      widget.obj.supportCount == null
+                                  ? ""
+                                  : f.format(widget.obj.supportCount),
+          // : f.format(view.value).toString(),
           // .split('.')[0]
           // .toString(),
           style: Theme.of(context).textTheme.bodyText1!,
@@ -538,9 +545,9 @@ class _ActionInteractionButtonWidgetState
                   ? helpful
                   : index == 3
                       ? share
-                      : index == 4
-                          ? support
-                          : view,
+                      : //index == 4 ?
+                      support,
+      // : view,
       child: Container(),
     );
   }

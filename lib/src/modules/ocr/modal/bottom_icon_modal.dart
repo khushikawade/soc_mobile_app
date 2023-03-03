@@ -72,10 +72,10 @@ class BottomIcon {
       title: 'History',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
     ),
-    BottomIcon(
-      title: 'Drive',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
-    ),
+    // BottomIcon(
+    //   title: 'Drive',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
+    // ),
     BottomIcon(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
@@ -91,10 +91,10 @@ class BottomIcon {
   ];
 
   static List<BottomIcon> standAloneHistoryBottomIconModalList = [
-    BottomIcon(
-      title: 'Drive',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
-    ),
+    // BottomIcon(
+    //   title: 'Drive',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
+    // ),
     BottomIcon(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
