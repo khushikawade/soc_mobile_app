@@ -160,7 +160,7 @@ class SocialDescription extends StatelessWidget {
                     object.mediaContent != "") ||
                 (object.description != null &&
                     object.description != "" &&
-                    object.description != null &&
+                    // object.description != null &&
                     object.description.toString().contains("<img src=") &&
                     object.description.toString().split('"')[1] != "")
             ? Container(
