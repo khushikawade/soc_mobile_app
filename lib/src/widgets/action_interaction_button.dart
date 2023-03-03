@@ -102,19 +102,31 @@ class _ActionInteractionButtonWidgetState
   }
 
   Widget build(BuildContext context) {
-    return Container(
-        width: MediaQuery.of(context).size.width * 0.84,
-        height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height * 0.07
-            : MediaQuery.of(context).size.width * 0.07,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: Globals.icons
-              .map<Widget>(
-                  (element) => _iconButton(Globals.icons.indexOf(element)))
-              .toList(),
-        ));
+    return
+        // Column(
+        //   children: [
+        Container(
+            width: MediaQuery.of(context).size.width * 0.84,
+            height: MediaQuery.of(context).orientation == Orientation.portrait
+                ? MediaQuery.of(context).size.height * 0.07
+                : MediaQuery.of(context).size.width * 0.07,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: Globals.icons
+                  .map<Widget>(
+                      (element) => _iconButton(Globals.icons.indexOf(element)))
+                  .toList(),
+            ));
+    // ValueListenableBuilder(
+    //   builder: (BuildContext context, dynamic value, Widget? child) {
+    //     return Container(
+    //         child: Text(f.format(view.value).toString() + ' Views'));
+    //   },
+    //   valueListenable: view,
+    // )
+    // ],
+    // );
   }
 
   @override
@@ -311,11 +323,10 @@ class _ActionInteractionButtonWidgetState
                                           .colorScheme
                                           .primaryVariant
                                       : index == 5
-                                          ?
-                                          // Theme.of(context)
-                                          //     .colorScheme
-                                          //     .primaryVariant
-                                          Color(0xff379bf0)
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant
+                                          // Color(0xff379bf0)
                                           : Theme.of(context)
                                               .colorScheme
                                               .primaryVariant,
