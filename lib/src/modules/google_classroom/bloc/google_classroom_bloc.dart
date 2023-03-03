@@ -140,7 +140,8 @@ class GoogleClassroomBloc
                 (event.title.contains('_'))) {
               for (GoogleClassroomCourses classroom
                   in _googleClassRoomLocalData) {
-                if ((event.title.split("_")[1] == classroom.name)) {
+                // always check last "_" contains in title and get the subject
+                if ((event.title.split("_").last == classroom.name)) {
                   print("insdie if loopppp");
                   isClassroomCourseAdded = true;
                   event.studentClassObj.courseId = classroom.courseId;

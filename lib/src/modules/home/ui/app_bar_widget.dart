@@ -227,16 +227,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   // }
 
   Widget _translateButton(StateSetter setState, BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(left: 10),
-      child: GestureDetector(
+    return IconButton(
         key: _bshowcase,
-        child: Image(
-          width: Globals.deviceType == "phone" ? 26 : 32,
-          height: Globals.deviceType == "phone" ? 26 : 32,
-          image: AssetImage("assets/images/gtranslate.png"),
-        ),
-        onTap: () async {
+        onPressed: () async {
           await FirebaseAnalyticsService.addCustomAnalyticsEvent(
               "language_translate");
 
@@ -251,36 +244,79 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             }
           });
         },
-      ),
-    );
+        icon: Container(
+          child: Image(
+            width: !Overrides.STANDALONE_GRADED_APP
+                ? Globals.deviceType == "phone"
+                    ? 26
+                    : 32
+                : 28,
+            height: !Overrides.STANDALONE_GRADED_APP
+                ? Globals.deviceType == "phone"
+                    ? 26
+                    : 32
+                : 28,
+            image: AssetImage("assets/images/gtranslate.png"),
+          ),
+        ));
+
+    //  Container(
+    //   padding: EdgeInsets.only(left: 10),
+    //   child: GestureDetector(
+    //     key: _bshowcase,
+    //     child: Image(
+    //       width: Globals.deviceType == "phone" ? 26 : 32,
+    //       height: Globals.deviceType == "phone" ? 26 : 32,
+    //       image: AssetImage("assets/images/gtranslate.png"),
+    //     ),
+    //     onTap: () async {
+    //       await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+    //           "language_translate");
+
+    //       setState(() {});
+    //       LanguageSelector(context, (language) {
+    //         if (language != null) {
+    //           setState(() {
+    //             Globals.selectedLanguage = language;
+    //             Globals.languageChanged.value = language;
+    //           });
+    //           refresh!(true);
+    //         }
+    //       });
+    //     },
+    //   ),
+    // );
   }
 
   Widget _openSettingsButton(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.only(left: 5),
-        child: IconButton(
-          onPressed: () async {
-            await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                "settings_drawer");
-            if (Platform.isAndroid) {
-              OpenAppsSettings.openAppsSettings(
-                  settingsCode: SettingsCode.ACCESSIBILITY);
-            } else {
-              // AppSettings.openAccessibilitySettings(asAnotherTask: true);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          IosAccessibilityGuidePage()));
-            }
-          },
-          icon: Icon(
-            FontAwesomeIcons.universalAccess,
-            color: Colors.blue,
-            key: _openSettingShowCaseKey,
-            size: Globals.deviceType == "phone" ? 25 : 32,
-          ),
-        ));
+    return IconButton(
+      iconSize: 28,
+      onPressed: () async {
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            "settings_drawer");
+        if (Platform.isAndroid) {
+          OpenAppsSettings.openAppsSettings(
+              settingsCode: SettingsCode.ACCESSIBILITY);
+        } else {
+          // AppSettings.openAccessibilitySettings(asAnotherTask: true);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      IosAccessibilityGuidePage()));
+        }
+      },
+      icon: Icon(
+        FontAwesomeIcons.universalAccess,
+        color: Colors.blue,
+        key: _openSettingShowCaseKey,
+        size: !Overrides.STANDALONE_GRADED_APP
+            ? Globals.deviceType == "phone"
+                ? 25
+                : 32
+            : null,
+      ),
+    );
   }
 
   BubbleSlide _firstSlide(context) => RelativeBubbleSlide(
