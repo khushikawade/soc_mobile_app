@@ -243,73 +243,10 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                                         if (nextPageUrl != '') {
                                           isLoading = true;
                                         }
-                                        // if (selectedValue.value ==
-                                        //     'Multiple Choice') {
-                                        //   for (var i = 0;
-                                        //       i < list.length;
-                                        //       i++) {
-                                        //     if (DateTime.parse(state
-                                        //             .obj.last.createdDate!)
-                                        //         .isBefore(DateTime.utc(
-                                        //             2022, 20, 12))) {
-                                        //       isLoading = false;
-                                        //     }
-                                        //   }
-                                        // }
-                                        // return list.length > 0
-                                        //     ?
+
                                         return state.obj != null &&
                                                 state.obj.length > 0
                                             ? listView(state.obj, isLoading)
-
-                                            //  ValueListenableBuilder(
-                                            //     valueListenable: selectedValue,
-                                            //     child: Container(),
-                                            //     builder: (
-                                            //       BuildContext context,
-                                            //       dynamic value,
-                                            //       Widget? child,
-                                            //     ) {
-                                            //       List<HistoryAssessment> list = [];
-                                            //       list.addAll(state.obj);
-
-                                            //       // if (selectedValue.value ==
-                                            //       //     'Multiple Choice') {
-                                            //       //   list.removeWhere((element) =>
-                                            //       //       element.assessmentType !=
-                                            //       //       selectedValue.value);
-                                            //       // } else if (selectedValue.value ==
-                                            //       //     'Constructed Response') {
-                                            //       //   list.removeWhere((element) =>
-                                            //       //       element.assessmentType !=
-                                            //       //       selectedValue.value);
-                                            //       // }
-                                            //       if (list.length < 6 &&
-                                            //           isLoading == true) {
-                                            //         isLoading = false;
-                                            //       } else if (nextPageUrl != '') {
-                                            //         isLoading = true;
-                                            //       }
-                                            //       if (selectedValue.value ==
-                                            //           'Multiple Choice') {
-                                            //         for (var i = 0;
-                                            //             i < list.length;
-                                            //             i++) {
-                                            //           if (DateTime.parse(state
-                                            //                   .obj.last.createdDate!)
-                                            //               .isBefore(DateTime.utc(
-                                            //                   2022, 20, 12))) {
-                                            //             isLoading = false;
-                                            //           }
-                                            //         }
-                                            //       }
-                                            //       return list.length > 0
-                                            //           ? listView(list, isLoading)
-                                            //           : NoDataFoundErrorWidget(
-                                            //               isResultNotFoundMsg: true,
-                                            //               isNews: false,
-                                            //               isEvents: false);
-                                            //     })
                                             : NoDataFoundErrorWidget(
                                                 isResultNotFoundMsg: true,
                                                 isNews: false,
@@ -600,42 +537,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   textTheme: Theme.of(context).textTheme.headline2),
               // subtitle:
               trailing: trailingRowBuilder(element: list[index]),
-
-              //  [
-              //   if (list[index].presentationLink != null &&
-              //       list[index].presentationLink!.isNotEmpty)
-              //     _iconBuilder(
-              //         svgIconPath:
-              //             'assets/ocr_result_section_bottom_button_icons/Slide.svg'),
-              //   GestureDetector(
-              //     onTap: () {
-              //       Utility.updateLogs(
-              //           activityId: '13',
-              //           sessionId: list[index].sessionId != null
-              //               ? list[index].sessionId
-              //               : '',
-              //           description:
-              //               'Teacher tap on Share Button on Assignment summery page',
-              //           operationResult: 'Success');
-
-              //       if (list[index].webContentLink != null &&
-              //           list[index].webContentLink != '') {
-              //         Share.share(list[index].webContentLink!);
-              //       }
-              //       // : print("no web link $index");
-              //     },
-              //     child: Icon(
-              //       IconData(0xe876,
-              //           fontFamily: Overrides.kFontFam,
-              //           fontPackage: Overrides.kFontPkg),
-              //       color: Color(0xff000000) !=
-              //               Theme.of(context).backgroundColor
-              //           ? Color(0xff111C20)
-              //           : Color(0xffF7F8F9),
-              //       size: Globals.deviceType == 'phone' ? 28 : 38,
-              //     ),
-              //   ),
-              // ],
             ),
           ),
         ),

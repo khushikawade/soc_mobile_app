@@ -570,7 +570,8 @@ class _ActionInteractionButtonWidgetState
         context: context,
         builder: (showDialogContext) => CommonPopupWidget(
               backgroundColor:
-                  Theme.of(showDialogContext).colorScheme.background == Color(0xff000000)
+                  Theme.of(showDialogContext).colorScheme.background ==
+                          Color(0xff000000)
                       ? Color(0xff162429)
                       : null,
               isLogout: true,

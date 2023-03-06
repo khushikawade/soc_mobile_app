@@ -238,7 +238,8 @@ class LogUserActivityEvent extends OcrEvent {
 class UploadAssessmentToDB extends OcrEvent {
   final List<StudentAssessmentInfo> studentDetails;
   final String assessmentId;
-  UploadAssessmentToDB({required this.studentDetails,required this.assessmentId});
+  UploadAssessmentToDB(
+      {required this.studentDetails, required this.assessmentId});
 }
 
 class GetRubricPdf extends OcrEvent {

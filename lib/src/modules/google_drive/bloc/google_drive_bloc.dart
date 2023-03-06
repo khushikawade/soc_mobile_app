@@ -36,7 +36,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   GoogleDriveBloc() : super(GoogleDriveInitial());
   final DbServices _dbServices = DbServices();
   Dio dio = Dio();
-
   GoogleDriveState get initialState => GoogleDriveInitial();
   int _totalRetry = 0;
 

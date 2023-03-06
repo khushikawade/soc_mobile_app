@@ -442,6 +442,7 @@ class _OpticalCharacterRecognitionPageState
                                 RubricScoreList.scoringList[index]);
                           },
                           onTap: () {
+                            print(Globals.scoringRubric);
                             rubricScoreSelectedColor.value = index;
 
                             if (RubricScoreList.scoringList[index].name ==

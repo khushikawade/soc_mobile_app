@@ -627,12 +627,15 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
             valueListenable: indexColor,
             builder: (BuildContext context, dynamic value, Widget? child) {
               return InkWell(
-                  onTap: () async{
+                  onTap: () async {
                     // updateDetails(isUpdateData: true);
                     String editScoreOrAnserKeyLogMsg =
                         'Teacher change ${widget.isMcqSheet == true ? "Answer Key " : "Score rubric"}  from ${pointScored.value.toString()} to ${index.toString()}';
-   FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            editScoreOrAnserKeyLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        editScoreOrAnserKeyLogMsg
+                                .toLowerCase()
+                                .replaceAll(" ", "_") ??
+                            '');
                     Utility.updateLogs(
                         // ,
                         activityId: widget.isMcqSheet == true ? "30 " : '8',
@@ -832,6 +835,21 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
         if (text == null || text.isEmpty) {
           return msg;
         }
+        //  else {
+        //   if (whichContoller == 2) {
+        //     if (Overrides.STANDALONE_GRADED_APP == true &&
+        //         !regex.hasMatch(text)) {
+        //       return msg;
+        //     } else if (Overrides.STANDALONE_GRADED_APP != true &&
+        //         text.length < 3) {
+        //       return msg;
+        //     } else {
+        //       return null;
+        //     }
+        //   } else if (text.length != 1 && whichContoller == 3) {
+        //     return msg;
+        //   }
+        // }
 
         return null;
       },

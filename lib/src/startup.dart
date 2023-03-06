@@ -6,12 +6,10 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/news/model/notification_list.dart';
 import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -244,7 +242,7 @@ class _StartupPageState extends State<StartupPage> {
                               var isOldUser = await _hiveDbServices
                                   .getSingleData('new_user', 'new_user');
                               if (Overrides.STANDALONE_GRADED_APP == true) {
-                               Globals.isPremiumUser = true;
+                                Globals.isPremiumUser = true;
                               }
                               Navigator.of(context)
                                   .pushReplacement(MaterialPageRoute(

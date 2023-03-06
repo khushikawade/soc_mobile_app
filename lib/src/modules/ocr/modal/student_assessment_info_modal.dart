@@ -45,7 +45,7 @@ class StudentAssessmentInfo {
   String? studentResponseKey;
   @HiveField(18)
   String? googleSlidePresentationURL;
-   @HiveField(19)
+  @HiveField(19)
   String? uniqueId;
   @HiveField(20)
   String? isRubricChanged;
@@ -73,7 +73,9 @@ class StudentAssessmentInfo {
       this.answerKey,
       this.standardDescription,
       //this.presentationURL,
-      this.studentResponseKey,this.isRubricChanged,this.uniqueId});
+      this.studentResponseKey,
+      this.isRubricChanged,
+      this.uniqueId});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(

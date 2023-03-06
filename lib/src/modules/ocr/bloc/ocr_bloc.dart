@@ -2261,4 +2261,235 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       throw (e);
     }
   }
+
+  // ----------- Function to get Subject Name according to the state ---------------
+  // Future<List<StateListObject>> getSubjectName({
+  //   required String stateName,
+  //   required String keyword,
+  // }) async {
+  //   List<StateListObject> subjectList = [];
+  //   // to get state list object from localDb
+  //   LocalDatabase<StateListObject> _localDb =
+  //       LocalDatabase(Strings.stateObjectName);
+  //   List<StateListObject>? _localData = await _localDb.getData();
+  //   for (int i = 0; i < _localData.length; i++) {
+  //     if (_localData[i].stateC == stateName) {
+  //       subjectList.add(_localData[i]);
+  //     }
+  //   }
+  //   // Calling Function to fetch Local subject created by user
+  //   List<StateListObject> list =
+  //       await fetchLocalSubject(keyword, stateName: stateName);
+  //   subjectList.addAll(list);
+  //   return subjectList;
+  // }
+
+  // Future<List> emailDetectionApi({required String base64}) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.postapi(
+  //       Uri.encodeFull(
+  //           'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA309Qitrqstm3l207XVUQ0Yw5K_qgozag'),
+  //       body: {
+  //         "requests": [
+  //           {
+  //             "image": {"content": base64.toString()},
+  //             "features": [
+  //               {"type": "DOCUMENT_TEXT_DETECTION"}
+  //             ]
+  //           }
+  //         ]
+  //       },
+  //       isGoogleApi: true,
+  //     );
+  //     if (response.statusCode == 200) {
+  //       // print(response.data);
+  //       String data =
+  //           response.data["responses"][0]["textAnnotations"][0]["description"];
+  //       print(data);
+  //       List nameAndemail = await checkEmailInsideRoster(responseText: data);
+  //       return [nameAndemail[0], nameAndemail[1]];
+  //     } else {
+  //       print(response.statusCode);
+  //       return ['', ''];
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     throw (e);
+  //   }
+  // }
+
+  // Future<List> checkEmailInsideRoster({required String responseText}) async {
+  //   try {
+  //     LocalDatabase<GoogleClassroomCourses> _localDb =
+  //         LocalDatabase(Strings.googleClassroomCoursesList);
+
+  //     List<GoogleClassroomCourses>? _localData = await _localDb.getData();
+  //     List<String> studentEmailList = [];
+  //     for (var i = 0; i < _localData.length; i++) {
+  //       for (var j = 0; j < _localData[i].studentList!.length; j++) {
+  //         studentEmailList
+  //             .add(_localData[i].studentList![j]['profile']['emailAddress']);
+  //       }
+  //     }
+  //     // List<String> studentList = [
+  //     //   "test@gmail.com",
+  //     //   "appdevelopersdp7@gmail.com",
+  //     //   "rupeshparmar@gmail.com",
+  //     //   "techadmin@solvedconsulting.com"
+  //     // ];
+  //     List<String> respoanceTextList = responseText.split(' ');
+  //     String pattern =
+  //         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  //     RegExp regex = new RegExp(pattern);
+  //     List result = extractEmailsFromString(responseText);
+
+  //     List<String> emails = [];
+
+  //     for (int i = 0; i < result.length; i++) {
+  //       String extra = result[i];
+  //       result.removeAt(i);
+  //       result.insert(i, extra.split('@')[0]);
+
+  //       var match = StringSimilarity.findBestMatch(
+  //           result[i], studentEmailList); // result[i].bestMatch(studentList);
+  //       print("--------------------------match-----------------------");
+  //       print(match);
+  //       emails.add("${match.bestMatch.target!}_${match.bestMatch.rating}");
+  //       // return match.bestMatch.target!;
+
+  //     }
+  //     String newresult = emails.isNotEmpty ? emails[0].split('_')[0] : '';
+  //     double confidence =
+  //         emails.isNotEmpty ? double.parse(emails[0].split('_')[1]) : 0;
+
+  //     for (int i = 1; i < emails.length; i++) {
+  //       if (confidence < double.parse(emails[i].split('_')[1])) {
+  //         newresult = emails.isNotEmpty ? emails[i].split('_')[0] : '';
+  //       }
+  //     }
+  //     String studentName = '';
+  //     for (var i = 0; i < _localData.length; i++) {
+  //       for (var j = 0; j < _localData[i].studentList!.length; j++) {
+  //         if (newresult ==
+  //             _localData[i].studentList![j]['profile']['emailAddress']) {
+  //           studentName =
+  //               _localData[i].studentList![j]['profile']['name']['fullName'];
+  //         }
+  //       }
+  //     }
+
+  //     return [newresult, studentName];
+
+  //     // if (result.isNotEmpty) {
+  //     //   return result[0];
+  //     // } else {
+  //     //   for (int j = 0; j < respoanceTextList.length; j++) {
+  //     //     if (regex.hasMatch(respoanceTextList[j]) &&
+  //     //         studentList.contains(respoanceTextList[j])) {
+  //     //       return respoanceTextList[j];
+  //     //     } else {
+  //     //       for (var i = 0; i < studentList.length; i++) {
+  //     //         if (studentList[i].contains(respoanceTextList[j])) {
+  //     //           return studentList[i];
+  //     //         }
+  //     //       }
+  //     //     }
+
+  //     //     //}
+
+  //     //   }
+  //     // }
+
+  //     return ['', ''];
+  //   } catch (e) {
+  //     return ['', ''];
+  //   }
+  // }
+
+  // List<String> extractEmailsFromString(String string) {
+  //   //String newString = string.replaceAll(RegExp(r"\s+"), '');
+  //   // newString
+
+  //   List<String> respoanceTextList = string.split(' ');
+  //   string = '';
+  //   for (int i = 0; i < respoanceTextList.length; i++) {
+  //     //  string = '';
+  //     if (respoanceTextList[i].toString().contains('@')) {
+  //       string = '$string${respoanceTextList[i].toString()}';
+  //     } else {
+  //       string = "$string ${respoanceTextList[i].toString()}";
+  //     }
+  //   }
+
+  //   final emailPattern = RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b',
+  //       caseSensitive: false, multiLine: true);
+  //   string = string.replaceAll(",", "");
+  //   final matches = emailPattern.allMatches(string);
+  //   final List<String> emails = [];
+  //   if (matches != null) {
+  //     for (final Match match in matches) {
+  //       emails.add(string.substring(match.start, match.end));
+  //     }
+  //   }
+  //   if (emails.isEmpty) {
+  //     List<String> respoanceTextList = string.split(' ');
+  //     for (var i = 0; i < respoanceTextList.length; i++) {
+  //       if (respoanceTextList[i].contains('@')) {
+  //         emails.add(respoanceTextList[i]);
+  //       }
+  //     }
+
+  //     // final test = RegExp('@',
+  //     //   caseSensitive: false, multiLine: true);
+  //     //   final data = test.allMatches(string);
+  //     // for (final Match match in data) {
+  //     //   emails.add(string.substring(match.start, match.end));
+
+  //     // }
+
+  //   }
+
+  //   return emails;
+  // }
+
+  Future<List<RubricPdfModal>> getRubicPdfList() async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          Uri.encodeFull(
+              "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/getRecords/Gradedplus_Rubric__c"),
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200) {
+        List<RubricPdfModal> _list = response.data['body']
+            .map<RubricPdfModal>((i) => RubricPdfModal.fromJson(i))
+            .toList();
+        print('repsonse is recived reurning data');
+        return _list;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  // Future<List<RubricPdfModal>> sortRubricPDFList(
+  //     List<RubricPdfModal> list) async {
+  //   List<RubricPdfModal> newList = [];
+  //   for (int i = 0; i < list.length; i++) {
+  //     if (Overrides.STANDALONE_GRADED_APP == true) {
+  //       //Create list to show standalone rubric pdf
+  //       if (list[i].usedInC != 'Schools') {
+  //         newList.add(list[i]);
+  //       }
+  //     } else {
+  //       //Create list to show school rubric pdf
+  //       if (list[i].usedInC != 'Standalone') {
+  //         newList.add(list[i]);
+  //       }
+  //     }
+  //   }
+
+  //   return newList;
+  // }
 }

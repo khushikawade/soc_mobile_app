@@ -284,6 +284,3 @@ class CustomFlutterIcons {
   static const IconData new_support =
       IconData(0xe882, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
-
-
- 

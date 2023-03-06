@@ -113,8 +113,6 @@ class Globals {
   static String historyAssessmentId = '';
   static bool isNewsContactPopupAppear = false; // when news popUp is on
 
-
-  
   static String? schoolDbnC;
 
 //  static EventController scheduleController = EventController();
