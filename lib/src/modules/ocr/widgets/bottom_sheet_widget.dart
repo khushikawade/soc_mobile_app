@@ -5,7 +5,6 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -27,11 +26,13 @@ class BottomSheetWidget extends StatefulWidget {
       required this.isSubjectScreen,
       this.onTap,
       this.valueChanged,
-      this.isPdfInfo,
+      this.section,
       this.rubricPdfModalList,
-      this.tileOnTap})
+      this.tileOnTap,
+      this.submitButton})
       : super(key: key);
-
+  // final bool? isMcqSheet;
+  // final bool? selectedAnswer;
   final ValueChanged<bool>? update;
   final bool? isImageField;
   final String? title;
@@ -41,15 +42,16 @@ class BottomSheetWidget extends StatefulWidget {
   final bool? isSubjectScreen;
   final VoidCallback? onTap;
   final ValueChanged? valueChanged;
-  var isPdfInfo;
+  var section;
   final List<RubricPdfModal>? rubricPdfModalList;
-  final Function(RubricPdfModal)? tileOnTap;
+  final Function(dynamic)? tileOnTap;
+  var submitButton;
   @override
   State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
 }
 
 class _BottomSheetWidgetState extends State<BottomSheetWidget> {
-  final textFieldControllerOne = TextEditingController();
+  final studentNameController = TextEditingController();
   final textFieldController2 = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   File? imageFile;
@@ -113,10 +115,12 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                         )),
               ),
             ),
-            if (widget.isPdfInfo == true)
+            if (widget.section == 'PDF section')
               Expanded(
                   child: rubricPdfListBuilder(
                       pdfInfoList: widget.rubricPdfModalList!))
+            else if (widget.section == 'MCQ Assessment')
+              _selectSection()
             else
               Form(
                 key: _formKey,
@@ -147,7 +151,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                         ),
                         child: TextFieldWidget(
                             msg: "Field is required",
-                            controller: textFieldControllerOne,
+                            controller: studentNameController,
                             onSaved: (String value) {}),
                       ),
                       widget.textFieldTitleTwo != null
@@ -205,20 +209,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                             )),
                                   ),
                                   SpacerWidget(5),
-                                  // InkWell(
-                                  //   onTap: () {
-                                  //     showActionsheet(context);
-                                  //   },
-                                  //   child: Padding(
-                                  //     padding: EdgeInsets.symmetric(
-                                  //       horizontal: 20,
-                                  //     ),
-                                  //     child: textFormField(
-                                  //         msg: "Add Name Please",
-                                  //         controller: nameController,
-                                  //         onSaved: (String value) {}),
-                                  //   ),
-                                  // ),
                                   SpacerWidget(10),
                                   InkWell(
                                     onTap: () {
@@ -259,103 +249,86 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                                   ),
                                                 ),
                                               ),
-
-                                        //  imageFile != null
-                                        //     ? Image.file(
-                                        //         imageFile!,
-                                        //         fit: BoxFit.fitWidth,
-                                        //       )
-                                        //     : Container(
-                                        //         child: Center(
-                                        //           child: Icon(Icons.add_a_photo),
-                                        //         ),
-                                        //       ),
                                       ),
                                     ),
                                   ),
                                 ])
                           : Container(),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-                        child: FloatingActionButton.extended(
-                            backgroundColor:
-                                AppTheme.kButtonColor.withOpacity(1.0),
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                if (widget.isSubjectScreen!) {
-                                  widget.valueChanged!(textFieldControllerOne);
-                                  Utility.updateLoges(
-                                      activityId: '21',
-                                      description:
-                                          'Teacher added custom subject ',
-                                      operationResult: 'Success');
-                                } else {
-                                  // TODO submit
-
-                                  //print("calling submit");
-                                  if (imageFile != null) {
-                                    String imgExtension = imageFile!.path
-                                        .substring(
-                                            imageFile!.path.lastIndexOf(".") +
-                                                1);
-                                    //print('Image Extension : $imgExtension');
-                                    List<int> imageBytes =
-                                        imageFile!.readAsBytesSync();
-                                    String imageB64 = base64Encode(imageBytes);
-
-                                    RubricScoreList.scoringList.add(
-                                        CustomRubicModal(
-                                            name: textFieldControllerOne.text,
-                                            score: textFieldController2.text,
-                                            imgBase64: imageB64,
-                                            filePath:
-                                                imageFile!.path.toString(),
-                                            customOrStandardRubic: "Custom"));
-                                    //print("calling get img url");
-                                    _googleBloc.add(ImageToAwsBucked(
-                                        imgBase64: RubricScoreList
-                                            .scoringList.last.imgBase64,
-                                        imgExtension: imgExtension));
-                                  } else {
-                                    //print("save score and name on local db");
-                                    Utility.updateLoges(
-                                        activityId: '21',
-                                        description:
-                                            'Teacher added custom rubric ',
-                                        operationResult: 'Success');
-                                    RubricScoreList.scoringList.add(
-                                        CustomRubicModal(
-                                            name: textFieldControllerOne.text,
-                                            score: textFieldController2.text,
-                                            customOrStandardRubic: "Custom"));
-                                  }
-
-                                  widget.update!(true);
-
-                                  Navigator.pop(
-                                    context,
-                                  );
-                                }
-                              }
-                            },
-                            label: Row(
-                              children: [
-                                Utility.textWidget(
-                                    text: 'Submit',
-                                    context: context,
-                                    textTheme: Theme.of(context)
-                                        .textTheme
-                                        .headline2!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .backgroundColor)),
-                              ],
-                            )),
-                      ),
                     ],
                   ),
                 ),
+              ),
+            if (widget.submitButton == true)
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                child: FloatingActionButton.extended(
+                    backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        if (widget.isSubjectScreen!) {
+                          widget.valueChanged!(studentNameController);
+                          Utility.updateLogs(
+                              activityId: '21',
+                              description: 'Teacher added custom subject ',
+                              operationResult: 'Success');
+                        } else {
+                          // TODO submit
+
+                          //print("calling submit");
+                          if (imageFile != null) {
+                            // String imgExtension = imageFile!.path.substring(
+                            //     imageFile!.path.lastIndexOf(".") + 1);
+                            //print('Image Extension : $imgExtension');
+                            List<int> imageBytes = imageFile!.readAsBytesSync();
+                            String imageB64 = base64Encode(imageBytes);
+
+                            RubricScoreList.scoringList.add(CustomRubricModal(
+                                name: studentNameController.text,
+                                score: textFieldController2.text,
+                                imgBase64: imageB64,
+                                filePath: imageFile!.path.toString(),
+                                customOrStandardRubic: "Custom"));
+                            // Globals.scoringRubric =
+                            //     '${studentNameController.text} ${textFieldController2.text}';
+                            //print("calling get img url");
+                            _googleBloc.add(ImageToAwsBucket(
+                                customRubricModal:
+                                    RubricScoreList.scoringList.last,
+                                getImageUrl: false));
+                          } else {
+                            //print("save score and name on local db");
+                            Utility.updateLogs(
+                                activityId: '21',
+                                description: 'Teacher added custom rubric ',
+                                operationResult: 'Success');
+                            RubricScoreList.scoringList.add(CustomRubricModal(
+                                name: studentNameController.text,
+                                score: textFieldController2.text,
+                                customOrStandardRubic: "Custom"));
+                          }
+
+                          widget.update!(true);
+
+                          Navigator.pop(
+                            context,
+                          );
+                        }
+                      }
+                    },
+                    label: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Utility.textWidget(
+                            text: 'Submit',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(
+                                    color: Theme.of(context).backgroundColor)),
+                      ],
+                    )),
               ),
           ],
         ),
@@ -405,6 +378,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
+                isMcqSheet: false,
+                selectedAnswer: '',
                 isFromHistoryAssessmentScanMore: false,
                 onlyForPicture: true,
                 isScanMore: false,
@@ -478,6 +453,36 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
       margin: EdgeInsets.symmetric(horizontal: 10),
       height: 0.5,
       decoration: BoxDecoration(color: Color(0xffD9D6D5)),
+    );
+  }
+
+  Widget _selectSection() {
+    return Column(children: [
+      selectionWidget(title: 'Standard Assignment', icon: Icons.check_outlined),
+      selectionWidget(
+          title: 'Multiple choice Assignment', icon: Icons.checklist),
+    ]);
+  }
+
+  Widget selectionWidget({required String title, required IconData icon}) {
+    return Column(
+      children: [
+        ListTile(
+          onTap: () {
+            Navigator.pop(context);
+            widget.tileOnTap!(title);
+          },
+          leading: Icon(
+            icon,
+            color: AppTheme.kButtonColor,
+          ),
+          title: Utility.textWidget(
+              context: context,
+              text: title,
+              textTheme: Theme.of(context).textTheme.headlineMedium!),
+        ),
+        divider(context)
+      ],
     );
   }
 }

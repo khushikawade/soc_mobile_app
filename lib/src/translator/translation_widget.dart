@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/translator/language_list.dart';
 import 'package:Soc/src/translator/translator_api.dart';
@@ -33,6 +34,17 @@ class TranslationWidget extends StatefulWidget {
 class _TranslationWidgetState extends State<TranslationWidget> {
   ConnectivityResult? connectivity;
   String? translation;
+
+  // @override
+  // void initState() {
+  // TODO: implement initState
+  // FirebaseAnalyticsService.addCustomAnalyticsEvent(
+  //     "language_translation_screen");
+  // FirebaseAnalyticsService.setCurrentScreen(
+  //     screenTitle: 'language_translation_screen',
+  //     screenClass: 'LanguageTranslation');
+  // super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {

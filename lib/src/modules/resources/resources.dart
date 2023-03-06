@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/resources/bloc/resources_bloc.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -31,7 +32,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
   ResourcesBloc _bloc = ResourcesBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -39,6 +40,10 @@ class _ResourcesPageState extends State<ResourcesPage> {
     // Utility.setLocked();
     super.initState();
     _bloc.add(ResourcesListEvent());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("resources_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'resources_page', screenClass: 'ResourcesPage');
   }
 
   @override
@@ -64,12 +69,12 @@ class _ResourcesPageState extends State<ResourcesPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
+                if (isErrorState == true) {
                   _bloc.add(ResourcesListEvent());
-                  iserrorstate = false;
+                  isErrorState = false;
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               return
@@ -89,7 +94,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                                     .colorScheme
                                     .primaryVariant,
                               ));
-                        } else if (state is ResourcesDataSucess) {
+                        } else if (state is ResourcesDataSuccess) {
                           return widget.customObj != null &&
                                   widget.customObj!.sectionTemplate ==
                                       "Grid Menu"

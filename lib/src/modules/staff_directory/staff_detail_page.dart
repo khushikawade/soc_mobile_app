@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -10,7 +11,6 @@ import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/hori_spacerwidget.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
-import 'package:Soc/src/widgets/weburllauncher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -28,14 +28,23 @@ class AboutSDDetailPage extends StatefulWidget {
 
 class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
   static const double _kLabelSpacing = 16.0;
-  static const double _kIconSize = 48.0;
-  bool issuccesstate = false;
+  // static const double _kIconSize = 48.0;
+  // bool issuccesstate = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  UrlLauncherWidget urlobj = new UrlLauncherWidget();
+  // UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc homebloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   static const double _kboxborderwidth = 0.75;
-  bool? isloadingstate = false;
+  bool? isLoadingstate = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    FirebaseAnalyticsService.addCustomAnalyticsEvent('about_sd_detail_page');
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'about_sd_detail_page', screenClass: 'AboutSDDetailPage');
+    super.initState();
+  }
 
   Widget _sdImage() {
     return Container(
@@ -141,7 +150,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                       ),
                 ),
               ),
-              HorzitalSpacerWidget(_kLabelSpacing / 2),
+              HorizontalSpacerWidget(_kLabelSpacing / 2),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: InkWell(
@@ -214,7 +223,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                               fontWeight: FontWeight.w500,
                             ),
                       ),
-                HorzitalSpacerWidget(_kLabelSpacing / 2),
+                HorizontalSpacerWidget(_kLabelSpacing / 2),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
                   child: InkWell(
@@ -291,7 +300,7 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
       child: Column(
         children: [
           Expanded(
-              child: isloadingstate!
+              child: isLoadingstate!
                   ? ShimmerLoading(isLoading: true, child: _buildItem())
                   : _buildItem()),
           Container(
@@ -301,13 +310,13 @@ class _AboutSDDetailPageState extends State<AboutSDDetailPage> {
                 bloc: homebloc,
                 listener: (context, state) async {
                   if (state is HomeLoading) {
-                    isloadingstate = true;
+                    isLoadingstate = true;
                   }
                   if (state is BottomNavigationBarSuccess) {
                     AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                     Globals.appSetting = AppSetting.fromJson(state.obj);
-                    isloadingstate = false;
+                    isLoadingstate = false;
                     setState(() {});
                   }
                 },

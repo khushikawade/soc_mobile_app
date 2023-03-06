@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -39,7 +40,7 @@ class _FamilyPageState extends State<FamilyPage> {
   FamilyBloc _bloc = FamilyBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   bool? isCustomApp;
   final ScrollController _scrollController = ScrollController();
 
@@ -54,6 +55,9 @@ class _FamilyPageState extends State<FamilyPage> {
     if (brightness == Brightness.dark && Globals.disableDarkMode != true) {
       Globals.themeType = 'Dark';
     }
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("families");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'family', screenClass: 'FamilyPage');
   }
 
   @override
@@ -79,12 +83,12 @@ class _FamilyPageState extends State<FamilyPage> {
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
-                  if (iserrorstate == true) {
+                  if (isErrorState == true) {
                     _bloc.add(FamiliesEvent());
-                    iserrorstate = false;
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return
@@ -103,7 +107,7 @@ class _FamilyPageState extends State<FamilyPage> {
                               color:
                                   Theme.of(context).colorScheme.primaryVariant,
                             ));
-                          } else if (state is FamiliesDataSucess) {
+                          } else if (state is FamiliesDataSuccess) {
                             return widget.customObj != null &&
                                     widget.customObj!.sectionTemplate ==
                                         "Grid Menu"

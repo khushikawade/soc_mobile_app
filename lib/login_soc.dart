@@ -67,7 +67,9 @@ class _SchoolIDLoginState extends State<SchoolIDLogin> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => StartupPage(isOcrSection: false,)));
+                              builder: (context) => StartupPage(
+                                    isOcrSection: false,
+                                  )));
                     }
                     // if (pushAppIdController.text != "") {
                     //   Overrides.PUSH_APP_ID = pushAppIdController.text;

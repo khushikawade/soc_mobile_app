@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/common_image_widget.dart';
@@ -11,7 +12,11 @@ class CommonSchoolDirectoryWidget extends StatefulWidget {
   final List<SchoolDirectoryList> data;
   final bool? connected;
   final ScrollController? scrollController;
-  CommonSchoolDirectoryWidget({Key? key, required this.data, this.connected, required this.scrollController})
+  CommonSchoolDirectoryWidget(
+      {Key? key,
+      required this.data,
+      this.connected,
+      required this.scrollController})
       : super(key: key);
   @override
   _CommonSchoolDirectoryWidgetState createState() =>
@@ -23,6 +28,13 @@ class _CommonSchoolDirectoryWidgetState
   static const double _kIconSize = 48.0;
   static const double _kLabelSpacing = 16.0;
   bool? tapped = true;
+
+  @override
+  void initState() {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("school_directory");
+    // TODO: implement initState
+    super.initState();
+  }
 
   Widget _buildList(SchoolDirectoryList obj, int index) {
     return Container(

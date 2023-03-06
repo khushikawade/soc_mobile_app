@@ -26,12 +26,12 @@ class CustomPages extends StatefulWidget {
   final CustomSetting? customObj;
   final ScrollController? scrollController;
 
-  CustomPages(
-      {Key? key,
-      this.customList,
-      this.customObj,
-      required this.scrollController})
-      : super(key: key);
+  CustomPages({
+    Key? key,
+    this.customList,
+    this.customObj,
+    required this.scrollController,
+  }) : super(key: key);
 
   @override
   _CustomPagesState createState() => _CustomPagesState();
@@ -42,7 +42,7 @@ class _CustomPagesState extends State<CustomPages> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
   var pdfViewerKey = UniqueKey();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   @override
   void initState() {
@@ -62,52 +62,14 @@ class _CustomPagesState extends State<CustomPages> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  Widget _body(String key) => RefreshIndicator(
-        key: refreshKey,
-        child: OfflineBuilder(
-            connectivityBuilder: (
-              BuildContext context,
-              ConnectivityResult connectivity,
-              Widget child,
-            ) {
-              final bool connected = connectivity != ConnectivityResult.none;
-
-              if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
-                }
-              } else if (!connected) {
-                iserrorstate = true;
-              }
-
-              return
-                  // connected?
-                  Stack(
-                fit: StackFit.expand,
-                //   mainAxisSize: MainAxisSize.max,
-                children: [
-                  buildPage(widget.customList!, widget.customObj!, connected),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<HomeBloc, HomeState>(
-                        bloc: _homeBloc,
-                        listener: (context, state) async {
-                          if (state is BottomNavigationBarSuccess) {
-                            AppTheme.setDynamicTheme(
-                                Globals.appSetting, context);
-                            Globals.appSetting = AppSetting.fromJson(state.obj);
-                            // setState(() {});
-                          }
-                        },
-                        child: EmptyContainer()),
-                  ),
-                ],
-              );
-            },
-            child: Container()),
-        onRefresh: refreshPage,
-      );
+  // Widget _body(String key) =>
+  //     widget.customObj!.sectionTemplate == "Calendar/Events"
+  //         ? bodyView()
+  //         : RefreshIndicator(
+  //             key: refreshKey,
+  //             child: bodyView(),
+  //             onRefresh: refreshPage,
+  //           );
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +81,57 @@ class _CustomPagesState extends State<CustomPages> {
         //     setState(() {});
         //   },
         // ),
-        body: _body('body1'));
+        body: //_body('body1')
+            widget.customObj!.sectionTemplate == "Calendar/Events"
+                ? bodyView()
+                : RefreshIndicator(
+                    key: refreshKey,
+                    child: bodyView(),
+                    onRefresh: refreshPage,
+                  ));
+  }
+
+  Widget bodyView() {
+    return OfflineBuilder(
+        connectivityBuilder: (
+          BuildContext context,
+          ConnectivityResult connectivity,
+          Widget child,
+        ) {
+          final bool connected = connectivity != ConnectivityResult.none;
+
+          if (connected) {
+            if (isErrorState == true) {
+              isErrorState = false;
+            }
+          } else if (!connected) {
+            isErrorState = true;
+          }
+
+          return Stack(
+            fit: StackFit.expand,
+            //   mainAxisSize: MainAxisSize.max,
+            children: [
+              buildPage(widget.customList!, widget.customObj!, connected),
+              Container(
+                height: 0,
+                width: 0,
+                child: BlocListener<HomeBloc, HomeState>(
+                    bloc: _homeBloc,
+                    listener: (context, state) async {
+                      if (state is BottomNavigationBarSuccess) {
+                        AppTheme.setDynamicTheme(Globals.appSetting, context);
+                        Globals.appSetting = AppSetting.fromJson(state.obj);
+                        // setState(() {});
+                      }
+                    },
+                    child: EmptyContainer()),
+              ),
+            ],
+          );
+          // connected?
+        },
+        child: Container());
   }
 
   Widget buildPage(List<SharedList> list, CustomSetting obj, connected) {
@@ -148,7 +160,7 @@ class _CustomPagesState extends State<CustomPages> {
                   : InAppUrlLauncer(
                       title: obj.sectionTitleC!, // "no scaffold",
                       url: obj.appUrlC,
-                      isbuttomsheet: true,
+                      isBottomSheet: true,
                       language: Globals.selectedLanguage,
                       isCustomMainPageWebView: true,
                     )
@@ -170,7 +182,7 @@ class _CustomPagesState extends State<CustomPages> {
       return obj.rtfHTMLC != null && obj.rtfHTMLC != ""
           ? AboutusPage(
               htmlText: obj.rtfHTMLC.toString(),
-              isbuttomsheet: true,
+              isBottomSheet: true,
               ishtml: true,
               isAppBar: false,
               language: Globals.selectedLanguage,
@@ -189,7 +201,7 @@ class _CustomPagesState extends State<CustomPages> {
               title: obj.sectionTitleC!,
               url: obj.rtfHTMLC,
               // obj.appUrlC,
-              isbuttomsheet: false,
+              isBottomSheet: false,
               language: Globals.selectedLanguage,
             )
           : NoDataFoundErrorWidget(
@@ -206,7 +218,7 @@ class _CustomPagesState extends State<CustomPages> {
                 tittle: '',
                 isHomePage: true,
                 url: obj.pdfURL,
-                isbuttomsheet: true,
+                isBottomSheet: true,
                 language: Globals.selectedLanguage,
               ),
             )
@@ -218,7 +230,7 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.sectionTemplate == "Contact") {
       return ContactPage(
         obj: Globals.appSetting,
-        isbuttomsheet: true,
+        isBottomSheet: true,
         isAppBar: false,
         language: Globals.selectedLanguage ?? "English",
         appBarTitle: '',
@@ -226,9 +238,11 @@ class _CustomPagesState extends State<CustomPages> {
     } else if (obj.sectionTemplate == "Calendar/Events") {
       return obj.calendarId != null && obj.calendarId != ""
           ? EventPage(
+              customObj: widget.customObj,
+              isMainPage: true,
               appBarTitle: '',
               isAppBar: false,
-              isbuttomsheet: true,
+              isBottomSheet: true,
               language: Globals.selectedLanguage,
               calendarId: obj.calendarId.toString(),
             )
@@ -253,7 +267,7 @@ class _CustomPagesState extends State<CustomPages> {
         // staffDirectoryCategoryId: obj.id,
         appBarTitle: obj.sectionTitleC!,
         obj: widget.customObj,
-        isbuttomsheet: true,
+        isBottomSheet: true,
         isAbout: false,
         isSubmenu: null, //To omit the appbar
         language: Globals.selectedLanguage,

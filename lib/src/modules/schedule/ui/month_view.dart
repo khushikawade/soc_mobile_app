@@ -6,19 +6,12 @@ import 'package:Soc/src/modules/schedule/common_widget/common_header.dart';
 import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';
 import 'package:Soc/src/modules/schedule/ui/schedule_event_builder.dart';
-
-import 'package:Soc/src/modules/schedule/ui/week_view.dart';
-import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:calendar_view/calendar_view.dart';
-
 // import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-
-import '../modal/event.dart';
 import '../modal/schedule_modal.dart';
 
 class MonthViewPage extends StatefulWidget {
@@ -56,6 +49,10 @@ class _MonthViewPageState extends State<MonthViewPage>
 
     _callEventBuilder(_date);
     WidgetsBinding.instance.addObserver(this);
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("month_view_calendar");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'month_view_calendar', screenClass: 'MonthViewPage');
   }
 
   @override

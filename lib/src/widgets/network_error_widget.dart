@@ -50,7 +50,7 @@ class NoInternetErrorWidget extends StatelessWidget {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          HorzitalSpacerWidget(16),
+                          HorizontalSpacerWidget(16),
                           connected
                               ? Container(
                                   height: 0,

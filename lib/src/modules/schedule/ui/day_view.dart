@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/schedule/common_widget/common_header.dart';
 import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/schedule_event_builder.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,6 +49,10 @@ class _DayViewPageState extends State<DayViewPage>
           blackoutDates: widget.blackoutDateList);
     }
     WidgetsBinding.instance.addObserver(this);
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("day_view_calendar");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'day_view_calendar', screenClass: 'DayViewPage');
   }
 
   @override

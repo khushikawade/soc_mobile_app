@@ -25,27 +25,27 @@ class ResourcesErrorLoading extends ResourcesState {
   List<Object> get props => [err];
 }
 
-class ResourcesDataSucess extends ResourcesState {
+class ResourcesDataSuccess extends ResourcesState {
   final List<SharedList>? obj;
-  ResourcesDataSucess({
+  ResourcesDataSuccess({
     this.obj,
   });
-  ResourcesDataSucess copyWith({
+  ResourcesDataSuccess copyWith({
     final obj,
   }) {
-    return ResourcesDataSucess(obj: obj ?? this.obj);
+    return ResourcesDataSuccess(obj: obj ?? this.obj);
   }
 
   @override
   List<Object> get props => [];
 }
 
-class ResourcesSubListSucess extends ResourcesState {
+class ResourcesSubListSuccess extends ResourcesState {
   final List<SharedList>? obj;
   final List<SharedList>? subFolder;
-  ResourcesSubListSucess({this.obj, this.subFolder});
-  ResourcesSubListSucess copyWith({final obj, final subFolder}) {
-    return ResourcesSubListSucess(
+  ResourcesSubListSuccess({this.obj, this.subFolder});
+  ResourcesSubListSuccess copyWith({final obj, final subFolder}) {
+    return ResourcesSubListSuccess(
         obj: obj ?? this.obj, subFolder: subFolder ?? this.subFolder);
   }
 

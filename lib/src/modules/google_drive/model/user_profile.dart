@@ -31,7 +31,7 @@ class UserGoogleProfile {
     }
   }
 
-  static Future<void> updateUserProfile(_userInformation) async {
+  static Future<void> updateUserProfile(UserInformation _userInformation) async {
     await clearUserProfile();
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);

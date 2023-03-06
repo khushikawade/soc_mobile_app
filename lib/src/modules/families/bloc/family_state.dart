@@ -25,47 +25,47 @@ class ErrorLoading extends FamilyState {
   List<Object> get props => [err];
 }
 
-class FamiliesDataSucess extends FamilyState {
+class FamiliesDataSuccess extends FamilyState {
   final List<SharedList>? obj;
-  FamiliesDataSucess({
+  FamiliesDataSuccess({
     this.obj,
   });
-  FamiliesDataSucess copyWith({
+  FamiliesDataSuccess copyWith({
     obj,
   }) {
-    return FamiliesDataSucess(obj: obj ?? this.obj);
+    return FamiliesDataSuccess(obj: obj ?? this.obj);
   }
 
   @override
   List<Object> get props => [];
 }
 
-class FamiliesSublistSucess extends FamilyState {
+class FamiliesSublistSuccess extends FamilyState {
   final List<SharedList>? obj;
 
-  FamiliesSublistSucess({
+  FamiliesSublistSuccess({
     this.obj,
   });
 
-  FamiliesSublistSucess copyWith({
+  FamiliesSublistSuccess copyWith({
     final obj,
   }) {
-    return FamiliesSublistSucess(obj: obj ?? this.obj);
+    return FamiliesSublistSuccess(obj: obj ?? this.obj);
   }
 
   @override
   List<Object> get props => [];
 }
 
-class SDDataSucess extends FamilyState {
-  final List<SDlist>? obj;
-  SDDataSucess({
-    this.obj,
+class SDDataSuccess extends FamilyState {
+  final Map<String, List<SDlist>> obj;
+  SDDataSuccess({
+    required this.obj,
   });
-  SDDataSucess copyWith({
+  SDDataSuccess copyWith({
     final obj,
   }) {
-    return SDDataSucess(obj: obj ?? this.obj);
+    return SDDataSuccess(obj: obj ?? this.obj);
   }
 
   @override

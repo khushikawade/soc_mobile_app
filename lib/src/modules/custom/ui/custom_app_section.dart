@@ -30,7 +30,7 @@ class CustomAppSection extends StatefulWidget {
 }
 
 class _CustomAppSectionState extends State<CustomAppSection> {
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   CustomBloc _bloc = CustomBloc();
   HomeBloc _homeBloc = HomeBloc();
@@ -59,7 +59,12 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBarWidget(
+      appBar:
+
+          // (widget.customObj!.sectionTemplate == "Calendar/Events")
+          //     ? null
+          //     :
+          AppBarWidget(
         onTap: () {
           Utility.scrollToTop(scrollController: _scrollController);
         },
@@ -69,7 +74,8 @@ class _CustomAppSectionState extends State<CustomAppSection> {
         },
       ),
       body: widget.customObj.customBannerImageC != null &&
-              widget.customObj.customBannerImageC != ''
+              widget.customObj.customBannerImageC != '' &&
+              (widget.customObj!.sectionTemplate != "Calendar/Events")
           ? NestedScrollView(
               controller: _scrollController,
               headerSliverBuilder:
@@ -83,9 +89,13 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                           : Colors.transparent)
                 ];
               },
-              body: _body('body2'),
+              body: _body(
+                'body2',
+              ),
             )
-          : _body('body1'),
+          : _body(
+              'body1',
+            ),
     );
   }
 
@@ -100,12 +110,12 @@ class _CustomAppSectionState extends State<CustomAppSection> {
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
-                  if (iserrorstate == true) {
+                  if (isErrorState == true) {
                     _bloc.add(CustomEvents(id: widget.customObj.id));
-                    iserrorstate = false;
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
 
                 return
@@ -120,7 +130,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                           if (state is CustomInitial ||
                               state is CustomLoading) {
                             return Center(child: CircularProgressIndicator());
-                          } else if (state is CustomDataSucess) {
+                          } else if (state is CustomDataSuccess) {
                             return Container(
                               height: MediaQuery.of(context).size.height,
                               child: CustomPages(

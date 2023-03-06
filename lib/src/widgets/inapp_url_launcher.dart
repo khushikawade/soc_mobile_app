@@ -16,7 +16,7 @@
 //   final String url;
 //   final bool? hideAppbar; //To hide the appbar
 //   // final bool? hideShare; //To hide share icon only from appbar
-//   final bool isbuttomsheet;
+//   final bool isBottomSheet;
 //   final String? language;
 //   final bool? isCustomMainPageWebView;
 //   // final callBackFunction;
@@ -27,7 +27,7 @@
 //     Key? key,
 //     required this.title,
 //     required this.url,
-//     required this.isbuttomsheet,
+//     required this.isBottomSheet,
 //     required this.language,
 //     this.hideAppbar,
 //     // this.hideShare,
@@ -40,7 +40,7 @@
 // }
 
 // class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
-//   bool? iserrorstate = false;
+//   bool? isErrorState = false;
 //   bool isLoading = true;
 //   final Completer<WebViewController> _controller =
 //       Completer<WebViewController>();
@@ -63,8 +63,8 @@
 //                     isSearch: false,
 //                     isShare: true, //widget.hideShare != true ? true : false,
 //                     appBarTitle: widget.title,
-//                     sharedpopBodytext: widget.url.toString(),
-//                     sharedpopUpheaderText: "Please checkout this link",
+//                     sharedPopBodyText: widget.url.toString(),
+//                     sharedPopUpHeaderText: "Please checkout this link",
 //                     language: Globals.selectedLanguage,
 //                   )
 //                 : null,
@@ -81,11 +81,11 @@
 //           final bool connected = connectivity != ConnectivityResult.none;
 
 //           if (connected) {
-//             if (iserrorstate == true) {
-//               iserrorstate = false;
+//             if (isErrorState == true) {
+//               isErrorState = false;
 //             }
 //           } else if (!connected) {
-//             iserrorstate = true;
+//             isErrorState = true;
 //           }
 
 //           return connected
@@ -173,7 +173,7 @@ class InAppUrlLauncer extends StatefulWidget {
   final String url;
   final bool? hideAppbar; //To hide the appbar
   // final bool? hideShare; //To hide share icon only from appbar
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final String? language;
   final bool? isCustomMainPageWebView;
   // final callBackFunction;
@@ -184,7 +184,7 @@ class InAppUrlLauncer extends StatefulWidget {
     Key? key,
     required this.title,
     required this.url,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.language,
     this.hideAppbar,
     // this.hideShare,
@@ -197,7 +197,7 @@ class InAppUrlLauncer extends StatefulWidget {
 }
 
 class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   bool isLoading = true;
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
@@ -220,8 +220,8 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                     isSearch: false,
                     isShare: true, //widget.hideShare != true ? true : false,
                     appBarTitle: widget.title,
-                    sharedpopBodytext: widget.url.toString(),
-                    sharedpopUpheaderText: "Please checkout this link",
+                    sharedPopBodyText: widget.url.toString(),
+                    sharedPopUpHeaderText: "Please checkout this link",
                     language: Globals.selectedLanguage,
                   )
                 : null,
@@ -348,11 +348,11 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
           final bool connected = connectivity != ConnectivityResult.none;
 
           if (connected) {
-            if (iserrorstate == true) {
-              iserrorstate = false;
+            if (isErrorState == true) {
+              isErrorState = false;
             }
           } else if (!connected) {
-            iserrorstate = true;
+            isErrorState = true;
           }
 
           return connected

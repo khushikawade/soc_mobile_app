@@ -13,20 +13,11 @@ class SpinningIconButton extends AnimatedWidget {
       begin: 1,
       end: 0,
     );
-    // final Animation<double> _animation = CurvedAnimation(
-    //   parent: controller!,
-
-    //   //reverseCurve: Curve(),
-
-    //   // Use whatever curve you would like, for more details refer to the Curves class
-    //   curve: Curves.linear,
-    // );
 
     return RotationTransition(
       alignment: Alignment.center,
       turns: turnsTween.animate(controller!), // _animation,
 
-      // filterQuality: FilterQuality.medium,
       child: Icon(iconData, size: 22, color: Theme.of(context).backgroundColor),
     );
   }

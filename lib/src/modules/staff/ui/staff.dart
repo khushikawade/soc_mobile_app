@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
-import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/startup.dart';
@@ -51,7 +51,7 @@ class _StaffPageState extends State<StaffPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   StaffBloc _bloc = StaffBloc();
   final HomeBloc _homeBloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   OcrBloc ocrBloc = new OcrBloc();
   bool? authSuccess = false;
   dynamic userData;
@@ -72,6 +72,9 @@ class _StaffPageState extends State<StaffPage> {
     if (widget.isFromOcr) {
       _homeBloc.add(FetchStandardNavigationBar());
     }
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("staff");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'staff', screenClass: 'StaffPage');
     // _scrollController.addListener(_scrollListener);
     //  globalKey.currentState!.innerController.addListener(_scrollListener);
   }
@@ -119,12 +122,12 @@ class _StaffPageState extends State<StaffPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
-                  iserrorstate = false;
+                if (isErrorState == true) {
+                  isErrorState = false;
                   _bloc.add(StaffPageEvent());
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               return
@@ -147,7 +150,7 @@ class _StaffPageState extends State<StaffPage> {
                                           .colorScheme
                                           .primaryVariant,
                                     ));
-                                  } else if (state is StaffDataSucess) {
+                                  } else if (state is StaffDataSuccess) {
                                     return widget.customObj != null &&
                                             widget.customObj!.sectionTemplate ==
                                                 "Grid Menu"
@@ -266,6 +269,22 @@ class _StaffPageState extends State<StaffPage> {
                   isExtended: isScrolling.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
+                    await Utility.clearStudentInfo(tableName: 'student_info');
+                    await Utility.clearStudentInfo(
+                        tableName: 'history_student_info');
+
+                    // else if (selectedField == 'Multiple choice Assignment') {
+                    //   await Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => MultipleChoiceSection()),
+                    //   );
+                    // } else {
+                    //   navigateToCamera();
+                    // }
+                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "assignment");
+
+                    FirebaseAnalyticsService.logLogin();
                     // pushNewScreen(
                     //   context,
                     //   screen: StartupPage(
@@ -276,7 +295,7 @@ class _StaffPageState extends State<StaffPage> {
                     // );
                     // return;
                     // Globals.localUserInfo.clear(); // COMMENT
-                    Globals.lastindex = Globals.controller!.index;
+                    Globals.lastIndex = Globals.controller!.index;
 
                     List<UserInformation> _profileData =
                         await UserGoogleProfile.getUserProfile();
@@ -286,7 +305,7 @@ class _StaffPageState extends State<StaffPage> {
                       await GoogleLogin.launchURL('Google Authentication',
                           context, _scaffoldKey, true, '');
                     } else {
-                      // List<UserInformation> _userprofilelocalData =
+                      // List<UserInformation> _userProfileLocalData =
                       //     await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
@@ -311,6 +330,7 @@ class _StaffPageState extends State<StaffPage> {
                         context,
                         screen: StartupPage(
                           isOcrSection: true, //since always opens OCR
+                          isMultipleChoice: false,
                         ),
                         withNavBar: false,
                       );
@@ -353,12 +373,12 @@ class _StaffPageState extends State<StaffPage> {
   }
 
   _getLocalDb() async {
-    LocalDatabase<CustomRubicModal> _localDb = LocalDatabase('custom_rubic');
+    LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
 
-    List<CustomRubicModal> _localData = await _localDb.getData();
+    List<CustomRubricModal> _localData = await _localDb.getData();
 
     if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubicModal e) async {
+      RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
         await _localDb.addData(e);
       });
       await _localDb.close();

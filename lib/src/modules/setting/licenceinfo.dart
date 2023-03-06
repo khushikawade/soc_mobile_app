@@ -34,7 +34,7 @@ class _LicenceinfoState extends State<Licenceinfo> {
   void initState() {
     super.initState();
     _list = obj.ossLicenses.values.toList();
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override
@@ -94,8 +94,8 @@ class _LicenceinfoState extends State<Licenceinfo> {
           isSearch: false,
           isShare: false,
           appBarTitle: "Open Source Licenses",
-          sharedpopUpheaderText: '',
-          sharedpopBodytext: '',
+          sharedPopUpHeaderText: '',
+          sharedPopBodyText: '',
           language: Globals.selectedLanguage,
         ),
         body: SafeArea(

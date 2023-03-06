@@ -27,13 +27,18 @@ class SDlistAdapter extends TypeAdapter<SDlist> {
       phoneC: fields[7] as String?,
       status: fields[8] as String?,
       darkModeIconC: fields[9] as String?,
+      groupingC: fields[10] as String?,
+      groupSortOrder: fields[11] as dynamic,
+      groupImageURL: fields[12] as String?,
+      isFolderC: fields[13] as String?,
+      appFolderC: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, SDlist obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.designation)
       ..writeByte(1)
@@ -53,7 +58,17 @@ class SDlistAdapter extends TypeAdapter<SDlist> {
       ..writeByte(8)
       ..write(obj.status)
       ..writeByte(9)
-      ..write(obj.darkModeIconC);
+      ..write(obj.darkModeIconC)
+      ..writeByte(10)
+      ..write(obj.groupingC)
+      ..writeByte(11)
+      ..write(obj.groupSortOrder)
+      ..writeByte(12)
+      ..write(obj.groupImageURL)
+      ..writeByte(13)
+      ..write(obj.isFolderC)
+      ..writeByte(14)
+      ..write(obj.appFolderC);
   }
 
   @override

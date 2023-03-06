@@ -28,7 +28,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc homebloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
   Widget build(BuildContext context) {
     return SafeArea(

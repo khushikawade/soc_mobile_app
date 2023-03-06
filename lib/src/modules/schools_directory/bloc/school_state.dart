@@ -25,15 +25,15 @@ class SchoolDirectoryErrorLoading extends SchoolDirectoryState {
   List<Object> get props => [err];
 }
 
-class SchoolDirectoryDataSucess extends SchoolDirectoryState {
+class SchoolDirectoryDataSuccess extends SchoolDirectoryState {
   final List<SchoolDirectoryList>? obj;
-  SchoolDirectoryDataSucess({
+  SchoolDirectoryDataSuccess({
     this.obj,
   });
-  SchoolDirectoryDataSucess copyWith({
+  SchoolDirectoryDataSuccess copyWith({
     final obj,
   }) {
-    return SchoolDirectoryDataSucess(obj: obj ?? this.obj);
+    return SchoolDirectoryDataSuccess(obj: obj ?? this.obj);
   }
 
   @override

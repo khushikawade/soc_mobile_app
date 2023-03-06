@@ -1,19 +1,19 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
-import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
 import 'package:Soc/src/modules/ocr/modal/custom_content_modal.dart';
+import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import '../../../overrides.dart';
 import '../../../services/local_database/hive_db_services.dart';
 import '../../../translator/translation_widget.dart';
 
 class CustomIntroWidget extends StatefulWidget {
-  const CustomIntroWidget({Key? key}) : super(key: key);
+  final bool? isMcqSheet;
+  const CustomIntroWidget({Key? key, this.isMcqSheet}) : super(key: key);
 
   @override
   State<CustomIntroWidget> createState() => _CustomIntroWidgetState();
@@ -51,7 +51,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                     _currentIndex = index;
                   });
                 }),
-            items: CustomContentModal.onboardingPagesList.map((i) {
+            items: GradedIntroContentModal.onboardingPagesList.map((i) {
               return Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.symmetric(horizontal: 5.0),
@@ -127,8 +127,9 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                   width: MediaQuery.of(context).size.width / 2.1,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: map<Widget>(
-                        CustomContentModal.onboardingPagesList, (index, url) {
+                    children:
+                        map<Widget>(GradedIntroContentModal.onboardingPagesList,
+                            (index, url) {
                       return Container(
                         width: 10.0,
                         height: 10.0,
@@ -145,7 +146,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                   ),
                 ),
                 _currentIndex !=
-                        CustomContentModal.onboardingPagesList.length - 1
+                        GradedIntroContentModal.onboardingPagesList.length - 1
                     ? _button(action: 'Skip')
                     : _button(action: 'Start With Graded+'),
               ],
@@ -173,16 +174,19 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                 await _hiveDbServices.addSingleData(
                     'new_user', 'new_user', true);
                 Navigator.pushReplacement<void, void>(
-                  context,
-                  MaterialPageRoute<void>(
-                      builder: (BuildContext context) =>
-                          Overrides.STANDALONE_GRADED_APP == true
-                              ? GradedLandingPage()
-                              : OpticalCharacterRecognition()),
-                );
+                    context,
+                    MaterialPageRoute<void>(
+                        builder: (BuildContext context) =>
+                            Overrides.STANDALONE_GRADED_APP == true
+                                ? GradedLandingPage(
+                                    isMultiplechoice: widget.isMcqSheet,
+                                  )
+                                : SelectAssessmentType()));
               } else {
+                // await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                //     "walkthrough_skip");
                 carouselController.animateToPage(
-                    CustomContentModal.onboardingPagesList.length - 1);
+                    GradedIntroContentModal.onboardingPagesList.length - 1);
               }
             },
             child: Padding(

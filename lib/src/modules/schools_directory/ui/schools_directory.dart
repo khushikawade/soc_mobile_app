@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/schools_directory/bloc/school_bloc.dart';
 import 'package:Soc/src/modules/shared/ui/common_school_directory_widget.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_bar.dart';
@@ -40,7 +41,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
   // static const double _kLabelSpacing = 16.0;
   SchoolDirectoryBloc bloc = new SchoolDirectoryBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-  bool iserrorstate = false;
+  bool isErrorState = false;
   final HomeBloc _homeBloc = new HomeBloc();
   final ScrollController _scrollController = ScrollController();
 
@@ -50,8 +51,13 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     //Utility.setLocked();
     super.initState();
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStandardPage != false ? null : widget.obj.id,
+        customerRecordId: widget.isStandardPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("school_directory_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'school_directory_page',
+        screenClass: 'SchoolDirectoryPage');
   }
 
   @override
@@ -71,16 +77,16 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
               ) {
                 final bool connected = connectivity != ConnectivityResult.none;
                 if (connected) {
-                  if (iserrorstate == true) {
+                  if (isErrorState == true) {
                     bloc.add(SchoolDirectoryListEvent(
-                        customRecordId: widget.isStandardPage != false
+                        customerRecordId: widget.isStandardPage != false
                             ? null
                             : widget.obj.id,
                         isSubMenu: widget.isSubmenu));
-                    iserrorstate = false;
+                    isErrorState = false;
                   }
                 } else if (!connected) {
-                  iserrorstate = true;
+                  isErrorState = true;
                 }
                 return Stack(
                   children: [
@@ -97,7 +103,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                                       .colorScheme
                                       .primaryVariant,
                                 ));
-                          } else if (state is SchoolDirectoryDataSucess) {
+                          } else if (state is SchoolDirectoryDataSuccess) {
                             return CommonSchoolDirectoryWidget(
                               scrollController: _scrollController,
                               data: state.obj!,
@@ -150,8 +156,8 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                 ? CustomAppBarWidget(
                     isSearch: true,
                     isShare: false,
-                    sharedpopBodytext: '',
-                    sharedpopUpheaderText: '',
+                    sharedPopBodyText: '',
+                    sharedPopUpHeaderText: '',
                     appBarTitle: widget.title ?? '',
                     language: Globals.selectedLanguage,
                   )
@@ -182,7 +188,7 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
     bloc.add(SchoolDirectoryListEvent(
-        customRecordId: widget.isStandardPage != false ? null : widget.obj.id,
+        customerRecordId: widget.isStandardPage != false ? null : widget.obj.id,
         isSubMenu: widget.isSubmenu));
     _homeBloc.add(FetchStandardNavigationBar());
   }
