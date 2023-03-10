@@ -838,6 +838,21 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
         if (text == null || text.isEmpty) {
           return msg;
         }
+        //  else {
+        //   if (whichContoller == 2) {
+        //     if (Overrides.STANDALONE_GRADED_APP == true &&
+        //         !regex.hasMatch(text)) {
+        //       return msg;
+        //     } else if (Overrides.STANDALONE_GRADED_APP != true &&
+        //         text.length < 3) {
+        //       return msg;
+        //     } else {
+        //       return null;
+        //     }
+        //   } else if (text.length != 1 && whichContoller == 3) {
+        //     return msg;
+        //   }
+        // }
 
         return null;
       },

@@ -321,6 +321,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
 
                 widget.googleDriveBloc.add(
                     AddAndUpdateAssessmentImageToSlidesOnDrive(
+                        studentInfoDb: _studentAssessmentInfoDb,
                         slidePresentationId:
                             Globals.googleSlidePresentationId));
               }

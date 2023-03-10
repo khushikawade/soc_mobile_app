@@ -50,11 +50,9 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
   final OcrBloc _ocrBlocLogs = new OcrBloc();
   DateTime currentDateTime = DateTime.now();
 
-
- @override
+  @override
   void dispose() {
     super.dispose();
-  
   }
 
   @override
@@ -150,10 +148,9 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                 teacherId: Globals.teacherId,
                                 activityId: '2',
                                 accountId: Globals.appSetting.schoolNameC,
-                                accountType:
-                                    Globals.isPremiumUser == true
-                                        ? "Premium"
-                                        : "Free",
+                                accountType: Globals.isPremiumUser == true
+                                    ? "Premium"
+                                    : "Free",
                                 dateTime: currentDateTime.toString(),
                                 description: 'Logout',
                                 operationResult: 'Success'));

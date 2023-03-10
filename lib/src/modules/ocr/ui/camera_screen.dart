@@ -135,6 +135,7 @@ class _CameraScreenState extends State<CameraScreen>
       LocalDatabase('history_student_info');
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
+
   @override
   void initState() {
     print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj);
@@ -304,12 +305,13 @@ class _CameraScreenState extends State<CameraScreen>
                                 null);
                           }
                         }
-                        if (state is AddBlankSlidesOnDriveSuccess) {
-                          _driveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
-                              slidePresentationId:
-                                  Globals.googleSlidePresentationId));
-                        }
-                        if (state is GoogleAssessmentImagesOnSlidesUpdated) {
+                        // if (state is AddBlankSlidesOnDriveSuccess) {
+                        //   // _driveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
+                        //   //     slidePresentationId:
+                        //   //         Globals.googleSlidePresentationId));
+                        // }
+                        if (state
+                            is AddAndUpdateStudentAssessmentDetailsToSlideSuccess) {
                           List<StudentAssessmentInfo> studentAssessmentInfoDb =
                               await Utility.getStudentInfoList(
                                   tableName:
@@ -451,6 +453,8 @@ class _CameraScreenState extends State<CameraScreen>
                             if (widget.isFromHistoryAssessmentScanMore ==
                                 true) {
                               _driveBloc.add(UpdateGoogleSlideOnScanMore(
+                                  studentInfoDb:
+                                      LocalDatabase('history_student_info'),
                                   isMcqSheet: widget.isMcqSheet ?? false,
                                   assessmentName: widget.assessmentName ?? '',
                                   isFromHistoryAssessment:
@@ -462,63 +466,20 @@ class _CameraScreenState extends State<CameraScreen>
                             } else if (!widget
                                     .isFromHistoryAssessmentScanMore &&
                                 widget.isScanMore == true) {
-                              _driveBloc.add(AddBlankSlidesOnDrive(
-                                  isScanMore: widget.isScanMore, //true,
-                                  slidePresentationId:
-                                      Globals.googleSlidePresentationId));
-                            }
-
-                            //     {
-
-                            //   StudentAssessmentInfo element = studentAssessmentInfoDb[0];
-
-                            //   //Updating remaining common details of assessment
-                            //   element.subject = studentAssessmentInfoDb.first.subject;
-                            //   element.learningStandard =
-                            //       studentAssessmentInfoDb.first.learningStandard == null
-                            //           ? "NA"
-                            //           : studentAssessmentInfoDb.first.learningStandard;
-                            //   element.subLearningStandard =
-                            //       studentAssessmentInfoDb.first.subLearningStandard ==
-                            //               null
-                            //           ? "NA"
-                            //           : studentAssessmentInfoDb.first.subLearningStandard;
-                            //   element.scoringRubric = Globals.scoringRubric;
-                            //   element.customRubricImage =
-                            //       studentAssessmentInfoDb.first.customRubricImage ?? "NA";
-                            //   element.grade = studentAssessmentInfoDb.first.grade;
-                            //   element.className = Globals.assessmentName!
-                            //       .split("_")[1]; //widget.selectedClass;
-                            //   element.questionImgUrl =
-                            //       studentAssessmentInfoDb.first.questionImgUrl;
-
-                            //   await _studentAssessmentInfoDb.putAt(0, element);
-
-                            //   _driveBloc.add(UpdateDocOnDrive(
-                            //       questionImage:
-                            //           widget.questionImageLink ?? 'NA',
-                            //       createdAsPremium: widget.createdAsPremium,
-                            //       assessmentName: Globals.assessmentName!,
-                            //       fileId: Globals.googleExcelSheetId,
-                            //       isLoading: true,
-                            //       studentData: await Utility.getStudentInfoList(
-                            //           tableName: 'student_info')));
-                            // }
-
-                            // else {
-                            //   _driveBloc.add(UpdateDocOnDrive(
-                            //       isMcqSheet: widget.isMcqSheet,
-                            //       questionImage:
-                            //           widget.questionImageLink ?? 'NA',
-                            //       createdAsPremium: widget.createdAsPremium,
-                            //       assessmentName: Globals.assessmentName!,
-                            //       fileId: Globals.googleExcelSheetId,
-                            //       isLoading: true,
-                            //       studentData: await Utility.getStudentInfoList(
-                            //           tableName: 'student_info')));
-                            // }
-                            else {
+                              _driveBloc.add(
+                                  AddAndUpdateAssessmentImageToSlidesOnDrive(
+                                      isScanMore: true,
+                                      slidePresentationId:
+                                          Globals.googleSlidePresentationId,
+                                      studentInfoDb:
+                                          LocalDatabase('student_info')));
+                              // _driveBloc.add(AddBlankSlidesOnDrive(
+                              //     isScanMore: widget.isScanMore, //true,
+                              //     slidePresentationId:
+                              //         Globals.googleSlidePresentationId));
+                            } else {
                               if (Overrides.STANDALONE_GRADED_APP == true) {
+                                //Prepare suggestion chips for create screen //course list
                                 List<String> suggestionList =
                                     await getSuggestionChips();
 
@@ -974,23 +935,9 @@ class _CameraScreenState extends State<CameraScreen>
         : null;
   }
 
-  // void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
-  //   if (controller == null) {
-  //     return;
-  //   }
-
-  //   final offset = Offset(
-  //     details.localPosition.dx / constraints.maxWidth,
-  //     details.localPosition.dy / constraints.maxHeight,
-  //   );
-
-  //   controller!.value.setExposurePoint(offset);
-  //   controller!.value.setFocusPoint(offset);
-  // }
-
   Future<List<StudentAssessmentInfo>> _getStudentInfoList() async {
-    LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
-        LocalDatabase('student_info');
+    // LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
+    //     LocalDatabase('student_info');
     return await _studentAssessmentInfoDb.getData();
   }
 

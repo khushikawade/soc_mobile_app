@@ -299,6 +299,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     Globals.googleSlidePresentationLink = state.shareLink;
                     _googleDriveBloc.add(
                         AddAndUpdateAssessmentImageToSlidesOnDrive(
+                            studentInfoDb: _studentAssessmentInfoDb,
                             slidePresentationId:
                                 Globals.googleSlidePresentationId));
                   }

@@ -319,14 +319,13 @@ class _StaffPageState extends State<StaffPage> {
                           teacherId: Globals.teacherId,
                           activityId: '2',
                           accountId: Globals.appSetting.schoolNameC,
-                          accountType: Globals.isPremiumUser  == true
+                          accountType: Globals.isPremiumUser == true
                               ? "Premium"
                               : "Free",
                           dateTime: currentDateTime.toString(),
                           description: 'Graded+ Accessed(Login)',
                           operationResult: 'Success'));
                       //    await _getLocalDb();
-
                       pushNewScreen(
                         context,
                         screen: StartupPage(
