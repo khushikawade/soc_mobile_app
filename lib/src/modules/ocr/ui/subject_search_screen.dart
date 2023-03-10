@@ -251,13 +251,13 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                   GradedGlobals.loadingMessage = 'Preparing Google Slide';
                 });
 
-                List<StudentAssessmentInfo> getStudentInfoList =
-                    await Utility.getStudentInfoList(tableName: 'student_info');
+                // List<StudentAssessmentInfo> getStudentInfoList =
+                //     await Utility.getStudentInfoList(tableName: 'student_info');
 
                 //Updating very first slide with the assignment details
                 widget.googleDriveBloc.add(UpdateAssignmentDetailsOnSlide(
                     slidePresentationId: Globals.googleSlidePresentationId,
-                    studentAssessmentInfoObj: getStudentInfoList[0]));
+                    studentAssessmentInfoDB: _studentAssessmentInfoDb));
 
                 // Globals.currentAssessmentId = '';
                 // _ocrBloc.add(SaveAssessmentToDashboardAndGetId(

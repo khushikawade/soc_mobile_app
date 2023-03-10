@@ -162,7 +162,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         List<StudentAssessmentInfo> assessmentDataList =
             List.unmodifiable(await event.studentInfoDb.getData());
-
         for (var i = 0; i < assessmentDataList.length; i++) {
           if ((assessmentDataList[i].assessmentImage == null ||
                   assessmentDataList[i].assessmentImage!.isEmpty) &&
@@ -204,6 +203,22 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             refreshToken: _userProfileLocalData[0].refreshToken,
           );
 
+          //
+          // await createBlankSlidesInGooglePresentation(
+          //     googleSlideId,
+          //     _userProfileLocalData[0].authorizationToken,
+          //     _userProfileLocalData[0].refreshToken,
+          //     isFromHistoryAssessment: false, //event.isFromHistoryAssessment,
+          //     studentRecordList: assessmentData,
+          //     isScanMore: false);
+
+          //
+          // await updateAssessmentImageToSlidesOnDrive(
+          //     googleSlideId,
+          //     _userProfileLocalData[0].authorizationToken,
+          //     _userProfileLocalData[0].refreshToken,
+          //     assessmentData,
+          //     _studentInfoDb);
           //To add one or more blank slides in Google Presentation
 //To update scanned images in the Google Slides
           await addAndUpdateStudentAssessmentDetailsToSlide(
@@ -219,7 +234,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               '12345',
-              assessmentDataList[0],
+              event.studentInfoDb,
+              // assessmentDataList[0],
               event.assessmentName);
 
           //Get the Google Presentation URL
@@ -251,6 +267,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             assessmentDataList[index].isSlideObjUpdated = true;
             await event.studentInfoDb.putAt(index, assessmentDataList[index]);
           }
+          // print(assessmentDataList);
+          // //To create Google Presentation
+          // await createBlankSlidesInGooglePresentation(
+          //     event.slidePresentationId,
+          //     _userProfileLocalData[0].authorizationToken,
+          //     _userProfileLocalData[0].refreshToken,
+          //     studentRecordList: list,
+          //     isFromHistoryAssessment: event.isFromHistoryAssessment,
+          //     isScanMore: true);
 
           //To create Google Presentation
           //To update scanned images in the Google Slides
@@ -732,7 +757,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               savePath);
-
+          print(summaryList);
           if (summaryList != []) {
             bool deleted = await GoogleDriveAccess.deleteFile(File(savePath));
             if (!deleted) {
@@ -978,7 +1003,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             _userProfileLocalData[0].authorizationToken,
             _userProfileLocalData[0].refreshToken,
             '12345',
-            event.studentAssessmentInfoObj,
+            event.studentAssessmentInfoDB,
             Globals.assessmentName ?? '');
 
         if (result == "Done") {
@@ -2512,14 +2537,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String? accessToken,
       String? refreshToken,
       String? slideObjectId,
-      StudentAssessmentInfo studentAssessmentInfoObj,
+      LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDB,
       String assignmentName,
       {int retry = 3}) async {
     try {
       var body = {
         "requests": await _getListOfAssignmentDetails(
             assignmentName: assignmentName,
-            studentAssessmentInfoObj: studentAssessmentInfoObj)
+            studentAssessmentInfoDB: studentAssessmentInfoDB)
       };
 
       Map<String, String> headers = {
@@ -2545,7 +2570,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               slideObjectId,
-              studentAssessmentInfoObj,
+              studentAssessmentInfoDB,
               assignmentName,
               retry: retry - 1);
           return result;
@@ -2559,9 +2584,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<List<Map>> _getListOfAssignmentDetails(
-      {required String? assignmentName,
-      required StudentAssessmentInfo studentAssessmentInfoObj}) async {
+//Updating first slide of presentation
+  Future<List<Map>> _getListOfAssignmentDetails({
+    required String? assignmentName,
+    required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDB,
+  }) async {
+    List<StudentAssessmentInfo> studentAssessmentInfoData =
+        await studentAssessmentInfoDB.getData();
+    StudentAssessmentInfo studentAssessmentInfoObj =
+        studentAssessmentInfoData[0];
+    print(studentAssessmentInfoObj);
     // check if question image is available or not
     bool? isQuestionImgUrlUpdate =
         studentAssessmentInfoObj.questionImgUrl != null &&
@@ -2651,6 +2683,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   String prepareTableCellValue(StudentAssessmentInfo studentAssessmentInfoObj,
       int index, String? assignmentName) {
     try {
+      print(index);
       // detail update on cell in slide table
       Map map = {
         0: assignmentName ?? 'NA',
@@ -2747,6 +2780,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               retry: retry - 1);
           return result;
         }
+        //  else {
+        //   return 'ReAuthentication is required';
+        // }
       }
       return 'ReAuthentication is required';
     } catch (e) {

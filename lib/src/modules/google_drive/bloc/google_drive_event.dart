@@ -216,10 +216,10 @@ class UpdateGoogleSlideOnScanMore extends GoogleDriveEvent {
 
 class UpdateAssignmentDetailsOnSlide extends GoogleDriveEvent {
   final String? slidePresentationId;
-  final StudentAssessmentInfo studentAssessmentInfoObj;
+  LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDB;
   UpdateAssignmentDetailsOnSlide(
       {required this.slidePresentationId,
-      required this.studentAssessmentInfoObj});
+      required this.studentAssessmentInfoDB});
 
   @override
   List<Object> get props => [];

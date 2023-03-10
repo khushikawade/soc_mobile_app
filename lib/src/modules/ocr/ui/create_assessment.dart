@@ -976,7 +976,18 @@ class _CreateAssessmentState extends State<CreateAssessment>
     LocalDatabase<GoogleClassroomCourses> _localDb =
         LocalDatabase(Strings.googleClassroomCoursesList);
 
-    List<GoogleClassroomCourses> _localData = await _localDb.getData();
+/////---------
+//Validating suggestion list comes from camera screen //comparing string of list and return course object
+//Manage here to manage standalone and standard app
+    List<GoogleClassroomCourses> googleClassroomCoursesDB =
+        await _localDb.getData();
+
+    List<GoogleClassroomCourses> _localData = googleClassroomCoursesDB
+        .where((GoogleClassroomCourses classroomCourses) =>
+            widget.classSuggestions.contains(classroomCourses.name))
+        .toList();
+    print(_localData);
+/////--------
 
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: 'student_info');

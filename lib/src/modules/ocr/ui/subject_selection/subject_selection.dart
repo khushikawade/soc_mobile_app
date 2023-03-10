@@ -263,7 +263,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                     //Updating very first slide with the assignment details
                     _googleDriveBloc.add(UpdateAssignmentDetailsOnSlide(
                         slidePresentationId: Globals.googleSlidePresentationId,
-                        studentAssessmentInfoObj: getStudentInfoList[0]));
+                        studentAssessmentInfoDB: _studentAssessmentInfoDb));
                   }
 
                   if (state is ErrorState) {
