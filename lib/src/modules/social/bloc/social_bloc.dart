@@ -145,7 +145,6 @@ class SocialBloc extends Bloc<SocialEvent, SocialState> {
         }
 
         // Syncing to local database
-
         await _localDb.clear();
         newList.forEach((Item e) {
           _localDb.addData(e);

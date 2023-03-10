@@ -165,15 +165,15 @@ class GetAssessmentSearchDetails extends GoogleDriveEvent {
 }
 
 // ignore: must_be_immutable
-class AddBlankSlidesOnDrive extends GoogleDriveEvent {
-  bool? isScanMore;
-  String? slidePresentationId;
-  AddBlankSlidesOnDrive(
-      {required this.slidePresentationId, required this.isScanMore});
+// class AddBlankSlidesOnDrive extends GoogleDriveEvent {
+//   bool? isScanMore;
+//   String? slidePresentationId;
+//   AddBlankSlidesOnDrive(
+//       {required this.slidePresentationId, required this.isScanMore});
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class CreateSlideToDrive extends GoogleDriveEvent {
   final String? fileTitle;
@@ -194,24 +194,25 @@ class UpdateGoogleSlideOnScanMore extends GoogleDriveEvent {
   final String slidePresentationId;
   final String assessmentName;
   final int lastAssessmentLength;
-
+  LocalDatabase<StudentAssessmentInfo> studentInfoDb;
   UpdateGoogleSlideOnScanMore(
       {required this.slidePresentationId,
       required this.lastAssessmentLength,
       required this.isFromHistoryAssessment,
       required this.assessmentName,
-      required this.isMcqSheet});
+      required this.isMcqSheet,
+      required this.studentInfoDb});
   @override
   List<Object> get props => [];
 }
 
-class UpdateAssessmentImageToSlidesOnDrive extends GoogleDriveEvent {
-  final String? slidePresentationId;
-  UpdateAssessmentImageToSlidesOnDrive({required this.slidePresentationId});
+// class UpdateAssessmentImageToSlidesOnDrive extends GoogleDriveEvent {
+//   final String? slidePresentationId;
+//   UpdateAssessmentImageToSlidesOnDrive({required this.slidePresentationId});
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class UpdateAssignmentDetailsOnSlide extends GoogleDriveEvent {
   final String? slidePresentationId;
@@ -224,10 +225,15 @@ class UpdateAssignmentDetailsOnSlide extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
+// ignore: must_be_immutable
 class AddAndUpdateAssessmentImageToSlidesOnDrive extends GoogleDriveEvent {
   final String? slidePresentationId;
+  LocalDatabase<StudentAssessmentInfo> studentInfoDb;
+  final bool? isScanMore;
   AddAndUpdateAssessmentImageToSlidesOnDrive(
-      {required this.slidePresentationId});
+      {required this.slidePresentationId,
+      required this.studentInfoDb,
+      this.isScanMore = false});
 
   @override
   List<Object> get props => [];

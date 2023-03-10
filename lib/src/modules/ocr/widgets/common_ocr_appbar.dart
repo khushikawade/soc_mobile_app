@@ -4,7 +4,8 @@ import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
 import 'package:Soc/src/modules/ocr/ui/profile_page.dart';
 import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
-import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart'
+    as customIntroLayout;
 import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -273,7 +274,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         "walkthrough");
                     var result = await Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) => CustomIntroWidget()),
+                          builder: (context) =>
+                              customIntroLayout.CustomIntroWidget()),
                     );
                     Navigator.pop(context);
                   },

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_selection.dart';

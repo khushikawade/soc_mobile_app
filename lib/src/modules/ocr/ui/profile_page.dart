@@ -52,7 +52,6 @@ class _ProfilePageState extends State<ProfilePage> {
             isBackButton: true,
             isProfilePage: true,
           ),
-
           body: ListView(
             physics: NeverScrollableScrollPhysics(),
             children: [

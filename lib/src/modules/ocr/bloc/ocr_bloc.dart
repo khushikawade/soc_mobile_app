@@ -556,6 +556,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           studentDetails:
               event.studentDetails); // Function will always open ended
     }
+
     if (event is LogUserActivityEvent) {
       //yield OcrLoading();
       try {

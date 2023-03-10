@@ -112,6 +112,9 @@ class _IosAccessibilityGuidePageState extends State<IosAccessibilityGuidePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBarWidget(
+          actionButton: Container(
+            width: 70,
+          ),
           marginLeft: 20,
           showClosebutton: true,
           hideAccessibilityButton: true,

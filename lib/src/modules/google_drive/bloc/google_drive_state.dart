@@ -131,10 +131,10 @@ class ImageToAwsBucketSuccess extends GoogleDriveState {
   CustomRubricModal customRubricModal;
   ImageToAwsBucketSuccess(
       {required this.bucketImageUrl, required this.customRubricModal});
-      
-        @override
-        // TODO: implement props
-        List<Object?> get props => throw UnimplementedError();
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
 }
 
 class GoogleSlideCreated extends GoogleDriveState {
@@ -145,19 +145,19 @@ class GoogleSlideCreated extends GoogleDriveState {
   List<Object> get props => [];
 }
 
-class AddBlankSlidesOnDriveSuccess extends GoogleDriveState {
-  AddBlankSlidesOnDriveSuccess();
+// class AddBlankSlidesOnDriveSuccess extends GoogleDriveState {
+//   AddBlankSlidesOnDriveSuccess();
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
-class GoogleAssessmentImagesOnSlidesUpdated extends GoogleDriveState {
-  GoogleAssessmentImagesOnSlidesUpdated();
+// class GoogleAssessmentImagesOnSlidesUpdated extends GoogleDriveState {
+//   GoogleAssessmentImagesOnSlidesUpdated();
 
-  @override
-  List<Object> get props => [];
-}
+//   @override
+//   List<Object> get props => [];
+// }
 
 class ShowLoadingDialog extends GoogleDriveState {
   @override
@@ -181,8 +181,10 @@ class UpdateAssignmentDetailsOnSlideSuccess extends GoogleDriveState {
   @override
   List<Object> get props => [];
 }
-class AddAndUpdateAssessmentImageToSlidesOnDriveSuccess extends GoogleDriveState {
-  AddAndUpdateAssessmentImageToSlidesOnDriveSuccess();
+
+class AddAndUpdateStudentAssessmentDetailsToSlideSuccess
+    extends GoogleDriveState {
+  AddAndUpdateStudentAssessmentDetailsToSlideSuccess();
 
   @override
   List<Object> get props => [];

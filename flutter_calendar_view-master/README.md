@@ -262,7 +262,7 @@ WeekView(
 );
 ```
 
-Above code will create `WeekView` with only five days, from monday to friday.
+Above code will create `WeekView` with only five days, from Monday to Friday.
 
 ## Main Contributors
 
