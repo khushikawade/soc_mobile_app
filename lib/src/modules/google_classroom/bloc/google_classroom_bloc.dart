@@ -259,11 +259,6 @@ class GoogleClassroomBloc
   Future<List> getAllGoogleClassroomCourses(
       {required String? accessToken, required String? refreshToken}) async {
     try {
-      // Map<String, String> headers = {
-      //   'Content-Type': 'application/json',
-      //   'authorization': 'Bearer $accessToken'
-      // };
-
       final ResponseModel response = await _dbServices.getApiNew(
           // '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/importRoster/$accessToken',

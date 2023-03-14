@@ -52,7 +52,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         AppSetting _appSetting = AppSetting.fromJson(data);
         Globals.isCustomNavbar = false;
 
-        // fatch custom bottom navbar and update to localdata base
+        // fetch custom bottom navbar and update to localData base
         if (_appSetting.isCustomApp!) {
           List<CustomSetting> data1 = await fetchCustomNavigationBar();
           data1.sort((a, b) => a.sortOrderC!.compareTo(b.sortOrderC!));
@@ -305,7 +305,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             'getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=School_App__c'),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200) { 
         final data = response.data['body'][0];
         Globals.appSetting = AppSetting.fromJson(data);
 

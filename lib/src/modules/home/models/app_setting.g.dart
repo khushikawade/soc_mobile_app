@@ -73,13 +73,16 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       enableGraded: fields[53] as String?,
       darkmodeIconColor: fields[54] as String?,
       parentCoordinatorEmailc: fields[55] as String?,
+      calendarId: fields[56] as String?,
+      calendarBannerImage: fields[57] as String?,
+      calendarBannerColor: fields[58] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppSetting obj) {
     writer
-      ..writeByte(56)
+      ..writeByte(59)
       ..writeByte(0)
       ..write(obj.attributes)
       ..writeByte(1)
@@ -191,7 +194,13 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       ..writeByte(54)
       ..write(obj.darkmodeIconColor)
       ..writeByte(55)
-      ..write(obj.parentCoordinatorEmailc);
+      ..write(obj.parentCoordinatorEmailc)
+      ..writeByte(56)
+      ..write(obj.calendarId)
+      ..writeByte(57)
+      ..write(obj.calendarBannerImage)
+      ..writeByte(58)
+      ..write(obj.calendarBannerColor);
   }
 
   @override

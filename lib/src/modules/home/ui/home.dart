@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/about/ui/about.dart';
 import 'package:Soc/src/modules/custom/ui/custom_app_section.dart';
+import 'package:Soc/src/modules/families/ui/event_with_banners.dart';
 import 'package:Soc/src/modules/families/ui/family.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
@@ -53,6 +54,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   var item2;
 
   List<Widget> _screens = [];
+  List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
   String? _versionNumber;
 
   final ValueNotifier<String> languageChanged =
@@ -214,6 +216,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 _screens.add(
                   ResourcesPage(isCustomSection: false),
                 );
+              } else if (element.contains('calendar')) {
+                _screens.add(
+                  EventPage(
+                    isStandardSelection: true,
+                    isMainPage: true,
+                    appBarTitle: '',
+                    isAppBar: true,
+                    isBottomSheet: true,
+                    language: Globals.selectedLanguage,
+                    calendarId: Globals.appSetting.calendarId.toString(),
+                  ),
+                );
               }
             }
           });
@@ -233,10 +247,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         },
       ).toList();
     } else {
-      return Globals.appSetting.bottomNavigationC!
-          .split(";")
-          .map<PersistentBottomNavBarItem>(
+      Globals.appSetting.bottomNavigationC!.split(";").forEach(
         (item) {
+          //For red dot indictor of news section
           if (item.split("_")[0].toString().toLowerCase().contains("news")) {
             Globals.newsIndex =
                 Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
@@ -245,13 +258,70 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           }
 
           setState(() {});
-          return PersistentBottomNavBarItem(
-            icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-            activeColorPrimary: Theme.of(context).primaryColor,
-            inactiveColorPrimary: CupertinoColors.systemGrey,
-          );
+
+          //This will return the options having below mentioned screens. For any other option name, it will not include in the bottom navbar list
+          item = item.toLowerCase();
+          if (persistentBottomNavBarItemList.length <
+              Globals.appSetting.bottomNavigationC!.split(";").length) {
+            if (item.contains('news')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            } else if (item.contains('student')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            } else if (item.contains('families')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            } else if (item.contains('staff')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            } else if (item.contains('social')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            } else if (item.contains('about')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            } else if (item.contains('school')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            } else if (item.contains('resource')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            } else if (item.contains('calendar')) {
+              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
+                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+                activeColorPrimary: Theme.of(context).primaryColor,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+              ));
+            }
+          }
         },
-      ).toList();
+      );
+      return persistentBottomNavBarItemList;
     }
   }
 

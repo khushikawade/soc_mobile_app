@@ -33,12 +33,14 @@ class EventPage extends StatefulWidget {
   final String calendarId;
   final bool? isMainPage;
   final CustomSetting? customObj;
+  final bool? isStandardSelection;
 
   EventPage(
       {required this.isBottomSheet,
       required this.appBarTitle,
       required this.language,
       required this.calendarId,
+      this.isStandardSelection,
       this.isAppBar,
       this.isMainPage,
       this.customObj});
@@ -65,7 +67,9 @@ class _EventPageState extends State<EventPage>
   @override
   void initState() {
     super.initState();
-    _eventBloc.add(CalendarListEvent(widget.calendarId));
+    _eventBloc.add(CalendarListEvent(widget.isStandardSelection == true
+        ? Globals.appSetting.calendarId.toString()
+        : widget.calendarId));
   }
 
   @override
@@ -78,9 +82,12 @@ class _EventPageState extends State<EventPage>
     state,
     bool? currentOrientation,
   ) {
-    return widget.customObj != null &&
-            widget.customObj!.customBannerImageC != null &&
-            widget.customObj!.customBannerImageC != ''
+    return (widget.customObj != null &&
+                widget.customObj!.customBannerImageC != null &&
+                widget.customObj!.customBannerImageC != '') ||
+            (widget.isStandardSelection == true &&
+                Globals.appSetting.calendarBannerImage != null &&
+                Globals.appSetting.calendarBannerImage != '')
         ? silverAppBarBody(state, currentOrientation)
         : standardTabbarView(state, currentOrientation);
   }
@@ -91,6 +98,8 @@ class _EventPageState extends State<EventPage>
   ) {
     return Container(
       child: ListView.builder(
+          //shrinkWrap: true,
+
           scrollDirection: Axis.vertical,
           padding: widget.isMainPage == true || !Platform.isAndroid
               ? EdgeInsets.only(
@@ -114,16 +123,26 @@ class _EventPageState extends State<EventPage>
     return Scaffold(
         appBar: widget.isAppBar == false
             ? null
-            : CustomAppBarWidget(
-                marginLeft: 30,
-                appBarTitle: widget.appBarTitle!,
-                isSearch: true,
-                sharedPopBodyText: '',
-                sharedPopUpHeaderText: '',
-                isShare: false,
-                isCenterIcon: true,
-                language: Globals.selectedLanguage,
-              ),
+            : widget.isStandardSelection == true
+                ? AppBarWidget(
+                    onTap: () {
+                      Utility.scrollToTop(scrollController: _scrollController);
+                    },
+                    marginLeft: 30,
+                    refresh: (v) {
+                      setState(() {});
+                    },
+                  )
+                : CustomAppBarWidget(
+                    marginLeft: 30,
+                    appBarTitle: widget.appBarTitle!,
+                    isSearch: true,
+                    sharedPopBodyText: '',
+                    sharedPopUpHeaderText: '',
+                    isShare: false,
+                    isCenterIcon: true,
+                    language: Globals.selectedLanguage,
+                  ),
         body: OrientationBuilder(builder: (context, orientation) {
           bool? currentOrientation =
               orientation == Orientation.landscape ? true : null;
@@ -138,7 +157,10 @@ class _EventPageState extends State<EventPage>
 
                 if (connected) {
                   if (isErrorState == true) {
-                    _eventBloc.add(CalendarListEvent(widget.calendarId));
+                    _eventBloc.add(CalendarListEvent(
+                        widget.isStandardSelection == true
+                            ? Globals.appSetting.calendarId.toString()
+                            : widget.calendarId));
                     isErrorState = false;
                   }
                 } else if (!connected) {
@@ -220,8 +242,10 @@ class _EventPageState extends State<EventPage>
                     ],
                   ),
                   Expanded(
-                    child: ListView(
-                      shrinkWrap: true,
+                    child: Column(
+                      // physics: const NeverScrollableScrollPhysics(),
+                      //  controller: _scrollController,
+                      // shrinkWrap: true,
                       children: [
                         Container(
                             height: Globals.deviceType == "phone" &&
@@ -229,7 +253,11 @@ class _EventPageState extends State<EventPage>
                                         Orientation.portrait
                                 ? widget.isMainPage == true
                                     // ? widget.isBannerEnabled != true
-                                    ? MediaQuery.of(context).size.height * 0.75
+                                    ? (widget.isStandardSelection == true
+                                        ? MediaQuery.of(context).size.height *
+                                            0.77
+                                        : MediaQuery.of(context).size.height *
+                                            0.75)
                                     // : MediaQuery.of(context).size.height *
                                     //     0.75
                                     : MediaQuery.of(context).size.height * 0.75
@@ -299,66 +327,65 @@ class _EventPageState extends State<EventPage>
 
   Widget silverAppBarBody(state, currentOrientation) {
     // Provides a TabController for TabBar and TabBarView
-    return DefaultTabController(
-      length: 2,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          // The flexible app bar with the tabs
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            expandedHeight: Globals.deviceType == "phone"
-                ? Utility.displayHeight(context) *
-                    (12 / //AppTheme.kBannerHeight  //Set default due to overlap of text to banner
-                        (Utility.displayHeight(context) > 900
-                            ? 38
-                            : 30)) //For big size screens
-                : Utility.displayHeight(context) *
-                    (12 * //AppTheme.kBannerHeight  //Set default due to overlap of text to banner
-                        1.3 /
-                        (Utility.displayHeight(context) > 900 ? 90 : 75)),
-            // expandedHeight:
-            //     Utility.displayHeight(context) * (AppTheme.kBannerHeight / 75),
-            floating: false,
-            stretch: true,
-            pinned: true,
-            // title: Container(
-            //   child: Text('Calendar'),
-            // ),
-            flexibleSpace: FlexibleSpaceBar(
-                stretchModes: <StretchMode>[
-                  StretchMode.zoomBackground,
-                  StretchMode.blurBackground,
-                ],
-                centerTitle: true,
-                background: Container(
-                  height: Utility.displayHeight(context) *
-                      (AppTheme.kBannerHeight / 100),
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    color: widget.customObj!.customBannerColorC != null &&
-                            widget.customObj!.customBannerColorC != ''
-                        ? Color(int.parse(
-                            '0xff' + widget.customObj!.customBannerColorC!))
-                        : Colors.white,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.customObj!.customBannerImageC!,
-                      // fit: BoxFit.contain,
-                      placeholder: (BuildContext context, _) => ShimmerLoading(
-                        isLoading: true,
-                        child: SizedBox(
-                          height: Utility.displayHeight(context) *
-                              (AppTheme.kBannerHeight / 100),
-                          width: Utility.displayWidth(context),
-                        ),
-                      ),
-                      errorWidget: (context, url, error) {
-                        return Container();
-                      },
-                    ),
+    return NestedScrollView(
+      // floatHeaderSlivers: true,
+      controller: _scrollController,
+      headerSliverBuilder: (context, innerBoxIsScrolled) => [
+        // The flexible app bar with the tabs
+        SliverAppBar(
+          automaticallyImplyLeading: false,
+          expandedHeight: Globals.appSetting.bannerHeightFactor != null &&
+                  Globals.appSetting.bannerHeightFactor != ''
+              ? Utility.displayHeight(context) *
+                  (Globals.appSetting.bannerHeightFactor / 100)
+              : Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100),
+         
+          floating: false,
+          
+          elevation: 0.00,
+          flexibleSpace: FlexibleSpaceBar(
+           
+              background: Container(
+            color: Globals.appSetting.calendarBannerColor != null
+                ? Utility.getColorFromHex(
+                    Globals.appSetting.calendarBannerColor!)
+                : Colors.transparent,
+            height:
+                Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100),
+            //  alignment: Alignment.topCenter,
+            child: Container(
+           
+              child: CachedNetworkImage(
+                imageUrl: widget.isStandardSelection == true
+                    ? Globals.appSetting.calendarBannerImage!
+                    : widget.customObj!.customBannerImageC!,
+                // fit: BoxFit.contain,
+                placeholder: (BuildContext context, _) => ShimmerLoading(
+                  isLoading: true,
+                  child: SizedBox(
+                    height: Utility.displayHeight(context) *
+                        (AppTheme.kBannerHeight / 100),
+                    width: Utility.displayWidth(context),
                   ),
-                )),
-            forceElevated: innerBoxIsScrolled,
-            bottom: TabBar(
+                ),
+                errorWidget: (context, url, error) {
+                  return Container();
+                },
+              ),
+            ),
+          )),
+          forceElevated: innerBoxIsScrolled,
+
+      
+        )
+      ],
+      // The content of each tab
+      body: DefaultTabController(
+        length: 2,
+        child: Column(
+          //shrinkWrap: true,
+          children: [
+            TabBar(
               indicatorSize: TabBarIndicatorSize.label,
               labelColor: Theme.of(context)
                   .colorScheme
@@ -395,21 +422,25 @@ class _EventPageState extends State<EventPage>
                 ),
               ],
             ),
-          )
-        ],
-        // The content of each tab
-        body: Column(
-          // shrinkWrap: true,
-          children: [
             Container(
                 height: Globals.deviceType == "phone" &&
                         MediaQuery.of(context).orientation ==
                             Orientation.portrait
                     ? widget.isMainPage == true
                         // ? widget.isBannerEnabled != true
-                        ? MediaQuery.of(context).size.height * 0.8
-                        // : MediaQuery.of(context).size.height *
-                        //     0.75
+                        ? Globals.appSetting.bannerHeightFactor != null &&
+                                Globals.appSetting.bannerHeightFactor != ''
+                            ? (MediaQuery.of(context).size.height * 0.72
+                                // +
+                                //     MediaQuery.of(context).size.height *
+                                //         (Globals.appSetting.bannerHeightFactor /
+                                //             100)
+                                )
+                            // : MediaQuery.of(context).size.height *
+                            //     0.75
+                            : (MediaQuery.of(context).size.height * 0.65 +
+                                MediaQuery.of(context).size.height *
+                                    (AppTheme.kBannerHeight / 100))
                         : MediaQuery.of(context).size.height * 0.75
                     : Globals.deviceType == "phone" &&
                             MediaQuery.of(context).orientation ==
@@ -476,7 +507,9 @@ class _EventPageState extends State<EventPage>
     refreshKey.currentState?.show(atTop: false);
     refreshKey1.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 2));
-    _eventBloc.add(CalendarListEvent(widget.calendarId));
+    _eventBloc.add(CalendarListEvent(widget.isStandardSelection == true
+        ? Globals.appSetting.calendarId.toString()
+        : widget.calendarId));
     _homeBloc.add(FetchStandardNavigationBar());
   }
 

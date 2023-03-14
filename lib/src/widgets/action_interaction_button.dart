@@ -21,19 +21,17 @@ import 'package:share/share.dart';
 import '../translator/language_list.dart';
 
 class ActionInteractionButtonWidget extends StatefulWidget {
-  ActionInteractionButtonWidget({
-    Key? key,
-    required this.obj,
-    required this.title,
-    required this.imageUrl,
-    required this.description,
-    this.isLoading,
-    required this.page,
-    this.imageExtType,
-    this.scaffoldKey,
-    // required this.isViewInteraction
-    // required this.view
-  }) : super(key: key);
+  ActionInteractionButtonWidget(
+      {Key? key,
+      required this.obj,
+      required this.title,
+      required this.imageUrl,
+      required this.description,
+      this.isLoading,
+      required this.page,
+      this.imageExtType,
+      this.scaffoldKey})
+      : super(key: key);
 
   final imageExtType;
   final Item obj;
@@ -43,9 +41,6 @@ class ActionInteractionButtonWidget extends StatefulWidget {
   final bool? isLoading;
   final String page;
   final Key? scaffoldKey;
-  // final bool? isViewInteraction;
-  // ValueNotifier<int> view;
-  // final Function(Item obj)? onChange;
   @override
   State<ActionInteractionButtonWidget> createState() =>
       _ActionInteractionButtonWidgetState();
@@ -53,9 +48,9 @@ class ActionInteractionButtonWidget extends StatefulWidget {
 
 class _ActionInteractionButtonWidgetState
     extends State<ActionInteractionButtonWidget> {
-  @override
   NewsBloc _newsBloc = new NewsBloc();
   SocialBloc _socialBloc = SocialBloc();
+
   final ValueNotifier<int> like = ValueNotifier<int>(0);
   final ValueNotifier<int> thanks = ValueNotifier<int>(0);
   final ValueNotifier<int> helpful = ValueNotifier<int>(0);
@@ -63,15 +58,13 @@ class _ActionInteractionButtonWidgetState
   final ValueNotifier<int> support = ValueNotifier<int>(0);
   final ValueNotifier<int> view = ValueNotifier<int>(0);
 
-  // final ValueNotifier<int> view = ValueNotifier<int>(0);
   bool _downloadingFile = false;
   int? iconNameIndex;
   bool _isDownloadingFile = false;
+
   var f = NumberFormat.compact();
   String pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-
-  // final _debouncer = Debouncer(milliseconds: 1000);
 
   @override
   void initState() {
@@ -246,7 +239,7 @@ class _ActionInteractionButtonWidgetState
                       toLanguageCode: toLanguageCode,
                       translatedText: TranslationAPI.translate(
                           Globals.iconsName[index], toLanguageCode, true));
-                  // _debouncer.run(() async {
+
                   if (connected) {
                     if (index == 3) {
                       await _shareNews();
@@ -261,7 +254,6 @@ class _ActionInteractionButtonWidgetState
                         context,
                         null);
                   }
-                  // });
                 }
               }
               // }
