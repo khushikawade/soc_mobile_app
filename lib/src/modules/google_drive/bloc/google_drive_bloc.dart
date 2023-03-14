@@ -1019,6 +1019,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 //Performing both create and update detail to slide together
     if (event is AddAndUpdateAssessmentImageToSlidesOnDrive) {
       try {
+        yield ShowLoadingDialog();
+
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 

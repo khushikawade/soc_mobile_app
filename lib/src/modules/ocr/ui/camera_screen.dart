@@ -1117,8 +1117,9 @@ class _CameraScreenState extends State<CameraScreen>
               isLogout: true,
               orientation: MediaQuery.of(showDialogContext).orientation,
               context: showDialogContext,
-              message: "All students is not belong to the same courses",
-              title: 'Warning!',
+              message:
+                  "A few students not found in the detected course. Do you still want to continue with those students?",
+              title: 'Action Required!',
               actionWidget: popupActionButtonWidget(
                   contactNumber: Globals.appSetting.contactPhoneC,
                   email: Globals.appSetting.parentCoordinatorEmailc,
