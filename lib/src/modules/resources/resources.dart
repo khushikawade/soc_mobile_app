@@ -88,6 +88,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                         if (state is ResourcesInitial ||
                             state is ResourcesLoading) {
                           return Container(
+                              height: MediaQuery.of(context).size.height * 0.6,
                               alignment: Alignment.center,
                               child: CircularProgressIndicator(
                                 color: Theme.of(context)

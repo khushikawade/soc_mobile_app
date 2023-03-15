@@ -242,10 +242,10 @@ class _EventPageState extends State<EventPage>
                     ],
                   ),
                   Expanded(
-                    child: Column(
+                    child: ListView(
                       // physics: const NeverScrollableScrollPhysics(),
                       //  controller: _scrollController,
-                      // shrinkWrap: true,
+                      shrinkWrap: true,
                       children: [
                         Container(
                             height: Globals.deviceType == "phone" &&
@@ -339,12 +339,9 @@ class _EventPageState extends State<EventPage>
               ? Utility.displayHeight(context) *
                   (Globals.appSetting.bannerHeightFactor / 100)
               : Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100),
-         
           floating: false,
-          
           elevation: 0.00,
           flexibleSpace: FlexibleSpaceBar(
-           
               background: Container(
             color: Globals.appSetting.calendarBannerColor != null
                 ? Utility.getColorFromHex(
@@ -354,7 +351,6 @@ class _EventPageState extends State<EventPage>
                 Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100),
             //  alignment: Alignment.topCenter,
             child: Container(
-           
               child: CachedNetworkImage(
                 imageUrl: widget.isStandardSelection == true
                     ? Globals.appSetting.calendarBannerImage!
@@ -375,8 +371,6 @@ class _EventPageState extends State<EventPage>
             ),
           )),
           forceElevated: innerBoxIsScrolled,
-
-      
         )
       ],
       // The content of each tab

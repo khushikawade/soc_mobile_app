@@ -75,8 +75,6 @@ class _StaffPageState extends State<StaffPage> {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("staff");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'staff', screenClass: 'StaffPage');
-    // _scrollController.addListener(_scrollListener);
-    //  globalKey.currentState!.innerController.addListener(_scrollListener);
   }
 
   @override
@@ -84,9 +82,6 @@ class _StaffPageState extends State<StaffPage> {
     // TODO: implement dispose
     super.dispose();
   }
-  //   ScrollController get innerController {
-  //   return globalKey.currentState!.innerController;
-  // }
 
   bool onNotification(ScrollNotification t) {
     if (t.metrics.pixels < 150) {
@@ -144,12 +139,16 @@ class _StaffPageState extends State<StaffPage> {
                                     (BuildContext contxt, StaffState state) {
                                   if (state is StaffInitial ||
                                       state is StaffLoading) {
-                                    return Center(
+                                    return Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.6,
+                                        alignment: Alignment.center,
                                         child: CircularProgressIndicator(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                    ));
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryVariant,
+                                        ));
                                   } else if (state is StaffDataSuccess) {
                                     return widget.customObj != null &&
                                             widget.customObj!.sectionTemplate ==
@@ -273,28 +272,11 @@ class _StaffPageState extends State<StaffPage> {
                     await Utility.clearStudentInfo(
                         tableName: 'history_student_info');
 
-                    // else if (selectedField == 'Multiple choice Assignment') {
-                    //   await Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(builder: (context) => MultipleChoiceSection()),
-                    //   );
-                    // } else {
-                    //   navigateToCamera();
-                    // }
                     await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                         "assignment");
 
                     FirebaseAnalyticsService.logLogin();
-                    // pushNewScreen(
-                    //   context,
-                    //   screen: StartupPage(
-                    //     isOcrSection: true,
-                    //     skipAppSettingsFetch: true,
-                    //   ),
-                    //   withNavBar: false,
-                    // );
-                    // return;
-                    // Globals.localUserInfo.clear(); // COMMENT
+
                     Globals.lastIndex = Globals.controller!.index;
 
                     List<UserInformation> _profileData =
@@ -305,8 +287,6 @@ class _StaffPageState extends State<StaffPage> {
                       await GoogleLogin.launchURL('Google Authentication',
                           context, _scaffoldKey, true, '');
                     } else {
-                      // List<UserInformation> _userProfileLocalData =
-                      //     await UserGoogleProfile.getUserProfile();
                       GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
 
                       Globals.teacherEmailId =

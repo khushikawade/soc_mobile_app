@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
@@ -328,10 +330,14 @@ class _StudentPageState extends State<StudentPage> {
                       bloc: _bloc,
                       builder: (BuildContext contxt, StudentState state) {
                         if (state is StudentInitial || state is Loading) {
-                          return Center(
+                          return Container(
+                              height: MediaQuery.of(context).size.height * 0.6,
+                              alignment: Alignment.center,
                               child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                          ));
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ));
                         } else if (state is StudentDataSuccess) {
                           return state.obj != null && state.obj!.length > 0
                               ? Container(

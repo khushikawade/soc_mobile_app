@@ -94,6 +94,7 @@ class _FamilyPageState extends State<FamilyPage> {
                 return
                     // connected?
                     ListView(
+                  // physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   //  mainAxisSize: MainAxisSize.max,
                   children: [
@@ -102,11 +103,15 @@ class _FamilyPageState extends State<FamilyPage> {
                         builder: (BuildContext contxt, FamilyState state) {
                           if (state is FamilyInitial ||
                               state is FamilyLoading) {
-                            return Center(
+                            return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.6,
+                                alignment: Alignment.center,
                                 child: CircularProgressIndicator(
-                              color:
-                                  Theme.of(context).colorScheme.primaryVariant,
-                            ));
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryVariant,
+                                ));
                           } else if (state is FamiliesDataSuccess) {
                             return widget.customObj != null &&
                                     widget.customObj!.sectionTemplate ==
