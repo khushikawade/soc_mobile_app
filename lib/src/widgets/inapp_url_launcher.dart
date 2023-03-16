@@ -206,8 +206,8 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
           return connected
               ? Container(
                   color: Colors.transparent,
-                  padding: const EdgeInsets.only(
-                    bottom: 30.0,
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.height * 0.02, //30.0,
                   ), // To manage web page crop issue together with bottom nav bar.
                   child: Stack(
                     children: [
