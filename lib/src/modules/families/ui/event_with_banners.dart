@@ -255,7 +255,7 @@ class _EventPageState extends State<EventPage>
                                     // ? widget.isBannerEnabled != true
                                     ? (widget.isStandardSelection == true
                                         ? MediaQuery.of(context).size.height *
-                                            0.77
+                                            0.78
                                         : MediaQuery.of(context).size.height *
                                             0.75)
                                     // : MediaQuery.of(context).size.height *
@@ -424,7 +424,7 @@ class _EventPageState extends State<EventPage>
                         // ? widget.isBannerEnabled != true
                         ? Globals.appSetting.bannerHeightFactor != null &&
                                 Globals.appSetting.bannerHeightFactor != ''
-                            ? (MediaQuery.of(context).size.height * 0.72
+                            ? (MediaQuery.of(context).size.height * 0.74
                                 // +
                                 //     MediaQuery.of(context).size.height *
                                 //         (Globals.appSetting.bannerHeightFactor /

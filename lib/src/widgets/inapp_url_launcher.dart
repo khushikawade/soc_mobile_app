@@ -205,10 +205,15 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
 
           return connected
               ? Container(
+                  // height: MediaQuery.of(context).size.height,
                   color: Colors.transparent,
                   padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height * 0.02, //30.0,
-                  ), // To manage web page crop issue together with bottom nav bar.
+                      bottom: (Globals.isAndroid == true
+                          ? (widget.isCustomMainPageWebView == true
+                              ? MediaQuery.of(context).size.height * 0.01
+                              : MediaQuery.of(context).size.height * 0.031)
+                          : MediaQuery.of(context).size.height *
+                              0.024)), // To manage web page crop issue together with bottom nav bar.
                   child: Stack(
                     children: [
                       Platform.isAndroid &&
