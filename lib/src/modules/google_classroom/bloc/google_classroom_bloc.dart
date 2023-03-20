@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/google_classroom/modal/classroom_student_profile
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,6 @@ import '../../../services/db_service.dart';
 import '../../../services/db_service_response.model.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../google_drive/model/user_profile.dart';
-import '../../ocr/modal/student_assessment_info_modal.dart';
 import '../../ocr/modal/user_info.dart';
 import '../../ocr/graded_overrides.dart';
 import 'dart:convert';

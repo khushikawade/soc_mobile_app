@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:Soc/src/overrides.dart';
 import 'package:hive/hive.dart';
 part 'student_assessment_info_modal.g.dart';

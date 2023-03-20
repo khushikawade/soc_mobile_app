@@ -4,7 +4,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
-import 'package:Soc/src/modules/ocr/modal/assessment_c_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_modal.dart';
