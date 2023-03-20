@@ -1297,15 +1297,15 @@ class _SuccessScreenState extends State<SuccessScreen>
                   InkWell(
                       onTap: () {
                         // updateDetails(isUpdateData: true);
-                        // Utility.updateLoges(
-                        //     // ,
-                        //     activityId: '8',
-                        //     description:
-                        //         'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
-                        //     operationResult: 'Success');
+                        Utility.updateLogs(
+                            // ,
+                            activityId: '8',
+                            description:
+                                'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
+                            operationResult: 'Success');
                         if (pointScored.value != index.toString()) {
                           isRubricChanged = true;
-                          if (widget.isMcqSheet!) {
+                          if (widget.isMcqSheet == true) {
                             Utility.updateLogs(
                                 //  ,
                                 activityId: '30',
@@ -1722,33 +1722,31 @@ class _SuccessScreenState extends State<SuccessScreen>
         // final StudentAssessmentInfo studentAssessmentInfo =
         //     StudentAssessmentInfo();
 
-        if (!id.contains(updatedStudentId)) {
-          studentAssessmentInfo.studentName = nameController.text;
-          studentAssessmentInfo.studentId =
-              updatedStudentId; // commented to add id case of email //idController.text;
-          studentAssessmentInfo.studentGrade = widget.isMcqSheet == true
-              ? (widget.selectedAnswer == indexColor.value.toString()
-                  ? '1'
-                  : '0')
-              : indexColor.value.toString(); //ointScored.value;
-          studentAssessmentInfo.pointPossible =
-              Globals.pointPossible != null || Globals.pointPossible!.isNotEmpty
-                  ? Globals.pointPossible
-                  : '2';
-          studentAssessmentInfo.assessmentImgPath =
-              widget.imgPath.path.toString();
-          studentAssessmentInfo.answerKey =
-              widget.isMcqSheet == true ? widget.selectedAnswer : 'NA';
-          studentAssessmentInfo.studentResponseKey =
-              widget.isMcqSheet == true ? indexColor.value.toString() : 'NA';
-          studentAssessmentInfo.googleSlidePresentationURL = 'NA';
-          studentAssessmentInfo.uniqueId = uniqueId;
-          studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
+        // if (!id.contains(updatedStudentId)) {
+        studentAssessmentInfo.studentName = nameController.text;
+        studentAssessmentInfo.studentId =
+            updatedStudentId; // commented to add id case of email //idController.text;
+        studentAssessmentInfo.studentGrade = widget.isMcqSheet == true
+            ? (widget.selectedAnswer == indexColor.value.toString() ? '1' : '0')
+            : indexColor.value.toString(); //ointScored.value;
+        studentAssessmentInfo.pointPossible =
+            Globals.pointPossible != null || Globals.pointPossible!.isNotEmpty
+                ? Globals.pointPossible
+                : '2';
+        studentAssessmentInfo.assessmentImgPath =
+            widget.imgPath.path.toString();
+        studentAssessmentInfo.answerKey =
+            widget.isMcqSheet == true ? widget.selectedAnswer : 'NA';
+        studentAssessmentInfo.studentResponseKey =
+            widget.isMcqSheet == true ? indexColor.value.toString() : 'NA';
+        studentAssessmentInfo.googleSlidePresentationURL = 'NA';
+        studentAssessmentInfo.uniqueId = uniqueId;
+        studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
 // To update/edit the scanned details
-          await _studentInfoDb.putAt(
-              studentInfo.length - 1, studentAssessmentInfo);
-          return;
-        }
+        await _studentInfoDb.putAt(
+            studentInfo.length - 1, studentAssessmentInfo);
+        return;
+        // }
       } else {
         final StudentAssessmentInfo studentAssessmentInfo =
             StudentAssessmentInfo();

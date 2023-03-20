@@ -311,7 +311,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
             "${widget.obj.phoneC ?? ""}",
         buttonTitle: "Share",
       ),
-      SpacerWidget(_kLabelSpacing * 3),
+      SpacerWidget(_kLabelSpacing * 4.2),
     ]);
   }
 

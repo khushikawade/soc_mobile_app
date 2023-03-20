@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
@@ -28,6 +29,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/firstLetterUpperCase.dart';
+import '../../google_classroom/bloc/google_classroom_bloc.dart';
 import '../widgets/suggestion_chip.dart';
 
 class CreateAssessment extends StatefulWidget {
@@ -72,6 +74,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
   final addController = TextEditingController();
   @override
   void initState() {
+    GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+        GoogleClassroomCourses();
     updateClassName();
     //   wd
     // listScrollController.addListener(_scrollListener);
@@ -97,6 +101,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
   ScrollController scrollControllerAssessmentName = new ScrollController();
   ScrollController scrollControllerClassName = new ScrollController();
 
+  GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
+  // GoogleClassroomCourses? studentClassRoomObj;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -274,6 +280,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       if (value.isNotEmpty) {
                                         classController.text = value;
                                         classError.value = value;
+                                        updateClassName();
                                       }
                                     },
                                     selected:
@@ -643,26 +650,45 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 if (assessmentNameError.value.isNotEmpty &&
                     assessmentNameError.value.length >= 2 &&
                     classError.value.isNotEmpty) {
-                  Globals.assessmentName =
-                      "${assessmentController.text}_${classController.text}";
-                  //Create excel sheet if not created already for current assessment
-
-                  if (Globals.googleExcelSheetId!.isEmpty) {
-                    _googleDriveBloc.add(CreateExcelSheetToDrive(
-                        isMcqSheet: widget.isMcqSheet,
-                        name:
-                            "${assessmentController.text}_${classController.text}"));
-                  } else if (imageFile != null && imageFile!.path.isNotEmpty) {
-                    String imgExtension = imageFile!.path
-                        .substring(imageFile!.path.lastIndexOf(".") + 1);
-                    List<int> imageBytes = imageFile!.readAsBytesSync();
-                    String imageB64 = base64Encode(imageBytes);
-                    Globals.questionImgFilePath = imageFile;
-
-                    _googleDriveBloc2.add(QuestionImgToAwsBucked(
-                        imgBase64: imageB64, imgExtension: imgExtension));
+                  if (Overrides.STANDALONE_GRADED_APP &&
+                      (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                              ?.courseId?.isEmpty ??
+                          true)) {
+                    Utility.currentScreenSnackBar(
+                        "None of the scanned student available in the selected classroom course \'${classController.text}\'",
+                        null);
                   } else {
-                    _navigateToSubjectSection('');
+                    Globals.assessmentName =
+                        "${assessmentController.text}_${classController.text}";
+                    //Create excel sheet if not created already for current assessment
+
+                    if (Globals.googleExcelSheetId!.isEmpty) {
+                      _googleDriveBloc.add(CreateExcelSheetToDrive(
+                          isMcqSheet: widget.isMcqSheet,
+                          name:
+                              "${assessmentController.text}_${classController.text}"));
+                      if (Overrides.STANDALONE_GRADED_APP) {
+                        _googleClassroomBloc.add(CreateClassRoomCourseWork(
+                            studentAssessmentInfoDb:
+                                LocalDatabase('student_info'),
+                            studentClassObj: GoogleClassroomGlobals
+                                .studentAssessmentAndClassroomObj,
+                            title: Globals.assessmentName ?? '',
+                            pointPossible: Globals.pointPossible ?? "0"));
+                      }
+                    } else if (imageFile != null &&
+                        imageFile!.path.isNotEmpty) {
+                      String imgExtension = imageFile!.path
+                          .substring(imageFile!.path.lastIndexOf(".") + 1);
+                      List<int> imageBytes = imageFile!.readAsBytesSync();
+                      String imageB64 = base64Encode(imageBytes);
+                      Globals.questionImgFilePath = imageFile;
+
+                      _googleDriveBloc2.add(QuestionImgToAwsBucked(
+                          imgBase64: imageB64, imgExtension: imgExtension));
+                    } else {
+                      _navigateToSubjectSection('');
+                    }
                   }
                 }
               }
@@ -944,25 +970,56 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   updateClassName() async {
+    GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+        GoogleClassroomCourses(courseId: '');
+
     LocalDatabase<GoogleClassroomCourses> _localDb =
         LocalDatabase(Strings.googleClassroomCoursesList);
 
-    List<GoogleClassroomCourses> _localData = await _localDb.getData();
+/////---------
+//Validating suggestion list comes from camera screen //comparing string of list and return course object
+//Manage here to manage standalone and standard app
+    List<GoogleClassroomCourses> googleClassroomCoursesDB =
+        await _localDb.getData();
+
+    List<GoogleClassroomCourses> _localData = googleClassroomCoursesDB
+        .where((GoogleClassroomCourses classroomCourses) =>
+            widget.classSuggestions.contains(classroomCourses.name))
+        .toList();
+    print(_localData);
+/////--------
+
     List<StudentAssessmentInfo> studentInfo =
         await Utility.getStudentInfoList(tableName: 'student_info');
 
     if (studentInfo.isNotEmpty) {
-      for (var i = 0; i < _localData.length; i++) {
-        for (var j = 0; j < _localData[i].studentList!.length; j++) {
-          if (studentInfo[0].studentId ==
-              _localData[i].studentList![j]['profile']['emailAddress']) {
-            classController.text = _localData[i].name!;
-            classError.value = _localData[i].name!;
-            break;
+      for (GoogleClassroomCourses classroom in _localData) {
+        if (classController.text?.isNotEmpty == true &&
+            classroom.name != classController.text) {
+          continue;
+        }
+
+        for (var student in classroom.studentList!) {
+          for (StudentAssessmentInfo info in studentInfo) {
+            if (info.studentId == student['profile']['emailAddress']) {
+              print(classroom.name);
+              classError.value = classroom.name!;
+              if (Overrides.STANDALONE_GRADED_APP) {
+                GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+                    classroom;
+              }
+              if (classController.text?.isEmpty != false) {
+                classController.text = classroom.name!;
+              }
+              break;
+            }
           }
         }
       }
     }
+    print(_localData);
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name);
+    print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
   }
 
   _checkFieldEditable() {

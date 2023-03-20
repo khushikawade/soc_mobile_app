@@ -191,6 +191,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 20),
                                   child: textFormField(
+                                      readOnly: Overrides.STANDALONE_GRADED_APP,
                                       controller: widget.studentNameController,
                                       hintText: 'Student Name',
                                       inputFormatters: <TextInputFormatter>[
@@ -294,6 +295,8 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                           return Wrap(
                                             children: [
                                               textFormField(
+                                                  readOnly: Overrides
+                                                      .STANDALONE_GRADED_APP,
                                                   controller: widget
                                                       .studentEmailIdController,
                                                   hintText:
@@ -893,17 +896,17 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
     );
   }
 
-  Widget textFormField({
-    required TextEditingController controller,
-    onSaved,
-    required validator,
-    TextInputType? keyboardType,
-    required bool? isFailure,
-    String? errormsg,
-    List<TextInputFormatter>? inputFormatters,
-    bool? maxNineDigit,
-    String? hintText,
-  }) {
+  Widget textFormField(
+      {required TextEditingController controller,
+      onSaved,
+      required validator,
+      TextInputType? keyboardType,
+      required bool? isFailure,
+      String? errormsg,
+      List<TextInputFormatter>? inputFormatters,
+      bool? maxNineDigit,
+      String? hintText,
+      bool? readOnly}) {
     return ValueListenableBuilder(
         valueListenable: controller,
         child: Container(),
@@ -919,6 +922,12 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                 }
 
                 return TextFormField(
+                    onTap: () => readOnly == true
+                        ? Utility.currentScreenSnackBar(
+                            'Read only $hintText' ?? "",
+                            null)
+                        : print(''),
+                    readOnly: readOnly ?? false,
                     maxLength: maxNineDigit == true &&
                             Overrides.STANDALONE_GRADED_APP == false
                         ? 9

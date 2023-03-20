@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, deprecated_member_use
 
 import 'dart:async';
 import 'dart:io';
@@ -6,6 +6,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
+import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -16,31 +17,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:share/share.dart';
 import '../translator/language_list.dart';
 
 class ActionInteractionButtonWidget extends StatefulWidget {
-  ActionInteractionButtonWidget({
-    Key? key,
-    required this.obj,
-    required this.title,
-    required this.imageUrl,
-    required this.description,
-    this.isLoading,
-    required this.page,
-    this.imageExtType,
-    this.scaffoldKey,
-  }) : super(key: key);
+  ActionInteractionButtonWidget(
+      {Key? key,
+      required this.obj,
+      required this.title,
+      required this.imageUrl,
+      required this.description,
+      this.isLoading,
+      required this.page,
+      this.imageExtType,
+      this.scaffoldKey})
+      : super(key: key);
+
   final imageExtType;
-  var obj;
+  final Item obj;
   final imageUrl;
   final title;
   final description;
   final bool? isLoading;
   final String page;
   final Key? scaffoldKey;
-  // final Function(Item obj)? onChange;
   @override
   State<ActionInteractionButtonWidget> createState() =>
       _ActionInteractionButtonWidgetState();
@@ -48,22 +48,23 @@ class ActionInteractionButtonWidget extends StatefulWidget {
 
 class _ActionInteractionButtonWidgetState
     extends State<ActionInteractionButtonWidget> {
-  @override
   NewsBloc _newsBloc = new NewsBloc();
   SocialBloc _socialBloc = SocialBloc();
+
   final ValueNotifier<int> like = ValueNotifier<int>(0);
   final ValueNotifier<int> thanks = ValueNotifier<int>(0);
   final ValueNotifier<int> helpful = ValueNotifier<int>(0);
   final ValueNotifier<int> share = ValueNotifier<int>(0);
   final ValueNotifier<int> support = ValueNotifier<int>(0);
+  final ValueNotifier<int> view = ValueNotifier<int>(0);
+
   bool _downloadingFile = false;
   int? iconNameIndex;
   bool _isDownloadingFile = false;
+
   var f = NumberFormat.compact();
   String pattern =
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-
-  // final _debouncer = Debouncer(milliseconds: 1000);
 
   @override
   void initState() {
@@ -75,50 +76,55 @@ class _ActionInteractionButtonWidgetState
     helpful.value = widget.obj.helpfulCount ?? 0;
     share.value = widget.obj.shareCount ?? 0;
     support.value = widget.obj.supportCount ?? 0;
+    view.value = widget.obj.viewCount ?? 0;
+
+    viewCountIncrement(widget.obj); //Calling in first time
   }
-
-  // closePopup() {
-  //   OneSignal.shared.setNotificationWillShowInForegroundHandler(
-  //       (OSNotificationReceivedEvent notification) async {
-  //     notification.complete(notification.notification);
-  //     // setState(() {
-  //     //   Globals.indicator.value = true;
-  //     // });
-  //     await Future.delayed(Duration(milliseconds: 1500));
-
-  //     // bloc.add(FetchNotificationList());
-  //     // Utility.scrollToTop(scrollController: _scrollController);
-
-  //     //
-  //   });
-  // }
 
   @override
   void didUpdateWidget(ActionInteractionButtonWidget oldWidget) {
-    // print(
-    //     'inside did update method ------------------------------------------');
     super.didUpdateWidget(oldWidget);
     like.value = widget.obj.likeCount ?? 0;
     thanks.value = widget.obj.thanksCount ?? 0;
     helpful.value = widget.obj.helpfulCount ?? 0;
     share.value = widget.obj.shareCount ?? 0;
     support.value = widget.obj.supportCount ?? 0;
+    view.value = widget.obj.viewCount ?? 0;
+
+    viewCountIncrement(widget.obj); //Calling in second time
   }
 
   Widget build(BuildContext context) {
-    return Container(
-        width: MediaQuery.of(context).size.width * 0.84,
-        height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height * 0.07
-            : MediaQuery.of(context).size.width * 0.07,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: Globals.icons
-              .map<Widget>(
-                  (element) => _iconButton(Globals.icons.indexOf(element)))
-              .toList(),
-        ));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+            alignment: Alignment.centerLeft,
+            width: MediaQuery.of(context).size.width * 0.84,
+            height: MediaQuery.of(context).orientation == Orientation.portrait
+                ? MediaQuery.of(context).size.height * 0.07
+                : MediaQuery.of(context).size.width * 0.07,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: Globals.icons
+                  .map<Widget>(
+                      (element) => _iconButton(Globals.icons.indexOf(element)))
+                  .toList(),
+            )),
+        ValueListenableBuilder(
+          builder: (BuildContext context, dynamic value, Widget? child) {
+            return Container(
+                alignment: Alignment.center,
+                child: Text(
+                  view.value.toString() + ' Views',
+                  textAlign: TextAlign.center,
+                ));
+          },
+          valueListenable: view,
+        )
+      ],
+    );
   }
 
   @override
@@ -208,8 +214,16 @@ class _ActionInteractionButtonWidgetState
         final bool connected = connectivity != ConnectivityResult.none;
         return Container(
           child: LikeButton(
+            // likeCountAnimationType: LikeCountAnimationType.all,
+            animationDuration:
+                //  index == 5
+                //     ? const Duration(milliseconds: 0)
+                //     :
+                Duration(milliseconds: 1000),
             isLiked: null,
             onTap: (onActionButtonTapped) async {
+              // if (Globals.icons[index] != 0xe887) {
+              //View analytics cannot be tapped by user
               if (!connected) {
                 Utility.currentScreenSnackBar("No Internet Connection", null);
               } else {
@@ -225,7 +239,7 @@ class _ActionInteractionButtonWidgetState
                       toLanguageCode: toLanguageCode,
                       translatedText: TranslationAPI.translate(
                           Globals.iconsName[index], toLanguageCode, true));
-                  // _debouncer.run(() async {
+
                   if (connected) {
                     if (index == 3) {
                       await _shareNews();
@@ -240,9 +254,9 @@ class _ActionInteractionButtonWidgetState
                         context,
                         null);
                   }
-                  // });
                 }
               }
+              // }
             },
             size: 20,
             circleColor: CircleColor(
@@ -307,6 +321,11 @@ class _ActionInteractionButtonWidgetState
                                       ? Theme.of(context)
                                           .colorScheme
                                           .primaryVariant
+                                      // : index == 5
+                                      //     ? Theme.of(context)
+                                      //         .colorScheme
+                                      //         .primaryVariant
+                                      // Color(0xff379bf0)
                                       : Theme.of(context)
                                           .colorScheme
                                           .primaryVariant,
@@ -353,9 +372,11 @@ class _ActionInteractionButtonWidgetState
                     ? share.value = share.value != 0
                         ? share.value + 1
                         : widget.obj.shareCount! + 1
-                    : support.value = support.value != 0
-                        ? support.value + 1
-                        : widget.obj.supportCount! + 1;
+                    : index == 4
+                        ? support.value = support.value != 0
+                            ? support.value + 1
+                            : widget.obj.supportCount! + 1
+                        : null;
 
     index == 0
         ? widget.obj.likeCount = like.value
@@ -365,7 +386,9 @@ class _ActionInteractionButtonWidgetState
                 ? widget.obj.helpfulCount = helpful.value
                 : index == 3
                     ? widget.obj.shareCount = share.value
-                    : widget.obj.supportCount = support.value;
+                    : index == 4
+                        ? widget.obj.supportCount = support.value
+                        : null;
 
     if (widget.page == "news") {
       _newsBloc.add(NewsAction(
@@ -389,7 +412,8 @@ class _ActionInteractionButtonWidgetState
           thanks: index == 1 ? 1 : 0,
           helpful: index == 2 ? 1 : 0,
           shared: index == 3 ? 1 : 0,
-          support: index == 4 ? 1 : 0));
+          support: index == 4 ? 1 : 0,
+          view: 0));
     }
     return isliked;
   }
@@ -465,13 +489,13 @@ class _ActionInteractionButtonWidgetState
         return Text(
           index == 0
               ? (like.value != 0
-                  ? f.format(like.value).toString().split('.')[0]
+                  ? f.format(like.value).toString() //.split('.')[0]
                   : widget.obj.likeCount == 0 || widget.obj.likeCount == null
                       ? ""
-                      : f.format(widget.obj.likeCount))
+                      : f.format(widget.obj.likeCount).toString())
               : index == 1
                   ? (thanks.value != 0
-                      ? f.format(thanks.value).toString().split('.')[0]
+                      ? f.format(thanks.value).toString() //.split('.')[0]
                       : widget.obj.thanksCount == 0 ||
                               widget.obj.thanksCount == null
                           ? ""
@@ -485,17 +509,23 @@ class _ActionInteractionButtonWidgetState
                               : f.format(widget.obj.helpfulCount))
                       : index == 3
                           ? (share.value != 0
-                              ? f.format(share.value).toString().split('.')[0]
+                              ? f.format(share.value).toString()
+                              //.split('.')[0]
                               : widget.obj.shareCount == 0 ||
                                       widget.obj.shareCount == null
                                   ? ""
                                   : f.format(widget.obj.shareCount))
-                          : support.value != 0
-                              ? f.format(support.value).toString().split('.')[0]
+                          : //index == 4?
+                          support.value != 0
+                              ? f.format(support.value).toString()
+                              //.split('.')[0]
                               : widget.obj.supportCount == 0 ||
                                       widget.obj.supportCount == null
                                   ? ""
                                   : f.format(widget.obj.supportCount),
+          // : f.format(view.value).toString(),
+          // .split('.')[0]
+          // .toString(),
           style: Theme.of(context).textTheme.bodyText1!,
         );
       },
@@ -505,7 +535,11 @@ class _ActionInteractionButtonWidgetState
               ? thanks
               : index == 2
                   ? helpful
-                  : share,
+                  : index == 3
+                      ? share
+                      : //index == 4 ?
+                      support,
+      // : view,
       child: Container(),
     );
   }
@@ -655,5 +689,52 @@ class _ActionInteractionButtonWidgetState
       ),
       onPressed: onPressed,
     );
+  }
+
+  viewCountIncrement(Item recordObject) async {
+    // print('New Post View : ${Globals.feedPostId}');
+    // print('Current Post View : ${widget.obj.id}');
+
+    //To make sure not increasing the count in bulk for same feed
+    if (widget.obj.id != Globals.feedPostId) {
+      Globals.feedPostId = widget.obj.id;
+
+      if (view.value < (recordObject.viewCount ?? 0)) {
+        view.value = recordObject.viewCount!;
+      }
+
+      view.value++;
+      recordObject.viewCount = view.value;
+
+      if (widget.page == "news") {
+        _newsBloc.add(NewsAction(
+            context: context,
+            scaffoldKey: widget.scaffoldKey,
+            notificationId: widget.obj.id,
+            notificationTitle: widget.title ?? '',
+            like: 0,
+            thanks: 0,
+            helpful: 0,
+            shared: 0,
+            support: 0,
+            view: 1));
+      } else {
+        _socialBloc.add(SocialAction(
+            context: context,
+            scaffoldKey: widget.scaffoldKey,
+            id: recordObject.id,
+            title: widget.title,
+            like: 0,
+            thanks: 0,
+            helpful: 0,
+            shared: 0,
+            support: 0,
+            view: 1));
+      }
+    }
+    //else {}
+
+    // print('New Post View : $alreadyViewPostId');
+    // print(view.value);
   }
 }

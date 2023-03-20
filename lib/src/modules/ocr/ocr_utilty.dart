@@ -36,6 +36,7 @@ class OcrUtility {
           LocalDatabase(Strings.googleClassroomCoursesList);
 
       List<GoogleClassroomCourses>? _localData = await _localDb.getData();
+
       for (var i = 0; i < _localData.length; i++) {
         for (var j = 0; j < _localData[i].studentList!.length; j++) {
           StudentClassroomInfo studentClassroomInfo = StudentClassroomInfo();

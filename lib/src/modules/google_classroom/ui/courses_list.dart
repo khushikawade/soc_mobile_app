@@ -39,7 +39,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
   final ValueNotifier<bool> refreshList = ValueNotifier<bool>(false);
   final ItemScrollController _itemScrollController = ItemScrollController();
-  final ValueNotifier<bool> isScrolling = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> isScrollingStop = ValueNotifier<bool>(true);
   AnimationController? _animationController;
   ScrollController? _scrollController;
   void _animateToIndex(
@@ -207,27 +207,27 @@ class _CoursesListScreenState extends State<CoursesListScreen>
 
   Widget scanAssessmentButton() {
     return ValueListenableBuilder<bool>(
-        valueListenable: isScrolling,
+        valueListenable: isScrollingStop,
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return AnimatedPositioned(
             bottom: 30,
-            right: !isScrolling.value
+            right: !isScrollingStop.value
                 ? 8
                 : (Utility.displayWidth(context) / 2) - 80,
             duration: const Duration(milliseconds: 650),
             curve: Curves.decelerate,
             child: Container(
-              width: !isScrolling.value ? 50 : null,
-              height: !isScrolling.value ? 50 : null,
-              // width: !isScrolling.value
+              width: !isScrollingStop.value ? 50 : null,
+              height: !isScrollingStop.value ? 50 : null,
+              // width: !isScrollingStop.value
               //     ? null
               //     : Globals.deviceType == 'phone'
               //         ? 150
               //         : 210,
               child: FloatingActionButton.extended(
                   heroTag: null,
-                  isExtended: isScrolling.value,
+                  isExtended: isScrollingStop.value,
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
                     if (widget.googleClassroomCourseList.length == 0) {
@@ -248,7 +248,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                       );
                     }
                   },
-                  icon: isScrolling.value
+                  icon: isScrollingStop.value
                       ? Container()
                       : Container(
                           //  alignment: Alignment.center,
@@ -265,7 +265,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
 
                           //     ),
                         ),
-                  label: !isScrolling.value
+                  label: !isScrollingStop.value
                       ? Container()
                       : Utility.textWidget(
                           text: 'Scan Assignment',
@@ -471,19 +471,28 @@ class _CoursesListScreenState extends State<CoursesListScreen>
     }
   }
 
-  bool onNotification(ScrollNotification t) {
+  bool onNotification(ScrollNotification scrollNotification) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (t.metrics.pixels < 150 && t.metrics.pixels >= 0) {
-        if (isScrolling.value == false) isScrolling.value = true;
+      if (scrollNotification is ScrollUpdateNotification) {
+        isScrollingStop.value = false;
       } else {
-        //To prevent from negative value
-        if (t.metrics.pixels < 0 == false && isScrolling.value == true)
-          isScrolling.value = false;
+        isScrollingStop.value = true;
       }
     });
 
     return true;
   }
+
+  // bool onNotification(ScrollNotification t) {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (t.metrics.pixels < 150 && t.metrics.pixels >= 0) {
+  //       if (isScrolling.value == false) isScrolling.value = true;
+  //     } else {
+  //       //To prevent from negative value
+  //       if (t.metrics.pixels < 0 == false && isScrolling.value == true)
+  //         isScrolling.value = false;
+  //     }
+  //   });
 
   popupModal({required String message, required String? title}) {
     return showDialog(

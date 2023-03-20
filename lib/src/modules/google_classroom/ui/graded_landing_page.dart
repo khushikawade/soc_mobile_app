@@ -119,10 +119,11 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
             backgroundColor: Colors.transparent,
             appBar: AppBarWidget(
               actionButton: Container(
-                padding: EdgeInsets.only(right: 10),
+                //   padding: EdgeInsets.only(right: 10),
                 child: Row(
                   children: [
                     IconButton(
+                        iconSize: 33,
                         onPressed: () async {
                           var result = await Navigator.of(context).push(
                             MaterialPageRoute(
@@ -132,7 +133,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                         },
                         icon: Icon(
                           Icons.help,
-                          size: 30,
+                          // size: 30,
                           color: AppTheme.kButtonColor,
                         )),
                     ValueListenableBuilder(
@@ -147,41 +148,72 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                 builder: (context,
                                     AsyncSnapshot<UserInformation> snapshot) {
                                   if (snapshot.hasData) {
-                                    return Container(
-                                      margin:
-                                          EdgeInsets.symmetric(vertical: 14),
-                                      padding: EdgeInsets.only(left: 5),
-                                      // margin: EdgeInsets.all(10),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(60),
-                                        ), //.circular(60),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProfilePage(
-                                                        profile: snapshot.data!,
-                                                      )),
-                                            );
+                                    return
 
-                                            // _showPopUp(snapshot.data!);
-                                            //print("profile url");
-                                          },
-                                          child: CachedNetworkImage(
-                                            // height: 20,
-                                            fit: BoxFit.cover,
-                                            imageUrl:
-                                                snapshot.data!.profilePicture!,
-                                            placeholder: (context, url) =>
-                                                CupertinoActivityIndicator(
-                                                    animating: true,
-                                                    radius: 10),
-                                          ),
+                                        // Container(
+                                        //   margin:
+                                        //       EdgeInsets.symmetric(vertical: 14),
+                                        //   padding: EdgeInsets.only(left: 5),
+                                        //   // margin: EdgeInsets.all(10),
+                                        //   child: ClipRRect(
+                                        //     borderRadius: BorderRadius.all(
+                                        //       Radius.circular(60),
+                                        //     ), //.circular(60),
+                                        //     child: GestureDetector(
+                                        //       onTap: () {
+                                        //         Navigator.push(
+                                        //           context,
+                                        //           MaterialPageRoute(
+                                        //               builder: (context) =>
+                                        //                   ProfilePage(
+                                        //                     profile: snapshot.data!,
+                                        //                   )),
+                                        //         );
+
+                                        //         // _showPopUp(snapshot.data!);
+                                        //         //print("profile url");
+                                        //       },
+                                        //       child: CachedNetworkImage(
+                                        //         // height: 20,
+                                        //         fit: BoxFit.cover,
+                                        //         imageUrl:
+                                        //             snapshot.data!.profilePicture!,
+                                        //         placeholder: (context, url) =>
+                                        //             CupertinoActivityIndicator(
+                                        //                 animating: true,
+                                        //                 radius: 10),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // );
+
+                                        IconButton(
+                                      icon: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(50),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          height: 28,
+                                          width: 28,
+                                          imageUrl:
+                                              snapshot.data!.profilePicture!,
+                                          placeholder: (context, url) =>
+                                              CupertinoActivityIndicator(
+                                                  animating: true, radius: 10),
                                         ),
                                       ),
+                                      onPressed: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ProfilePage(
+                                                    profile: snapshot.data!,
+                                                  )),
+                                        );
+
+                                        // _showPopUp(snapshot.data!);
+                                        //print("profile url");
+                                      },
                                     );
                                   }
                                   return Container();

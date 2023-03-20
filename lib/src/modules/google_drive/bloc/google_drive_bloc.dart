@@ -25,6 +25,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/db_service.dart';
 import 'package:path/path.dart';
+import '../../google_classroom/google_classroom_globals.dart';
 import '../../ocr/modal/custom_rubic_modal.dart';
 import '../../ocr/modal/student_assessment_info_modal.dart';
 import 'package:dio/dio.dart';
@@ -152,56 +153,48 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     else if (event is UpdateGoogleSlideOnScanMore) {
       try {
         yield ShowLoadingDialog();
+
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
-        LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
-            LocalDatabase('history_student_info');
-        List<StudentAssessmentInfo> assessmentData =
-            await _studentInfoDb.getData();
 
-        for (var i = 0; i < assessmentData.length; i++) {
-          if (assessmentData[i].assessmentImage == null ||
-              assessmentData[i].assessmentImage!.isEmpty) {
-            String imgExtension = assessmentData[i]
+        // List<StudentAssessmentInfo> assessmentDataList =
+        //     await event.studentInfoDb.getData();
+
+        List<StudentAssessmentInfo> assessmentDataList =
+            List.unmodifiable(await event.studentInfoDb.getData());
+        for (var i = 0; i < assessmentDataList.length; i++) {
+          if ((assessmentDataList[i].assessmentImage == null ||
+                  assessmentDataList[i].assessmentImage!.isEmpty) &&
+              (assessmentDataList[i].assessmentImgPath?.isNotEmpty ?? false)) {
+            String imgExtension = assessmentDataList[i]
                 .assessmentImgPath!
                 .substring(
-                    assessmentData[i].assessmentImgPath!.lastIndexOf(".") + 1);
+                    assessmentDataList[i].assessmentImgPath!.lastIndexOf(".") +
+                        1);
 
             File assessmentImageFile =
-                File(assessmentData[i].assessmentImgPath!);
+                File(assessmentDataList[i].assessmentImgPath!);
 
             List<int> imageBytes = assessmentImageFile.readAsBytesSync();
 
             String imageB64 = base64Encode(imageBytes);
 
-            String imgUrl = await _uploadImgB64AndGetUrl(
+            String? imgUrl = await uploadImgB64AndGetUrl(
                 imgBase64: imageB64,
                 imgExtension: imgExtension,
                 section: "assessment-sheet");
 
-            if (imgUrl != "") {
-              assessmentData[i].assessmentImage = imgUrl;
+            if (imgUrl?.isNotEmpty ?? false) {
+              assessmentDataList[i].assessmentImage = imgUrl;
+              await event.studentInfoDb.putAt(i, assessmentDataList[i]);
             }
           }
         }
-        //clear local DB
-        _studentInfoDb.clear();
-
-        //updating local DB with latest data
-        assessmentData.forEach((StudentAssessmentInfo e) {
-          _studentInfoDb.addData(e);
-        });
-        List<StudentAssessmentInfo> newList = [];
-        newList.addAll(assessmentData);
-        Utility.updateAssessmentToDb(
-          studentInfoList: newList,
-          assessmentId: Globals.historyAssessmentId,
-        );
 
         // Create new Google presentation in case already not exist // Will work for all the existing assessment which are not having already google slide presentation in case of scan more
         if (event.slidePresentationId == 'NA') {
           //To create Google Presentation
-          String googleSlideId = await createSlideOnDrive(
+          List result = await createSlideOnDrive(
             isMcqSheet: event.isMcqSheet,
             excelSheetId: Globals.googleExcelSheetId,
             name: event.assessmentName, //event.fileTitle!,
@@ -210,68 +203,107 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             refreshToken: _userProfileLocalData[0].refreshToken,
           );
 
+          //
+          // await createBlankSlidesInGooglePresentation(
+          //     googleSlideId,
+          //     _userProfileLocalData[0].authorizationToken,
+          //     _userProfileLocalData[0].refreshToken,
+          //     isFromHistoryAssessment: false, //event.isFromHistoryAssessment,
+          //     studentRecordList: assessmentData,
+          //     isScanMore: false);
+
+          //
+          // await updateAssessmentImageToSlidesOnDrive(
+          //     googleSlideId,
+          //     _userProfileLocalData[0].authorizationToken,
+          //     _userProfileLocalData[0].refreshToken,
+          //     assessmentData,
+          //     _studentInfoDb);
           //To add one or more blank slides in Google Presentation
-          await createBlankSlidesInGooglePresentation(
-              googleSlideId,
-              _userProfileLocalData[0].authorizationToken,
-              _userProfileLocalData[0].refreshToken,
-              isFromHistoryAssessment: false, //event.isFromHistoryAssessment,
-              studentRecordList: assessmentData,
+//To update scanned images in the Google Slides
+          await addAndUpdateStudentAssessmentDetailsToSlide(
+              presentationId: result[1] ?? '',
+              accessToken: _userProfileLocalData[0].authorizationToken ?? '',
+              refreshToken: _userProfileLocalData[0].refreshToken ?? '',
+              studentInfoDb: event.studentInfoDb,
               isScanMore: false);
 
-          //To update scanned images in the Google Slides
-          await updateAssessmentImageToSlidesOnDrive(
-              googleSlideId,
+          //Used to update assessment detail on very fisrt slide of the google presentation
+          await _updateAssignmentDetailsOnSlide(
+              result[1] ?? '',
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
-              assessmentData);
+              '12345',
+              event.studentInfoDb,
+              // assessmentDataList[0],
+              event.assessmentName);
 
           //Get the Google Presentation URL
-          String shareLink = await _getShareableLink(
-            fileId: googleSlideId,
+          List res = await _getShareableLink(
+            fileId: result[1],
             token: _userProfileLocalData[0].authorizationToken!,
             refreshToken: _userProfileLocalData[0].refreshToken,
           );
 
-          //Updating Google Presentation URL in the sheet where the URL doen't exist
-          for (var i = 0; i < assessmentData.length; i++) {
-            if (assessmentData[i].googleSlidePresentationURL == null ||
-                assessmentData[i].googleSlidePresentationURL!.isEmpty ||
-                assessmentData[i].googleSlidePresentationURL == 'NA') {
-              assessmentData[i].googleSlidePresentationURL = shareLink;
-            }
+          if (res[0]) {
+            // update googleslidespresentaion url on student info data list to update the Google Excel Sheet
+            assessmentDataList.forEach((element) {
+              if ((element.googleSlidePresentationURL?.isEmpty ?? true) ||
+                  element.googleSlidePresentationURL == 'NA') {
+                element.googleSlidePresentationURL = res[1];
+              }
+            });
+            yield GoogleSheetUpdateOnScanMoreSuccess(
+                list: List.from(assessmentDataList));
+          } else {
+            yield ErrorState(errorMsg: res[1].toString());
           }
-          yield GoogleSheetUpdateOnScanMoreSuccess(list: assessmentData);
         } else {
-          List<StudentAssessmentInfo> list = [];
-
-          list.addAll(assessmentData);
-          //   list.removeRange(0, event.lastAssessmentLength);
-
-          if (list.isNotEmpty) {
-            for (int i = 0; i < event.lastAssessmentLength; i++) {
-              list[i].slideObjectId = 'AlreadyUpdated';
-            }
-            //To create Google Presentation
-            await createBlankSlidesInGooglePresentation(
-                event.slidePresentationId,
-                _userProfileLocalData[0].authorizationToken,
-                _userProfileLocalData[0].refreshToken,
-                studentRecordList: list,
-                isFromHistoryAssessment: event.isFromHistoryAssessment,
-                isScanMore: true);
-
-            //To update scanned images in the Google Slides
-            await updateAssessmentImageToSlidesOnDrive(
-                event.slidePresentationId,
-                _userProfileLocalData[0].authorizationToken,
-                _userProfileLocalData[0].refreshToken,
-                list);
-            yield GoogleSheetUpdateOnScanMoreSuccess(list: assessmentData);
+          //Execute when presentation already exist and we need to add only new slides for new scans
+          for (int index = 0;
+              index < event.lastAssessmentLength &&
+                  index < assessmentDataList.length;
+              index++) {
+            assessmentDataList[index].isSlideObjUpdated = true;
+            await event.studentInfoDb.putAt(index, assessmentDataList[index]);
           }
+          // print(assessmentDataList);
+          // //To create Google Presentation
+          // await createBlankSlidesInGooglePresentation(
+          //     event.slidePresentationId,
+          //     _userProfileLocalData[0].authorizationToken,
+          //     _userProfileLocalData[0].refreshToken,
+          //     studentRecordList: list,
+          //     isFromHistoryAssessment: event.isFromHistoryAssessment,
+          //     isScanMore: true);
 
-          yield GoogleSheetUpdateOnScanMoreSuccess(list: assessmentData);
+          //To create Google Presentation
+          //To update scanned images in the Google Slides
+          String result = await addAndUpdateStudentAssessmentDetailsToSlide(
+              presentationId: event.slidePresentationId ?? '',
+              accessToken: _userProfileLocalData[0].authorizationToken ?? '',
+              refreshToken: _userProfileLocalData[0].refreshToken ?? '',
+              studentInfoDb: event.studentInfoDb,
+              isScanMore: true);
+          if (result == "Done") {
+            yield GoogleSheetUpdateOnScanMoreSuccess(
+                list: List.from(assessmentDataList));
+          } else {
+            yield ErrorState(errorMsg: result.toString());
+          }
+          //}
+
+          // yield GoogleSheetUpdateOnScanMoreSuccess(list: assessmentData);
         }
+
+        //Saving Scanned images to database for dashboard management //also using to train model
+        Utility.updateAssessmentToDb(
+            studentInfoList: List.from(assessmentDataList),
+            //assessmentId: Globals.historyAssessmentId,
+            assessmentId: GoogleClassroomGlobals
+                    .studentAssessmentAndClassroomObj.assessmentCId ??
+                '');
+        // yield ErrorState(errorMsg: 'ReAuthentication is required');
       } catch (e) {
         yield ErrorState(errorMsg: e.toString());
         throw (e);
@@ -310,7 +342,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             List<int> imageBytes = assessmentImageFile.readAsBytesSync();
             String imageB64 = base64Encode(imageBytes);
 
-            String imgUrl = await _uploadImgB64AndGetUrl(
+            String imgUrl = await uploadImgB64AndGetUrl(
                 imgBase64: imageB64,
                 imgExtension: imgExtension,
                 section: "assessment-sheet");
@@ -391,7 +423,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 String imgExtension = assessmentImageFile.path
                     .substring(assessmentImageFile.path.lastIndexOf(".") + 1);
 
-                String imgUrl = await _uploadImgB64AndGetUrl(
+                String imgUrl = await uploadImgB64AndGetUrl(
                     imgBase64: customRubicModal.imgBase64,
                     imgExtension: imgExtension,
                     section: 'rubric-score');
@@ -559,7 +591,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               searchKey: event.searchKeyword ?? "");
           List<HistoryAssessment>? mainListWithSlideAndSheet =
               pair != null && pair.length > 0 ? pair[0] : [];
-
           if (mainListWithSlideAndSheet == null) {
             yield ErrorState(errorMsg: 'ReAuthentication is required');
           } else {
@@ -726,7 +757,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               savePath);
-
+          print(summaryList);
           if (summaryList != []) {
             bool deleted = await GoogleDriveAccess.deleteFile(File(savePath));
             if (!deleted) {
@@ -769,7 +800,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is ImageToAwsBucket) {
       try {
         // print(event.getImageUrl);
-        String imgUrl = await _uploadImgB64AndGetUrl(
+        String imgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.customRubricModal.imgBase64,
             imgExtension: Utility.getBase64FileExtension(
                 event.customRubricModal.imgBase64!),
@@ -791,7 +822,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
     if (event is AssessmentImgToAwsBucked) {
       try {
-        String imgUrl = await _uploadImgB64AndGetUrl(
+        String imgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: "assessment-sheet");
@@ -833,7 +864,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       try {
         yield GoogleDriveLoading();
 
-        String questionImgUrl = await _uploadImgB64AndGetUrl(
+        String questionImgUrl = await uploadImgB64AndGetUrl(
             imgBase64: event.imgBase64,
             imgExtension: event.imgExtension,
             section: 'rubric-score');
@@ -851,19 +882,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        String link = await _getShareableLink(
+        List res = await _getShareableLink(
             fileId: event.fileId ?? '',
             refreshToken: _userProfileLocalData[0].refreshToken,
             token: _userProfileLocalData[0].authorizationToken!);
 
-        if (link != '' && link != 'ReAuthentication is required') {
+        if (res[0]) {
           if (!event.slideLink) {
-            Globals.shareableLink = link;
+            Globals.shareableLink = res[1];
           } else {
-            yield ShareLinkReceived(shareLink: link);
+            yield ShareLinkReceived(shareLink: res[1]);
           }
-        } else if (link == 'ReAuthentication is required') {
-          yield ErrorState(errorMsg: 'ReAuthentication is required');
+        } else {
+          yield ErrorState(errorMsg: res[1]);
         }
       } catch (e) {
         yield ErrorState(errorMsg: e.toString());
@@ -888,35 +919,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       }
     }
 
-    if (event is AddBlankSlidesOnDrive) {
-      yield ShowLoadingDialog();
-      try {
-        List<UserInformation> _userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
-
-        String result = await createBlankSlidesInGooglePresentation(
-            event.slidePresentationId!,
-            _userProfileLocalData[0].authorizationToken,
-            _userProfileLocalData[0].refreshToken,
-            isFromHistoryAssessment: false,
-            isScanMore: event.isScanMore);
-
-        if (result == "Done") {
-          yield AddBlankSlidesOnDriveSuccess();
-        } else {
-          yield ErrorState(errorMsg: result.toString());
-        }
-      } catch (e) {
-        yield ErrorState(errorMsg: e.toString());
-      }
-    }
-
     if (event is CreateSlideToDrive) {
       try {
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        String result = await createSlideOnDrive(
+        List result = await createSlideOnDrive(
             isMcqSheet: event.isMcqSheet,
             name: event.fileTitle!,
             folderId: Globals.googleDriveFolderId,
@@ -925,67 +933,65 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             excelSheetId: event.excelSheetId
             //  image: file
             );
-        if (result == '') {
-          CreateSlideToDrive(
-              fileTitle: event.fileTitle,
-              excelSheetId: event.excelSheetId,
-              isMcqSheet: event.isMcqSheet);
-        } else if (result == 'ReAuthentication is required') {
-          yield ErrorState(errorMsg: 'ReAuthentication is required');
+        if (result[0]) {
+          yield GoogleSlideCreated(slideFiledId: result[1]);
         } else {
-          yield GoogleSlideCreated(slideFiledId: result);
+          yield ErrorState(errorMsg: result[1]);
         }
       } catch (e) {
         yield ErrorState(errorMsg: e.toString());
       }
     }
-    if (event is UpdateAssessmentImageToSlidesOnDrive) {
-      try {
-        List<UserInformation> _userProfileLocalData =
-            await UserGoogleProfile.getUserProfile();
 
-        LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
-            LocalDatabase('student_info');
-        List<StudentAssessmentInfo> assessmentData =
-            await _studentInfoDb.getData();
-        for (var i = 0; i < assessmentData.length; i++) {
-          if (assessmentData[i].assessmentImage == null ||
-              assessmentData[i].assessmentImage!.isEmpty) {
-            String imgExtension = assessmentData[i]
-                .assessmentImgPath!
-                .substring(
-                    assessmentData[i].assessmentImgPath!.lastIndexOf(".") + 1);
-            File assessmentImageFile =
-                File(assessmentData[i].assessmentImgPath!);
-            List<int> imageBytes = assessmentImageFile.readAsBytesSync();
-            String imageB64 = base64Encode(imageBytes);
+    // if (event is UpdateAssessmentImageToSlidesOnDrive) {
+    //   try {
+    //     List<UserInformation> _userProfileLocalData =
+    //         await UserGoogleProfile.getUserProfile();
 
-            String imgUrl = await _uploadImgB64AndGetUrl(
-                imgBase64: imageB64,
-                imgExtension: imgExtension,
-                section: "assessment-sheet");
+    //     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+    //         LocalDatabase('student_info');
+    //     List<StudentAssessmentInfo> assessmentData =
+    //         await _studentInfoDb.getData();
+    //     for (var i = 0; i < assessmentData.length; i++) {
+    //       if (assessmentData[i].assessmentImage == null ||
+    //           assessmentData[i].assessmentImage!.isEmpty) {
+    //         String imgExtension = assessmentData[i]
+    //             .assessmentImgPath!
+    //             .substring(
+    //                 assessmentData[i].assessmentImgPath!.lastIndexOf(".") + 1);
+    //         File assessmentImageFile =
+    //             File(assessmentData[i].assessmentImgPath!);
+    //         List<int> imageBytes = assessmentImageFile.readAsBytesSync();
+    //         String imageB64 = base64Encode(imageBytes);
 
-            if (imgUrl != "") {
-              assessmentData[i].assessmentImage = imgUrl;
-              await _studentInfoDb.putAt(i, assessmentData[i]);
-            }
-          }
-        }
+    //         String imgUrl = await uploadImgB64AndGetUrl(
+    //             imgBase64: imageB64,
+    //             imgExtension: imgExtension,
+    //             section: "assessment-sheet");
 
-        String result = await updateAssessmentImageToSlidesOnDrive(
-            event.slidePresentationId!,
-            _userProfileLocalData[0].authorizationToken,
-            _userProfileLocalData[0].refreshToken,
-            assessmentData);
+    //         if (imgUrl != "") {
+    //           assessmentData[i].assessmentImage = imgUrl;
+    //           await _studentInfoDb.putAt(i, assessmentData[i]);
+    //         }
+    //       }
+    //     }
 
-        if (result == "Done") {
-          yield GoogleAssessmentImagesOnSlidesUpdated();
-        } else {}
-      } catch (e) {
-        yield ErrorState(errorMsg: e.toString());
-      }
-    }
+    //     String result = await updateAssessmentImageToSlidesOnDrive(
+    //         event.slidePresentationId!,
+    //         _userProfileLocalData[0].authorizationToken,
+    //         _userProfileLocalData[0].refreshToken,
+    //         assessmentData,
+    //         _studentInfoDb);
 
+    //     if (result == "Done") {
+    //       yield GoogleAssessmentImagesOnSlidesUpdated();
+    //     } else {}
+    //   } catch (e) {
+    //     yield ErrorState(errorMsg: e.toString());
+    //   }
+    // }
+
+//Used to update first slide of the presentation only
     if (event is UpdateAssignmentDetailsOnSlide) {
       try {
         List<UserInformation> _userProfileLocalData =
@@ -997,7 +1003,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             _userProfileLocalData[0].authorizationToken,
             _userProfileLocalData[0].refreshToken,
             '12345',
-            event.studentAssessmentInfoObj);
+            event.studentAssessmentInfoDB,
+            Globals.assessmentName ?? '');
 
         if (result == "Done") {
           yield UpdateAssignmentDetailsOnSlideSuccess();
@@ -1012,13 +1019,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 //Performing both create and update detail to slide together
     if (event is AddAndUpdateAssessmentImageToSlidesOnDrive) {
       try {
+        yield ShowLoadingDialog();
+
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
-            LocalDatabase('student_info');
+        // LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        //     LocalDatabase('student_info');
         List<StudentAssessmentInfo> assessmentData =
-            await _studentInfoDb.getData();
+            await event.studentInfoDb.getData();
 
         for (var i = 0; i < assessmentData.length; i++) {
           if (assessmentData[i].assessmentImage == null ||
@@ -1032,32 +1041,90 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             List<int> imageBytes = assessmentImageFile.readAsBytesSync();
             String imageB64 = base64Encode(imageBytes);
 
-            String imgUrl = await _uploadImgB64AndGetUrl(
+            String imgUrl = await uploadImgB64AndGetUrl(
                 imgBase64: imageB64,
                 imgExtension: imgExtension,
                 section: "assessment-sheet");
 
-            if (imgUrl != "") {
+            if (imgUrl?.isNotEmpty ?? false) {
               assessmentData[i].assessmentImage = imgUrl;
-              await _studentInfoDb.putAt(i, assessmentData[i]);
+              await event.studentInfoDb.putAt(i, assessmentData[i]);
             }
           }
         }
 
-        String result = await addAndUpdateAssessmentImageToSlidesOnDrive(
-            event.slidePresentationId!,
-            _userProfileLocalData[0].authorizationToken,
-            _userProfileLocalData[0].refreshToken,
-            assessmentData,
-            _studentInfoDb);
+        // assessmentData.asMap().forEach((index, element) async {
+        //   if ((element.assessmentImage?.isEmpty ?? true) &&
+        //       (element.assessmentImgPath?.isNotEmpty ?? false)) {
+        //     String imgExtension = element.assessmentImgPath!
+        //         .substring(element.assessmentImgPath!.lastIndexOf(".") + 1);
+
+        //     File assessmentImageFile = File(element.assessmentImgPath!);
+
+        //     List<int> imageBytes = assessmentImageFile.readAsBytesSync();
+
+        //     String imageB64 = base64Encode(imageBytes);
+
+        //     String imgUrl = await uploadImgB64AndGetUrl(
+        //         imgBase64: imageB64,
+        //         imgExtension: imgExtension,
+        //         section: "assessment-sheet");
+
+        //     if (imgUrl?.isEmpty ?? false) {
+        //       element.assessmentImage = imgUrl;
+        //       await event.studentInfoDb.putAt(index, element);
+        //     }
+        //   }
+        // });
+
+        String result = await addAndUpdateStudentAssessmentDetailsToSlide(
+            presentationId: event.slidePresentationId ?? '',
+            accessToken: _userProfileLocalData[0].authorizationToken ?? '',
+            refreshToken: _userProfileLocalData[0].refreshToken ?? '',
+            studentInfoDb: event.studentInfoDb,
+            isScanMore: event.isScanMore);
 
         if (result == "Done") {
-          yield AddAndUpdateAssessmentImageToSlidesOnDriveSuccess();
+          yield AddAndUpdateStudentAssessmentDetailsToSlideSuccess();
         } else {
           yield ErrorState(errorMsg: result.toString());
         }
       } catch (e) {
         yield ErrorState(errorMsg: e.toString());
+      }
+    }
+//
+
+    //deleting slide from presentation
+    if (event is DeleteSlideFromPresentation) {
+      try {
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        deleteSlide(
+          slideObjId: event.slideObjId!,
+          presentationId: event.slidePresentationId,
+          refreshToken: _userProfileLocalData[0].refreshToken,
+          accessToken: _userProfileLocalData[0].authorizationToken,
+        );
+      } catch (e) {
+        print(e);
+      }
+    }
+
+    if (event is EditSlideFromPresentation) {
+      try {
+        //updating the student record on sldies
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+        _editSlideFromPresentation(
+          studentAssessmentInfo: event.studentAssessmentInfo,
+          presentationId: event.slidePresentationId,
+          refreshToken: _userProfileLocalData[0].refreshToken,
+          accessToken: _userProfileLocalData[0].authorizationToken,
+        );
+      } catch (e) {
+        print(e);
       }
     }
   }
@@ -1068,11 +1135,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     Navigator.pop(context!);
   }
 
+//Waiting for excel sheet Id to process the data
   void checkForGoogleExcelId() async {
     try {
-      if (Globals.googleExcelSheetId!.isEmpty) {
+      if (Globals.googleExcelSheetId?.isEmpty ?? true) {
         await Future.delayed(Duration(milliseconds: 200));
-
         checkForGoogleExcelId();
       }
     } catch (e) {
@@ -1552,6 +1619,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _list[i].isCreatedAsPremium = assessmentList[j].createdAsPremium;
               _list[i].assessmentType = assessmentList[j].assessmentType;
               _list[i].assessmentId = assessmentList[j].assessmentId;
+              _list[i].classroomCourseId = assessmentList[j].classroomCourseId;
+              _list[i].classroomCourseWorkId =
+                  assessmentList[j].classroomCourseWorkId;
             }
           }
         }
@@ -1627,10 +1697,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  _getShareableLink(
+  Future<List> _getShareableLink(
       {required String token,
       required String fileId,
-      required String? refreshToken}) async {
+      required String? refreshToken,
+      int retry = 3}) async {
     try {
       Map<String, String> headers = {
         'Content-Type': 'application/json',
@@ -1642,26 +1713,21 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isCompleteUrl: true);
 
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
-        return response.data['body']['webViewLink'];
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
-        _totalRetry++;
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        return [true, response.data['body']['webViewLink']];
+      } else if (retry > 0) {
         var result = await _toRefreshAuthenticationToken(refreshToken!);
         if (result == true) {
-          String link = await _getShareableLink(
-              token: token, fileId: fileId, refreshToken: refreshToken);
-          return link;
-        } else {
-          return 'ReAuthentication is required';
+          return await _getShareableLink(
+              retry: retry - 1,
+              token: token,
+              fileId: fileId,
+              refreshToken: refreshToken);
         }
       }
-      return "";
+      return [false, 'ReAuthentication is required'];
     } catch (e) {
-      throw (e);
+      return [false, e.toString()];
     }
   }
 
@@ -2069,48 +2135,55 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> _uploadImgB64AndGetUrl(
+  Future<String> uploadImgB64AndGetUrl(
       {required String? imgBase64,
       required String? imgExtension,
-      required String? section}) async {
-    // print(imgExtension);
-    Map body = {
-      "bucket": "graded/$section",
-      "fileExtension": imgExtension,
-      "image": imgBase64
-    };
-    // Map<String, String> headers = {
-    //   'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-    // };
+      required String? section,
+      int retry = 3}) async {
+    try {
+      // print(imgExtension);
+      Map body = {
+        "bucket": "graded/$section",
+        "fileExtension": imgExtension,
+        "image": imgBase64
+      };
+      // Map<String, String> headers = {
+      //   'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      // };
 
-    final ResponseModel response = await _dbServices.postApi(
-        "${OcrOverrides.OCR_API_BASE_URL}/uploadImage",
-        body: body,
-        // headers: headers,
-        isGoogleApi: true);
+      final ResponseModel response = await _dbServices.postApi(
+          "${OcrOverrides.OCR_API_BASE_URL}/uploadImage",
+          body: body,
+          // headers: headers,
+          isGoogleApi: true);
 
-    if (response.statusCode != 401 &&
-        response.statusCode == 200 &&
-        response.data['statusCode'] != 500) {
-      return response.data['body']['Location'];
-    } else if ((response.statusCode == 401 ||
-            response.data['statusCode'] == 500) &&
-        _totalRetry < 3) {
-      _totalRetry++;
-      return await _uploadImgB64AndGetUrl(
-          imgBase64: imgBase64, imgExtension: imgExtension, section: section);
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        return response.data['body']['Location'];
+      } else if (retry > 0) {
+        return await uploadImgB64AndGetUrl(
+            retry: retry - 1,
+            imgBase64: imgBase64,
+            imgExtension: imgExtension,
+            section: section);
+      }
+      return "";
+    } catch (e) {
+      return "";
     }
-    return "";
   }
 
-  deleteFirstSlide(
-      {String? presentationId,
-      String? accessToken,
-      String? refreshToken}) async {
+  deleteSlide(
+      {required String? presentationId,
+      required String? accessToken,
+      required String? refreshToken,
+      required String? slideObjId,
+      int retry = 3}) async {
     Map body = {
       "requests": [
         {
-          "deleteObject": {"objectId": "p"}
+          "deleteObject": {
+            "objectId": slideObjId // "p"
+          }
         }
       ]
     };
@@ -2130,17 +2203,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
         return true;
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
+      } else if (retry > 0) {
         _totalRetry++;
-        //To regernerate fresh access token
+
+        //To regenerate fresh access token
         var result = await _toRefreshAuthenticationToken(refreshToken!);
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
-          bool result = await deleteFirstSlide(
+          bool result = await deleteSlide(
+            retry: retry - 1,
+            slideObjId: slideObjId,
             presentationId: presentationId,
             accessToken: _userProfileLocalData[0].authorizationToken,
             refreshToken: _userProfileLocalData[0].refreshToken,
@@ -2157,13 +2231,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> createSlideOnDrive(
+  Future<List> createSlideOnDrive(
       {String? name,
       String? folderId,
       String? accessToken,
       String? refreshToken,
       required String? excelSheetId,
-      required bool isMcqSheet}) async {
+      required bool isMcqSheet,
+      int retry = 3}) async {
     Map body = {
       'name': name,
       'mimeType': 'application/vnd.google-apps.presentation',
@@ -2184,17 +2259,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isGoogleApi: true);
 
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
-        deleteFirstSlide(
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        deleteSlide(
+            slideObjId:
+                "p", //default first slide object ID//Always delete this to change the type of slide
             accessToken: accessToken,
             refreshToken: refreshToken,
             presentationId: response.data['body']['id']);
-        return response.data['body']['id'];
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
+        return [true, response.data['body']['id']];
+      } else if (retry > 0) {
         _totalRetry++;
         //To regernerate fresh access token
         var result = await _toRefreshAuthenticationToken(refreshToken!);
@@ -2202,22 +2275,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
-          String result = await createSlideOnDrive(
+          return await createSlideOnDrive(
               isMcqSheet: isMcqSheet,
               name: name!,
               folderId: folderId,
               accessToken: _userProfileLocalData[0].authorizationToken,
               refreshToken: _userProfileLocalData[0].refreshToken,
-              excelSheetId: excelSheetId);
-          return result;
-        } else {
-          return 'ReAuthentication is required';
+              excelSheetId: excelSheetId,
+              retry: retry - 1);
         }
       }
-      return '';
+      return [false, 'ReAuthentication is required'];
     } catch (e) {
-      print(e);
-      throw (e);
+      return [false, e.toString()];
     }
   }
 
@@ -2279,11 +2349,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String? presentationId,
       String? accessToken,
       String? refreshToken,
-      List<StudentAssessmentInfo> assessmentData) async {
+      List<StudentAssessmentInfo> assessmentData,
+      LocalDatabase<StudentAssessmentInfo> _studentInfoDb) async {
     try {
       Map body = {
         "requests": prepareStudentAssessmentImageRequestBody(
-            assessmentData: assessmentData)
+          assessmentData: assessmentData,
+          studentInfoDb: _studentInfoDb,
+        )
       };
 
       Map<String, String> headers = {
@@ -2311,7 +2384,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               presentationId,
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
-              assessmentData);
+              assessmentData,
+              _studentInfoDb);
           return result;
         } else {
           return 'ReAuthentication is required';
@@ -2324,8 +2398,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }
 
   List<Map> prepareStudentAssessmentImageRequestBody(
-      {required List<StudentAssessmentInfo> assessmentData}) {
-    // print(assessmentData);
+      {required List<StudentAssessmentInfo> assessmentData,
+      required LocalDatabase<StudentAssessmentInfo> studentInfoDb}) {
     List<String> listOfFields = [
       'Student Name',
       'Student ID',
@@ -2335,8 +2409,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     List<Map> body = [];
     assessmentData.asMap().forEach((index, element) {
-      if (element.slideObjectId != "AlreadyUpdated") {
-        // print(element);
+      if (!element.isSlideObjUpdated) {
         Map obj = {
           "createImage": {
             "url": element.assessmentImage,
@@ -2346,12 +2419,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             "objectId": DateTime.now().microsecondsSinceEpoch.toString()
           }
         };
-        String tableObjectId = DateTime.now().microsecondsSinceEpoch.toString();
+        String tableObjectuniqueId =
+            DateTime.now().microsecondsSinceEpoch.toString();
         Map table = {
           "createTable": {
             "rows": listOfFields.length, //pass no. of names
             "columns": 2, //key:value
-            "objectId": tableObjectId,
+            "objectId": tableObjectuniqueId,
             "elementProperties": {
               "pageObjectId": element.slideObjectId,
               "size": {
@@ -2375,7 +2449,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             body.add(
               {
                 "insertText": {
-                  "objectId": tableObjectId,
+                  "objectId": tableObjectuniqueId,
                   "cellLocation": {
                     "rowIndex": rowIndex,
                     "columnIndex": columnIndex
@@ -2389,6 +2463,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             );
           }
         });
+        element.isSlideObjUpdated = true;
+        element.slideTableObjId = tableObjectuniqueId;
+        studentInfoDb.putAt(index, element);
       }
     });
     return body;
@@ -2430,7 +2507,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           ];
     // print(slideObjects);
     assessmentData.asMap().forEach((index, element) async {
-      if (element.slideObjectId == null || element.slideObjectId!.isEmpty) {
+      if (!element.isSlideObjUpdated) {
         String uniqueId = DateTime.now().microsecondsSinceEpoch.toString();
 
         // Preparing blank slide type to add assessment images
@@ -2445,11 +2522,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         element.slideObjectId = uniqueId;
 
         //updating local database with slideObjectId
-        await _studentInfoDb.putAt(index, element);
-      } else {
-        element.slideObjectId = "AlreadyUpdated";
+        // element.isSlideObjUpdated = true;
         await _studentInfoDb.putAt(index, element);
       }
+      // else {
+      //   element.isSlideObjUpdated = true;
+      //   await _studentInfoDb.putAt(index, element);
+      // }
     });
     return slideObjects;
   }
@@ -2460,12 +2539,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String? accessToken,
       String? refreshToken,
       String? slideObjectId,
-      StudentAssessmentInfo studentAssessmentInfoObj) async {
+      LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDB,
+      String assignmentName,
+      {int retry = 3}) async {
     try {
       var body = {
         "requests": await _getListOfAssignmentDetails(
-            assignmentName: Globals.assessmentName,
-            studentAssessmentInfoObj: studentAssessmentInfoObj)
+            assignmentName: assignmentName,
+            studentAssessmentInfoDB: studentAssessmentInfoDB)
       };
 
       Map<String, String> headers = {
@@ -2479,13 +2560,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           body: body,
           headers: headers,
           isGoogleApi: true);
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return 'Done';
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
+      } else if (retry > 0) {
         var result = await _toRefreshAuthenticationToken(refreshToken!);
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
@@ -2495,7 +2572,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               slideObjectId,
-              studentAssessmentInfoObj);
+              studentAssessmentInfoDB,
+              assignmentName,
+              retry: retry - 1);
           return result;
         } else {
           return 'ReAuthentication is required';
@@ -2507,9 +2586,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<List<Map>> _getListOfAssignmentDetails(
-      {required String? assignmentName,
-      required StudentAssessmentInfo studentAssessmentInfoObj}) async {
+//Updating first slide of presentation
+  Future<List<Map>> _getListOfAssignmentDetails({
+    required String? assignmentName,
+    required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDB,
+  }) async {
+    List<StudentAssessmentInfo> studentAssessmentInfoData =
+        await studentAssessmentInfoDB.getData();
+    StudentAssessmentInfo studentAssessmentInfoObj =
+        studentAssessmentInfoData[0];
+    print(studentAssessmentInfoObj);
     // check if question image is available or not
     bool? isQuestionImgUrlUpdate =
         studentAssessmentInfoObj.questionImgUrl != null &&
@@ -2599,6 +2685,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   String prepareTableCellValue(StudentAssessmentInfo studentAssessmentInfoObj,
       int index, String? assignmentName) {
     try {
+      print(index);
       // detail update on cell in slide table
       Map map = {
         0: assignmentName ?? 'NA',
@@ -2626,6 +2713,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
+//Use to update student information in each slide of the presentation
   prepareAssignmentTableCellValue(
       StudentAssessmentInfo studentAssessmentInfoObj,
       int index,
@@ -2640,16 +2728,199 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     return map[index] ?? 'NA';
   }
 
-  Future<String> addAndUpdateAssessmentImageToSlidesOnDrive(
-      String? presentationId,
-      String? accessToken,
-      String? refreshToken,
-      List<StudentAssessmentInfo> assessmentData,
-      LocalDatabase<StudentAssessmentInfo> _studentInfoDb) async {
+  Future<String> addAndUpdateStudentAssessmentDetailsToSlide(
+      {required String presentationId,
+      required String accessToken,
+      required String refreshToken,
+      required LocalDatabase<StudentAssessmentInfo> studentInfoDb,
+      required bool? isScanMore,
+      int retry = 3}) async {
+    try {
+      List<Map> slideRequiredObjectsList =
+          await prepareAddAndUpdateSlideRequestBody(
+              studentInfoDb: studentInfoDb, isScanMore: isScanMore);
+//if user tries to scan same existing assessment sheet, it will not add the that again in the list
+      if ((slideRequiredObjectsList?.isEmpty ?? true) &&
+          (isScanMore ?? false)) {
+        return 'Done';
+      }
+
+      Map body = {"requests": slideRequiredObjectsList};
+
+      Map<String, String> headers = {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json'
+      };
+
+      final ResponseModel response = await _dbServices.postApi(
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
+          body: body,
+          headers: headers,
+          isGoogleApi: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        List<StudentAssessmentInfo> assessmentData =
+            await studentInfoDb.getData();
+        // update the local-db only after slides updated on google drive to manage the next scan more sheets to not repeat in the list
+        assessmentData.asMap().forEach((index, element) async {
+          element.isSlideObjUpdated = true;
+          //updating local database with slideObjectId
+          await studentInfoDb.putAt(index, element);
+        });
+        return 'Done';
+      } else if (retry > 0) {
+        var result = await _toRefreshAuthenticationToken(refreshToken);
+        if (result == true) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+          String result = await addAndUpdateStudentAssessmentDetailsToSlide(
+              presentationId: presentationId,
+              accessToken: _userProfileLocalData[0].authorizationToken ?? '',
+              refreshToken: _userProfileLocalData[0].refreshToken ?? '',
+              studentInfoDb: studentInfoDb,
+              isScanMore: isScanMore,
+              retry: retry - 1);
+          return result;
+        }
+        //  else {
+        //   return 'ReAuthentication is required';
+        // }
+      }
+      return 'ReAuthentication is required';
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  prepareAddAndUpdateSlideRequestBody({
+    required LocalDatabase<StudentAssessmentInfo> studentInfoDb,
+    required bool? isScanMore,
+  }) async {
+    List<StudentAssessmentInfo> assessmentData = await studentInfoDb.getData();
+    // print(studentInfoDb);
+    // print(assessmentData);
+    List<String> listOfFields = [
+      'Student Name',
+      'Student ID',
+      'Points Earned',
+      'Points Possible'
+    ];
+
+// Preparing first blank slide
+    List<Map> slideRequiredObjectsList = (isScanMore ?? true)
+        ? []
+        : [
+            {
+              "createSlide": {
+                "objectId": "Slide1",
+                "slideLayoutReference": {"predefinedLayout": "BLANK"}
+              }
+            }
+          ];
+    // print(slideRequiredObjectsList);
+    // print(assessmentData);
+    try {
+      assessmentData.asMap().forEach((index, element) async {
+        if (!element.isSlideObjUpdated) {
+          String pageObjectuniqueId =
+              DateTime.now().microsecondsSinceEpoch.toString();
+
+          String tableObjectuniqueId =
+              DateTime.now().microsecondsSinceEpoch.toString();
+          // Preparing all other blank slide (based on student detail length) type to add assessment images
+          Map slideObject = {
+            "createSlide": {
+              "objectId": pageObjectuniqueId,
+              "slideLayoutReference": {"predefinedLayout": "BLANK"}
+            }
+          };
+
+          slideRequiredObjectsList.add(slideObject);
+
+// Preparing to update assignment sheet images - students
+          if (element.assessmentImage?.isNotEmpty ?? false) {
+            Map obj = {
+              "createImage": {
+                "url": element.assessmentImage,
+                "elementProperties": {
+                  "pageObjectId": pageObjectuniqueId,
+                },
+                "objectId": DateTime.now().microsecondsSinceEpoch.toString()
+              }
+            };
+            slideRequiredObjectsList.add(obj);
+          }
+          // print(slideRequiredObjectsList);
+// Preparing table and structure for each student slide
+          Map table = {
+            "createTable": {
+              "rows": listOfFields.length, //pass no. of names
+              "columns": 2, //key:value
+              "objectId": tableObjectuniqueId,
+              "elementProperties": {
+                "pageObjectId": pageObjectuniqueId,
+                "size": {
+                  "width": {"magnitude": 4000000, "unit": "EMU"},
+                  "height": {"magnitude": 3000000, "unit": "EMU"}
+                },
+                "transform": {
+                  "scaleX": 1,
+                  "scaleY": 1,
+                  "translateX": 3480600,
+                  "translateY": 1167820,
+                  "unit": "EMU"
+                }
+              },
+            }
+          };
+          slideRequiredObjectsList.add(table);
+
+          // Updating table with student information
+          listOfFields.asMap().forEach((rowIndex, value) {
+            for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
+              slideRequiredObjectsList.add(
+                {
+                  "insertText": {
+                    "objectId": tableObjectuniqueId,
+                    "cellLocation": {
+                      "rowIndex": rowIndex,
+                      "columnIndex": columnIndex
+                    },
+                    "text": columnIndex == 0
+                        ? listOfFields[rowIndex] //Keys
+                        : prepareAssignmentTableCellValue(element, rowIndex,
+                            assessmentData[0].pointPossible) //Values
+                  }
+                },
+              );
+            }
+          });
+
+          element.slideObjectId = pageObjectuniqueId;
+          // element.isSlideObjUpdated = true;
+          element.slideTableObjId = tableObjectuniqueId;
+          //updating local database with slideObjectId
+          await studentInfoDb.putAt(index, element);
+        }
+      });
+      //  print(assessmentData);
+      return slideRequiredObjectsList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  Future _editSlideFromPresentation(
+      {required StudentAssessmentInfo studentAssessmentInfo,
+      required String? presentationId,
+      required String? refreshToken,
+      required String? accessToken,
+      int retry = 3}) async {
     try {
       Map body = {
-        "requests": prepareAddAndUpdateSlideRequestBody(
-            assessmentData: assessmentData, studentInfoDb: _studentInfoDb)
+        "requests": prepareEditAndUpdateSlideRequestBody(
+            studentAssessmentInfo: studentAssessmentInfo)
       };
 
       Map<String, String> headers = {
@@ -2666,19 +2937,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
         return 'Done';
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
+      } else if (retry > 0) {
         var result = await _toRefreshAuthenticationToken(refreshToken!);
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
-          String result = await addAndUpdateAssessmentImageToSlidesOnDrive(
-              presentationId,
-              _userProfileLocalData[0].authorizationToken,
-              _userProfileLocalData[0].refreshToken,
-              assessmentData,
-              _studentInfoDb);
+
+          String result = await _editSlideFromPresentation(
+              retry: retry - 1,
+              studentAssessmentInfo: studentAssessmentInfo,
+              accessToken: _userProfileLocalData[0].authorizationToken,
+              presentationId: presentationId,
+              refreshToken: _userProfileLocalData[0].refreshToken);
           return result;
         } else {
           return 'ReAuthentication is required';
@@ -2690,109 +2960,40 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  prepareAddAndUpdateSlideRequestBody(
-      {required List<StudentAssessmentInfo> assessmentData,
-      required LocalDatabase<StudentAssessmentInfo> studentInfoDb}) {
-    // print(studentInfoDb);
-    // print(assessmentData);
-    List<String> listOfFields = [
-      'Student Name',
-      'Student ID',
-      'Points Earned',
-      'Points Possible'
-    ];
+  List prepareEditAndUpdateSlideRequestBody(
+      {required StudentAssessmentInfo studentAssessmentInfo}) {
+    try {
+      //request object
+      List<Map> slideObjects = [];
 
-// Preparing first blank slide
-    List<Map> slideObjects = [
-      {
-        "createSlide": {
-          "objectId": "Slide1",
-          "slideLayoutReference": {"predefinedLayout": "BLANK"}
+      //check before preparing body
+      if (studentAssessmentInfo.slideTableObjId != null &&
+          studentAssessmentInfo.slideTableObjId!.isNotEmpty) {
+        //index =3 showing number of cell we are updating in the slide table.
+        for (int index = 0; index < 3; index++) {
+          //delete the existing text from table cell
+          Map deleteTextObj = {
+            "deleteText": {
+              "objectId": studentAssessmentInfo.slideTableObjId,
+              "cellLocation": {"columnIndex": 1, "rowIndex": index}
+            }
+          };
+
+          // now updating new text on table cells
+          Map insertTextObj = {
+            "insertText": {
+              "objectId": studentAssessmentInfo.slideTableObjId,
+              "cellLocation": {"columnIndex": 1, "rowIndex": index},
+              "text": prepareAssignmentTableCellValue(
+                  studentAssessmentInfo, index, '')
+            }
+          };
+
+          //Adding both delete obj and updating text on request list body
+          slideObjects.add(deleteTextObj);
+          slideObjects.add(insertTextObj);
         }
       }
-    ];
-
-    try {
-      assessmentData.asMap().forEach((index, element) async {
-        if (element.slideObjectId == null || element.slideObjectId!.isEmpty) {
-          String uniqueId = DateTime.now().microsecondsSinceEpoch.toString();
-
-          // Preparing all other blank slide (based on student detail length) type to add assessment images
-          Map slideObject = {
-            "createSlide": {
-              "objectId": uniqueId,
-              "slideLayoutReference": {"predefinedLayout": "BLANK"}
-            }
-          };
-
-          slideObjects.add(slideObject);
-
-// Preparing to update assignment sheet images - students
-          Map obj = {
-            "createImage": {
-              "url": element.assessmentImage,
-              "elementProperties": {
-                "pageObjectId": uniqueId,
-              },
-              "objectId": DateTime.now().microsecondsSinceEpoch.toString()
-            }
-          };
-          slideObjects.add(obj);
-
-// Preparing table and structure for each student slide
-          Map table = {
-            "createTable": {
-              "rows": listOfFields.length, //pass no. of names
-              "columns": 2, //key:value
-              "objectId": "table$index",
-              "elementProperties": {
-                "pageObjectId": uniqueId,
-                "size": {
-                  "width": {"magnitude": 4000000, "unit": "EMU"},
-                  "height": {"magnitude": 3000000, "unit": "EMU"}
-                },
-                "transform": {
-                  "scaleX": 1,
-                  "scaleY": 1,
-                  "translateX": 3480600,
-                  "translateY": 1167820,
-                  "unit": "EMU"
-                }
-              },
-            }
-          };
-          slideObjects.add(table);
-
-          // Updating table with student information
-          listOfFields.asMap().forEach((rowIndex, value) {
-            for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
-              slideObjects.add(
-                {
-                  "insertText": {
-                    "objectId": "table$index",
-                    "cellLocation": {
-                      "rowIndex": rowIndex,
-                      "columnIndex": columnIndex
-                    },
-                    "text": columnIndex == 0
-                        ? listOfFields[rowIndex] //Keys
-                        : prepareAssignmentTableCellValue(element, rowIndex,
-                            assessmentData[0].pointPossible) //Values
-                  }
-                },
-              );
-            }
-          });
-
-          element.slideObjectId = uniqueId;
-
-          //updating local database with slideObjectId
-          await studentInfoDb.putAt(index, element);
-        } else {
-          element.slideObjectId = "AlreadyUpdated";
-          await studentInfoDb.putAt(index, element);
-        }
-      });
 
       return slideObjects;
     } catch (e) {

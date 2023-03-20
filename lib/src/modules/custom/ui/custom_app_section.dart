@@ -36,6 +36,7 @@ class _CustomAppSectionState extends State<CustomAppSection> {
   HomeBloc _homeBloc = HomeBloc();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<bool?> isURLSection = ValueNotifier<bool?>(false);
 
   @override
   void initState() {
@@ -118,9 +119,11 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                   isErrorState = true;
                 }
 
-                return
-                    // connected?
-                    ListView(
+                return ListView(
+                  physics:
+                      widget.customObj.sectionTemplate!.toLowerCase() == 'url'
+                          ? NeverScrollableScrollPhysics()
+                          : null,
                   shrinkWrap: true,
                   // mainAxisSize: MainAxisSize.max,
                   children: [
@@ -129,10 +132,18 @@ class _CustomAppSectionState extends State<CustomAppSection> {
                         builder: (BuildContext contxt, CustomState state) {
                           if (state is CustomInitial ||
                               state is CustomLoading) {
-                            return Center(child: CircularProgressIndicator());
+                            return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.8,
+                                alignment: Alignment.center,
+                                child: CircularProgressIndicator());
                           } else if (state is CustomDataSuccess) {
                             return Container(
-                              height: MediaQuery.of(context).size.height,
+                              height: widget.customObj.sectionTemplate!
+                                          .toLowerCase() ==
+                                      'url'
+                                  ? MediaQuery.of(context).size.height * 0.81
+                                  : MediaQuery.of(context).size.height,
                               child: CustomPages(
                                 scrollController: _scrollController,
                                 customList: state.obj,

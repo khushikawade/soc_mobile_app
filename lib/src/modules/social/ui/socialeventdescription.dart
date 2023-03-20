@@ -16,22 +16,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:visibility_detector/visibility_detector.dart';
 
 // ignore: must_be_immutable
 class SocialDescription extends StatelessWidget {
   Item object;
-
   String? language;
   int? index;
 
-  // final List? icons;
-  // final List? iconsName;
   SocialDescription({
     required this.object,
     this.language,
     this.index,
-    // required this.iconsName,
-    // required this.icons
   });
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
@@ -164,7 +160,7 @@ class SocialDescription extends StatelessWidget {
                     object.mediaContent != "") ||
                 (object.description != null &&
                     object.description != "" &&
-                    object.description != null &&
+                    // object.description != null &&
                     object.description.toString().contains("<img src=") &&
                     object.description.toString().split('"')[1] != "")
             ? Container(
@@ -272,7 +268,36 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
-    return Container(child: _buildItem(context));
+    return
+        // VisibilityDetector(
+        //     key: Key('rss-feed-post'),
+        //     onVisibilityChanged: (visibilityInfo) {
+        //       ActionInteractionButtonWidget(
+        //         // view: view,
+        //         isViewInteraction: true,
+        //         page: "social",
+        //         obj: object,
+        //         title:
+        //             object.title != "" && object.title != null ? object.title : "",
+        //         description:
+        //             object.title != "" && object.title != null ? object.title : "",
+        //         imageUrl: object.mediaContent != "" &&
+        //                 object.mediaContent != null &&
+        //                 object.mediaContent != "" &&
+        //                 object.mediaContent != null
+        //             ? object.mediaContent
+        //             : "",
+        //         imageExtType: object.mediaContent != "" &&
+        //                 object.mediaContent != null &&
+        //                 object.mediaContent.toString().split(".").last != "" &&
+        //                 object.mediaContent.toString().split(".").last != null
+        //             ? object.mediaContent.toString().split(".").last
+        //             : "",
+        //       );
+        //     },
+        //     child:
+        Container(child: _buildItem(context));
+    //  );
   }
 
   Future<String> _buildlink() async {

@@ -18,15 +18,21 @@ class GoogleClassroomCourses {
   List? studentList = [];
   @HiveField(6)
   String? enrollmentCode;
-
-  GoogleClassroomCourses(
-      {this.courseId,
-      this.name,
-      this.section,
-      this.descriptionHeading,
-      this.room,
-      this.studentList,
-      this.enrollmentCode});
+  @HiveField(7)
+  String? courseWorkId;
+  @HiveField(8)
+  String? assessmentCId;
+  GoogleClassroomCourses({
+    this.courseId = '',
+    this.name,
+    this.section,
+    this.descriptionHeading,
+    this.room,
+    this.studentList,
+    this.enrollmentCode,
+    this.courseWorkId = '',
+    this.assessmentCId,
+  });
 
   factory GoogleClassroomCourses.fromJson(Map<dynamic, dynamic> json) =>
       GoogleClassroomCourses(

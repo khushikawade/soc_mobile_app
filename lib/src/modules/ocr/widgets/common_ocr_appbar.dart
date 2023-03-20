@@ -363,14 +363,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
   Widget commonGradedLogo() {
     return Expanded(
-      child: Container(
-        padding: widget.isBackButton == true
-            ? EdgeInsets.all(1)
-            : EdgeInsets.only(left: 18),
-        alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Image(
-          alignment: Alignment.centerLeft,
-          width: MediaQuery.of(context).size.width * 0.22,
+          height: Globals.deviceType == 'phone' ? 28 : 35,
+          // width: 28,
+
+          // alignment: Alignment.centerLeft,
+          // width: MediaQuery.of(context).size.width * 0.22,
           image: AssetImage(
             Color(0xff000000) == Theme.of(context).backgroundColor
                 ? "assets/images/graded+_light.png"

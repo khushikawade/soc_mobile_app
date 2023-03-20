@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:Soc/src/overrides.dart';
 import 'package:hive/hive.dart';
 part 'student_assessment_info_modal.g.dart';
@@ -37,7 +36,8 @@ class StudentAssessmentInfo {
   @HiveField(14)
   String? assessmentImgPath;
   @HiveField(15)
-  String? slideObjectId;
+  String?
+      slideObjectId; //slides object page ids to update the images , tables and text on slides
   @HiveField(16)
   // String? googleSlidePresentationLink;
   String? answerKey;
@@ -51,7 +51,18 @@ class StudentAssessmentInfo {
   String? isRubricChanged;
   @HiveField(21)
   String? standardDescription;
-
+  @HiveField(22)
+  String?
+      googleClassRoomStudentProfileId; // student profile ids to update the classroom
+  @HiveField(23)
+  bool
+      isgoogleClassRoomStudentProfileUpdated; // Flag indicating whether the student's profile has been updated in Google Classroom or not. True if updated, false otherwise.
+  @HiveField(24)
+  bool
+      isSlideObjUpdated; // Flag indicating whether the student's profile has been updated in Google slides or not. True if updated, false otherwise.
+  @HiveField(25)
+  String?
+      slideTableObjId; //slides table ids for update and edit the student records
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,
@@ -75,7 +86,11 @@ class StudentAssessmentInfo {
       //this.presentationURL,
       this.studentResponseKey,
       this.isRubricChanged,
-      this.uniqueId});
+      this.uniqueId,
+      this.googleClassRoomStudentProfileId,
+      this.isgoogleClassRoomStudentProfileUpdated = false,
+      this.isSlideObjUpdated = false,
+      this.slideTableObjId});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(
@@ -103,5 +118,6 @@ class StudentAssessmentInfo {
           answerKey: json['Answer Key'],
           googleSlidePresentationURL: json['Presentation URL'],
           studentResponseKey: json['Student Response Key'],
-          standardDescription: json['Standard Description']);
+          standardDescription: json['Standard Description'],
+          isSlideObjUpdated: true);
 }

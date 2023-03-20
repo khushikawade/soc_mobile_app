@@ -40,6 +40,8 @@ class Item {
   dynamic completedAt;
   @HiveField(17)
   dynamic completedAtTimestamp;
+  @HiveField(18)
+  int? viewCount;
   // @HiveField(14)
   // dynamic completedAt;
 
@@ -62,5 +64,6 @@ class Item {
       this.thanksCount = 0,
       this.helpfulCount = 0,
       this.shareCount = 0,
-      this.supportCount = 0});
+      this.supportCount = 0,
+      this.viewCount = 0});
 }

@@ -149,6 +149,8 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
   final String teacherEmail;
   final String assessmentQueImage;
   final bool isMcqSheet;
+  final String classroomCourseId;
+  final String classroomCourseWorkId;
 
   SaveAssessmentToDashboardAndGetId(
       {required this.assessmentName,
@@ -166,7 +168,9 @@ class SaveAssessmentToDashboardAndGetId extends OcrEvent {
       required this.teacherContactId,
       required this.teacherEmail,
       required this.assessmentQueImage,
-      required this.isMcqSheet});
+      required this.isMcqSheet,
+      required this.classroomCourseId,
+      required this.classroomCourseWorkId});
 
   @override
   List<Object> get props => [];
@@ -184,12 +188,12 @@ class FetchStudentDetails extends OcrEvent {
 }
 
 class GetDashBoardStatus extends OcrEvent {
-  final String fileId;
-
-  GetDashBoardStatus({required this.fileId});
+  final String? fileId;
+  GoogleClassroomCourses? assessmentObj;
+  GetDashBoardStatus({required this.fileId, required this.assessmentObj});
 
   @override
-  List<Object> get props => [fileId];
+  List<Object> get props => [fileId!, assessmentObj!];
 
   @override
   String toString() => 'GlobalSearchEvent { keyword: $fileId}';

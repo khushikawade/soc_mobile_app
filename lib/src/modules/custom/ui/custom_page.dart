@@ -62,25 +62,10 @@ class _CustomPagesState extends State<CustomPages> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  // Widget _body(String key) =>
-  //     widget.customObj!.sectionTemplate == "Calendar/Events"
-  //         ? bodyView()
-  //         : RefreshIndicator(
-  //             key: refreshKey,
-  //             child: bodyView(),
-  //             onRefresh: refreshPage,
-  //           );
-
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         key: _scaffoldKey,
-        // appBar: AppBarWidget(
-        //   marginLeft: 30,
-        //   refresh: (v) {
-        //     setState(() {});
-        //   },
-        // ),
         body: //_body('body1')
             widget.customObj!.sectionTemplate == "Calendar/Events"
                 ? bodyView()

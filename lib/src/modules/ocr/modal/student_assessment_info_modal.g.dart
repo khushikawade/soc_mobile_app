@@ -39,13 +39,17 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       studentResponseKey: fields[17] as String?,
       isRubricChanged: fields[20] as String?,
       uniqueId: fields[19] as String?,
+      googleClassRoomStudentProfileId: fields[22] as String?,
+      isgoogleClassRoomStudentProfileUpdated: fields[23] as bool,
+      isSlideObjUpdated: fields[24] as bool,
+      slideTableObjId: fields[25] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentAssessmentInfo obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(26)
       ..writeByte(0)
       ..write(obj.studentName)
       ..writeByte(1)
@@ -89,7 +93,15 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       ..writeByte(20)
       ..write(obj.isRubricChanged)
       ..writeByte(21)
-      ..write(obj.standardDescription);
+      ..write(obj.standardDescription)
+      ..writeByte(22)
+      ..write(obj.googleClassRoomStudentProfileId)
+      ..writeByte(23)
+      ..write(obj.isgoogleClassRoomStudentProfileUpdated)
+      ..writeByte(24)
+      ..write(obj.isSlideObjUpdated)
+      ..writeByte(25)
+      ..write(obj.slideTableObjId);
   }
 
   @override

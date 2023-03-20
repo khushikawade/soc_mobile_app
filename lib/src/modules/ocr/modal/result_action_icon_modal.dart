@@ -72,32 +72,48 @@ class BottomIcon {
       title: 'History',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
     ),
-    BottomIcon(
-      title: 'Drive',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
-    ),
+    // BottomIcon(
+    //   title: 'Drive',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
+    // ),
     BottomIcon(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
     ),
     BottomIcon(
+      title: 'Slides',
+      svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
+    ),
+    BottomIcon(
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
+    // BottomIcon(
+    //   title: 'Classroom',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
+    // ),
   ];
 
   static List<BottomIcon> standAloneHistoryBottomIconModalList = [
-    BottomIcon(
-      title: 'Drive',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
-    ),
+    // BottomIcon(
+    //   title: 'Drive',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
+    // ),
     BottomIcon(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
     ),
     BottomIcon(
+      title: 'Slides',
+      svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
+    ),
+    BottomIcon(
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
+    // BottomIcon(
+    //   title: 'Classroom',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
+    // ),
   ];
 }

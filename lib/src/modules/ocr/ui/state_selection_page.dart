@@ -98,7 +98,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                       Navigator.pop(context);
                     }),
               ),
-              body: Column(
+              body: ListView(
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(

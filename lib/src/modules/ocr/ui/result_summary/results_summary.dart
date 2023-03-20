@@ -1,4 +1,8 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/modal/result_action_icon_modal.dart';
@@ -12,7 +16,6 @@ import 'package:Soc/src/modules/ocr/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
 import 'package:Soc/src/overrides.dart';
-import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -28,7 +31,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
+import '../../../../services/Strings.dart';
 import '../../../../widgets/empty_container_widget.dart';
+import '../../../google_classroom/bloc/google_classroom_bloc.dart';
 import '../../../google_drive/model/user_profile.dart';
 import '../../bloc/ocr_bloc.dart';
 import '../../modal/user_info.dart';
@@ -48,7 +53,7 @@ class ResultsSummary extends StatefulWidget {
       required this.shareLink,
       required this.assessmentName,
       this.historySecondTime,
-      this.isMcqSheet,
+      this.isMcqSheet = false,
       this.selectedAnswer})
       : super(key: key);
   final bool? assessmentDetailPage;
@@ -112,9 +117,9 @@ class studentRecordList extends State<ResultsSummary> {
   //     ValueNotifier([]);
   ValueNotifier<int> _listCount = ValueNotifier(0);
 
-  LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+  LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
       LocalDatabase('student_info');
-  LocalDatabase<StudentAssessmentInfo> _historyStudentInfoDb =
+  LocalDatabase<StudentAssessmentInfo> _historystudentAssessmentInfoDb =
       LocalDatabase('history_student_info');
 
   String? historyAssessmentId;
@@ -126,50 +131,15 @@ class studentRecordList extends State<ResultsSummary> {
   final ScrollController _scrollController = ScrollController();
   GoogleDriveBloc _driveBloc3 = GoogleDriveBloc();
   final ValueNotifier<bool> isShareLinkReceived = ValueNotifier<bool>(false);
+  LocalDatabase<GoogleClassroomCourses> _googleClassRoomlocalDb =
+      LocalDatabase(Strings.googleClassroomCoursesList);
+
+  GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
 
   @override
   void initState() {
     _futureMethod();
-
-    if (widget.assessmentDetailPage!) {
-      _historyStudentInfoDb.clear();
-      if (widget.historySecondTime == true) {
-        widget.assessmentName = Globals.historyAssessmentName;
-        widget.fileId = Globals.historyAssessmentFileId;
-      } else {
-        Globals.historyAssessmentName = '';
-        Globals.historyAssessmentFileId = '';
-        Globals.historyAssessmentName = widget.assessmentName;
-        Globals.historyAssessmentFileId = widget.fileId;
-      }
-
-      _driveBloc
-          .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
-
-      if (!Overrides.STANDALONE_GRADED_APP) {
-        _ocrBloc.add(GetDashBoardStatus(fileId: widget.fileId!));
-      }
-      _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
-    } else {
-      updateAssessmentToDb();
-      if (widget.isScanMore != true) {
-        // print("Shared Link called");
-        _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
-      } else {
-        //TODO : REMOVE GLOBAL ACCESS : IMPROVE
-
-        widget.shareLink = Globals.shareableLink;
-        isShareLinkReceived.value = true;
-      }
-
-      iconsList = Globals.ocrResultIcons;
-      iconsName = Globals.ocrResultIconsName;
-      // if (Overrides.STANDALONE_GRADED_APP == true) {
-      //   iconsList.removeLast();
-      //   iconsName.removeLast();
-      // }
-      _method();
-    }
+    _initState();
 
     _scrollController.addListener(_scrollListener);
 
@@ -457,12 +427,32 @@ class studentRecordList extends State<ResultsSummary> {
                                   bloc: _driveBloc2,
                                   child: Container(),
                                   listener: (context, state) async {
-                                    if (state is GoogleDriveLoading) {
-                                      Utility.showLoadingDialog(
-                                          context: context, isOCR: true);
-                                    }
+                                    print(
+                                        "result screen state is recived -----> $state");
+
+                                    // if (state is GoogleDriveLoading) {
+                                    //   Utility.showLoadingDialog(
+                                    //       context: context, isOCR: true);
+                                    // }
+
                                     if (state is GoogleSuccess) {
-                                      Navigator.of(context).pop();
+                                      if (Overrides.STANDALONE_GRADED_APP) {
+                                        _googleClassroomBloc.add(
+                                            CreateClassRoomCourseWork(
+                                                isEditStudentInfo: true,
+                                                studentAssessmentInfoDb:
+                                                    LocalDatabase(
+                                                        'student_info'),
+                                                studentClassObj:
+                                                    GoogleClassroomGlobals
+                                                        .studentAssessmentAndClassroomObj,
+                                                title: Globals.assessmentName!,
+                                                pointPossible:
+                                                    Globals.pointPossible ??
+                                                        "0"));
+                                      } else {
+                                        Navigator.of(context).pop();
+                                      }
                                     }
                                     if (state is ErrorState) {
                                       if (state.errorMsg ==
@@ -505,6 +495,46 @@ class studentRecordList extends State<ResultsSummary> {
                                       //     "Something Went Wrong. Please Try Again.");
                                     }
                                   }),
+                              BlocListener<GoogleClassroomBloc,
+                                      GoogleClassroomState>(
+                                  bloc: _googleClassroomBloc,
+                                  child: Container(),
+                                  listener: (context, state) async {
+                                    if (state
+                                        is CreateClassroomCourseWorkSuccess) {
+                                      Navigator.of(context).pop();
+                                    }
+                                    if (state is GoogleClassroomErrorState) {
+                                      if (state.errorMsg ==
+                                          'ReAuthentication is required') {
+                                        await Utility
+                                            .refreshAuthenticationToken(
+                                                isNavigator: true,
+                                                errorMsg: state.errorMsg!,
+                                                context: context,
+                                                scaffoldKey: scaffoldKey);
+
+                                        _googleClassroomBloc.add(
+                                            CreateClassRoomCourseWork(
+                                                isEditStudentInfo: true,
+                                                studentAssessmentInfoDb:
+                                                    LocalDatabase(
+                                                        'student_info'),
+                                                studentClassObj:
+                                                    GoogleClassroomGlobals
+                                                        .studentAssessmentAndClassroomObj,
+                                                title: Globals.assessmentName!,
+                                                pointPossible:
+                                                    Globals.pointPossible ??
+                                                        "0"));
+                                      } else {
+                                        Navigator.of(context).pop();
+                                        Utility.currentScreenSnackBar(
+                                            state.errorMsg?.toString() ?? "",
+                                            null);
+                                      }
+                                    }
+                                  })
                             ],
                           ),
                         )
@@ -624,9 +654,21 @@ class studentRecordList extends State<ResultsSummary> {
                                         tableName: 'history_student_info') ==
                                     0) {
                                   state.obj.forEach((e) async {
-                                    //print(
-                                    // 'ffffffffffffffffffffffffffffffffffff');
-                                    await _historyStudentInfoDb.addData(e);
+                                    if ((GoogleClassroomGlobals
+                                                .studentAssessmentAndClassroomObj
+                                                ?.courseId
+                                                ?.isNotEmpty ??
+                                            false) &&
+                                        (GoogleClassroomGlobals
+                                                .studentAssessmentAndClassroomObj
+                                                ?.courseWorkId
+                                                ?.isNotEmpty ??
+                                            false)) {
+                                      e.isgoogleClassRoomStudentProfileUpdated =
+                                          true;
+                                    }
+                                    await _historystudentAssessmentInfoDb
+                                        .addData(e);
                                   });
                                 }
                                 if (state.obj[0]
@@ -721,7 +763,8 @@ class studentRecordList extends State<ResultsSummary> {
                               if (element.isSavedOnDashBoard == null) {
                                 element.isSavedOnDashBoard = true;
                               }
-                              await _studentInfoDb.putAt(index, element);
+                              await _studentAssessmentInfoDb.putAt(
+                                  index, element);
                             });
 
                             List list = await Utility.getStudentInfoList(
@@ -747,25 +790,110 @@ class studentRecordList extends State<ResultsSummary> {
                             disableSlidableAction.value = false;
                           }
                           if (state is AssessmentDashboardStatus) {
-                            if (state.assessmentId == null &&
-                                state.resultRecordCount == null) {
-                              dashboardState.value = '';
-                            } else {
-                              if (isGoogleSheetStateReceived.value == true) {
-                                List list = await Utility.getStudentInfoList(
-                                    tableName: 'history_student_info');
+                            if (state
+                                    .assessmentObj?.assessmentCId?.isNotEmpty ??
+                                false) {
+                              List list = await Utility.getStudentInfoList(
+                                  tableName: 'history_student_info');
 
+                              if (isGoogleSheetStateReceived.value == true) {
                                 state.resultRecordCount == list.length
                                     ? dashboardState.value = 'Success'
                                     : dashboardState.value = '';
                               }
-                              // dashboardWidget.value[0] = true;
+
+                              if (Overrides.STANDALONE_GRADED_APP) {
+                                List<GoogleClassroomCourses>
+                                    _googleClassroomCourseslocalData =
+                                    await _googleClassRoomlocalDb.getData();
+
+                                for (GoogleClassroomCourses element
+                                    in _googleClassroomCourseslocalData) {
+                                  if (element.courseId ==
+                                      state.assessmentObj!.courseId) {
+                                    //update the classroom course work id in GoogleClassroomGlobals obj
+                                    element.courseWorkId =
+                                        state.assessmentObj!.courseWorkId!;
+
+                                    GoogleClassroomGlobals
+                                            .studentAssessmentAndClassroomObj =
+                                        element;
+
+                                    break;
+                                  }
+                                }
+                                // print(
+                                //     "printing assessmentId -------->${state.assessmentObj!.assessmentCId}");
+                                // print(
+                                //     "printing classroomCourseWorkId -------->${state.assessmentObj!.courseWorkId}");
+                                // print(
+                                //     "printing classroomCourseId -------->${state.assessmentObj!.courseId}");
+                                // print(
+                                //     "printing classroomCourseId -------->${state.resultRecordCount}");
+                                // GoogleClassroomGlobals
+                                //         .studentAssessmentAndClassroomObj.assessmentCId =
+                                //     state.assessmentObj!.assessmentCId;
+                              }
 
                               savedRecordCount = state.resultRecordCount;
-                              historyAssessmentId = state.assessmentId;
-                              //Globals.historyAssessmentId = state.assessmentId!;
+                              GoogleClassroomGlobals
+                                      .studentAssessmentAndClassroomObj
+                                      .assessmentCId =
+                                  historyAssessmentId =
+                                      state.assessmentObj!.assessmentCId;
                             }
                           }
+
+//  if (state is AssessmentDashboardStatus) {
+//                             if (state.assessmentObj == null &&
+//                                 state.resultRecordCount == null) {
+//                               dashboardState.value = '';
+//                             } else {
+//                               List list = await Utility.getStudentInfoList(
+//                                   tableName: 'history_student_info');
+
+//                               if (isGoogleSheetStateReceived.value == true) {
+//                                 state.resultRecordCount == list.length
+//                                     ? dashboardState.value = 'Success'
+//                                     : dashboardState.value = '';
+//                               }
+
+//                               if (Overrides.STANDALONE_GRADED_APP) {
+//                                 List<GoogleClassroomCourses>
+//                                     _googleClassroomCourseslocalData =
+//                                     await _googleClassRoomlocalDb.getData();
+
+//                                 for (GoogleClassroomCourses element
+//                                     in _googleClassroomCourseslocalData) {
+//                                   if (element.courseId ==
+//                                       state.assessmentObj!.classroomCourseId) {
+//                                     //update the classroom course work id in GoogleClassroomGlobals obj
+//                                     element.courseWorkId = state
+//                                         .assessmentObj!.classroomCourseWorkId!;
+
+//                                     GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
+//                                         element;
+
+//                                     break;
+//                                   }
+//                                 }
+//                                 print(
+//                                     "printing assessmentId -------->${state.assessmentObj!.assessmentId}");
+//                                 print(
+//                                     "printing classroomCourseWorkId -------->${state.assessmentObj!.classroomCourseWorkId}");
+//                                 print(
+//                                     "printing classroomCourseId -------->${state.assessmentObj!.classroomCourseId}");
+//                                 GoogleClassroomGlobals
+//                                         .studentAssessmentAndClassroomObj.assessmentCId =
+//                                     state.assessmentObj!.assessmentId;
+//                               }
+
+//                               savedRecordCount = state.resultRecordCount;
+//                               historyAssessmentId =
+//                                   state.assessmentObj!.assessmentId;
+//                             }
+//                           }
+
                           if (state is OcrLoading2) {
                             dashboardState.value = 'Loading';
                           }
@@ -806,7 +934,7 @@ class studentRecordList extends State<ResultsSummary> {
                   bloc: _driveBloc3,
                   listener: (context, state) async {
                     if (state is ShareLinkReceived) {
-                      // print("LINK RECIVED -------------->");
+                      //   print("LINK RECIVED -------------->");
                       if (!widget.assessmentDetailPage!) {
                         Globals.shareableLink = state.shareLink;
                       }
@@ -1048,68 +1176,17 @@ class studentRecordList extends State<ResultsSummary> {
                 isExtended: !isScrolling.value,
                 backgroundColor: AppTheme.kButtonColor,
                 onPressed: () async {
-                  // Globals.scanMoreStudentInfoLength =
-                  //     Globals.studentInfo!.length;
-                  if ((widget.assessmentDetailPage == true) &&
-                      ((widget.createdAsPremium == true &&
-                              Globals.isPremiumUser != true) ||
-                          (widget.createdAsPremium == false &&
-                              Globals.isPremiumUser == true))) {
-                    popupModal(
-                        title: 'Alert!',
-                        message: Globals.isPremiumUser == true
-                            ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-                            : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
-                    return;
+                  if (Overrides.STANDALONE_GRADED_APP) {
+                    List<GoogleClassroomCourses> _localData =
+                        await _googleClassRoomlocalDb.getData();
+                    if (_localData.isEmpty) {
+                      Utility.currentScreenSnackBar(
+                          "You need to import roster first", null);
+                      return;
+                    }
                   }
-                  String scanMoreLogMsg =
-                      'Scan more button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-
-                  FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-                  Utility.updateLogs(
-                      //,
-                      activityId: '22',
-                      sessionId: widget.assessmentDetailPage == true
-                          ? widget.obj!.sessionId
-                          : '',
-                      description: scanMoreLogMsg,
-                      operationResult: 'Success');
-
-                  if (widget.obj != null &&
-                      widget.obj!.isCreatedAsPremium == "true") {
-                    createdAsPremium = true;
-                  }
-                  String pointPossible = await _getpointPossible(
-                      tableName: widget.assessmentDetailPage == true
-                          ? 'history_student_info'
-                          : 'student_info');
-                  Fluttertoast.cancel();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CameraScreen(
-                              lastAssessmentLength: lastAssessmentLength,
-                              assessmentName: widget.assessmentName,
-                              isMcqSheet: widget.isMcqSheet,
-                              selectedAnswer: widget.selectedAnswer,
-                              isFlashOn: ValueNotifier<bool>(false),
-                              questionImageLink: questionImageUrl,
-                              obj: widget.obj,
-                              createdAsPremium:
-                                  widget.assessmentDetailPage == true
-                                      ? createdAsPremium
-                                      : Globals.isPremiumUser,
-                              oneTimeCamera: widget.assessmentDetailPage!,
-                              isFromHistoryAssessmentScanMore:
-                                  widget.assessmentDetailPage!,
-                              onlyForPicture: false,
-                              isScanMore: true,
-                              // lastStudentInfoLength: Globals.studentInfo!.length,
-                              pointPossible: pointPossible != null &&
-                                      pointPossible.isNotEmpty
-                                  ? pointPossible.replaceAll(' ', '')
-                                  : '2')));
+                  // print('perform scan more');
+                  performScanMore();
                 },
                 icon: Icon(
                     IconData(0xe875,
@@ -1169,7 +1246,6 @@ class studentRecordList extends State<ResultsSummary> {
             : widget.assessmentDetailPage!
                 ? MediaQuery.of(context).size.width * 0.7
                 : MediaQuery.of(context).size.width * 0.9,
-        //  color: Colors.blue,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -1317,7 +1393,7 @@ class studentRecordList extends State<ResultsSummary> {
                           onPressed: () async {
                             Navigator.of(context).pop();
                             if (yesActionText != null) {
-                              await _historyStudentInfoDb.clear();
+                              await _historystudentAssessmentInfoDb.clear();
                             }
                             Fluttertoast.cancel();
                             Navigator.push(
@@ -1481,14 +1557,15 @@ class studentRecordList extends State<ResultsSummary> {
                 studentInfo.studentId = id.text;
                 studentInfo.studentGrade = score.text;
                 studentInfo.studentResponseKey = studentResonance;
-                _studentInfoDb.putAt(index, studentInfo);
+                studentInfo.isgoogleClassRoomStudentProfileUpdated = false;
+                _studentAssessmentInfoDb.putAt(index, studentInfo);
                 assessmentCount.value = _list.length;
 
                 await _futureMethod();
                 _method();
                 disableSlidableAction.value = true;
                 Navigator.pop(context, false);
-
+                Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
                   questionImage: questionImageUrl ?? "NA",
@@ -1501,6 +1578,11 @@ class studentRecordList extends State<ResultsSummary> {
                       await Utility.getStudentInfoList(
                           tableName: 'student_info'),
                 ));
+
+//to update the slides details .
+                _driveBloc.add(EditSlideFromPresentation(
+                    slidePresentationId: Globals.googleSlidePresentationId,
+                    studentAssessmentInfo: studentInfo));
 
                 // assessmentCount.value = await Utility.getStudentInfoListLength(
                 //           tableName: 'student_info');
@@ -1629,9 +1711,10 @@ class studentRecordList extends State<ResultsSummary> {
                             obj.questionImgUrl = _list[0].questionImgUrl;
                             obj.googleSlidePresentationURL =
                                 _list[0].googleSlidePresentationURL;
-                            _studentInfoDb.putAt(0, obj);
+
+                            _studentAssessmentInfoDb.putAt(0, obj);
                           }
-                          _studentInfoDb.deleteAt(index);
+                          _studentAssessmentInfoDb.deleteAt(index);
                           String deletrecordLogMsg =
                               "Teacher deleted the record successfully";
                           FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -1653,7 +1736,8 @@ class studentRecordList extends State<ResultsSummary> {
                           Navigator.pop(
                             context,
                           );
-
+                          Utility.showLoadingDialog(
+                              context: context, isOCR: true);
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
                               questionImage: questionImageUrl ?? "NA",
@@ -1663,6 +1747,11 @@ class studentRecordList extends State<ResultsSummary> {
                               isLoading: true,
                               studentData: await Utility.getStudentInfoList(
                                   tableName: 'student_info')));
+
+                          _driveBloc.add(DeleteSlideFromPresentation(
+                              slidePresentationId:
+                                  Globals.googleSlidePresentationId,
+                              slideObjId: _list[index].slideObjectId));
                         },
                       ),
                     ],
@@ -2411,6 +2500,107 @@ class studentRecordList extends State<ResultsSummary> {
         break;
       default:
         print(title);
+    }
+  }
+
+  void performScanMore() async {
+    // Globals.scanMoreStudentInfoLength =
+    //     Globals.studentInfo!.length;
+    if ((widget.assessmentDetailPage == true) &&
+        ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
+            (widget.createdAsPremium == false &&
+                Globals.isPremiumUser == true))) {
+      popupModal(
+          title: 'Alert!',
+          message: Globals.isPremiumUser == true
+              ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
+              : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
+      return;
+    }
+    String scanMoreLogMsg =
+        'Scan more button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+    Utility.updateLogs(
+        //,
+        activityId: '22',
+        sessionId:
+            widget.assessmentDetailPage == true ? widget.obj!.sessionId : '',
+        description: scanMoreLogMsg,
+        operationResult: 'Success');
+
+    if (widget.obj != null && widget.obj!.isCreatedAsPremium == "true") {
+      createdAsPremium = true;
+    }
+    String pointPossible = await _getpointPossible(
+        tableName: widget.assessmentDetailPage == true
+            ? 'history_student_info'
+            : 'student_info');
+
+    Fluttertoast.cancel();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CameraScreen(
+                lastAssessmentLength: lastAssessmentLength,
+                assessmentName: widget.assessmentName,
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
+                isFlashOn: ValueNotifier<bool>(false),
+                questionImageLink: questionImageUrl,
+                obj: widget.obj,
+                createdAsPremium: widget.assessmentDetailPage == true
+                    ? createdAsPremium
+                    : Globals.isPremiumUser,
+                oneTimeCamera: widget.assessmentDetailPage!,
+                isFromHistoryAssessmentScanMore: widget.assessmentDetailPage!,
+                onlyForPicture: false,
+                isScanMore: true,
+                // lastStudentInfoLength: Globals.studentInfo!.length,
+                pointPossible: pointPossible != null && pointPossible.isNotEmpty
+                    ? pointPossible.replaceAll(' ', '')
+                    : '2')));
+  }
+
+  Future<void> _initState() async {
+    if (widget.assessmentDetailPage!) {
+      // GoogleClassroomGlobals.studentAssessmentAndClassroomObj = GoogleClassroomCourses();
+      await _historystudentAssessmentInfoDb.clear();
+      if (widget.historySecondTime == true) {
+        widget.assessmentName = Globals.historyAssessmentName;
+        widget.fileId = Globals.historyAssessmentFileId;
+      } else {
+        Globals.historyAssessmentName = '';
+        Globals.historyAssessmentFileId = '';
+        Globals.historyAssessmentName = widget.assessmentName;
+        Globals.historyAssessmentFileId = widget.fileId;
+      }
+
+      _driveBloc
+          .add(GetAssessmentDetail(fileId: widget.fileId, nextPageUrl: ''));
+
+      _ocrBloc.add(GetDashBoardStatus(
+          fileId: widget.fileId,
+          assessmentObj:
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj));
+      _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
+    } else {
+      updateAssessmentToDb();
+      if (widget.isScanMore != true) {
+        // print("Shared Link called");
+        _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
+      } else {
+        //TODO : REMOVE GLOBAL ACCESS : IMPROVE
+
+        widget.shareLink = Globals.shareableLink;
+        isShareLinkReceived.value = true;
+      }
+
+      iconsList = Globals.ocrResultIcons;
+      iconsName = Globals.ocrResultIconsName;
+
+      _method();
     }
   }
 }

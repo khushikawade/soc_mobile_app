@@ -97,6 +97,8 @@ class _SchoolDirectoryPageState extends State<SchoolDirectoryPage> {
                           if (state is SchoolDirectoryInitial ||
                               state is SchoolDirectoryLoading) {
                             return Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.6,
                                 alignment: Alignment.center,
                                 child: CircularProgressIndicator(
                                   color: Theme.of(context)

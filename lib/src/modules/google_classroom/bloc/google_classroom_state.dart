@@ -47,3 +47,10 @@ class GoogleClassroomCourseListSuccess extends GoogleClassroomState {
 //   @override
 //   List<Object> get props => [obj!];
 // }
+
+class CreateClassroomCourseWorkSuccess extends GoogleClassroomState {
+  CreateClassroomCourseWorkSuccess();
+
+  @override
+  List<Object> get props => [];
+}

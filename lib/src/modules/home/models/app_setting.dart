@@ -118,8 +118,13 @@ class AppSetting {
   String? darkmodeIconColor;
 
   @HiveField(55)
-
   String? parentCoordinatorEmailc;
+  @HiveField(56)
+  String? calendarId;
+  @HiveField(57)
+  String? calendarBannerImage;
+  @HiveField(58)
+  String? calendarBannerColor;
 
   AppSetting(
       {this.attributes,
@@ -177,90 +182,90 @@ class AppSetting {
       this.authenticationURL,
       this.enableGraded,
       this.darkmodeIconColor,
-     this.parentCoordinatorEmailc});
+      this.parentCoordinatorEmailc,
+      this.calendarId,
+      this.calendarBannerImage,
+      this.calendarBannerColor});
 
   factory AppSetting.fromJson(Map<String, dynamic> json) => AppSetting(
-        attributes: json['attributes'] == null
-            ? null
-            : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
-        id: json['Id'] as String?,
-        ownerId: json['OwnerId'] as String?,
-        isDeleted: json['IsDeleted'].toString().toLowerCase() == 'true'
-            ? true
-            : false as bool?,
-        name: json['Name'] as String?,
-        createdDate: json['CreatedDate'] as String?,
-        createdById: json['CreatedById'] as String?,
-        lastModifiedDate: json['LastModifiedDate'] as String?,
-        lastModifiedById: json['LastModifiedById'] as String?,
-        systemModstamp: json['SystemModstamp'] as String?,
-        lastActivityDate: json['LastActivityDate'],
-        lastViewedDate: json['LastViewedDate'] as String?,
-        lastReferencedDate: json['LastReferencedDate'] as String?,
-        schoolNameC: json['School_Name__c'] as String?,
-        contactNameC: json['Contact_Name__c'] as String?,
-        appIconC: json['App_Icon__c'] as String?,
-        splashScreenC: json['Splash_Screen__c'],
-        primaryColorC: json['Primary_Color__c'] as String?,
-        backgroundColorC: json['Background_Color__c'] as String?,
-        secondaryColorC: json['Secondary_Color__c'] as String?,
-        fontColorC: json['Font_Color__c'] as String?,
-        appLogoC: json['App_Logo__c'],
-        fullLogoC: json['Full_Logo__c'],
-        bottomNavigationC: json['Bottom_Navigation__c'] as String?,
-        appBuildStatusC: json['App_Build_Status__c'] as String?,
-        appInformationC: json['App_Information__c'] as String?,
-        contactEmailC: json['Contact_Email__c'] as String?,
-        contactPhoneC: json['Contact_Phone__c'] as String?,
-        contactAddressC: json['Contact_Address__c'] as String?,
-        socialapiurlc: json['Social_API_URL__c'] as String?,
-        contactOfficeLocationLatitudeS: double.parse(
-            json['Contact_Office_Location__Latitude__s'] != null
-                ? json['Contact_Office_Location__Latitude__s'].toString()
-                : "0.0"),
-        contactOfficeLocationLongitudeS: double.parse(
-            json['Contact_Office_Location__Longitude__s'] != null
-                ? json['Contact_Office_Location__Longitude__s'].toString()
-                : "0.0"),
-        bannerHeightFactor: double.parse(json['Banner_Height_Factor__c'] != null
-            ? json['Banner_Height_Factor__c'].toString()
-            : "12.0"),
-        familyBannerImageC: json['Family_Banner_Image__c'] as String?,
-        staffBannerImageC: json['Staff_Banner_Image__c'] as String?,
-        studentBannerImageC: json['Student_Banner_Image__c'] as String?,
-        aboutBannerImageC: json['About_Banner_Image__c'] as String?,
-        schoolBannerImageC: json['School_Banner_Image__c'] as String?,
-        resourcesBannerImageC: json['Resources_Banner_Image__c'] as String?,
-        playStoreUrlC: json['Play_Store_URL__c'] as String?,
-        appStoreUrlC: json['App_Store_URL__c'] as String?,
-        bannerHeightFactorC: double.parse(
-            json['Banner_Height_Factor__c'] != null
-                ? json['Banner_Height_Factor__c'].toString()
-                : "12.0"),
-        familyBannerColorC: json['Family_Banner_Color__c'] as String?,
-        staffBannerColorC: json['Staff_Banner_Color__c'] as String?,
-        studentBannerColorC: json['Student_Banner_Color__c'] as String?,
-        aboutBannerColorC: json['About_Banner_Color__c'] as String?,
-        schoolBannerColorC: json['School_Banner_Color__c'] as String?,
-        resourcesBannerColorC: json['Resources_Banner_Color__c'] as String?,
-        contactImageC: json['Contact_Image__c'] as String?,
-        isTestSchool: json['Test_School__c'].toString().toLowerCase() == 'true'
-            ? true
-            : false as bool?,
-        isCustomApp:
-            json['Needs_Custom_App__c'].toString().toLowerCase() == 'true'
-                ? true
-                : false as bool?,
-        disableDarkMode:
-            json['Disable_Dark_Mode__c'].toString().toLowerCase() == 'true'
-                ? true
-                : false as bool?,
-        authenticationURL: json['Authentication_URL__c'] as String?,
-        enableGraded: json['Enable_GradEd__c'] as String?,
-        darkmodeIconColor: json['Dark_Mode_Icon_Color__c'] as String?,
-       parentCoordinatorEmailc: json['Parent_Coordinator_Email__c'] as String?
-      );
-
+      attributes: json['attributes'] == null
+          ? null
+          : Attributes.fromJson(json['attributes'] as Map<String, dynamic>),
+      id: json['Id'] as String?,
+      ownerId: json['OwnerId'] as String?,
+      isDeleted: json['IsDeleted'].toString().toLowerCase() == 'true'
+          ? true
+          : false as bool?,
+      name: json['Name'] as String?,
+      createdDate: json['CreatedDate'] as String?,
+      createdById: json['CreatedById'] as String?,
+      lastModifiedDate: json['LastModifiedDate'] as String?,
+      lastModifiedById: json['LastModifiedById'] as String?,
+      systemModstamp: json['SystemModstamp'] as String?,
+      lastActivityDate: json['LastActivityDate'],
+      lastViewedDate: json['LastViewedDate'] as String?,
+      lastReferencedDate: json['LastReferencedDate'] as String?,
+      schoolNameC: json['School_Name__c'] as String?,
+      contactNameC: json['Contact_Name__c'] as String?,
+      appIconC: json['App_Icon__c'] as String?,
+      splashScreenC: json['Splash_Screen__c'],
+      primaryColorC: json['Primary_Color__c'] as String?,
+      backgroundColorC: json['Background_Color__c'] as String?,
+      secondaryColorC: json['Secondary_Color__c'] as String?,
+      fontColorC: json['Font_Color__c'] as String?,
+      appLogoC: json['App_Logo__c'],
+      fullLogoC: json['Full_Logo__c'],
+      bottomNavigationC: json['Bottom_Navigation__c'] as String?,
+      appBuildStatusC: json['App_Build_Status__c'] as String?,
+      appInformationC: json['App_Information__c'] as String?,
+      contactEmailC: json['Contact_Email__c'] as String?,
+      contactPhoneC: json['Contact_Phone__c'] as String?,
+      contactAddressC: json['Contact_Address__c'] as String?,
+      socialapiurlc: json['Social_API_URL__c'] as String?,
+      contactOfficeLocationLatitudeS: double.parse(
+          json['Contact_Office_Location__Latitude__s'] != null
+              ? json['Contact_Office_Location__Latitude__s'].toString()
+              : "0.0"),
+      contactOfficeLocationLongitudeS: double.parse(
+          json['Contact_Office_Location__Longitude__s'] != null
+              ? json['Contact_Office_Location__Longitude__s'].toString()
+              : "0.0"),
+      bannerHeightFactor: double.parse(json['Banner_Height_Factor__c'] != null
+          ? json['Banner_Height_Factor__c'].toString()
+          : "12.0"),
+      familyBannerImageC: json['Family_Banner_Image__c'] as String?,
+      staffBannerImageC: json['Staff_Banner_Image__c'] as String?,
+      studentBannerImageC: json['Student_Banner_Image__c'] as String?,
+      aboutBannerImageC: json['About_Banner_Image__c'] as String?,
+      schoolBannerImageC: json['School_Banner_Image__c'] as String?,
+      resourcesBannerImageC: json['Resources_Banner_Image__c'] as String?,
+      playStoreUrlC: json['Play_Store_URL__c'] as String?,
+      appStoreUrlC: json['App_Store_URL__c'] as String?,
+      bannerHeightFactorC: double.parse(json['Banner_Height_Factor__c'] != null
+          ? json['Banner_Height_Factor__c'].toString()
+          : "12.0"),
+      familyBannerColorC: json['Family_Banner_Color__c'] as String?,
+      staffBannerColorC: json['Staff_Banner_Color__c'] as String?,
+      studentBannerColorC: json['Student_Banner_Color__c'] as String?,
+      aboutBannerColorC: json['About_Banner_Color__c'] as String?,
+      schoolBannerColorC: json['School_Banner_Color__c'] as String?,
+      resourcesBannerColorC: json['Resources_Banner_Color__c'] as String?,
+      contactImageC: json['Contact_Image__c'] as String?,
+      isTestSchool: json['Test_School__c'].toString().toLowerCase() == 'true'
+          ? true
+          : false as bool?,
+      isCustomApp:
+          json['Needs_Custom_App__c'].toString().toLowerCase() == 'true'
+              ? true
+              : false as bool?,
+      disableDarkMode: json['Disable_Dark_Mode__c'].toString().toLowerCase() == 'true' ? true : false as bool?,
+      authenticationURL: json['Authentication_URL__c'] as String?,
+      enableGraded: json['Enable_GradEd__c'] as String?,
+      darkmodeIconColor: json['Dark_Mode_Icon_Color__c'] as String?,
+      parentCoordinatorEmailc: json['Parent_Coordinator_Email__c'] as String?,
+      calendarId: json['Calendar_Id__c'],
+      calendarBannerImage: json['Calendar_Banner_Image__c'],
+      calendarBannerColor: json['Calendar_Banner_Color__c']);
 
   Map<String, dynamic> toJson() => {
         'attributes': attributes?.toJson(),
@@ -318,7 +323,10 @@ class AppSetting {
         'Authentication_URL__c': authenticationURL,
         'Enable_GradEd': enableGraded,
         'Dark_Mode_Icon_Color__c': darkmodeIconColor,
-        'Parent_Coordinator_Email__c': parentCoordinatorEmailc
+        'Parent_Coordinator_Email__c': parentCoordinatorEmailc,
+        'Calendar_Id__c': calendarId,
+        'Calendar_Banner_Image__c': calendarBannerImage,
+        'Calendar_Banner_Color__c': calendarBannerColor
       };
 
   AppSetting copyWith(
@@ -378,7 +386,10 @@ class AppSetting {
       String? darkmodeIconColor,
       bool? isPremiumUser,
       String? dbnC,
-      String? parentCoordinatorEmailc}) {
+      String? parentCoordinatorEmailc,
+      String? calendarId,
+      String? calendarBannerImage,
+      String? calendarBannerColor}) {
     return AppSetting(
         attributes: attributes ?? this.attributes,
         id: id ?? this.id,
@@ -438,8 +449,10 @@ class AppSetting {
         authenticationURL: authenticationURL ?? this.authenticationURL,
         enableGraded: enableGraded ?? this.enableGraded,
         darkmodeIconColor: darkmodeIconColor ?? this.darkmodeIconColor,
-       
         parentCoordinatorEmailc:
-            parentCoordinatorEmailc ?? this.parentCoordinatorEmailc);
+            parentCoordinatorEmailc ?? this.parentCoordinatorEmailc,
+        calendarId: calendarId ?? this.calendarId,
+        calendarBannerImage: calendarBannerImage ?? this.aboutBannerImageC,
+        calendarBannerColor: calendarBannerColor ?? this.aboutBannerColorC);
   }
 }
