@@ -27,17 +27,21 @@ class ItemAdapter extends TypeAdapter<Item> {
       mediaContent: fields[7] as dynamic,
       enclosure: fields[8] as dynamic,
       id: fields[9] as dynamic,
+      completedAt: fields[16] as dynamic,
+      completedAtTimestamp: fields[17] as dynamic,
+      image: fields[15] as String?,
       likeCount: fields[10] as int?,
       thanksCount: fields[11] as int?,
       helpfulCount: fields[12] as int?,
       shareCount: fields[13] as int?,
+      supportCount: fields[14] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Item obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -65,7 +69,15 @@ class ItemAdapter extends TypeAdapter<Item> {
       ..writeByte(12)
       ..write(obj.helpfulCount)
       ..writeByte(13)
-      ..write(obj.shareCount);
+      ..write(obj.shareCount)
+      ..writeByte(14)
+      ..write(obj.supportCount)
+      ..writeByte(15)
+      ..write(obj.image)
+      ..writeByte(16)
+      ..write(obj.completedAt)
+      ..writeByte(17)
+      ..write(obj.completedAtTimestamp);
   }
 
   @override

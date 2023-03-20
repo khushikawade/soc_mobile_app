@@ -59,3 +59,14 @@ class GetRecordByID extends HomeEvent {
   String toString() =>
       'GlobalSearchEvent { referenceId: $recordId!,referenceTitle: ${objectName!},objectType:$recordType }';
 }
+
+class VerifyUserWithDatabase extends HomeEvent {
+  final String? acountId;
+  VerifyUserWithDatabase({required this.acountId});
+
+  @override
+  List<Object> get props => [acountId!];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $acountId}';
+}

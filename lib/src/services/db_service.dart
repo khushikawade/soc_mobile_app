@@ -6,7 +6,7 @@ import '../overrides.dart';
 import 'db_service_response.model.dart';
 
 class DbServices {
-  getapi(
+  getApi(
     api, {
     headers,
   }) async {
@@ -23,7 +23,7 @@ class DbServices {
         return ResponseModel(statusCode: response.statusCode, data: data);
       } else {
         if (response.body == 'Unauthorized') {
-          ResponseModel _res = await getapi(api, headers: headers);
+          ResponseModel _res = await getApi(api, headers: headers);
           return _res;
         }
         return ResponseModel(statusCode: response.statusCode, data: null);
@@ -52,7 +52,7 @@ class DbServices {
         return ResponseModel(statusCode: response.statusCode, data: data);
       } else {
         if (response.body == 'Unauthorized') {
-          ResponseModel _res = await getapi(api, headers: headers);
+          ResponseModel _res = await getApi(api, headers: headers);
           return _res;
         }
         return ResponseModel(statusCode: response.statusCode, data: null);
@@ -66,7 +66,7 @@ class DbServices {
     }
   }
 
-  // googlegetapi(api, {headers}) async {
+  // googlegetApi(api, {headers}) async {
   //   try {
   //     final response = await httpClient.get(Uri.parse(api), headers: headers);
 
@@ -76,7 +76,7 @@ class DbServices {
   //       return ResponseModel(statusCode: response.statusCode, data: data);
   //     } else {
   //       if (response.body == 'Unauthorized') {
-  //         ResponseModel _res = await getapi(api, headers: headers);
+  //         ResponseModel _res = await getApi(api, headers: headers);
   //         return _res;
   //       }
   //       return ResponseModel(statusCode: response.statusCode, data: null);
@@ -90,7 +90,7 @@ class DbServices {
   //   }
   // }
 
-  postapi(
+  postApi(
     api, {
     body,
     headers,
@@ -116,7 +116,7 @@ class DbServices {
         return ResponseModel(statusCode: response.statusCode, data: data);
       } else {
         if (response.body == 'Unauthorized') {
-          ResponseModel _res = await postapi(api, body: body, headers: headers);
+          ResponseModel _res = await postApi(api, body: body, headers: headers);
           return _res;
         }
         final data = json.decode(response.body);
@@ -131,7 +131,7 @@ class DbServices {
     }
   }
 
-  diopostapi(api, _headers, body) async {
+  diopostApi(api, _headers, body) async {
     try {
       final dio = Dio();
       Response response = await dio.post(
@@ -160,7 +160,7 @@ class DbServices {
     }
   }
 
-  patchapi(
+  patchApi(
     api, {
     body,
     headers,
@@ -174,7 +174,7 @@ class DbServices {
       } else {
         if (response.body == 'Unauthorized') {
           ResponseModel _res =
-              await patchapi(api, body: body, headers: headers);
+              await patchApi(api, body: body, headers: headers);
           return _res;
         }
         final data = json.decode(response.body);
@@ -191,7 +191,7 @@ class DbServices {
 
 //Use it for all the previous aws APIs, Do not use it for google APIs
 //'https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/'
-  postapimain(api, {body, headers}) async {
+  postApimain(api, {body, headers}) async {
     try {
       final response = await httpClient.post(
           Uri.parse('${Overrides.API_BASE_URL}$api'),
@@ -206,7 +206,7 @@ class DbServices {
         return ResponseModel(statusCode: response.statusCode, data: data);
       } else {
         if (response.body == 'Unauthorized') {
-          ResponseModel _res = await postapi(api, body: body, headers: headers);
+          ResponseModel _res = await postApi(api, body: body, headers: headers);
           return _res;
         }
         final data = json.decode(response.body);

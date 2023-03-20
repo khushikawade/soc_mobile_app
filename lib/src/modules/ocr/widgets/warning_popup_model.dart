@@ -98,7 +98,7 @@ class _WarningPopupModelState extends State<WarningPopupModel> {
                                       ));
                             }),
                         onPressed: () {
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                           Navigator.pop(context, false);
                         },
                       ),
@@ -117,7 +117,7 @@ class _WarningPopupModelState extends State<WarningPopupModel> {
                                       ));
                             }),
                         onPressed: () {
-                          //Globals.iscameraPopup = false;
+                          //Globals.isCameraPopup = false;
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                   builder: (context) => HomePage(

@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/about/bloc/about_bloc.dart';
 import 'package:Soc/src/modules/custom/model/custom_setting.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -32,7 +33,7 @@ class _AboutPageState extends State<AboutPage> {
   AboutBloc _bloc = AboutBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   HomeBloc _homeBloc = HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   List<String?> department = [];
   final ScrollController _scrollController = ScrollController();
 
@@ -40,6 +41,10 @@ class _AboutPageState extends State<AboutPage> {
   void initState() {
     super.initState();
     _bloc.add(AboutStaffDirectoryEvent());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("about_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'about_page', screenClass: 'AboutPage');
   }
 
   @override
@@ -65,12 +70,12 @@ class _AboutPageState extends State<AboutPage> {
             ) {
               final bool connected = connectivity != ConnectivityResult.none;
               if (connected) {
-                if (iserrorstate == true) {
+                if (isErrorState == true) {
                   _bloc.add(AboutStaffDirectoryEvent());
-                  iserrorstate = false;
+                  isErrorState = false;
                 }
               } else if (!connected) {
-                iserrorstate = true;
+                isErrorState = true;
               }
 
               return ListView(
@@ -87,7 +92,7 @@ class _AboutPageState extends State<AboutPage> {
                                     .colorScheme
                                     .primaryVariant,
                               ));
-                        } else if (state is AboutDataSucess) {
+                        } else if (state is AboutDataSuccess) {
                           return widget.customObj != null &&
                                   widget.customObj!.sectionTemplate ==
                                       "Grid Menu"

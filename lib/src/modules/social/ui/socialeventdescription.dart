@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -22,14 +23,16 @@ class SocialDescription extends StatelessWidget {
 
   String? language;
   int? index;
-  
+
   // final List? icons;
   // final List? iconsName;
-  SocialDescription(
-      {required this.object, this.language, this.index,
-      // required this.iconsName,
-      // required this.icons
-      });
+  SocialDescription({
+    required this.object,
+    this.language,
+    this.index,
+    // required this.iconsName,
+    // required this.icons
+  });
   static const double _kPadding = 16.0;
   static const double _KButtonSize = 110.0;
   // static const double _kIconSize = 45.0;
@@ -38,28 +41,32 @@ class SocialDescription extends StatelessWidget {
 
   RegExp exp =
       new RegExp(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+');
-  int objectindex = 0;
-  int? itemcount;
-  int pageindex = 0;
+  // int objectindex = 0;
+  int? itemCount;
+  int pageIndex = 0;
   String heading1 = '';
   String heading2 = '';
   String heading3 = '';
-  int initailindex = 0;
-  int currentindex = 0;
-  int firstindex = 0;
-  late int lastindex;
+  // int initailIndex = 0;
+  int currentIndex = 0;
+  // int firstindex = 0;
+  late int lastIndex;
 
   var date;
   var link;
   var link2;
-  int pageviewItem = 0;
-  int indexpostion = 0;
+  // int pageviewItem = 0;
+  // int indexpostion = 0;
 
   void increasIndexValue() {
-    this.currentindex++;
+    this.currentIndex++;
   }
 
   Widget _buildItem(BuildContext context) {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent('social_description');
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'social_description', screenClass: 'SocialDescription');
+
     return RefreshIndicator(
       key: refreshKey,
       child: ListView(padding: const EdgeInsets.all(_kPadding), children: [
@@ -121,7 +128,7 @@ class SocialDescription extends StatelessWidget {
                           builder: (context) => SocialPageWebview(
                                 link: link2,
                                 isSocialpage: true,
-                                isbuttomsheet: true,
+                                isBottomSheet: true,
                               )));
                 },
                 child: TranslationWidget(
@@ -148,63 +155,31 @@ class SocialDescription extends StatelessWidget {
   }
 
   Widget _buildBottomSection(BuildContext context) {
-    // String data = object.description["__cdata"].toString()
-    // .contains("\\n")
-    //     ? object.description["__cdata"]
-    //         .toString()
-    //         .split("<div>")[2]
-    //         .split("\\n")[0]
-    //     : "";
-    // String data2 = object.description["__cdata"].toString().contains("\\n#")
-    //     ? object.description["__cdata"]
-    //         .toString()
-    //         .split("\\n#")[1]
-    //         .split("</div>")[0]
-    //     : "";
-    // String _socialDescription = object.description["__cdata"]
-    //     .toString()
-    //     .replaceAll(new RegExp(r'[\\]+'), '\n')
-    //     .replaceAll("n.", ".")
-    //     .replaceAll("\nn", "\n")
-    //     .replaceAll("n ", "");
-
     return Column(
       children: [
-        HorzitalSpacerWidget(_kPadding / 4),
-        (object.enclosure != null &&
-                    object.enclosure != "" &&
-                    object.enclosure['url'] != null &&
-                    object.enclosure['url'] != "") ||
+        HorizontalSpacerWidget(_kPadding / 4),
+        (object.mediaContent != null &&
+                    object.mediaContent != "" &&
+                    object.mediaContent != null &&
+                    object.mediaContent != "") ||
                 (object.description != null &&
                     object.description != "" &&
-                    object.description["__cdata"] != null &&
-                    object.description["__cdata"]
-                        .toString()
-                        .contains("<img src=") &&
-                    object.description["__cdata"].toString().split('"')[1] !=
-                        "")
+                    object.description != null &&
+                    object.description.toString().contains("<img src=") &&
+                    object.description.toString().split('"')[1] != "")
             ? Container(
                 alignment: Alignment.center,
                 child: CommonImageWidget(
                     isOnTap: true,
-                    iconUrl: (object.enclosure != null &&
-                            object.enclosure != "" &&
-                            object.enclosure['url'] != null &&
-                            object.enclosure['url'] != "")
-                        ? object.enclosure['url']
-                        : Utility.getHTMLImgSrc(
-                                    object.description["__cdata"]) !=
-                                ''
-                            ? Utility.getHTMLImgSrc(
-                                object.description["__cdata"])
+                    iconUrl: (object.mediaContent != null &&
+                            object.mediaContent != "" &&
+                            object.mediaContent != null &&
+                            object.mediaContent != "")
+                        ? object.mediaContent
+                        : Utility.getHTMLImgSrc(object.description) != ''
+                            ? Utility.getHTMLImgSrc(object.description)
                             : Globals.splashImageUrl ??
                                 Globals.appSetting.appLogoC,
-
-                    // object.enclosure['url'] ??
-                    //     Utility.getHTMLImgSrc(object.description["__cdata"]) ??
-                    //     Globals.splashImageUrl ??
-                    //     // Globals.homeObject["App_Logo__c"],
-                    //     Globals.appSetting.appLogoC,
                     fitMethod: BoxFit.contain,
                     height: Utility.displayHeight(context) *
                         (AppTheme.kDetailPageImageHeightFactor / 100)))
@@ -221,7 +196,7 @@ class SocialDescription extends StatelessWidget {
         SpacerWidget(_kPadding),
         TranslationWidget(
           message:
-              "${object.description != null && object.description != "" ? object.description["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "").replaceAll('⁦', '').replaceAll('⁩', '') : ""}",
+              "${object.description != null && object.description != "" ? object.description.toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll("n ", "").replaceAll("\\ n ", "").replaceAll('⁦', '').replaceAll('⁩', '') : ""}",
           // "${data + "#" + data2}",
           fromLanguage: "en",
           toLanguage: language,
@@ -232,11 +207,6 @@ class SocialDescription extends StatelessWidget {
                 Map<String, String> attributes, dom.Element? element) {
               _launchURL(url, context);
             },
-            // customRender: {
-            //   "img": (RenderContext context, Widget child) {
-            //     return Container();
-            //   },
-            // },
             data: translatedMessage.toString(),
             style: {
               "body": Style(
@@ -261,7 +231,7 @@ class SocialDescription extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: TranslationWidget(
             message: object.title != null && object.title != ""
-                ? "${object.title["__cdata"].toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
+                ? "${object.title.toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", ".").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
                 : "",
             fromLanguage: "en",
             toLanguage: language,
@@ -288,7 +258,9 @@ class SocialDescription extends StatelessWidget {
 
   Widget _buildnewTimeStamp(BuildContext context) {
     return Container(
-        child: object != null && object.pubDate.length > 1
+        child: object != null &&
+                object.pubDate != null &&
+                object.pubDate.length > 1
             ? TranslationWidget(
                 message: Utility.convertDate(object.pubDate).toString(),
                 toLanguage: language,
@@ -317,37 +289,27 @@ class SocialDescription extends StatelessWidget {
   _buildActionCount(BuildContext context) {
     return ActionInteractionButtonWidget(
       page: "social",
-
       obj: object,
-      title: object.title != "" && object.title != null
-          ? object.title['__cdata']
+      title: object.title != "" && object.title != null ? object.title : "",
+      description:
+          object.title != "" && object.title != null ? object.title : "",
+      imageUrl: object.mediaContent != "" &&
+              object.mediaContent != null &&
+              object.mediaContent != "" &&
+              object.mediaContent != null
+          ? object.mediaContent
           : "",
-      description: object.title != "" && object.title != null
-          ? object.title['__cdata']
+      imageExtType: object.mediaContent != "" &&
+              object.mediaContent != null &&
+              object.mediaContent.toString().split(".").last != "" &&
+              object.mediaContent.toString().split(".").last != null
+          ? object.mediaContent.toString().split(".").last
           : "",
-
-      imageUrl: object.enclosure != "" &&
-              object.enclosure != null &&
-              object.enclosure['url'] != "" &&
-              object.enclosure['url'] != null
-          ? object.enclosure['url']
-          : "",
-      imageExtType: object.enclosure != "" &&
-              object.enclosure != null &&
-              object.enclosure['type'] != "" &&
-              object.enclosure['type'] != null
-          ? object.enclosure['type']
-          : "",
-      // icons: icons,
-      // iconsName: iconsName,
-      // onChange: (Item obj) {
-      //   onChange!(obj);
-      // },
     );
   }
 
   Widget widgetIcon(link, context) {
-    if (link["\$t"].contains('instagram')) {
+    if (link.contains('instagram')) {
       return ShaderMask(
           shaderCallback: (bounds) => RadialGradient(
                 center: Alignment.topRight,
@@ -374,16 +336,17 @@ class SocialDescription extends StatelessWidget {
 // iconWidget(
 
 // FontAwesomeIcons.instagramSquare, [Colors.cyan, Colors.yellow]);
-
-    } else if (link["\$t"].contains('twitter')) {
+    } else if (link.contains('twitter')) {
       return iconWidget(FontAwesomeIcons.twitter, Color(0xff1DA1F2), context);
-    } else if (link["\$t"].contains('facebook')) {
+    } else if (link.contains('facebook')) {
       return Padding(
           padding: EdgeInsets.only(bottom: 1),
           child: iconWidget(
               FontAwesomeIcons.facebook, Color(0xff4267B2), context));
-    } else if (link["\$t"].contains('youtube')) {
+    } else if (link.contains('youtube')) {
       return iconWidget(FontAwesomeIcons.youtube, Color(0xffFF0000), context);
+    } else if (link.contains('pinterest')) {
+      return iconWidget(FontAwesomeIcons.pinterest, Color(0xffFF0000), context);
     }
 
     return Container();

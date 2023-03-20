@@ -4,15 +4,17 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/ocr/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
-import 'package:Soc/src/modules/ocr/ui/subject_selection.dart';
+import 'package:Soc/src/modules/ocr/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -24,24 +26,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/firstLetterUpperCase.dart';
 import '../widgets/suggestion_chip.dart';
 
 class CreateAssessment extends StatefulWidget {
   CreateAssessment(
-      {Key? key, required this.classSuggestions, required this.customGrades})
+      {Key? key,
+      required this.classSuggestions,
+      required this.customGrades,
+      this.isMcqSheet,
+      required this.selectedAnswer})
       : super(key: key);
   final List<String> classSuggestions;
   final List<String> customGrades;
+  final bool? isMcqSheet;
+  final String? selectedAnswer;
   @override
   State<CreateAssessment> createState() => _CreateAssessmentState();
 }
 
 class _CreateAssessmentState extends State<CreateAssessment>
     with SingleTickerProviderStateMixin {
-  static const double _KVertcalSpace = 60.0;
+  static const double _KVerticalSpace = 60.0;
   final assessmentController = TextEditingController();
   final classController = TextEditingController();
   // int selectedGrade.value = 0;
@@ -52,7 +59,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
   // final ScrollController listScrollController = ScrollController();
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
-  ValueNotifier<bool> isimageFilePicked = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isImageFilePicked = ValueNotifier<bool>(false);
   final ValueNotifier<String> assessmentNameError = ValueNotifier<String>('');
   final ValueNotifier<String> classError = ValueNotifier<String>('');
   ValueNotifier<bool> isAlreadySelected = ValueNotifier<bool>(false);
@@ -69,7 +76,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
     //   wd
     // listScrollController.addListener(_scrollListener);
     Globals.googleExcelSheetId = '';
+    Globals.googleSlidePresentationId = '';
+    Globals.googleSlidePresentationLink = '';
     //_bloc.add(SaveSubjectListDetails());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'create_assessment', screenClass: 'CreateAssessment');
     super.initState();
   }
 
@@ -81,13 +94,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
   //   FocusScope.of(context).requestFocus(FocusNode());
   // }
 
-  ScrollController scrollControlleAssessmentName = new ScrollController();
-  ScrollController scrollControlleClassName = new ScrollController();
+  ScrollController scrollControllerAssessmentName = new ScrollController();
+  ScrollController scrollControllerClassName = new ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async => true,
       child: Stack(
         children: [
           CommonBackGroundImgWidget(),
@@ -100,7 +113,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
               isSuccessState: ValueNotifier<bool>(true),
-              isbackOnSuccess: isBackFromCamera,
+              isBackOnSuccess: isBackFromCamera,
               key: GlobalKey(),
               isBackButton: false,
               isHomeButtonPopup: true,
@@ -126,7 +139,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           // controller: listScrollController,
                           shrinkWrap: true,
                           children: [
-                            SpacerWidget(_KVertcalSpace * 0.50),
+                            SpacerWidget(_KVerticalSpace * 0.50),
                             highlightText(
                               text: 'Create Assignment',
                               theme: Theme.of(context)
@@ -134,7 +147,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                   .headline6!
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
-                            SpacerWidget(_KVertcalSpace / 1.8),
+                            SpacerWidget(_KVerticalSpace / 1.8),
                             highlightText(
                                 text: 'Assignment Name',
                                 theme: Theme.of(context)
@@ -146,8 +159,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                             .primaryVariant
                                             .withOpacity(0.3))),
                             textFormField(
-                                scrollController: scrollControlleAssessmentName,
-                                isAssessmenttextFormField: true,
+                                scrollController:
+                                    scrollControllerAssessmentName,
+                                isAssessmentTextFormField: true,
                                 controller: assessmentController,
                                 hintText: 'Assignment Name',
                                 validator: (String? value) {
@@ -155,21 +169,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                 },
                                 onSaved: (String value) {
                                   assessmentNameError.value = value;
-
-                                  //To insert the value in the middle of the text
-                                  // String beforeCursorPosition = assessmentController
-                                  //     .selection
-                                  //     .textBefore(assessmentController.text);
-
-                                  // String afterCursorPosition = assessmentController
-                                  //     .selection
-                                  //     .textAfter(assessmentController.text);
-
-                                  // String result = beforeCursorPosition +
-                                  //     value +
-                                  //     afterCursorPosition;
-
-                                  // assessmentNameError.value = result;
                                 },
                                 readOnly: isAlreadySelected.value),
 
@@ -204,7 +203,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                         }),
                                   );
                                 }),
-                            SpacerWidget(_KVertcalSpace / 3),
+                            SpacerWidget(_KVerticalSpace / 3),
                             highlightText(
                                 text: 'Class Name',
                                 theme: Theme.of(context)
@@ -224,8 +223,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                       Overrides.STANDALONE_GRADED_APP == true
                                           ? true
                                           : isAlreadySelected.value, // true,
-                                  scrollController: scrollControlleClassName,
-                                  isAssessmenttextFormField: false,
+                                  scrollController: scrollControllerClassName,
+                                  isAssessmentTextFormField: false,
                                   controller: classController,
                                   hintText: '1st',
                                   onSaved: (String value) {
@@ -265,7 +264,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             ),
                             if (widget.classSuggestions.length > 0 &&
                                 !isAlreadySelected.value)
-                              SpacerWidget(_KVertcalSpace / 8),
+                              SpacerWidget(_KVerticalSpace / 8),
                             if (widget.classSuggestions.length > 0)
                               Container(
                                   height: !isAlreadySelected.value ? 30 : 0.0,
@@ -282,7 +281,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                     filters: widget.classSuggestions,
                                   )),
 
-                            SpacerWidget(_KVertcalSpace / 2),
+                            SpacerWidget(_KVerticalSpace / 2),
                             highlightText(
                                 text: 'Select Grade',
                                 theme: Theme.of(context)
@@ -293,14 +292,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                             .colorScheme
                                             .primaryVariant
                                             .withOpacity(0.3))),
-                            SpacerWidget(_KVertcalSpace / 4),
+                            SpacerWidget(_KVerticalSpace / 4),
                             scoringButton(),
-                            SpacerWidget(_KVertcalSpace / 3),
+                            SpacerWidget(_KVerticalSpace / 3),
 
                             Row(
                               children: [
                                 ValueListenableBuilder(
-                                    valueListenable: isimageFilePicked,
+                                    valueListenable: isImageFilePicked,
                                     builder: (BuildContext context,
                                         dynamic value, Widget? child) {
                                       return Container(
@@ -313,13 +312,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                               children: [
                                                 Utility.textWidget(
                                                   context: context,
-                                                  text: isimageFilePicked
+                                                  text: isImageFilePicked
                                                               .value !=
                                                           true
                                                       ? 'Scan Assignment (Optional)'
                                                       : 'Assignment Selected',
                                                   textTheme: TextStyle(
-                                                      color: isimageFilePicked
+                                                      color: isImageFilePicked
                                                                   .value !=
                                                               true
                                                           ? Color(0xff000000) ==
@@ -338,7 +337,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                               ? 16
                                                               : 22),
                                                 ),
-                                                isimageFilePicked.value == true
+                                                isImageFilePicked.value == true
                                                     ? IconButton(
                                                         onPressed: () {
                                                           _cameraImage(context);
@@ -352,7 +351,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                                   ? 20
                                                                   : 25,
                                                         ),
-                                                        color: isimageFilePicked
+                                                        color: isImageFilePicked
                                                                     .value !=
                                                                 true
                                                             ? Color(0xff000000) ==
@@ -369,11 +368,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                     : Container(),
                                               ],
                                             ),
-                                            SpacerWidget(_KVertcalSpace / 8),
+                                            SpacerWidget(_KVerticalSpace / 8),
                                             CircleAvatar(
                                               //  foregroundColor:  Colors.red,
                                               backgroundImage:
-                                                  isimageFilePicked.value ==
+                                                  isImageFilePicked.value ==
                                                           true
                                                       ? FileImage(imageFile!)
                                                       : null,
@@ -382,7 +381,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                               radius: 30,
                                               child: IconButton(
                                                 onPressed: () {
-                                                  if (isimageFilePicked.value !=
+                                                  if (isImageFilePicked.value !=
                                                       true) {
                                                     _cameraImage(context);
                                                   } else {
@@ -390,7 +389,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                   }
                                                 },
                                                 icon: Icon(
-                                                  isimageFilePicked.value !=
+                                                  isImageFilePicked.value !=
                                                           true
                                                       ? Icons.add
                                                       : Icons.check,
@@ -400,7 +399,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                       ? 25
                                                       : 30,
                                                 ),
-                                                color: isimageFilePicked
+                                                color: isImageFilePicked
                                                             .value !=
                                                         true
                                                     ? Color(0xff000000) ==
@@ -474,7 +473,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     //   //     ? _addSectionBottomSheet()
                     //   //     : selectedGrade.value = index;
                     // },
-                    child: InkWell(
+                    child: GestureDetector(
                       onTap: () {
                         widget.customGrades[index] == '+'
                             ? _addSectionBottomSheet()
@@ -554,7 +553,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     required onSaved,
     required hintText,
     required validator,
-    required bool isAssessmenttextFormField,
+    required bool isAssessmentTextFormField,
     required ScrollController scrollController,
   }) {
     return ValueListenableBuilder(
@@ -587,13 +586,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     cursorColor: Theme.of(context).colorScheme.primaryVariant,
                     decoration: InputDecoration(
                       hintText: hintText,
-                      // errorText: isAssessmenttextFormField == true &&
-                      //             (controller.text.isEmpty ||
-                      //                 assessmentNameError.value.length < 2) ||
-                      //         controller.text.isEmpty
-                      //     ? ''
-                      //     : null,
-                      // errorMaxLines: 2,
                       hintStyle: Theme.of(context)
                           .textTheme
                           .headline6!
@@ -607,27 +599,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             color: Theme.of(context)
                                 .colorScheme
                                 .primaryVariant
-                                .withOpacity(0.5)
-                            //  controller.text.isEmpty ||
-                            //         assessmentNameError.value.length < 2 ||
-                            //         classError.value.isEmpty
-                            //     ? Colors.red
-                            //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(0.5),
-                            ),
+                                .withOpacity(0.5)),
                       ),
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                             color: Theme.of(context)
                                 .colorScheme
                                 .primaryVariant
-                                .withOpacity(0.5)
-                            //  assessmentNameError.value.isEmpty ||
-                            //         assessmentNameError.value.length < 2 ||
-                            //         classError.value.isEmpty
-                            //     ? Colors.red
-                            //     : Theme.of(context).colorScheme.primaryVariant.withOpacity(
-                            //         0.5) // Theme.of(context).colorScheme.primaryVariant,
-                            ),
+                                .withOpacity(0.5)),
                       ),
                       contentPadding:
                           EdgeInsets.only(top: 10, bottom: 10, left: 3.0),
@@ -670,6 +649,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
                   if (Globals.googleExcelSheetId!.isEmpty) {
                     _googleDriveBloc.add(CreateExcelSheetToDrive(
+                        isMcqSheet: widget.isMcqSheet,
                         name:
                             "${assessmentController.text}_${classController.text}"));
                   } else if (imageFile != null && imageFile!.path.isNotEmpty) {
@@ -694,10 +674,53 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: Container(),
                     listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context, true);
+                        Utility.showLoadingDialog(
+                            context: context, isOCR: true);
                       }
 
                       if (state is ExcelSheetCreated) {
+                        //Create Google Presentation once Spreadsheet created
+                        _googleDriveBloc.add(CreateSlideToDrive(
+                            isMcqSheet: widget.isMcqSheet ?? false,
+                            fileTitle:
+                                "${assessmentController.text}_${classController.text}",
+                            excelSheetId: Globals.googleExcelSheetId));
+                      }
+                      if (state is ErrorState) {
+                        if (state.errorMsg == 'ReAuthentication is required') {
+                          await Utility.refreshAuthenticationToken(
+                              isNavigator: true,
+                              errorMsg: state.errorMsg!,
+                              context: context,
+                              scaffoldKey: scaffoldKey);
+
+                          _googleDriveBloc.add(CreateExcelSheetToDrive(
+                              isMcqSheet: widget.isMcqSheet,
+                              name:
+                                  "${assessmentController.text}_${classController.text}"));
+                        } else {
+                          Navigator.of(context).pop();
+                          Utility.currentScreenSnackBar(
+                              state.errorMsg == 'NO_CONNECTION'
+                                  ? 'No Internet Connection'
+                                  : "Something Went Wrong. Please Try Again.",
+                              null);
+                        }
+                      }
+                      if (state is RecallTheEvent) {
+                        _googleDriveBloc.add(CreateExcelSheetToDrive(
+                            isMcqSheet: widget.isMcqSheet,
+                            name:
+                                "${assessmentController.text}_${classController.text}"));
+                      }
+
+                      if (state is GoogleSlideCreated) {
+                        // _googleDriveBloc.add(GetShareLink(
+                        //     fileId: Globals.googleSlidePresentationId,
+                        //     slideLink: true));
+
+                        //Save Google Presentation Id
+                        Globals.googleSlidePresentationId = state.slideFiledId;
                         Navigator.of(context).pop();
 
                         // to update question image to aws s3 bucket and get the link
@@ -714,33 +737,33 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           _navigateToSubjectSection('');
                         }
                       }
-                      if (state is ErrorState) {
-                        if (state.errorMsg == 'Reauthentication is required') {
-                          await Utility.refreshAuthenticationToken(
-                              isNavigator: true,
-                              errorMsg: state.errorMsg!,
-                              context: context,
-                              scaffoldKey: scaffoldKey);
 
-                          _googleDriveBloc.add(CreateExcelSheetToDrive(
-                              name:
-                                  "${assessmentController.text}_${classController.text}"));
-                        } else {
-                          Navigator.of(context).pop();
-                          Utility.currentScreenSnackBar(
-                              state.errorMsg == 'NO_CONNECTION'
-                                  ? 'No Internet Connection'
-                                  : "Something Went Wrong. Please Try Again.",
-                              null);
-                        }
-                      }
+                      // if (state is ShareLinkRecived) {
+                      //   Globals.googleSlidePresentationLink = state.shareLink;
+                      //   Navigator.of(context).pop();
+
+                      //   // to update question image to aws s3 bucket and get the link
+                      //   if (imageFile != null && imageFile!.path.isNotEmpty) {
+                      //     String imgExtension = imageFile!.path
+                      //         .substring(imageFile!.path.lastIndexOf(".") + 1);
+                      //     List<int> imageBytes = imageFile!.readAsBytesSync();
+                      //     String imageB64 = base64Encode(imageBytes);
+                      //     Globals.questionImgFilePath = imageFile;
+
+                      //     _googleDriveBloc2.add(QuestionImgToAwsBucked(
+                      //         imgBase64: imageB64, imgExtension: imgExtension));
+                      //   } else {
+                      //     _navigateToSubjectSection('');
+                      //   }
+                      // }
                     }),
                 BlocListener<GoogleDriveBloc, GoogleDriveState>(
                     bloc: _googleDriveBloc2,
                     child: Container(),
                     listener: (context, state) async {
                       if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(context, true);
+                        Utility.showLoadingDialog(
+                            context: context, isOCR: true);
                       }
 
                       if (state is QuestionImageSuccess) {
@@ -778,6 +801,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
       context,
       MaterialPageRoute(
           builder: (context) => CameraScreen(
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
                 isFromHistoryAssessmentScanMore: false,
                 onlyForPicture: true,
                 isScanMore: false,
@@ -787,16 +812,18 @@ class _CreateAssessmentState extends State<CreateAssessment>
     );
     if (photo != null) {
       imageFile = photo;
-      isimageFilePicked.value = false;
-      isimageFilePicked.value = true;
+      isImageFilePicked.value = false;
+      isImageFilePicked.value = true;
+      String addedAQuestionImgLogMsg = "User Added a Question Image";
+      FirebaseAnalyticsService.addCustomAnalyticsEvent(
+          addedAQuestionImgLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
     }
   }
 
   void _navigateToSubjectSection(String? questionImageUrl) async {
     for (int i = 0; i < widget.classSuggestions.length; i++) {
-      classController.text == widget.classSuggestions[i]
-          ? widget.classSuggestions.removeAt(i)
-          : print("nothing ---------->");
+      if (classController.text == widget.classSuggestions[i])
+        widget.classSuggestions.removeAt(i);
     }
 
     widget.classSuggestions.insert(0, classController.text);
@@ -809,22 +836,35 @@ class _CreateAssessmentState extends State<CreateAssessment>
     widget.classSuggestions.forEach((String e) {
       _localDb.addData(e);
     });
-    Utility.updateLoges(
+
+    Utility.updateLogs(
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');
 
-    // To check State is selected or not (if selected then navigate to subject screen otherwise navigate to state selection screen)
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? selectedState = pref.getString('selected_state');
+    // To check State is selected or not only for standalone app (if selected then navigate to subject screen otherwise navigate to state selection screen)
+    String? selectedState;
+    if (Overrides.STANDALONE_GRADED_APP) {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      selectedState = pref.getString('selected_state');
+    } else {
+      //for school app default state
+      selectedState = OcrOverrides.defaultStateForSchoolApp;
+    }
+
     isAlreadySelected.value = true;
+
+    // FirebaseAnalyticsService.addCustomAnalyticsEvent(
+    //     "navigate_from_create_assignment_page_to_subject_page");
     if (selectedState != null) {
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => SubjectSelection(
+                  isMcqSheet: widget.isMcqSheet,
+                  selectedAnswer: widget.selectedAnswer,
                   stateName: selectedState,
-                  questionimageUrl: questionImageUrl ?? '',
+                  questionImageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
                 )),
       );
@@ -833,8 +873,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
         context,
         MaterialPageRoute(
             builder: (context) => StateSelectionPage(
-                  isFromCreateAssesmentScreen: true,
-                  questionimageUrl: questionImageUrl ?? '',
+                  isMcqSheet: widget.isMcqSheet,
+                  selectedAnswer: widget.selectedAnswer,
+                  isFromCreateAssessmentScreen: true,
+                  questionImageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
                 )),
       );
@@ -852,31 +894,32 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
   _addSectionBottomSheet() {
     showModalBottomSheet(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
-        backgroundColor: Colors.transparent,
-        elevation: 10,
-        context: context,
-        builder: (context) => BottomSheetWidget(
-              title: 'Add Custom Grade',
-              isImageField: false,
-              textFieldTitleOne: 'Grade Name',
-              isSubjectScreen: true,
-              sheetHeight:
-                  MediaQuery.of(context).orientation == Orientation.landscape
-                      ? MediaQuery.of(context).size.height * 0.82
-                      : MediaQuery.of(context).size.height * 0.45,
-              valueChanged: (controller) async {
-                await updateList(
-                  sectionName: controller.text,
-                );
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+      backgroundColor: Colors.transparent,
+      elevation: 10,
+      context: context,
+      builder: (context) => BottomSheetWidget(
+        title: 'Add Custom Grade',
+        isImageField: false,
+        textFieldTitleOne: 'Grade Name',
+        isSubjectScreen: true,
+        sheetHeight: MediaQuery.of(context).orientation == Orientation.landscape
+            ? MediaQuery.of(context).size.height * 0.82
+            : MediaQuery.of(context).size.height / 2.5,
+        valueChanged: (controller) async {
+          await updateList(
+            sectionName: controller.text,
+          );
 
-                controller.clear();
-                Navigator.pop(context, false);
-              },
-            ));
+          controller.clear();
+          Navigator.pop(context, false);
+        },
+        submitButton: true,
+      ),
+    );
   }
 
   updateList({required String sectionName}) async {

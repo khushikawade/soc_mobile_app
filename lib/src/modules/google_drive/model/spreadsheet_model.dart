@@ -12,6 +12,9 @@ class ResultSpreadsheet {
   String? scoringRubric;
   String? customRubricImage;
   String? assessmentImage;
+  String? answerKey;
+  String? studentResponseKey;
+  String? presentationURL;
 
   ResultSpreadsheet(
       this.id,
@@ -26,7 +29,10 @@ class ResultSpreadsheet {
       this.nyNextGenerationLearningStandard,
       this.scoringRubric,
       this.customRubricImage,
-      this.assessmentImage);
+      this.assessmentImage,
+      this.answerKey,
+      this.presentationURL,
+      this.studentResponseKey);
 
   ResultSpreadsheet.fromList(
     List items, //bool? isStandalone
@@ -45,10 +51,13 @@ class ResultSpreadsheet {
             items[10],
             items[11],
             // isStandalone ? items[4] :
-            items[12]);
+            items[12],
+            items[13],
+            items[14],
+            items[15]);
 
   @override
   String toString() {
-    return 'ResultSpreadsheet{id: $id, name: $name, pointsEarned: $pointsEarned,pointPossible: $pointPossible, assessmentQuestionImg: $assessmentQuestionImg, grade: $grade,className: $className,subject: $subject, learningStandard: $learningStandard,nyNextGenerationLearningStandard: $nyNextGenerationLearningStandard, ScoringRubric: $scoringRubric, CustomRubricImage: $customRubricImage,assessmentImage: $assessmentImage}';
+    return 'ResultSpreadsheet{id: $id, name: $name, pointsEarned: $pointsEarned,pointPossible: $pointPossible, assessmentQuestionImg: $assessmentQuestionImg, grade: $grade,className: $className,subject: $subject, learningStandard: $learningStandard,nyNextGenerationLearningStandard: $nyNextGenerationLearningStandard, ScoringRubric: $scoringRubric, CustomRubricImage: $customRubricImage,assessmentImage: $assessmentImage,answerKey:$answerKey,studentResponseKey:$studentResponseKey,presentationURL:$presentationURL }';
   }
 }

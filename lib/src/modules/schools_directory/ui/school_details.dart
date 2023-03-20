@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -37,16 +38,16 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final HomeBloc homebloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
   static const double _kboxborderwidth = 0.75;
-  bool? isloadingstate = false;
+  bool? isLoadingstate = false;
   final List<Marker> _markers = [];
 
   @override
   void initState() {
     super.initState();
     homebloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
     if (widget.obj.latitude != null && widget.obj.longitude != null) {
       _markers.add(Marker(
           markerId: MarkerId("Location"),
@@ -54,6 +55,10 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           position: LatLng(double.parse(widget.obj.latitude ?? "0.0"),
               double.parse(widget.obj.longitude ?? "0.0"))));
     }
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("school_detail_page");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'school_detail_page', screenClass: 'SchoolDetailPage');
   }
 
   @override
@@ -317,8 +322,8 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
           isShare: false,
           isCenterIcon: true,
           appBarTitle: "",
-          sharedpopBodytext: '',
-          sharedpopUpheaderText: '',
+          sharedPopBodyText: '',
+          sharedPopUpHeaderText: '',
           language: Globals.selectedLanguage,
           marginLeft: 30,
         ),
@@ -328,7 +333,7 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
             children: [
               Container(
                 height: MediaQuery.of(context).size.height * 0.85,
-                child: isloadingstate!
+                child: isLoadingstate!
                     ? ShimmerLoading(isLoading: true, child: _buildItem())
                     : _buildItem(),
               ),
@@ -337,13 +342,13 @@ class _SchoolDetailPageState extends State<SchoolDetailPage> {
                     bloc: homebloc,
                     listener: (context, state) async {
                       if (state is HomeLoading) {
-                        isloadingstate = true;
+                        isLoadingstate = true;
                       }
                       if (state is BottomNavigationBarSuccess) {
                         AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                         Globals.appSetting = AppSetting.fromJson(state.obj);
-                        isloadingstate = false;
+                        isLoadingstate = false;
                         setState(() {});
                       }
                     },

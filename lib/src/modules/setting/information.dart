@@ -16,15 +16,15 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
 
 class InformationPage extends StatefulWidget {
-  final bool isbuttomsheet;
+  final bool isBottomSheet;
   final bool ishtml;
   final String appbarTitle;
-  final bool? isloadingstate = false;
+  final bool? isLoadingstate = false;
 
   @override
   InformationPage({
     Key? key,
-    required this.isbuttomsheet,
+    required this.isBottomSheet,
     required this.ishtml,
     required this.appbarTitle,
   }) : super(key: key);
@@ -38,15 +38,15 @@ class _InformationPageState extends State<InformationPage> {
   UrlLauncherWidget urlobj = new UrlLauncherWidget();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final HomeBloc _bloc = new HomeBloc();
-  bool? iserrorstate = false;
+  bool? isErrorState = false;
 
-  bool? isloadingstate = false;
+  bool? isLoadingstate = false;
 
   @override
   void initState() {
     super.initState();
     _bloc.add(FetchStandardNavigationBar());
-    Globals.callsnackbar = true;
+    Globals.callSnackbar = true;
   }
 
   @override
@@ -136,10 +136,10 @@ class _InformationPageState extends State<InformationPage> {
           isShare: false,
           appBarTitle: widget.appbarTitle,
           ishtmlpage: widget.ishtml,
-          sharedpopBodytext: Globals.appSetting.appInformationC!
+          sharedPopBodyText: Globals.appSetting.appInformationC!
               .replaceAll(exp, '')
               .toString(),
-          sharedpopUpheaderText: "Please checkout this ",
+          sharedPopUpHeaderText: "Please checkout this ",
           language: Globals.selectedLanguage,
         ),
         body: RefreshIndicator(
@@ -147,7 +147,7 @@ class _InformationPageState extends State<InformationPage> {
           child: Column(
             children: [
               Expanded(
-                child: isloadingstate!
+                child: isLoadingstate!
                     ? ShimmerLoading(
                         isLoading: true,
                         child: _buildContent1(),
@@ -161,14 +161,14 @@ class _InformationPageState extends State<InformationPage> {
                   bloc: _bloc,
                   listener: (context, state) async {
                     if (state is HomeLoading) {
-                      isloadingstate = true;
+                      isLoadingstate = true;
                     }
                     if (state is BottomNavigationBarSuccess) {
                       AppTheme.setDynamicTheme(Globals.appSetting, context);
 
                       Globals.appSetting = AppSetting.fromJson(state.obj);
                       setState(() {
-                        isloadingstate = false;
+                        isLoadingstate = false;
                       });
                     }
                   },
@@ -197,7 +197,7 @@ class _InformationPageState extends State<InformationPage> {
               builder: (BuildContext context) => InAppUrlLauncer(
                     title: widget.appbarTitle.toString(),
                     url: obj,
-                    isbuttomsheet: true,
+                    isBottomSheet: true,
                     language: Globals.selectedLanguage,
                   )));
     }

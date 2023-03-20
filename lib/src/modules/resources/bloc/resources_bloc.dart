@@ -33,7 +33,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
         if (_localData.isEmpty) {
           yield ResourcesLoading();
         } else {
-          yield ResourcesDataSucess(obj: _localData);
+          yield ResourcesDataSuccess(obj: _localData);
         }
         // End local database
         List<SharedList> list = await getResourcesSDList();
@@ -47,7 +47,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield ResourcesLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield ResourcesDataSucess(obj: list);
+        yield ResourcesDataSuccess(obj: list);
       } catch (e) {
         // Incase of error, fetching data from the local database.
         LocalDatabase<SharedList> _localDb =
@@ -59,7 +59,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
         _localData.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
 
         yield ResourcesLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield ResourcesDataSucess(obj: _localData);
+        yield ResourcesDataSuccess(obj: _localData);
         // yield ResourcesErrorLoading(err: e);
       }
     }
@@ -78,7 +78,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
         if (_localData.isEmpty) {
           yield ResourcesLoading();
         } else {
-          yield ResourcesSubListSucess(obj: _localData);
+          yield ResourcesSubListSuccess(obj: _localData);
         }
         //Local database end
 
@@ -93,7 +93,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
         list.sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
         yield ResourcesLoading();
-        yield ResourcesSubListSucess(obj: list);
+        yield ResourcesSubListSuccess(obj: list);
       } catch (e) {
         String? _objectName =
             "${Strings.resourcesSubListObjectName}_${event.id}";
@@ -104,16 +104,15 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
         _localDb.close();
 
         yield ResourcesLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
-        yield ResourcesSubListSucess(obj: _localData);
+        yield ResourcesSubListSuccess(obj: _localData);
         // yield ResourcesErrorLoading(err: e);
-
       }
     }
   }
 
   Future<List<SharedList>> getResourcesSDList() async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getRecords?schoolId=${Overrides.SCHOOL_ID}&objectName=Resources_App__c"));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']
@@ -131,7 +130,7 @@ class ResourcesBloc extends Bloc<ResourcesEvent, ResourcesState> {
 
   Future<List<SharedList>> getResourcesSubList(id) async {
     try {
-      final ResponseModel response = await _dbServices.getapi(Uri.encodeFull(
+      final ResponseModel response = await _dbServices.getApi(Uri.encodeFull(
           "getSubRecords?parentId=$id&parentName=Resources_App__c&objectName=Resources_Sub_Menu_App__c"));
       if (response.statusCode == 200) {
         List<SharedList> _list = response.data['body']

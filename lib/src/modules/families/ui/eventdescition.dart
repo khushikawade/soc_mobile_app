@@ -13,12 +13,12 @@
 // // ignore: must_be_immutable
 // class EventDescription extends StatefulWidget {
 //   final obj;
-//   bool? isbuttomsheet;
+//   bool? isBottomSheet;
 //   String? language;
 //   EventDescription(
 //       {Key? key,
 //       required this.obj,
-//       required this.isbuttomsheet,
+//       required this.isBottomSheet,
 //       required this.language})
 //       : super(key: key);
 
@@ -35,7 +35,7 @@
 //   @override
 //   void initState() {
 //     super.initState();
-//     Globals.callsnackbar = true;
+//     Globals.callSnackbar = true;
 //   }
 
 //   Widget _buildItem(CalendarEventList list) {

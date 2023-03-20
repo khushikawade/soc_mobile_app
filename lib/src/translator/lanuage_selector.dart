@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/shared_preference.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -69,6 +70,9 @@ class LanguageSelector {
                 onChanged: (dynamic val) {
                   if (selectedLanguage != language) {
                     setLanguage(language, context, onLanguageChanged);
+
+                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "language_translated_$language");
                   }
                 },
                 groupValue: true,

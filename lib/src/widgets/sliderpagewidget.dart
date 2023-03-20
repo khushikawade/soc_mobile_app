@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
-import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
 import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -16,11 +15,11 @@ import 'package:html/parser.dart' show parse;
 class SliderWidget extends StatefulWidget {
   final obj;
   int currentIndex;
-  bool? issocialpage;
+  bool? isSocialPage;
   bool? isAboutSDPage;
   bool? isNewsPage;
   String date;
-  bool isbuttomsheet;
+  bool isBottomSheet;
   String? language;
   // final iseventpage;
   bool? connected;
@@ -30,9 +29,9 @@ class SliderWidget extends StatefulWidget {
       required this.currentIndex,
       // required this.iseventpage,
       required this.date,
-      required this.isbuttomsheet,
+      required this.isBottomSheet,
       required this.language,
-      this.issocialpage,
+      this.isSocialPage,
       this.isAboutSDPage,
       this.isNewsPage});
 
@@ -40,12 +39,13 @@ class SliderWidget extends StatefulWidget {
   _SliderWidgetState createState() => _SliderWidgetState();
 }
 
-class _SliderWidgetState extends State<SliderWidget> {
+class _SliderWidgetState extends State<SliderWidget>
+    with AutomaticKeepAliveClientMixin {
   var _controller = new PageController();
   static const _kDuration = const Duration(milliseconds: 400);
   int pageinitialIndex = 0;
-  int pageViewCurrentIndex = 0;
-  int pageviewLastIndex = 10;
+  int pageViewcurrentIndex = 0;
+  int pageviewlastIndex = 10;
   static const _kCurve = Curves.ease;
   var object;
   var link;
@@ -61,7 +61,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     first = true;
     pageinitialIndex = widget.currentIndex;
     _controller = PageController(initialPage: widget.currentIndex);
-    Globals.callsnackbar = false;
+    Globals.callSnackbar = false;
     BackButtonInterceptor.add(updateAction);
   }
 
@@ -73,16 +73,15 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   bool updateAction(bool stopDefaultButtonEvent, RouteInfo info) {
-    
     if (isDeviceBackButton == true) {
       isDeviceBackButton = false;
       // bool isNewsPage =
       //     // widget.iseventpage == false ||
-      //     widget.issocialpage == true ? true : false;
+      //     widget.isSocialPage == true ? true : false;
       Navigator.of(context).pop(widget.isNewsPage == true
           ? widget.isNewsPage
-          : widget.issocialpage == true
-              ? widget.issocialpage
+          : widget.isSocialPage == true
+              ? widget.isSocialPage
               : null);
       return true;
     }
@@ -90,6 +89,7 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
           iconTheme: IconThemeData(color: Theme.of(context).accentColor),
@@ -104,12 +104,12 @@ class _SliderWidgetState extends State<SliderWidget> {
               BackButtonWidget(
             isNewsPage: widget.isNewsPage == true
                 ? widget.isNewsPage
-                : widget.issocialpage == true
-                    ? widget.issocialpage
+                : widget.isSocialPage == true
+                    ? widget.isSocialPage
                     : null,
 
             // widget.iseventpage == false ||
-            // widget.issocialpage == true ? true : false,
+            // widget.isSocialPage == true ? true : false,
           ),
           title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             AppLogoWidget(
@@ -163,7 +163,7 @@ class _SliderWidgetState extends State<SliderWidget> {
               //   pageinitialIndex <= sliderIndex
               //       ? ++widget.currentIndex
               //       : --widget.currentIndex;
-              //   pageViewCurrentIndex = sliderIndex;
+              //   pageViewcurrentIndex = sliderIndex;
               //   first = false;
               // } else {
               //   if (sliderIndex > widget.currentIndex &&
@@ -176,7 +176,7 @@ class _SliderWidgetState extends State<SliderWidget> {
               // }
             },
             itemBuilder: (BuildContext context, int index) {
-              return widget.issocialpage!
+              return widget.isSocialPage!
                   ? SocialDescription(
                       object: object[pageinitialIndex],
                       language: Globals.selectedLanguage,
@@ -186,10 +186,10 @@ class _SliderWidgetState extends State<SliderWidget> {
                       // },
                     )
                   : widget.isNewsPage!
-                      ? Newdescription(
+                      ? NewsDescription(
                           obj: object[pageinitialIndex],
                           date: widget.date,
-                          isbuttomsheet: true,
+                          isBottomSheet: true,
                           language: Globals.selectedLanguage,
                           connected: widget.connected,
                         )
@@ -200,7 +200,7 @@ class _SliderWidgetState extends State<SliderWidget> {
                           // : widget.iseventpage             //Removed due to new UI
                           //     ? EventDescription(
                           //         obj: object[pageinitialIndex],
-                          //         isbuttomsheet: true,
+                          //         isBottomSheet: true,
                           //         language: Globals.selectedLanguage,
                           //       )
                           : EmptyContainer();
@@ -216,4 +216,7 @@ class _SliderWidgetState extends State<SliderWidget> {
     final element = doc.getElementById('content');
     debugPrint(element!.querySelectorAll('div').toString());
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

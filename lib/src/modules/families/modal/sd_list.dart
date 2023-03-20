@@ -1,3 +1,4 @@
+import 'package:Soc/src/services/utility.dart';
 import 'package:hive/hive.dart';
 part 'sd_list.g.dart';
 
@@ -24,7 +25,16 @@ class SDlist {
   String? status;
   @HiveField(9)
   String? darkModeIconC;
-
+  @HiveField(10)
+  String? groupingC;
+  @HiveField(11)
+  final groupSortOrder;
+  @HiveField(12)
+  String? groupImageURL;
+  @HiveField(13)
+  String? isFolderC;
+  @HiveField(14)
+  String? appFolderC;
   SDlist(
       {
       // this.attributes,
@@ -37,22 +47,32 @@ class SDlist {
       this.sortOrderC,
       this.phoneC,
       this.status,
-      this.darkModeIconC});
+      this.darkModeIconC,
+      this.groupingC,
+      this.groupSortOrder,
+      this.groupImageURL,
+      this.isFolderC,
+      this.appFolderC});
 
   factory SDlist.fromJson(Map<String, dynamic> json) => SDlist(
       // attributes: json['attributes'] == null
       //     ? null
       //     : SDAttributes.fromJson(json['attributes'] as Map<String, dynamic>),
-      designation: json['Title__c'],
+      designation: Utility.utf8convert(json['Title__c'] ?? ''),
       imageUrlC: json['Image_URL__c'] as String?,
       id: json['Id'] as String?,
-      name: json['Name__c'] as String?,
-      descriptionC: json['Description__c'],
+      name: Utility.utf8convert(json['Name__c'] ?? ''),
+      descriptionC: Utility.utf8convert(json['Description__c']?? ''),
       emailC: json['Email__c'] as String?,
       sortOrderC: double.parse(json['Sort_Order__c'] ?? '100'),
       phoneC: json['Phone__c'] as String?,
       status: json['Active_Status__c'] ?? 'Show',
-      darkModeIconC: json['Dark_Mode_Icon__c']);
+      darkModeIconC: json['Dark_Mode_Icon__c'],
+      groupingC: json['Grouping__c'],
+      groupSortOrder: double.parse(json['Group_Sort_Order__c'] ?? '100'),
+      groupImageURL: json['Group_Image_URL__c'],
+      appFolderC: json['App_Folder__c'] as String?,
+      isFolderC: json['Is_Folder__c'] as String?);
 
   Map<String, dynamic> toJson() => {
         // 'attributes': attributes?.toJson(),
@@ -65,6 +85,10 @@ class SDlist {
         'Sort_Order__c': sortOrderC,
         'Phone__c': phoneC,
         'Active_Status__c': status,
-        'Dark_Mode_Icon__c': darkModeIconC
+        'Dark_Mode_Icon__c': darkModeIconC,
+        'Grouping__c': groupingC,
+        'Group_Sort_Order__c': groupSortOrder,
+        'Group_Image_URL__c': groupImageURL,
+        "Is_Folder__c": isFolderC
       };
 }

@@ -23,8 +23,6 @@ class _SuccessCustomButtonState extends State<SuccessCustomButton> {
   // double _animatedWidth = 0.0;
   @override
   Widget build(BuildContext context) {
-    //print(
-    // "building animation ------------------------> ${widget.animationStart}");
     return Stack(
       children: [
         Container(

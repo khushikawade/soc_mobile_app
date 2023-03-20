@@ -8,7 +8,7 @@ class RecentGoogleFileSearch {
   @HiveField(1)
   String? description;
   @HiveField(2)
-  String? fileid;
+  String? fileId;
   @HiveField(3)
   final label;
   @HiveField(4)
@@ -23,15 +23,19 @@ class RecentGoogleFileSearch {
   String? isCreatedAsPremium;
   @HiveField(9)
   int? hiveobjid;
+  @HiveField(10)
+  String? assessmentType;
+
   RecentGoogleFileSearch(
       {this.title,
       this.description,
-      this.fileid,
+      this.fileId,
       this.label,
       this.webContentLink,
       this.createdDate,
       this.modifiedDate,
       this.sessionId,
       this.isCreatedAsPremium,
-      this.hiveobjid});
+      this.hiveobjid,
+      this.assessmentType});
 }

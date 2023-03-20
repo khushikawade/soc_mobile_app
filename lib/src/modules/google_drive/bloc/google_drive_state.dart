@@ -69,16 +69,11 @@ class AssessmentDetailSuccess extends GoogleDriveState {
 }
 
 class ExcelSheetCreated extends GoogleDriveState {
-  final obj;
-  ExcelSheetCreated({
-    required this.obj,
-  });
+  ExcelSheetCreated();
   ExcelSheetCreated copyWith({
     final obj,
   }) {
-    return ExcelSheetCreated(
-      obj: obj ?? this.obj,
-    );
+    return ExcelSheetCreated();
   }
 
   @override
@@ -118,15 +113,77 @@ class ErrorState extends GoogleDriveState {
   List<Object> get props => [];
 }
 
-class ShareLinkRecived extends GoogleDriveState {
+class ShareLinkReceived extends GoogleDriveState {
   final String? shareLink;
-  ShareLinkRecived({required this.shareLink});
+  ShareLinkReceived({required this.shareLink});
   @override
   List<Object> get props => [];
 }
 
 class RefreshAuthenticationTokenSuccessState extends GoogleDriveState {
   RefreshAuthenticationTokenSuccessState();
+  @override
+  List<Object> get props => [];
+}
+
+class ImageToAwsBucketSuccess extends GoogleDriveState {
+  final String? bucketImageUrl;
+  CustomRubricModal customRubricModal;
+  ImageToAwsBucketSuccess(
+      {required this.bucketImageUrl, required this.customRubricModal});
+      
+        @override
+        // TODO: implement props
+        List<Object?> get props => throw UnimplementedError();
+}
+
+class GoogleSlideCreated extends GoogleDriveState {
+  final String? slideFiledId;
+  GoogleSlideCreated({required this.slideFiledId});
+
+  @override
+  List<Object> get props => [];
+}
+
+class AddBlankSlidesOnDriveSuccess extends GoogleDriveState {
+  AddBlankSlidesOnDriveSuccess();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GoogleAssessmentImagesOnSlidesUpdated extends GoogleDriveState {
+  GoogleAssessmentImagesOnSlidesUpdated();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ShowLoadingDialog extends GoogleDriveState {
+  @override
+  List<Object> get props => [];
+}
+
+class GoogleSheetUpdateOnScanMoreSuccess extends GoogleDriveState {
+  final List<StudentAssessmentInfo> list;
+  GoogleSheetUpdateOnScanMoreSuccess({required this.list});
+  @override
+  List<Object> get props => [];
+}
+
+class RecallTheEvent extends GoogleDriveState {
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateAssignmentDetailsOnSlideSuccess extends GoogleDriveState {
+  UpdateAssignmentDetailsOnSlideSuccess();
+  @override
+  List<Object> get props => [];
+}
+class AddAndUpdateAssessmentImageToSlidesOnDriveSuccess extends GoogleDriveState {
+  AddAndUpdateAssessmentImageToSlidesOnDriveSuccess();
+
   @override
   List<Object> get props => [];
 }

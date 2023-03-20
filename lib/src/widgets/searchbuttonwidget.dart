@@ -1,8 +1,6 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/home/ui/search.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
-
 import '../modules/home/ui/search_new.dart';
 
 class SearchButtonWidget extends StatelessWidget {
@@ -19,7 +17,7 @@ class SearchButtonWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => SearchPage(
-                        isbuttomsheet: true,
+                        isBottomSheet: true,
                         language: language,
                       )));
         },
