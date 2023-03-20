@@ -483,7 +483,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: GestureDetector(
                       onTap: () {
                         widget.customGrades[index] == '+'
-                            ? _addSectionBottomSheet()
+                            ? _updateGradeBottomSheet()
                             : selectedGrade.value = index;
                       },
                       child: Transform.scale(
@@ -918,7 +918,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     // );
   }
 
-  _addSectionBottomSheet() {
+  _updateGradeBottomSheet() {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       isScrollControlled: true,
@@ -936,7 +936,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             ? MediaQuery.of(context).size.height * 0.82
             : MediaQuery.of(context).size.height / 2.5,
         valueChanged: (controller) async {
-          await updateList(
+          await updateGradeList(
             sectionName: controller.text,
           );
 
@@ -948,7 +948,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     );
   }
 
-  updateList({required String sectionName}) async {
+  updateGradeList({required String sectionName}) async {
     LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
 
     if (!widget.customGrades.contains(sectionName)) {
