@@ -103,7 +103,7 @@ class _EventPageState extends State<EventPage>
           scrollDirection: Axis.vertical,
           padding: widget.isMainPage == true || !Platform.isAndroid
               ? EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height * 0.1)
+                  bottom: MediaQuery.of(context).size.height * 0.15)
               // : !Platform.isAndroid
               //     ? EdgeInsets.only(
               //         bottom: MediaQuery.of(context).size.height * 0.1)
@@ -528,19 +528,15 @@ class _EventPageState extends State<EventPage>
       children: [
         Padding(
           padding: EdgeInsets.only(top: 20.0, bottom: 5.0),
-          child: Column(
-            children: [
-              CachedNetworkImage(
-                  imageUrl: _getCalenderBanerImages(
-                      map[0].monthString.toString().toLowerCase(),
-                      state.calendarBannerImageList),
-                  imageBuilder: (context, imageProvider) => imageBuilder(
-                      imageProvider, date, context, BoxFit.fitWidth),
-                  placeholder: (context, url) => placeholderBuilder(),
-                  errorWidget: (context, url, error) =>
-                      errorWidgetBuilder(date: date)),
-            ],
-          ),
+          child: CachedNetworkImage(
+              imageUrl: _getCalenderBanerImages(
+                  map[0].monthString.toString().toLowerCase(),
+                  state.calendarBannerImageList),
+              imageBuilder: (context, imageProvider) =>
+                  imageBuilder(imageProvider, date, context, BoxFit.fitWidth),
+              placeholder: (context, url) => placeholderBuilder(),
+              errorWidget: (context, url, error) =>
+                  errorWidgetBuilder(date: date)),
         ),
         for (CalendarEventList i in map) eventWidget(i)
       ],

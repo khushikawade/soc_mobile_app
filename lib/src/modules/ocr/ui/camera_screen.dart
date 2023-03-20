@@ -135,9 +135,7 @@ class _CameraScreenState extends State<CameraScreen>
       LocalDatabase('history_student_info');
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
-  bool isAllStudentsBelongToSameCourse = true;
 
-  List<String> studentIds = [];
   ValueNotifier<bool>? removeLoading = ValueNotifier<bool>(false);
   @override
   void initState() {
@@ -483,16 +481,21 @@ class _CameraScreenState extends State<CameraScreen>
                             } else {
                               if (Overrides.STANDALONE_GRADED_APP == true) {
                                 //Prepare suggestion chips for create screen //course list
+                                Utility.showLoadingDialog(
+                                    context: context, isOCR: true);
                                 List<String> suggestionList =
                                     await getSuggestionChips();
+                                Navigator.of(context).pop();
 
-                                if (isAllStudentsBelongToSameCourse) {
-                                  _navigateToCreateAssessment(
-                                      suggestionList: suggestionList);
-                                } else {
-                                  removeStudentPopupModal(
-                                      suggestionList: suggestionList);
-                                }
+                                // if (isAllStudentsBelongToSameCourse) {
+                                //   _navigateToCreateAssessment(
+                                //       suggestionList: suggestionList);
+                                // } else {
+                                //   removeStudentPopupModal(
+                                //       suggestionList: suggestionList);
+                                // }
+                                _navigateToCreateAssessment(
+                                    suggestionList: suggestionList);
 
                                 // Navigator.pushReplacement(
                                 //   context,
@@ -972,49 +975,77 @@ class _CameraScreenState extends State<CameraScreen>
 
 // Will be used in standalone app only
   Future<List<String>> getSuggestionChips() async {
+    List<String> classSuggestionsList = [];
+
     try {
       List<StudentAssessmentInfo> studentInfo =
           await Utility.getStudentInfoList(tableName: 'student_info');
 
-      List<String> classList = [];
       LocalDatabase<GoogleClassroomCourses> _localDb =
           LocalDatabase(Strings.googleClassroomCoursesList);
 
       List<GoogleClassroomCourses>? _localData = await _localDb.getData();
 
 // filteredCourses only the courses that contain all scanned students //Else return empty course list
-      List<GoogleClassroomCourses> filteredCourses = _localData
-          .where((GoogleClassroomCourses classroomCourse) => studentInfo.every(
-              (StudentAssessmentInfo student) =>
-                  classroomCourse.studentList!.any((classroomCourseStudent) {
-                    if (classroomCourseStudent['profile']['emailAddress'] ==
-                        student.studentId) {
-                      //student email always since work in standalone
-                      studentIds.add(student.studentId!);
-                      return true;
-                    }
-                    return false;
-                  })))
+      // List<GoogleClassroomCourses> filteredCourses = _localData
+      //     .where((GoogleClassroomCourses classroomCourse) => studentInfo.every(
+      //         (StudentAssessmentInfo student) =>
+      //             classroomCourse.studentList!.any((classroomCourseStudent) {
+      //               if (classroomCourseStudent['profile']['emailAddress'] ==
+      //                   student.studentId) {
+      //                 //student email always since work in standalone
+      //                 studentIds.add(student.studentId!);
+      //                 return true;
+      //               }
+      //               return false;
+      //             })))
+      //     .toList();
+
+      // for (var i = 0; i < _localData.length; i++) {
+      //   GoogleClassroomCourses currentCourse = _localData[i];
+      //   for (var j = 0; j < currentCourse.studentList!.length; j++) {
+      //     var currentStudent =
+      //         currentCourse.studentList![j]['profile']['emailAddress'];
+      //     for (var k = 0; k < studentInfo.length; k++) {
+      //       String? student = studentInfo[k].studentId;
+      //       if (student == currentStudent) {
+      //         classList.add(currentCourse.name!);
+      //       }
+      //     }
+      //   }
+      // }
+      // ;
+
+      // if (filteredCourses?.isNotEmpty ?? false) {
+      //   for (var i = 0; i < filteredCourses.length; i++) {
+      //     classList.add(filteredCourses[i].name!);
+      //   }
+      // } else {
+      //   isAllStudentsBelongToSameCourse =
+      //       false; //managed to show popup if teacher still wants to continue with other students not belong to the detected course
+      //   for (var i = 0; i < _localData.length; i++) {
+      //     classList.add(_localData[i].name ?? '');
+      //   }
+      // }
+
+// filteredCourses only the courses that contain all scanned students //Including every single student course if belongs to other course
+      classSuggestionsList = _localData
+          .where((course) => course.studentList != null)
+          .where((course) => course.studentList!.any((student) => studentInfo
+              .any((s) => s.studentId == student['profile']['emailAddress'])))
+          .map((course) => course.name!)
+          .toSet() // remove duplicates
           .toList();
-      print(studentIds);
 
-      if (filteredCourses?.isNotEmpty ?? false) {
-        for (var i = 0; i < filteredCourses.length; i++) {
-          classList.add(filteredCourses[i].name!);
-        }
-      } else {
-        isAllStudentsBelongToSameCourse =
-            false; //managed to show popup if teacher still wants to continue with other students not belong to the detected course
-        for (var i = 0; i < _localData.length; i++) {
-          classList.add(_localData[i].name ?? '');
-        }
-      }
+// if classSuggestionList is empty or null so get all local classroom courses
+      classSuggestionsList = classSuggestionsList?.isNotEmpty ?? false
+          ? classSuggestionsList
+          : _localData.map((course) => course.name!).toList();
 
-      classList.sort();
-      return classList ?? [];
+      classSuggestionsList.sort();
+      return classSuggestionsList ?? [];
     } catch (e) {
-      List<String> classList = [];
-      return classList;
+      return classSuggestionsList;
     }
   }
 
@@ -1105,113 +1136,113 @@ class _CameraScreenState extends State<CameraScreen>
     );
   }
 
-  removeStudentPopupModal({required List<String> suggestionList}) async {
-    showDialog(
-        context: context,
-        builder: (showDialogContext) => CommonPopupWidget(
-              backgroundColor:
-                  Theme.of(showDialogContext).colorScheme.background ==
-                          Color(0xff000000)
-                      ? Color(0xff162429)
-                      : null,
-              isLogout: true,
-              orientation: MediaQuery.of(showDialogContext).orientation,
-              context: showDialogContext,
-              message:
-                  "A few students not found in the detected course. Do you still want to continue with those students?",
-              title: 'Action Required!',
-              actionWidget: popupActionButtonWidget(
-                  contactNumber: Globals.appSetting.contactPhoneC,
-                  email: Globals.appSetting.parentCoordinatorEmailc,
-                  showDialogContext: showDialogContext,
-                  suggestionList: suggestionList),
-              clearButton: true,
-              titleStyle: Theme.of(showDialogContext)
-                  .textTheme
-                  .headline1!
-                  .copyWith(fontWeight: FontWeight.bold),
-            )).then((_) => Globals.isNewsContactPopupAppear = false);
-    ;
-  }
+  // removeStudentPopupModal({required List<String> suggestionList}) async {
+  //   showDialog(
+  //       context: context,
+  //       builder: (showDialogContext) => CommonPopupWidget(
+  //             backgroundColor:
+  //                 Theme.of(showDialogContext).colorScheme.background ==
+  //                         Color(0xff000000)
+  //                     ? Color(0xff162429)
+  //                     : null,
+  //             isLogout: true,
+  //             orientation: MediaQuery.of(showDialogContext).orientation,
+  //             context: showDialogContext,
+  //             message:
+  //                 "A few students not found in the detected course. Do you still want to continue with those students?",
+  //             title: 'Action Required!',
+  //             actionWidget: popupActionButtonWidget(
+  //                 contactNumber: Globals.appSetting.contactPhoneC,
+  //                 email: Globals.appSetting.parentCoordinatorEmailc,
+  //                 showDialogContext: showDialogContext,
+  //                 suggestionList: suggestionList),
+  //             clearButton: true,
+  //             titleStyle: Theme.of(showDialogContext)
+  //                 .textTheme
+  //                 .headline1!
+  //                 .copyWith(fontWeight: FontWeight.bold),
+  //           )).then((_) => Globals.isNewsContactPopupAppear = false);
+  //   ;
+  // }
 
-  List<Widget> popupActionButtonWidget(
-      {required String? email,
-      required String? contactNumber,
-      required BuildContext showDialogContext,
-      required List<String> suggestionList}) {
-    return [
-      textButtonWidget(
-          showDialogContext: showDialogContext,
-          title: 'Continue',
-          isLoading: false,
-          onPressed: () async {
-            _navigateToCreateAssessment(suggestionList: suggestionList);
-          }),
-      Container(
-        height: 40,
-        width: 1,
-        color: Colors.grey.withOpacity(0.2),
-      ),
-      ValueListenableBuilder(
-          valueListenable: removeLoading!,
-          builder: (BuildContext context, dynamic value, Widget? child) {
-            return textButtonWidget(
-                showDialogContext: showDialogContext,
-                title: 'Remove',
-                isLoading: removeLoading!.value,
-                onPressed: () async {
-                  removeLoading!.value = true;
-                  await removeStudentRecordFromStudentInfoDB();
-                  List<String> suggestionList = await getSuggestionChips();
-                  _navigateToCreateAssessment(suggestionList: suggestionList);
-                });
-          }),
-    ];
-  }
+  // List<Widget> popupActionButtonWidget(
+  //     {required String? email,
+  //     required String? contactNumber,
+  //     required BuildContext showDialogContext,
+  //     required List<String> suggestionList}) {
+  //   return [
+  //     textButtonWidget(
+  //         showDialogContext: showDialogContext,
+  //         title: 'Continue',
+  //         isLoading: false,
+  //         onPressed: () async {
+  //           _navigateToCreateAssessment(suggestionList: suggestionList);
+  //         }),
+  //     Container(
+  //       height: 40,
+  //       width: 1,
+  //       color: Colors.grey.withOpacity(0.2),
+  //     ),
+  //     ValueListenableBuilder(
+  //         valueListenable: removeLoading!,
+  //         builder: (BuildContext context, dynamic value, Widget? child) {
+  //           return textButtonWidget(
+  //               showDialogContext: showDialogContext,
+  //               title: 'Remove',
+  //               isLoading: removeLoading!.value,
+  //               onPressed: () async {
+  //                 removeLoading!.value = true;
+  //                 await removeStudentRecordFromStudentInfoDB();
+  //                 List<String> suggestionList = await getSuggestionChips();
+  //                 _navigateToCreateAssessment(suggestionList: suggestionList);
+  //               });
+  //         }),
+  //   ];
+  // }
 
-  Widget textButtonWidget(
-      {required String title,
-      required bool isLoading,
-      required void Function()? onPressed,
-      required BuildContext showDialogContext}) {
-    return TextButton(
-      child: isLoading
-          ? Container(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-              ),
-            )
-          : Container(
-              width: MediaQuery.of(showDialogContext).size.width / 5,
-              child: Utility.textWidget(
-                  context: showDialogContext,
-                  text: title.toString(),
-                  textTheme: Theme.of(showDialogContext)
-                      .textTheme
-                      .headline2!
-                      .copyWith(fontWeight: FontWeight.bold))),
-      onPressed: onPressed,
-    );
-  }
+  // Widget textButtonWidget(
+  //     {required String title,
+  //     required bool isLoading,
+  //     required void Function()? onPressed,
+  //     required BuildContext showDialogContext}) {
+  //   return TextButton(
+  //     child: isLoading
+  //         ? Container(
+  //             width: 20,
+  //             height: 20,
+  //             child: CircularProgressIndicator(
+  //               strokeWidth: 2,
+  //             ),
+  //           )
+  //         : Container(
+  //             width: MediaQuery.of(showDialogContext).size.width / 5,
+  //             child: Utility.textWidget(
+  //                 context: showDialogContext,
+  //                 text: title.toString(),
+  //                 textTheme: Theme.of(showDialogContext)
+  //                     .textTheme
+  //                     .headline2!
+  //                     .copyWith(fontWeight: FontWeight.bold))),
+  //     onPressed: onPressed,
+  //   );
+  // }
 
-  Future removeStudentRecordFromStudentInfoDB() async {
-    List<StudentAssessmentInfo> studentinfo =
-        await _studentAssessmentInfoDb.getData();
+//   Future removeStudentRecordFromStudentInfoDB() async {
+//     List<StudentAssessmentInfo> studentinfo =
+//         await _studentAssessmentInfoDb.getData();
 
-//filterd only same course student here
-    List<StudentAssessmentInfo> filteredList = studentinfo
-        .where((StudentAssessmentInfo student) =>
-            studentIds.contains(student.studentId))
-        .toList();
+// //filterd only same course student here
+//     List<StudentAssessmentInfo> filteredList = studentinfo
+//         .where((StudentAssessmentInfo student) =>
+//             studentIds.contains(student.studentId))
+//         .toList();
 
-//clean student info
-    await _studentAssessmentInfoDb.clear();
+// //clean student info
+//     await _studentAssessmentInfoDb.clear();
 
-    //update with filterd data only
-    filteredList.forEach((element) async {
-      await _studentAssessmentInfoDb.addData(element);
-    });
-  }
+//     //update with filterd data only
+//     filteredList.forEach((element) async {
+//       await _studentAssessmentInfoDb.addData(element);
+//     });
+//   }
 }

@@ -74,7 +74,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
 
   Widget _iOSWebView() => Container(
         //height is used to manage the bottom web content to not hide
-        // height: MediaQuery.of(context).size.height * 0.8,
+        height: MediaQuery.of(context).size.height * 0.775,
         child: WebView(
           // userAgent: 'random',
           // zoomEnabled: widget.zoomEnabled == null
@@ -107,83 +107,85 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
         ),
       );
 
-  Widget _androidWebView() => inAppWebView.InAppWebView(
-        initialUrlRequest: inAppWebView.URLRequest(
-            url: widget.isiFrame == true
-                ? Uri.dataFromString('${widget.url}', mimeType: 'text/html')
-                : Uri.parse(widget.url)),
-        // initialUserScripts: UnmodifiableListView<UserScript>([]),
-        // initialOptions: inAppWebView.options,
-        // pullToRefreshController: pullToRefreshController,
+  Widget _androidWebView() => Container(
+        child: inAppWebView.InAppWebView(
+          initialUrlRequest: inAppWebView.URLRequest(
+              url: widget.isiFrame == true
+                  ? Uri.dataFromString('${widget.url}', mimeType: 'text/html')
+                  : Uri.parse(widget.url)),
+          // initialUserScripts: UnmodifiableListView<UserScript>([]),
+          // initialOptions: inAppWebView.options,
+          // pullToRefreshController: pullToRefreshController,
 
-        onWebViewCreated: (controller) {
-          // webViewController = controller;
-        },
-        onLoadStart: (controller, url) {
-          // setState(() {
-          //   widget.url = url.toString();
-          //   urlController.text = widget.url;
-          // });
-        },
-        androidOnPermissionRequest: (controller, origin, resources) async {
-          return inAppWebView.PermissionRequestResponse(
-              resources: resources,
-              action: inAppWebView.PermissionRequestResponseAction.GRANT);
-        },
-        shouldOverrideUrlLoading: (controller, navigationAction) async {
-          var uri = navigationAction.request.url!;
+          onWebViewCreated: (controller) {
+            // webViewController = controller;
+          },
+          onLoadStart: (controller, url) {
+            // setState(() {
+            //   widget.url = url.toString();
+            //   urlController.text = widget.url;
+            // });
+          },
+          androidOnPermissionRequest: (controller, origin, resources) async {
+            return inAppWebView.PermissionRequestResponse(
+                resources: resources,
+                action: inAppWebView.PermissionRequestResponseAction.GRANT);
+          },
+          shouldOverrideUrlLoading: (controller, navigationAction) async {
+            var uri = navigationAction.request.url!;
 
-          if (![
-            "http",
-            "https",
-            "file",
-            "chrome",
-            "data",
-            "javascript",
-            "about"
-          ].contains(uri.scheme)) {
-            if (await canLaunchUrl(Uri.parse(widget.url))) {
-              // Launch the App
-              await launchUrl(Uri.parse(widget.url));
-              // and cancel the request
-              return inAppWebView.NavigationActionPolicy.CANCEL;
+            if (![
+              "http",
+              "https",
+              "file",
+              "chrome",
+              "data",
+              "javascript",
+              "about"
+            ].contains(uri.scheme)) {
+              if (await canLaunchUrl(Uri.parse(widget.url))) {
+                // Launch the App
+                await launchUrl(Uri.parse(widget.url));
+                // and cancel the request
+                return inAppWebView.NavigationActionPolicy.CANCEL;
+              }
             }
-          }
 
-          return inAppWebView.NavigationActionPolicy.ALLOW;
-        },
-        onLoadStop: (controller, url) async {
-          // pullToRefreshController.endRefreshing();
-          // setState(() {
-          //   isLoading = false;
-          // });
-        },
-        onLoadError: (controller, url, code, message) {
-          // pullToRefreshController.endRefreshing();
-        },
-        onLoadHttpError: (controller, url, code, message) {
-          // setState(() {
-          //   showLoader = false;
-          // });
-        },
-        onProgressChanged: (controller, progress) {
-          //print(progress);
-          if (progress >= 65) {
-            if (isLoading == false) return;
-            setState(() {
-              isLoading = false;
-            });
-          }
-        },
-        onUpdateVisitedHistory: (controller, url, androidIsReload) {
-          // setState(() {
-          //   widget.url = url.toString();
-          //   urlController.text = widget.url;
-          // });
-        },
-        onConsoleMessage: (controller, consoleMessage) {
-          //print(consoleMessage);
-        },
+            return inAppWebView.NavigationActionPolicy.ALLOW;
+          },
+          onLoadStop: (controller, url) async {
+            // pullToRefreshController.endRefreshing();
+            // setState(() {
+            //   isLoading = false;
+            // });
+          },
+          onLoadError: (controller, url, code, message) {
+            // pullToRefreshController.endRefreshing();
+          },
+          onLoadHttpError: (controller, url, code, message) {
+            // setState(() {
+            //   showLoader = false;
+            // });
+          },
+          onProgressChanged: (controller, progress) {
+            //print(progress);
+            if (progress >= 65) {
+              if (isLoading == false) return;
+              setState(() {
+                isLoading = false;
+              });
+            }
+          },
+          onUpdateVisitedHistory: (controller, url, androidIsReload) {
+            // setState(() {
+            //   widget.url = url.toString();
+            //   urlController.text = widget.url;
+            // });
+          },
+          onConsoleMessage: (controller, consoleMessage) {
+            //print(consoleMessage);
+          },
+        ),
       );
 
   Widget _webViewWidget() {
