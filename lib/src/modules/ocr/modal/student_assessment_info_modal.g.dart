@@ -40,8 +40,8 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       isRubricChanged: fields[20] as String?,
       uniqueId: fields[19] as String?,
       googleClassRoomStudentProfileId: fields[22] as String?,
-      isgoogleClassRoomStudentProfileUpdated: fields[23] as bool,
-      isSlideObjUpdated: fields[24] as bool,
+      isgoogleClassRoomStudentProfileUpdated: fields[23] as bool?,
+      isSlideObjUpdated: fields[24] as bool?,
       slideTableObjId: fields[25] as String?,
     );
   }

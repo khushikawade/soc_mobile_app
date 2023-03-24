@@ -99,6 +99,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                     }),
               ),
               body: ListView(
+                physics: NeverScrollableScrollPhysics(),
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(
