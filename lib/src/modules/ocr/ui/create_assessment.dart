@@ -887,8 +887,19 @@ class _CreateAssessmentState extends State<CreateAssessment>
     // To check State is selected or not only for standalone app (if selected then navigate to subject screen otherwise navigate to state selection screen)
     String? selectedState;
     if (Overrides.STANDALONE_GRADED_APP) {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      selectedState = pref.getString('selected_state');
+      SharedPreferences clearSelectedStateCache =
+          await SharedPreferences.getInstance();
+
+      final clearSelectedCacheResult = await clearSelectedStateCache
+          .getBool('delete_local_selected_state_cache');
+
+      if (clearSelectedCacheResult != true) {
+        await clearSelectedStateCache.setBool(
+            'delete_local_selected_state_cache', true);
+      } else {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        selectedState = pref.getString('selected_state');
+      }
     } else {
       //for school app default state
       selectedState = OcrOverrides.defaultStateForSchoolApp;

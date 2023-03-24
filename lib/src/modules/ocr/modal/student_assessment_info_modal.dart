@@ -55,10 +55,10 @@ class StudentAssessmentInfo {
   String?
       googleClassRoomStudentProfileId; // student profile ids to update the classroom
   @HiveField(23)
-  bool
+  bool?
       isgoogleClassRoomStudentProfileUpdated; // Flag indicating whether the student's profile has been updated in Google Classroom or not. True if updated, false otherwise.
   @HiveField(24)
-  bool
+  bool?
       isSlideObjUpdated; // Flag indicating whether the student's profile has been updated in Google slides or not. True if updated, false otherwise.
   @HiveField(25)
   String?
