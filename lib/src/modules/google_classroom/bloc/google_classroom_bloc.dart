@@ -197,7 +197,7 @@ class GoogleClassroomBloc
                 (assessmentData[i]
                         .studentId == //studentId contains student email address
                     studentProfileObj['profile']['emailAddress']) &&
-                (!assessmentData[i].isgoogleClassRoomStudentProfileUpdated)) {
+                (!assessmentData[i].isgoogleClassRoomStudentProfileUpdated!)) {
               //adding student profile list
 
               studentAssessmentDetails.add(ClassRoomStudentProfile(

@@ -26,10 +26,13 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/firstLetterUpperCase.dart';
 import '../../google_classroom/bloc/google_classroom_bloc.dart';
+import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
+import '../widgets/student_popup.dart';
 import '../widgets/suggestion_chip.dart';
 
 class CreateAssessment extends StatefulWidget {
@@ -76,13 +79,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
   void initState() {
     GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
         GoogleClassroomCourses();
+
+    //Managing suggestion chips // course name // class name
     updateClassName();
-    //   wd
-    // listScrollController.addListener(_scrollListener);
+
     Globals.googleExcelSheetId = '';
     Globals.googleSlidePresentationId = '';
     Globals.googleSlidePresentationLink = '';
-    //_bloc.add(SaveSubjectListDetails());
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -94,14 +97,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
   void dispose() {
     super.dispose();
   }
-  // _scrollListener() {
-  //   FocusScope.of(context).requestFocus(FocusNode());
-  // }
 
   ScrollController scrollControllerAssessmentName = new ScrollController();
   ScrollController scrollControllerClassName = new ScrollController();
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
+  final GlobalKey<NonCourseGoogleClassroomStudentPopupState> _dialogKey =
+      GlobalKey<NonCourseGoogleClassroomStudentPopupState>();
+
   // GoogleClassroomCourses? studentClassRoomObj;
   @override
   Widget build(BuildContext context) {
@@ -483,7 +486,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     child: GestureDetector(
                       onTap: () {
                         widget.customGrades[index] == '+'
-                            ? _addSectionBottomSheet()
+                            ? _updateGradeBottomSheet()
                             : selectedGrade.value = index;
                       },
                       child: Transform.scale(
@@ -642,57 +645,89 @@ class _CreateAssessmentState extends State<CreateAssessment>
         return FloatingActionButton.extended(
             backgroundColor: AppTheme.kButtonColor,
             onPressed: () async {
+              // Hide keyboard
               FocusScope.of(context).requestFocus(FocusNode());
+
+              // Check for internet connection
               if (!connected) {
                 Utility.currentScreenSnackBar("No Internet Connection", null);
-              } else {
-                // if (_formKey.currentState!.validate()) {
-                if (assessmentNameError.value.isNotEmpty &&
-                    assessmentNameError.value.length >= 2 &&
-                    classError.value.isNotEmpty) {
-                  if (Overrides.STANDALONE_GRADED_APP &&
-                      (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
-                              ?.courseId?.isEmpty ??
-                          true)) {
-                    Utility.currentScreenSnackBar(
-                        "None of the scanned student available in the selected classroom course \'${classController.text}\'",
-                        null);
-                  } else {
-                    Globals.assessmentName =
-                        "${assessmentController.text}_${classController.text}";
-                    //Create excel sheet if not created already for current assessment
+                return;
+              }
 
-                    if (Globals.googleExcelSheetId!.isEmpty) {
-                      _googleDriveBloc.add(CreateExcelSheetToDrive(
-                          isMcqSheet: widget.isMcqSheet,
-                          name:
-                              "${assessmentController.text}_${classController.text}"));
-                      if (Overrides.STANDALONE_GRADED_APP) {
-                        _googleClassroomBloc.add(CreateClassRoomCourseWork(
-                            studentAssessmentInfoDb:
-                                LocalDatabase('student_info'),
-                            studentClassObj: GoogleClassroomGlobals
-                                .studentAssessmentAndClassroomObj,
-                            title: Globals.assessmentName ?? '',
-                            pointPossible: Globals.pointPossible ?? "0"));
-                      }
-                    } else if (imageFile != null &&
-                        imageFile!.path.isNotEmpty) {
-                      String imgExtension = imageFile!.path
-                          .substring(imageFile!.path.lastIndexOf(".") + 1);
-                      List<int> imageBytes = imageFile!.readAsBytesSync();
-                      String imageB64 = base64Encode(imageBytes);
-                      Globals.questionImgFilePath = imageFile;
+              // Check if form is valid
+              if (assessmentNameError.value.isEmpty ||
+                  assessmentNameError.value.length < 2 ||
+                  classError.value.isEmpty) {
+                return;
+              }
 
-                      _googleDriveBloc2.add(QuestionImgToAwsBucked(
-                          imgBase64: imageB64, imgExtension: imgExtension));
-                    } else {
-                      _navigateToSubjectSection('');
-                    }
-                  }
+              // Check if using standalone graded app and if student not belongs to selected classroom
+              //on updating the course selection, firstly 'GoogleClassroomGlobals.studentAssessmentAndClassroomObj?.courseId?' gets empty and updates with the selected course id when course matches to one or more student
+              if (Overrides.STANDALONE_GRADED_APP &&
+                  (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                          ?.courseId?.isEmpty ??
+                      true)) {
+                Utility.currentScreenSnackBar(
+                    "None of the scanned student available in the selected classroom course \'${classController.text}\'",
+                    null);
+                return;
+              }
+
+              // Check if all students belong to same class
+              if (Overrides.STANDALONE_GRADED_APP) {
+                Utility.showLoadingDialog(
+                  context: context,
+                  isOCR: true,
+                );
+
+                List<StudentAssessmentInfo> studentsNotBelongToSelectedCourse =
+                    await _compareStudentsBelongToSameClassOrNot();
+
+                Navigator.of(context).pop();
+                if (studentsNotBelongToSelectedCourse?.isNotEmpty ?? true) {
+                  showUnavailableStudentsPopupModal(
+                      studentsNotBelongToSelectedCourse:
+                          studentsNotBelongToSelectedCourse);
+                  return;
                 }
               }
+
+              performOnTapOnNext();
             },
+            // onPressed: () async {
+            //   FocusScope.of(context).requestFocus(FocusNode());
+            //   if (!connected) {
+            //     Utility.currentScreenSnackBar("No Internet Connection", null);
+            //   } else {
+            //     // if (_formKey.currentState!.validate()) {
+            //     if (assessmentNameError.value.isNotEmpty &&
+            //         assessmentNameError.value.length >= 2 &&
+            //         classError.value.isNotEmpty) {
+            //       if (Overrides.STANDALONE_GRADED_APP &&
+            //           (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+            //                   ?.courseId?.isEmpty ??
+            //               true)) {
+            //         Utility.currentScreenSnackBar(
+            //             "None of the scanned student available in the selected classroom course \'${classController.text}\'",
+            //             null);
+            //       } else {
+            //         if (Overrides.STANDALONE_GRADED_APP) {
+            //           List<StudentAssessmentInfo> notPresentStudentsList =
+            //               await _compareStudentsBelongToSameClassOrNot();
+
+            //           if (notPresentStudentsList?.isNotEmpty ?? false) {
+            //             studentPopupModal(
+            //                 notPresentStudentsList: notPresentStudentsList);
+            //           } else {
+            //             preparingexcelSheet();
+            //           }
+            //         } else {
+            //           preparingexcelSheet();
+            //         }
+            //       }
+            //     }
+            //   }
+            // },
             label: Row(
               children: [
                 BlocListener<GoogleDriveBloc, GoogleDriveState>(
@@ -763,25 +798,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           _navigateToSubjectSection('');
                         }
                       }
-
-                      // if (state is ShareLinkRecived) {
-                      //   Globals.googleSlidePresentationLink = state.shareLink;
-                      //   Navigator.of(context).pop();
-
-                      //   // to update question image to aws s3 bucket and get the link
-                      //   if (imageFile != null && imageFile!.path.isNotEmpty) {
-                      //     String imgExtension = imageFile!.path
-                      //         .substring(imageFile!.path.lastIndexOf(".") + 1);
-                      //     List<int> imageBytes = imageFile!.readAsBytesSync();
-                      //     String imageB64 = base64Encode(imageBytes);
-                      //     Globals.questionImgFilePath = imageFile;
-
-                      //     _googleDriveBloc2.add(QuestionImgToAwsBucked(
-                      //         imgBase64: imageB64, imgExtension: imgExtension));
-                      //   } else {
-                      //     _navigateToSubjectSection('');
-                      //   }
-                      // }
                     }),
                 BlocListener<GoogleDriveBloc, GoogleDriveState>(
                     bloc: _googleDriveBloc2,
@@ -871,8 +887,19 @@ class _CreateAssessmentState extends State<CreateAssessment>
     // To check State is selected or not only for standalone app (if selected then navigate to subject screen otherwise navigate to state selection screen)
     String? selectedState;
     if (Overrides.STANDALONE_GRADED_APP) {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      selectedState = pref.getString('selected_state');
+      SharedPreferences clearSelectedStateCache =
+          await SharedPreferences.getInstance();
+
+      final clearSelectedCacheResult = await clearSelectedStateCache
+          .getBool('delete_local_selected_state_cache');
+
+      if (clearSelectedCacheResult != true) {
+        await clearSelectedStateCache.setBool(
+            'delete_local_selected_state_cache', true);
+      } else {
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        selectedState = pref.getString('selected_state');
+      }
     } else {
       //for school app default state
       selectedState = OcrOverrides.defaultStateForSchoolApp;
@@ -907,18 +934,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 )),
       );
     }
-
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => SubjectSelection(
-    //             questionimageUrl: questionImageUrl ?? '',
-    //             selectedClass: widget.customGrades[selectedGrade.value],
-    //           )),
-    // );
   }
 
-  _addSectionBottomSheet() {
+  _updateGradeBottomSheet() {
     showModalBottomSheet(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       isScrollControlled: true,
@@ -936,7 +954,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             ? MediaQuery.of(context).size.height * 0.82
             : MediaQuery.of(context).size.height / 2.5,
         valueChanged: (controller) async {
-          await updateList(
+          await updateGradeList(
             sectionName: controller.text,
           );
 
@@ -948,7 +966,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     );
   }
 
-  updateList({required String sectionName}) async {
+  updateGradeList({required String sectionName}) async {
     LocalDatabase<String> _localDb = LocalDatabase('class_section_list');
 
     if (!widget.customGrades.contains(sectionName)) {
@@ -986,7 +1004,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
         .where((GoogleClassroomCourses classroomCourses) =>
             widget.classSuggestions.contains(classroomCourses.name))
         .toList();
-    print(_localData);
+
+    _localData.sort((a, b) => (a?.name ?? '').compareTo(b?.name ?? ''));
+
 /////--------
 
     List<StudentAssessmentInfo> studentInfo =
@@ -1028,5 +1048,79 @@ class _CreateAssessmentState extends State<CreateAssessment>
           'You cannot edit the Assessment Name and Class, once created.', null);
     }
     return;
+  }
+
+  Future<List<StudentAssessmentInfo>>
+      _compareStudentsBelongToSameClassOrNot() async {
+    try {
+      List<StudentAssessmentInfo> studentInfo =
+          await Utility.getStudentInfoList(tableName: 'student_info');
+
+      // Retrieve the students not present in the "GoogleClassroomCourses" or not in the "Selected Course" object locally
+      return studentInfo.where((student) {
+        return GoogleClassroomGlobals
+            .studentAssessmentAndClassroomObj //selected course object
+            .studentList!
+            .every((courseStudent) {
+          return courseStudent["profile"]["emailAddress"] != student.studentId;
+        });
+      }).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  void performOnTapOnNext() {
+    Globals.assessmentName =
+        "${assessmentController.text}_${classController.text}";
+    //Create excel sheet if not created already for current assessment
+
+    if (Globals.googleExcelSheetId!.isEmpty) {
+      _googleDriveBloc.add(CreateExcelSheetToDrive(
+          isMcqSheet: widget.isMcqSheet,
+          name: "${assessmentController.text}_${classController.text}"));
+      if (Overrides.STANDALONE_GRADED_APP) {
+        _googleClassroomBloc.add(CreateClassRoomCourseWork(
+            studentAssessmentInfoDb: LocalDatabase('student_info'),
+            studentClassObj:
+                GoogleClassroomGlobals.studentAssessmentAndClassroomObj,
+            title: Globals.assessmentName ?? '',
+            pointPossible: Globals.pointPossible ?? "0"));
+      }
+    } else if (imageFile != null && imageFile!.path.isNotEmpty) {
+      String imgExtension =
+          imageFile!.path.substring(imageFile!.path.lastIndexOf(".") + 1);
+      List<int> imageBytes = imageFile!.readAsBytesSync();
+      String imageB64 = base64Encode(imageBytes);
+      Globals.questionImgFilePath = imageFile;
+
+      _googleDriveBloc2.add(QuestionImgToAwsBucked(
+          imgBase64: imageB64, imgExtension: imgExtension));
+    } else {
+      _navigateToSubjectSection('');
+    }
+  }
+
+  void showUnavailableStudentsPopupModal(
+      {required List<StudentAssessmentInfo>
+          studentsNotBelongToSelectedCourse}) async {
+    showDialog(
+        context: context,
+        builder: (showDialogContext) => NonCourseGoogleClassroomStudentPopup(
+              key: _dialogKey,
+              studentsNotBelongToSelectedCourse:
+                  studentsNotBelongToSelectedCourse,
+              title: 'Action Required!',
+              message:
+                  "A few students not found in the selected course \'${classController.text}\'. Do you still want to continue with these students?",
+              studentInfoDb: LocalDatabase('student_info'),
+              onTapCallback: () {
+                // Close the dialog from outside
+                if (_dialogKey.currentState != null) {
+                  _dialogKey.currentState!.closeDialog();
+                }
+                performOnTapOnNext();
+              },
+            ));
   }
 }

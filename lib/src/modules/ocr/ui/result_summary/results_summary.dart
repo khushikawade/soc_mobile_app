@@ -80,8 +80,8 @@ class studentRecordList extends State<ResultsSummary> {
   GoogleDriveBloc _driveBloc = GoogleDriveBloc();
   GoogleDriveBloc _driveBloc2 = GoogleDriveBloc();
   OcrBloc _ocrBloc = OcrBloc();
-  OcrBloc _ocrAssessmentBloc =
-      OcrBloc(); // bloc instance only use for save assessment to database
+  // OcrBloc _ocrAssessmentBloc =
+  //     OcrBloc(); // bloc instance only use for save assessment to database
   int lastAssessmentLength = 0;
 
   // int? assessmentCount;
@@ -90,8 +90,9 @@ class studentRecordList extends State<ResultsSummary> {
   final ValueNotifier<bool> disableSlidableAction = ValueNotifier<bool>(false);
   final ValueNotifier<bool> editStudentDetailSuccess =
       ValueNotifier<bool>(false);
-  final scaffoldKey = new GlobalKey<ScaffoldState>();
   final ValueNotifier<String> dashboardState = ValueNotifier<String>('');
+
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
   int? assessmentListLength;
   ValueNotifier<int> assessmentCount = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
@@ -1696,35 +1697,57 @@ class studentRecordList extends State<ResultsSummary> {
                               await Utility.getStudentInfoList(
                                   tableName: 'student_info');
 
+                          await _studentAssessmentInfoDb.deleteAt(index);
+
+                          //To save the 0th index value to next index in case of 0th index deletion
+                          // if (index == 0) {
+                          //   StudentAssessmentInfo obj = _list[1];
+                          //   obj.className = _list[0].className;
+                          //   obj.subject = _list[0].subject;
+                          //   // obj.studentGrade = _list[0].studentGrade;
+                          //   obj.learningStandard = _list[0].learningStandard;
+                          //   obj.subLearningStandard =
+                          //       _list[0].subLearningStandard;
+                          //   obj.scoringRubric = _list[0].scoringRubric;
+                          //   obj.customRubricImage = _list[0].customRubricImage;
+                          //   obj.grade = _list[0].grade;
+                          //   obj.questionImgUrl = _list[0].questionImgUrl;
+                          //   obj.googleSlidePresentationURL =
+                          //       _list[0].googleSlidePresentationURL;
+
+                          //   await _studentAssessmentInfoDb.putAt(0, obj);
+                          // }
                           //To save the 0th index value to next index in case of 0th index deletion
                           if (index == 0) {
                             StudentAssessmentInfo obj = _list[1];
-                            obj.className = _list[0].className;
-                            obj.subject = _list[0].subject;
-                            obj.studentGrade = _list[0].studentGrade;
-                            obj.learningStandard = _list[0].learningStandard;
-                            obj.subLearningStandard =
-                                _list[0].subLearningStandard;
-                            obj.scoringRubric = _list[0].scoringRubric;
-                            obj.customRubricImage = _list[0].customRubricImage;
-                            obj.grade = _list[0].grade;
-                            obj.questionImgUrl = _list[0].questionImgUrl;
-                            obj.googleSlidePresentationURL =
-                                _list[0].googleSlidePresentationURL;
-
-                            _studentAssessmentInfoDb.putAt(0, obj);
+                            obj
+                              ..className = _list[0].className
+                              ..subject = _list[0].subject
+                              ..learningStandard = _list[0].learningStandard
+                              ..subLearningStandard =
+                                  _list[0].subLearningStandard
+                              ..scoringRubric = _list[0].scoringRubric
+                              ..customRubricImage = _list[0].customRubricImage
+                              ..grade = _list[0].grade
+                              ..questionImgUrl = _list[0].questionImgUrl
+                              ..googleSlidePresentationURL =
+                                  _list[0].googleSlidePresentationURL
+                              ..standardDescription =
+                                  _list[0].standardDescription;
+                            await _studentAssessmentInfoDb.putAt(0, obj);
                           }
-                          _studentAssessmentInfoDb.deleteAt(index);
-                          String deletrecordLogMsg =
+
+                          String deleteRecordLogMsg =
                               "Teacher deleted the record successfully";
                           FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                              deletrecordLogMsg
+                              deleteRecordLogMsg
                                       .toLowerCase()
                                       .replaceAll(" ", "_") ??
                                   '');
+
                           Utility.updateLogs(
                               activityId: '17',
-                              description: deletrecordLogMsg,
+                              description: deleteRecordLogMsg,
                               operationResult: 'Success');
 
                           // List _list = await Utility.getStudentInfoList(

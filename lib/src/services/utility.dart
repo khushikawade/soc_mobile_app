@@ -651,13 +651,6 @@ class Utility {
                             SizedBox(
                               height: 10,
                             ),
-                            // Center(
-                            //   child: Row(
-                            //       mainAxisAlignment: MainAxisAlignment.center,
-                            //       children: [
-                            //         SizedBox(
-                            //           width: 10,
-                            //         ),
                             Container(
                               alignment: Alignment.center,
                               margin: EdgeInsets.symmetric(horizontal: 10),
@@ -665,11 +658,6 @@ class Utility {
                                 color: isOCR! ? AppTheme.kButtonColor : null,
                               ),
                             ),
-                            //         SizedBox(
-                            //           width: 10,
-                            //         ),
-                            //       ]),
-                            // ),
                           ],
                         ),
                       )

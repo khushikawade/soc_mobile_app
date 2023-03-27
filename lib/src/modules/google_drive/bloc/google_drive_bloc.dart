@@ -2409,7 +2409,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
     List<Map> body = [];
     assessmentData.asMap().forEach((index, element) {
-      if (!element.isSlideObjUpdated) {
+      if (!element.isSlideObjUpdated!) {
         Map obj = {
           "createImage": {
             "url": element.assessmentImage,
@@ -2507,7 +2507,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           ];
     // print(slideObjects);
     assessmentData.asMap().forEach((index, element) async {
-      if (!element.isSlideObjUpdated) {
+      if (!element.isSlideObjUpdated!) {
         String uniqueId = DateTime.now().microsecondsSinceEpoch.toString();
 
         // Preparing blank slide type to add assessment images
@@ -2821,7 +2821,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     // print(assessmentData);
     try {
       assessmentData.asMap().forEach((index, element) async {
-        if (!element.isSlideObjUpdated) {
+        if (!element.isSlideObjUpdated!) {
           String pageObjectuniqueId =
               DateTime.now().microsecondsSinceEpoch.toString();
 

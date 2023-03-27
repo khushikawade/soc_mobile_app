@@ -745,12 +745,13 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         SharedPreferences clearNewsCache =
             await SharedPreferences.getInstance();
         final clearCacheResult =
-            clearNewsCache.getBool('delete_local_state_and_subject_cache');
+            clearNewsCache.getBool('delete_local_all_state_and_subject_cache');
 
         if (clearCacheResult != true) {
-          _localDb.clear();
+          print('Inside clear state');
+          await _localDb.clear();
           await clearNewsCache.setBool(
-              'delete_local_state_and_subject_cache', true);
+              'delete_local_all_state_and_subject_cache', true);
         }
 
         List<StateListObject>? _localData = await _localDb.getData();
@@ -883,7 +884,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           }
         }
       }
-
+      print('State List Updatelist method');
+      print(stateList);
       return stateList;
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
