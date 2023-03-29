@@ -65,7 +65,7 @@ class _OpticalCharacterRecognitionPageState
     //Globals.isPremiumUser = true;
     // Globals.questionImgUrl = '';
     getAllRubricList();
-    Globals.questionImgFilePath = null;
+    // Globals.questionImgFilePath = null;
     Utility.setLocked();
     _homeBloc.add(FetchStandardNavigationBar());
     super.initState();

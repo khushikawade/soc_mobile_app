@@ -32,7 +32,7 @@ class SearchScreenPage extends StatefulWidget {
   final String? selectedAnswer;
   final String? selectedKeyword;
   final String? grade;
-  final String? questionImage;
+  // final String? questionImage;
   final String? selectedSubject;
   final String? subjectId;
   final String? stateName;
@@ -45,7 +45,7 @@ class SearchScreenPage extends StatefulWidget {
       required this.selectedKeyword,
       required this.grade,
       required this.selectedSubject,
-      required this.questionImage,
+      // required this.questionImage,
       required this.stateName,
       required this.subjectId,
       required this.googleDriveBloc,
@@ -290,9 +290,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                   widget.googleDriveBloc.add(
                     UpdateDocOnDrive(
                       isMcqSheet: widget.isMcqSheet ?? false,
-                      questionImage: widget.questionImage == ''
-                          ? 'NA'
-                          : widget.questionImage ?? 'NA',
+                      // questionImage: widget.questionImage == ''
+                      //     ? 'NA'
+                      //     : widget.questionImage ?? 'NA',
                       createdAsPremium: Globals.isPremiumUser,
                       assessmentName: Globals.assessmentName,
                       fileId: Globals.googleExcelSheetId,
@@ -342,12 +342,15 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                   GradedGlobals.loadingMessage =
                       'Assignment Detail is Updating';
                 });
-
+                List<StudentAssessmentInfo> studentAssessmentInfoDblist =
+                    await Utility.getStudentInfoList(tableName: 'student_info');
                 Globals.currentAssessmentId = '';
                 //Save Assessment To  Postgres Database
                 _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
                     isMcqSheet: widget.isMcqSheet ?? false,
-                    assessmentQueImage: widget.questionImage ?? 'NA',
+                    assessmentQueImage:
+                        studentAssessmentInfoDblist?.first?.questionImgUrl ??
+                            'NA',
                     assessmentName: Globals.assessmentName ?? 'Assessment Name',
                     rubricScore: Globals.scoringRubric ?? '2',
                     subjectName: widget.selectedSubject ??
@@ -527,9 +530,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                                     selectedAnswer:
                                                         widget.selectedAnswer,
                                                     subjectId: widget.subjectId,
-                                                    questionImageUrl:
-                                                        widget.questionImage ??
-                                                            'NA',
+                                                    // questionImageUrl:
+                                                    //     widget.questionImage ??
+                                                    //         'NA',
                                                     selectedClass: widget.grade,
                                                     isSearchPage: true,
                                                     domainNameC:
@@ -732,9 +735,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       element.customRubricImage = rubricImgUrl ?? "NA";
                       element.grade = widget.grade;
                       element.className = Globals.assessmentName!.split("_")[1];
-                      element.questionImgUrl = widget.questionImage == ''
-                          ? "NA"
-                          : widget.questionImage;
+                      // element.questionImgUrl = widget.questionImage == ''
+                      //     ? "NA"
+                      //     : widget.questionImage;
                       element.googleSlidePresentationURL =
                           Globals.googleSlidePresentationLink;
                       await _studentAssessmentInfoDb.putAt(0, element);
@@ -749,9 +752,9 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
 
                       widget.googleDriveBloc.add(UpdateDocOnDrive(
                           isMcqSheet: widget.isMcqSheet ?? false,
-                          questionImage: widget.questionImage == ''
-                              ? 'NA'
-                              : widget.questionImage ?? 'NA',
+                          // questionImage: widget.questionImage == ''
+                          //     ? 'NA'
+                          //     : widget.questionImage ?? 'NA',
                           createdAsPremium: Globals.isPremiumUser,
                           assessmentName: Globals.assessmentName!,
                           fileId: Globals.googleExcelSheetId,

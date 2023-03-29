@@ -5,11 +5,13 @@ import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/graded_overrides.dart';
+import 'package:Soc/src/modules/ocr/helper/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_popup.dart';
+import 'package:Soc/src/modules/ocr/widgets/student_popup.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -129,10 +131,10 @@ class _CameraScreenState extends State<CameraScreen>
   ];
 
   LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
-      LocalDatabase('student_info');
+      LocalDatabase(Strings.studentInfoDbName);
 
   LocalDatabase<StudentAssessmentInfo> _historystudentAssessmentInfoDb =
-      LocalDatabase('history_student_info');
+      LocalDatabase(Strings.historyStudentInfoDbName);
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   ValueNotifier<bool>? removeLoading = ValueNotifier<bool>(false);
@@ -174,6 +176,8 @@ class _CameraScreenState extends State<CameraScreen>
 
   double x = 0;
   double y = 0;
+  final GlobalKey<NonCourseGoogleClassroomStudentPopupState> _dialogKey =
+      GlobalKey<NonCourseGoogleClassroomStudentPopupState>();
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -287,7 +291,7 @@ class _CameraScreenState extends State<CameraScreen>
 
                             _driveBloc.add(UpdateDocOnDrive(
                                 isMcqSheet: widget.isMcqSheet ?? false,
-                                questionImage: widget.questionImageLink ?? 'NA',
+                                // questionImage: widget.questionImageLink ?? 'NA',
                                 createdAsPremium: widget.createdAsPremium,
                                 assessmentName: Globals.historyAssessmentName,
                                 fileId: Globals.historyAssessmentFileId,
@@ -296,8 +300,8 @@ class _CameraScreenState extends State<CameraScreen>
                                     tableName:
                                         widget.isFromHistoryAssessmentScanMore ==
                                                 true
-                                            ? 'history_student_info'
-                                            : 'student_info')));
+                                            ? Strings.historyStudentInfoDbName
+                                            : Strings.studentInfoDbName)));
                           } else {
                             Navigator.of(context).pop();
                             Utility.currentScreenSnackBar(
@@ -305,11 +309,7 @@ class _CameraScreenState extends State<CameraScreen>
                                 null);
                           }
                         }
-                        // if (state is AddBlankSlidesOnDriveSuccess) {
-                        //   // _driveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
-                        //   //     slidePresentationId:
-                        //   //         Globals.googleSlidePresentationId));
-                        // }
+
                         if (state
                             is AddAndUpdateStudentAssessmentDetailsToSlideSuccess) {
                           List<StudentAssessmentInfo> studentAssessmentInfoDb =
@@ -317,8 +317,8 @@ class _CameraScreenState extends State<CameraScreen>
                                   tableName:
                                       widget.isFromHistoryAssessmentScanMore ==
                                               true
-                                          ? 'history_student_info'
-                                          : 'student_info');
+                                          ? Strings.historyStudentInfoDbName
+                                          : Strings.studentInfoDbName);
                           StudentAssessmentInfo element =
                               studentAssessmentInfoDb[0];
 
@@ -348,22 +348,22 @@ class _CameraScreenState extends State<CameraScreen>
 
                           await _studentAssessmentInfoDb.putAt(0, element);
                           // List l = await Utility.getStudentInfoList(
-                          //     tableName: 'student_info');
+                          //     tableName: Strings.studentInfoDbName);
 
                           _driveBloc.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet ?? false,
-                              questionImage: widget.questionImageLink ?? 'NA',
+                              // questionImage: widget.questionImageLink ?? 'NA',
                               createdAsPremium: widget.createdAsPremium,
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
                               studentData: await Utility.getStudentInfoList(
-                                  tableName: 'student_info')));
+                                  tableName: Strings.studentInfoDbName)));
                         }
                         if (state is GoogleSheetUpdateOnScanMoreSuccess) {
                           _driveBloc.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet ?? false,
-                              questionImage: widget.questionImageLink ?? 'NA',
+                              // questionImage: widget.questionImageLink ?? 'NA',
                               createdAsPremium: widget.createdAsPremium ??
                                   Globals.isPremiumUser,
                               assessmentName: Globals.historyAssessmentName,
@@ -446,107 +446,43 @@ class _CameraScreenState extends State<CameraScreen>
                                   tableName:
                                       widget.isFromHistoryAssessmentScanMore ==
                                               true
-                                          ? 'history_student_info'
-                                          : 'student_info');
+                                          ? Strings.historyStudentInfoDbName
+                                          : Strings.studentInfoDbName);
 
                           if (studentAssessmentInfoDb.length > 0) {
-                            if (widget.isFromHistoryAssessmentScanMore ==
-                                true) {
-                              _driveBloc.add(UpdateGoogleSlideOnScanMore(
-                                  studentInfoDb:
-                                      LocalDatabase('history_student_info'),
-                                  isMcqSheet: widget.isMcqSheet ?? false,
-                                  assessmentName: widget.assessmentName ?? '',
-                                  isFromHistoryAssessment:
-                                      widget.isFromHistoryAssessmentScanMore,
-                                  lastAssessmentLength:
-                                      widget.lastAssessmentLength ?? 0,
-                                  slidePresentationId:
-                                      Globals.googleSlidePresentationId!));
-                            } else if (!widget
-                                    .isFromHistoryAssessmentScanMore &&
-                                widget.isScanMore == true) {
-                              _driveBloc.add(
-                                  AddAndUpdateAssessmentImageToSlidesOnDrive(
-                                      isScanMore: true,
-                                      slidePresentationId:
-                                          Globals.googleSlidePresentationId,
-                                      studentInfoDb:
-                                          LocalDatabase('student_info')));
-                              // _driveBloc.add(AddBlankSlidesOnDrive(
-                              //     isScanMore: widget.isScanMore, //true,
-                              //     slidePresentationId:
-                              //         Globals.googleSlidePresentationId));
-                            } else {
-                              if (Overrides.STANDALONE_GRADED_APP == true) {
-                                //Prepare suggestion chips for create screen //course list
-                                Utility.showLoadingDialog(
-                                    context: context, isOCR: true);
-                                List<String> suggestionList =
-                                    await getSuggestionChips();
-                                Navigator.of(context).pop();
+                            // Check if all students belong to same class
+                            if (Overrides.STANDALONE_GRADED_APP &&
+                                (widget.isFromHistoryAssessmentScanMore ==
+                                        true ||
+                                    widget.isScanMore == true)) {
+                              //Preparing list of student not belong to selected class
+                              List<StudentAssessmentInfo>
+                                  notPresentStudentsInSelectedClass =
+                                  await OcrUtility
+                                      .checkAllStudentBelongsToSameClassOrNot(
+                                          title: widget
+                                                  .isFromHistoryAssessmentScanMore
+                                              ? Globals.historyAssessmentName ??
+                                                  ''
+                                              : Globals.assessmentName ?? '',
+                                          isScanMore: true,
+                                          studentInfoDB: widget
+                                                      .isFromHistoryAssessmentScanMore ==
+                                                  true
+                                              ? _historystudentAssessmentInfoDb
+                                              : _studentAssessmentInfoDb);
 
-                                // if (isAllStudentsBelongToSameCourse) {
-                                //   _navigateToCreateAssessment(
-                                //       suggestionList: suggestionList);
-                                // } else {
-                                //   removeStudentPopupModal(
-                                //       suggestionList: suggestionList);
-                                // }
-                                _navigateToCreateAssessment(
-                                    suggestionList: suggestionList);
-
-                                // Navigator.pushReplacement(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => CreateAssessment(
-                                //           isMcqSheet: widget.isMcqSheet,
-                                //           selectedAnswer: widget.selectedAnswer,
-                                //           customGrades: classList,
-                                //           classSuggestions: suggestionList)),
-                                // );
-                              } else {
-                                List<String> classSuggestions =
-                                    await _localDb.getData();
-                                LocalDatabase<String> classSectionLocalDb =
-                                    LocalDatabase('class_section_list');
-
-                                List<String> localSectionList =
-                                    await classSectionLocalDb.getData();
-
-                                // Compares 2 list and update the changes in local database.
-                                bool isClassChanges = false;
-                                for (int i = 0; i < classList.length; i++) {
-                                  if (!localSectionList
-                                      .contains(classList[i])) {
-                                    isClassChanges = true;
-                                    break;
-                                  }
-                                }
-
-                                if (localSectionList.isEmpty ||
-                                    isClassChanges) {
-                                  //print("local db is empty");
-                                  classSectionLocalDb.clear();
-                                  classList.forEach((String e) {
-                                    classSectionLocalDb.addData(e);
-                                  });
-                                } else {
-                                  //print("local db is not empty");
-                                  classList = [];
-                                  classList.addAll(localSectionList);
-                                }
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CreateAssessment(
-                                          isMcqSheet: widget.isMcqSheet,
-                                          selectedAnswer: widget.selectedAnswer,
-                                          customGrades: classList,
-                                          classSuggestions: classSuggestions)),
-                                );
+                              if (notPresentStudentsInSelectedClass
+                                      ?.isNotEmpty ??
+                                  true) {
+                                notPresentStudentsPopupModal(
+                                    notPresentStudentsInSelectedClass:
+                                        notPresentStudentsInSelectedClass);
+                                return;
                               }
                             }
+
+                            preparingGoogleSlideFiles();
                           } else {
                             Utility.showSnackBar(
                                 _scaffoldKey,
@@ -640,14 +576,6 @@ class _CameraScreenState extends State<CameraScreen>
                                           if (widget.onlyForPicture) {
                                             Navigator.pop(context, imageFile);
                                           } else {
-                                            // LocalDatabase<StudentAssessmentInfo>
-                                            //     _historystudentAssessmentInfoDb =
-                                            //     LocalDatabase(
-                                            //         'history_student_info');
-
-                                            // List l = await _historystudentAssessmentInfoDb
-                                            //     .getData();
-                                            //print(l.length);
                                             if (widget.isFromHistoryAssessmentScanMore ==
                                                     true &&
                                                 widget.oneTimeCamera == null) {
@@ -655,9 +583,7 @@ class _CameraScreenState extends State<CameraScreen>
                                                 ..pop()
                                                 ..pop();
                                             }
-                                            // List p = await _historystudentAssessmentInfoDb
-                                            //     .getData();
-                                            // //print(p.length);
+
                                             setEnabledSystemUIMode();
                                             var flashOn = await Navigator.push(
                                               context,
@@ -950,27 +876,9 @@ class _CameraScreenState extends State<CameraScreen>
 
   Future<List<StudentAssessmentInfo>> _getStudentInfoList() async {
     // LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
-    //     LocalDatabase('student_info');
+    //     LocalDatabase(Strings.studentInfoDbName);
     return await _studentAssessmentInfoDb.getData();
   }
-
-  // Future<List<String>> getSuggestionChips() async {
-  //   try {
-  //     List<String> classList = [];
-  //     LocalDatabase<GoogleClassroomCourses> _localDb =
-  //         LocalDatabase(Strings.googleClassroomCoursesList);
-
-  //     List<GoogleClassroomCourses>? _localData = await _localDb.getData();
-  //     for (var i = 0; i < _localData.length; i++) {
-  //       classList.add(_localData[i].name!);
-  //     }
-  //     classList.sort();
-  //     return classList;
-  //   } catch (e) {
-  //     List<String> classList = [];
-  //     return classList;
-  //   }
-  // }
 
 // Will be used in standalone app only
   Future<List<String>> getSuggestionChips() async {
@@ -978,56 +886,15 @@ class _CameraScreenState extends State<CameraScreen>
 
     try {
       List<StudentAssessmentInfo> studentInfo =
-          await Utility.getStudentInfoList(tableName: 'student_info');
+          await Utility.getStudentInfoList(
+              tableName: Strings.studentInfoDbName);
 
       LocalDatabase<GoogleClassroomCourses> _localDb =
           LocalDatabase(Strings.googleClassroomCoursesList);
 
       List<GoogleClassroomCourses>? _localData = await _localDb.getData();
 
-// filteredCourses only the courses that contain all scanned students //Else return empty course list
-      // List<GoogleClassroomCourses> filteredCourses = _localData
-      //     .where((GoogleClassroomCourses classroomCourse) => studentInfo.every(
-      //         (StudentAssessmentInfo student) =>
-      //             classroomCourse.studentList!.any((classroomCourseStudent) {
-      //               if (classroomCourseStudent['profile']['emailAddress'] ==
-      //                   student.studentId) {
-      //                 //student email always since work in standalone
-      //                 studentIds.add(student.studentId!);
-      //                 return true;
-      //               }
-      //               return false;
-      //             })))
-      //     .toList();
-
-      // for (var i = 0; i < _localData.length; i++) {
-      //   GoogleClassroomCourses currentCourse = _localData[i];
-      //   for (var j = 0; j < currentCourse.studentList!.length; j++) {
-      //     var currentStudent =
-      //         currentCourse.studentList![j]['profile']['emailAddress'];
-      //     for (var k = 0; k < studentInfo.length; k++) {
-      //       String? student = studentInfo[k].studentId;
-      //       if (student == currentStudent) {
-      //         classList.add(currentCourse.name!);
-      //       }
-      //     }
-      //   }
-      // }
-      // ;
-
-      // if (filteredCourses?.isNotEmpty ?? false) {
-      //   for (var i = 0; i < filteredCourses.length; i++) {
-      //     classList.add(filteredCourses[i].name!);
-      //   }
-      // } else {
-      //   isAllStudentsBelongToSameCourse =
-      //       false; //managed to show popup if teacher still wants to continue with other students not belong to the detected course
-      //   for (var i = 0; i < _localData.length; i++) {
-      //     classList.add(_localData[i].name ?? '');
-      //   }
-      // }
-
-// filteredCourses only the courses that contain all scanned students //Including every single student course if belongs to other course
+// filteredCourses only the courses that contain all scanned students
       classSuggestionsList = _localData
           .where((course) => course.studentList != null)
           .where((course) => course.studentList!.any((student) => studentInfo
@@ -1078,7 +945,7 @@ class _CameraScreenState extends State<CameraScreen>
     }
   }
 
-  void _navigatetoResultSection() {
+  Future<void> _navigatetoResultSection() async {
     Navigator.of(context).pop();
     if (widget.isFromHistoryAssessmentScanMore == true) {
       Navigator.of(context)
@@ -1103,6 +970,16 @@ class _CameraScreenState extends State<CameraScreen>
                 )),
       );
     } else {
+      final List<StudentAssessmentInfo> list =
+          await _studentAssessmentInfoDb.getData();
+
+      list.asMap().forEach(
+        (i, object) async {
+          object.isScanMore = false;
+          await _studentAssessmentInfoDb.putAt(i, object);
+        },
+      );
+
       setEnabledSystemUIMode();
       Navigator.push(
         context,
@@ -1135,113 +1012,92 @@ class _CameraScreenState extends State<CameraScreen>
     );
   }
 
-  // removeStudentPopupModal({required List<String> suggestionList}) async {
-  //   showDialog(
-  //       context: context,
-  //       builder: (showDialogContext) => CommonPopupWidget(
-  //             backgroundColor:
-  //                 Theme.of(showDialogContext).colorScheme.background ==
-  //                         Color(0xff000000)
-  //                     ? Color(0xff162429)
-  //                     : null,
-  //             isLogout: true,
-  //             orientation: MediaQuery.of(showDialogContext).orientation,
-  //             context: showDialogContext,
-  //             message:
-  //                 "A few students not found in the detected course. Do you still want to continue with those students?",
-  //             title: 'Action Required!',
-  //             actionWidget: popupActionButtonWidget(
-  //                 contactNumber: Globals.appSetting.contactPhoneC,
-  //                 email: Globals.appSetting.parentCoordinatorEmailc,
-  //                 showDialogContext: showDialogContext,
-  //                 suggestionList: suggestionList),
-  //             clearButton: true,
-  //             titleStyle: Theme.of(showDialogContext)
-  //                 .textTheme
-  //                 .headline1!
-  //                 .copyWith(fontWeight: FontWeight.bold),
-  //           )).then((_) => Globals.isNewsContactPopupAppear = false);
-  //   ;
-  // }
+  notPresentStudentsPopupModal(
+      {required List<StudentAssessmentInfo>
+          notPresentStudentsInSelectedClass}) async {
+    showDialog(
+        context: context,
+        builder: (showDialogContext) => NonCourseGoogleClassroomStudentPopup(
+              key: _dialogKey,
+              notPresentStudentsInSelectedClass:
+                  notPresentStudentsInSelectedClass,
+              title: 'Action Required!',
+              message:
+                  "A few students not found in the selected course . Do you still want to continue with these students?",
+              studentInfoDb: widget.isFromHistoryAssessmentScanMore == true
+                  ? _historystudentAssessmentInfoDb
+                  : _studentAssessmentInfoDb,
+              onTapCallback: () {
+                // Close the dialog from outside
+                if (_dialogKey.currentState != null) {
+                  _dialogKey.currentState!.closeDialog();
+                }
+                preparingGoogleSlideFiles();
+              },
+            ));
+  }
 
-  // List<Widget> popupActionButtonWidget(
-  //     {required String? email,
-  //     required String? contactNumber,
-  //     required BuildContext showDialogContext,
-  //     required List<String> suggestionList}) {
-  //   return [
-  //     textButtonWidget(
-  //         showDialogContext: showDialogContext,
-  //         title: 'Continue',
-  //         isLoading: false,
-  //         onPressed: () async {
-  //           _navigateToCreateAssessment(suggestionList: suggestionList);
-  //         }),
-  //     Container(
-  //       height: 40,
-  //       width: 1,
-  //       color: Colors.grey.withOpacity(0.2),
-  //     ),
-  //     ValueListenableBuilder(
-  //         valueListenable: removeLoading!,
-  //         builder: (BuildContext context, dynamic value, Widget? child) {
-  //           return textButtonWidget(
-  //               showDialogContext: showDialogContext,
-  //               title: 'Remove',
-  //               isLoading: removeLoading!.value,
-  //               onPressed: () async {
-  //                 removeLoading!.value = true;
-  //                 await removeStudentRecordFromStudentInfoDB();
-  //                 List<String> suggestionList = await getSuggestionChips();
-  //                 _navigateToCreateAssessment(suggestionList: suggestionList);
-  //               });
-  //         }),
-  //   ];
-  // }
+  Future<void> preparingGoogleSlideFiles() async {
+    if (widget.isFromHistoryAssessmentScanMore == true) {
+      _driveBloc.add(UpdateGoogleSlideOnScanMore(
+          studentInfoDb: LocalDatabase(Strings.historyStudentInfoDbName),
+          isMcqSheet: widget.isMcqSheet ?? false,
+          assessmentName: widget.assessmentName ?? '',
+          isFromHistoryAssessment: widget.isFromHistoryAssessmentScanMore,
+          lastAssessmentLength: widget.lastAssessmentLength ?? 0,
+          slidePresentationId: Globals.googleSlidePresentationId!));
+    } else if (!widget.isFromHistoryAssessmentScanMore &&
+        widget.isScanMore == true) {
+      _driveBloc.add(AddAndUpdateAssessmentImageToSlidesOnDrive(
+          isScanMore: true,
+          slidePresentationId: Globals.googleSlidePresentationId,
+          studentInfoDb: LocalDatabase(Strings.studentInfoDbName)));
+      //
+    } else {
+      if (Overrides.STANDALONE_GRADED_APP == true) {
+        //Prepare suggestion chips for create screen //course list
+        Utility.showLoadingDialog(context: context, isOCR: true);
+        List<String> suggestionList = await getSuggestionChips();
+        Navigator.of(context).pop();
 
-  // Widget textButtonWidget(
-  //     {required String title,
-  //     required bool isLoading,
-  //     required void Function()? onPressed,
-  //     required BuildContext showDialogContext}) {
-  //   return TextButton(
-  //     child: isLoading
-  //         ? Container(
-  //             width: 20,
-  //             height: 20,
-  //             child: CircularProgressIndicator(
-  //               strokeWidth: 2,
-  //             ),
-  //           )
-  //         : Container(
-  //             width: MediaQuery.of(showDialogContext).size.width / 5,
-  //             child: Utility.textWidget(
-  //                 context: showDialogContext,
-  //                 text: title.toString(),
-  //                 textTheme: Theme.of(showDialogContext)
-  //                     .textTheme
-  //                     .headline2!
-  //                     .copyWith(fontWeight: FontWeight.bold))),
-  //     onPressed: onPressed,
-  //   );
-  // }
+        _navigateToCreateAssessment(suggestionList: suggestionList);
+      } else {
+        List<String> classSuggestions = await _localDb.getData();
+        LocalDatabase<String> classSectionLocalDb =
+            LocalDatabase('class_section_list');
 
-//   Future removeStudentRecordFromStudentInfoDB() async {
-//     List<StudentAssessmentInfo> studentinfo =
-//         await _studentAssessmentInfoDb.getData();
+        List<String> localSectionList = await classSectionLocalDb.getData();
 
-// //filterd only same course student here
-//     List<StudentAssessmentInfo> filteredList = studentinfo
-//         .where((StudentAssessmentInfo student) =>
-//             studentIds.contains(student.studentId))
-//         .toList();
+        // Compares 2 list and update the changes in local database.
+        bool isClassChanges = false;
+        for (int i = 0; i < classList.length; i++) {
+          if (!localSectionList.contains(classList[i])) {
+            isClassChanges = true;
+            break;
+          }
+        }
 
-// //clean student info
-//     await _studentAssessmentInfoDb.clear();
-
-//     //update with filterd data only
-//     filteredList.forEach((element) async {
-//       await _studentAssessmentInfoDb.addData(element);
-//     });
-//   }
+        if (localSectionList.isEmpty || isClassChanges) {
+          //print("local db is empty");
+          classSectionLocalDb.clear();
+          classList.forEach((String e) {
+            classSectionLocalDb.addData(e);
+          });
+        } else {
+          //print("local db is not empty");
+          classList = [];
+          classList.addAll(localSectionList);
+        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CreateAssessment(
+                  isMcqSheet: widget.isMcqSheet,
+                  selectedAnswer: widget.selectedAnswer,
+                  customGrades: classList,
+                  classSuggestions: classSuggestions)),
+        );
+      }
+    }
+  }
 }

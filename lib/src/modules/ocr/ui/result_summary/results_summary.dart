@@ -468,8 +468,8 @@ class studentRecordList extends State<ResultsSummary> {
                                         _driveBloc2.add(UpdateDocOnDrive(
                                           isMcqSheet:
                                               widget.isMcqSheet ?? false,
-                                          questionImage:
-                                              questionImageUrl ?? "NA",
+                                          // questionImage:
+                                          //     questionImageUrl ?? "NA",
                                           createdAsPremium: createdAsPremium,
                                           assessmentName:
                                               Globals.assessmentName!,
@@ -650,28 +650,30 @@ class studentRecordList extends State<ResultsSummary> {
                           listener: (BuildContext contxt,
                               GoogleDriveState state) async {
                             if (state is AssessmentDetailSuccess) {
+                              //Fetching excel sheet records and its length
                               if (state.obj.length > 0) {
-                                if (await Utility.getStudentInfoListLength(
-                                        tableName: 'history_student_info') ==
-                                    0) {
-                                  state.obj.forEach((e) async {
-                                    if ((GoogleClassroomGlobals
-                                                .studentAssessmentAndClassroomObj
-                                                ?.courseId
-                                                ?.isNotEmpty ??
-                                            false) &&
-                                        (GoogleClassroomGlobals
-                                                .studentAssessmentAndClassroomObj
-                                                ?.courseWorkId
-                                                ?.isNotEmpty ??
-                                            false)) {
-                                      e.isgoogleClassRoomStudentProfileUpdated =
-                                          true;
-                                    }
-                                    await _historystudentAssessmentInfoDb
-                                        .addData(e);
-                                  });
-                                }
+                                // await _historystudentAssessmentInfoDb.clear();
+
+                                //Mark student that are already saved to google classroom
+                                state.obj.forEach((e) async {
+                                  if ((GoogleClassroomGlobals
+                                              .studentAssessmentAndClassroomObj
+                                              ?.courseId
+                                              ?.isNotEmpty ??
+                                          false) &&
+                                      (GoogleClassroomGlobals
+                                              .studentAssessmentAndClassroomObj
+                                              ?.courseWorkId
+                                              ?.isNotEmpty ??
+                                          false)) {
+                                    e.isgoogleClassRoomStudentProfileUpdated =
+                                        true;
+                                  }
+                                  await _historystudentAssessmentInfoDb
+                                      .addData(e);
+                                });
+
+                                //Extract presentation url from the excel sheet
                                 if (state.obj[0]
                                             .googleSlidePresentationURL !=
                                         'NA' &&
@@ -781,12 +783,6 @@ class studentRecordList extends State<ResultsSummary> {
                                     'Yay! Assessment data has been successfully added to your school’s Data Dashboard.',
                                 noActionText: 'No',
                                 yesActionText: 'Perfect!');
-
-                            // Utility.showSnackBar(
-                            //     scaffoldKey,
-                            //     'Yay! Data has been successfully saved to the dashboard',
-                            //     context,
-                            //     null);
                           } else if (state is OcrErrorReceived) {
                             disableSlidableAction.value = false;
                           }
@@ -823,17 +819,6 @@ class studentRecordList extends State<ResultsSummary> {
                                     break;
                                   }
                                 }
-                                // print(
-                                //     "printing assessmentId -------->${state.assessmentObj!.assessmentCId}");
-                                // print(
-                                //     "printing classroomCourseWorkId -------->${state.assessmentObj!.courseWorkId}");
-                                // print(
-                                //     "printing classroomCourseId -------->${state.assessmentObj!.courseId}");
-                                // print(
-                                //     "printing classroomCourseId -------->${state.resultRecordCount}");
-                                // GoogleClassroomGlobals
-                                //         .studentAssessmentAndClassroomObj.assessmentCId =
-                                //     state.assessmentObj!.assessmentCId;
                               }
 
                               savedRecordCount = state.resultRecordCount;
@@ -844,56 +829,6 @@ class studentRecordList extends State<ResultsSummary> {
                                       state.assessmentObj!.assessmentCId;
                             }
                           }
-
-//  if (state is AssessmentDashboardStatus) {
-//                             if (state.assessmentObj == null &&
-//                                 state.resultRecordCount == null) {
-//                               dashboardState.value = '';
-//                             } else {
-//                               List list = await Utility.getStudentInfoList(
-//                                   tableName: 'history_student_info');
-
-//                               if (isGoogleSheetStateReceived.value == true) {
-//                                 state.resultRecordCount == list.length
-//                                     ? dashboardState.value = 'Success'
-//                                     : dashboardState.value = '';
-//                               }
-
-//                               if (Overrides.STANDALONE_GRADED_APP) {
-//                                 List<GoogleClassroomCourses>
-//                                     _googleClassroomCourseslocalData =
-//                                     await _googleClassRoomlocalDb.getData();
-
-//                                 for (GoogleClassroomCourses element
-//                                     in _googleClassroomCourseslocalData) {
-//                                   if (element.courseId ==
-//                                       state.assessmentObj!.classroomCourseId) {
-//                                     //update the classroom course work id in GoogleClassroomGlobals obj
-//                                     element.courseWorkId = state
-//                                         .assessmentObj!.classroomCourseWorkId!;
-
-//                                     GoogleClassroomGlobals.studentAssessmentAndClassroomObj =
-//                                         element;
-
-//                                     break;
-//                                   }
-//                                 }
-//                                 print(
-//                                     "printing assessmentId -------->${state.assessmentObj!.assessmentId}");
-//                                 print(
-//                                     "printing classroomCourseWorkId -------->${state.assessmentObj!.classroomCourseWorkId}");
-//                                 print(
-//                                     "printing classroomCourseId -------->${state.assessmentObj!.classroomCourseId}");
-//                                 GoogleClassroomGlobals
-//                                         .studentAssessmentAndClassroomObj.assessmentCId =
-//                                     state.assessmentObj!.assessmentId;
-//                               }
-
-//                               savedRecordCount = state.resultRecordCount;
-//                               historyAssessmentId =
-//                                   state.assessmentObj!.assessmentId;
-//                             }
-//                           }
 
                           if (state is OcrLoading2) {
                             dashboardState.value = 'Loading';
@@ -1132,9 +1067,6 @@ class studentRecordList extends State<ResultsSummary> {
                       context: context,
                       builder: (_) =>
                           ImagePopup(imageURL: _list[index].assessmentImage!))),
-              // visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-              // contentPadding:
-              //     EdgeInsets.only(left: _kLabelSpacing, right: _kLabelSpacing / 2),
               leading:
                   // Text('Unknown'),
                   Container(
@@ -1148,7 +1080,6 @@ class studentRecordList extends State<ResultsSummary> {
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline2!),
               ),
-
               trailing: Utility.textWidget(
                   text: //'2/2',
                       _list[index].studentGrade == '' ||
@@ -1265,12 +1196,6 @@ class studentRecordList extends State<ResultsSummary> {
                   : BottomIcon.bottomIconModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList(),
-
-          //  iconsList
-          //     .map<Widget>((element) => _iconButton(
-          //         iconsList.indexOf(element), iconName,
-          //         webContentLink: webContentLink))
-          //     .toList(),
         ));
   }
 
@@ -1569,7 +1494,7 @@ class studentRecordList extends State<ResultsSummary> {
                 Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
-                  questionImage: questionImageUrl ?? "NA",
+                  // questionImage: questionImageUrl ?? "NA",
                   createdAsPremium: Globals.isPremiumUser,
                   assessmentName: Globals.assessmentName!,
                   fileId: Globals.googleExcelSheetId,
@@ -1700,24 +1625,6 @@ class studentRecordList extends State<ResultsSummary> {
                           await _studentAssessmentInfoDb.deleteAt(index);
 
                           //To save the 0th index value to next index in case of 0th index deletion
-                          // if (index == 0) {
-                          //   StudentAssessmentInfo obj = _list[1];
-                          //   obj.className = _list[0].className;
-                          //   obj.subject = _list[0].subject;
-                          //   // obj.studentGrade = _list[0].studentGrade;
-                          //   obj.learningStandard = _list[0].learningStandard;
-                          //   obj.subLearningStandard =
-                          //       _list[0].subLearningStandard;
-                          //   obj.scoringRubric = _list[0].scoringRubric;
-                          //   obj.customRubricImage = _list[0].customRubricImage;
-                          //   obj.grade = _list[0].grade;
-                          //   obj.questionImgUrl = _list[0].questionImgUrl;
-                          //   obj.googleSlidePresentationURL =
-                          //       _list[0].googleSlidePresentationURL;
-
-                          //   await _studentAssessmentInfoDb.putAt(0, obj);
-                          // }
-                          //To save the 0th index value to next index in case of 0th index deletion
                           if (index == 0) {
                             StudentAssessmentInfo obj = _list[1];
                             obj
@@ -1733,10 +1640,11 @@ class studentRecordList extends State<ResultsSummary> {
                               ..googleSlidePresentationURL =
                                   _list[0].googleSlidePresentationURL
                               ..standardDescription =
-                                  _list[0].standardDescription;
+                                  _list[0].standardDescription
+                              ..questionImgFilePath =
+                                  _list[0].questionImgFilePath;
                             await _studentAssessmentInfoDb.putAt(0, obj);
                           }
-
                           String deleteRecordLogMsg =
                               "Teacher deleted the record successfully";
                           FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -1763,7 +1671,7 @@ class studentRecordList extends State<ResultsSummary> {
                               context: context, isOCR: true);
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
-                              questionImage: questionImageUrl ?? "NA",
+                              // questionImage: questionImageUrl ?? "NA",
                               createdAsPremium: Globals.isPremiumUser,
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
@@ -2473,15 +2381,6 @@ class studentRecordList extends State<ResultsSummary> {
         FirebaseAnalyticsService.addCustomAnalyticsEvent(
             slidesLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Fluttertoast.cancel();
-        // Utility.updateLogs(
-        //     activityId: '16',
-        //     sessionId: widget.assessmentDetailPage == true
-        //         ? widget.obj!.sessionId
-        //         : '',
-        //     description: widget.assessmentDetailPage == true
-        //         ? 'Drive Button pressed from Assessment History Detail Page'
-        //         : 'Drive Button pressed from Result Summary',
-        //     operationResult: 'Success');
 
         Utility.updateLogs(
             activityId: '31',
@@ -2499,16 +2398,6 @@ class studentRecordList extends State<ResultsSummary> {
                 'Assessment do not have slides', null);
         break;
       case "Sheet":
-        // if (Overrides.STANDALONE_GRADED_APP == true) {
-        //   if (widget.shareLink == null) {
-        //     Utility.currentScreenSnackBar('Please Wait', null,
-        //         marginFromBottom: 90);
-        //   } else {
-        //     await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-        //   }
-
-        //   return;
-        // }
         if (widget.shareLink != null && widget.shareLink!.isNotEmpty) {
           String sheetLogMsg =
               "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
@@ -2527,8 +2416,6 @@ class studentRecordList extends State<ResultsSummary> {
   }
 
   void performScanMore() async {
-    // Globals.scanMoreStudentInfoLength =
-    //     Globals.studentInfo!.length;
     if ((widget.assessmentDetailPage == true) &&
         ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
             (widget.createdAsPremium == false &&

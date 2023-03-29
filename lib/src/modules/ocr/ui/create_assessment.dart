@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
 import 'package:Soc/src/modules/ocr/graded_overrides.dart';
+import 'package:Soc/src/modules/ocr/helper/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/ui/state_selection_page.dart';
@@ -26,12 +27,10 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../services/firstLetterUpperCase.dart';
 import '../../google_classroom/bloc/google_classroom_bloc.dart';
-import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
 import '../widgets/student_popup.dart';
 import '../widgets/suggestion_chip.dart';
 
@@ -56,18 +55,18 @@ class _CreateAssessmentState extends State<CreateAssessment>
   static const double _KVerticalSpace = 60.0;
   final assessmentController = TextEditingController();
   final classController = TextEditingController();
-  // int selectedGrade.value = 0;
+
   final _formKey = GlobalKey<FormState>();
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-  // To update image to s3 bucket
-  GoogleDriveBloc _googleDriveBloc2 = new GoogleDriveBloc();
-  // final ScrollController listScrollController = ScrollController();
+
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
-  ValueNotifier<bool> isImageFilePicked = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isImageFilePicked = ValueNotifier<bool>(
+      false); //Used to manage the question image. Should not be editable if already sent to google classroom assignment
   final ValueNotifier<String> assessmentNameError = ValueNotifier<String>('');
   final ValueNotifier<String> classError = ValueNotifier<String>('');
-  ValueNotifier<bool> isAlreadySelected = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isAlreadySelected = ValueNotifier<bool>(
+      false); //Used to manage the edit of assignment details if excel and slide already created. It should not be editable then.
   File? imageFile;
 
   final scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -106,6 +105,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
       GlobalKey<NonCourseGoogleClassroomStudentPopupState>();
 
   // GoogleClassroomCourses? studentClassRoomObj;
+
+  LocalDatabase<StudentAssessmentInfo> _studentAssessmentInfoDb =
+      LocalDatabase(Strings.studentInfoDbName);
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -309,25 +312,132 @@ class _CreateAssessmentState extends State<CreateAssessment>
                             Row(
                               children: [
                                 ValueListenableBuilder(
-                                    valueListenable: isImageFilePicked,
-                                    builder: (BuildContext context,
-                                        dynamic value, Widget? child) {
-                                      return Container(
-                                        // height: 80,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Utility.textWidget(
-                                                  context: context,
-                                                  text: isImageFilePicked
-                                                              .value !=
-                                                          true
-                                                      ? 'Scan Assignment (Optional)'
-                                                      : 'Assignment Selected',
-                                                  textTheme: TextStyle(
+                                    valueListenable: isAlreadySelected,
+                                    builder: (BuildContext context, bool value,
+                                        Widget? child) {
+                                      return ValueListenableBuilder(
+                                          valueListenable: isImageFilePicked,
+                                          builder: (BuildContext context,
+                                              dynamic value, Widget? child) {
+                                            return Container(
+                                              // height: 80,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Utility.textWidget(
+                                                        context: context,
+                                                        text: isImageFilePicked
+                                                                    .value !=
+                                                                true
+                                                            ? 'Scan Assignment (Optional)'
+                                                            : 'Assignment Selected',
+                                                        textTheme: TextStyle(
+                                                            color: isImageFilePicked
+                                                                        .value !=
+                                                                    true
+                                                                ? Color(0xff000000) ==
+                                                                        Theme.of(context)
+                                                                            .backgroundColor
+                                                                    ? Color(
+                                                                        0xffFFFFFF)
+                                                                    : Color(
+                                                                        0xff000000)
+                                                                : AppTheme
+                                                                    .kSelectedColor,
+                                                            fontSize:
+                                                                Globals.deviceType ==
+                                                                        'phone'
+                                                                    ? 16
+                                                                    : 22),
+                                                      ),
+                                                      isImageFilePicked.value ==
+                                                              true
+                                                          ? IconButton(
+                                                              onPressed: () {
+                                                                if (isAlreadySelected
+                                                                    .value) {
+                                                                  _checkFieldEditable(
+                                                                      msg:
+                                                                          "You cannot edit the image, once created.");
+                                                                } else {
+                                                                  _cameraImage(
+                                                                      context);
+                                                                }
+                                                              },
+                                                              icon: Icon(
+                                                                Icons
+                                                                    .replay_outlined,
+                                                                // : Icons.image_sharp,
+                                                                size: Globals
+                                                                            .deviceType ==
+                                                                        'phone'
+                                                                    ? 20
+                                                                    : 25,
+                                                              ),
+                                                              color: isImageFilePicked
+                                                                          .value !=
+                                                                      true
+                                                                  ? Color(0xff000000) ==
+                                                                          Theme.of(context)
+                                                                              .backgroundColor
+                                                                      ? Color(
+                                                                          0xffFFFFFF)
+                                                                      : Color(
+                                                                          0xff000000)
+                                                                  : AppTheme
+                                                                      .kSelectedColor,
+                                                            )
+                                                          : Container(),
+                                                    ],
+                                                  ),
+                                                  SpacerWidget(
+                                                      _KVerticalSpace / 8),
+                                                  CircleAvatar(
+                                                    //  foregroundColor:  Colors.red,
+                                                    backgroundImage:
+                                                        isImageFilePicked
+                                                                    .value ==
+                                                                true
+                                                            ? FileImage(
+                                                                imageFile!)
+                                                            : null,
+                                                    backgroundColor:
+                                                        AppTheme.kButtonColor,
+                                                    radius: 30,
+                                                    child: IconButton(
+                                                      onPressed: () {
+                                                        if (isImageFilePicked
+                                                                .value !=
+                                                            true) {
+                                                          if (isAlreadySelected
+                                                              .value) {
+                                                            _checkFieldEditable(
+                                                                msg:
+                                                                    "You cannot edit the image, once created.");
+                                                          } else {
+                                                            _cameraImage(
+                                                                context);
+                                                          }
+                                                        } else {
+                                                          showQuestionImage();
+                                                        }
+                                                      },
+                                                      icon: Icon(
+                                                        isImageFilePicked
+                                                                    .value !=
+                                                                true
+                                                            ? Icons.add
+                                                            : Icons.check,
+                                                        // : Icons.image_sharp,
+                                                        size:
+                                                            Globals.deviceType ==
+                                                                    'phone'
+                                                                ? 25
+                                                                : 30,
+                                                      ),
                                                       color: isImageFilePicked
                                                                   .value !=
                                                               true
@@ -341,88 +451,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                                                   0xff000000)
                                                           : AppTheme
                                                               .kSelectedColor,
-                                                      fontSize:
-                                                          Globals.deviceType ==
-                                                                  'phone'
-                                                              ? 16
-                                                              : 22),
-                                                ),
-                                                isImageFilePicked.value == true
-                                                    ? IconButton(
-                                                        onPressed: () {
-                                                          _cameraImage(context);
-                                                        },
-                                                        icon: Icon(
-                                                          Icons.replay_outlined,
-                                                          // : Icons.image_sharp,
-                                                          size:
-                                                              Globals.deviceType ==
-                                                                      'phone'
-                                                                  ? 20
-                                                                  : 25,
-                                                        ),
-                                                        color: isImageFilePicked
-                                                                    .value !=
-                                                                true
-                                                            ? Color(0xff000000) ==
-                                                                    Theme.of(
-                                                                            context)
-                                                                        .backgroundColor
-                                                                ? Color(
-                                                                    0xffFFFFFF)
-                                                                : Color(
-                                                                    0xff000000)
-                                                            : AppTheme
-                                                                .kSelectedColor,
-                                                      )
-                                                    : Container(),
-                                              ],
-                                            ),
-                                            SpacerWidget(_KVerticalSpace / 8),
-                                            CircleAvatar(
-                                              //  foregroundColor:  Colors.red,
-                                              backgroundImage:
-                                                  isImageFilePicked.value ==
-                                                          true
-                                                      ? FileImage(imageFile!)
-                                                      : null,
-                                              backgroundColor:
-                                                  AppTheme.kButtonColor,
-                                              radius: 30,
-                                              child: IconButton(
-                                                onPressed: () {
-                                                  if (isImageFilePicked.value !=
-                                                      true) {
-                                                    _cameraImage(context);
-                                                  } else {
-                                                    showQuestionImage();
-                                                  }
-                                                },
-                                                icon: Icon(
-                                                  isImageFilePicked.value !=
-                                                          true
-                                                      ? Icons.add
-                                                      : Icons.check,
-                                                  // : Icons.image_sharp,
-                                                  size: Globals.deviceType ==
-                                                          'phone'
-                                                      ? 25
-                                                      : 30,
-                                                ),
-                                                color: isImageFilePicked
-                                                            .value !=
-                                                        true
-                                                    ? Color(0xff000000) ==
-                                                            Theme.of(context)
-                                                                .backgroundColor
-                                                        ? Color(0xffFFFFFF)
-                                                        : Color(0xff000000)
-                                                    : AppTheme.kSelectedColor,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
+                                            );
+                                          });
                                     }),
                               ],
                             ),
@@ -579,7 +613,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 return Container(
                   //  color: Colors.blue,
                   child: TextFormField(
-                    onTap: (() => _checkFieldEditable()),
+                    onTap: (() => _checkFieldEditable(
+                        msg:
+                            'You cannot edit the Assessment Name and Class, once created.')),
                     readOnly: readOnly ?? false,
                     scrollController: scrollController,
                     autovalidateMode: AutovalidateMode.always,
@@ -662,7 +698,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
               }
 
               // Check if using standalone graded app and if student not belongs to selected classroom
-              //on updating the course selection, firstly 'GoogleClassroomGlobals.studentAssessmentAndClassroomObj?.courseId?' gets empty and updates with the selected course id when course matches to one or more student
               if (Overrides.STANDALONE_GRADED_APP &&
                   (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
                           ?.courseId?.isEmpty ??
@@ -680,14 +715,22 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   isOCR: true,
                 );
 
-                List<StudentAssessmentInfo> studentsNotBelongToSelectedCourse =
-                    await _compareStudentsBelongToSameClassOrNot();
+                List<StudentAssessmentInfo>
+                    notPresentStudentListInSelectedClass =
+                    await OcrUtility.checkAllStudentBelongsToSameClassOrNot(
+                        title: Globals.assessmentName ?? '',
+                        isScanMore: false,
+                        studentInfoDB: _studentAssessmentInfoDb);
 
                 Navigator.of(context).pop();
-                if (studentsNotBelongToSelectedCourse?.isNotEmpty ?? true) {
-                  showUnavailableStudentsPopupModal(
-                      studentsNotBelongToSelectedCourse:
-                          studentsNotBelongToSelectedCourse);
+
+                //Check student and show popup modal in case of scan more
+                if ((notPresentStudentListInSelectedClass?.isNotEmpty ??
+                        true) &&
+                    (!isAlreadySelected.value)) {
+                  notPresentStudentsPopupModal(
+                      notPresentStudentsInSelectedClass:
+                          notPresentStudentListInSelectedClass);
                   return;
                 }
               }
@@ -713,10 +756,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //       } else {
             //         if (Overrides.STANDALONE_GRADED_APP) {
             //           List<StudentAssessmentInfo> notPresentStudentsList =
-            //               await _compareStudentsBelongToSameClassOrNot();
+            //               await _checkAllStudentBelongsToSameClassOrNot();
 
             //           if (notPresentStudentsList?.isNotEmpty ?? false) {
-            //             studentPopupModal(
+            //             NonCourseGoogleClassroomStudentPopupModal(
             //                 notPresentStudentsList: notPresentStudentsList);
             //           } else {
             //             preparingexcelSheet();
@@ -734,10 +777,10 @@ class _CreateAssessmentState extends State<CreateAssessment>
                     bloc: _googleDriveBloc,
                     child: Container(),
                     listener: (context, state) async {
-                      if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(
-                            context: context, isOCR: true);
-                      }
+                      // if (state is GoogleDriveLoading) {
+                      //   Utility.showLoadingDialog(
+                      //       context: context, isOCR: true);
+                      // }
 
                       if (state is ExcelSheetCreated) {
                         //Create Google Presentation once Spreadsheet created
@@ -776,47 +819,26 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       }
 
                       if (state is GoogleSlideCreated) {
-                        // _googleDriveBloc.add(GetShareLink(
-                        //     fileId: Globals.googleSlidePresentationId,
-                        //     slideLink: true));
-
                         //Save Google Presentation Id
                         Globals.googleSlidePresentationId = state.slideFiledId;
                         Navigator.of(context).pop();
-
-                        // to update question image to aws s3 bucket and get the link
-                        if (imageFile != null && imageFile!.path.isNotEmpty) {
-                          String imgExtension = imageFile!.path
-                              .substring(imageFile!.path.lastIndexOf(".") + 1);
-                          List<int> imageBytes = imageFile!.readAsBytesSync();
-                          String imageB64 = base64Encode(imageBytes);
-                          Globals.questionImgFilePath = imageFile;
-
-                          _googleDriveBloc2.add(QuestionImgToAwsBucked(
-                              imgBase64: imageB64, imgExtension: imgExtension));
-                        } else {
-                          _navigateToSubjectSection('');
-                        }
-                      }
-                    }),
-                BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                    bloc: _googleDriveBloc2,
-                    child: Container(),
-                    listener: (context, state) async {
-                      if (state is GoogleDriveLoading) {
-                        Utility.showLoadingDialog(
-                            context: context, isOCR: true);
+                        _navigateToSubjectSection();
                       }
 
                       if (state is QuestionImageSuccess) {
-                        Navigator.of(context).pop();
+                        //update Question image url in local studentDb
+                        List<StudentAssessmentInfo> studentInfoList =
+                            await _studentAssessmentInfoDb.getData();
 
-                        _navigateToSubjectSection(state.questionImageUrl);
-                      }
-                      if (state is ErrorState) {
-                        Navigator.of(context).pop();
-                        Utility.currentScreenSnackBar(
-                            "Something Went Wrong. Please Try Again.", null);
+                        if (studentInfoList?.isNotEmpty ?? false) {
+                          StudentAssessmentInfo stduentObj =
+                              studentInfoList.first;
+
+                          stduentObj.questionImgUrl = state.questionImageUrl;
+                          await _studentAssessmentInfoDb.putAt(0, stduentObj);
+                        }
+
+                        _callToCreateExcelSheetAndClassRoomIfStandAlone();
                       }
                     }),
                 textwidget(
@@ -854,15 +876,27 @@ class _CreateAssessmentState extends State<CreateAssessment>
     );
     if (photo != null) {
       imageFile = photo;
-      isImageFilePicked.value = false;
+      //isImageFilePicked.value = false;
       isImageFilePicked.value = true;
+
+      //update Question imagefilepath in local studentDb
+
+      List<StudentAssessmentInfo> studentInfoList =
+          await _studentAssessmentInfoDb.getData();
+
+      if (studentInfoList?.isNotEmpty ?? false) {
+        StudentAssessmentInfo stduentObj = studentInfoList.first;
+        stduentObj.questionImgFilePath = imageFile!.path.toString();
+        await _studentAssessmentInfoDb.putAt(0, stduentObj);
+      }
+
       String addedAQuestionImgLogMsg = "User Added a Question Image";
       FirebaseAnalyticsService.addCustomAnalyticsEvent(
           addedAQuestionImgLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
     }
   }
 
-  void _navigateToSubjectSection(String? questionImageUrl) async {
+  void _navigateToSubjectSection() async {
     for (int i = 0; i < widget.classSuggestions.length; i++) {
       if (classController.text == widget.classSuggestions[i])
         widget.classSuggestions.removeAt(i);
@@ -917,7 +951,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   stateName: selectedState,
-                  questionImageUrl: questionImageUrl ?? '',
+                  // questionImageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
                 )),
       );
@@ -929,7 +963,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   isFromCreateAssessmentScreen: true,
-                  questionImageUrl: questionImageUrl ?? '',
+                  // questionImageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
                 )),
       );
@@ -1010,7 +1044,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
 /////--------
 
     List<StudentAssessmentInfo> studentInfo =
-        await Utility.getStudentInfoList(tableName: 'student_info');
+        await Utility.getStudentInfoList(tableName: Strings.studentInfoDbName);
 
     if (studentInfo.isNotEmpty) {
       for (GoogleClassroomCourses classroom in _localData) {
@@ -1042,32 +1076,11 @@ class _CreateAssessmentState extends State<CreateAssessment>
     print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
   }
 
-  _checkFieldEditable() {
+  _checkFieldEditable({required String msg}) {
     if (isAlreadySelected.value) {
-      Utility.currentScreenSnackBar(
-          'You cannot edit the Assessment Name and Class, once created.', null);
+      Utility.currentScreenSnackBar(msg, null);
     }
     return;
-  }
-
-  Future<List<StudentAssessmentInfo>>
-      _compareStudentsBelongToSameClassOrNot() async {
-    try {
-      List<StudentAssessmentInfo> studentInfo =
-          await Utility.getStudentInfoList(tableName: 'student_info');
-
-      // Retrieve the students not present in the "GoogleClassroomCourses" or not in the "Selected Course" object locally
-      return studentInfo.where((student) {
-        return GoogleClassroomGlobals
-            .studentAssessmentAndClassroomObj //selected course object
-            .studentList!
-            .every((courseStudent) {
-          return courseStudent["profile"]["emailAddress"] != student.studentId;
-        });
-      }).toList();
-    } catch (e) {
-      return [];
-    }
   }
 
   void performOnTapOnNext() {
@@ -1075,45 +1088,34 @@ class _CreateAssessmentState extends State<CreateAssessment>
         "${assessmentController.text}_${classController.text}";
     //Create excel sheet if not created already for current assessment
 
-    if (Globals.googleExcelSheetId!.isEmpty) {
-      _googleDriveBloc.add(CreateExcelSheetToDrive(
-          isMcqSheet: widget.isMcqSheet,
-          name: "${assessmentController.text}_${classController.text}"));
-      if (Overrides.STANDALONE_GRADED_APP) {
-        _googleClassroomBloc.add(CreateClassRoomCourseWork(
-            studentAssessmentInfoDb: LocalDatabase('student_info'),
-            studentClassObj:
-                GoogleClassroomGlobals.studentAssessmentAndClassroomObj,
-            title: Globals.assessmentName ?? '',
-            pointPossible: Globals.pointPossible ?? "0"));
+    if (Globals.googleExcelSheetId?.isEmpty ?? true) {
+      Utility.showLoadingDialog(context: context, isOCR: true);
+      // to update question image to aws s3 bucket and get the link
+      if (imageFile?.path?.isNotEmpty ?? false) {
+        _googleDriveBloc.add(QuestionImgToAwsBucket(
+          imageFile: imageFile,
+        ));
+      } else {
+        _callToCreateExcelSheetAndClassRoomIfStandAlone();
       }
-    } else if (imageFile != null && imageFile!.path.isNotEmpty) {
-      String imgExtension =
-          imageFile!.path.substring(imageFile!.path.lastIndexOf(".") + 1);
-      List<int> imageBytes = imageFile!.readAsBytesSync();
-      String imageB64 = base64Encode(imageBytes);
-      Globals.questionImgFilePath = imageFile;
-
-      _googleDriveBloc2.add(QuestionImgToAwsBucked(
-          imgBase64: imageB64, imgExtension: imgExtension));
     } else {
-      _navigateToSubjectSection('');
+      _navigateToSubjectSection();
     }
   }
 
-  void showUnavailableStudentsPopupModal(
+  notPresentStudentsPopupModal(
       {required List<StudentAssessmentInfo>
-          studentsNotBelongToSelectedCourse}) async {
+          notPresentStudentsInSelectedClass}) async {
     showDialog(
         context: context,
         builder: (showDialogContext) => NonCourseGoogleClassroomStudentPopup(
               key: _dialogKey,
-              studentsNotBelongToSelectedCourse:
-                  studentsNotBelongToSelectedCourse,
+              notPresentStudentsInSelectedClass:
+                  notPresentStudentsInSelectedClass,
               title: 'Action Required!',
               message:
                   "A few students not found in the selected course \'${classController.text}\'. Do you still want to continue with these students?",
-              studentInfoDb: LocalDatabase('student_info'),
+              studentInfoDb: _studentAssessmentInfoDb,
               onTapCallback: () {
                 // Close the dialog from outside
                 if (_dialogKey.currentState != null) {
@@ -1122,5 +1124,21 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 performOnTapOnNext();
               },
             ));
+  }
+
+  void _callToCreateExcelSheetAndClassRoomIfStandAlone() {
+    _googleDriveBloc.add(CreateExcelSheetToDrive(
+        isMcqSheet: widget.isMcqSheet,
+        name: "${assessmentController.text}_${classController.text}"));
+
+//Create google classroom assignment in case of standalone only
+    if (Overrides.STANDALONE_GRADED_APP) {
+      _googleClassroomBloc.add(CreateClassRoomCourseWork(
+          studentAssessmentInfoDb: _studentAssessmentInfoDb,
+          studentClassObj:
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj,
+          title: Globals.assessmentName ?? '',
+          pointPossible: Globals.pointPossible ?? "0"));
+    }
   }
 }

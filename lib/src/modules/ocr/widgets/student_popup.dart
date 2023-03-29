@@ -11,7 +11,7 @@ import '../../../translator/translation_widget.dart';
 class NonCourseGoogleClassroomStudentPopup extends StatefulWidget {
   final String? title;
   final TextStyle? titleStyle;
-  List<StudentAssessmentInfo> studentsNotBelongToSelectedCourse;
+  List<StudentAssessmentInfo> notPresentStudentsInSelectedClass;
   LocalDatabase<StudentAssessmentInfo> studentInfoDb;
   final VoidCallback onTapCallback;
   final String? message;
@@ -19,7 +19,7 @@ class NonCourseGoogleClassroomStudentPopup extends StatefulWidget {
       {Key? key,
       required this.title,
       this.titleStyle,
-      required this.studentsNotBelongToSelectedCourse,
+      required this.notPresentStudentsInSelectedClass,
       required this.studentInfoDb,
       required this.onTapCallback,
       this.message})
@@ -41,7 +41,7 @@ class NonCourseGoogleClassroomStudentPopupState
     super.initState();
 
     notPresentStudentsInSelectedClassValueNotifier.value =
-        widget.studentsNotBelongToSelectedCourse;
+        widget.notPresentStudentsInSelectedClass;
   }
 
   void closeDialog() {
@@ -80,6 +80,7 @@ class NonCourseGoogleClassroomStudentPopupState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      actionsPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0))),
       backgroundColor:
@@ -120,7 +121,7 @@ class NonCourseGoogleClassroomStudentPopupState
       ),
       content: _buildContentWidget(
         notPresentStudentsInSelectedClass:
-            widget.studentsNotBelongToSelectedCourse,
+            widget.notPresentStudentsInSelectedClass,
       ),
       actions: actionButtonWidget(
         title: "Continue",
@@ -137,7 +138,7 @@ class NonCourseGoogleClassroomStudentPopupState
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Container(
             width: MediaQuery.of(context).size.width * 0.6,
-            height: MediaQuery.of(context).size.height * 0.2,
+            height: MediaQuery.of(context).size.height * 0.3,
             child: notPresentStudentsInSelectedClassValueNotifier
                         ?.value?.isEmpty ??
                     true
@@ -178,8 +179,12 @@ class NonCourseGoogleClassroomStudentPopupState
                                 'Remove ${notPresentStudentsInSelectedClassValueNotifier.value[index].studentName!}',
                             child: OutlinedButton(
                               style: ButtonStyle(
+                                side: MaterialStateProperty.all(BorderSide(
+                                    color: Colors.red,
+                                    width: 1.5,
+                                    style: BorderStyle.solid)),
                                 padding: MaterialStateProperty.all<
-                                    EdgeInsetsGeometry>(EdgeInsets.zero),
+                                    EdgeInsetsGeometry>(EdgeInsets.all(5.0)),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -208,7 +213,7 @@ class NonCourseGoogleClassroomStudentPopupState
                                       .textTheme
                                       .subtitle2!
                                       .copyWith(
-                                        color: Colors.grey,
+                                        color: Colors.red,
                                       ),
                                 ),
                               ),
@@ -226,20 +231,22 @@ class NonCourseGoogleClassroomStudentPopupState
     required String title,
   }) {
     return [
-      Container(
-        alignment: Alignment.center,
-        child: OutlinedButton(
-          onPressed: () {
-            widget.onTapCallback();
-          },
-          child: Utility.textWidget(
-              context: context,
-              text: title.toString(),
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline2!
-                  .copyWith(fontWeight: FontWeight.bold)),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
         ),
+        onPressed: () {
+          widget.onTapCallback();
+        },
+        child: Utility.textWidget(
+            context: context,
+            text: title.toString(),
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline2!
+                .copyWith(fontWeight: FontWeight.bold)),
       ),
     ];
   }

@@ -42,7 +42,7 @@ class SubjectSelection extends StatefulWidget {
   final String? domainNameC;
   final String? searchClass;
   final String? selectedSubject;
-  final String? questionImageUrl;
+  // final String? questionImageUrl;
   final bool? isCommonCore;
   SubjectSelection(
       {Key? key,
@@ -53,7 +53,7 @@ class SubjectSelection extends StatefulWidget {
       this.domainNameC,
       this.searchClass,
       this.selectedSubject,
-      required this.questionImageUrl,
+      // required this.questionImageUrl,
       this.isCommonCore,
       this.isMcqSheet,
       this.selectedAnswer})
@@ -276,7 +276,9 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
                       //calling API
                       updateDocOnDrive(
-                          widget.isMcqSheet, widget.questionImageUrl);
+                        widget.isMcqSheet,
+                        // widget.questionImageUrl
+                      );
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
@@ -313,10 +315,14 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                       GradedGlobals.loadingMessage =
                           'Assignment Detail is Updating';
                     });
-
+                    List<StudentAssessmentInfo> studentAssessmentInfoDblist =
+                        await Utility.getStudentInfoList(
+                            tableName: 'student_info');
                     _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
                         isMcqSheet: widget.isMcqSheet ?? false,
-                        assessmentQueImage: widget.questionImageUrl ?? '',
+                        assessmentQueImage: studentAssessmentInfoDblist
+                                ?.first?.questionImgUrl ??
+                            '',
                         assessmentName:
                             Globals.assessmentName ?? 'Assessment Name',
                         rubricScore: Globals.scoringRubric ?? '2',
@@ -369,7 +375,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           pointPossible: Globals.pointPossible ?? '0',
                           studentClassObj: GoogleClassroomGlobals
                               .studentAssessmentAndClassroomObj!,
-                          title: Globals.assessmentName!.split("_")[1] ?? ''));
+                          title: Globals.assessmentName ?? ''));
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(
@@ -405,7 +411,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             builder: (context) => SearchScreenPage(
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
-                                  questionImage: widget.questionImageUrl ?? '',
+                                  // questionImage: widget.questionImageUrl ?? '',
                                   selectedKeyword: selectedKeyword,
                                   grade: widget.selectedClass,
                                   selectedSubject: subject,
@@ -467,7 +473,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                             builder: (context) => SearchScreenPage(
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
-                                  questionImage: widget.questionImageUrl ?? '',
+                                  // questionImage: widget.questionImageUrl ?? '',
                                   selectedKeyword: selectedKeyword,
                                   grade: widget.selectedClass,
                                   selectedSubject: subject,
@@ -1353,8 +1359,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                         GoogleClassroomGlobals
                                                             .studentAssessmentAndClassroomObj!,
                                                     title: Globals
-                                                            .assessmentName!
-                                                            .split("_")[1] ??
+                                                            .assessmentName ??
                                                         ''));
                                           } else {
                                             _navigatetoResultSection();
@@ -1524,8 +1529,8 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         element.className = Globals.assessmentName!.split("_")[1];
         element.customRubricImage = rubricImgUrl;
         element.grade = widget.selectedClass;
-        element.questionImgUrl =
-            widget.questionImageUrl == '' ? "NA" : widget.questionImageUrl;
+        // element.questionImgUrl =
+        //     widget.questionImageUrl == '' ? "NA" : widget.questionImageUrl;
         element.googleSlidePresentationURL =
             Globals.googleSlidePresentationLink;
         await _studentAssessmentInfoDb.putAt(0, element);
@@ -1538,7 +1543,10 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             state: (p0) => {showDialogSetState = p0});
 
         //calling API
-        updateDocOnDrive(widget.isMcqSheet, widget.questionImageUrl);
+        updateDocOnDrive(
+          widget.isMcqSheet,
+          // widget.questionImageUrl
+        );
       }
     }
   }
@@ -1557,13 +1565,13 @@ class _SubjectSelectionState extends State<SubjectSelection> {
 
   void updateDocOnDrive(
     bool? isMCQSheet,
-    String? questionImageURL,
+    // String? questionImageURL,
   ) async {
     _googleDriveBloc.add(
       UpdateDocOnDrive(
           isMcqSheet: isMCQSheet ?? false,
-          questionImage:
-              questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
+          // questionImage:
+          //     questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
           createdAsPremium: Globals.isPremiumUser,
           assessmentName: Globals.assessmentName,
           fileId: Globals.googleExcelSheetId,

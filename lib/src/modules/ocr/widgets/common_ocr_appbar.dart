@@ -106,7 +106,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                       )
                     : Container(
                         height: 0,
-                        width: 0,
+                        width: 8.0,
                       ),
             commonGradedLogo()
           ],
@@ -298,8 +298,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               Radius.circular(50),
                             ),
                             child: CachedNetworkImage(
-                              height: 28,
-                              width: 28,
+                              height: Globals.deviceType == "phone" ? 28 : 32,
+                              width: Globals.deviceType == "phone" ? 28 : 32,
                               imageUrl: snapshot.data!.profilePicture!,
                               placeholder: (context, url) =>
                                   CupertinoActivityIndicator(
@@ -362,22 +362,16 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
   }
 
   Widget commonGradedLogo() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Image(
-          height: Globals.deviceType == 'phone' ? 28 : 35,
-          // width: 28,
-
-          // alignment: Alignment.centerLeft,
-          // width: MediaQuery.of(context).size.width * 0.22,
-          image: AssetImage(
-            Color(0xff000000) == Theme.of(context).backgroundColor
-                ? "assets/images/graded+_light.png"
-                : "assets/images/graded+_dark.png",
-          ),
-        ),
-      ),
+    return Image.asset(
+      Color(0xff000000) == Theme.of(context).backgroundColor
+          ? "assets/images/graded+_light.png"
+          : "assets/images/graded+_dark.png",
+      height: Globals.deviceType == "phone"
+          ? AppTheme.kIconSize * 2
+          : AppTheme.kTabIconSize * 2,
+      width: Globals.deviceType == "phone"
+          ? AppTheme.kIconSize * 2
+          : AppTheme.kTabIconSize * 2,
     );
   }
 

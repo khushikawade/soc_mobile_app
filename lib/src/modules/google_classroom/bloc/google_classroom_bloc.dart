@@ -142,7 +142,7 @@ class GoogleClassroomBloc
                   in _googleClassRoomLocalData) {
                 // always check last "_" contains in title and get the subject
                 if ((event.title.split("_").last == classroom.name)) {
-                  print("insdie if loopppp");
+                  // print("insdie if loopppp");
                   isClassroomCourseAdded = true;
                   event.studentClassObj.courseId = classroom.courseId;
                   event.studentClassObj.studentList = classroom.studentList;
@@ -172,7 +172,7 @@ class GoogleClassroomBloc
 
         // print(event.studentClassObj);
         // get local stored classroom course list
-        List<dynamic> classRoomCoursesStuentList =
+        List<dynamic> classRoomCoursesStudentList =
             event.studentClassObj?.studentList ?? [];
 
         //create student details as per the request body keys
@@ -182,16 +182,29 @@ class GoogleClassroomBloc
         for (int i = 0; i < assessmentData.length; i++) {
           if (assessmentData[i].assessmentImage?.isNotEmpty != true) {
             // if any assessment images url is not updated
-            String imgUrl =
-                await updateAssessmentImg(assessmentData: assessmentData[i]);
+            String imgUrl = await updateImg(
+                filePath: assessmentData[i]?.assessmentImgPath ?? '');
+
             if (imgUrl?.isNotEmpty ?? false) {
               assessmentData[i].assessmentImage = imgUrl;
               await event.studentAssessmentInfoDb.putAt(i, assessmentData[i]);
             }
           }
 
+          //Check if assignment image and update in case found empty
+          if ((i == 0) &&
+              (assessmentData[0]?.questionImgUrl?.isEmpty ?? true) &&
+              (assessmentData[0]?.questionImgFilePath?.isNotEmpty ?? false)) {
+            String imgUrl = await updateImg(
+                filePath: assessmentData[0]?.questionImgFilePath ?? '');
+            if (imgUrl?.isNotEmpty ?? false) {
+              assessmentData[0].questionImgUrl = imgUrl;
+              await event.studentAssessmentInfoDb.putAt(0, assessmentData[0]);
+            }
+          }
+
           //update student googleClassRoomStudentProfileId into list
-          classRoomCoursesStuentList.forEach((studentProfileObj) async {
+          classRoomCoursesStudentList.forEach((studentProfileObj) async {
             if ((studentProfileObj['profile']['emailAddress']?.isNotEmpty ??
                     false) &&
                 (assessmentData[i]
@@ -215,7 +228,8 @@ class GoogleClassroomBloc
 
         if (studentAssessmentDetails.isNotEmpty) {
           var result = await _createClassRoomCourseWork(
-              isEditStudentinfo: event.isEditStudentInfo,
+              questionImageUrl: assessmentData.first.questionImgUrl,
+              isEditStudentInfo: event.isEditStudentInfo,
               isFromHistoryAssessmentScanMore:
                   event.isFromHistoryAssessmentScanMore,
               authorizationToken:
@@ -232,14 +246,14 @@ class GoogleClassroomBloc
                 .studentAssessmentAndClassroomObj.courseWorkId = result[1];
 
 // Updating local database with already scanned students data true to avoid include them in next scan more case
-            assessmentData.asMap().forEach((i, obj) {
-              studentAssessmentDetails.forEach((e) async {
-                if (obj.googleClassRoomStudentProfileId == e.studentId) {
-                  obj.isgoogleClassRoomStudentProfileUpdated = true;
-                  await event.studentAssessmentInfoDb.putAt(i, obj);
+            assessmentData.asMap().forEach(
+              (i, element) async {
+                if (element.isgoogleClassRoomStudentProfileUpdated != true) {
+                  element.isgoogleClassRoomStudentProfileUpdated = true;
+                  await event.studentAssessmentInfoDb.putAt(i, element);
                 }
-              });
-            });
+              },
+            );
 
             yield CreateClassroomCourseWorkSuccess();
           } else {
@@ -373,7 +387,8 @@ class GoogleClassroomBloc
       required List<ClassRoomStudentProfile> studentProfileDetails,
       required bool? isFromHistoryAssessmentScanMore,
       required GoogleClassroomCourses? studentClassObj,
-      required bool? isEditStudentinfo,
+      required bool? isEditStudentInfo,
+      required String? questionImageUrl,
       int retry = 3}) async {
     try {
       final url =
@@ -390,17 +405,32 @@ class GoogleClassroomBloc
         "courseId": studentClassObj!.courseId,
         "maxPoints": maxPoints,
         "studentAssessmentDetails": studentProfileDetails
-            .map((data) => isEditStudentinfo ?? false
+            .map((data) => isEditStudentInfo ?? false
                 //user edit the student info.
                 ? data.editStudentInfotoJson()
                 : data.toJson())
             .toList()
       };
+
 //if courseWorkId is available need to update the classroom with new student or edit the student info
-      if (studentClassObj.courseWorkId?.isNotEmpty == true) {
-        body['courseWorkId'] = studentClassObj.courseWorkId;
-      } else {
-        body['title'] = title;
+      body['courseWorkId'] = studentClassObj.courseWorkId?.isNotEmpty == true
+          ? studentClassObj.courseWorkId
+          : null;
+
+//To create new assignment in the Google Classroom in case of already not exist
+      if (body['courseWorkId'] == null) {
+        body.addAll({
+          'title': title,
+          if (questionImageUrl?.isNotEmpty ?? false)
+            'materials': [
+              {
+                "link": {
+                  "thumbnailUrl": questionImageUrl,
+                  "url": questionImageUrl
+                }
+              }
+            ]
+        });
       }
 
       final ResponseModel response = await _dbServices.postApi(url,
@@ -428,8 +458,9 @@ class GoogleClassroomBloc
               await UserGoogleProfile.getUserProfile();
 
           return await _createClassRoomCourseWork(
+              questionImageUrl: questionImageUrl,
               retry: retry - 1,
-              isEditStudentinfo: isEditStudentinfo,
+              isEditStudentInfo: isEditStudentInfo,
               isFromHistoryAssessmentScanMore: isFromHistoryAssessmentScanMore,
               authorizationToken: _userProfileLocalData[0].authorizationToken!,
               maxPoints: maxPoints,
@@ -446,12 +477,10 @@ class GoogleClassroomBloc
     }
   }
 
-  Future<String> updateAssessmentImg(
-      {required StudentAssessmentInfo assessmentData}) async {
+  Future<String> updateImg({required String filePath}) async {
     try {
-      String imgExtension = assessmentData.assessmentImgPath!
-          .substring(assessmentData.assessmentImgPath!.lastIndexOf(".") + 1);
-      File assessmentImageFile = File(assessmentData.assessmentImgPath!);
+      String imgExtension = filePath.substring(filePath.lastIndexOf(".") + 1);
+      File assessmentImageFile = File(filePath);
       List<int> imageBytes = assessmentImageFile.readAsBytesSync();
       String imageB64 = base64Encode(imageBytes);
 

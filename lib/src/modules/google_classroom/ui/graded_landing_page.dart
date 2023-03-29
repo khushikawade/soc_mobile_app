@@ -123,7 +123,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                 child: Row(
                   children: [
                     IconButton(
-                        iconSize: 33,
+                        iconSize: Globals.deviceType == "phone" ? 32 : 38,
                         onPressed: () async {
                           var result = await Navigator.of(context).push(
                             MaterialPageRoute(
@@ -148,53 +148,18 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                 builder: (context,
                                     AsyncSnapshot<UserInformation> snapshot) {
                                   if (snapshot.hasData) {
-                                    return
-
-                                        // Container(
-                                        //   margin:
-                                        //       EdgeInsets.symmetric(vertical: 14),
-                                        //   padding: EdgeInsets.only(left: 5),
-                                        //   // margin: EdgeInsets.all(10),
-                                        //   child: ClipRRect(
-                                        //     borderRadius: BorderRadius.all(
-                                        //       Radius.circular(60),
-                                        //     ), //.circular(60),
-                                        //     child: GestureDetector(
-                                        //       onTap: () {
-                                        //         Navigator.push(
-                                        //           context,
-                                        //           MaterialPageRoute(
-                                        //               builder: (context) =>
-                                        //                   ProfilePage(
-                                        //                     profile: snapshot.data!,
-                                        //                   )),
-                                        //         );
-
-                                        //         // _showPopUp(snapshot.data!);
-                                        //         //print("profile url");
-                                        //       },
-                                        //       child: CachedNetworkImage(
-                                        //         // height: 20,
-                                        //         fit: BoxFit.cover,
-                                        //         imageUrl:
-                                        //             snapshot.data!.profilePicture!,
-                                        //         placeholder: (context, url) =>
-                                        //             CupertinoActivityIndicator(
-                                        //                 animating: true,
-                                        //                 radius: 10),
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // );
-
-                                        IconButton(
+                                    return IconButton(
                                       icon: ClipRRect(
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(50),
                                         ),
                                         child: CachedNetworkImage(
-                                          height: 28,
-                                          width: 28,
+                                          height: Globals.deviceType == "phone"
+                                              ? 28
+                                              : 32,
+                                          width: Globals.deviceType == "phone"
+                                              ? 28
+                                              : 32,
                                           imageUrl:
                                               snapshot.data!.profilePicture!,
                                           placeholder: (context, url) =>
@@ -210,9 +175,6 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                                     profile: snapshot.data!,
                                                   )),
                                         );
-
-                                        // _showPopUp(snapshot.data!);
-                                        //print("profile url");
                                       },
                                     );
                                   }
@@ -223,7 +185,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                   ],
                 ),
               ),
-              marginLeft: 30,
+              //  marginLeft: 30,
               refresh: (v) {
                 setState(() {});
               },

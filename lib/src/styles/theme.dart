@@ -78,7 +78,8 @@ class AppTheme {
   static const double kSize = 8.0;
   static const double kIconSize = 40.0;
   static const double kTabIconSize = 55.0;
-
+  static const double kStandAloneIconSize = 60.0;
+  static const double kStandAloneTabIconSize = 70.0;
   // Banner Height
   static double kBannerHeight = 15;
 

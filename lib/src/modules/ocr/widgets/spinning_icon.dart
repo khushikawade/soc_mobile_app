@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math; // import this
 
@@ -18,7 +19,9 @@ class SpinningIconButton extends AnimatedWidget {
       alignment: Alignment.center,
       turns: turnsTween.animate(controller!), // _animation,
 
-      child: Icon(iconData, size: 22, color: Theme.of(context).backgroundColor),
+      child: Icon(iconData,
+          size: Globals.deviceType == "phone" ? 22 : 30,
+          color: Theme.of(context).backgroundColor),
     );
   }
 }

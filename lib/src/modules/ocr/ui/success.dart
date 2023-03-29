@@ -4,10 +4,10 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/helper/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
-import 'package:Soc/src/modules/ocr/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
 import 'package:Soc/src/modules/ocr/widgets/animation_button.dart';
 import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
@@ -31,7 +31,6 @@ import 'package:flutter_svg/svg.dart';
 
 class SuccessScreen extends StatefulWidget {
   final bool? isMcqSheet;
-
   final String? selectedAnswer;
   final String img64;
   final File imgPath;
@@ -1690,7 +1689,7 @@ class _SuccessScreenState extends State<SuccessScreen>
             studentAssessmentInfo.googleSlidePresentationURL = 'NA';
             studentAssessmentInfo.uniqueId = uniqueId;
             studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
-
+            studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
             if (!historyStudentInfo.contains(id)) {
               //   Globals.historyStudentInfo!.add(studentAssessmentInfo);
               List list = await _historyStudentInfoDb.getData();
@@ -1742,6 +1741,7 @@ class _SuccessScreenState extends State<SuccessScreen>
         studentAssessmentInfo.googleSlidePresentationURL = 'NA';
         studentAssessmentInfo.uniqueId = uniqueId;
         studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
+        studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
 // To update/edit the scanned details
         await _studentInfoDb.putAt(
             studentInfo.length - 1, studentAssessmentInfo);
@@ -1775,6 +1775,7 @@ class _SuccessScreenState extends State<SuccessScreen>
           studentAssessmentInfo.googleSlidePresentationURL = 'NA';
           studentAssessmentInfo.uniqueId = uniqueId;
           studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
+          studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
           // studentAssessmentInfo.assessmentName = Globals.assessmentName;
           await _studentInfoDb.addData(studentAssessmentInfo);
           return;
@@ -1814,6 +1815,7 @@ class _SuccessScreenState extends State<SuccessScreen>
             studentAssessmentInfo.googleSlidePresentationURL = 'NA';
             studentAssessmentInfo.uniqueId = uniqueId;
             studentAssessmentInfo.isRubricChanged = isRubricChanged.toString();
+            studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
               //print('added in record ----------------->>>>');

@@ -88,13 +88,13 @@ class _CoursesListScreenState extends State<CoursesListScreen>
           mainAxisSize: MainAxisSize.max,
           children: [
             SpacerWidget(_KVertcalSpace / 4),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Utility.textWidget(
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Utility.textWidget(
                     text: 'All Courses',
                     context: context,
                     textTheme: Theme.of(context)
@@ -102,48 +102,41 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                         .headline6!
                         .copyWith(fontWeight: FontWeight.bold),
                   ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  padding: EdgeInsets.only(right: 10),
-                  child: FloatingActionButton.extended(
-
-                      // elevation: 0,
-                      backgroundColor: AppTheme.kButtonColor,
-                      onPressed: () {
-                        if (_animationController!.isAnimating == true) {
-                          Utility.currentScreenSnackBar(
-                              'Please Wait, Sync Is In Progress', null,
-                              marginFromBottom: 90);
-                        } else {
-                          _animationController!.repeat();
-                          refreshPage(isFromPullToRefresh: true);
-                        }
-                      },
-                      label: Row(
-                        children: [
-                          Utility.textWidget(
-                              text: 'Sync',
-                              context: context,
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline4!
-                                  .copyWith(
-                                      color:
-                                          Theme.of(context).backgroundColor)),
-                        ],
-                      ),
-                      icon: Container(
-                        //  / height: MediaQuery.of(context).size.height * 0.04,
-                        // width: 30,
-                        //  color: Colors.amber,
-                        child: SpinningIconButton(
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.036,
+                    // padding: EdgeInsets.only(right: 10),
+                    child: FloatingActionButton.extended(
+                        backgroundColor: AppTheme.kButtonColor,
+                        onPressed: () {
+                          if (_animationController!.isAnimating == true) {
+                            Utility.currentScreenSnackBar(
+                                'Please Wait, Sync Is In Progress', null,
+                                marginFromBottom: 90);
+                          } else {
+                            _animationController!.repeat();
+                            refreshPage(isFromPullToRefresh: true);
+                          }
+                        },
+                        label: Row(
+                          children: [
+                            Utility.textWidget(
+                                text: 'Sync',
+                                context: context,
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .headline4!
+                                    .copyWith(
+                                        color:
+                                            Theme.of(context).backgroundColor)),
+                          ],
+                        ),
+                        icon: SpinningIconButton(
                           controller: _animationController,
                           iconData: Icons.sync,
-                        ),
-                      )),
-                )
-              ],
+                        )),
+                  )
+                ],
+              ),
             ),
             SpacerWidget(_KVertcalSpace / 3),
             SpacerWidget(_KVertcalSpace / 5),
@@ -281,9 +274,10 @@ class _CoursesListScreenState extends State<CoursesListScreen>
   }
 
   Widget coursesChips(List<GoogleClassroomCourses> courseList) {
-    return ListView(
+    return Column(
       children: [
         Container(
+            margin: EdgeInsets.only(bottom: 10.0),
             height: 30,
             //padding: EdgeInsets.only(left: 2.0),
             child: Container(
@@ -296,8 +290,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                 scrollDirection: Axis.horizontal,
               ),
             )),
-        SpacerWidget(20),
-        studentListCourseWiseView(courseList)
+        Expanded(child: studentListCourseWiseView(courseList))
       ],
     );
   }
@@ -341,8 +334,8 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                     courseList[currentIndex].name!,
                     style: Theme.of(context)
                         .textTheme
-                        .headline6!
-                        .copyWith(fontSize: 12),
+                        .subtitle2!
+                        .copyWith(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -354,21 +347,17 @@ class _CoursesListScreenState extends State<CoursesListScreen>
   Widget studentListCourseWiseView(
     List<GoogleClassroomCourses> courseList,
   ) {
-    return Container(
-        //  color: Colors.green,
-        height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height * 0.70
-            : MediaQuery.of(context).size.height * 0.45,
-        child: NotificationListener<ScrollNotification>(
-          onNotification: onNotification,
-          child: ScrollablePositionedList.builder(
-              shrinkWrap: true,
-              itemScrollController: _itemScrollController,
-              itemCount: courseList.length,
-              itemBuilder: (context, index) {
-                return _buildCourseSeparationList(courseList, index);
-              }),
-        ));
+    return NotificationListener<ScrollNotification>(
+      onNotification: onNotification,
+      child: ScrollablePositionedList.builder(
+          padding: EdgeInsets.symmetric(vertical: 10.0),
+          shrinkWrap: true,
+          itemScrollController: _itemScrollController,
+          itemCount: courseList.length,
+          itemBuilder: (context, index) {
+            return _buildCourseSeparationList(courseList, index);
+          }),
+    );
   }
 
   Widget _buildCourseSeparationList(
@@ -473,26 +462,17 @@ class _CoursesListScreenState extends State<CoursesListScreen>
 
   bool onNotification(ScrollNotification scrollNotification) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // print(scrollNotification.metrics.atEdge);
       if (scrollNotification is ScrollUpdateNotification) {
         isScrollingStop.value = false;
-      } else {
+      } else if (scrollNotification.metrics.pixels !=
+          scrollNotification.metrics.maxScrollExtent) {
         isScrollingStop.value = true;
       }
     });
 
     return true;
   }
-
-  // bool onNotification(ScrollNotification t) {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (t.metrics.pixels < 150 && t.metrics.pixels >= 0) {
-  //       if (isScrolling.value == false) isScrolling.value = true;
-  //     } else {
-  //       //To prevent from negative value
-  //       if (t.metrics.pixels < 0 == false && isScrolling.value == true)
-  //         isScrolling.value = false;
-  //     }
-  //   });
 
   popupModal({required String message, required String? title}) {
     return showDialog(

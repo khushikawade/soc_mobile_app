@@ -5,27 +5,20 @@ import '../../../services/local_database/local_db.dart';
 import '../../ocr/modal/user_info.dart';
 
 class GoogleClassroom {
-  // static updateUserProfileIntoDB(updatedObj) async {
-  //   HiveDbServices _localdb = HiveDbServices();
-  //   await _localdb.updateListData("user_profile", 0, updatedObj);
-  // }
-
   static Future<List<GoogleClassroomCourses>> getGoogleClassroom() async {
     LocalDatabase<GoogleClassroomCourses> _gClassroom =
         LocalDatabase(Strings.googleClassroomCoursesList);
 
     List<GoogleClassroomCourses>? _gClassroomList = await _gClassroom.getData();
 
-    // LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
-    // List<UserInformation> _userInformation = await _localDb.getData();
-    if (_gClassroomList.isNotEmpty) {
-      //print(_userInformation[0].authorizationToken);
-      //print(_userInformation[0].profilePicture);
-      //print(_userInformation[0].refreshToken);
-      //print(_userInformation[0].userEmail);
-      //print(_userInformation[0].userName);
+    // if (_gClassroomList.isNotEmpty) {}
+
+    try {
+      await _gClassroom.close();
+    } catch (e) {
+      print(e);
     }
-    await _gClassroom.close();
+
     sort(obj: _gClassroomList);
     return _gClassroomList;
   }

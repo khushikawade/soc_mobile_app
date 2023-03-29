@@ -21,13 +21,13 @@ class StateSelectionPage extends StatefulWidget {
   final bool? isMcqSheet;
   final String? selectedAnswer;
   final bool? isFromCreateAssessmentScreen;
-  final String questionImageUrl;
+  // final String questionImageUrl;
   final String selectedClass;
   const StateSelectionPage(
       {Key? key,
       this.isMcqSheet,
       this.selectedAnswer,
-      required this.questionImageUrl,
+      // required this.questionImageUrl,
       required this.selectedClass,
       this.isFromCreateAssessmentScreen})
       : super(key: key);
@@ -160,8 +160,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                           // isCommonCore: selectedIndex.value == 0
                                           //     ? true
                                           //     : false,
-                                          questionImageUrl:
-                                              widget.questionImageUrl,
+                                          // questionImageUrl:
+                                          //     widget.questionImageUrl,
                                           selectedClass: widget.selectedClass,
                                         )),
                               );
@@ -271,7 +271,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                   // isCommonCore: selectedIndex.value == 0
                                   //     ? true
                                   //     : false,
-                                  questionImageUrl: widget.questionImageUrl,
+                                  // questionImageUrl: widget.questionImageUrl,
                                   selectedClass: widget.selectedClass,
                                 )),
                       );

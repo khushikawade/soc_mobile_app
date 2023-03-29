@@ -63,6 +63,11 @@ class StudentAssessmentInfo {
   @HiveField(25)
   String?
       slideTableObjId; //slides table ids for update and edit the student records
+
+  @HiveField(26)
+  String? questionImgFilePath;
+  @HiveField(27)
+  bool? isScanMore;
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,
@@ -90,7 +95,8 @@ class StudentAssessmentInfo {
       this.googleClassRoomStudentProfileId,
       this.isgoogleClassRoomStudentProfileUpdated = false,
       this.isSlideObjUpdated = false,
-      this.slideTableObjId});
+      this.slideTableObjId,
+      this.isScanMore = false});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(

@@ -169,7 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               StateSelectionPage(
                                                 isFromCreateAssessmentScreen:
                                                     false,
-                                                questionImageUrl: '',
+                                                // questionImageUrl: '',
                                                 selectedClass: '',
                                               )));
                                 },

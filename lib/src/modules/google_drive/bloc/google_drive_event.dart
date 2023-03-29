@@ -41,7 +41,7 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
   final bool isLoading;
   final bool? isCustomRubricSelected;
   final int? selectedRubric;
-  final String questionImage;
+  // final String questionImage;
   final String? assessmentName;
   final bool? createdAsPremium;
 
@@ -49,7 +49,7 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
       {this.studentData,
       required this.fileId,
       required this.isLoading,
-      required this.questionImage,
+      // required this.questionImage,
       this.isCustomRubricSelected,
       this.selectedRubric,
       required this.assessmentName,
@@ -126,13 +126,11 @@ class AssessmentImgToAwsBucked extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
-class QuestionImgToAwsBucked extends GoogleDriveEvent {
-  final String? imgBase64;
-  final String? imgExtension;
+class QuestionImgToAwsBucket extends GoogleDriveEvent {
+  final File? imageFile;
 
-  QuestionImgToAwsBucked({
-    required this.imgBase64,
-    required this.imgExtension,
+  QuestionImgToAwsBucket({
+    required this.imageFile,
   });
 
   @override

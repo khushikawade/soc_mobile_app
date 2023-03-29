@@ -110,7 +110,7 @@ class Globals {
   static String? scoringRubric;
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static String? questionImgUrl;
-  static File? questionImgFilePath;
+  // static File? questionImgFilePath;
   static String? historyAssessmentName = '';
   static String? historyAssessmentFileId = '';
   static late TabController tabController;

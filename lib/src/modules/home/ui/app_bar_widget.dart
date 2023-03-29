@@ -43,7 +43,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   AppBarWidget(
       {Key? key,
       required this.refresh,
-      required this.marginLeft,
+      this.marginLeft = 0.0,
       this.hideAccessibilityButton,
       this.onTap,
       this.showClosebutton,
@@ -229,6 +229,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _translateButton(StateSetter setState, BuildContext context) {
     return IconButton(
+        iconSize: Globals.deviceType == "phone" ? 28 : 32,
         key: _bshowcase,
         onPressed: () async {
           await FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -247,16 +248,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         },
         icon: Container(
           child: Image(
-            width: !Overrides.STANDALONE_GRADED_APP
-                ? Globals.deviceType == "phone"
-                    ? 26
-                    : 32
-                : 28,
-            height: !Overrides.STANDALONE_GRADED_APP
-                ? Globals.deviceType == "phone"
-                    ? 26
-                    : 32
-                : 28,
+            // width: Globals.deviceType == "phone" ? 28 : 32,
+            // height: Globals.deviceType == "phone" ? 28 : 32,
             image: AssetImage("assets/images/gtranslate.png"),
           ),
         ));
@@ -291,7 +284,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _openSettingsButton(BuildContext context) {
     return IconButton(
-      iconSize: 28,
+      iconSize: Globals.deviceType == "phone" ? 28 : 32,
       onPressed: () async {
         await FirebaseAnalyticsService.addCustomAnalyticsEvent(
             "settings_drawer");
@@ -311,11 +304,6 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         FontAwesomeIcons.universalAccess,
         color: Colors.blue,
         key: _openSettingShowCaseKey,
-        size: !Overrides.STANDALONE_GRADED_APP
-            ? Globals.deviceType == "phone"
-                ? 25
-                : 32
-            : null,
       ),
     );
   }

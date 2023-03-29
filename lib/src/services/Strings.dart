@@ -52,4 +52,6 @@ class Strings {
   static final String keyArrowSvgIconPath = "assets/images/arrow.svg";
   static final String latestNewsId =
       "last_news_id"; // to maintain news id for showing red indicator
+  static final String studentInfoDbName = "student_info";
+  static final String historyStudentInfoDbName = "history_student_info";
 }

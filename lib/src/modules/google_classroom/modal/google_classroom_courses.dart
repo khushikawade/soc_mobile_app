@@ -1,4 +1,3 @@
-import 'package:Soc/src/modules/google_classroom/modal/classroom_student_list.dart';
 import 'package:hive/hive.dart';
 part 'google_classroom_courses.g.dart';
 

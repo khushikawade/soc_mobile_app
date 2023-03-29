@@ -43,13 +43,14 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       isgoogleClassRoomStudentProfileUpdated: fields[23] as bool?,
       isSlideObjUpdated: fields[24] as bool?,
       slideTableObjId: fields[25] as String?,
-    );
+      isScanMore: fields[27] as bool?,
+    )..questionImgFilePath = fields[26] as String?;
   }
 
   @override
   void write(BinaryWriter writer, StudentAssessmentInfo obj) {
     writer
-      ..writeByte(26)
+      ..writeByte(28)
       ..writeByte(0)
       ..write(obj.studentName)
       ..writeByte(1)
@@ -101,7 +102,11 @@ class StudentAssessmentInfoAdapter extends TypeAdapter<StudentAssessmentInfo> {
       ..writeByte(24)
       ..write(obj.isSlideObjUpdated)
       ..writeByte(25)
-      ..write(obj.slideTableObjId);
+      ..write(obj.slideTableObjId)
+      ..writeByte(26)
+      ..write(obj.questionImgFilePath)
+      ..writeByte(27)
+      ..write(obj.isScanMore);
   }
 
   @override
