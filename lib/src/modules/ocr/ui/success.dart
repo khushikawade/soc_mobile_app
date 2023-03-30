@@ -1073,7 +1073,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                         // errormsg:
                         //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
                         onSaved: (String value) {
-                          initialCursorPositionAtLast = false;
+                          // initialCursorPositionAtLast = false;
                           studentIdOnSaveFailure(value);
                         },
                         validator: (String? value) {
