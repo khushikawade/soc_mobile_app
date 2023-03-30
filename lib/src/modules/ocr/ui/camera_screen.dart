@@ -4,9 +4,10 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/ocr/graded_overrides.dart';
+import 'package:Soc/src/modules/ocr/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/helper/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/ocr/helper/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/ui/create_assessment.dart';
 import 'package:Soc/src/modules/ocr/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/ocr/ui/success.dart';
@@ -1012,6 +1013,60 @@ class _CameraScreenState extends State<CameraScreen>
     );
   }
 
+  // notPresentStudentsPopupModal(
+  //     {required List<StudentAssessmentInfo>
+  //         notPresentStudentsInSelectedClass}) async {
+  //   showDialog(
+  //       context: context,
+  //       builder: (showDialogContext) => NonCourseGoogleClassroomNonCourseGoogleClassroomStudentPopup(
+  //             key: _dialogKey,
+  //             notPresentStudentsInSelectedClass:
+  //                 notPresentStudentsInSelectedClass,
+  //             title: 'Action Required!',
+  //             message:
+  //                 "A few students not found in the selected course . Do you still want to continue with these students?",
+  //             studentInfoDb: widget.isFromHistoryAssessmentScanMore == true
+  //                 ? _historystudentAssessmentInfoDb
+  //                 : _studentAssessmentInfoDb,
+  //             onTapCallback: () {
+  //               // Close the dialog from outside
+  //               if (_dialogKey.currentState != null) {
+  //                 _dialogKey.currentState!.closeDialog();
+  //               }
+  //               preparingGoogleSlideFiles();
+  //             },
+  //           ));
+  // }
+
+  // Future<void> preparingGoogleSlideFiles() async {
+  //   if (widget.isFromHistoryAssessmentScanMore == true) {
+  //     _driveBloc.add(UpdateGoogleSlideOnScanMore(
+  //         studentInfoDb: LocalDatabase(Strings.historyStudentInfoDbName),
+  //         isMcqSheet: widget.isMcqSheet ?? false,
+  //         assessmentName: widget.assessmentName ?? '',
+  //         isFromHistoryAssessment: widget.isFromHistoryAssessmentScanMore,
+  //         lastAssessmentLength: widget.lastAssessmentLength ?? 0,
+  //         slidePresentationId: Globals.googleSlidePresentationId!));
+  //   } else if (!widget.isFromHistoryAssessmentScanMore &&
+  //       widget.isScanMore == true) {
+  //     _driveBloc.add(AddAndUpdateAssessmentImageToSlidesOnDrive(
+  //         isScanMore: true,
+  //         slidePresentationId: Globals.googleSlidePresentationId,
+  //         studentInfoDb: LocalDatabase(Strings.studentInfoDbName)));
+  //     //
+  //   } else {
+  //     if (Overrides.STANDALONE_GRADED_APP == true) {
+  //       //Prepare suggestion chips for create screen //course list
+  //       Utility.showLoadingDialog(context: context, isOCR: true);
+  //       List<String> suggestionList = await getSuggestionChips();
+  //       Navigator.of(context).pop();
+
+  //       _navigateToCreateAssessment(suggestionList: suggestionList);
+  //     } else {
+  //       List<String> classSuggestions = await _localDb.getData();
+  //       LocalDatabase<String> classSectionLocalDb =
+  //           LocalDatabase('class_section_list');
+
   notPresentStudentsPopupModal(
       {required List<StudentAssessmentInfo>
           notPresentStudentsInSelectedClass}) async {
@@ -1023,7 +1078,7 @@ class _CameraScreenState extends State<CameraScreen>
                   notPresentStudentsInSelectedClass,
               title: 'Action Required!',
               message:
-                  "A few students not found in the selected course . Do you still want to continue with these students?",
+                  "A few students not found in the selected course. Do you still want to continue with these students?",
               studentInfoDb: widget.isFromHistoryAssessmentScanMore == true
                   ? _historystudentAssessmentInfoDb
                   : _studentAssessmentInfoDb,
@@ -1060,7 +1115,24 @@ class _CameraScreenState extends State<CameraScreen>
         List<String> suggestionList = await getSuggestionChips();
         Navigator.of(context).pop();
 
+        // if (isAllStudentsBelongToSameCourse) {
+        //   _navigateToCreateAssessment(
+        //       suggestionList: suggestionList);
+        // } else {
+        //   removeNonCourseGoogleClassroomStudentPopupModal(
+        //       suggestionList: suggestionList);
+        // }
         _navigateToCreateAssessment(suggestionList: suggestionList);
+
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => CreateAssessment(
+        //           isMcqSheet: widget.isMcqSheet,
+        //           selectedAnswer: widget.selectedAnswer,
+        //           customGrades: classList,
+        //           classSuggestions: suggestionList)),
+        // );
       } else {
         List<String> classSuggestions = await _localDb.getData();
         LocalDatabase<String> classSectionLocalDb =
@@ -1100,4 +1172,41 @@ class _CameraScreenState extends State<CameraScreen>
       }
     }
   }
+
+//   Future removeStudentRecordFromStudentInfoDB() async {
+//     List<StudentAssessmentInfo> studentinfo =
+//         await _studentAssessmentInfoDb.getData();
+
+  //       // Compares 2 list and update the changes in local database.
+  //       bool isClassChanges = false;
+  //       for (int i = 0; i < classList.length; i++) {
+  //         if (!localSectionList.contains(classList[i])) {
+  //           isClassChanges = true;
+  //           break;
+  //         }
+  //       }
+
+  //       if (localSectionList.isEmpty || isClassChanges) {
+  //         //print("local db is empty");
+  //         classSectionLocalDb.clear();
+  //         classList.forEach((String e) {
+  //           classSectionLocalDb.addData(e);
+  //         });
+  //       } else {
+  //         //print("local db is not empty");
+  //         classList = [];
+  //         classList.addAll(localSectionList);
+  //       }
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (context) => CreateAssessment(
+  //                 isMcqSheet: widget.isMcqSheet,
+  //                 selectedAnswer: widget.selectedAnswer,
+  //                 customGrades: classList,
+  //                 classSuggestions: classSuggestions)),
+  //       );
+  //     }
+  //   }
+  // }
 }

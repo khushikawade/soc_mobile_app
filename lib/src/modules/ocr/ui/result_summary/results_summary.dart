@@ -136,7 +136,7 @@ class studentRecordList extends State<ResultsSummary> {
       LocalDatabase(Strings.googleClassroomCoursesList);
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
-
+  final ValueNotifier<bool> classroomUrlStatus = ValueNotifier<bool>(false);
   @override
   void initState() {
     _futureMethod();
@@ -245,8 +245,8 @@ class studentRecordList extends State<ResultsSummary> {
                   SpacerWidget(_KVerticalSpace * 0.40),
                   Padding(
                     padding: EdgeInsets.only(
-                        left: 5,
-                        right: 20), //EdgeInsets.symmetric(horizontal: 20),
+                      left: 5,
+                    ), //EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -276,21 +276,21 @@ class studentRecordList extends State<ResultsSummary> {
                                             AsyncSnapshot<
                                                     List<StudentAssessmentInfo>>
                                                 snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return Globals.isAndroid!
-                                                ? Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .colorScheme
-                                                                .primaryVariant,
-                                                            strokeWidth: 2))
-                                                : CupertinoActivityIndicator();
-                                          }
+                                          // if (snapshot.connectionState ==
+                                          //     ConnectionState.waiting) {
+                                          //   return Globals.isAndroid!
+                                          //       ? Container(
+                                          //           width: 10,
+                                          //           height: 10,
+                                          //           child:
+                                          //               CircularProgressIndicator(
+                                          //                   color: Theme.of(
+                                          //                           context)
+                                          //                       .colorScheme
+                                          //                       .primaryVariant,
+                                          //                   strokeWidth: 2))
+                                          //       : CupertinoActivityIndicator();
+                                          // }
                                           if (snapshot.hasData &&
                                                   widget.assessmentDetailPage ==
                                                       true
@@ -298,49 +298,63 @@ class studentRecordList extends State<ResultsSummary> {
                                               : !isGoogleSheetStateReceived
                                                   .value) {
                                             lastAssessmentLength =
-                                                snapshot.data!.length;
+                                                snapshot?.data?.length ?? 0;
                                             return snapshot.data != null
-                                                ? Text(
-                                                    '${snapshot.data!.length}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline3)
-                                                : Container();
+                                                ? Tooltip(
+                                                    message:
+                                                        "Total Scanned ${lastAssessmentLength == 0 ? 'Sheet' : 'Sheets'}",
+                                                    child: IconButton(
+                                                      onPressed: (() {}),
+                                                      icon: Text(
+                                                          '${snapshot.data!.length}',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline3),
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    width: 10,
+                                                    height: 10,
+                                                  );
                                           }
-                                          return
-                                              // Padding(
-                                              //   padding: EdgeInsets.only(top: 10),
-                                              //   child: ShimmerLoading(
-                                              //     isLoading: true,
-                                              //     child: Container(
-                                              //       decoration: BoxDecoration(
-                                              //           color: Colors.white,
-                                              //           borderRadius:
-                                              //               BorderRadius.all(
-                                              //                   Radius.circular(
-                                              //                       40))),
-                                              //       // height: 15,
-                                              //       // width: 15,
+                                          return Container(
+                                            width: 10,
+                                            height: 10,
+                                          );
+                                          // Padding(
+                                          //   padding: EdgeInsets.only(top: 10),
+                                          //   child: ShimmerLoading(
+                                          //     isLoading: true,
+                                          //     child: Container(
+                                          //       decoration: BoxDecoration(
+                                          //           color: Colors.white,
+                                          //           borderRadius:
+                                          //               BorderRadius.all(
+                                          //                   Radius.circular(
+                                          //                       40))),
+                                          //       // height: 15,
+                                          //       // width: 15,
 
-                                              //       child: CircleAvatar(
-                                              //         radius: 10,
-                                              //       ),
-                                              //     ),
-                                              //   ),
-                                              // );
+                                          //       child: CircleAvatar(
+                                          //         radius: 10,
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // );
 
-                                              Globals.isAndroid!
-                                                  ? Container(
-                                                      width: 10,
-                                                      height: 10,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .primaryVariant,
-                                                              strokeWidth: 2))
-                                                  : CupertinoActivityIndicator();
+                                          // Globals.isAndroid!
+                                          //     ? Container(
+                                          //         width: 10,
+                                          //         height: 10,
+                                          //         child:
+                                          //             CircularProgressIndicator(
+                                          //                 color: Theme.of(
+                                          //                         context)
+                                          //                     .colorScheme
+                                          //                     .primaryVariant,
+                                          //                 strokeWidth: 2))
+                                          //     : CupertinoActivityIndicator();
                                         });
                                   });
                             }),
@@ -428,9 +442,6 @@ class studentRecordList extends State<ResultsSummary> {
                                   bloc: _driveBloc2,
                                   child: Container(),
                                   listener: (context, state) async {
-                                    print(
-                                        "result screen state is recived -----> $state");
-
                                     // if (state is GoogleDriveLoading) {
                                     //   Utility.showLoadingDialog(
                                     //       context: context, isOCR: true);
@@ -496,46 +507,6 @@ class studentRecordList extends State<ResultsSummary> {
                                       //     "Something Went Wrong. Please Try Again.");
                                     }
                                   }),
-                              BlocListener<GoogleClassroomBloc,
-                                      GoogleClassroomState>(
-                                  bloc: _googleClassroomBloc,
-                                  child: Container(),
-                                  listener: (context, state) async {
-                                    if (state
-                                        is CreateClassroomCourseWorkSuccess) {
-                                      Navigator.of(context).pop();
-                                    }
-                                    if (state is GoogleClassroomErrorState) {
-                                      if (state.errorMsg ==
-                                          'ReAuthentication is required') {
-                                        await Utility
-                                            .refreshAuthenticationToken(
-                                                isNavigator: true,
-                                                errorMsg: state.errorMsg!,
-                                                context: context,
-                                                scaffoldKey: scaffoldKey);
-
-                                        _googleClassroomBloc.add(
-                                            CreateClassRoomCourseWork(
-                                                isEditStudentInfo: true,
-                                                studentAssessmentInfoDb:
-                                                    LocalDatabase(
-                                                        'student_info'),
-                                                studentClassObj:
-                                                    GoogleClassroomGlobals
-                                                        .studentAssessmentAndClassroomObj,
-                                                title: Globals.assessmentName!,
-                                                pointPossible:
-                                                    Globals.pointPossible ??
-                                                        "0"));
-                                      } else {
-                                        Navigator.of(context).pop();
-                                        Utility.currentScreenSnackBar(
-                                            state.errorMsg?.toString() ?? "",
-                                            null);
-                                      }
-                                    }
-                                  })
                             ],
                           ),
                         )
@@ -714,6 +685,14 @@ class studentRecordList extends State<ResultsSummary> {
                               }
                               updateAssessmentToDb();
                               isGoogleSheetStateReceived.value = true;
+
+                              // classroomUrlStatus.value = 'Loading';
+
+                              //Get Course URL on detail page load
+                              _googleClassroomBloc.add(
+                                  GetClassroomCourseWorkURL(
+                                      obj: GoogleClassroomGlobals
+                                          .studentAssessmentAndClassroomObj));
                             } else if (state is ErrorState) {
                               if (state.errorMsg ==
                                   'ReAuthentication is required') {
@@ -901,6 +880,48 @@ class studentRecordList extends State<ResultsSummary> {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
           ),
+          BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
+              bloc: _googleClassroomBloc,
+              child: Container(),
+              listener: (context, state) async {
+                if (state is CreateClassroomCourseWorkSuccess) {
+                  Navigator.of(context).pop();
+                }
+                if (state is GoogleClassroomErrorState) {
+                  if (state.errorMsg == 'ReAuthentication is required') {
+                    await Utility.refreshAuthenticationToken(
+                        isNavigator: true,
+                        errorMsg: state.errorMsg!,
+                        context: context,
+                        scaffoldKey: scaffoldKey);
+
+                    _googleClassroomBloc.add(CreateClassRoomCourseWork(
+                        isEditStudentInfo: true,
+                        studentAssessmentInfoDb: LocalDatabase('student_info'),
+                        studentClassObj: GoogleClassroomGlobals
+                            .studentAssessmentAndClassroomObj,
+                        title: Globals.assessmentName!,
+                        pointPossible: Globals.pointPossible ?? "0"));
+                  } else {
+                    Navigator.of(context).pop();
+                    Utility.currentScreenSnackBar(
+                        state.errorMsg?.toString() ?? "", null);
+                  }
+                }
+
+                if (state is GetClassroomCourseWorkURLSuccess) {
+                  if (!state.isLinkAvailable!) {
+                    print(state.classroomCouseWorkURL);
+                    Utility.currentScreenSnackBar(
+                        "Please check your internet connection and try again",
+                        null);
+                  }
+
+                  GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                      .courseWorkURL = state.classroomCouseWorkURL ?? '';
+                  classroomUrlStatus.value = true;
+                }
+              })
         ],
       ),
     );
@@ -1171,11 +1192,13 @@ class studentRecordList extends State<ResultsSummary> {
         height: MediaQuery.of(context).orientation == Orientation.portrait
             ? MediaQuery.of(context).size.height * 0.086
             : MediaQuery.of(context).size.width * 0.086,
-        width: Overrides.STANDALONE_GRADED_APP == true
-            ? (widget.assessmentDetailPage == true
-                ? MediaQuery.of(context).size.width * 0.5
-                : MediaQuery.of(context).size.width * 0.7)
-            : widget.assessmentDetailPage!
+        width:
+            //  Overrides.STANDALONE_GRADED_APP == true
+            //     ? (widget.assessmentDetailPage == true
+            //         ? MediaQuery.of(context).size.width * 0.5
+            //         : MediaQuery.of(context).size.width * 0.7)
+            //  :
+            widget.assessmentDetailPage!
                 ? MediaQuery.of(context).size.width * 0.7
                 : MediaQuery.of(context).size.width * 0.9,
         child: Row(
@@ -2140,73 +2163,106 @@ class studentRecordList extends State<ResultsSummary> {
   Widget bottomIcon(BottomIcon element) {
     return Expanded(
       child: ValueListenableBuilder(
-          valueListenable: isShareLinkReceived,
+          valueListenable: classroomUrlStatus,
           child: Container(),
-          builder: (BuildContext context, dynamic value, Widget? child) {
+          builder: (BuildContext context, bool value, Widget? child) {
             return ValueListenableBuilder(
-                valueListenable: dashboardState,
+                valueListenable: isShareLinkReceived,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
-                  return Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        //text building for all icons
-                        Utility.textWidget(
-                            text: element.title!,
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(fontWeight: FontWeight.bold)),
+                  return ValueListenableBuilder(
+                      valueListenable: dashboardState,
+                      child: Container(),
+                      builder:
+                          (BuildContext context, dynamic value, Widget? child) {
+                        return Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              //text building for all icons
+                              Utility.textWidget(
+                                  text: element.title!,
+                                  context: context,
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2!
+                                      .copyWith(fontWeight: FontWeight.bold)),
 
-                        //Loading indicator dashboard
-                        if ((element.title == "Dashboard" &&
-                                dashboardState.value == "Loading") ||
-                            (element.title == "Share" &&
-                                !isShareLinkReceived.value))
-                          Container(
-                              padding: EdgeInsets.all(3),
-                              width: Globals.deviceType == "phone" ? 28 : 50,
-                              height: Globals.deviceType == "phone" ? 28 : 50,
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryVariant,
-                              ))
+                              //Loading indicator dashboard
+                              if ((element.title == "Dashboard" &&
+                                      dashboardState.value == "Loading") ||
+                                  (element.title == "Share" &&
+                                      !isShareLinkReceived.value) ||
+                                  (element.title == "Class" &&
+                                      !classroomUrlStatus.value))
+                                Container(
+                                    padding: EdgeInsets.all(3),
+                                    width:
+                                        Globals.deviceType == "phone" ? 28 : 50,
+                                    height:
+                                        Globals.deviceType == "phone" ? 28 : 50,
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: MediaQuery.of(context)
+                                              .size
+                                              .shortestSide *
+                                          0.005,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryVariant,
+                                    ))
 
-                        //Tick mark icons
-                        else if (element.title == "Dashboard" &&
-                            dashboardState.value == "Success")
-                          SvgPicture.asset(
-                              'assets/ocr_result_section_bottom_button_icons/Done.svg',
-                              width: Globals.deviceType == "phone" ? 28 : 50,
-                              height: Globals.deviceType == "phone" ? 28 : 50,
-                              color: AppTheme.kButtonColor)
+                              //Tick mark icons
+                              else if (element.title == "Dashboard" &&
+                                  dashboardState.value == "Success")
+                                SvgPicture.asset(
+                                    'assets/ocr_result_section_bottom_button_icons/Done.svg',
+                                    width:
+                                        Globals.deviceType == "phone" ? 28 : 50,
+                                    height:
+                                        Globals.deviceType == "phone" ? 28 : 50,
+                                    color: AppTheme.kButtonColor)
 
-                        //building all icons here
-                        else
-                          InkWell(
-                            child: SvgPicture.asset(element.svgPath!,
-                                width: Globals.deviceType == "phone" ? 28 : 50,
-                                height: Globals.deviceType == "phone" ? 28 : 50,
-                                color: Theme.of(context).backgroundColor ==
-                                            Color(0xff000000) &&
-                                        element.title == "Dashboard"
-                                    ? Color(0xffF7F8F9)
-                                    : null),
-                            onTap: (() =>
-                                _bottomIconsOnTap(title: element.title!)),
-                          ),
-                      ]);
+                              //building all icons here
+                              else
+                                Builder(builder: (context) {
+                                  String? url = getURlForBottomIcons(
+                                      title: element.title ?? '');
+                                  return Opacity(
+                                    opacity: ((url?.isEmpty ?? true) ||
+                                            (url == 'NA'))
+                                        ? 0.3
+                                        : 1.0,
+                                    child: InkWell(
+                                      child: SvgPicture.asset(element.svgPath!,
+                                          width: Globals.deviceType == "phone"
+                                              ? 28
+                                              : 50,
+                                          height: Globals.deviceType == "phone"
+                                              ? 28
+                                              : 50,
+                                          color: Theme.of(context)
+                                                          .backgroundColor ==
+                                                      Color(0xff000000) &&
+                                                  element.title == "Dashboard"
+                                              ? Color(0xffF7F8F9)
+                                              : null),
+                                      onTap: (() async {
+                                        _bottomIconsOnTap(
+                                            title: element.title ?? '',
+                                            url: url ?? '');
+                                      }),
+                                    ),
+                                  );
+                                }),
+                            ]);
+                      });
                 });
           }),
     );
   }
 
-  _bottomIconsOnTap({required String title}) async {
+  _bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
       case 'Share':
         String shareLogMsg =
@@ -2220,28 +2276,34 @@ class studentRecordList extends State<ResultsSummary> {
                 : '',
             description: shareLogMsg,
             operationResult: 'Success');
-        widget.shareLink != null && widget.shareLink!.isNotEmpty
-            ? Share.share(widget.shareLink!)
-            : print("no link ");
+        if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+          Share.share(url);
+        }
         break;
-      case 'Drive':
-        String driveLogMsg =
-            'Drive Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
 
-        FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            driveLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-        Fluttertoast.cancel();
-        Utility.updateLogs(
-            activityId: '16',
-            sessionId: widget.assessmentDetailPage == true
-                ? widget.obj!.sessionId
-                : '',
-            description: driveLogMsg,
-            operationResult: 'Success');
-        Globals.googleDriveFolderPath != null
-            ? Utility.launchUrlOnExternalBrowser(Globals.googleDriveFolderPath!)
-            : getGoogleFolderPath();
-        break;
+      // case 'Drive':
+      //   String driveLogMsg =
+      //       'Drive Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+
+      //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
+      //       driveLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+      //   Fluttertoast.cancel();
+      //   Utility.updateLogs(
+      //       activityId: '16',
+      //       sessionId: widget.assessmentDetailPage == true
+      //           ? widget.obj!.sessionId
+      //           : '',
+      //       description: driveLogMsg,
+      //       operationResult: 'Success');
+      //   // url != null
+      //   //     ? Utility.launchUrlOnExternalBrowser(url)
+      //   //     : getGoogleFolderPath();
+      //   if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+      //     Utility.launchUrlOnExternalBrowser(url);
+      //   } else {
+      //     getGoogleFolderPath();
+      //   }
+      //   break;
       case 'History':
         String historyLogMsg =
             'History Assessment button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
@@ -2390,28 +2452,37 @@ class studentRecordList extends State<ResultsSummary> {
             description: slidesLogMsg,
             operationResult: 'Success');
 
-        Globals.googleSlidePresentationLink != null &&
-                Globals.googleSlidePresentationLink!.isNotEmpty
-            ? Utility.launchUrlOnExternalBrowser(
-                Globals.googleSlidePresentationLink!)
-            : Utility.currentScreenSnackBar(
-                'Assessment do not have slides', null);
+        // Globals.googleSlidePresentationLink != null &&
+        //         Globals.googleSlidePresentationLink!.isNotEmpty
+        //     ? Utility.launchUrlOnExternalBrowser(
+        //         Globals.googleSlidePresentationLink!)
+        //     : Utility.currentScreenSnackBar(
+        //         'Assessment do not have slides', null);
+        if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+          Utility.launchUrlOnExternalBrowser(url);
+        }
+
         break;
       case "Sheet":
-        if (widget.shareLink != null && widget.shareLink!.isNotEmpty) {
+        if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
           String sheetLogMsg =
               "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-          await Utility.launchUrlOnExternalBrowser(widget.shareLink!);
-        } else {
-          Utility.currentScreenSnackBar('Please Wait', null,
-              marginFromBottom: 90);
+          await Utility.launchUrlOnExternalBrowser(url);
         }
-
         break;
+      case "Class":
+        if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+          Utility.launchUrlOnExternalBrowser(url);
+        }
+        break;
+
       default:
         print(title);
+    }
+    if (((url?.isEmpty ?? true) || (url == 'NA'))) {
+      Utility.currentScreenSnackBar('$title is Not available ', null);
     }
   }
 
@@ -2511,6 +2582,24 @@ class studentRecordList extends State<ResultsSummary> {
       iconsName = Globals.ocrResultIconsName;
 
       _method();
+      if (Overrides.STANDALONE_GRADED_APP) {
+        classroomUrlStatus.value = true;
+      }
     }
+  }
+
+  getURlForBottomIcons({required String title}) {
+    Map map = {
+      'Share': widget.shareLink,
+      'Drive': Globals.googleDriveFolderPath,
+      'History': 'History',
+      'Dashboard': 'Dashboard',
+      'Slides': Globals.googleSlidePresentationLink,
+      'Sheet': widget.shareLink,
+      'Class':
+          GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseWorkURL,
+    };
+
+    return map[title] ?? '';
   }
 }

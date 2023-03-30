@@ -782,7 +782,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                         true)) {
                                   showDialogSetState!(() {
                                     GradedGlobals.loadingMessage =
-                                        'Adding google class more';
+                                        'Creating Google Classroom Assignment';
                                   });
                                   widget.googleClassroomBloc.add(
                                       CreateClassRoomCourseWork(

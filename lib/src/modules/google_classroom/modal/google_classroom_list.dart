@@ -8,11 +8,20 @@ class GoogleClassroom {
   static Future<List<GoogleClassroomCourses>> getGoogleClassroom() async {
     LocalDatabase<GoogleClassroomCourses> _gClassroom =
         LocalDatabase(Strings.googleClassroomCoursesList);
-
-    List<GoogleClassroomCourses>? _gClassroomList = await _gClassroom.getData();
+    List<GoogleClassroomCourses>? _gClassroomList;
+    try {
+      _gClassroomList = await _gClassroom.getData();
+    } catch (e) {
+      _gClassroomList = [];
+    }
 
     // if (_gClassroomList.isNotEmpty) {}
 
+    try {
+      await _gClassroom.close();
+    } catch (e) {
+      print(e);
+    }
     try {
       await _gClassroom.close();
     } catch (e) {

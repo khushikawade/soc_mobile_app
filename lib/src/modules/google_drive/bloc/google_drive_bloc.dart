@@ -9,8 +9,8 @@ import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart';
 import 'package:Soc/src/modules/google_drive/model/spreadsheet_model.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
+import 'package:Soc/src/modules/ocr/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -53,8 +53,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (event.isFromOcrHome!) {
           yield GoogleDriveLoading();
         }
+        //  folderObject = await _getGoogleDriveFolderId(
+        //     token: event.token, folderName: event.folderName);
         folderObject = await _getGoogleDriveFolderId(
-            token: event.token, folderName: event.folderName);
+            token: event.token,
+            folderName: event.folderName,
+            refreshToken: event.refreshToken);
+
         //Condition To Create Folder In Case Of It Is Not Exist
         if (folderObject != 401 && folderObject != 500) {
           if (folderObject.length == 0) {
@@ -1111,7 +1116,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   }
 
   Future _getGoogleDriveFolderId(
-      {required String? token, required String? folderName}) async {
+      {required String? token,
+      required String? folderName,
+      required String? refreshToken,
+      int retry = 3}) async {
     try {
       Map<String, String> headers = {
         'Content-Type': 'application/json',
@@ -1127,9 +1135,22 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           headers: headers,
           isCompleteUrl: true);
 
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
+      // if (response.statusCode != 401 &&
+      //     response.statusCode == 200 &&
+      //     response.data['statusCode'] != 500) {
+      //   var data = response.data['body']['files'];
+
+      //   if (data.length == 0) {
+      //     return data;
+      //   } else {
+      //     return data[0];
+      //   }
+      // } else if (response.statusCode == 401 ||
+      //     response.data['statusCode'] == 500) {
+      //   return response.statusCode == 401 ? response.statusCode : 500;
+      // }
+      // return "";
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         var data = response.data['body']['files'];
 
         if (data.length == 0) {
@@ -1137,13 +1158,25 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           return data[0];
         }
-      } else if (response.statusCode == 401 ||
-          response.data['statusCode'] == 500) {
+      } else if (retry > 0) {
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+
+        if (result == true) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+          return await _getGoogleDriveFolderId(
+              folderName: folderName,
+              token: _userProfileLocalData[0].authorizationToken,
+              refreshToken: _userProfileLocalData[0].refreshToken,
+              retry: retry - 1);
+        }
+
         return response.statusCode == 401 ? response.statusCode : 500;
       }
       return "";
     } catch (e) {
-      throw (e);
+      // throw (e);
+      return e.toString();
     }
   }
 

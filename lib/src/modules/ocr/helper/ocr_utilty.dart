@@ -1,9 +1,10 @@
-import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/ocr/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+
+import '../../google_classroom/google_classroom_globals.dart';
 
 class OcrUtility {
   static Future<bool> checkEmailFromGoogleClassroom(
@@ -103,7 +104,6 @@ class OcrUtility {
       List<StudentAssessmentInfo> studentInfo = await studentInfoDB.getData();
 
       if (isScanMore) {
-        //Removing already exist student to process at the time of scan more sheets
         studentInfo.removeWhere((element) =>
             element?.isScanMore == null || element?.isScanMore == false);
 
@@ -141,7 +141,14 @@ class OcrUtility {
         }
       }
 
-//Check if the scanned student exist in the Google Classroom Course list
+      // Retrieve the students not present in the "coogleClassroomCourses" or "Selected class"  object
+      // return studentInfo.where((student) {
+      //   return GoogleClassroomGlobals
+      //       ?.studentAssessmentAndClassroomObj.studentList!
+      //       .every((courseStudent) {
+      //     return courseStudent["profile"]["emailAddress"] != student.studentId;
+      //   });
+      // }).toList();
       return GoogleClassroomGlobals
                   ?.studentAssessmentAndClassroomObj?.studentList ==
               null

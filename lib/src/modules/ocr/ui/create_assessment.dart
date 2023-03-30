@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/graded_overrides.dart';
+import 'package:Soc/src/modules/ocr/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/helper/ocr_utilty.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
@@ -58,7 +58,6 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
   final _formKey = GlobalKey<FormState>();
   GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
-
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isImageFilePicked = ValueNotifier<bool>(
@@ -759,7 +758,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
             //               await _checkAllStudentBelongsToSameClassOrNot();
 
             //           if (notPresentStudentsList?.isNotEmpty ?? false) {
-            //             NonCourseGoogleClassroomStudentPopupModal(
+            //             NonCourseGoogleClassroomNonCourseGoogleClassroomStudentPopupModal(
             //                 notPresentStudentsList: notPresentStudentsList);
             //           } else {
             //             preparingexcelSheet();
@@ -1071,9 +1070,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
         }
       }
     }
-    print(_localData);
-    print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name);
-    print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
+    // print(_localData);
+    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name);
+    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
   }
 
   _checkFieldEditable({required String msg}) {
@@ -1089,9 +1088,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
     //Create excel sheet if not created already for current assessment
 
     if (Globals.googleExcelSheetId?.isEmpty ?? true) {
-      Utility.showLoadingDialog(context: context, isOCR: true);
+      Utility.showLoadingDialog(
+          context: context,
+          isOCR: true,
+          msg: 'Creating Google Classroom Assignment');
       // to update question image to aws s3 bucket and get the link
       if (imageFile?.path?.isNotEmpty ?? false) {
+        //  Globals.questionImgFilePath = imageFile;
+
         _googleDriveBloc.add(QuestionImgToAwsBucket(
           imageFile: imageFile,
         ));

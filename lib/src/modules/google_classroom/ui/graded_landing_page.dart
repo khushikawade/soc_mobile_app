@@ -620,18 +620,25 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     rosterImport.value == 'loading'
                                 ? Container(
                                     margin: EdgeInsets.only(left: 10),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02,
-                                    width: MediaQuery.of(context).size.width *
+                                    height: MediaQuery.of(context)
+                                            .size
+                                            .shortestSide *
+                                        0.04,
+                                    width: MediaQuery.of(context)
+                                            .size
+                                            .shortestSide *
                                         0.04,
                                     alignment: Alignment.center,
                                     child: CircularProgressIndicator(
-                                      color: Color(0xff000000) ==
-                                              Theme.of(context).backgroundColor
-                                          ? Colors.black
-                                          : Colors.white,
-                                      strokeWidth: 2,
-                                    ))
+                                        color: Color(0xff000000) ==
+                                                Theme.of(context)
+                                                    .backgroundColor
+                                            ? Colors.black
+                                            : Colors.white,
+                                        strokeWidth: MediaQuery.of(context)
+                                                .size
+                                                .shortestSide *
+                                            0.005))
                                 : Container()
                           ],
                         )));

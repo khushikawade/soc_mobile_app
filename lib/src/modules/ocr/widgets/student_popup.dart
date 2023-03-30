@@ -1,10 +1,9 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
+
 import '../../../services/local_database/local_db.dart';
 import '../../../translator/translation_widget.dart';
 
@@ -181,10 +180,15 @@ class NonCourseGoogleClassroomStudentPopupState
                               style: ButtonStyle(
                                 side: MaterialStateProperty.all(BorderSide(
                                     color: Colors.red,
-                                    width: 1.5,
+                                    width: Globals.deviceType == "phone"
+                                        ? 1.5
+                                        : 2.5,
                                     style: BorderStyle.solid)),
-                                padding: MaterialStateProperty.all<
-                                    EdgeInsetsGeometry>(EdgeInsets.all(5.0)),
+                                // padding: MaterialStateProperty.all<
+                                //         EdgeInsetsGeometry>(
+                                //     EdgeInsets.all(Globals.deviceType == "phone"
+                                //         ? 5.0
+                                //         : 10.0)),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -203,18 +207,22 @@ class NonCourseGoogleClassroomStudentPopupState
                                           .value),
                                 );
                               },
-                              child: TranslationWidget(
-                                message: "Remove",
-                                toLanguage: Globals.selectedLanguage,
-                                fromLanguage: "en",
-                                builder: (translatedMessage) => Text(
-                                  translatedMessage.toString(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(
-                                        color: Colors.red,
-                                      ),
+                              child: Container(
+                                padding: EdgeInsets.all(
+                                    Globals.deviceType == "phone" ? 4.0 : 10.0),
+                                child: TranslationWidget(
+                                  message: "Remove",
+                                  toLanguage: Globals.selectedLanguage,
+                                  fromLanguage: "en",
+                                  builder: (translatedMessage) => Text(
+                                    translatedMessage.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2!
+                                        .copyWith(
+                                          color: Colors.red,
+                                        ),
+                                  ),
                                 ),
                               ),
                             ),

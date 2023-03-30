@@ -77,6 +77,10 @@ class BottomIcon {
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
     // ),
     BottomIcon(
+      title: 'Class',
+      svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
+    ),
+    BottomIcon(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
     ),
@@ -88,10 +92,6 @@ class BottomIcon {
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
-    // BottomIcon(
-    //   title: 'Classroom',
-    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
-    // ),
   ];
 
   static List<BottomIcon> standAloneHistoryBottomIconModalList = [
@@ -100,6 +100,10 @@ class BottomIcon {
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
     // ),
     BottomIcon(
+      title: 'Class',
+      svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
+    ),
+    BottomIcon(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
     ),
@@ -111,9 +115,5 @@ class BottomIcon {
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
-    // BottomIcon(
-    //   title: 'Classroom',
-    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
-    // ),
   ];
 }

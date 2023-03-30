@@ -1,7 +1,10 @@
 import 'package:Soc/src/modules/google_classroom/modal/classroom_student_profile_modal.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_modal.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
+import 'package:Soc/src/modules/ocr/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
@@ -12,7 +15,6 @@ import '../../../services/db_service_response.model.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../google_drive/model/user_profile.dart';
 import '../../ocr/modal/user_info.dart';
-import '../../ocr/graded_overrides.dart';
 import 'dart:convert';
 import 'dart:io';
 import '../google_classroom_globals.dart';
@@ -227,7 +229,7 @@ class GoogleClassroomBloc
         }
 
         if (studentAssessmentDetails.isNotEmpty) {
-          var result = await _createClassRoomCourseWork(
+          List<dynamic> result = await _createClassRoomCourseWork(
               questionImageUrl: assessmentData.first.questionImgUrl,
               isEditStudentInfo: event.isEditStudentInfo,
               isFromHistoryAssessmentScanMore:
@@ -240,10 +242,38 @@ class GoogleClassroomBloc
               title: event.title,
               studentClassObj: event.studentClassObj);
 
-          if (result[0] && result[1]?.isNotEmpty == true) {
-            //   print("upting list and courseworid");
-            GoogleClassroomGlobals
-                .studentAssessmentAndClassroomObj.courseWorkId = result[1];
+          bool isClassRoomUpdated = result[0];
+
+          dynamic obj =
+              GoogleClassroomCourseworkModal(); // `dynamic` type is used here to allow either `GoogleClassroomCourseworkModal` or `String`
+
+          // Conditionally cast the `obj` based on the value of `isClassRoomUpdated`
+          if (isClassRoomUpdated) {
+            obj = result[1]
+                as GoogleClassroomCourseworkModal; // cast to `GoogleClassroomCourseworkModal` if `isClassRoomUpdated` is true
+          } else {
+            obj = result[1]
+                as String; // set to a string if `isClassRoomUpdated` is false
+          }
+
+          if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
+            if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                  .courseWorkId = obj.courseWorkId;
+
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                  .courseWorkURL = obj.courseWorkURL;
+            }
+
+// // Updating local database with already scanned students data true to avoid include them in next scan more case
+//             assessmentData.asMap().forEach((i, obj) {
+//               studentAssessmentDetails.forEach((e) async {
+//                 if (obj.googleClassRoomStudentProfileId == e.studentId) {
+//                   obj.isgoogleClassRoomStudentProfileUpdated = true;
+//                   await event.studentAssessmentInfoDb.putAt(i, obj);
+//                 }
+//               });
+//             });
 
 // Updating local database with already scanned students data true to avoid include them in next scan more case
             assessmentData.asMap().forEach(
@@ -257,13 +287,30 @@ class GoogleClassroomBloc
 
             yield CreateClassroomCourseWorkSuccess();
           } else {
-            yield GoogleClassroomErrorState(errorMsg: result[1].toString());
+            yield GoogleClassroomErrorState(errorMsg: obj[1].toString());
           }
         } else {
           yield CreateClassroomCourseWorkSuccess();
         }
       } catch (e) {
         yield GoogleClassroomErrorState(errorMsg: e.toString());
+      }
+    }
+    if (event is GetClassroomCourseWorkURL) {
+      try {
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        List<dynamic> result = await _getClassroomCourseWorkURL(
+            obj: event.obj,
+            accessToken: _userProfileLocalData[0].authorizationToken,
+            refreshToken: _userProfileLocalData[0].refreshToken);
+
+        yield GetClassroomCourseWorkURLSuccess(
+            isLinkAvailable: result[0], classroomCouseWorkURL: result[1]);
+      } catch (e) {
+        yield GetClassroomCourseWorkURLSuccess(
+            isLinkAvailable: false, classroomCouseWorkURL: e.toString());
       }
     }
   }
@@ -379,7 +426,7 @@ class GoogleClassroomBloc
     }
   }
 
-  Future<List> _createClassRoomCourseWork(
+  Future<List<dynamic>> _createClassRoomCourseWork(
       {required String authorizationToken,
       required String refreshToken,
       required String title,
@@ -417,8 +464,14 @@ class GoogleClassroomBloc
           ? studentClassObj.courseWorkId
           : null;
 
-//To create new assignment in the Google Classroom in case of already not exist
+//If courseWorkId is null, prepare request body to add a assignment in Google Classroom
       if (body['courseWorkId'] == null) {
+        int lastUnderscoreIndex = title.lastIndexOf(
+            "_"); // find the index of the last underscore character
+        title = lastUnderscoreIndex == -1
+            ? title
+            : title.substring(0, lastUnderscoreIndex);
+
         body.addAll({
           'title': title,
           if (questionImageUrl?.isNotEmpty ?? false)
@@ -437,6 +490,8 @@ class GoogleClassroomBloc
           headers: headers, body: body, isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        GoogleClassroomCourseworkModal data =
+            GoogleClassroomCourseworkModal.fromJson(response.data);
         if ((studentClassObj.courseWorkId?.isEmpty ?? true) &&
             (isFromHistoryAssessmentScanMore == true)) {
           // If courseWorkId is null or empty, and isHistorySanMore is either null or false
@@ -445,10 +500,10 @@ class GoogleClassroomBloc
           await _bloc.updateAssessmentOnDashboardOnHistoryScanMore(
               assessmentId: studentClassObj?.assessmentCId,
               classroomCourseId: studentClassObj?.courseId,
-              classroomCourseWorkId: response.data['courseWorkId']);
+              classroomCourseWorkId: data.courseWorkId);
         }
 
-        return [true, response.data['courseWorkId']];
+        return [true, data];
       }
       //retry =3 max
       else if (retry > 0) {
@@ -490,6 +545,51 @@ class GoogleClassroomBloc
           section: "assessment-sheet");
     } catch (e) {
       return '';
+    }
+  }
+
+  Future<List<dynamic>> _getClassroomCourseWorkURL({
+    required GoogleClassroomCourses? obj,
+    required String? accessToken,
+    required String? refreshToken,
+    int retry = 3,
+  }) async {
+    try {
+      String? courseId = obj?.courseId ?? '';
+      String? courseWorkId = obj?.courseWorkId ?? '';
+
+      if ((courseId?.isEmpty ?? true) || (courseWorkId?.isEmpty ?? true)) {
+        return [true, ''];
+      }
+      final ResponseModel response = await _dbServices.getApiNew(
+          // 'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://classroom.googleapis.com/v1/courses/$courseId/courseWork/$courseWorkId',
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': 'Bearer $accessToken'
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        final url = response?.data?['body']?['alternateLink'] as String?;
+        return [url?.isNotEmpty == true, url ?? ''];
+      } else if (retry > 0) {
+        var result = await _toRefreshAuthenticationToken(refreshToken!);
+
+        if (result == true) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+          return await _getClassroomCourseWorkURL(
+              obj: obj,
+              accessToken: _userProfileLocalData[0].authorizationToken,
+              refreshToken: _userProfileLocalData[0].refreshToken,
+              retry: retry - 1);
+        }
+      }
+      return [false, response.data['statusCode'].toString()];
+    } catch (e) {
+      print(e);
+      return [false, e.toString()];
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/ocr/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';

@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
+import 'package:Soc/src/modules/ocr/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/graded_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -595,7 +595,8 @@ class Utility {
   static void showLoadingDialog(
       {BuildContext? context,
       bool? isOCR,
-      Function(StateSetter)? state}) async {
+      Function(StateSetter)? state,
+      String? msg}) async {
     return showDialog<void>(
         useRootNavigator: false,
         context: context!,
@@ -628,7 +629,8 @@ class Utility {
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: FittedBox(
                                 child: Utility.textWidget(
-                                    text: GradedGlobals.loadingMessage ??
+                                    text: msg ??
+                                        GradedGlobals.loadingMessage ??
                                         'Please Wait...',
                                     context: context,
                                     textTheme: Theme.of(context)

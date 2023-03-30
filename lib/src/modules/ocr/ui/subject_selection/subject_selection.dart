@@ -1345,7 +1345,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                                   true)) {
                                             showDialogSetState!(() {
                                               GradedGlobals.loadingMessage =
-                                                  'Adding google class room';
+                                                  'Creating Google Classroom Assignment';
                                             });
                                             _googleClassroomBloc.add(
                                                 CreateClassRoomCourseWork(

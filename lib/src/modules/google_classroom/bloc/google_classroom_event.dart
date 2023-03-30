@@ -35,3 +35,11 @@ class CreateClassRoomCourseWork extends GoogleClassroomEvent {
   @override
   List<Object> get props => [];
 }
+
+// ignore: must_be_immutable
+class GetClassroomCourseWorkURL extends GoogleClassroomEvent {
+  GoogleClassroomCourses? obj;
+  GetClassroomCourseWorkURL({required this.obj});
+  @override
+  List<Object> get props => [];
+}
