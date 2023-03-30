@@ -2228,6 +2228,7 @@ class studentRecordList extends State<ResultsSummary> {
                                 Builder(builder: (context) {
                                   String? url = getURlForBottomIcons(
                                       title: element.title ?? '');
+                                  print(url);
                                   return Opacity(
                                     opacity: ((url?.isEmpty ?? true) ||
                                             (url == 'NA'))

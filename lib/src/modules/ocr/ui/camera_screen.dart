@@ -1078,7 +1078,7 @@ class _CameraScreenState extends State<CameraScreen>
                   notPresentStudentsInSelectedClass,
               title: 'Action Required!',
               message:
-                  "A few students not found in the selected course. Do you still want to continue with these students?",
+                  "A few students not found in the selected course \'${Globals.assessmentName!.split("_")[1]}\'. Do you still want to continue with these students?",
               studentInfoDb: widget.isFromHistoryAssessmentScanMore == true
                   ? _historystudentAssessmentInfoDb
                   : _studentAssessmentInfoDb,

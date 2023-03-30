@@ -162,7 +162,10 @@ class NonCourseGoogleClassroomStudentPopupState
                             context: context,
                             text: notPresentStudentsInSelectedClassValueNotifier
                                 .value[index].studentId!,
-                            textTheme: Theme.of(context).textTheme.subtitle1!),
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(fontSize: 10)),
                         contentPadding: EdgeInsets.symmetric(horizontal: 5),
                         title: Utility.textWidget(
                             context: context,
