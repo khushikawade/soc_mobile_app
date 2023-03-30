@@ -773,13 +773,9 @@ class _SuccessScreenState extends State<SuccessScreen>
                         // errormsg:
                         //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
                         onSaved: (String value) {
-                          initialCursorPositionAtLast = true;
+                          initialCursorPositionAtLast = false;
                           studentIdOnSaveFailure(value);
                         },
-                        onTap: () {
-                          // initialCursorPositionAtLast = false;
-                        },
-
                         validator: (String? value) {
                           isStudentIdFilled.value = value!;
                           return Overrides.STANDALONE_GRADED_APP == true
@@ -1077,11 +1073,8 @@ class _SuccessScreenState extends State<SuccessScreen>
                         // errormsg:
                         //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
                         onSaved: (String value) {
-                          // initialCursorPositionAtLast = false;
-                          studentIdOnSaveFailure(value);
-                        },
-                        onTap: () {
                           initialCursorPositionAtLast = false;
+                          studentIdOnSaveFailure(value);
                         },
                         validator: (String? value) {
                           isStudentIdFilled.value = value!;
@@ -1458,18 +1451,18 @@ class _SuccessScreenState extends State<SuccessScreen>
         });
   }
 
-  Widget textFormField(
-      {required TextEditingController controller,
-      required onSaved,
-      required validator,
-      TextInputType? keyboardType,
-      required bool? isFailure,
-      String? errormsg,
-      List<TextInputFormatter>? inputFormatters,
-      bool? maxNineDigit,
-      String? hintText,
-      required ScrollController scrollController,
-      onTap}) {
+  Widget textFormField({
+    required TextEditingController controller,
+    required onSaved,
+    required validator,
+    TextInputType? keyboardType,
+    required bool? isFailure,
+    String? errormsg,
+    List<TextInputFormatter>? inputFormatters,
+    bool? maxNineDigit,
+    String? hintText,
+    required ScrollController scrollController,
+  }) {
     return ValueListenableBuilder(
         valueListenable: isNameUpdated,
         child: Container(),
@@ -1563,7 +1556,6 @@ class _SuccessScreenState extends State<SuccessScreen>
                       ),
                     ),
                     onChanged: onSaved,
-                    onTap: onTap,
                     validator: validator);
               });
         });
