@@ -358,6 +358,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 top: _calculateWidgetOffset(widgetKey).dy + 45,
                 left: _calculateWidgetOffset(widgetKey).dx + leftDx),
           ));
+
   // BubbleSlide _firstSlide(context) => RelativeBubbleSlide(
   //     widgetKey: _bshowcase,
   //     shape: const Circle(

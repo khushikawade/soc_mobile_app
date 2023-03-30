@@ -409,6 +409,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
 
   renderStudents(List studentList) {
     return ListView.builder(
+      padding: EdgeInsets.all(0),
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       controller: _scrollController,
