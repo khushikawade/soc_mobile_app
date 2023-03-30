@@ -115,6 +115,7 @@ class _ActionInteractionButtonWidgetState
         ValueListenableBuilder(
           builder: (BuildContext context, dynamic value, Widget? child) {
             return Container(
+                padding: EdgeInsets.only(bottom: 10),
                 alignment: Alignment.center,
                 child: Text(
                   view.value.toString() + ' Views',
