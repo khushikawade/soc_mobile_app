@@ -366,10 +366,10 @@ class _CoursesListScreenState extends State<CoursesListScreen>
         // courseListlist[index].studentList!.length > 0
         //     ?
         Column(children: [
-      Container(
-        // color: Theme.of(context).colorScheme.secondary,
-        height: 6,
-      ),
+      // Container(
+      //   // color: Theme.of(context).colorScheme.secondary,
+      //   height: 6,
+      // ),
       Container(
         key: ValueKey(courseListlist[index]),
         color: Theme.of(context).colorScheme.secondary,

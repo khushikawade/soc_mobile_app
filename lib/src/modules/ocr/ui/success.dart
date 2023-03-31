@@ -717,6 +717,11 @@ class _SuccessScreenState extends State<SuccessScreen>
                 valueListenable: isStudentNameFilled,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
+                  if (isStudentNameFilled?.value?.isEmpty ?? true) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      suggestionNameListLenght.value = 0;
+                    });
+                  }
                   return isStudentNameFilled.value.length < 3
                       ? Container(
                           // padding: null,
@@ -866,7 +871,9 @@ class _SuccessScreenState extends State<SuccessScreen>
             ? suggestionNameListLenght
             : suggestionEmailListLenght,
         child: Container(),
-        builder: (BuildContext context, dynamic value, Widget? child) {
+        builder: (BuildContext context, int value, Widget? child) {
+          print("printing value --$value");
+
           return suggestionNameListLenght.value == 0 &&
                       suggestionEmailListLenght.value == 0 ||
                   (suggestionNameListLenght.value == 0 && isNameList == true) ||
@@ -1017,6 +1024,12 @@ class _SuccessScreenState extends State<SuccessScreen>
                 valueListenable: isStudentNameFilled,
                 child: Container(),
                 builder: (BuildContext context, dynamic value, Widget? child) {
+                  if (isStudentNameFilled?.value?.isEmpty ?? true) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      suggestionNameListLenght.value = 0;
+                    });
+                  }
+
                   return nameController.text.length < 3
                       ? Container(
                           alignment: Alignment.centerLeft,
