@@ -706,7 +706,10 @@ class _SuccessScreenState extends State<SuccessScreen>
                   studentNameOnSaveFailure(value);
                 },
                 validator: (String? value) {
-                  isStudentNameFilled.value = value!; //nameController.text;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    isStudentNameFilled.value = value!; //nameController.text;
+                  });
+                  // isStudentNameFilled.value = value!; //nameController.text;
 
                   return isStudentNameFilled.value.isEmpty ||
                           isStudentNameFilled.value.length < 3
@@ -872,7 +875,7 @@ class _SuccessScreenState extends State<SuccessScreen>
             : suggestionEmailListLenght,
         child: Container(),
         builder: (BuildContext context, int value, Widget? child) {
-          print("printing value --$value");
+          // print("printing value --$value");
 
           return suggestionNameListLenght.value == 0 &&
                       suggestionEmailListLenght.value == 0 ||
@@ -1018,7 +1021,10 @@ class _SuccessScreenState extends State<SuccessScreen>
                   studentNameOnSaveSuccess(value);
                 },
                 validator: (String? value) {
-                  isStudentNameFilled.value = value!;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    isStudentNameFilled.value = value!;
+                  });
+                  // isStudentNameFilled.value = value!;
                 }),
             ValueListenableBuilder(
                 valueListenable: isStudentNameFilled,
@@ -1090,7 +1096,10 @@ class _SuccessScreenState extends State<SuccessScreen>
                           studentIdOnSaveFailure(value);
                         },
                         validator: (String? value) {
-                          isStudentIdFilled.value = value!;
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            isStudentIdFilled.value = value!;
+                          });
+                          //isStudentIdFilled.value = value!;
                           return Overrides.STANDALONE_GRADED_APP == true
                               ? isStudentIdFilled.value.isEmpty ||
                                       !regex.hasMatch(isStudentIdFilled.value)

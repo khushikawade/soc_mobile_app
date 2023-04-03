@@ -1070,6 +1070,7 @@ class _CameraScreenState extends State<CameraScreen>
   notPresentStudentsPopupModal(
       {required List<StudentAssessmentInfo>
           notPresentStudentsInSelectedClass}) async {
+    String course = getCourse();
     showDialog(
         context: context,
         builder: (showDialogContext) => NonCourseGoogleClassroomStudentPopup(
@@ -1078,7 +1079,7 @@ class _CameraScreenState extends State<CameraScreen>
                   notPresentStudentsInSelectedClass,
               title: 'Action Required!',
               message:
-                  "A few students not found in the selected course \'${Globals.assessmentName!.split("_")[1]}\'. Do you still want to continue with these students?",
+                  "A few students not found in the selected course \'$course\'. Do you still want to continue with these students?",
               studentInfoDb: widget.isFromHistoryAssessmentScanMore == true
                   ? _historystudentAssessmentInfoDb
                   : _studentAssessmentInfoDb,
@@ -1171,6 +1172,16 @@ class _CameraScreenState extends State<CameraScreen>
         );
       }
     }
+  }
+
+  String getCourse() {
+    // Extract the course name from the assessment name, which is in the format "assessment_math"
+
+    String course = widget.isFromHistoryAssessmentScanMore
+        ? Globals?.historyAssessmentName ?? ''
+        : Globals?.assessmentName ?? '';
+// Split the assessment name by "_" and get the second element, which contains the course name
+    return course.contains("_") ? course.split("_")[1] : '';
   }
 
 //   Future removeStudentRecordFromStudentInfoDB() async {

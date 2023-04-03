@@ -590,7 +590,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             mainListWithSlideAndSheet.forEach((element) {
               //Separate SpreadSheet from the drive folder
               if (element.label['trashed'] != true &&
-                      (element.description == "Graded+" ||
+                      ((element.description == "Graded+" ||
+                              element.description ==
+                                  "Constructed Response sheet") ||
                           element.description ==
                               'Assessment \'${element.title}\' result has been generated.') ||
                   element.description == "Multiple Choice Sheet") {
@@ -680,7 +682,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //------Start
             mainListWithSlideAndSheet.forEach((element) {
               if (element.label['trashed'] != true &&
-                  (element.description == "Graded+" ||
+                  ((element.description == "Graded+" ||
+                          element.description ==
+                              "Constructed Response sheet") ||
                       element.description ==
                           'Assessment \'${element.title}\' result has been generated.')) {
                 spreadsheetList.add(element);
@@ -1191,7 +1195,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       Map body = {
         'name': name,
         // 'description': 'Assessment \'$name\' result has been generated.',
-        'description': isMcqSheet == true ? "Multiple Choice Sheet" : 'Graded+',
+        // 'description': isMcqSheet == true ? "Multiple Choice Sheet" : 'Graded+',
+        'description': isMcqSheet == true
+            ? "Multiple Choice Sheet"
+            : "Constructed Response sheet",
         'mimeType': 'application/vnd.google-apps.spreadsheet',
         'parents': ['$folderId']
       };
@@ -1515,8 +1522,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 '((mimeType = \'application/vnd.google-apps.spreadsheet\'or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Multiple Choice Sheet\')';
             break;
           case "Constructed Response":
+            // query =
+            //     '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Graded%2B\')';
             query =
-                '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Graded%2B\')';
+                '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\') and \'$folderId\' in parents and (fullText contains \'Constructed Response sheet\' or fullText contains \'Graded%2B\'))';
+
             break;
           default:
             query = "'$folderId'+in+parents";
@@ -1571,7 +1581,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
 
         if (filterType == 'Multiple Choice') {
-          _list.removeWhere((element) => element.description == 'Graded+');
+          _list.removeWhere((element) => (element.description == 'Graded+' ||
+              element.description == "Constructed Response sheet"));
         } else if (filterType == 'Constructed Response') {
           _list.removeWhere(
               (element) => element.description == 'Multiple Choice Sheet');
@@ -1923,11 +1934,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     Map body = {
       'name': name,
       'mimeType': 'application/vnd.google-apps.presentation',
-      'description': isMcqSheet == true
-          ? "$excelSheetId" + " " + "Multiple Choice Sheet"
-          : "$excelSheetId" + " " + "Graded+     ",
+      // 'description': isMcqSheet == true
+      //     ? "$excelSheetId" + " " + "Multiple Choice Sheet"
+      //     : "$excelSheetId" + " " + "Graded+     ",
       'parents': ['$folderId']
     };
+
+    String description = isMcqSheet == true
+        ? "Multiple Choice Sheet"
+        : "Constructed Response sheet";
+    body['description'] = (excelSheetId?.isNotEmpty ?? false)
+        ? "$excelSheetId $description "
+        : description;
+
     Map<String, String> headers = {
       'Authorization': 'Bearer $accessToken',
       'Content-Type': 'application/json; charset=UTF-8'
