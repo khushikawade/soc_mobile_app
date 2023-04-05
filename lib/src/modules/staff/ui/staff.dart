@@ -352,20 +352,20 @@ class _StaffPageState extends State<StaffPage> {
     );
   }
 
-  _getLocalDb() async {
-    LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
+  // _getLocalDb() async {
+  //   LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
 
-    List<CustomRubricModal> _localData = await _localDb.getData();
+  //   List<CustomRubricModal> _localData = await _localDb.getData();
 
-    if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
-        await _localDb.addData(e);
-      });
-      await _localDb.close();
-    } else {
-      RubricScoreList.scoringList = [];
-      RubricScoreList.scoringList.addAll(_localData);
-      // _localDb.close()
-    }
-  }
+  //   if (_localData.isEmpty) {
+  //     RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
+  //       await _localDb.addData(e);
+  //     });
+  //     await _localDb.close();
+  //   } else {
+  //     RubricScoreList.scoringList = [];
+  //     RubricScoreList.scoringList.addAll(_localData);
+  //     // _localDb.close()
+  //   }
+  // }
 }

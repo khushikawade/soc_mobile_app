@@ -38,8 +38,8 @@ class GradedIntroContentModal {
     GradedIntroContentModal(
         title: 'STEP 5',
         msgBody: Overrides.STANDALONE_GRADED_APP == true
-            ? 'The GRADED+ image recognition software auto captures the student email Id, name and your circled score. Results and image scans are automatically saved in your Google Drive in a Google Sheet.'
-            : 'The GRADED+ image recognition software auto captures the student Id, name and your circled score. Results and image scans are automatically saved in your Google Drive in a Google Sheet.',
+            ? 'The GRADED+ image recognition auto captures the student email ID, name, and your circled score. Results and image scans are automatically saved in your Google Classroom and Google Drive.'
+            : 'The GRADED+ image recognition auto captures the student Id, name and your circled score. Results and image scans are automatically saved in your Google Drive in a Google Sheet.',
         imgURL: Overrides.STANDALONE_GRADED_APP == true
             ? 'assets/images/onboarding_image5_individual.png'
             : 'assets/images/onboarding_image5.png')
