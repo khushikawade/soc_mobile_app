@@ -590,9 +590,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             mainListWithSlideAndSheet.forEach((element) {
               //Separate SpreadSheet from the drive folder
               if (element.label['trashed'] != true &&
-                      ((element.description == "Graded+" ||
-                              element.description ==
-                                  "Constructed Response sheet") ||
+                      ((element.description == "Graded+"
+                          // ||
+                          //         element.description ==
+                          //             "Constructed Response sheet"
+                          ) ||
                           element.description ==
                               'Assessment \'${element.title}\' result has been generated.') ||
                   element.description == "Multiple Choice Sheet") {
@@ -682,9 +684,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //------Start
             mainListWithSlideAndSheet.forEach((element) {
               if (element.label['trashed'] != true &&
-                  ((element.description == "Graded+" ||
-                          element.description ==
-                              "Constructed Response sheet") ||
+                  ((element.description == "Graded+"
+                      // ||
+                      //         element.description ==
+                      //             "Constructed Response sheet"
+                      ) ||
                       element.description ==
                           'Assessment \'${element.title}\' result has been generated.')) {
                 spreadsheetList.add(element);
@@ -1196,9 +1200,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'name': name,
         // 'description': 'Assessment \'$name\' result has been generated.',
         // 'description': isMcqSheet == true ? "Multiple Choice Sheet" : 'Graded+',
-        'description': isMcqSheet == true
-            ? "Multiple Choice Sheet"
-            : "Constructed Response sheet",
+        'description': isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
         'mimeType': 'application/vnd.google-apps.spreadsheet',
         'parents': ['$folderId']
       };
@@ -1522,10 +1524,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 '((mimeType = \'application/vnd.google-apps.spreadsheet\'or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Multiple Choice Sheet\')';
             break;
           case "Constructed Response":
-            // query =
-            //     '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Graded%2B\')';
             query =
-                '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\') and \'$folderId\' in parents and (fullText contains \'Constructed Response sheet\' or fullText contains \'Graded%2B\'))';
+                '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Graded%2B\')';
+            // query =
+            // '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\') and \'$folderId\' in parents and (fullText contains \'Constructed Response sheet\' or fullText contains \'Graded%2B\'))';
 
             break;
           default:
@@ -1581,8 +1583,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
 
         if (filterType == 'Multiple Choice') {
-          _list.removeWhere((element) => (element.description == 'Graded+' ||
-              element.description == "Constructed Response sheet"));
+          _list.removeWhere((element) => (element.description == 'Graded+'
+              // ||
+              // element.description == "Constructed Response sheet"
+              ));
         } else if (filterType == 'Constructed Response') {
           _list.removeWhere(
               (element) => element.description == 'Multiple Choice Sheet');
@@ -1940,9 +1944,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'parents': ['$folderId']
     };
 
-    String description = isMcqSheet == true
-        ? "Multiple Choice Sheet"
-        : "Constructed Response sheet";
+    String description =
+        isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+";
     body['description'] = (excelSheetId?.isNotEmpty ?? false)
         ? "$excelSheetId $description "
         : description;
