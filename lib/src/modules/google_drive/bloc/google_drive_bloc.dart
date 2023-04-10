@@ -684,13 +684,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             //------Start
             mainListWithSlideAndSheet.forEach((element) {
               if (element.label['trashed'] != true &&
-                  ((element.description == "Graded+"
-                      // ||
-                      //         element.description ==
-                      //             "Constructed Response sheet"
-                      ) ||
-                      element.description ==
-                          'Assessment \'${element.title}\' result has been generated.')) {
+                      ((element.description == "Graded+"
+                          // ||
+                          //         element.description ==
+                          //             "Constructed Response sheet"
+                          ) ||
+                          element.description ==
+                              'Assessment \'${element.title}\' result has been generated.') ||
+                  element.description == "Multiple Choice Sheet") {
                 spreadsheetList.add(element);
               } else if (element.label['trashed'] != true &&
                   element.description != null &&
@@ -1521,14 +1522,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         switch (filterType) {
           case 'Multiple Choice':
             query =
-                '((mimeType = \'application/vnd.google-apps.spreadsheet\'or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Multiple Choice Sheet\')';
+                '(mimeType=\'application/vnd.google-apps.spreadsheet\' or mimeType=\'application/vnd.google-apps.presentation\') and \'$folderId\' in parents and not fullText contains \'Graded%2B\'';
+
+            // query =
+            //     '((mimeType = \'application/vnd.google-apps.spreadsheet\'or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Multiple Choice Sheet\')';
             break;
           case "Constructed Response":
             query =
-                '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\'+in+parents and fullText contains \'Graded%2B\')';
+                '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\' ) and \'$folderId\' in parents and fullText contains \'Graded%2B\')';
             // query =
             // '((mimeType = \'application/vnd.google-apps.spreadsheet\' or mimeType = \'application/vnd.google-apps.presentation\') and \'$folderId\' in parents and (fullText contains \'Constructed Response sheet\' or fullText contains \'Graded%2B\'))';
 
+            // query =
+            //     '(mimeType=\'application/vnd.google-apps.spreadsheet\' or mimeType=\'application/vnd.google-apps.presentation\') and \'$folderId\' in parents and not fullText contains \'Graded+\'';
             break;
           default:
             query = "'$folderId'+in+parents";
@@ -1540,9 +1546,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               ? "$nextPageUrl"
               : searchKey == "" && filterType == 'All'
                   ? "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q='$folderId'+in+parents" //List Call
-                  : "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
-                      Uri.encodeFull(query), //Search call
-
+                  : filterType == 'Multiple Choice' && searchKey == "" ||
+                          searchKey == null
+                      ? 'https://www.googleapis.com/drive/v2/files?maxResults=100&orderBy=modifiedDate%20desc&q=(mimeType%3D%27application%2Fvnd.google-apps.spreadsheet%27%20or%20mimeType%3D%27application%2Fvnd.google-apps.presentation%27)%20and%20%271wmJajuIgOriR8l1DEttYooYeqQDK9REr%27%20in%20parents%20and%20not%20fullText%20contains%20%27Graded%2B%27&supportsAllDrives=true&supportsTeamDrives=true'
+                      // : "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?maxResults=100&orderBy=modifiedDate%20desc&q=" +
+                      //     //     // https://www.googleapis.com/drive/v2/files?q=" +
+                      //     Uri.encodeFull(query), //Search call
+                      : "${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://www.googleapis.com/drive/v2/files?q=" +
+                          Uri.encodeFull(query),
           headers: headers,
           isCompleteUrl: true);
       // print(response.statusCode);
@@ -1551,14 +1562,16 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.data['statusCode'] != 500) {
         String updatedNextUrlLink = '';
         try {
-          updatedNextUrlLink = isPagination == true
-              ? response.data["nextLink"]
-              : response.data['body']["nextLink"];
+          updatedNextUrlLink =
+              isPagination == true || (filterType == 'Multiple Choice')
+                  ? response.data["nextLink"]
+                  : response.data['body']["nextLink"];
         } catch (e) {
           updatedNextUrlLink = '';
         }
 
-        List<HistoryAssessment> _list = isPagination == true
+        List<HistoryAssessment> _list = isPagination == true ||
+                (filterType == 'Multiple Choice')
             ? response.data['items']
                 .map<HistoryAssessment>((i) => HistoryAssessment.fromJson(i))
                 .toList()
