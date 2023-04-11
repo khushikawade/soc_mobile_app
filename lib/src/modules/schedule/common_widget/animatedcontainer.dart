@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schedule/ui/day_view.dart';

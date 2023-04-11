@@ -1,8 +1,7 @@
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/services/strings.dart';
-
 import '../../../services/local_database/local_db.dart';
-import '../../ocr/modal/user_info.dart';
+import '../../graded_plus/modal/user_info.dart';
 
 class GoogleClassroom {
   static Future<List<GoogleClassroomCourses>> getGoogleClassroom() async {

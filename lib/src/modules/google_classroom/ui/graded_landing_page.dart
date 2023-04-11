@@ -6,15 +6,15 @@ import 'package:Soc/src/modules/google_classroom/ui/courses_list.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
-import 'package:Soc/src/modules/ocr/ui/profile_page.dart';
-import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
-import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
-import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
-import 'package:Soc/src/modules/ocr/widgets/google_login.dart';
-import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
+import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
+import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/google_login.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -113,7 +113,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        CommonBackGroundImgWidget(),
+        CommonBackgroundImgWidget(),
         Scaffold(
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,

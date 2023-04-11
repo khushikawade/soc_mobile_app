@@ -1,9 +1,9 @@
 // import 'package:Soc/src/globals.dart';
 // import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 // import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
-// import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-// import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-// import 'package:Soc/src/modules/ocr/ui/ocr_home.dart';
+// import 'package:Soc/src/modules/graded_plus/bloc/ocr_bloc.dart';
+// import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+// import 'package:Soc/src/modules/graded_plus/ui/ocr_home.dart';
 // import 'package:Soc/src/services/local_database/local_db.dart';
 // import 'package:Soc/src/services/utility.dart';
 // import 'package:Soc/src/widgets/google_auth_webview.dart';

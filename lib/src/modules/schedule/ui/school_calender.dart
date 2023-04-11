@@ -1,8 +1,8 @@
 // import 'package:Soc/src/globals.dart';
 // import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 // import 'package:Soc/src/modules/home/ui/home.dart';
-// import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-// import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
+// import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+// import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
 // import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 // import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 // import 'package:Soc/src/modules/schedule/modal/event.dart';

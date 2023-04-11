@@ -1,7 +1,7 @@
 // import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 // import 'package:Soc/src/modules/google_classroom/modal/classroom_student_list.dart';
-// import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
-// import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
+// import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
+// import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
 // import 'package:Soc/src/services/utility.dart';
 // import 'package:Soc/src/styles/theme.dart';
 // import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -33,7 +33,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Stack(children: [
-//       CommonBackGroundImgWidget(),
+//       CommonBackgroundImgWidget(),
 //       Scaffold(
 //         backgroundColor: Colors.transparent,
 //         key: _scaffoldKey,

@@ -11,14 +11,16 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
-import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/modal/RubricPdfModal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
@@ -96,7 +98,13 @@ void main() async {
       ..registerAdapter(StudentDetailsModalAdapter())
       ..registerAdapter(RecentGoogleFileSearchAdapter())
       ..registerAdapter(CalendarBannerImageModalAdapter())
-      ..registerAdapter(RubricPdfModalAdapter());
+      ..registerAdapter(RubricPdfModalAdapter())
+      ..registerAdapter(ClassroomCourseAdapter())
+      ..registerAdapter(ClassroomStudentsAdapter())
+      ..registerAdapter(ClassroomProfileNameAdapter())
+      ..registerAdapter(ClassroomProfileAdapter())
+      ..registerAdapter(ClassroomPermissionsAdapter())
+      ..registerAdapter(PBISPlusHistoryModalAdapter());
   }
   clearTheme();
   await disableDarkMode();

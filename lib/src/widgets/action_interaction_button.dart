@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
-import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/social/bloc/social_bloc.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/overrides.dart';
@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
+
 import 'package:share/share.dart';
 import '../translator/language_list.dart';
 

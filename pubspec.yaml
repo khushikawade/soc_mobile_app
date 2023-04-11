@@ -144,7 +144,7 @@ flutter:
   assets:
     - assets/images/
     - assets/ocr_result_section_bottom_button_icons/
-
+    - lib/src/modules/pbis_plus/bloc/
   # An image asset can refer to one or more resolution-specific "finaliants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
@@ -167,6 +167,9 @@ flutter:
       fonts:
         - asset: fonts/CustomFlutterIcons.ttf
 
+    - family: PBISPlusIcons
+      fonts:
+        - asset: fonts/PBISPlusIcons.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

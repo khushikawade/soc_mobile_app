@@ -2,8 +2,8 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -22,8 +22,8 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
-import '../../ocr/modal/user_info.dart';
-import '../../ocr/widgets/google_login.dart';
+import '../../graded_plus/modal/user_info.dart';
+import '../../graded_plus/widgets/google_login.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -264,77 +264,120 @@ class _StaffPageState extends State<StaffPage> {
               //     : Globals.deviceType == 'phone'
               //         ? 150
               //         : 210,
-              child: FloatingActionButton.extended(
-                  isExtended: isScrolling.value,
-                  backgroundColor: AppTheme.kButtonColor,
-                  onPressed: () async {
-                    await Utility.clearStudentInfo(tableName: 'student_info');
-                    await Utility.clearStudentInfo(
-                        tableName: 'history_student_info');
-
-                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        "assignment");
-
-                    FirebaseAnalyticsService.logLogin();
-
-                    Globals.lastIndex = Globals.controller!.index;
-
-                    List<UserInformation> _profileData =
-                        await UserGoogleProfile.getUserProfile();
-
-                    if (_profileData.isEmpty) {
-                      // await _launchURL('Google Authentication');
-                      await GoogleLogin.launchURL('Google Authentication',
-                          context, _scaffoldKey, true, '');
-                    } else {
-                      GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
-
-                      Globals.teacherEmailId =
-                          _profileData[0].userEmail!.split('@')[0];
-                      Globals.sessionId =
-                          "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-                      DateTime currentDateTime = DateTime.now();
-                      _ocrBlocLogs.add(LogUserActivityEvent(
-                          sessionId: Globals.sessionId,
-                          teacherId: Globals.teacherId,
-                          activityId: '2',
-                          accountId: Globals.appSetting.schoolNameC,
-                          accountType: Globals.isPremiumUser == true
-                              ? "Premium"
-                              : "Free",
-                          dateTime: currentDateTime.toString(),
-                          description: 'Graded+ Accessed(Login)',
-                          operationResult: 'Success'));
-                      //    await _getLocalDb();
-                      pushNewScreen(
-                        context,
-                        screen: StartupPage(
-                          isOcrSection: true, //since always opens OCR
-                          isMultipleChoice: false,
+              child: Column(
+                children: [
+                  FloatingActionButton.extended(
+                      heroTag: "tag1",
+                      isExtended: isScrolling.value,
+                      backgroundColor: AppTheme.kButtonColor,
+                      onPressed: () async {
+                        pushNewScreen(
+                          context,
+                          screen: PBISPlusHome(),
+                          withNavBar: false,
+                        );
+                      },
+                      icon: Container(
+                        padding:
+                            EdgeInsets.only(left: !isScrolling.value ? 4 : 0),
+                        //alignment: Alignment.center,
+                        child: Center(
+                          child: Icon(Icons.add,
+                              size: Globals.deviceType == 'tablet' ? 30 : null,
+                              color: Theme.of(context).backgroundColor),
                         ),
-                        withNavBar: false,
-                      );
-                    }
-                  },
-                  icon: Container(
-                    padding: EdgeInsets.only(left: !isScrolling.value ? 4 : 0),
-                    //alignment: Alignment.center,
-                    child: Center(
-                      child: Icon(Icons.add,
-                          size: Globals.deviceType == 'tablet' ? 30 : null,
-                          color: Theme.of(context).backgroundColor),
-                    ),
+                      ),
+                      label: !isScrolling.value
+                          ? Container()
+                          : Utility.textWidget(
+                              text: 'PBISPlus +',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).backgroundColor))),
+                  Container(
+                    height: 5,
                   ),
-                  label: !isScrolling.value
-                      ? Container()
-                      : Utility.textWidget(
-                          text: 'Assignment',
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(
-                                  color: Theme.of(context).backgroundColor))),
+                  FloatingActionButton.extended(
+                      heroTag: "tag2",
+                      isExtended: isScrolling.value,
+                      backgroundColor: AppTheme.kButtonColor,
+                      onPressed: () async {
+                        await Utility.clearStudentInfo(
+                            tableName: 'student_info');
+                        await Utility.clearStudentInfo(
+                            tableName: 'history_student_info');
+
+                        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                            "assignment");
+
+                        FirebaseAnalyticsService.logLogin();
+
+                        Globals.lastIndex = Globals.controller!.index;
+
+                        List<UserInformation> _profileData =
+                            await UserGoogleProfile.getUserProfile();
+
+                        if (_profileData.isEmpty) {
+                          // await _launchURL('Google Authentication');
+                          await GoogleLogin.launchURL('Google Authentication',
+                              context, _scaffoldKey, true, '');
+                        } else {
+                          GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+
+                          Globals.teacherEmailId =
+                              _profileData[0].userEmail!.split('@')[0];
+                          Globals.sessionId =
+                              "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+                          DateTime currentDateTime = DateTime.now();
+                          _ocrBlocLogs.add(LogUserActivityEvent(
+                              sessionId: Globals.sessionId,
+                              teacherId: Globals.teacherId,
+                              activityId: '2',
+                              accountId: Globals.appSetting.schoolNameC,
+                              accountType: Globals.isPremiumUser == true
+                                  ? "Premium"
+                                  : "Free",
+                              dateTime: currentDateTime.toString(),
+                              description: 'Graded+ Accessed(Login)',
+                              operationResult: 'Success'));
+                          //    await _getLocalDb();
+                          pushNewScreen(
+                            context,
+                            screen: StartupPage(
+                              isOcrSection: true, //since always opens OCR
+                              isMultipleChoice: false,
+                            ),
+                            withNavBar: false,
+                          );
+                        }
+                      },
+                      icon: Container(
+                        padding:
+                            EdgeInsets.only(left: !isScrolling.value ? 4 : 0),
+                        //alignment: Alignment.center,
+                        child: Center(
+                          child: Icon(Icons.add,
+                              size: Globals.deviceType == 'tablet' ? 30 : null,
+                              color: Theme.of(context).backgroundColor),
+                        ),
+                      ),
+                      label: !isScrolling.value
+                          ? Container()
+                          : Utility.textWidget(
+                              text: 'Assignment',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).backgroundColor))),
+                ],
+              ),
             ),
           );
         });

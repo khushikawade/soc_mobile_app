@@ -2,13 +2,13 @@ import 'dart:async';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
-import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
-import 'package:Soc/src/modules/ocr/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/ocr/widgets/google_login.dart';
-import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
-import 'package:Soc/src/modules/ocr/widgets/spinning_icon.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/google_login.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -66,7 +66,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      CommonBackGroundImgWidget(),
+      CommonBackgroundImgWidget(),
       Scaffold(
         backgroundColor: Colors.transparent,
         key: _scaffoldKey,

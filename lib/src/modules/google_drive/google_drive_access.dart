@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
