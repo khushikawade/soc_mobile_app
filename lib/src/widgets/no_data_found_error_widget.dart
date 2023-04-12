@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class NoDataFoundErrorWidget extends StatelessWidget {
+  String? customText;
   String? errorMessage;
   bool? isCalendarPageOrientationLandscape;
   bool? isOcrSearch;
@@ -20,6 +21,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
   bool? isScheduleFound;
   NoDataFoundErrorWidget(
       {Key? key,
+      this.customText,
       required this.isResultNotFoundMsg,
       required this.isNews,
       this.errorMessage,

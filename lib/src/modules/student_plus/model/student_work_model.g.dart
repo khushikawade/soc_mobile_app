@@ -28,13 +28,17 @@ class StudentPlusWorkModelAdapter extends TypeAdapter<StudentPlusWorkModel> {
       resultC: fields[8] as String?,
       assessmentImageC: fields[9] as String?,
       assessmentQueImageC: fields[10] as String?,
+      firstName: fields[11] as String?,
+      lastName: fields[12] as String?,
+      subjectC: fields[13] as String?,
+      assessmentType: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusWorkModel obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.assessmentId)
       ..writeByte(1)
@@ -56,7 +60,15 @@ class StudentPlusWorkModelAdapter extends TypeAdapter<StudentPlusWorkModel> {
       ..writeByte(9)
       ..write(obj.assessmentImageC)
       ..writeByte(10)
-      ..write(obj.assessmentQueImageC);
+      ..write(obj.assessmentQueImageC)
+      ..writeByte(11)
+      ..write(obj.firstName)
+      ..writeByte(12)
+      ..write(obj.lastName)
+      ..writeByte(13)
+      ..write(obj.subjectC)
+      ..writeByte(14)
+      ..write(obj.assessmentType);
   }
 
   @override

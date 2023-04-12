@@ -140,7 +140,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             Container(
               height: Globals.deviceType == "phone" &&
                       MediaQuery.of(context).orientation == Orientation.portrait
-                  ? (MediaQuery.of(context).size.height * 0.55) //62
+                  ? (MediaQuery.of(context).size.height * 0.61)
                   : Globals.deviceType == "phone" &&
                           MediaQuery.of(context).orientation ==
                               Orientation.landscape
@@ -181,13 +181,13 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           height: _kLabelSpacing / 2,
         ),
         /* -------------------------- NYS graph widget card ------------------------- */
-        nysGraphWidget(),
+        nysGraphWidget(isMathSection: isMathSection),
         SpacerWidget(_kLabelSpacing * 2),
         Container(
           height: 2,
           color: StudentPlusUtility.oppositeBackgroundColor(context: context),
         ),
-        SpacerWidget(_kLabelSpacing * 1.5),
+        SpacerWidget(_kLabelSpacing),
         Center(
             child: Utility.textWidget(
                 text: 'iReady Grade-Level',
@@ -196,7 +196,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
         SpacerWidget(_kLabelSpacing),
         iReadySchoolYearTitleWidget(),
         SpacerWidget(10),
-        iReadyGradeLevelWidget(),
+        iReadyGradeLevelWidget(isMathsSection: isMathSection),
         SpacerWidget(_kLabelSpacing),
         Row(
           children: [
@@ -220,13 +220,13 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             ),
           ],
         ),
-        iReadyGraphWidget(),
+        iReadyGraphWidget(isMathsSection: isMathSection),
         SpacerWidget(_kLabelSpacing * 3)
       ],
     );
   }
 
-  Widget nysGraphWidget() {
+  Widget nysGraphWidget({required bool isMathSection}) {
     return Card(
       color: Color(0xff000000) != Theme.of(context).backgroundColor
           ? Color(0xffF7F8F9)
@@ -240,12 +240,15 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
       child: Container(
         padding: EdgeInsets.only(left: 20, right: 40, bottom: 20, top: 0),
         height: MediaQuery.of(context).size.height * 0.55,
-        child: CommonLineGraphWidget(isIReadyGraph: false),
+        child: CommonLineGraphWidget(
+            isIReadyGraph: false,
+            isMathsSection: isMathSection,
+            studentDetails: widget.studentDetails),
       ),
     );
   }
 
-  Widget iReadyGraphWidget() {
+  Widget iReadyGraphWidget({required bool isMathsSection}) {
     return Card(
       color: Color(0xff000000) != Theme.of(context).backgroundColor
           ? Color(0xffF7F8F9)
@@ -264,6 +267,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
         width: MediaQuery.of(context).size.width * 0.9,
         child: CommonLineGraphWidget(
           isIReadyGraph: true,
+          studentDetails: widget.studentDetails,
+          isMathsSection: isMathsSection,
         ),
       ),
     );
@@ -292,7 +297,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
     );
   }
 
-  Widget iReadyGradeLevelWidget() {
+  Widget iReadyGradeLevelWidget({required bool isMathsSection}) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       color: Theme.of(context).colorScheme.secondary,
@@ -302,7 +307,11 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           Container(
             child: Container(
                 alignment: Alignment.centerLeft,
-                child: circularAvatarWidget(centreText: 'NA', subTitle: 'EOY')),
+                child: circularSchoolYearWidget(
+                    centreText: isMathsSection
+                        ? (widget.studentDetails.mathPreviousSyEOY ?? 'NA')
+                        : (widget.studentDetails.ELAPreviousSyEOY ?? 'NA'),
+                    subTitle: 'EOY')),
           ),
           Container(
             child: Container(
@@ -310,15 +319,27 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  circularAvatarWidget(centreText: '542', subTitle: 'BOY'),
+                  circularSchoolYearWidget(
+                      centreText: isMathsSection
+                          ? (widget.studentDetails.mathCurrentSyBOY ?? 'NA')
+                          : (widget.studentDetails.ELACurrentSyBOY ?? 'NA'),
+                      subTitle: 'BOY'),
                   SizedBox(
                     width: 7,
                   ),
-                  circularAvatarWidget(centreText: '653', subTitle: 'MOY'),
+                  circularSchoolYearWidget(
+                      centreText: isMathsSection
+                          ? (widget.studentDetails.mathCurrentSyMOY ?? 'NA')
+                          : (widget.studentDetails.ELACurrentSyMOY ?? 'NA'),
+                      subTitle: 'MOY'),
                   SizedBox(
                     width: 7,
                   ),
-                  circularAvatarWidget(centreText: 'NA', subTitle: 'EOY')
+                  circularSchoolYearWidget(
+                      centreText: isMathsSection
+                          ? (widget.studentDetails.mathCurrentSyEOY ?? 'NA')
+                          : (widget.studentDetails.ELACurrentSyEOY ?? 'NA'),
+                      subTitle: 'EOY')
                 ],
               ),
             ),
@@ -337,7 +358,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             textTheme: Theme.of(context).textTheme.headline5));
   }
 
-  Widget circularAvatarWidget(
+  Widget circularSchoolYearWidget(
       {required String centreText, required String subTitle}) {
     return Column(
       children: [

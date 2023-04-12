@@ -74,29 +74,29 @@ class StudentPlusUtility {
       StudentPlusInfoModel(
           label: 'Class', value: '${studentDetails.classC ?? 'NA'}'),
       StudentPlusInfoModel(
-          label: 'Teacher', value: '${studentDetails.teacherC ?? 'NA'}'),
+          label: 'Teacher', value: '${studentDetails.teacherProperC ?? 'NA'}'),
       StudentPlusInfoModel(
-          label: 'Attend%', value: '${studentDetails.academicYearC ?? 'NA'}'),
+          label: 'Attend%', value: 'NA'),
       StudentPlusInfoModel(
-          label: 'Gender', value: '${studentDetails.genderC ?? 'NA'}'),
+          label: 'Gender', value: '${studentDetails.genderFullC ?? 'NA'}'),
       StudentPlusInfoModel(
           label: 'Ethnicity',
           value: '${studentDetails.ethnicityNameC ?? 'NA'}'),
       StudentPlusInfoModel(
           label: 'Age',
           value:
-              '${calculateAgeFromDOBString(studentDetails.dateOfBirthFormulaC ?? '')}'),
+              'NA'),
       StudentPlusInfoModel(
           label: 'DOB',
           value:
-              '${studentDetails.dateOfBirthFormulaC == '//' ? 'NA' : studentDetails.dateOfBirthFormulaC ?? 'NA'}'),
+              '${studentDetails.dobC ?? 'NA'}'),
       StudentPlusInfoModel(
           label: 'ELL Status', value: '${studentDetails.ellC ?? 'NA'}'),
       StudentPlusInfoModel(
           label: 'ELL Level',
           value: '${studentDetails.ellProficiencyC ?? 'NA'}'),
       StudentPlusInfoModel(
-          label: 'IEP Status', value: '${studentDetails.iepC ?? 'NA'}'),
+          label: 'IEP Status', value: '${studentDetails.iepProgramC ?? 'NA'}'),
     ];
     return studentInfoList;
   }

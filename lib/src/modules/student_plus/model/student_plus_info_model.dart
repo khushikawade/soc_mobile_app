@@ -17,262 +17,244 @@ String studentInfoModelDetailsToJson(StudentPlusDetailsModel data) =>
 //
 //     final studentInfoModelDetails = studentInfoModelDetailsFromJson(jsonString);
 
+// To parse this JSON data, do
+//
+//     final StudentPlusDetailsModel = StudentPlusDetailsModelFromJson(jsonString);
+
+// To parse this JSON data, do
+//
+//     final StudentPlusDetailsModel = StudentPlusDetailsModelFromJson(jsonString);
+
 class StudentPlusDetailsModel {
   StudentPlusDetailsModel({
-    this.dateOfBirthC,
-    this.dbnC,
     this.firstNameC,
     this.gradeC,
     this.lastNameC,
-    this.messageC,
     this.parentPhoneC,
     this.schoolC,
-    this.schoolYearC,
     this.studentIdC,
     this.id,
-    this.isDeleted,
-    this.createdByGradedC,
-    this.teacherAddedC,
     this.emailC,
-    this.dateOfBirthFormulaC,
-    this.grC,
     this.ellC,
     this.ellProficiencyC,
-    this.ethnicityCodeC,
-    this.genderC,
-    this.iepC,
-    this.nysElaScore2022C,
     this.classC,
-    this.admittanceDateC,
-    this.hispanicCodeC,
-    this.sexC,
-    this.accountIdC,
-    this.locC,
-    this.teacherC,
-    this.academicYearC,
-    this.dobResiC,
-    this.grade1920C,
-    this.grade2021C,
-    this.grade2122C,
-    this.iReadyMathMoyOverallPlacementC,
-    this.firstNameInitcapC,
-    this.lastNameInitcapC,
-    this.ethnicityNameC,
-    this.hispanicC,
-    this.sexNameC,
-    this.housingStatusNameC,
-    this.temporaryResidencyFlagC,
-    this.iepTextC,
-    this.teacherProperC,
-    this.iepStatusC,
-    this.lepFlagTextC,
-    this.ellAdmissionDateC,
+    this.iepProgramC,
+    this.genderFullC,
     this.dobC,
+    this.nysElaScore2022C,
+    this.nysMathScore2022C,
+    this.nysElaScore2021C,
+    this.nysMathScore2021C,
+    this.nysElaScore2019C,
+    this.nysMathScore2019C,
+    this.nysMath2023PredictionC,
+    this.nysEla2023PredictionC,
+    this.ELACurrentSyBOY,
+    this.ELACurrentSyBOYPercentile,
+    this.ELACurrentSyEOY,
+    this.ELACurrentSyEOYPercentile,
+    this.ELACurrentSyMOY,
+    this.ELACurrentSyMOYPercentile,
+    this.ELAPreviousSyEOY,
+    this.ELAPreviousSyEOYPercentile,
+    this.ethnicityNameC,
+    this.iepYesNoC,
+    this.mathCurrentSyBOY,
+    this.mathCurrentSyBOYPercentile,
+    this.mathCurrentSyEOY,
+    this.mathCurrentSyEOYPercentile,
+    this.mathCurrentSyMOY,
+    this.mathCurrentSyMOYPercentile,
+    this.mathPreviousSyEOY,
+    this.mathPreviousSyEOYPercentile,
+    this.teacherProperC,
   });
+
+  /* --------------------- Field use to show student info --------------------- */
   @HiveField(0)
-  final dynamic dateOfBirthC;
-  @HiveField(1)
-  final String? dbnC;
-  @HiveField(2)
   final String? firstNameC;
-  @HiveField(3)
+  @HiveField(1)
   final String? gradeC;
-  @HiveField(4)
+  @HiveField(2)
   final String? lastNameC;
-  @HiveField(5)
-  final dynamic messageC;
-  @HiveField(6)
+  @HiveField(3)
   final String? parentPhoneC;
-  @HiveField(7)
+  @HiveField(4)
   final String? schoolC;
-  @HiveField(8)
-  final dynamic schoolYearC;
-  @HiveField(9)
+  @HiveField(5)
   final String? studentIdC;
-  @HiveField(10)
+  @HiveField(6)
   final String? id;
-  @HiveField(11)
-  final String? isDeleted;
-  @HiveField(12)
-  final String? createdByGradedC;
-  @HiveField(13)
-  final String? teacherAddedC;
-  @HiveField(14)
-  final dynamic emailC;
-  @HiveField(15)
-  final String? dateOfBirthFormulaC;
-  @HiveField(16)
-  final String? grC;
-  @HiveField(17)
+  @HiveField(7)
+  final String? emailC;
+  @HiveField(8)
   final String? ellC;
-  @HiveField(18)
+  @HiveField(9)
   final String? ellProficiencyC;
-  @HiveField(19)
-  final String? ethnicityCodeC;
-  @HiveField(20)
-  final String? genderC;
-  @HiveField(21)
-  final String? iepC;
-  @HiveField(22)
-  final String? nysElaScore2022C;
-  @HiveField(23)
+  @HiveField(10)
   final String? classC;
-  @HiveField(24)
-  final dynamic admittanceDateC;
-  @HiveField(25)
-  final String? hispanicCodeC;
-  @HiveField(26)
-  final String? sexC;
-  @HiveField(27)
-  final String? accountIdC;
-  @HiveField(28)
-  final String? locC;
-  @HiveField(29)
-  final String? teacherC;
-  @HiveField(30)
-  final String? academicYearC;
-  @HiveField(31)
-  final String? dobResiC;
-  @HiveField(32)
-  final String? grade1920C;
-  @HiveField(33)
-  final String? grade2021C;
-  @HiveField(34)
-  final String? grade2122C;
-  @HiveField(35)
-  final String? iReadyMathMoyOverallPlacementC;
-  @HiveField(36)
-  final String? firstNameInitcapC;
-  @HiveField(37)
-  final String? lastNameInitcapC;
-  @HiveField(38)
-  final String? ethnicityNameC;
-  @HiveField(39)
-  final String? hispanicC;
-  @HiveField(40)
-  final String? sexNameC;
-  @HiveField(41)
-  final dynamic housingStatusNameC;
-  @HiveField(42)
-  final String? temporaryResidencyFlagC;
-  @HiveField(43)
-  final String? iepTextC;
-  @HiveField(44)
+  @HiveField(11)
+  final String? iepProgramC;
+  @HiveField(12)
+  final String? genderFullC;
+  @HiveField(13)
+  final String? dobC;
+  @HiveField(14)
+  final String? iepYesNoC;
+  @HiveField(15)
   final String? teacherProperC;
-  @HiveField(45)
-  final String? iepStatusC;
-  @HiveField(46)
-  final String? lepFlagTextC;
-  @HiveField(47)
-  final dynamic ellAdmissionDateC;
-  @HiveField(48)
-  final DateTime? dobC;
+  @HiveField(16)
+  final String? ethnicityNameC;
 
-  factory StudentPlusDetailsModel.fromJson(Map<String, dynamic> json) =>
-      StudentPlusDetailsModel(
-        dateOfBirthC: json["Date_of_Birth__c"],
-        dbnC: json["DBN__c"],
-        firstNameC: json["First_Name__c"],
-        gradeC: json["Grade__c"],
-        lastNameC: json["last_Name__c"],
-        messageC: json["message__c"],
-        parentPhoneC: json["Parent_Phone__c"],
-        schoolC: json["School__c"],
-        schoolYearC: json["School_Year__c"],
-        studentIdC: json["Student_ID__c"],
-        id: json["Id"],
-        isDeleted: json["IsDeleted"],
-        createdByGradedC: json["Created_by_Graded__c"],
-        teacherAddedC: json["Teacher_added__c"],
-        emailC: json["Email__c"],
-        dateOfBirthFormulaC: json["Date_of_Birth_Formula__c"],
-        grC: json["GR__c"],
-        ellC: json["ELL__c"],
-        ellProficiencyC: json["ELL_Proficiency__c"],
-        ethnicityCodeC: json["Ethnicity_Code__c"],
-        genderC: json["Gender__c"],
-        iepC: json["IEP__c"],
-        nysElaScore2022C: json["NYS_ELA_Score_2022__c"],
-        classC: json["Class__c"],
-        admittanceDateC: json["Admittance_Date__c"],
-        hispanicCodeC: json["Hispanic_Code__c"],
-        sexC: json["Sex__c"],
-        accountIdC: json["Account_ID__c"],
-        locC: json["LOC__c"],
-        teacherC: json["Teacher__c"],
-        academicYearC: json["Academic_Year__c"],
-        dobResiC: json["DOB_RESI__c"],
-        grade1920C: json["Grade_19_20__c"],
-        grade2021C: json["Grade_20_21__c"],
-        grade2122C: json["Grade_21_22__c"],
-        iReadyMathMoyOverallPlacementC:
-            json["IReady_Math_MOY_Overall_Placement__c"],
-        firstNameInitcapC: json["First_Name_INITCAP__c"],
-        lastNameInitcapC: json["Last_Name_INITCAP__c"],
-        ethnicityNameC: json["Ethnicity_Name__c"],
-        hispanicC: json["Hispanic__c"],
-        sexNameC: json["Sex_Name__c"],
-        housingStatusNameC: json["Housing_Status_Name__c"],
-        temporaryResidencyFlagC: json["Temporary_Residency_Flag__c"],
-        iepTextC: json["IEP_Text__c"],
-        teacherProperC: json["Teacher_Proper__c"],
-        iepStatusC: json["IEP_Status__c"],
-        lepFlagTextC: json["LEP_Flag_text__c"],
-        ellAdmissionDateC: json["ELL_Admission_Date__c"],
-        dobC: json["DOB__c"] == null ? null : DateTime.parse(json["DOB__c"]),
-      );
+  /* ----------------------------- NYS Graph Value ---------------------------- */
+  @HiveField(17)
+  final String? nysElaScore2019C;
+  @HiveField(18)
+  final String? nysMathScore2019C;
+  @HiveField(19)
+  final String? nysElaScore2021C;
+  @HiveField(20)
+  final String? nysMathScore2021C;
+  @HiveField(21)
+  final String? nysElaScore2022C;
+  @HiveField(22)
+  final String? nysMathScore2022C;
+  @HiveField(23)
+  final String? nysMath2023PredictionC;
+  @HiveField(24)
+  final String? nysEla2023PredictionC;
 
-  Map<String, dynamic> toJson() => {
-        "Date_of_Birth__c": dateOfBirthC,
-        "DBN__c": dbnC,
+  /* ------------------ Field use in Exams Page - iReady Math ----------------- */
+  @HiveField(25)
+  final String? mathPreviousSyEOY;
+  @HiveField(26)
+  final String? mathCurrentSyBOY;
+  @HiveField(27)
+  final String? mathCurrentSyMOY;
+  @HiveField(28)
+  final String? mathCurrentSyEOY;
+  @HiveField(29)
+  final String? mathPreviousSyEOYPercentile;
+  @HiveField(30)
+  final String? mathCurrentSyBOYPercentile;
+  @HiveField(31)
+  final String? mathCurrentSyMOYPercentile;
+  @HiveField(32)
+  final String? mathCurrentSyEOYPercentile;
+
+  /* ------------------ Exams Page - iReady ELA ----------------- */
+  @HiveField(33)
+  final String? ELAPreviousSyEOY;
+  @HiveField(34)
+  final String? ELACurrentSyBOY;
+  @HiveField(35)
+  final String? ELACurrentSyMOY;
+  @HiveField(36)
+  final String? ELACurrentSyEOY;
+  @HiveField(37)
+  final String? ELAPreviousSyEOYPercentile;
+  @HiveField(38)
+  final String? ELACurrentSyBOYPercentile;
+  @HiveField(39)
+  final String? ELACurrentSyMOYPercentile;
+  @HiveField(40)
+  final String? ELACurrentSyEOYPercentile;
+
+  factory StudentPlusDetailsModel.fromJson(Map<String, dynamic> json) => StudentPlusDetailsModel(
+      firstNameC: json["First_Name__c"],
+      gradeC: json["Grade__c"],
+      lastNameC: json["last_Name__c"],
+      parentPhoneC: json["Parent_Phone__c"],
+      schoolC: json["School__c"],
+      studentIdC: json["Student_ID__c"],
+      id: json["Id"],
+      emailC: json["Email__c"],
+      ellC: json["ELL__c"],
+      ellProficiencyC: json["ELL_Proficiency__c"],
+      classC: json["Class__c"],
+      iepProgramC: json["IEP_Program__c"],
+      genderFullC: json["Gender_Full__c"],
+      dobC: json["DOB__c"],
+
+      /* ---------------------- Fields use to show NYS graph ---------------------- */
+      nysElaScore2019C: json["NYS_ELA_2019__c"],
+      nysMathScore2019C: json["NYS_Math_2019__c"],
+      nysElaScore2021C: json["NYS_ELA_Score_2021__c"],
+      nysMathScore2021C: json["NYS_Math_Score_2021__c"],
+      nysElaScore2022C: json["NYS_ELA_Score_2022__c"],
+      nysMathScore2022C: json["NYS_Math_Score_2022__c"],
+      nysMath2023PredictionC: json["NYS_Math_2023_Prediction__c"],
+      nysEla2023PredictionC: json["NYS_ELA_2023_Prediction__c"],
+
+      /* ------------------ Field use in Exams Page - iReady Math ----------------- */
+      mathPreviousSyEOY: json["iReady_Math_EOY_21_22_Score__c"],
+      mathCurrentSyBOY: json["iReady_Math_BOY_Score__c"],
+      mathCurrentSyMOY: json["iReady_Math_MOY_Score__c"],
+      mathCurrentSyEOY: json["iReady_Math_EOY_Score__c"],
+      mathPreviousSyEOYPercentile: json["iReady_Math_EOY_21_22_Percentile__c"],
+      mathCurrentSyBOYPercentile: json["IReady_MATH_BOY_Percentile__c"],
+      mathCurrentSyMOYPercentile: json["IReady_MATH_MOY_Percentile__c"],
+      mathCurrentSyEOYPercentile: json["IReady_MATH_EOY_Percentile__c"],
+
+      /* ------------------ Field use in Exams Page - iReady Math ----------------- */
+      ELAPreviousSyEOY: json["iReady_ELA_EOY_21_22_Score__c"],
+      ELACurrentSyBOY: json["iReady_ELA_BOY_Score__c"],
+      ELACurrentSyMOY: json["iReady_ELA_MOY_Score__c"],
+      ELACurrentSyEOY: json["iReady_ELA_EOY_Score__c"],
+      ELAPreviousSyEOYPercentile: json["iReady_ELA_EOY_21_22_Percentile__c"],
+      ELACurrentSyBOYPercentile: json["IReady_ELA_BOY_Percentile__c"],
+      ELACurrentSyMOYPercentile: json["IReady_ELA_MOY_Percentile__c"],
+      ELACurrentSyEOYPercentile: json["IReady_ELA_EOY_Percentile__c"],
+      iepYesNoC: json["IEP_Yes_No__c"],
+      teacherProperC: json["Teacher_Proper__c"],
+      ethnicityNameC: json["Ethnicity_Name__c"]);
+
+  Map<String, String?> toJson() => {
         "First_Name__c": firstNameC,
         "Grade__c": gradeC,
         "last_Name__c": lastNameC,
-        "message__c": messageC,
         "Parent_Phone__c": parentPhoneC,
         "School__c": schoolC,
-        "School_Year__c": schoolYearC,
         "Student_ID__c": studentIdC,
         "Id": id,
-        "IsDeleted": isDeleted,
-        "Created_by_Graded__c": createdByGradedC,
-        "Teacher_added__c": teacherAddedC,
         "Email__c": emailC,
-        "Date_of_Birth_Formula__c": dateOfBirthFormulaC,
-        "GR__c": grC,
         "ELL__c": ellC,
         "ELL_Proficiency__c": ellProficiencyC,
-        "Ethnicity_Code__c": ethnicityCodeC,
-        "Gender__c": genderC,
-        "IEP__c": iepC,
-        "NYS_ELA_Score_2022__c": nysElaScore2022C,
         "Class__c": classC,
-        "Admittance_Date__c": admittanceDateC,
-        "Hispanic_Code__c": hispanicCodeC,
-        "Sex__c": sexC,
-        "Account_ID__c": accountIdC,
-        "LOC__c": locC,
-        "Teacher__c": teacherC,
-        "Academic_Year__c": academicYearC,
-        "DOB_RESI__c": dobResiC,
-        "Grade_19_20__c": grade1920C,
-        "Grade_20_21__c": grade2021C,
-        "Grade_21_22__c": grade2122C,
-        "IReady_Math_MOY_Overall_Placement__c": iReadyMathMoyOverallPlacementC,
-        "First_Name_INITCAP__c": firstNameInitcapC,
-        "Last_Name_INITCAP__c": lastNameInitcapC,
-        "Ethnicity_Name__c": ethnicityNameC,
-        "Hispanic__c": hispanicC,
-        "Sex_Name__c": sexNameC,
-        "Housing_Status_Name__c": housingStatusNameC,
-        "Temporary_Residency_Flag__c": temporaryResidencyFlagC,
-        "IEP_Text__c": iepTextC,
+        "IEP_Program__c": iepProgramC,
+        "Gender_Full__c": genderFullC,
+        "DOB__c": dobC,
+        "NYS_ELA_2019__c": nysElaScore2019C,
+        "NYS_Math_2019__c": nysMathScore2019C,
+        "NYS_ELA_2022__c": nysElaScore2022C,
+        "NYS_Math_2022__c": nysMathScore2022C,
+        "NYS_ELA_2021__c": nysElaScore2021C,
+        "NYS_Math_2021__c": nysMathScore2021C,
+        "NYS_Math_2023_Prediction__c": nysMath2023PredictionC,
+        "NYS_ELA_2023_Prediction__c": nysEla2023PredictionC,
+
+        /* ------------------ Field use in Exams Page - iReady Math ----------------- */
+        "iReady_Math_EOY_21_22_Score__c": mathPreviousSyEOY,
+        "iReady_Math_BOY_Score__c": mathCurrentSyBOY,
+        "iReady_Math_MOY_Score__c": mathCurrentSyMOY,
+        "iReady_Math_EOY_Score__c": mathCurrentSyEOY,
+        "iReady_Math_EOY_21_22_Percentile__c": mathPreviousSyEOYPercentile,
+        "IReady_MATH_BOY_Percentile__c": mathCurrentSyBOYPercentile,
+        "IReady_MATH_MOY_Percentile__c": mathCurrentSyMOYPercentile,
+        "IReady_MATH_EOY_Percentile__c": mathCurrentSyEOYPercentile,
+
+        /* ------------------ Field use in Exams Page - iReady ELA ----------------- */
+        "iReady_ELA_EOY_21_22_Score__c": ELAPreviousSyEOY,
+        "iReady_ELA_BOY_Score__c": ELACurrentSyBOY,
+        "iReady_ELA_MOY_Score__c": ELACurrentSyMOY,
+        "iReady_ELA_EOY_Score__c": ELACurrentSyEOY,
+        "iReady_ELA_EOY_21_22_Percentile__c": ELAPreviousSyEOYPercentile,
+        "IReady_ELA_BOY_Percentile__c": ELACurrentSyBOYPercentile,
+        "IReady_ELA_MOY_Percentile__c": ELACurrentSyMOYPercentile,
+        "IReady_ELA_EOY_Percentile__c": ELACurrentSyEOYPercentile,
+        "IEP_Yes_No__c": iepYesNoC,
         "Teacher_Proper__c": teacherProperC,
-        "IEP_Status__c": iepStatusC,
-        "LEP_Flag_text__c": lepFlagTextC,
-        "ELL_Admission_Date__c": ellAdmissionDateC,
-        "DOB__c":
-            "${dobC!.year.toString().padLeft(4, '0')}-${dobC!.month.toString().padLeft(2, '0')}-${dobC!.day.toString().padLeft(2, '0')}",
+        "Ethnicity_Name__c": ethnicityNameC,
       };
 }
 

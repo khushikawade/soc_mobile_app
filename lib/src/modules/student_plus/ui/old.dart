@@ -228,10 +228,10 @@
 
 //   List<Widget> _buildScreens() {
 //     _screens = [];
-//     _screens.add(StudentPlusInfoScreen());
-//     _screens.add(StudentPlusExamsScreen());
+//     _screens.add(StudentPlusInfoPage());
+//     _screens.add(StudentPlusExamsPage());
 //     _screens.add(StudentPlusGradesPage());
-//     _screens.add(StudentPlusWorkScreen());
+//     _screens.add(StudentPlusWorkPage());
 //     return _screens;
 //   }
 // }

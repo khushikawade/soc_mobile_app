@@ -126,20 +126,12 @@ class GoogleLogin {
         return true;
         // if (actionName == 'STUDENT+') {
         //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-        //     builder: (context) => StudentPlusSearchScreen(fromStudentPlusDetailPage: false),
+        //     builder: (context) => StudentPlusSearchPage(fromStudentPlus: false),
         //   ));
         //   // pushNewScreen(
         //   //   context,
-        //   //   screen: StudentPlusSearchScreen(
-        //   //     fromStudentPlusDetailPage: false,
-        //   //   ),
-        //   //   withNavBar: false,
-        //   // );
-        // } else if (actionName == 'PBIS+') {
-        // } else {
-        //   pushNewScreen(
-        //     context,
-        //     screen: StartupPage(
+        //   //   screen: StudentPlusSearchPage(
+        //   //     fromStudentPlus: false,
         //       isOcrSection: Overrides.STANDALONE_GRADED_APP,
         //       skipAppSettingsFetch: true,
         //     ),
