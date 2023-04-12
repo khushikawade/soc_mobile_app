@@ -8,11 +8,11 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class FilterWidget extends StatefulWidget {
+class StudentPlusFilterWidget extends StatefulWidget {
   ValueNotifier<String> filterNotifier;
   final List<String> subjectList;
   final List<String> teacherList;
-  FilterWidget(
+  StudentPlusFilterWidget(
       {Key? key,
       required this.filterNotifier,
       required this.subjectList,
@@ -20,16 +20,18 @@ class FilterWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<FilterWidget> createState() => _FilterWidgetState();
+  State<StudentPlusFilterWidget> createState() =>
+      _StudentPlusFilterWidgetState();
 }
 
-class _FilterWidgetState extends State<FilterWidget> {
+class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
   late PageController _pageController;
   List<String> filterOptionList = ["Subject", "Teacher"];
   int selectedTypeFilterIndex = 0;
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(999);
   int pageValue = 0;
   // double _progress;
+
   @override
   void initState() {
     _pageController = PageController()
