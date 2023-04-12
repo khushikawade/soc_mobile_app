@@ -14,6 +14,15 @@ class PBISPlusLoading extends PBISPlusState {
   List<Object> get props => [];
 }
 
+class PBISErrorState extends PBISPlusState {
+  final String? errorMsg;
+  PBISErrorState({
+    this.errorMsg,
+  });
+  @override
+  List<Object> get props => [];
+}
+
 class PBISPlusImportRosterSuccess extends PBISPlusState {
   final List<ClassroomCourse> googleClassroomCourseList;
   PBISPlusImportRosterSuccess({required this.googleClassroomCourseList});
