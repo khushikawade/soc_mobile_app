@@ -31,7 +31,6 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(999);
   int pageValue = 0;
   // double _progress;
-
   @override
   void initState() {
     _pageController = PageController()

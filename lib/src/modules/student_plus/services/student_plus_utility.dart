@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -146,4 +147,29 @@ class StudentPlusUtility {
       return 'NA';
     }
   }
+
+    /* --------------------- Function to return subject list -------------------- */
+  static List<String> getSubjectList({required List<StudentPlusWorkModel> list}) {
+    List<String> subjectList = [];
+    for (var i = 0; i < list.length; i++) {
+      if (!subjectList.contains(list[i].subjectC) && list[i].subjectC != null) {
+        subjectList.add(list[i].subjectC ?? '');
+      }
+    }
+    return subjectList;
+  }
+
+  /* --------- Function to return teacher list from student work list --------- */
+  static List<String> getTeacherList({required List<StudentPlusWorkModel> list}) {
+    List<String> teacherList = [];
+    for (var i = 0; i < list.length; i++) {
+      if (!teacherList.contains(
+              "${list[i].firstName ?? ''} ${list[i].lastName ?? ''}") &&
+          list[i].subjectC != null) {
+        teacherList.add("${list[i].firstName ?? ''} ${list[i].lastName ?? ''}");
+      }
+    }
+    return teacherList;
+  }
+
 }
