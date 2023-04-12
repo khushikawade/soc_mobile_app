@@ -195,7 +195,7 @@ class _StartupPageState extends State<StartupPage> {
                                 : SafeArea(
                                     child: NoInternetErrorWidget(
                                       connected: false,
-                                      issplashscreen: false,
+                                      isSplashScreen: false,
                                       onRefresh: () {
                                         _bloc.add(FetchStandardNavigationBar());
                                       },

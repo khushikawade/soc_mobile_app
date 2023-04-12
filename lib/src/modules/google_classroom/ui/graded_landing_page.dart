@@ -27,6 +27,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class GradedLandingPage extends StatefulWidget {
   final bool? isFromLogoutPage;
@@ -508,7 +509,6 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                   'Google Authentication',
                                   context,
                                   _scaffoldKey,
-                                  true,
                                   text);
                               if (result == true) {
                                 updateAppBar.value = !updateAppBar.value;
@@ -533,6 +533,9 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     dateTime: currentDateTime.toString(),
                                     description: 'Graded+ Accessed(Login)',
                                     operationResult: 'Success'));
+
+                                pushNewScreen(context,
+                                    screen: GradedLandingPage());
                               }
                             } else {
                               if (text == 'Import Roster') {

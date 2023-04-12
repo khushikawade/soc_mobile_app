@@ -22,6 +22,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
       {Key? key,
       required this.isResultNotFoundMsg,
       required this.isNews,
+      this.errorMessage,
       this.connected,
       this.isCalendarPageOrientationLandscape,
       required this.isEvents,
@@ -34,7 +35,7 @@ class NoDataFoundErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return connected == false
         ? NoInternetErrorWidget(
-            issplashscreen: false,
+            isSplashScreen: false,
             connected: connected,
           )
         : OrientationBuilder(builder: (context, orientation) {
@@ -70,17 +71,19 @@ class NoDataFoundErrorWidget extends StatelessWidget {
                   Container(
                       alignment: Alignment.center,
                       child: TranslationWidget(
-                        message: isNews == true
-                            ? "No Message Yet"
-                            : isEvents == true
-                                ? "No Event Found"
-                                : isResultNotFoundMsg == true
-                                    ? "No result found"
-                                    : isOcrSearch == true
-                                        ? "No recent search"
-                                        : isScheduleFound == true
-                                            ? "Schedule not found"
-                                            : "No data found",
+                        message: errorMessage != null && errorMessage != ''
+                            ? errorMessage
+                            : isNews == true
+                                ? "No Message Yet"
+                                : isEvents == true
+                                    ? "No Event Found"
+                                    : isResultNotFoundMsg == true
+                                        ? "No result found"
+                                        : isOcrSearch == true
+                                            ? "No recent search"
+                                            : isScheduleFound == true
+                                                ? "Schedule not found"
+                                                : "No data found",
                         toLanguage: Globals.selectedLanguage,
                         fromLanguage: "en",
                         builder: (translatedMessage) => Text(

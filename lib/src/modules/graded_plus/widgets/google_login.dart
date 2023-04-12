@@ -1,7 +1,5 @@
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +21,6 @@ class GoogleLogin {
     String? title,
     context,
     _scaffoldKey,
-    bool? isStandAloneApp,
     String? buttonPressed,
   ) async {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("google_login");
@@ -82,6 +79,7 @@ class GoogleLogin {
       //     'You are not authorized to access the feature. Please use the authorized account.',
       //     context,
       //     50.0);
+      return false;
     } else if (value.toString().contains('success')) {
       value = value.split('?')[1] ?? '';
       //Save user profile
@@ -113,7 +111,7 @@ class GoogleLogin {
           description: 'Google Authentication Success',
           operationResult: 'Success'));
       // Push to the grading system
-      if (isStandAloneApp == true) {
+      if (Overrides.STANDALONE_GRADED_APP == true) {
         print('local data base clear on login');
         // clean imported roster on fresh login
         LocalDatabase<GoogleClassroomCourses> _localDb =
@@ -122,33 +120,41 @@ class GoogleLogin {
         _localDb.clear();
         _localDb.close();
 
-        if (Overrides.STANDALONE_GRADED_APP != true) {
-          pushNewScreen(
-            context,
-            screen: SelectAssessmentType(),
-            // isMcqSheet == true
-            //     ? MultipleChoiceSection()
-            //     : OpticalCharacterRecognition(),
-            withNavBar: false,
-          );
-          // Navigator.of(context).pushReplacement(MaterialPageRoute(
-          //     builder: (context) => OpticalCharacterRecognition()));
-        } else {
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => GradedLandingPage()));
-        }
         return true;
         // pushNewScreen(context, screen: GradedLandingPage());
       } else {
-        pushNewScreen(
-          context,
-          screen: StartupPage(
-            isOcrSection: Overrides.STANDALONE_GRADED_APP,
-            skipAppSettingsFetch: true,
-          ),
-          withNavBar: false,
-        );
+        return true;
+        // if (actionName == 'STUDENT+') {
+        //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+        //     builder: (context) => StudentPlusSearchScreen(fromStudentPlusDetailPage: false),
+        //   ));
+        //   // pushNewScreen(
+        //   //   context,
+        //   //   screen: StudentPlusSearchScreen(
+        //   //     fromStudentPlusDetailPage: false,
+        //   //   ),
+        //   //   withNavBar: false,
+        //   // );
+        // } else if (actionName == 'PBIS+') {
+        // } else {
+        //   pushNewScreen(
+        //     context,
+        //     screen: StartupPage(
+        //       isOcrSection: Overrides.STANDALONE_GRADED_APP,
+        //       skipAppSettingsFetch: true,
+        //     ),
+        //     withNavBar: false,
+        //   );
+        // }
+        // pushNewScreen(
+        //     context,
+        //     screen: SelectAssessmentType(),
+        //     withNavBar: false,
+        //   );
+
       }
+    } else {
+      return false;
     }
   }
 

@@ -232,7 +232,7 @@ class _InAppUrlLauncerState extends State<InAppUrlLauncer> {
                   ),
                 )
               : NoInternetErrorWidget(
-                  connected: connected, issplashscreen: false);
+                  connected: connected, isSplashScreen: false);
         },
         child: Container());
   }

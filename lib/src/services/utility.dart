@@ -203,7 +203,7 @@ class Utility {
     return new DateFormat.jm().format(picked.toLocal()).toString();
   }
 
-  String convertUSADateFormat(picked) {
+  static String convertUSADateFormat(picked) {
     return new DateFormat.yMMMd('en_US').format(picked.toLocal()).toString();
   }
 
@@ -216,6 +216,21 @@ class Utility {
     final DateFormat formatNew = DateFormat('dd/MM/yyyy  hh:mm');
     final String formatted = formatNew.format(dateTime);
     return formatted;
+  }
+
+  static convertDateUSFormat(date) {
+    try {
+      String dateNew = date;
+      final string = dateNew.toString();
+      final formatter = DateFormat('yyyy-MM-dd');
+      final dateTime = formatter.parse(string);
+      final DateFormat formatNew = DateFormat('MM/dd/yyyy');
+      final String formatted = formatNew.format(dateTime);
+
+      return formatted;
+    } catch (e) {
+      return date.toString();
+    }
   }
 
   static convertDateFormat(date) {
