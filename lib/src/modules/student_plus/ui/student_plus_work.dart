@@ -7,10 +7,9 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dar
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/common_filter_widget.dart';
-import 'package:Soc/src/modules/student_plus/widgets/header_widget.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
-import 'package:Soc/src/modules/student_plus/widgets/student_plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -73,7 +72,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    HeaderWidget(
+                    StudentPlusScreenTitleWidget(
                         kLabelSpacing: _kLabelSpacing,
                         text: StudentPlusOverrides.studentPlusWorkTitle),
                     BlocBuilder<StudentPlusBloc, StudentPlusState>(

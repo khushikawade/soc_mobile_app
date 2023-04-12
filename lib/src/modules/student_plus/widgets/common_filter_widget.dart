@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/header_widget.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -103,7 +104,8 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               ),
             ),
           ),
-          HeaderWidget(kLabelSpacing: 20, text: 'Select Filter'),
+          StudentPlusScreenTitleWidget(
+              kLabelSpacing: 20, text: 'Select Filter'),
           SpacerWidget(10),
           Expanded(
             child: ListView.builder(
@@ -160,7 +162,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 0),
                   minLeadingWidth: 70,
-                  title: HeaderWidget(
+                  title: StudentPlusScreenTitleWidget(
                       kLabelSpacing: 20,
                       text: selectedTypeFilterIndex == 0
                           ? "Select Subject"
