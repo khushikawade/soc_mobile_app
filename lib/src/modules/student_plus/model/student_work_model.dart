@@ -27,6 +27,10 @@ class StudentPlusWorkModel {
     this.resultC,
     this.assessmentImageC,
     this.assessmentQueImageC,
+    this.firstName,
+    this.lastName,
+    this.subjectC,
+    this.assessmentType,
   });
   @HiveField(0)
   final String? assessmentId;
@@ -50,21 +54,32 @@ class StudentPlusWorkModel {
   final String? assessmentImageC;
   @HiveField(10)
   final String? assessmentQueImageC;
+  @HiveField(11)
+  final String? firstName;
+  @HiveField(12)
+  final String? lastName;
+  @HiveField(13)
+  final String? subjectC;
+  @HiveField(14)
+  final String? assessmentType;
 
   factory StudentPlusWorkModel.fromJson(Map<String, dynamic> json) =>
       StudentPlusWorkModel(
-        assessmentId: json["Assessment_Id"],
-        nameC: json["Name__c"],
-        rubricC: json["Rubric__c"],
-        dateC: json["Date__c"] == null ? null : json["Date__c"],
-        schoolC: json["School__c"],
-        teacherEmail: json["Teacher_Email"],
-        studentC: json["Student__c"],
-        studentNameC: json["Student_Name__c"],
-        resultC: json["Result__c"],
-        assessmentImageC: json["Assessment_Image__c"],
-        assessmentQueImageC: json["Assessment_Que_Image__c"],
-      );
+          assessmentId: json["Assessment_Id"],
+          nameC: json["Name__c"],
+          rubricC: json["Rubric__c"],
+          dateC: json["Date__c"] == null ? null : json["Date__c"],
+          schoolC: json["School__c"],
+          teacherEmail: json["Teacher_Email"],
+          studentC: json["Student__c"],
+          studentNameC: json["Student_Name__c"],
+          resultC: json["Result__c"],
+          assessmentImageC: json["Assessment_Image__c"],
+          assessmentQueImageC: json["Assessment_Que_Image__c"],
+          firstName: json["FirstName"],
+          lastName: json["LastName"],
+          subjectC: json["Subject__c"],
+          assessmentType: json["Assessment_Type"]);
 
   Map<String, dynamic> toJson() => {
         "Assessment_Id": assessmentId,
@@ -78,5 +93,9 @@ class StudentPlusWorkModel {
         "Result__c": resultC,
         "Assessment_Image__c": assessmentImageC,
         "Assessment_Que_Image__c": assessmentQueImageC,
+        "FirstName": firstName,
+        "LastName": lastName,
+        "Subject__c":subjectC,
+        "Assessment_Type":assessmentType
       };
 }

@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_graph_methods.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -7,8 +8,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class CommonLineGraphWidget extends StatefulWidget {
+  final StudentPlusDetailsModel studentDetails;
   final bool isIReadyGraph;
-  const CommonLineGraphWidget({Key? key, required this.isIReadyGraph})
+  final bool isMathsSection;
+  const CommonLineGraphWidget(
+      {Key? key,
+      required this.isIReadyGraph,
+      required this.studentDetails,
+      required this.isMathsSection})
       : super(key: key);
 
   @override
@@ -44,13 +51,15 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                               : Color(0xffF7F8F9),
                       width: 1)),
               show: true),
-          maxX: widget.isIReadyGraph == true ? 3 : 2024,
-          minX: widget.isIReadyGraph == true ? 0 : 2021,
+          maxX: widget.isIReadyGraph == true ? 3 : 2023,
+          minX: widget.isIReadyGraph == true ? 0 : 2020,
           maxY: widget.isIReadyGraph == true ? 110 : 5,
           minY: widget.isIReadyGraph == true ? 0 : 0,
-          showingTooltipIndicators:
-              StudentPlusGraphMethod.showingTooltipIndicators(
-                  context: context, isIReadyGraph: widget.isIReadyGraph),
+          showingTooltipIndicators: StudentPlusGraphMethod.showingTooltipIndicators(
+              context: context,
+              isIReadyGraph: widget.isIReadyGraph,
+              isMathSection: widget.isMathsSection,
+              studentDetails: widget.studentDetails),
           lineTouchData: LineTouchData(
             enabled: false, // false because it will show always
             getTouchedSpotIndicator:
@@ -91,7 +100,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                     },
                   )
                 : LineTouchTooltipData(
-                    tooltipBgColor: AppTheme.kButtonColor.withOpacity(0.5),
+                    tooltipBgColor: AppTheme.kButtonColor.withOpacity(0.2),
                     tooltipRoundedRadius: 5,
                     fitInsideHorizontally: true,
                     fitInsideVertically: true,
@@ -104,9 +113,21 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                             children: [
                               TextSpan(
                                 text: lineBarSpot.y.toString(),
-                                style: Theme.of(context).textTheme.headline4!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4!
+                                    .copyWith(
+                                        color:
+                                            StudentPlusGraphMethod.nysTooltipColor(
+                                                value: lineBarSpot.y),
+                                        fontWeight: FontWeight.bold),
                               ),
-                              lineBarSpot.y.toString() == '4.25'
+                              lineBarSpot.y.toString() ==
+                                      (widget.isMathsSection == true
+                                          ? widget.studentDetails
+                                              .nysMath2023PredictionC
+                                          : widget.studentDetails
+                                              .nysEla2023PredictionC)
                                   ? TextSpan(
                                       text: '\n' + 'Prediction',
                                       style: Theme.of(context)
@@ -120,7 +141,10 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                   ),
           ),
           lineBarsData: StudentPlusGraphMethod.graphLineBarsData(
-              context: context, isIReadyGraph: widget.isIReadyGraph)),
+              context: context,
+              isIReadyGraph: widget.isIReadyGraph,
+              isMathSection: widget.isMathsSection,
+              studentDetails: widget.studentDetails)),
     );
   }
 
@@ -135,6 +159,9 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
         getTitlesWidget: (value, meta) {
           String text = '';
           switch (value.toString()) {
+            case '2020.0':
+              text = '19-20';
+              break;
             case '2021.0':
               text = '20-21';
               break;
@@ -143,9 +170,6 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
               break;
             case '2023.0':
               text = '22-23';
-              break;
-            case '2024.0':
-              text = '23-24';
               break;
           }
 

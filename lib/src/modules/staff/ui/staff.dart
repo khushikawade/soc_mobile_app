@@ -428,6 +428,75 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
+  // staffActionIconsOnTap({required String actionName}) async {
+  //   await Utility.clearStudentInfo(tableName: 'student_info');
+  //   await Utility.clearStudentInfo(tableName: 'history_student_info');
+
+  //   await FirebaseAnalyticsService.addCustomAnalyticsEvent("assignment");
+
+  //   FirebaseAnalyticsService.logLogin();
+
+  //   Globals.lastIndex = Globals.controller!.index;
+
+  //   List<UserInformation> _profileData =
+  //       await UserGoogleProfile.getUserProfile();
+
+  //   if (_profileData.isEmpty) {
+  //     // await _launchURL('Google Authentication');
+  //     var value = await GoogleLogin.launchURL(
+  //       'Google Authentication',
+  //       context,
+  //       _scaffoldKey,
+  //       '',
+  //     );
+  //     if (value == true) {
+  //       navigatorToScreen(actionName: actionName);
+  //     }
+  //   } else {
+  //     GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+
+  //     Globals.teacherEmailId = _profileData[0].userEmail!.split('@')[0];
+  //     Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+  //     DateTime currentDateTime = DateTime.now();
+  //     _ocrBlocLogs.add(LogUserActivityEvent(
+  //         sessionId: Globals.sessionId,
+  //         teacherId: Globals.teacherId,
+  //         activityId: '2',
+  //         accountId: Globals.appSetting.schoolNameC,
+  //         accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+  //         dateTime: currentDateTime.toString(),
+  //         description: 'Graded+ Accessed(Login)',
+  //         operationResult: 'Success'));
+  //     //    await _getLocalDb();
+  //     navigatorToScreen(actionName: actionName);
+  //   }
+  // }
+
+  // navigatorToScreen({required String actionName}) {
+  //   if (Overrides.STANDALONE_GRADED_APP == true) {
+  //     Navigator.of(context).pushReplacement(
+  //         MaterialPageRoute(builder: (context) => GradedLandingPage()));
+  //   } else {
+  //     if (actionName == 'GRADED+') {
+  //       pushNewScreen(
+  //         context,
+  //         screen: StartupPage(
+  //           isOcrSection: true, //since always opens OCR
+  //           isMultipleChoice: false,
+  //         ),
+  //         withNavBar: false,
+  //       );
+  //     } else if (actionName == 'PBIS+') {
+  //     } else if (actionName == 'STUDENT+') {
+  //       pushNewScreen(
+  //         context,
+  //         screen: StudentPlusSearchPage(fromStudentPlus: false),
+  //         withNavBar: false,
+  //       );
+  //     }
+  //   }
+  // }
+
   Widget textwidget({required String text, required dynamic textTheme}) {
     return TranslationWidget(
       message: text,

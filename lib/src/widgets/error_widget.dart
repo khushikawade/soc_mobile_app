@@ -32,9 +32,7 @@ class ErrorMsgWidget extends StatelessWidget {
                 Container(
                   alignment: Alignment.center,
                   child: TranslationWidget(
-                    message: isStudentSearch == false
-                        ? "Something Went Wrong"
-                        : "Student not found",
+                    message: "Something Went Wrong",
                     toLanguage: Globals.selectedLanguage,
                     fromLanguage: "en",
                     builder: (translatedMessage) => Text(
