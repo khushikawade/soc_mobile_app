@@ -89,6 +89,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
         //  crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
+            padding: EdgeInsets.only(top: 16),
             alignment: Alignment.topRight,
             child: IconButton(
               onPressed: () {
@@ -143,6 +144,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               children: [
                 Container(
                     alignment: Alignment.topRight,
+                    padding: EdgeInsets.only(top: 16),
                     //color: Colors.amber,
                     child: IconButton(
                       onPressed: () {
