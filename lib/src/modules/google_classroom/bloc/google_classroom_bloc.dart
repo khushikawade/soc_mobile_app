@@ -343,7 +343,7 @@ class GoogleClassroomBloc
               // response.data['body'][" status"] != 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await toRefreshAuthenticationToken(refreshToken!);
 
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
@@ -389,7 +389,7 @@ class GoogleClassroomBloc
     } catch (e) {}
   }
 
-  Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
+  Future<bool> toRefreshAuthenticationToken(String refreshToken) async {
     try {
       final body = {"refreshToken": refreshToken};
       final ResponseModel response = await _dbServices.postApi(
@@ -508,7 +508,7 @@ class GoogleClassroomBloc
       }
       //retry =3 max
       else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken);
+        var result = await toRefreshAuthenticationToken(refreshToken);
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
@@ -575,7 +575,7 @@ class GoogleClassroomBloc
         final url = response?.data?['body']?['alternateLink'] as String?;
         return [url?.isNotEmpty == true, url ?? ''];
       } else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await toRefreshAuthenticationToken(refreshToken!);
 
         if (result == true) {
           List<UserInformation> _userProfileLocalData =

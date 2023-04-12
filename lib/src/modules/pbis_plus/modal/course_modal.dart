@@ -115,9 +115,9 @@ class ClassroomProfile {
         ? new ClassroomProfileName.fromJson(json['name'])
         : null;
     emailAddress = json['emailAddress'] ?? '';
-    // photoUrl = json['photoUrl'] ?? '';
-    photoUrl =
-        'https://source.unsplash.com/random/200x200?sig=${generateRandomUniqueNumber().toString()}';
+    photoUrl = 'https:' + json['photoUrl'] ?? '';
+    // photoUrl =
+    //     'https://source.unsplash.com/random/200x200?sig=${generateRandomUniqueNumber().toString()}';
     if (json['permissions'] != null) {
       permissions = <ClassroomPermissions>[];
       json['permissions'].forEach((v) {

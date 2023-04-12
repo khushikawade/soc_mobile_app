@@ -6,7 +6,6 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_modal_card.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
@@ -81,27 +80,28 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           SpacerWidget(_KVertcalSpace / 3),
           SpacerWidget(_KVertcalSpace / 5),
           Expanded(
-              child: BlocConsumer(
-                  bloc: PBISPlusBlocInstance,
-                  builder: (context, state) {
-                    if (state is PBISPlusLoading) {
-                      return Container(
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.primaryVariant,
-                          ));
-                    }
-                    if (state is PBISPlusImportRosterSuccess &&
-                        (state.googleClassroomCourseList.isNotEmpty ?? false)) {
-                      return buildList(state.googleClassroomCourseList);
-                    }
+            child: BlocConsumer(
+                bloc: PBISPlusBlocInstance,
+                builder: (context, state) {
+                  if (state is PBISPlusLoading) {
+                    return Container(
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.primaryVariant,
+                        ));
+                  }
+                  if (state is PBISPlusImportRosterSuccess &&
+                      (state.googleClassroomCourseList.isNotEmpty ?? false)) {
+                    return buildList(state.googleClassroomCourseList);
+                  }
 
-                    return NoDataFoundErrorWidget(
-                        isResultNotFoundMsg: true,
-                        isNews: false,
-                        isEvents: false);
-                  },
-                  listener: (context, state) {})),
+                  return NoDataFoundErrorWidget(
+                      isResultNotFoundMsg: true,
+                      isNews: false,
+                      isEvents: false);
+                },
+                listener: (context, state) {}),
+          ),
         ],
       ),
     );
@@ -195,7 +195,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   Widget studentListCourseWiseView(googleClassroomCourseList) {
     return Container(
         height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height * 0.70
+            ? MediaQuery.of(context).size.height * 0.60 //7
             : MediaQuery.of(context).size.height * 0.45,
         child: ScrollablePositionedList.builder(
             padding: EdgeInsets.only(bottom: 30),
