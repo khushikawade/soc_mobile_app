@@ -65,39 +65,39 @@ class StudentPlusUtility {
           value:
               '${studentDetails.firstNameC ?? ''} ${studentDetails.lastNameC ?? ''}'),
       StudentPlusInfoModel(
-          label: 'ID', value: '${studentDetails.studentIdC ?? 'NA'}'),
+          label: 'ID', value: '${studentDetails.studentIdC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Phone', value: '${studentDetails.parentPhoneC ?? 'NA'}'),
+          label: 'Phone', value: '${studentDetails.parentPhoneC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Email', value: '${studentDetails.emailC ?? 'NA'}'),
+          label: 'Email', value: '${studentDetails.emailC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Grade', value: '${studentDetails.gradeC ?? 'NA'}'),
+          label: 'Grade', value: '${studentDetails.gradeC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Class', value: '${studentDetails.classC ?? 'NA'}'),
+          label: 'Class', value: '${studentDetails.classC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Teacher', value: '${studentDetails.teacherProperC ?? 'NA'}'),
+          label: 'Teacher', value: '${studentDetails.teacherProperC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Attend%', value: 'NA'),
+          label: 'Attend%', value: '-'),
       StudentPlusInfoModel(
-          label: 'Gender', value: '${studentDetails.genderFullC ?? 'NA'}'),
+          label: 'Gender', value: '${studentDetails.genderFullC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Ethnicity',
-          value: '${studentDetails.ethnicityNameC ?? 'NA'}'),
+          value: '${studentDetails.ethnicityNameC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Age',
           value:
-              'NA'),
+              '-'),
       StudentPlusInfoModel(
           label: 'DOB',
           value:
-              '${studentDetails.dobC ?? 'NA'}'),
+              '${studentDetails.dobC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'ELL Status', value: '${studentDetails.ellC ?? 'NA'}'),
+          label: 'ELL Status', value: '${studentDetails.ellC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'ELL Level',
-          value: '${studentDetails.ellProficiencyC ?? 'NA'}'),
+          value: '${studentDetails.ellProficiencyC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'IEP Status', value: '${studentDetails.iepProgramC ?? 'NA'}'),
+          label: 'IEP Status', value: '${studentDetails.iepProgramC ?? '-'}'),
     ];
     return studentInfoList;
   }
