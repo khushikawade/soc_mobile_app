@@ -69,9 +69,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                   pbisTotalInteractionList, coursesList);
 
           await _localDb.clear();
-          coursesList.forEach((ClassroomCourse e) {
+          classroomStudentProfile.forEach((ClassroomCourse e) {
             _localDb.addData(e);
           });
+
           Utility.updateLogs(
               activityId: '24',
               description: 'Import Roster Successfully From PBIS+',
@@ -280,56 +281,52 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     List<ClassroomCourse> classroomCourseList,
   ) {
     List<ClassroomCourse> classroomStudentProfile = [];
-    ClassroomCourse classroomCourse = ClassroomCourse();
 
-    classroomStudentProfile.clear();
+    // classroomStudentProfile.clear();
     if (pbisTotalInteractionList.length == 0) {
       //Add 0 interaction counts to all the post in case of no interaction found
       classroomStudentProfile.addAll(classroomCourseList);
     } else {
-      //Check with the length of social list
       for (int i = 0; i < classroomCourseList.length; i++) {
+        ClassroomCourse classroomCourse = ClassroomCourse();
+        classroomCourse
+          ..id = classroomCourseList[i].id
+          ..name = classroomCourseList[i].name
+          ..enrollmentCode = classroomCourseList[i].enrollmentCode
+          ..descriptionHeading = classroomCourseList[i].descriptionHeading
+          ..ownerId = classroomCourseList[i].ownerId
+          ..courseState = classroomCourseList[i].courseState
+          ..students = classroomCourseList[i].students;
+
+        bool interactionCountsFound = false;
+
         for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
           for (int k = 0; k < pbisTotalInteractionList.length; k++) {
             if (classroomCourseList[i].students![j].profile!.id ==
                 pbisTotalInteractionList[k].studentId) {
-              classroomCourse
-                ..id = classroomCourseList[i].id
-                ..name = classroomCourseList[i].name
-                ..enrollmentCode = classroomCourseList[i].enrollmentCode
-                ..descriptionHeading = classroomCourseList[i].descriptionHeading
-                ..ownerId = classroomCourseList[i].ownerId
-                ..courseState = classroomCourseList[i].courseState
-                ..students = classroomCourseList[i].students
-                ..students![j].profile!.engaged =
-                    pbisTotalInteractionList[k].engaged
-                ..students![j].profile!.engaged =
-                    pbisTotalInteractionList[k].niceWork
-                ..students![j].profile!.engaged =
-                    pbisTotalInteractionList[k].helpful;
-
-              classroomStudentProfile.add(classroomCourse);
+              classroomCourse.students![j].profile!.engaged =
+                  pbisTotalInteractionList[k].engaged;
+              classroomCourse.students![j].profile!.niceWork =
+                  pbisTotalInteractionList[k].niceWork;
+              classroomCourse.students![j].profile!.helpful =
+                  pbisTotalInteractionList[k].helpful;
+              interactionCountsFound = true;
               break;
-            }
-
-            // If Interaction count list length ends, Add all the remaining RSS feed interaction count = 0
-            if (pbisTotalInteractionList.length - 1 == j) {
-              classroomCourse
-                ..id = classroomCourseList[i].id
-                ..name = classroomCourseList[i].name
-                ..enrollmentCode = classroomCourseList[i].enrollmentCode
-                ..descriptionHeading = classroomCourseList[i].descriptionHeading
-                ..ownerId = classroomCourseList[i].ownerId
-                ..courseState = classroomCourseList[i].courseState
-                ..students = classroomCourseList[i].students
-                ..students![j].profile!.engaged = 0
-                ..students![j].profile!.engaged = 0
-                ..students![j].profile!.engaged = 0;
-
-              classroomStudentProfile.add(classroomCourse);
             }
           }
         }
+
+        //Adding 0 interaction where no interaction added yet
+        if (!interactionCountsFound) {
+          // If no interaction counts were found, set all counts to 0
+          for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
+            classroomCourse.students![j].profile!.engaged = 0;
+            classroomCourse.students![j].profile!.niceWork = 0;
+            classroomCourse.students![j].profile!.helpful = 0;
+          }
+        }
+
+        classroomStudentProfile.add(classroomCourse);
       }
     }
     return classroomStudentProfile;
