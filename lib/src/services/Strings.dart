@@ -1,5 +1,8 @@
 class Strings {
   static final String hiveLogName = "recent_items";
+  // Student Plus Module Local Db
+  static final String studentInfoRecentList = "student_info_recent_list";
+  static final String studentWorkList = "student_work_list";
   static final String googleRecentSearch = "google_file_recent_search";
   static final String SplashUrl = "SPLASHURL";
   static final String deviceType = "Device";

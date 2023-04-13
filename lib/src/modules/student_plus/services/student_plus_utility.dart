@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -64,39 +65,39 @@ class StudentPlusUtility {
           value:
               '${studentDetails.firstNameC ?? ''} ${studentDetails.lastNameC ?? ''}'),
       StudentPlusInfoModel(
-          label: 'ID', value: '${studentDetails.studentIdC ?? 'NA'}'),
+          label: 'ID', value: '${studentDetails.studentIdC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Phone', value: '${studentDetails.parentPhoneC ?? 'NA'}'),
+          label: 'Phone', value: '${studentDetails.parentPhoneC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Email', value: '${studentDetails.emailC ?? 'NA'}'),
+          label: 'Email', value: '${studentDetails.emailC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Grade', value: '${studentDetails.gradeC ?? 'NA'}'),
+          label: 'Grade', value: '${studentDetails.gradeC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Class', value: '${studentDetails.classC ?? 'NA'}'),
+          label: 'Class', value: '${studentDetails.classC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Teacher', value: '${studentDetails.teacherProperC ?? 'NA'}'),
+          label: 'Teacher', value: '${studentDetails.teacherProperC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Attend%', value: 'NA'),
+          label: 'Attend%', value: '-'),
       StudentPlusInfoModel(
-          label: 'Gender', value: '${studentDetails.genderFullC ?? 'NA'}'),
+          label: 'Gender', value: '${studentDetails.genderFullC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Ethnicity',
-          value: '${studentDetails.ethnicityNameC ?? 'NA'}'),
+          value: '${studentDetails.ethnicityNameC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Age',
           value:
-              'NA'),
+              '-'),
       StudentPlusInfoModel(
           label: 'DOB',
           value:
-              '${studentDetails.dobC ?? 'NA'}'),
+              '${studentDetails.dobC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'ELL Status', value: '${studentDetails.ellC ?? 'NA'}'),
+          label: 'ELL Status', value: '${studentDetails.ellC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'ELL Level',
-          value: '${studentDetails.ellProficiencyC ?? 'NA'}'),
+          value: '${studentDetails.ellProficiencyC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'IEP Status', value: '${studentDetails.iepProgramC ?? 'NA'}'),
+          label: 'IEP Status', value: '${studentDetails.iepProgramC ?? '-'}'),
     ];
     return studentInfoList;
   }
@@ -146,4 +147,29 @@ class StudentPlusUtility {
       return 'NA';
     }
   }
+
+    /* --------------------- Function to return subject list -------------------- */
+  static List<String> getSubjectList({required List<StudentPlusWorkModel> list}) {
+    List<String> subjectList = [];
+    for (var i = 0; i < list.length; i++) {
+      if (!subjectList.contains(list[i].subjectC) && list[i].subjectC != null) {
+        subjectList.add(list[i].subjectC ?? '');
+      }
+    }
+    return subjectList;
+  }
+
+  /* --------- Function to return teacher list from student work list --------- */
+  static List<String> getTeacherList({required List<StudentPlusWorkModel> list}) {
+    List<String> teacherList = [];
+    for (var i = 0; i < list.length; i++) {
+      if (!teacherList.contains(
+              "${list[i].firstName ?? ''} ${list[i].lastName ?? ''}") &&
+          list[i].subjectC != null) {
+        teacherList.add("${list[i].firstName ?? ''} ${list[i].lastName ?? ''}");
+      }
+    }
+    return teacherList;
+  }
+
 }

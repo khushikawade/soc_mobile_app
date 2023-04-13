@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
@@ -363,7 +364,15 @@ class _StaffPageState extends State<StaffPage> {
     FirebaseAnalyticsService.logLogin();
 
     Globals.lastIndex = Globals.controller!.index;
-
+    /* ---- Clear login local data base once because we added classroom scope --- */
+    SharedPreferences clearGoogleLoginLocalDb =
+        await SharedPreferences.getInstance();
+    final clearCacheResult =
+        await clearGoogleLoginLocalDb.getBool('delete_local_login_details');
+    if (clearCacheResult != true) {
+      await UserGoogleProfile.clearUserProfile();
+      await clearGoogleLoginLocalDb.setBool('delete_local_login_details', true);
+    }
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 

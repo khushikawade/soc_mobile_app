@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/header_widget.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -31,7 +32,6 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(999);
   int pageValue = 0;
   // double _progress;
-
   @override
   void initState() {
     _pageController = PageController()
@@ -90,6 +90,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
         //  crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
+            padding: EdgeInsets.only(top: 16),
             alignment: Alignment.topRight,
             child: IconButton(
               onPressed: () {
@@ -103,7 +104,8 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               ),
             ),
           ),
-          HeaderWidget(kLabelSpacing: 20, text: 'Select Filter'),
+          StudentPlusScreenTitleWidget(
+              kLabelSpacing: 20, text: 'Select Filter'),
           SpacerWidget(10),
           Expanded(
             child: ListView.builder(
@@ -144,6 +146,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               children: [
                 Container(
                     alignment: Alignment.topRight,
+                    padding: EdgeInsets.only(top: 16),
                     //color: Colors.amber,
                     child: IconButton(
                       onPressed: () {
@@ -159,7 +162,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 0),
                   minLeadingWidth: 70,
-                  title: HeaderWidget(
+                  title: StudentPlusScreenTitleWidget(
                       kLabelSpacing: 20,
                       text: selectedTypeFilterIndex == 0
                           ? "Select Subject"
