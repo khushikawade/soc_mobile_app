@@ -10,6 +10,12 @@ class PBISPlusImportRoster extends PBISPlusEvent {
   List<Object> get props => [];
 }
 
+class GetPBISTotalInteractionsByTeacher extends PBISPlusEvent {
+  GetPBISTotalInteractionsByTeacher();
+  @override
+  List<Object> get props => [];
+}
+
 class GetPBISPlusHistory extends PBISPlusEvent {
   GetPBISPlusHistory();
   @override

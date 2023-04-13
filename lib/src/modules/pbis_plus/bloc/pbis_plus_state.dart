@@ -30,6 +30,14 @@ class PBISPlusImportRosterSuccess extends PBISPlusState {
   List<Object> get props => [];
 }
 
+class PBISPlusTotalInteractionByTeacherSuccess extends PBISPlusState {
+  final List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList;
+  PBISPlusTotalInteractionByTeacherSuccess(
+      {required this.pbisTotalInteractionList});
+  @override
+  List<Object> get props => [];
+}
+
 class PBISPlusHistorySuccess extends PBISPlusState {
   final List<PBISPlusHistoryModal> pbisHistoryData;
   PBISPlusHistorySuccess({required this.pbisHistoryData});

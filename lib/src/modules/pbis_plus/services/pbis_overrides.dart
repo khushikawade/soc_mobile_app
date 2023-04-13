@@ -3,6 +3,9 @@ import 'package:intl/intl.dart';
 class PBISPlusOverrides {
   static final String PBISPlusClassroomDB = 'PBISPlus_student_course_details';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
+  static final String PBISPlusTotalInteractionByTeacherDB =
+      'PBISPlus_total_interactions_by_teacher';
+
   static final double profilePictureSize = 40;
   static final double circleSize = 25;
 

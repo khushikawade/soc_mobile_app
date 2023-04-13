@@ -93,9 +93,9 @@ class ClassroomProfile {
   @HiveField(4)
   List<ClassroomPermissions>? permissions;
   @HiveField(5)
-  int? like;
+  int? engaged;
   @HiveField(6)
-  int? thanks;
+  int? niceWork;
   @HiveField(7)
   int? helpful;
   @HiveField(8)
@@ -105,8 +105,8 @@ class ClassroomProfile {
       this.emailAddress,
       this.photoUrl,
       this.permissions,
-      this.like,
-      this.thanks,
+      this.engaged,
+      this.niceWork,
       this.helpful});
 
   ClassroomProfile.fromJson(Map<String, dynamic> json) {
@@ -124,8 +124,8 @@ class ClassroomProfile {
         permissions!.add(new ClassroomPermissions.fromJson(v));
       });
     }
-    like = 0;
-    thanks = 0;
+    engaged = 0;
+    niceWork = 0;
     helpful = 0;
   }
 

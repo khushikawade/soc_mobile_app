@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class CommonProfileWidget extends StatelessWidget {
-  const CommonProfileWidget({
+class PBISCommonProfileWidget extends StatelessWidget {
+  const PBISCommonProfileWidget({
     Key? key,
     required this.profilePictureSize,
     required this.imageUrl,

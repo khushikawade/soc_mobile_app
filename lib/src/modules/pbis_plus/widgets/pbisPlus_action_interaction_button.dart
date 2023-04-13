@@ -121,11 +121,11 @@ class PBISPlusActionInteractionButtonState
     });
     print(widget.iconData.title);
     if (widget.iconData.title == 'Like') {
-      widget.studentValueNotifier.value.profile!.like =
-          widget.studentValueNotifier.value.profile!.like! + 1;
+      widget.studentValueNotifier.value.profile!.engaged =
+          widget.studentValueNotifier.value.profile!.engaged! + 1;
     } else if (widget.iconData.title == 'Thanks') {
-      widget.studentValueNotifier.value.profile!.thanks =
-          widget.studentValueNotifier.value.profile!.thanks! + 1;
+      widget.studentValueNotifier.value.profile!.niceWork =
+          widget.studentValueNotifier.value.profile!.niceWork! + 1;
     } else {
       widget.studentValueNotifier.value.profile!.helpful =
           widget.studentValueNotifier.value.profile!.helpful! + 1;
@@ -143,8 +143,8 @@ class PBISPlusActionInteractionButtonState
   _getCounts() {
     String title = widget.iconData.title;
     var map = {
-      'Engaged': widget.studentValueNotifier.value.profile!.like,
-      'Nice work': widget.studentValueNotifier.value.profile!.thanks,
+      'Engaged': widget.studentValueNotifier.value.profile!.engaged,
+      'Nice work': widget.studentValueNotifier.value.profile!.niceWork,
       'Helpful': widget.studentValueNotifier.value.profile!.helpful,
     };
 

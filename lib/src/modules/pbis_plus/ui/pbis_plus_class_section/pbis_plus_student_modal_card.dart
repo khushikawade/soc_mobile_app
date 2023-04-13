@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -160,10 +161,23 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                     //   width: 2,
                     // ),
                   ),
-                  child: CommonProfileWidget(
-                      profilePictureSize: PBISPlusOverrides.profilePictureSize,
-                      imageUrl:
-                          widget.studentValueNotifier.value.profile!.photoUrl!),
+                  child: widget.studentValueNotifier.value!.profile!.photoUrl!
+                          .contains('default-user')
+                      ? PBISCircularProfileName(
+                          firstLetter: widget.studentValueNotifier.value
+                              .profile!.name!.givenName!
+                              .substring(0, 1),
+                          lastLetter: widget.studentValueNotifier.value.profile!
+                              .name!.familyName!
+                              .substring(0, 1),
+                          profilePictureSize:
+                              PBISPlusOverrides.profilePictureSize,
+                        )
+                      : PBISCommonProfileWidget(
+                          profilePictureSize:
+                              PBISPlusOverrides.profilePictureSize,
+                          imageUrl: widget
+                              .studentValueNotifier.value.profile!.photoUrl!),
                 ),
               ),
             ),
@@ -189,9 +203,12 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                           Widget? child) {
                         return Text(
                           PBISPlusUtility.numberAbbreviationFormat(widget
-                                  .studentValueNotifier.value!.profile!.like! +
+                                  .studentValueNotifier
+                                  .value!
+                                  .profile!
+                                  .engaged! +
                               widget.studentValueNotifier.value!.profile!
-                                  .thanks! +
+                                  .niceWork! +
                               widget.studentValueNotifier.value!.profile!
                                   .helpful!),
                           style: Theme.of(context)

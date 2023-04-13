@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_mod
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
@@ -141,10 +142,21 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     //   width: 2,
                     // ),
                   ),
-                  child: CommonProfileWidget(
-                      profilePictureSize: profilePictureSize,
-                      imageUrl: widget
-                          .studentValueNotifier.value!.profile!.photoUrl!),
+                  child: widget.studentValueNotifier.value!.profile!.photoUrl!
+                          .contains('default-user')
+                      ? PBISCircularProfileName(
+                          firstLetter: widget.studentValueNotifier.value
+                              .profile!.name!.givenName!
+                              .substring(0, 1),
+                          lastLetter: widget.studentValueNotifier.value.profile!
+                              .name!.familyName!
+                              .substring(0, 1),
+                          profilePictureSize: profilePictureSize,
+                        )
+                      : PBISCommonProfileWidget(
+                          profilePictureSize: profilePictureSize,
+                          imageUrl: widget
+                              .studentValueNotifier.value!.profile!.photoUrl!),
                 ),
               ),
               Positioned(
@@ -165,12 +177,12 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(
-                        PBISPlusUtility.numberAbbreviationFormat(
-                            widget.studentValueNotifier.value!.profile!.like! +
-                                widget.studentValueNotifier.value!.profile!
-                                    .thanks! +
-                                widget.studentValueNotifier.value!.profile!
-                                    .helpful!),
+                        PBISPlusUtility.numberAbbreviationFormat(widget
+                                .studentValueNotifier.value!.profile!.engaged! +
+                            widget.studentValueNotifier.value!.profile!
+                                .niceWork! +
+                            widget
+                                .studentValueNotifier.value!.profile!.helpful!),
                         style: Theme.of(context)
                             .textTheme
                             .subtitle1!
