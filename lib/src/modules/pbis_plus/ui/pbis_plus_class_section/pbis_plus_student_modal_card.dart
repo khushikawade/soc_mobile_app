@@ -15,12 +15,16 @@ import '../../widgets/PBISPlus_action_interaction_button.dart';
 class PBISPlusStudentCardModal extends StatefulWidget {
   final ValueNotifier<ClassroomStudents> studentValueNotifier;
   final String heroTag;
+  final Key? scaffoldKey;
+  final String classroomCourseId;
 
-  PBISPlusStudentCardModal({
-    Key? key,
-    required this.studentValueNotifier,
-    required this.heroTag,
-  }) : super(key: key);
+  PBISPlusStudentCardModal(
+      {Key? key,
+      required this.studentValueNotifier,
+      required this.heroTag,
+      required this.scaffoldKey,
+      required this.classroomCourseId})
+      : super(key: key);
 
   @override
   State<PBISPlusStudentCardModal> createState() =>
@@ -48,6 +52,8 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
             child: PBISPlusActionInteractionButton(
               studentValueNotifier: widget.studentValueNotifier,
               iconData: iconData,
+              classroomCourseId: widget.classroomCourseId,
+              scaffoldKey: widget.scaffoldKey,
               // onTapCallback: (bool isLiked) async {
               //   _getKeys(index).currentState?.updateState(isLiked);
               //   if (index == 0) {

@@ -15,9 +15,9 @@ class PBISPlusLoading extends PBISPlusState {
 }
 
 class PBISErrorState extends PBISPlusState {
-  final String? errorMsg;
+  final error;
   PBISErrorState({
-    this.errorMsg,
+    this.error,
   });
   @override
   List<Object> get props => [];
@@ -30,13 +30,23 @@ class PBISPlusImportRosterSuccess extends PBISPlusState {
   List<Object> get props => [];
 }
 
-class PBISPlusTotalInteractionByTeacherSuccess extends PBISPlusState {
-  final List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList;
-  PBISPlusTotalInteractionByTeacherSuccess(
-      {required this.pbisTotalInteractionList});
+class AddPBISInteractionSuccess extends PBISPlusState {
+  final obj;
+  AddPBISInteractionSuccess({this.obj});
+  AddPBISInteractionSuccess copyWith({final obj}) {
+    return AddPBISInteractionSuccess(obj: obj ?? this.obj);
+  }
+
   @override
   List<Object> get props => [];
 }
+// class PBISPlusTotalInteractionByTeacherSuccess extends PBISPlusState {
+//   final List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList;
+//   PBISPlusTotalInteractionByTeacherSuccess(
+//       {required this.pbisTotalInteractionList});
+//   @override
+//   List<Object> get props => [];
+// }
 
 class PBISPlusHistorySuccess extends PBISPlusState {
   final List<PBISPlusHistoryModal> pbisHistoryData;

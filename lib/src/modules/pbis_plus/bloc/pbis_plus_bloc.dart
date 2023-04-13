@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -6,6 +7,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -41,7 +43,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             await UserGoogleProfile.getUserProfile();
 
         LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(PBISPlusOverrides.PBISPlusClassroomDB);
+            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
         if (_localData.isEmpty) {
@@ -84,7 +86,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               googleClassroomCourseList: classroomStudentProfile);
         } else {
           yield PBISErrorState(
-            errorMsg: 'ReAuthentication is required',
+            error: 'ReAuthentication is required',
           );
         }
       } catch (e) {
@@ -136,6 +138,65 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     //   yield PBISPlusTotalInteractionByTeacherSuccess(
     //       pbisTotalInteractionList: pbisTotalInteractionList);
     // }
+
+    /*----------------------------------------------------------------------------------------------*/
+    /*------------------------------GetPBISTotalInteractionsByTeacher-------------------------------*/
+    /*----------------------------------------------------------------------------------------------*/
+
+    if (event is AddPBISInteraction) {
+      try {
+        //Fetch logged in user profile
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        String? _objectName = "${PBISPlusOverrides.pbisStudentInteractionDB}";
+        LocalDatabase<ClassroomCourse> _localDb = LocalDatabase(_objectName);
+        List<ClassroomCourse> _localData = await _localDb.getData();
+
+        yield PBISPlusLoading();
+        if (_localData.isNotEmpty) {
+          for (int i = 0; i < _localData.length; i++) {
+            for (int j = 0; j < _localData[i].students!.length; j++) {
+              if (_localData[i].students![j].profile!.id == event.studentId) {
+                ClassroomCourse obj = _localData[i];
+                // print(_localData[i].likeCount);
+                _localDb.putAt(i, obj);
+              }
+            }
+          }
+        }
+
+        var data = await addPBISInteraction({
+          "Student_Id": event.studentId!,
+          "Classroom_Course_Id": "${event.classroomCourseId}",
+          "Engaged": "${event.engaged}",
+          "Nice_Work": "${event.niceWork}",
+          "Helpful": "${event.helpful}",
+          "School_Id": Overrides.SCHOOL_ID,
+          "DBN": Globals.schoolDbnC,
+          "Teacher_Email": userProfileLocalData[0].userEmail,
+          "Teacher_Name":
+              userProfileLocalData[0].userName!.replaceAll('%20', ' '),
+          "Status": "active"
+        });
+
+        yield AddPBISInteractionSuccess(
+          obj: data,
+        );
+      } catch (e) {
+        if (e.toString().contains('NO_CONNECTION')) {
+          Utility.showSnackBar(
+              event.scaffoldKey,
+              'Make sure you have a proper Internet connection',
+              event.context,
+              null);
+        } else {
+          Utility.showSnackBar(
+              event.scaffoldKey, 'Something went wrong', event.context, null);
+        }
+        yield PBISErrorState(error: e);
+      }
+    }
 
     /*----------------------------------------------------------------------------------------------*/
     /*---------------------------------GetPBISPlusHistory-------------------------------------------*/
@@ -240,6 +301,49 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     } catch (e) {}
   }
+
+  /*----------------------------------------------------------------------------------------------*/
+  /*------------------------------Function getPBISTotalInteractionByTeacher-----------------------*/
+  /*----------------------------------------------------------------------------------------------*/
+
+  Future addPBISInteraction(body) async {
+    try {
+      final ResponseModel response = await _dbServices.postApi(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          body: body,
+          isGoogleApi: true);
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw ('something_went_wrong');
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  // Future addSocialAction(body) async {
+  //   try {
+  //     final ResponseModel response = await _dbServices.postApimain(
+  //         //timestamp=false is use to manage the UID. If not found, it will create a new record with UID
+  //         "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
+  //         body: body);
+
+  //     if (response.statusCode == 200) {
+  //       var res = response.data;
+  //       var data = res["statusCode"];
+  //       return data;
+  //     } else {
+  //       throw ('something_went_wrong');
+  //     }
+  //   } catch (e) {
+  //     throw (e);
+  //   }
+  // }
 
   /*----------------------------------------------------------------------------------------------*/
   /*------------------------------Function getPBISTotalInteractionByTeacher-----------------------*/

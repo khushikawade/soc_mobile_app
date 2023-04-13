@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -9,14 +10,19 @@ import 'package:like_button/like_button.dart';
 class PBISPlusActionInteractionButton extends StatefulWidget {
   final PBISPlusActionInteractionModal iconData;
   ValueNotifier<ClassroomStudents> studentValueNotifier;
+  final Key? scaffoldKey;
+  final String? classroomCourseId;
   // final Future<bool?> Function(bool)? onTapCallback;
 
-  PBISPlusActionInteractionButton({
-    Key? key,
-    required this.iconData,
-    required this.studentValueNotifier,
-    // required this.onTapCallback,
-  }) : super(key: key);
+  PBISPlusActionInteractionButton(
+      {Key? key,
+      required this.iconData,
+      required this.studentValueNotifier,
+      required this.scaffoldKey,
+      required this.classroomCourseId
+      // required this.onTapCallback,
+      })
+      : super(key: key);
 
   @override
   State<PBISPlusActionInteractionButton> createState() =>
@@ -25,6 +31,7 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
 
 class PBISPlusActionInteractionButtonState
     extends State<PBISPlusActionInteractionButton> {
+  PBISPlusBloc interactionBloc = new PBISPlusBloc();
   // void updateState(bool isLiked) {
   //   if (_isOffline) {
   //     Utility.currentScreenSnackBar("No Internet Connection", null);
@@ -106,7 +113,9 @@ class PBISPlusActionInteractionButtonState
           ],
         );
       },
-      child: _isOffline ? Text('Internet is not working') : SizedBox.shrink(),
+      child: _isOffline
+          ? Text('Make sure you have proper internet connection')
+          : SizedBox.shrink(),
     );
   }
 
@@ -120,16 +129,25 @@ class PBISPlusActionInteractionButtonState
       _showMessage.value = false;
     });
     print(widget.iconData.title);
-    if (widget.iconData.title == 'Like') {
+
+    if (widget.iconData.title == 'Engaged') {
       widget.studentValueNotifier.value.profile!.engaged =
           widget.studentValueNotifier.value.profile!.engaged! + 1;
-    } else if (widget.iconData.title == 'Thanks') {
+    } else if (widget.iconData.title == 'Nice work') {
       widget.studentValueNotifier.value.profile!.niceWork =
           widget.studentValueNotifier.value.profile!.niceWork! + 1;
     } else {
       widget.studentValueNotifier.value.profile!.helpful =
           widget.studentValueNotifier.value.profile!.helpful! + 1;
     }
+    interactionBloc.add(AddPBISInteraction(
+        context: context,
+        scaffoldKey: widget.scaffoldKey,
+        studentId: widget.studentValueNotifier.value.profile!.id,
+        classroomCourseId: widget.classroomCourseId,
+        engaged: widget.iconData.title == 'Engaged' ? 1 : 0,
+        niceWork: widget.iconData.title == 'Nice work' ? 1 : 0,
+        helpful: widget.iconData.title == 'Helpful' ? 1 : 0));
 
     /// send your request here
     // final bool success = await sendRequest();

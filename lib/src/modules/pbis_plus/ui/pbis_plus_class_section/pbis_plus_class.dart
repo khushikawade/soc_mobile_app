@@ -42,7 +42,6 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   void initState() {
     super.initState();
     pbisPlusClassroomBloc.add(PBISPlusImportRoster());
-    pbisPlusTotalInteractionBloc.add(GetPBISTotalInteractionsByTeacher());
   }
 
   @override
@@ -238,8 +237,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         )),
       ),
       googleClassroomCourseList[index].students!.length > 0
-          ? renderStudents(googleClassroomCourseList[index].students!,
-              googleClassroomCourseList[index].name!, index)
+          ? renderStudents(
+              googleClassroomCourseList[index].students!,
+              googleClassroomCourseList[index].name!,
+              index,
+              googleClassroomCourseList[index].id!)
           : Container(
               height: 65,
               padding: EdgeInsets.only(left: 20),
@@ -254,7 +256,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     ]);
   }
 
-  renderStudents(List<ClassroomStudents> studentList, String cLassName, i) {
+  renderStudents(List<ClassroomStudents> studentList, String cLassName, i,
+      String classroomCourseId) {
     // return GridView.custom(
     //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
     //     crossAxisCount: 4,
@@ -281,18 +284,15 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         shrinkWrap: true,
         children: List.generate(studentList.length, (index) {
           return _buildStudent(
-            ValueNotifier<ClassroomStudents>(studentList[index]),
-            index,
-            cLassName,
-          );
+              ValueNotifier<ClassroomStudents>(studentList[index]),
+              index,
+              cLassName,
+              classroomCourseId);
         }));
   }
 
-  Widget _buildStudent(
-    ValueNotifier<ClassroomStudents> studentValueNotifier,
-    int index,
-    String cLassName,
-  ) {
+  Widget _buildStudent(ValueNotifier<ClassroomStudents> studentValueNotifier,
+      int index, String cLassName, String classroomCourseId) {
     // String imageNum = generateRandomUniqueNumber().toString();
     // studentValueNotifier.value.profile!.photoUrl =
     //     'https://source.unsplash.com/random/200x200?sig=$imageNum';
@@ -308,6 +308,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 // imageUrl: imageUrl,
                 studentValueNotifier: studentValueNotifier,
                 heroTag: heroTag,
+                classroomCourseId: classroomCourseId,
+                scaffoldKey: _scaffoldKey,
               ),
             ),
           ),
