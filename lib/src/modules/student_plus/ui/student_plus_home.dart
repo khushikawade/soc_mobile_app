@@ -1,15 +1,20 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
+import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_bottomnavbar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
+import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/error_message_widget.dart';
+import 'package:Soc/src/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusHome extends StatefulWidget {
-  final StudentPlusDetailsModel studentDetails;
-  const StudentPlusHome({Key? key, required this.studentDetails})
-      : super(key: key);
+  final StudentPlusDetailsModel studentPlusStudentInfo;
+  const StudentPlusHome({Key? key, required this.studentPlusStudentInfo}) : super(key: key);
 
   @override
   State<StudentPlusHome> createState() => _StudentPlusHomeState();
@@ -21,6 +26,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   // persistent tab controller use for navigate
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
+ // final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
 
   // list of bottom navigation bar icons
   List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
@@ -31,6 +37,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   @override
   void initState() {
     _controller.index = 0;
+    //_studentPlusBloc.add(GetStudentPlusDetails(studentId: widget.studentId));
     super.initState();
   }
 
@@ -42,7 +49,21 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: body(),
+      body: body()
+    );
+  }
+
+  // widget  to show loader while fetching information
+  Widget loaderWidget() {
+    return Stack(
+      children: [
+        CommonBackgroundImgWidget(),
+        Center(
+          child: CircularProgressIndicator.adaptive(
+            backgroundColor: AppTheme.kButtonColor,
+          ),
+        )
+      ],
     );
   }
 
@@ -56,7 +77,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             context,
             controller: _controller,
             screens: StudentPlusBottomNavBar.buildScreens(
-                studentInfo: widget.studentDetails),
+                studentInfo: widget.studentPlusStudentInfo),
             onItemSelected: (i) {
               //To go back to the staff screen of standard app
               if (i == 4) {

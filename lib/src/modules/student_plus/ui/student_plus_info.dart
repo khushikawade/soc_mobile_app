@@ -150,10 +150,9 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
             Container(
               padding: EdgeInsets.only(right: 0),
               width: (MediaQuery.of(context).size.width / 2) - 25,
-              child: (studentInfo.label == "Phone" &&
-                          studentInfo.value != "NA") ||
-                      (studentInfo.label == "Email" &&
-                          studentInfo.value != "NA")
+              child: (studentInfo.label == "Phone" ||
+                          studentInfo.label == "Email") &&
+                      studentInfo.value != "-"
                   ? InkWell(
                       onTap: () {
                         Utility.launchUrlOnExternalBrowser(

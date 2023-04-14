@@ -3,8 +3,9 @@ class StudentPlusOverrides {
   /*                  List of Static word used in student plus                  */
   /* -------------------------------------------------------------------------- */
   // Student Plus Module Local Db
-  static final String studentInfoRecentList = "student_info_recent_list";
+  static final String studentInfoRecentList = "student_info_recent_search_list";
   static final String studentWorkList = "student_work_list";
+  static final String studentPlusDetails = "student_plus_details";
   static final String searchTileStaticWord = 'Class';
   static final String recentSearchHeader = "Recent Search";
   static final String titleSearchPage = 'Search Any Student';
@@ -22,4 +23,6 @@ class StudentPlusOverrides {
   static final String examScreenPopupText =
       'The student’s position relative to students in the same grade level nationwide. For example, if a student’s percentile rank is 90%, this means the student scored better than or equal to 90% of their peers.';
   static final double kSymmetricPadding = 10.0;
+  static final String studentPlusBaseUrl =
+      "https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production";
 }

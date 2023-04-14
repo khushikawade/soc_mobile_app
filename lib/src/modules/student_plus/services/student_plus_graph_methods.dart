@@ -9,7 +9,7 @@ class StudentPlusGraphMethod {
   /*             Function to create nycGraphLineBarsData details                */
   /* -------------------------------------------------------------------------- */
 
-    static List<LineChartBarData> graphLineBarsData(
+  static List<LineChartBarData> graphLineBarsData(
       {required BuildContext context,
       required bool isIReadyGraph,
       required StudentPlusDetailsModel studentDetails,
@@ -243,15 +243,77 @@ class StudentPlusGraphMethod {
 
   static Color nysTooltipColor({required double value}) {
     if (value >= 1.00 && value <= 1.99) {
-      return Colors.red;
+      return Color(0xffe57373);
     } else if ((value >= 2.00 && value <= 2.99)) {
-      return Colors.yellow;
+      return Color(0xffffd54f);
     } else if ((value >= 3.00 && value <= 3.99)) {
-      return Colors.green;
+      return Color(0xff7ac36a);
     } else if ((value >= 4.00 && value <= 4.99)) {
-      return Colors.blue;
+      return Color(0xff64b5f6);
     } else {
-      return Colors.grey;
+      return Color(0xff737373);
     }
+  }
+
+  static Color iReadyTooltipColor(
+      {required String value, required String type}) {
+    Color color = Colors.black;
+    switch (value) {
+      case "3+ GL Below":
+        color = Color(0xffe57373);
+        break;
+      case "2+ GL Below":
+        color = Color(0xffe57373);
+        ;
+        break;
+      case "1 GL Below":
+        color = Color(0xffffd54f);
+        break;
+      case "Early GL":
+        color = type == 'BOY' ? Color(0xff7ac36a) : Color(0xffffd54f);
+        break;
+      case "Mid GL":
+        color = type == 'EOY'
+            ? Color(0xffffd54f)
+            : (type == 'MOY' ? Color(0xff7ac36a) : Color(0xff64b5f6));
+        break;
+      case "Late GL":
+        color = type == 'EOY' ? Color(0xff7ac36a) : Color(0xff64b5f6);
+        break;
+      case "Above GL":
+        color = Color(0xff64b5f6);
+        break;
+
+      default:
+        color = Color(0xff737373);
+    }
+
+    return color;
+  }
+
+  /* ------------ Function to get field for colors in iReady graph ------------ */
+  static String iReadyColorValue(
+      {required double x,
+      required bool isMathsSection,
+      required StudentPlusDetailsModel studentInfo}) {
+    String value = '';
+    if (x == 0.0) {
+      value = isMathsSection == true
+          ? studentInfo.mathPreviousEOYOverallRelPlace ?? ''
+          : studentInfo.ELAPreviousEOYOverallRelPlace ?? '';
+    } else if (x == 1.0) {
+      value = isMathsSection == true
+          ? studentInfo.mathCurrentBOYOverallRelativePlace ?? ''
+          : studentInfo.ELACurrentBOYOverallRelativePlace ?? '';
+    } else if (x == 2.0) {
+      value = isMathsSection == true
+          ? studentInfo.mathCurrentMOYOverallRelativePlace ?? ''
+          : studentInfo.ELACurrentMOYOverallRelativePlace ?? '';
+    } else {
+      value = isMathsSection == true
+          ? studentInfo.mathCurrentEOYOverallRelativePlace ?? ''
+          : studentInfo.ELACurrentEOYOverallRelativePlace ?? '';
+    }
+    return value;
   }
 }

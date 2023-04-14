@@ -55,11 +55,12 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
           minX: widget.isIReadyGraph == true ? 0 : 2020,
           maxY: widget.isIReadyGraph == true ? 110 : 5,
           minY: widget.isIReadyGraph == true ? 0 : 0,
-          showingTooltipIndicators: StudentPlusGraphMethod.showingTooltipIndicators(
-              context: context,
-              isIReadyGraph: widget.isIReadyGraph,
-              isMathSection: widget.isMathsSection,
-              studentDetails: widget.studentDetails),
+          showingTooltipIndicators:
+              StudentPlusGraphMethod.showingTooltipIndicators(
+                  context: context,
+                  isIReadyGraph: widget.isIReadyGraph,
+                  isMathSection: widget.isMathsSection,
+                  studentDetails: widget.studentDetails),
           lineTouchData: LineTouchData(
             enabled: false, // false because it will show always
             getTouchedSpotIndicator:
@@ -94,7 +95,16 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                       return lineBarsSpot.map((lineBarSpot) {
                         return LineTooltipItem(
                           lineBarSpot.y.toInt().toString(),
-                          Theme.of(context).textTheme.headline4!,
+                          Theme.of(context).textTheme.headline4!.copyWith(
+                              color: StudentPlusGraphMethod.iReadyTooltipColor(
+                                  type: lineBarSpot.x == 1.0
+                                      ? 'BOY'
+                                      : (lineBarSpot.x == 2.0 ? 'MOY' : 'EOY'),
+                                  value:
+                                      StudentPlusGraphMethod.iReadyColorValue(
+                                          x: lineBarSpot.x,
+                                          isMathsSection: widget.isMathsSection,
+                                          studentInfo: widget.studentDetails))),
                         );
                       }).toList();
                     },
@@ -117,8 +127,8 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                                     .textTheme
                                     .headline4!
                                     .copyWith(
-                                        color:
-                                            StudentPlusGraphMethod.nysTooltipColor(
+                                        color: StudentPlusGraphMethod
+                                            .nysTooltipColor(
                                                 value: lineBarSpot.y),
                                         fontWeight: FontWeight.bold),
                               ),
