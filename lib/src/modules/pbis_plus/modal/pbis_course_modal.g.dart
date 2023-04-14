@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'course_modal.dart';
+part of 'pbis_course_modal.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:hive/hive.dart';
-part 'course_modal.g.dart';
+part 'pbis_course_modal.g.dart';
 
 @HiveType(typeId: 33)
 class ClassroomCourse {

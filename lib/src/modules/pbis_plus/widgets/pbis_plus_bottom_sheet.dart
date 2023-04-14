@@ -45,8 +45,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     text: widget.title!,
                     textTheme: Theme.of(context)
                         .textTheme
-                        .headline3!
-                        .copyWith(fontWeight: FontWeight.bold)),
+                        .headline5!
+                        .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
               SpacerWidget(20),
               if (widget.content) ...[
                 _listTileMenu(
@@ -91,10 +91,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       title: Utility.textWidget(
           text: title!,
           context: context,
-          textTheme: Theme.of(context)
-              .textTheme
-              .headline3!
-              .copyWith(fontWeight: FontWeight.bold)),
+          textTheme: Theme.of(context).textTheme.headline3!),
       onTap: onTap,
     );
   }

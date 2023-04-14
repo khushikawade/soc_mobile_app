@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/pbis_plus/modal/course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
@@ -211,9 +211,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           alignment: Alignment.topCenter,
           height: MediaQuery.of(context).size.height * 0.43,
           width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.symmetric(horizontal: 30),
+          margin: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
+            // color: Theme.of(context).backgroundColor,
             // border: Border.all(
             //   color: Color(0xff000000) == Theme.of(context).backgroundColor
             //       ? Color(0xffF7F8F9)
@@ -244,12 +245,22 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         headingRowColor: MaterialStateColor.resolveWith(
             (states) => Color.fromRGBO(50, 52, 67, 1)),
         dividerThickness: 5.0,
-        border: TableBorder.all(
-          color: Colors.grey,
-          width: 1.0,
-          borderRadius: BorderRadius.circular(5),
-          style: BorderStyle.solid,
+        border: TableBorder(
+          horizontalInside: BorderSide(
+            width: 2.0,
+            color: Colors.white,
+          ),
+          // verticalInside: BorderSide(
+          //   width: 1.0,
+          //   color: Colors.grey,
+          // ),
         ),
+        // TableBorder.all(
+        //   color: Colors.white,
+        //   width: 3.0,
+        //   borderRadius: BorderRadius.circular(5),
+        //   style: BorderStyle.solid,
+        // ),
         columns: PBISPlusDataTableModal.PBISPlusDataTableHeadingRaw.map(
             (PBISPlusDataTableModal item) {
           return buildDataColumn(item);
@@ -266,15 +277,25 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           Icon(
             item.iconData,
             color: item.color,
+            size: 35,
           ),
           Padding(padding: EdgeInsets.only(top: 5)),
-          Text(
-            item.title,
+          Utility.textWidget(
+            context: context,
+            text: item.title,
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ));
 
   DataRow buildDataRow(int index) => DataRow(
+        color: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          return Theme.of(context).backgroundColor; // Use the default value.
+        }),
         cells: [
           DataCell(Utility.textWidget(
             text: PBISPlusOverrides.data[index]['Date'].toString(),
