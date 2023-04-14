@@ -65,56 +65,73 @@ class PBISPlusActionInteractionButtonState
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            LikeButton(
-              likeCountAnimationType: LikeCountAnimationType.none,
-              likeCountPadding: const EdgeInsets.only(left: 5.0),
-              animationDuration: Duration(milliseconds: 1000),
-              countPostion: CountPostion.right,
-              isLiked: null,
-              size: 20,
-              onTap: _onLikeButtonTapped,
-              circleColor: CircleColor(
-                start: widget.iconData.color,
-                end: widget.iconData.color,
-              ),
-              bubblesColor: BubblesColor(
-                dotPrimaryColor: widget.iconData.color,
-                dotSecondaryColor: widget.iconData.color,
-              ),
-              likeBuilder: (bool isLiked) {
-                return Icon(
-                  widget.iconData.iconData,
-                  color: widget.iconData.color,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                LikeButton(
+                  padding: EdgeInsets.all(0),
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  likeCountAnimationType: LikeCountAnimationType.none,
+                  likeCountPadding: const EdgeInsets.only(left: 5.0),
+                  animationDuration: Duration(milliseconds: 1000),
+                  countPostion: CountPostion.right,
+                  isLiked: null,
                   size: 20,
-                );
-              },
-              likeCount: _getCounts(),
+                  onTap: _onLikeButtonTapped,
+                  circleColor: CircleColor(
+                    start: widget.iconData.color,
+                    end: widget.iconData.color,
+                  ),
+                  bubblesColor: BubblesColor(
+                    dotPrimaryColor: widget.iconData.color,
+                    dotSecondaryColor: widget.iconData.color,
+                  ),
+                  likeBuilder: (bool isLiked) {
+                    return Icon(
+                      widget.iconData.iconData,
+                      color: widget.iconData.color,
+                      size: 20,
+                    );
+                  },
+                  // likeCount: _getCounts(),
+                ),
+                _getCounts()
+              ],
             ),
-            ValueListenableBuilder<bool>(
-              valueListenable: _showMessage,
-              builder: (BuildContext context, bool value, Widget? child) {
-                return value
-                    ? SizedBox(
-                        width: 40,
-                        height: 20,
-                        child: FittedBox(
-                          child: Text(
-                            widget.iconData.title,
-                            style: Theme.of(context).textTheme.bodyText1!,
-                          ),
-                        ),
-                      )
-                    : SizedBox(
-                        width: 40,
-                        height: 20,
-                      );
-              },
-            ),
+            Utility.textWidget(
+                text: widget.iconData.title,
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(fontSize: 12)),
+            // ValueListenableBuilder<bool>(
+            //   valueListenable: _showMessage,
+            //   builder: (BuildContext context, bool value, Widget? child) {
+            //     return value
+            //         ? SizedBox(
+            //             width: 40,
+            //             height: 20,
+            //             child: FittedBox(
+            //               child: Text(
+            //                 widget.iconData.title,
+            //                 style: Theme.of(context).textTheme.bodyText1!,
+            //               ),
+            //             ),
+            //           )
+            //         : SizedBox(
+            //             width: 40,
+            //             height: 20,
+            //           );
+            //   },
+            // ),
           ],
         );
       },
       child: _isOffline
-          ? Text('Make sure you have proper internet connection')
+          ? Utility.textWidget(
+              text: 'Make sure you have proper internet connection',
+              context: context)
           : SizedBox.shrink(),
     );
   }
@@ -166,6 +183,11 @@ class PBISPlusActionInteractionButtonState
       'Helpful': widget.studentValueNotifier.value.profile!.helpful,
     };
 
-    return map[title] ?? 0;
+    int viewCount = map[title] ?? 0;
+    return Utility.textWidget(
+        text: viewCount.toString(),
+        context: context,
+        textTheme:
+            Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12));
   }
 }

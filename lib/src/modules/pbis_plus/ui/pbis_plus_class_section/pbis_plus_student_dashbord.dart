@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart'
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -55,7 +56,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             context,
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.miniEndFloat,
+              FloatingActionButtonLocation.miniEndDocked,
         ),
       ],
     );
@@ -74,17 +75,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             children: <Widget>[
               Container(
                   alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.21,
+                  height: MediaQuery.of(context).size.height * 0.18,
                   width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.fromLTRB(30, 40, 30, 20),
+                  margin: EdgeInsets.fromLTRB(16, 40, 16, 20),
                   decoration: BoxDecoration(
-                    // border: Border.all(
-                    //   color:
-                    //       Color(0xff000000) == Theme.of(context).backgroundColor
-                    //           ? Color(0xffF7F8F9)
-                    //           : Color(0xff111C20),
-                    //   width: 0.5,
-                    // ),
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(5),
                     boxShadow: [
@@ -106,7 +100,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       ],
                     ),
                   ),
-                  child: FittedBox(child: widget.StudentDetailWidget)
+                  child: FittedBox(
+                      child: Container(
+                          margin: EdgeInsets.only(top: 15),
+                          child: widget.StudentDetailWidget))
 
                   //  Column(
                   //   mainAxisAlignment: MainAxisAlignment.center,
@@ -197,7 +194,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         ),
         Container(
           alignment: Alignment.topCenter,
-          height: MediaQuery.of(context).size.height * 0.4,
+          height: MediaQuery.of(context).size.height * 0.43,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 30),
           decoration: BoxDecoration(
@@ -221,15 +218,17 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   }
 
   DataTable _buildDataTable() => DataTable(
-        headingRowHeight: 80,
+        headingRowHeight: 90,
+        dataRowHeight: 60,
         dataTextStyle: Theme.of(context).textTheme.headline2,
+        showBottomBorder: false,
         headingTextStyle: Theme.of(context)
             .textTheme
             .headline2!
             .copyWith(fontWeight: FontWeight.bold),
         headingRowColor: MaterialStateColor.resolveWith(
             (states) => Color.fromRGBO(50, 52, 67, 1)),
-        dividerThickness: 3.0,
+        dividerThickness: 5.0,
         border: TableBorder.all(
           color: Colors.grey,
           width: 1.0,
@@ -262,15 +261,45 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   DataRow buildDataRow(int index) => DataRow(
         cells: [
-          DataCell(Text(PBISPlusOverrides.data[index]['Date'].toString())),
-          DataCell(Text(PBISPlusOverrides.data[index]['Engaged'].toString())),
-          DataCell(Text(PBISPlusOverrides.data[index]['Nice Work'].toString())),
-          DataCell(Text(PBISPlusOverrides.data[index]['Helpful'].toString())),
+          DataCell(Utility.textWidget(
+            text: PBISPlusOverrides.data[index]['Date'].toString(),
+            context: context,
+            textAlign: TextAlign.center,
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold),
+          )),
+          DataCell(Utility.textWidget(
+            context: context,
+            text: PBISPlusOverrides.data[index]['Engaged'].toString(),
+            textAlign: TextAlign.center,
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold),
+          )),
+          DataCell(Utility.textWidget(
+            context: context,
+            text: PBISPlusOverrides.data[index]['Nice Work'].toString(),
+            textAlign: TextAlign.center,
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold),
+          )),
+          DataCell(Utility.textWidget(
+            context: context,
+            text: PBISPlusOverrides.data[index]['Helpful'].toString(),
+            textAlign: TextAlign.center,
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold),
+          )),
           DataCell(
             Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 10,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               margin: EdgeInsets.only(left: 2),
               decoration: BoxDecoration(
                 boxShadow: [],
@@ -278,10 +307,19 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(PBISPlusUtility.numberAbbreviationFormat(
-                      PBISPlusOverrides.data[index]['Total']))
+                  Utility.textWidget(
+                    context: context,
+                    text: PBISPlusUtility.numberAbbreviationFormat(
+                        PBISPlusOverrides.data[index]['Total']),
+                    textAlign: TextAlign.center,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline5!
+                        .copyWith(fontWeight: FontWeight.bold),
+                  )
                 ],
               ),
             ),

@@ -11,18 +11,15 @@ class PBISPlusCustomFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Container(
-            margin: EdgeInsets.only(bottom: 50),
-            child: FloatingActionButton(
-              backgroundColor: AppTheme.kButtonColor,
-              onPressed: onPressed,
-              child: Icon(PBISPlusIcons.PBISPlus_plus_floating,
-                  color: Theme.of(context).backgroundColor),
-            )),
-      ],
-    );
+    return Container(
+        height: 40,
+        width: 40,
+        margin: EdgeInsets.only(bottom: 40),
+        child: FloatingActionButton(
+          backgroundColor: AppTheme.kButtonColor,
+          onPressed: onPressed,
+          child: Icon(PBISPlusIcons.PBISPlus_plus_floating,
+              color: Theme.of(context).backgroundColor),
+        ));
   }
 }
