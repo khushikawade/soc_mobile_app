@@ -12,7 +12,13 @@ class StudentPlusScreenTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 0, horizontal: kLabelSpacing / 2),
-      child: Utility.textWidget(text: text, context: context),
+      child: Utility.textWidget(
+          text: text,
+          context: context,
+          textTheme: Theme.of(context)
+              .textTheme
+              .headline5!
+              .copyWith(fontWeight: FontWeight.w700)),
     );
   }
 }

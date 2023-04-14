@@ -46,11 +46,11 @@ class individual extends State<StudentPlusGradesPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 StudentPlusScreenTitleWidget(
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+                SpacerWidget(StudentPlusOverrides.kSymmetricPadding ),
                 StudentPlusInfoSearchBar(
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
