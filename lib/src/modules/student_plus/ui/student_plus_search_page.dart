@@ -88,6 +88,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
       children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+          resizeToAvoidBottomInset: true,
           appBar: StudentPlusAppBar(
             refresh: (v) {
               setState(() {});
@@ -296,7 +297,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.3,
+                // height: MediaQuery.of(context).size.height * 0.3,
                 child: Center(
                     child: CircularProgressIndicator.adaptive(
                   backgroundColor: AppTheme.kButtonColor,
@@ -389,11 +390,14 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                   bloc: _studentPlusBloc,
                   builder: (BuildContext contxt, StudentPlusState state) {
                     if (state is StudentPlusLoading) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.3,
+                      return Expanded(
+                        // height: MediaQuery.of(context).size.height * 0.6,
                         child: Center(
-                          child: CircularProgressIndicator.adaptive(
-                            backgroundColor: AppTheme.kButtonColor,
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator.adaptive(
+                              backgroundColor: AppTheme.kButtonColor,
+                            ),
                           ),
                         ),
                       );
@@ -403,7 +407,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                           : Expanded(
                               child: NoDataFoundErrorWidget(
                                 marginTop:
-                                    MediaQuery.of(context).size.height * 0.13,
+                                    MediaQuery.of(context).size.height * 0.15,
                                 isResultNotFoundMsg: false,
                                 isNews: false,
                                 isEvents: false,
