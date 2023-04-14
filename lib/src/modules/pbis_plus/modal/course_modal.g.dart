@@ -108,8 +108,8 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       emailAddress: fields[2] as String?,
       photoUrl: fields[3] as String?,
       permissions: (fields[4] as List?)?.cast<ClassroomPermissions>(),
-      like: fields[5] as int?,
-      thanks: fields[6] as int?,
+      engaged: fields[5] as int?,
+      niceWork: fields[6] as int?,
       helpful: fields[7] as int?,
     );
   }
@@ -129,9 +129,9 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       ..writeByte(4)
       ..write(obj.permissions)
       ..writeByte(5)
-      ..write(obj.like)
+      ..write(obj.engaged)
       ..writeByte(6)
-      ..write(obj.thanks)
+      ..write(obj.niceWork)
       ..writeByte(7)
       ..write(obj.helpful);
   }

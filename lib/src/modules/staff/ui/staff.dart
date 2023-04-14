@@ -364,6 +364,7 @@ class _StaffPageState extends State<StaffPage> {
     FirebaseAnalyticsService.logLogin();
 
     Globals.lastIndex = Globals.controller!.index;
+
     /* ---- Clear login local data base once because we added classroom scope --- */
     SharedPreferences clearGoogleLoginLocalDb =
         await SharedPreferences.getInstance();
@@ -373,6 +374,8 @@ class _StaffPageState extends State<StaffPage> {
       await UserGoogleProfile.clearUserProfile();
       await clearGoogleLoginLocalDb.setBool('delete_local_login_details', true);
     }
+    /* ---- Clear login local data base once because we added classroom scope --- */
+
     List<UserInformation> _profileData =
         await UserGoogleProfile.getUserProfile();
 
@@ -393,15 +396,7 @@ class _StaffPageState extends State<StaffPage> {
       Globals.teacherEmailId = _profileData[0].userEmail!.split('@')[0];
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
       DateTime currentDateTime = DateTime.now();
-      _ocrBlocLogs.add(LogUserActivityEvent(
-          sessionId: Globals.sessionId,
-          teacherId: Globals.teacherId,
-          activityId: '2',
-          accountId: Globals.appSetting.schoolNameC,
-          accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-          dateTime: currentDateTime.toString(),
-          description: 'Graded+ Accessed(Login)',
-          operationResult: 'Success'));
+
       //    await _getLocalDb();
       navigatorToScreen(actionName: actionName);
     }
@@ -413,6 +408,17 @@ class _StaffPageState extends State<StaffPage> {
           MaterialPageRoute(builder: (context) => GradedLandingPage()));
     } else {
       if (actionName == 'GRADED+') {
+        //Graded+ login activity
+        _ocrBlocLogs.add(LogUserActivityEvent(
+            sessionId: Globals.sessionId,
+            teacherId: Globals.teacherId,
+            activityId: '2',
+            accountId: Globals.appSetting.schoolNameC,
+            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            dateTime: currentDateTime.toString(),
+            description: 'Graded+ Accessed(Login)',
+            operationResult: 'Success'));
+
         pushNewScreen(
           context,
           screen: StartupPage(

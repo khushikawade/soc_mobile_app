@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -14,12 +15,16 @@ import '../../widgets/PBISPlus_action_interaction_button.dart';
 class PBISPlusStudentCardModal extends StatefulWidget {
   final ValueNotifier<ClassroomStudents> studentValueNotifier;
   final String heroTag;
+  final Key? scaffoldKey;
+  final String classroomCourseId;
 
-  PBISPlusStudentCardModal({
-    Key? key,
-    required this.studentValueNotifier,
-    required this.heroTag,
-  }) : super(key: key);
+  PBISPlusStudentCardModal(
+      {Key? key,
+      required this.studentValueNotifier,
+      required this.heroTag,
+      required this.scaffoldKey,
+      required this.classroomCourseId})
+      : super(key: key);
 
   @override
   State<PBISPlusStudentCardModal> createState() =>
@@ -43,26 +48,30 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
         (index) {
           final iconData = PBISPlusActionInteractionModal
               .PBISPlusActionInteractionIcons[index];
-          return Expanded(
-            child: PBISPlusActionInteractionButton(
-              studentValueNotifier: widget.studentValueNotifier,
-              iconData: iconData,
-              // onTapCallback: (bool isLiked) async {
-              //   _getKeys(index).currentState?.updateState(isLiked);
-              //   if (index == 0) {
-              //     widget.studentValueNotifier.value.profile!.like =
-              //         widget.studentValueNotifier.value.profile!.like! + 1;
-              //   } else if (index == 1) {
-              //     widget.studentValueNotifier.value.profile!.thanks =
-              //         widget.studentValueNotifier.value.profile!.thanks! + 1;
-              //   } else {
-              //     widget.studentValueNotifier.value.profile!.helpful =
-              //         widget.studentValueNotifier.value.profile!.helpful! + 1;
-              //   }
-              //   setState(() {});
-              //   return isLiked;
-              // },
-            ),
+          return
+              // Expanded(
+              // child:
+              PBISPlusActionInteractionButton(
+            studentValueNotifier: widget.studentValueNotifier,
+            iconData: iconData,
+            classroomCourseId: widget.classroomCourseId,
+            scaffoldKey: widget.scaffoldKey,
+            // onTapCallback: (bool isLiked) async {
+            //   _getKeys(index).currentState?.updateState(isLiked);
+            //   if (index == 0) {
+            //     widget.studentValueNotifier.value.profile!.like =
+            //         widget.studentValueNotifier.value.profile!.like! + 1;
+            //   } else if (index == 1) {
+            //     widget.studentValueNotifier.value.profile!.thanks =
+            //         widget.studentValueNotifier.value.profile!.thanks! + 1;
+            //   } else {
+            //     widget.studentValueNotifier.value.profile!.helpful =
+            //         widget.studentValueNotifier.value.profile!.helpful! + 1;
+            //   }
+            //   setState(() {});
+            //   return isLiked;
+            // },
+            // ),
           );
         },
       ),
@@ -70,20 +79,23 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
 
     final Column pbisStudentDetailWidget = Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        SpacerWidget(40),
+        SpacerWidget(MediaQuery.of(context).size.width * 0.10),
         Text(
           widget.studentValueNotifier.value.profile!.name!.fullName!,
           style: Theme.of(context)
               .textTheme
-              .subtitle1!
+              .bodyText2!
               .copyWith(fontWeight: FontWeight.bold),
         ),
-        SpacerWidget(20),
+        // SpacerWidget(MediaQuery.of(context).size.width * 0.07),
         Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            height: 60,
+            alignment: Alignment.center,
+            margin:
+                EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.07),
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            // height: 60,
             width: MediaQuery.of(context).size.width * 0.7,
             child: ActionInteractionButtons)
       ],
@@ -99,17 +111,10 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
           children: <Widget>[
             Container(
                 alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.2,
+                height: MediaQuery.of(context).size.height * 0.17,
                 width: MediaQuery.of(context).size.width * 0.7,
                 margin: EdgeInsets.only(top: 45),
                 decoration: BoxDecoration(
-                  // border: Border.all(
-                  //   color:
-                  //       Color(0xff000000) == Theme.of(context).backgroundColor
-                  //           ? Color(0xffF7F8F9)
-                  //           : Color(0xff111C20),
-                  //   width: 0.2,
-                  // ),
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5),
                   boxShadow: [
@@ -133,7 +138,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                     ],
                   ),
                 ),
-                child: SingleChildScrollView(child: pbisStudentDetailWidget)),
+                child: pbisStudentDetailWidget),
             Positioned(
               top: 0,
               child: GestureDetector(
@@ -160,10 +165,23 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                     //   width: 2,
                     // ),
                   ),
-                  child: CommonProfileWidget(
-                      profilePictureSize: PBISPlusOverrides.profilePictureSize,
-                      imageUrl:
-                          widget.studentValueNotifier.value.profile!.photoUrl!),
+                  child: widget.studentValueNotifier.value!.profile!.photoUrl!
+                          .contains('default-user')
+                      ? PBISCircularProfileName(
+                          firstLetter: widget.studentValueNotifier.value
+                              .profile!.name!.givenName!
+                              .substring(0, 1),
+                          lastLetter: widget.studentValueNotifier.value.profile!
+                              .name!.familyName!
+                              .substring(0, 1),
+                          profilePictureSize:
+                              PBISPlusOverrides.profilePictureSize,
+                        )
+                      : PBISCommonProfileWidget(
+                          profilePictureSize:
+                              PBISPlusOverrides.profilePictureSize,
+                          imageUrl: widget
+                              .studentValueNotifier.value.profile!.photoUrl!),
                 ),
               ),
             ),
@@ -189,9 +207,12 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                           Widget? child) {
                         return Text(
                           PBISPlusUtility.numberAbbreviationFormat(widget
-                                  .studentValueNotifier.value!.profile!.like! +
+                                  .studentValueNotifier
+                                  .value!
+                                  .profile!
+                                  .engaged! +
                               widget.studentValueNotifier.value!.profile!
-                                  .thanks! +
+                                  .niceWork! +
                               widget.studentValueNotifier.value!.profile!
                                   .helpful!),
                           style: Theme.of(context)

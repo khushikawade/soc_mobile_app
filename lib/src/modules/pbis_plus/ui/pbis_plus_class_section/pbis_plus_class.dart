@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_modal_card.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
@@ -28,7 +29,9 @@ class PBISPlusClass extends StatefulWidget {
 }
 
 class _PBISPlusClassState extends State<PBISPlusClass> {
-  PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
+  PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
+  PBISPlusBloc pbisPlusTotalInteractionBloc = PBISPlusBloc();
+
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -38,7 +41,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   @override
   void initState() {
     super.initState();
-    PBISPlusBlocInstance.add(PBISPlusImportRoster());
+    pbisPlusClassroomBloc.add(PBISPlusImportRoster());
   }
 
   @override
@@ -81,7 +84,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           SpacerWidget(_KVertcalSpace / 5),
           Expanded(
             child: BlocConsumer(
-                bloc: PBISPlusBlocInstance,
+                bloc: pbisPlusClassroomBloc,
                 builder: (context, state) {
                   if (state is PBISPlusLoading) {
                     return Container(
@@ -214,10 +217,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         // courseListlist[index].studentList!.length > 0
         //     ?
         Column(children: [
-      Container(
-        // color: Theme.of(context).colorScheme.secondary,
-        height: 6,
-      ),
+      // Container(
+      //   // color: Theme.of(context).colorScheme.secondary,
+      //   height: 6,
+      // ),
       Container(
         key: ValueKey(googleClassroomCourseList[index]),
         color: Theme.of(context).colorScheme.secondary,
@@ -234,8 +237,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         )),
       ),
       googleClassroomCourseList[index].students!.length > 0
-          ? renderStudents(googleClassroomCourseList[index].students!,
-              googleClassroomCourseList[index].name!, index)
+          ? renderStudents(
+              googleClassroomCourseList[index].students!,
+              googleClassroomCourseList[index].name!,
+              index,
+              googleClassroomCourseList[index].id!)
           : Container(
               height: 65,
               padding: EdgeInsets.only(left: 20),
@@ -250,7 +256,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     ]);
   }
 
-  renderStudents(List<ClassroomStudents> studentList, String cLassName, i) {
+  renderStudents(List<ClassroomStudents> studentList, String cLassName, i,
+      String classroomCourseId) {
     // return GridView.custom(
     //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
     //     crossAxisCount: 4,
@@ -277,18 +284,15 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         shrinkWrap: true,
         children: List.generate(studentList.length, (index) {
           return _buildStudent(
-            ValueNotifier<ClassroomStudents>(studentList[index]),
-            index,
-            cLassName,
-          );
+              ValueNotifier<ClassroomStudents>(studentList[index]),
+              index,
+              cLassName,
+              classroomCourseId);
         }));
   }
 
-  Widget _buildStudent(
-    ValueNotifier<ClassroomStudents> studentValueNotifier,
-    int index,
-    String cLassName,
-  ) {
+  Widget _buildStudent(ValueNotifier<ClassroomStudents> studentValueNotifier,
+      int index, String cLassName, String classroomCourseId) {
     // String imageNum = generateRandomUniqueNumber().toString();
     // studentValueNotifier.value.profile!.photoUrl =
     //     'https://source.unsplash.com/random/200x200?sig=$imageNum';
@@ -304,6 +308,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 // imageUrl: imageUrl,
                 studentValueNotifier: studentValueNotifier,
                 heroTag: heroTag,
+                classroomCourseId: classroomCourseId,
+                scaffoldKey: _scaffoldKey,
               ),
             ),
           ),
@@ -335,10 +341,21 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   //  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CommonProfileWidget(
-                        profilePictureSize: profilePictureSize,
-                        imageUrl:
-                            studentValueNotifier.value!.profile!.photoUrl!),
+                    studentValueNotifier.value!.profile!.photoUrl!
+                            .contains('default-user')
+                        ? PBISCircularProfileName(
+                            firstLetter: studentValueNotifier
+                                .value.profile!.name!.givenName!
+                                .substring(0, 1),
+                            lastLetter: studentValueNotifier
+                                .value.profile!.name!.familyName!
+                                .substring(0, 1),
+                            profilePictureSize: profilePictureSize,
+                          )
+                        : PBISCommonProfileWidget(
+                            profilePictureSize: profilePictureSize,
+                            imageUrl:
+                                studentValueNotifier.value!.profile!.photoUrl!),
                     // SizedBox(height: 15),
                     Column(
                       children: [
@@ -373,8 +390,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 right: 0,
                 child: Container(
                   padding: EdgeInsets.all(2),
-                  width: 15,
-                  height: 15,
+                  width: 20,
+                  height: 20,
                   decoration: BoxDecoration(
                     color: AppTheme.kButtonColor,
                     shape: BoxShape.circle,
@@ -384,8 +401,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                       fit: BoxFit.scaleDown,
                       child: Text(
                         PBISPlusUtility.numberAbbreviationFormat(
-                            studentValueNotifier.value!.profile!.like! +
-                                studentValueNotifier.value!.profile!.thanks! +
+                            studentValueNotifier.value!.profile!.engaged! +
+                                studentValueNotifier.value!.profile!.niceWork! +
                                 studentValueNotifier.value!.profile!.helpful!),
                         style: TextStyle(
                           color: Theme.of(context).backgroundColor,
