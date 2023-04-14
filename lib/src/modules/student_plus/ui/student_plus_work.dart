@@ -68,7 +68,6 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -91,7 +90,6 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     // filterIcon()
                   ],
                 ),
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
                 StudentPlusInfoSearchBar(
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
@@ -155,7 +153,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   fontFamily: Overrides.kFontFam,
                   fontPackage: Overrides.kFontPkg),
               color: AppTheme.kButtonColor,
-              size: 28,
+              size: 26,
             )),
         ValueListenableBuilder(
             valueListenable: filterNotifier,

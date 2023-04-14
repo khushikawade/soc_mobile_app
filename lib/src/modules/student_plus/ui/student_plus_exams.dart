@@ -63,9 +63,11 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           StudentPlusScreenTitleWidget(
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPlusExamsTitle),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           StudentPlusInfoSearchBar(
             hintText:
                 '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',

@@ -306,6 +306,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
               child: PBISPlusStudentCardModal(
                 //count: index,
                 // imageUrl: imageUrl,
+                onValueUpdate: (updatedStudentValueNotifier) {
+                  studentValueNotifier = updatedStudentValueNotifier;
+                },
                 studentValueNotifier: studentValueNotifier,
                 heroTag: heroTag,
                 classroomCourseId: classroomCourseId,
@@ -398,26 +401,25 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   ),
                   child: Center(
                     child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: ValueListenableBuilder<ClassroomStudents>(
-                          valueListenable: studentValueNotifier,
-                          builder: (BuildContext context,
-                              ClassroomStudents value, Widget? child) {
-                            return Text(
-                              PBISPlusUtility.numberAbbreviationFormat(
-                                  studentValueNotifier
-                                          .value!.profile!.engaged! +
-                                      studentValueNotifier
-                                          .value!.profile!.niceWork! +
-                                      studentValueNotifier
-                                          .value!.profile!.helpful!),
-                              style: TextStyle(
-                                color: Theme.of(context).backgroundColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          }),
-                    ),
+                        fit: BoxFit.scaleDown,
+                        child: ValueListenableBuilder<ClassroomStudents>(
+                            valueListenable: studentValueNotifier,
+                            builder: (BuildContext context,
+                                ClassroomStudents value, Widget? child) {
+                              return Text(
+                                PBISPlusUtility.numberAbbreviationFormat(
+                                    studentValueNotifier
+                                            .value!.profile!.engaged! +
+                                        studentValueNotifier
+                                            .value!.profile!.niceWork! +
+                                        studentValueNotifier
+                                            .value!.profile!.helpful!),
+                                style: TextStyle(
+                                  color: Theme.of(context).backgroundColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            })),
                   ),
                 ),
               ),

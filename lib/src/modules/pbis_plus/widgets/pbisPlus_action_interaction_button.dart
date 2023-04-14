@@ -12,6 +12,7 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
   ValueNotifier<ClassroomStudents> studentValueNotifier;
   final Key? scaffoldKey;
   final String? classroomCourseId;
+  final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
   // final Future<bool?> Function(bool)? onTapCallback;
 
   PBISPlusActionInteractionButton(
@@ -19,7 +20,8 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
       required this.iconData,
       required this.studentValueNotifier,
       required this.scaffoldKey,
-      required this.classroomCourseId
+      required this.classroomCourseId,
+      required this.onValueUpdate
       // required this.onTapCallback,
       })
       : super(key: key);
@@ -145,7 +147,6 @@ class PBISPlusActionInteractionButtonState
     Future.delayed(Duration(seconds: 1), () {
       _showMessage.value = false;
     });
-    print(widget.iconData.title);
 
     if (widget.iconData.title == 'Engaged') {
       widget.studentValueNotifier.value.profile!.engaged =
@@ -157,6 +158,9 @@ class PBISPlusActionInteractionButtonState
       widget.studentValueNotifier.value.profile!.helpful =
           widget.studentValueNotifier.value.profile!.helpful! + 1;
     }
+
+    widget.onValueUpdate(widget.studentValueNotifier);
+
     interactionBloc.add(AddPBISInteraction(
         context: context,
         scaffoldKey: widget.scaffoldKey,
@@ -185,11 +189,10 @@ class PBISPlusActionInteractionButtonState
 
     int viewCount = map[title] ?? 0;
     return viewCount;
+    // return Utility.textWidget(
+    //     text: viewCount.toString(),
+    //     context: context,
+    //     textTheme:
+    //         Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12));
   }
-  //   return Utility.textWidget(
-  //       text: viewCount.toString(),
-  //       context: context,
-  //       textTheme:
-  //           Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12));
-  // }
 }
