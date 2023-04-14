@@ -306,6 +306,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
               child: PBISPlusStudentCardModal(
                 //count: index,
                 // imageUrl: imageUrl,
+                onValueUpdate: (updatedStudentValueNotifier) {
+                  studentValueNotifier = updatedStudentValueNotifier;
+                },
                 studentValueNotifier: studentValueNotifier,
                 heroTag: heroTag,
                 classroomCourseId: classroomCourseId,

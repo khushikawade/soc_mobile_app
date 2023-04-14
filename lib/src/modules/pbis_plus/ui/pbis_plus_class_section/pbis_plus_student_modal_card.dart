@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Soc/src/modules/pbis_plus/modal/course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -13,17 +15,21 @@ import 'package:flutter/material.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusStudentCardModal extends StatefulWidget {
-  final ValueNotifier<ClassroomStudents> studentValueNotifier;
+  ValueNotifier<ClassroomStudents> studentValueNotifier;
   final String heroTag;
   final Key? scaffoldKey;
   final String classroomCourseId;
+  final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
+
+  //final Function(bool) onValueUpdate;
 
   PBISPlusStudentCardModal(
       {Key? key,
       required this.studentValueNotifier,
       required this.heroTag,
       required this.scaffoldKey,
-      required this.classroomCourseId})
+      required this.classroomCourseId,
+      required this.onValueUpdate})
       : super(key: key);
 
   @override
@@ -32,6 +38,8 @@ class PBISPlusStudentCardModal extends StatefulWidget {
 }
 
 class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
+  ValueNotifier<bool> valueChnage = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +60,14 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
               // Expanded(
               // child:
               PBISPlusActionInteractionButton(
+            onValueUpdate: (updatedStudentValueNotifier) {
+              widget.onValueUpdate(
+                  updatedStudentValueNotifier); //Return to class screen //Roster screen count update
+              widget.studentValueNotifier =
+                  updatedStudentValueNotifier; //Used on current screen to update the value
+              valueChnage.value =
+                  !valueChnage.value; //update the changes on bool change detect
+            },
             studentValueNotifier: widget.studentValueNotifier,
             iconData: iconData,
             classroomCourseId: widget.classroomCourseId,
@@ -146,6 +162,11 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                   Navigator.of(context).pushReplacement(
                     HeroDialogRoute(
                       builder: (context) => PBISPlusStudentDashBoard(
+                        isValueChangeNotice: valueChnage,
+                        onValueUpdate: (updatedStudentValueNotifier) {
+                          widget.studentValueNotifier =
+                              updatedStudentValueNotifier;
+                        },
                         // StudentDetailWidget: StudentDetailWidget,
                         studentValueNotifier: widget.studentValueNotifier,
                         heroTag: widget.heroTag,
@@ -200,29 +221,31 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                 ),
                 child: Center(
                   child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: ValueListenableBuilder<ClassroomStudents>(
-                      valueListenable: widget.studentValueNotifier,
-                      builder: (BuildContext context, ClassroomStudents value,
-                          Widget? child) {
-                        return Text(
-                          PBISPlusUtility.numberAbbreviationFormat(widget
-                                  .studentValueNotifier
-                                  .value!
-                                  .profile!
-                                  .engaged! +
-                              widget.studentValueNotifier.value!.profile!
-                                  .niceWork! +
-                              widget.studentValueNotifier.value!.profile!
-                                  .helpful!),
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        );
-                      },
-                    ),
-                  ),
+                      fit: BoxFit.scaleDown,
+                      child: ValueListenableBuilder(
+                          valueListenable: valueChnage,
+                          builder:
+                              (BuildContext context, value, Widget? child) {
+                            return ValueListenableBuilder<ClassroomStudents>(
+                              valueListenable: widget.studentValueNotifier,
+                              builder: (BuildContext context,
+                                  ClassroomStudents value, Widget? child) {
+                                return Text(
+                                  PBISPlusUtility.numberAbbreviationFormat(
+                                      widget.studentValueNotifier.value.profile!
+                                              .engaged! +
+                                          widget.studentValueNotifier.value
+                                              .profile!.niceWork! +
+                                          widget.studentValueNotifier.value
+                                              .profile!.helpful!),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(fontWeight: FontWeight.bold),
+                                );
+                              },
+                            );
+                          })),
                 ),
               ),
             ),

@@ -18,13 +18,17 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
   final String heroTag;
   // final String imageUrl;
   final Column StudentDetailWidget;
+  final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
+  ValueNotifier<bool> isValueChangeNotice = ValueNotifier<bool>(false);
 
   PBISPlusStudentDashBoard(
       {Key? key,
       required this.heroTag,
       // required this.imageUrl,
       required this.studentValueNotifier,
-      required this.StudentDetailWidget})
+      required this.StudentDetailWidget,
+      required this.onValueUpdate,
+      required this.isValueChangeNotice})
       : super(key: key);
 
   @override
@@ -173,25 +177,29 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                   child: Center(
                     child: FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: ValueListenableBuilder<ClassroomStudents>(
-                            valueListenable: widget.studentValueNotifier,
-                            builder: (BuildContext context,
-                                ClassroomStudents value, Widget? child) {
-                              return Text(
-                                PBISPlusUtility.numberAbbreviationFormat(widget
-                                        .studentValueNotifier
-                                        .value!
-                                        .profile!
-                                        .engaged! +
-                                    widget.studentValueNotifier.value!.profile!
-                                        .niceWork! +
-                                    widget.studentValueNotifier.value!.profile!
-                                        .helpful!),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              );
+                        child: ValueListenableBuilder<bool>(
+                            valueListenable: widget.isValueChangeNotice,
+                            builder:
+                                (BuildContext context, value, Widget? child) {
+                              return ValueListenableBuilder<ClassroomStudents>(
+                                  valueListenable: widget.studentValueNotifier,
+                                  builder: (BuildContext context,
+                                      ClassroomStudents value, Widget? child) {
+                                    return Text(
+                                      PBISPlusUtility.numberAbbreviationFormat(
+                                          widget.studentValueNotifier.value!
+                                                  .profile!.engaged! +
+                                              widget.studentValueNotifier.value!
+                                                  .profile!.niceWork! +
+                                              widget.studentValueNotifier.value!
+                                                  .profile!.helpful!),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    );
+                                  });
                             })),
                   ),
                 ),

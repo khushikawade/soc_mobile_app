@@ -12,6 +12,7 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
   ValueNotifier<ClassroomStudents> studentValueNotifier;
   final Key? scaffoldKey;
   final String? classroomCourseId;
+  final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
   // final Future<bool?> Function(bool)? onTapCallback;
 
   PBISPlusActionInteractionButton(
@@ -19,7 +20,8 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
       required this.iconData,
       required this.studentValueNotifier,
       required this.scaffoldKey,
-      required this.classroomCourseId
+      required this.classroomCourseId,
+      required this.onValueUpdate
       // required this.onTapCallback,
       })
       : super(key: key);
@@ -157,6 +159,9 @@ class PBISPlusActionInteractionButtonState
       widget.studentValueNotifier.value.profile!.helpful =
           widget.studentValueNotifier.value.profile!.helpful! + 1;
     }
+
+    widget.onValueUpdate(widget.studentValueNotifier);
+
     interactionBloc.add(AddPBISInteraction(
         context: context,
         scaffoldKey: widget.scaffoldKey,
