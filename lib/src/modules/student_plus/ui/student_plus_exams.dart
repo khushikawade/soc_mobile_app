@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_bottomsheet.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_graph_methods.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/widgets/common_graph_widget.dart';
@@ -308,6 +309,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             child: Container(
                 alignment: Alignment.centerLeft,
                 child: circularSchoolYearWidget(
+                    isPreviousYear: true,
+                    isMathSection: isMathsSection,
                     centreText: isMathsSection
                         ? (widget.studentDetails.mathPreviousSyEOY ?? 'NA')
                         : (widget.studentDetails.ELAPreviousSyEOY ?? 'NA'),
@@ -320,6 +323,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   circularSchoolYearWidget(
+                      isPreviousYear: false,
+                      isMathSection: isMathsSection,
                       centreText: isMathsSection
                           ? (widget.studentDetails.mathCurrentSyBOY ?? 'NA')
                           : (widget.studentDetails.ELACurrentSyBOY ?? 'NA'),
@@ -328,6 +333,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
                     width: 7,
                   ),
                   circularSchoolYearWidget(
+                      isPreviousYear: false,
+                      isMathSection: isMathsSection,
                       centreText: isMathsSection
                           ? (widget.studentDetails.mathCurrentSyMOY ?? 'NA')
                           : (widget.studentDetails.ELACurrentSyMOY ?? 'NA'),
@@ -336,6 +343,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
                     width: 7,
                   ),
                   circularSchoolYearWidget(
+                      isPreviousYear: false,
+                      isMathSection: isMathsSection,
                       centreText: isMathsSection
                           ? (widget.studentDetails.mathCurrentSyEOY ?? 'NA')
                           : (widget.studentDetails.ELACurrentSyEOY ?? 'NA'),
@@ -359,15 +368,27 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
   }
 
   Widget circularSchoolYearWidget(
-      {required String centreText, required String subTitle}) {
+      {required String centreText,
+      required String subTitle,
+      required bool isMathSection,
+      required bool isPreviousYear}) {
     return Column(
       children: [
         SpacerWidget(10),
         CircleAvatar(
-          backgroundColor:
-              Color(0xff000000) != Theme.of(context).backgroundColor
-                  ? Color(0xff111C20)
-                  : Color(0xffF7F8F9),
+          backgroundColor: StudentPlusGraphMethod.iReadyTooltipColor(
+              type: subTitle,
+              value: StudentPlusGraphMethod.iReadyColorValue(
+                  isMathsSection: isMathSection,
+                  studentInfo: widget.studentDetails,
+                  x: subTitle == 'BOY'
+                      ? 1.0
+                      : (subTitle == 'MOY'
+                          ? 2.0
+                          : (isPreviousYear == true ? 0.0 : 3.0)))),
+          // Color(0xff000000) != Theme.of(context).backgroundColor
+          //     ? Color(0xff111C20)
+          //     : Color(0xffF7F8F9),
           radius: MediaQuery.of(context).size.width * 0.07,
           child: Utility.textWidget(
               text: centreText,
@@ -375,7 +396,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
               textTheme: Theme.of(context)
                   .textTheme
                   .headline4!
-                  .copyWith(color: Theme.of(context).colorScheme.background)),
+                  .copyWith(color: Colors.black)),
         ),
         SpacerWidget(10),
         Utility.textWidget(

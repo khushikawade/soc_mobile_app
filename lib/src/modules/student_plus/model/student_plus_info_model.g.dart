@@ -59,13 +59,22 @@ class StudentPlusDetailsModelAdapter
       mathPreviousSyEOY: fields[25] as String?,
       mathPreviousSyEOYPercentile: fields[29] as String?,
       teacherProperC: fields[15] as String?,
+      mathCurrentBOYOverallRelativePlace: fields[42] as String?,
+      mathCurrentEOYOverallRelativePlace: fields[44] as String?,
+      mathCurrentMOYOverallRelativePlace: fields[43] as String?,
+      mathPreviousEOYOverallRelPlace: fields[41] as String?,
+      ELACurrentBOYOverallRelativePlace: fields[46] as String?,
+      ELACurrentEOYOverallRelativePlace: fields[48] as String?,
+      ELACurrentMOYOverallRelativePlace: fields[47] as String?,
+      ELAPreviousEOYOverallRelPlace: fields[45] as String?,
+      currentAttendance: fields[49] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusDetailsModel obj) {
     writer
-      ..writeByte(41)
+      ..writeByte(50)
       ..writeByte(0)
       ..write(obj.firstNameC)
       ..writeByte(1)
@@ -147,7 +156,25 @@ class StudentPlusDetailsModelAdapter
       ..writeByte(39)
       ..write(obj.ELACurrentSyMOYPercentile)
       ..writeByte(40)
-      ..write(obj.ELACurrentSyEOYPercentile);
+      ..write(obj.ELACurrentSyEOYPercentile)
+      ..writeByte(41)
+      ..write(obj.mathPreviousEOYOverallRelPlace)
+      ..writeByte(42)
+      ..write(obj.mathCurrentBOYOverallRelativePlace)
+      ..writeByte(43)
+      ..write(obj.mathCurrentMOYOverallRelativePlace)
+      ..writeByte(44)
+      ..write(obj.mathCurrentEOYOverallRelativePlace)
+      ..writeByte(45)
+      ..write(obj.ELAPreviousEOYOverallRelPlace)
+      ..writeByte(46)
+      ..write(obj.ELACurrentBOYOverallRelativePlace)
+      ..writeByte(47)
+      ..write(obj.ELACurrentMOYOverallRelativePlace)
+      ..writeByte(48)
+      ..write(obj.ELACurrentEOYOverallRelativePlace)
+      ..writeByte(49)
+      ..write(obj.currentAttendance);
   }
 
   @override

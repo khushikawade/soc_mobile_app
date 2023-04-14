@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
@@ -139,6 +140,8 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                             validationMessageWidget(),
                             recentSearchHeader(),
                             buildSearchList(),
+
+                            blocListener(),
                           ],
                         ),
                       )
@@ -150,6 +153,30 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
               child: Container()),
         ),
       ],
+    );
+  }
+
+  /* ------------- widget to fetch student Detail and show loader ------------ */
+
+  Widget blocListener() {
+    return BlocListener<StudentPlusBloc, StudentPlusState>(
+      bloc: _studentPlusBloc,
+      listener: (context, state) async {
+        if (state is StudentPlusGetDetailsLoading) {
+          Utility.showLoadingDialog(
+            context: context,
+            isOCR: true,
+          );
+        } else if (state is StudentPlusInfoSuccess) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => StudentPlusHome(
+                        studentPlusStudentInfo: state.obj,
+                      )),
+              (_) => true);
+        }
+      },
+      child: Container(),
     );
   }
 
@@ -187,7 +214,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
   }
 
   /* ---------- Common list view widget to search and recent list ---------- */
-  Widget searchResultList({required List<StudentPlusDetailsModel> list}) {
+  Widget searchResultList({required List<StudentPlusSearchModel> list}) {
     return Expanded(
       child: ListView.builder(
           shrinkWrap: true,
@@ -210,19 +237,21 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                           : Color(0xffE9ECEE)),
               child: ListTile(
                 onTap: () {
-                  StudentPlusUtility.addStudentInfoToLocalDb(
-                      studentInfo: list[index]);
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                          builder: (context) => StudentPlusHome(
-                                studentDetails: list[index],
-                              )),
-                      (_) => true);
+                  if (list[index].id == null || list[index].id == '') {
+                    Utility.currentScreenSnackBar(
+                        'Unable to get details for ${list[index].firstNameC} ${list[index].lastNameC}',
+                        null);
+                  } else {
+                    StudentPlusUtility.addStudentInfoToLocalDb(
+                        studentInfo: list[index]);
+                    _studentPlusBloc.add(
+                        GetStudentPlusDetails(studentId: list[index].id ?? ''));
+                  }
                 },
                 contentPadding: EdgeInsets.only(left: 20),
                 title: Utility.textWidget(
                   text:
-                      "${list[index].firstNameC ?? ''} ${list[index].lastNameC}  ",
+                      "${list[index].firstNameC ?? ''} ${list[index].lastNameC ?? ''}",
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline5,
                 ),
@@ -267,7 +296,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return Expanded(
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.4,
+                height: MediaQuery.of(context).size.height * 0.3,
                 child: Center(
                     child: CircularProgressIndicator.adaptive(
                   backgroundColor: AppTheme.kButtonColor,
@@ -361,7 +390,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                   builder: (BuildContext contxt, StudentPlusState state) {
                     if (state is StudentPlusLoading) {
                       return Container(
-                        height: MediaQuery.of(context).size.height * 0.35,
+                        height: MediaQuery.of(context).size.height * 0.3,
                         child: Center(
                           child: CircularProgressIndicator.adaptive(
                             backgroundColor: AppTheme.kButtonColor,

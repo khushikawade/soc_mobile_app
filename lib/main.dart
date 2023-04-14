@@ -27,6 +27,7 @@ import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.da
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/overrides.dart';
@@ -110,6 +111,8 @@ void main() async {
           ..registerAdapter(ClassroomProfileAdapter())
           ..registerAdapter(ClassroomPermissionsAdapter())
           ..registerAdapter(PBISPlusHistoryModalAdapter())
+          ..registerAdapter(StudentPlusSearchModelAdapter())
+
         // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
         ;
   }

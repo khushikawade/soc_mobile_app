@@ -1,6 +1,8 @@
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/db_service.dart';
 import 'package:Soc/src/services/db_service_response.model.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -23,7 +25,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
     if (event is StudentPlusSearchEvent) {
       try {
         yield StudentPlusLoading();
-        List<StudentPlusDetailsModel> list =
+        List<StudentPlusSearchModel> list =
             await getStudentPlusSearch(keyword: event.keyword ?? '');
 
         yield StudentPlusSearchSuccess(
@@ -31,6 +33,46 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         );
       } catch (e) {
         yield StudentPlusErrorReceived(err: e);
+      }
+    }
+
+    /* ------------------- Event to get student detail from id ------------------ */
+    if (event is GetStudentPlusDetails) {
+      try {
+        LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
+            "${StudentPlusOverrides.studentPlusDetails}_${event.studentId}");
+
+        List<StudentPlusDetailsModel> _localData = await _localDb.getData();
+
+        if (_localData.length > 0) {
+          yield StudentPlusInfoSuccess(
+            obj: _localData[0],
+          );
+        } else {
+          yield StudentPlusGetDetailsLoading();
+        }
+
+        StudentPlusDetailsModel studentDetails =
+            await getStudentDetailsFromId(studentId: event.studentId);
+
+        await _localDb.clear();
+        await _localDb.addData(studentDetails);
+        yield StudentPlusInfoSuccess(
+          obj: studentDetails,
+        );
+      } catch (e) {
+        LocalDatabase<StudentPlusDetailsModel> _localDb = LocalDatabase(
+            "${StudentPlusOverrides.studentPlusDetails}_${event.studentId}");
+
+        List<StudentPlusDetailsModel> _localData = await _localDb.getData();
+
+        if (_localData.length > 0) {
+          yield StudentPlusInfoSuccess(
+            obj: _localData[0],
+          );
+        } else {
+          yield StudentPlusErrorReceived(err: e);
+        }
       }
     }
 
@@ -83,12 +125,17 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
 
   Future getStudentPlusSearch({required String keyword}) async {
     try {
-      final ResponseModel response = await _dbServices.getApi(
-          'filterRecords/Student__c/"First_Name__c" ilike \'%25$keyword%25\'And "DBN__c" = \'BB0456\''); //change DBN to dynamic
+      final ResponseModel response = await _dbServices.getApiNew(
+          '${StudentPlusOverrides.studentPlusBaseUrl}/studentPlus/search/student?keyword=$keyword',
+          isCompleteUrl: true,
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
+          }); //change DBN to dynamic
       if (response.statusCode == 200) {
         return response.data["body"]
-            .map<StudentPlusDetailsModel>(
-                (i) => StudentPlusDetailsModel.fromJson(i))
+            .map<StudentPlusSearchModel>(
+                (i) => StudentPlusSearchModel.fromJson(i))
             .toList();
       }
     } catch (e) {
@@ -100,7 +147,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   Future getStudentWorkDetails({required String studentId}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          'https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production/getStudentWork/$studentId',
+          '${StudentPlusOverrides.studentPlusBaseUrl}/getStudentWork/$studentId',
           isCompleteUrl: true,
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
@@ -110,6 +157,24 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         return response.data["body"]
             .map<StudentPlusWorkModel>((i) => StudentPlusWorkModel.fromJson(i))
             .toList();
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  /* ------------- Function to get student details for student id ------------- */
+  Future getStudentDetailsFromId({required String studentId}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          '${Overrides.API_BASE_URL}getRecord/Student__c/${studentId}',
+          isCompleteUrl: true,
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
+          }); //change DBN to dynamic
+      if (response.statusCode == 200) {
+        return StudentPlusDetailsModel.fromJson(response.data['body']);
       }
     } catch (e) {
       throw (e);

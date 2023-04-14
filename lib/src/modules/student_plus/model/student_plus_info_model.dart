@@ -26,49 +26,57 @@ String studentInfoModelDetailsToJson(StudentPlusDetailsModel data) =>
 //     final StudentPlusDetailsModel = StudentPlusDetailsModelFromJson(jsonString);
 
 class StudentPlusDetailsModel {
-  StudentPlusDetailsModel({
-    this.firstNameC,
-    this.gradeC,
-    this.lastNameC,
-    this.parentPhoneC,
-    this.schoolC,
-    this.studentIdC,
-    this.id,
-    this.emailC,
-    this.ellC,
-    this.ellProficiencyC,
-    this.classC,
-    this.iepProgramC,
-    this.genderFullC,
-    this.dobC,
-    this.nysElaScore2022C,
-    this.nysMathScore2022C,
-    this.nysElaScore2021C,
-    this.nysMathScore2021C,
-    this.nysElaScore2019C,
-    this.nysMathScore2019C,
-    this.nysMath2023PredictionC,
-    this.nysEla2023PredictionC,
-    this.ELACurrentSyBOY,
-    this.ELACurrentSyBOYPercentile,
-    this.ELACurrentSyEOY,
-    this.ELACurrentSyEOYPercentile,
-    this.ELACurrentSyMOY,
-    this.ELACurrentSyMOYPercentile,
-    this.ELAPreviousSyEOY,
-    this.ELAPreviousSyEOYPercentile,
-    this.ethnicityNameC,
-    this.iepYesNoC,
-    this.mathCurrentSyBOY,
-    this.mathCurrentSyBOYPercentile,
-    this.mathCurrentSyEOY,
-    this.mathCurrentSyEOYPercentile,
-    this.mathCurrentSyMOY,
-    this.mathCurrentSyMOYPercentile,
-    this.mathPreviousSyEOY,
-    this.mathPreviousSyEOYPercentile,
-    this.teacherProperC,
-  });
+  StudentPlusDetailsModel(
+      {this.firstNameC,
+      this.gradeC,
+      this.lastNameC,
+      this.parentPhoneC,
+      this.schoolC,
+      this.studentIdC,
+      this.id,
+      this.emailC,
+      this.ellC,
+      this.ellProficiencyC,
+      this.classC,
+      this.iepProgramC,
+      this.genderFullC,
+      this.dobC,
+      this.nysElaScore2022C,
+      this.nysMathScore2022C,
+      this.nysElaScore2021C,
+      this.nysMathScore2021C,
+      this.nysElaScore2019C,
+      this.nysMathScore2019C,
+      this.nysMath2023PredictionC,
+      this.nysEla2023PredictionC,
+      this.ELACurrentSyBOY,
+      this.ELACurrentSyBOYPercentile,
+      this.ELACurrentSyEOY,
+      this.ELACurrentSyEOYPercentile,
+      this.ELACurrentSyMOY,
+      this.ELACurrentSyMOYPercentile,
+      this.ELAPreviousSyEOY,
+      this.ELAPreviousSyEOYPercentile,
+      this.ethnicityNameC,
+      this.iepYesNoC,
+      this.mathCurrentSyBOY,
+      this.mathCurrentSyBOYPercentile,
+      this.mathCurrentSyEOY,
+      this.mathCurrentSyEOYPercentile,
+      this.mathCurrentSyMOY,
+      this.mathCurrentSyMOYPercentile,
+      this.mathPreviousSyEOY,
+      this.mathPreviousSyEOYPercentile,
+      this.teacherProperC,
+      this.mathCurrentBOYOverallRelativePlace,
+      this.mathCurrentEOYOverallRelativePlace,
+      this.mathCurrentMOYOverallRelativePlace,
+      this.mathPreviousEOYOverallRelPlace,
+      this.ELACurrentBOYOverallRelativePlace,
+      this.ELACurrentEOYOverallRelativePlace,
+      this.ELACurrentMOYOverallRelativePlace,
+      this.ELAPreviousEOYOverallRelPlace,
+      this.currentAttendance});
 
   /* --------------------- Field use to show student info --------------------- */
   @HiveField(0)
@@ -160,54 +168,101 @@ class StudentPlusDetailsModel {
   @HiveField(40)
   final String? ELACurrentSyEOYPercentile;
 
-  factory StudentPlusDetailsModel.fromJson(Map<String, dynamic> json) => StudentPlusDetailsModel(
-      firstNameC: json["First_Name__c"],
-      gradeC: json["Grade__c"],
-      lastNameC: json["last_Name__c"],
-      parentPhoneC: json["Parent_Phone__c"],
-      schoolC: json["School__c"],
-      studentIdC: json["Student_ID__c"],
-      id: json["Id"],
-      emailC: json["Email__c"],
-      ellC: json["ELL__c"],
-      ellProficiencyC: json["ELL_Proficiency__c"],
-      classC: json["Class__c"],
-      iepProgramC: json["IEP_Program__c"],
-      genderFullC: json["Gender_Full__c"],
-      dobC: json["DOB__c"],
+  /* ------------------------- iReady Math color code ------------------------- */
+  @HiveField(41)
+  final String? mathPreviousEOYOverallRelPlace;
+  @HiveField(42)
+  final String? mathCurrentBOYOverallRelativePlace;
+  @HiveField(43)
+  final String? mathCurrentMOYOverallRelativePlace;
+  @HiveField(44)
+  final String? mathCurrentEOYOverallRelativePlace;
 
-      /* ---------------------- Fields use to show NYS graph ---------------------- */
-      nysElaScore2019C: json["NYS_ELA_2019__c"],
-      nysMathScore2019C: json["NYS_Math_2019__c"],
-      nysElaScore2021C: json["NYS_ELA_Score_2021__c"],
-      nysMathScore2021C: json["NYS_Math_Score_2021__c"],
-      nysElaScore2022C: json["NYS_ELA_Score_2022__c"],
-      nysMathScore2022C: json["NYS_Math_Score_2022__c"],
-      nysMath2023PredictionC: json["NYS_Math_2023_Prediction__c"],
-      nysEla2023PredictionC: json["NYS_ELA_2023_Prediction__c"],
+  /* ------------------------- iReady Math color code ------------------------- */
+  @HiveField(45)
+  final String? ELAPreviousEOYOverallRelPlace;
+  @HiveField(46)
+  final String? ELACurrentBOYOverallRelativePlace;
+  @HiveField(47)
+  final String? ELACurrentMOYOverallRelativePlace;
+  @HiveField(48)
+  final String? ELACurrentEOYOverallRelativePlace;
 
-      /* ------------------ Field use in Exams Page - iReady Math ----------------- */
-      mathPreviousSyEOY: json["iReady_Math_EOY_21_22_Score__c"],
-      mathCurrentSyBOY: json["iReady_Math_BOY_Score__c"],
-      mathCurrentSyMOY: json["iReady_Math_MOY_Score__c"],
-      mathCurrentSyEOY: json["iReady_Math_EOY_Score__c"],
-      mathPreviousSyEOYPercentile: json["iReady_Math_EOY_21_22_Percentile__c"],
-      mathCurrentSyBOYPercentile: json["IReady_MATH_BOY_Percentile__c"],
-      mathCurrentSyMOYPercentile: json["IReady_MATH_MOY_Percentile__c"],
-      mathCurrentSyEOYPercentile: json["IReady_MATH_EOY_Percentile__c"],
+  @HiveField(49)
+  final String? currentAttendance;
 
-      /* ------------------ Field use in Exams Page - iReady Math ----------------- */
-      ELAPreviousSyEOY: json["iReady_ELA_EOY_21_22_Score__c"],
-      ELACurrentSyBOY: json["iReady_ELA_BOY_Score__c"],
-      ELACurrentSyMOY: json["iReady_ELA_MOY_Score__c"],
-      ELACurrentSyEOY: json["iReady_ELA_EOY_Score__c"],
-      ELAPreviousSyEOYPercentile: json["iReady_ELA_EOY_21_22_Percentile__c"],
-      ELACurrentSyBOYPercentile: json["IReady_ELA_BOY_Percentile__c"],
-      ELACurrentSyMOYPercentile: json["IReady_ELA_MOY_Percentile__c"],
-      ELACurrentSyEOYPercentile: json["IReady_ELA_EOY_Percentile__c"],
-      iepYesNoC: json["IEP_Yes_No__c"],
-      teacherProperC: json["Teacher_Proper__c"],
-      ethnicityNameC: json["Ethnicity_Name__c"]);
+  factory StudentPlusDetailsModel.fromJson(Map<String, dynamic> json) =>
+      StudentPlusDetailsModel(
+          firstNameC: json["First_Name__c"],
+          gradeC: json["Grade__c"],
+          lastNameC: json["last_Name__c"],
+          parentPhoneC: json["Parent_Phone__c"],
+          schoolC: json["School__c"],
+          studentIdC: json["Student_ID__c"],
+          id: json["Id"],
+          emailC: json["Email__c"],
+          ellC: json["ELL__c"],
+          ellProficiencyC: json["ELL_Proficiency__c"],
+          classC: json["Class__c"],
+          iepProgramC: json["IEP_Program__c"],
+          genderFullC: json["Gender_Full__c"],
+          dobC: json["DOB__c"],
+
+          /* ---------------------- Fields use to show NYS graph ---------------------- */
+          nysElaScore2019C: json["NYS_ELA_2019__c"],
+          nysMathScore2019C: json["NYS_Math_2019__c"],
+          nysElaScore2021C: json["NYS_ELA_Score_2021__c"],
+          nysMathScore2021C: json["NYS_Math_Score_2021__c"],
+          nysElaScore2022C: json["NYS_ELA_Score_2022__c"],
+          nysMathScore2022C: json["NYS_Math_Score_2022__c"],
+          nysMath2023PredictionC: json["NYS_Math_2023_Prediction__c"],
+          nysEla2023PredictionC: json["NYS_ELA_2023_Prediction__c"],
+
+          /* ------------------ Field use in Exams Page - iReady Math ----------------- */
+          mathPreviousSyEOY: json["iReady_Math_EOY_21_22_Score__c"],
+          mathCurrentSyBOY: json["iReady_Math_BOY_Score__c"],
+          mathCurrentSyMOY: json["iReady_Math_MOY_Score__c"],
+          mathCurrentSyEOY: json["iReady_Math_EOY_Score__c"],
+          mathPreviousSyEOYPercentile:
+              json["iReady_Math_EOY_21_22_Percentile__c"],
+          mathCurrentSyBOYPercentile: json["IReady_MATH_BOY_Percentile__c"],
+          mathCurrentSyMOYPercentile: json["IReady_MATH_MOY_Percentile__c"],
+          mathCurrentSyEOYPercentile: json["IReady_MATH_EOY_Percentile__c"],
+
+          /* ------------------ Field use in Exams Page - iReady Math ----------------- */
+          ELAPreviousSyEOY: json["iReady_ELA_EOY_21_22_Score__c"],
+          ELACurrentSyBOY: json["iReady_ELA_BOY_Score__c"],
+          ELACurrentSyMOY: json["iReady_ELA_MOY_Score__c"],
+          ELACurrentSyEOY: json["iReady_ELA_EOY_Score__c"],
+          ELAPreviousSyEOYPercentile:
+              json["iReady_ELA_EOY_21_22_Percentile__c"],
+          ELACurrentSyBOYPercentile: json["IReady_ELA_BOY_Percentile__c"],
+          ELACurrentSyMOYPercentile: json["IReady_ELA_MOY_Percentile__c"],
+          ELACurrentSyEOYPercentile: json["IReady_ELA_EOY_Percentile__c"],
+          iepYesNoC: json["IEP_Yes_No__c"],
+          teacherProperC: json["Teacher_Proper__c"],
+          ethnicityNameC: json["Ethnicity_Name__c"],
+
+          /* ------------------------- iReady Math color code ------------------------- */
+          mathPreviousEOYOverallRelPlace:
+              json["iReady_Math_EOY_21_22_Overall_Rel_Place__c"],
+          mathCurrentBOYOverallRelativePlace:
+              json["IReady_Math_BOY_Overall_Relative_Place__c"],
+          mathCurrentMOYOverallRelativePlace:
+              json["Math_IReady_Overall_Relative_Place_MOY__c"],
+          mathCurrentEOYOverallRelativePlace:
+              json["IReady_Math_EOY_Overall_Relative_Place__c"],
+
+          /* ------------------------- iReady ELA color code ------------------------- */
+          ELAPreviousEOYOverallRelPlace:
+              json["iReady_ELA_EOY_21_22_Overall_Rel_Place__c"],
+          ELACurrentBOYOverallRelativePlace:
+              json["IReady_ELA_BOY_Overall_Relative_Place__c"],
+          ELACurrentMOYOverallRelativePlace:
+              json["ELA_IReady_Overall_Relative_Place_MOY__c"],
+          ELACurrentEOYOverallRelativePlace:
+              json["IReady_ELA_EOY_Overall_Relative_Place__c"],
+          currentAttendance: json["Current_Attendance__c"]);
 
   Map<String, String?> toJson() => {
         "First_Name__c": firstNameC,
@@ -255,6 +310,27 @@ class StudentPlusDetailsModel {
         "IEP_Yes_No__c": iepYesNoC,
         "Teacher_Proper__c": teacherProperC,
         "Ethnicity_Name__c": ethnicityNameC,
+
+        /* ------------------------- iReady Math color code ------------------------- */
+        "iReady_Math_EOY_21_22_Overall_Rel_Place__c":
+            mathPreviousEOYOverallRelPlace,
+        "IReady_Math_BOY_Overall_Relative_Place__c":
+            mathCurrentBOYOverallRelativePlace,
+        "Math_IReady_Overall_Relative_Place_MOY__c":
+            mathCurrentMOYOverallRelativePlace,
+        "IReady_Math_EOY_Overall_Relative_Place__c":
+            mathCurrentEOYOverallRelativePlace,
+
+        /* ------------------------- iReady Math color code ------------------------- */
+        "iReady_ELA_EOY_21_22_Overall_Rel_Place__c":
+            ELAPreviousEOYOverallRelPlace,
+        "IReady_ELA_BOY_Overall_Relative_Place__c":
+            ELACurrentBOYOverallRelativePlace,
+        "ELA_IReady_Overall_Relative_Place_MOY__c":
+            ELACurrentMOYOverallRelativePlace,
+        "IReady_ELA_EOY_Overall_Relative_Place__c":
+            ELACurrentEOYOverallRelativePlace,
+        "Current_Attendance__c": currentAttendance,
       };
 }
 

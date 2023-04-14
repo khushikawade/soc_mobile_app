@@ -10,9 +10,11 @@ class StudentPlusInitial extends StudentPlusState {}
 
 class StudentPlusLoading extends StudentPlusState {}
 
+class StudentPlusGetDetailsLoading extends StudentPlusState {}
+
 /* -------------------- state use to return student search details --------------- */
 class StudentPlusSearchSuccess extends StudentPlusState {
-  final List<StudentPlusDetailsModel> obj;
+  final List<StudentPlusSearchModel> obj;
   StudentPlusSearchSuccess({required this.obj});
   StudentPlusSearchSuccess copyWith({final obj}) {
     return StudentPlusSearchSuccess(obj: obj ?? this.obj);
@@ -44,4 +46,16 @@ class StudentPlusErrorReceived extends StudentPlusState {
 
   @override
   List<Object> get props => [err];
+}
+
+/* ------------------ State to get student details from id ------------------ */
+class StudentPlusInfoSuccess extends StudentPlusState {
+  final StudentPlusDetailsModel obj;
+  StudentPlusInfoSuccess({required this.obj});
+  StudentPlusInfoSuccess copyWith({final obj}) {
+    return StudentPlusInfoSuccess(obj: obj ?? this.obj);
+  }
+
+  @override
+  List<Object> get props => [];
 }

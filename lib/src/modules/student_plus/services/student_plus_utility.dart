@@ -1,7 +1,7 @@
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,9 +13,9 @@ class StudentPlusUtility {
   /* -------------------------------------------------------------------------- */
 
   static Future<List<dynamic>> getRecentStudentSearchData() async {
-    LocalDatabase<StudentPlusDetailsModel> _localDb =
+    LocalDatabase<StudentPlusSearchModel> _localDb =
         LocalDatabase(StudentPlusOverrides.studentInfoRecentList);
-    List<StudentPlusDetailsModel>? _localData = await _localDb.getData();
+    List<StudentPlusSearchModel>? _localData = await _localDb.getData();
     return _localData;
   }
 
@@ -24,12 +24,11 @@ class StudentPlusUtility {
   /* --------------------------------------------------------------------*/
 
   static addStudentInfoToLocalDb(
-      {required StudentPlusDetailsModel studentInfo}) async {
-    LocalDatabase<StudentPlusDetailsModel> _localDb =
+      {required StudentPlusSearchModel studentInfo}) async {
+    LocalDatabase<StudentPlusSearchModel> _localDb =
         LocalDatabase(StudentPlusOverrides.studentInfoRecentList);
-
-    List<StudentPlusDetailsModel>? _localData = await _localDb.getData();
-    List<StudentPlusDetailsModel> studentInfoList = [];
+    List<StudentPlusSearchModel>? _localData = await _localDb.getData();
+    List<StudentPlusSearchModel> studentInfoList = [];
     studentInfoList.add(studentInfo);
     for (var i = 0; i < _localData.length; i++) {
       if (_localData[i].id != studentInfo.id) {
@@ -37,7 +36,7 @@ class StudentPlusUtility {
       }
     }
     await _localDb.clear();
-    studentInfoList.forEach((StudentPlusDetailsModel e) async {
+    studentInfoList.forEach((StudentPlusSearchModel e) async {
       await _localDb.addData(e);
     });
   }
@@ -76,21 +75,14 @@ class StudentPlusUtility {
           label: 'Class', value: '${studentDetails.classC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Teacher', value: '${studentDetails.teacherProperC ?? '-'}'),
-      StudentPlusInfoModel(
-          label: 'Attend%', value: '-'),
+      StudentPlusInfoModel(label: 'Attend%', value: '${studentDetails.currentAttendance ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Gender', value: '${studentDetails.genderFullC ?? '-'}'),
       StudentPlusInfoModel(
-          label: 'Ethnicity',
-          value: '${studentDetails.ethnicityNameC ?? '-'}'),
+          label: 'Ethnicity', value: '${studentDetails.ethnicityNameC ?? '-'}'),
+      StudentPlusInfoModel(label: 'Age', value: '-'),
       StudentPlusInfoModel(
-          label: 'Age',
-          value:
-              '-'),
-      StudentPlusInfoModel(
-          label: 'DOB',
-          value:
-              '${studentDetails.dobC ?? '-'}'),
+          label: 'DOB', value: '${studentDetails.dobC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'ELL Status', value: '${studentDetails.ellC ?? '-'}'),
       StudentPlusInfoModel(
@@ -148,8 +140,9 @@ class StudentPlusUtility {
     }
   }
 
-    /* --------------------- Function to return subject list -------------------- */
-  static List<String> getSubjectList({required List<StudentPlusWorkModel> list}) {
+  /* --------------------- Function to return subject list -------------------- */
+  static List<String> getSubjectList(
+      {required List<StudentPlusWorkModel> list}) {
     List<String> subjectList = [];
     for (var i = 0; i < list.length; i++) {
       if (!subjectList.contains(list[i].subjectC) && list[i].subjectC != null) {
@@ -160,7 +153,8 @@ class StudentPlusUtility {
   }
 
   /* --------- Function to return teacher list from student work list --------- */
-  static List<String> getTeacherList({required List<StudentPlusWorkModel> list}) {
+  static List<String> getTeacherList(
+      {required List<StudentPlusWorkModel> list}) {
     List<String> teacherList = [];
     for (var i = 0; i < list.length; i++) {
       if (!teacherList.contains(
@@ -171,5 +165,4 @@ class StudentPlusUtility {
     }
     return teacherList;
   }
-
 }
