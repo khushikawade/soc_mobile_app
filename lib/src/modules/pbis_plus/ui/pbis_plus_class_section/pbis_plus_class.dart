@@ -399,16 +399,24 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   child: Center(
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
-                      child: Text(
-                        PBISPlusUtility.numberAbbreviationFormat(
-                            studentValueNotifier.value!.profile!.engaged! +
-                                studentValueNotifier.value!.profile!.niceWork! +
-                                studentValueNotifier.value!.profile!.helpful!),
-                        style: TextStyle(
-                          color: Theme.of(context).backgroundColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: ValueListenableBuilder<ClassroomStudents>(
+                          valueListenable: studentValueNotifier,
+                          builder: (BuildContext context,
+                              ClassroomStudents value, Widget? child) {
+                            return Text(
+                              PBISPlusUtility.numberAbbreviationFormat(
+                                  studentValueNotifier
+                                          .value!.profile!.engaged! +
+                                      studentValueNotifier
+                                          .value!.profile!.niceWork! +
+                                      studentValueNotifier
+                                          .value!.profile!.helpful!),
+                              style: TextStyle(
+                                color: Theme.of(context).backgroundColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          }),
                     ),
                   ),
                 ),
