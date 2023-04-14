@@ -1,9 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_modal_card.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
@@ -449,7 +449,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         builder: (BuildContext context) {
           return PBISPlusBottomSheet(
             padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
-            height: 250,
+            height: MediaQuery.of(context).size.height * 0.3,
             title: 'Save and Share',
           );
         },

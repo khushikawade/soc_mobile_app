@@ -1,5 +1,5 @@
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +34,7 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
 class PBISPlusActionInteractionButtonState
     extends State<PBISPlusActionInteractionButton> {
   PBISPlusBloc interactionBloc = new PBISPlusBloc();
+  final ValueNotifier<bool> onTapDetect = ValueNotifier<bool>(false);
   // void updateState(bool isLiked) {
   //   if (_isOffline) {
   //     Utility.currentScreenSnackBar("No Internet Connection", null);
@@ -67,46 +68,60 @@ class PBISPlusActionInteractionButtonState
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                LikeButton(
-                  padding: EdgeInsets.all(0),
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  likeCountAnimationType: LikeCountAnimationType.none,
-                  likeCountPadding: const EdgeInsets.only(left: 5.0),
-                  animationDuration: Duration(milliseconds: 1000),
-                  countPostion: CountPostion.right,
-                  isLiked: null,
-                  size: 20,
-                  onTap: _onLikeButtonTapped,
-                  circleColor: CircleColor(
-                    start: widget.iconData.color,
-                    end: widget.iconData.color,
+            Container(
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  LikeButton(
+                    padding: EdgeInsets.all(0),
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    likeCountAnimationType: LikeCountAnimationType.none,
+                    likeCountPadding: const EdgeInsets.only(left: 5.0),
+                    animationDuration: Duration(milliseconds: 1000),
+                    countPostion: CountPostion.right,
+                    isLiked: null,
+                    size: 20,
+                    onTap: _onLikeButtonTapped,
+                    circleColor: CircleColor(
+                      start: widget.iconData.color,
+                      end: widget.iconData.color,
+                    ),
+                    bubblesColor: BubblesColor(
+                      dotPrimaryColor: widget.iconData.color,
+                      dotSecondaryColor: widget.iconData.color,
+                    ),
+                    likeBuilder: (bool isLiked) {
+                      return Icon(
+                        widget.iconData.iconData,
+                        color: widget.iconData.color,
+                        size: 20,
+                      );
+                    },
+
+                    // likeCount: _getCounts(),
                   ),
-                  bubblesColor: BubblesColor(
-                    dotPrimaryColor: widget.iconData.color,
-                    dotSecondaryColor: widget.iconData.color,
-                  ),
-                  likeBuilder: (bool isLiked) {
-                    return Icon(
-                      widget.iconData.iconData,
-                      color: widget.iconData.color,
-                      size: 20,
-                    );
-                  },
-                  likeCount: _getCounts(),
-                ),
-                // _getCounts()
-              ],
+                  ValueListenableBuilder(
+                      valueListenable: onTapDetect,
+                      builder:
+                          (BuildContext context, dynamic value, Widget? child) {
+                        // print('only likes count');
+                        // print(widget.obj.likeCount);
+                        return _getCounts();
+                      })
+                ],
+              ),
             ),
+
             Utility.textWidget(
                 text: widget.iconData.title,
                 context: context,
                 textTheme: Theme.of(context)
                     .textTheme
                     .bodyText1!
-                    .copyWith(fontSize: 12)),
+                    .copyWith(fontSize: 12, fontWeight: FontWeight.w600)),
             // ValueListenableBuilder<bool>(
             //   valueListenable: _showMessage,
             //   builder: (BuildContext context, bool value, Widget? child) {
@@ -147,7 +162,6 @@ class PBISPlusActionInteractionButtonState
     Future.delayed(Duration(seconds: 1), () {
       _showMessage.value = false;
     });
-    print(widget.iconData.title);
 
     if (widget.iconData.title == 'Engaged') {
       widget.studentValueNotifier.value.profile!.engaged =
@@ -160,7 +174,11 @@ class PBISPlusActionInteractionButtonState
           widget.studentValueNotifier.value.profile!.helpful! + 1;
     }
 
-    widget.onValueUpdate(widget.studentValueNotifier);
+    onTapDetect.value =
+        !onTapDetect.value; //Update interaction text count in card
+
+    widget.onValueUpdate(
+        widget.studentValueNotifier); //return updated count to other screens
 
     interactionBloc.add(AddPBISInteraction(
         context: context,
@@ -189,11 +207,11 @@ class PBISPlusActionInteractionButtonState
     };
 
     int viewCount = map[title] ?? 0;
-    return viewCount;
-    // return Utility.textWidget(
-    //     text: viewCount.toString(),
-    //     context: context,
-    //     textTheme:
-    //         Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12));
+    // return viewCount;
+    return Utility.textWidget(
+        text: viewCount.toString(),
+        context: context,
+        textTheme:
+            Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12));
   }
 }

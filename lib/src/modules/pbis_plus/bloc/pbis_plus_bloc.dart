@@ -3,7 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/pbis_plus/modal/course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
@@ -61,8 +61,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         if (responseList[1] == '') {
           List<ClassroomCourse> coursesList = responseList[0];
-          List<PBISPlusTotalInteractionByTeacherModal>
-              pbisTotalInteractionList = await getPBISTotalInteractionByTeacher(
+          List<PBISPlusTotalInteractionModal> pbisTotalInteractionList =
+              await getPBISTotalInteractionByTeacher(
                   teacherEmail: userProfileLocalData[0].userEmail!);
 
           // Merge Student Interaction with Google Classroom Rosters
@@ -326,32 +326,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-  // Future addSocialAction(body) async {
-  //   try {
-  //     final ResponseModel response = await _dbServices.postApimain(
-  //         //timestamp=false is use to manage the UID. If not found, it will create a new record with UID
-  //         "addUserAction?schoolId=${Overrides.SCHOOL_ID}&objectName=Social&withTimeStamp=false",
-  //         body: body);
-
-  //     if (response.statusCode == 200) {
-  //       var res = response.data;
-  //       var data = res["statusCode"];
-  //       return data;
-  //     } else {
-  //       throw ('something_went_wrong');
-  //     }
-  //   } catch (e) {
-  //     throw (e);
-  //   }
-  // }
-
   /*----------------------------------------------------------------------------------------------*/
   /*------------------------------Function getPBISTotalInteractionByTeacher-----------------------*/
   /*----------------------------------------------------------------------------------------------*/
 
-  Future<List<PBISPlusTotalInteractionByTeacherModal>>
-      getPBISTotalInteractionByTeacher(
-          {required String teacherEmail, int retry = 3}) async {
+  Future<List<PBISPlusTotalInteractionModal>> getPBISTotalInteractionByTeacher(
+      {required String teacherEmail, int retry = 3}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/teacher/$teacherEmail',
@@ -363,8 +343,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         return response.data['body']
-            .map<PBISPlusTotalInteractionByTeacherModal>(
-                (i) => PBISPlusTotalInteractionByTeacherModal.fromJson(i))
+            .map<PBISPlusTotalInteractionModal>(
+                (i) => PBISPlusTotalInteractionModal.fromJson(i))
             .toList();
       } else if (retry > 0) {
         return getPBISTotalInteractionByTeacher(
@@ -381,7 +361,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /*----------------------------------------------------------------------------------------------*/
 
   List<ClassroomCourse> assignStudentTotalInteraction(
-    List<PBISPlusTotalInteractionByTeacherModal> pbisTotalInteractionList,
+    List<PBISPlusTotalInteractionModal> pbisTotalInteractionList,
     List<ClassroomCourse> classroomCourseList,
   ) {
     List<ClassroomCourse> classroomStudentProfile = [];
@@ -434,6 +414,36 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     }
     return classroomStudentProfile;
+  }
+
+  /*----------------------------------------------------------------------------------------------*/
+  /*---------------------------------Function getPBISPlusHistoryData------------------------------*/
+  /*----------------------------------------------------------------------------------------------*/
+
+  Future<List<PBISPlusHistoryModal>> getPBISPlusStudentPreviousData(
+      {required String teacherEmail,
+      required String studentId,
+      int retry = 3}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/student/$studentId?teacher_email=$teacherEmail',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        return response.data['body']
+            .map<PBISPlusHistoryModal>((i) => PBISPlusHistoryModal.fromJson(i))
+            .toList();
+      } else if (retry > 0) {
+        return getPBISPlusHistoryData(
+            teacherEmail: teacherEmail, retry: retry - 1);
+      }
+      return [];
+    } catch (e) {
+      throw (e);
+    }
   }
 
   /*----------------------------------------------------------------------------------------------*/
