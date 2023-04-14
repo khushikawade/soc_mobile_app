@@ -93,9 +93,9 @@ class PBISPlusActionInteractionButtonState
                       size: 20,
                     );
                   },
-                  // likeCount: _getCounts(),
+                  likeCount: _getCounts(),
                 ),
-                _getCounts()
+                // _getCounts()
               ],
             ),
             Utility.textWidget(
@@ -184,10 +184,11 @@ class PBISPlusActionInteractionButtonState
     };
 
     int viewCount = map[title] ?? 0;
-    return Utility.textWidget(
-        text: viewCount.toString(),
-        context: context,
-        textTheme:
-            Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12));
+    return viewCount;
+    // return Utility.textWidget(
+    //     text: viewCount.toString(),
+    //     context: context,
+    //     textTheme:
+    //         Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12));
   }
 }

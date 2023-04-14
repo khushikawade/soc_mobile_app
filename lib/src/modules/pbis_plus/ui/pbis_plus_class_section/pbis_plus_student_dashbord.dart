@@ -172,20 +172,27 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                   ),
                   child: Center(
                     child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        PBISPlusUtility.numberAbbreviationFormat(widget
-                                .studentValueNotifier.value!.profile!.engaged! +
-                            widget.studentValueNotifier.value!.profile!
-                                .niceWork! +
-                            widget
-                                .studentValueNotifier.value!.profile!.helpful!),
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                        fit: BoxFit.scaleDown,
+                        child: ValueListenableBuilder<ClassroomStudents>(
+                            valueListenable: widget.studentValueNotifier,
+                            builder: (BuildContext context,
+                                ClassroomStudents value, Widget? child) {
+                              return Text(
+                                PBISPlusUtility.numberAbbreviationFormat(widget
+                                        .studentValueNotifier
+                                        .value!
+                                        .profile!
+                                        .engaged! +
+                                    widget.studentValueNotifier.value!.profile!
+                                        .niceWork! +
+                                    widget.studentValueNotifier.value!.profile!
+                                        .helpful!),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              );
+                            })),
                   ),
                 ),
               ),
