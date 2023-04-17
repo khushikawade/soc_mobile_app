@@ -146,8 +146,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Spreadsheet',
                   onTap: () {
-                    _pageController.animateToPage(2,
-                        duration: const Duration(milliseconds: 400),
+                    _pageController.animateToPage(3,
+                        duration: const Duration(milliseconds: 100),
                         curve: Curves.ease);
                   }),
               Container(
