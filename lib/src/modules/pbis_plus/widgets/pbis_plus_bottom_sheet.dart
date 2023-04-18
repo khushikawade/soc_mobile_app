@@ -1,5 +1,10 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
+import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -8,22 +13,47 @@ class PBISPlusBottomSheet extends StatefulWidget {
   final bool content;
   final String? title;
   final EdgeInsetsGeometry? padding;
+  final List<ClassroomCourse> googleClassroomCourseworkList;
   PBISPlusBottomSheet(
       {Key? key,
       this.height = 200,
       this.title,
       this.content = true,
-      this.padding});
+      this.padding,
+      required this.googleClassroomCourseworkList});
   @override
   State<PBISPlusBottomSheet> createState() => _PBISPlusBottomSheetState();
 }
 
 class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
+  late PageController _pageController;
+  final pointPossibleController = TextEditingController();
+  final ValueNotifier<bool> selectionChange = ValueNotifier<bool>(false);
+  final _formKey = GlobalKey<FormState>();
+
+  int pageValue = 0;
+  bool classroomLoader = false;
+
+  //default value '0' to show 'All' in the course bottomsheet list by default selected
+  List<int> selectedValueIndexList = [0];
+
+  @override
+  void initState() {
+    _pageController = PageController()
+      ..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // final double progress =
+    //     _pageController.hasClients ? (_pageController.page ?? 0) : 0;
+
     return Container(
-        // padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-        padding: widget.padding ?? EdgeInsets.all(10),
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        // padding: widget.padding ?? EdgeInsets.all(2),
         decoration: BoxDecoration(
           color: Color(0xff000000) != Theme.of(context).backgroundColor
               ? Color(0xffF7F8F9)
@@ -31,55 +61,113 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         ),
-        height: widget.height,
-        child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: !widget.content
-                ? MainAxisAlignment.center
-                : MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget?.title?.isNotEmpty ?? false)
-                Utility.textWidget(
-                    context: context,
-                    text: widget.title!,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
-              SpacerWidget(20),
-              if (widget.content) ...[
-                _listTileMenu(
-                    leading: SvgPicture.asset(
-                      "assets/ocr_result_section_bottom_button_icons/Classroom.svg",
-                      height: 30,
-                      width: 30,
-                    ),
-                    title: 'Classroom',
-                    onTap: (() {})),
-                _listTileMenu(
-                    leading: SvgPicture.asset(
-                      "assets/ocr_result_section_bottom_button_icons/Spreadsheet.svg",
-                      height: 30,
-                      width: 30,
-                    ),
-                    title: 'Spreadsheet',
-                    onTap: (() {
-                      print("ffffffffffffffffffff");
-                    })),
-                Divider(
+        height: pageValue == 1
+            ? widget.height * 1.3
+            : pageValue == 2
+                ? widget.height * 1.7
+                : pageValue == 3
+                    ? widget.height * 0.8
+                    : widget.height,
+        child: PageView(
+          physics:
+              // pageValue == 0
+              // ?
+              NeverScrollableScrollPhysics(),
+          // : BouncingScrollPhysics(),
+          onPageChanged: ((value) {
+            pageValue = value;
+          }),
+          allowImplicitScrolling: false,
+          pageSnapping: false,
+          controller: _pageController,
+          children: [
+            saveAndShareOptions(),
+            classroomMaxPointQue(),
+            buildGoogleClassroomCourseWidget(),
+            commonLoaderWidget()
+          ],
+        ));
+  }
+
+//page value=0
+  Widget saveAndShareOptions() {
+    return Container(
+      padding: EdgeInsets.only(left: 16),
+      child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: !widget.content
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                alignment: Alignment.topRight,
+
+                // padding: EdgeInsets.only(top: 16),
+                //color: Colors.amber,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: AppTheme.kButtonColor,
+                    size: Globals.deviceType == "phone" ? 28 : 36,
+                  ),
+                )),
+            if (widget?.title?.isNotEmpty ?? false)
+              Utility.textWidget(
+                  context: context,
+                  text: widget.title!,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+            SpacerWidget(20),
+            if (widget.content) ...[
+              _listTileMenu(
+                  leading: SvgPicture.asset(
+                    "assets/ocr_result_section_bottom_button_icons/Classroom.svg",
+                    height: 30,
+                    width: 30,
+                  ),
+                  title: 'Classroom',
+                  onTap: () {
+                    _pageController.animateToPage(1,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.ease);
+                  }),
+              _listTileMenu(
+                  leading: SvgPicture.asset(
+                    "assets/ocr_result_section_bottom_button_icons/Spreadsheet.svg",
+                    height: 30,
+                    width: 30,
+                  ),
+                  title: 'Spreadsheet',
+                  onTap: () {
+                    classroomLoader = false;
+                    _pageController.animateToPage(2,
+                        duration: const Duration(milliseconds: 100),
+                        curve: Curves.ease);
+                  }),
+              Container(
+                padding: EdgeInsets.only(right: 16),
+                child: Divider(
                   thickness: 1.0,
                   color: Colors.grey,
                 ),
-              ],
-              _listTileMenu(
-                  leading: Icon(
-                    Icons.share,
-                    color: Colors.grey,
-                  ),
-                  title: 'Share',
-                  onTap: (() {})),
-            ]));
+              ),
+            ],
+            _listTileMenu(
+                leading: Icon(
+                  Icons.share,
+                  color: Colors.grey,
+                ),
+                title: 'Share',
+                onTap: (() {})),
+          ]),
+    );
   }
 
   ListTile _listTileMenu({Widget? leading, String? title, Function()? onTap}) {
@@ -93,6 +181,268 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           context: context,
           textTheme: Theme.of(context).textTheme.headline3!),
       onTap: onTap,
+    );
+  }
+
+//page value=1
+  Widget classroomMaxPointQue() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 0),
+          minLeadingWidth: 70,
+          title: Utility.textWidget(
+              context: context,
+              // textAlign: TextAlign.center,
+              text: 'Google Classroom',
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+          leading: IconButton(
+            onPressed: () {
+              _pageController.animateToPage(pageValue - 1,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.ease);
+            },
+            icon: Icon(
+              IconData(0xe80d,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              color: AppTheme.kButtonColor,
+            ),
+          ),
+        ),
+        SpacerWidget(15),
+        Utility.textWidget(
+            context: context,
+            textAlign: TextAlign.center,
+            text:
+                'This information will be saved to Google Classroom as an assignment. Please input the total points possible as required by Google Classroom.',
+            textTheme: Theme.of(context).textTheme.bodyText1!),
+        SpacerWidget(30),
+        Form(
+          key: _formKey,
+          child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
+              child: TextFieldWidget(
+                  hintText: 'Point Possible',
+                  msg: "Field is required",
+                  controller: pointPossibleController,
+                  onSaved: (String value) {})),
+        ),
+        SpacerWidget(30),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+          child: FloatingActionButton.extended(
+              backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  FocusScope.of(context).requestFocus(FocusNode());
+
+                  _pageController.animateToPage(2,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.ease);
+
+                  classroomLoader = true;
+                }
+              },
+              label: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Utility.textWidget(
+                      text: 'Next',
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Theme.of(context).backgroundColor)),
+                ],
+              )),
+        ),
+      ],
+    );
+  }
+
+//page value=2
+  Widget buildGoogleClassroomCourseWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 0),
+          // minLeadingWidth: 70,
+          title: Utility.textWidget(
+              context: context,
+              // textAlign: TextAlign.center,
+              text: 'Select Google Classroom Course',
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+          leading: IconButton(
+            onPressed: () {
+              _pageController.animateToPage(pageValue - 1,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.ease);
+            },
+            icon: Icon(
+              IconData(0xe80d,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              color: AppTheme.kButtonColor,
+            ),
+          ),
+        ),
+        SpacerWidget(20),
+        ValueListenableBuilder(
+            valueListenable: selectionChange,
+            child: Container(),
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.36,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(
+                    bottom: 25,
+                  ),
+                  scrollDirection: Axis.vertical,
+                  itemCount: widget.googleClassroomCourseworkList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _classroomCourseRadioList(index, context,
+                        widget.googleClassroomCourseworkList[index]);
+                  },
+                ),
+              );
+            }),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+          child: FloatingActionButton.extended(
+              backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+              onPressed: () async {
+                // if (_formKey.currentState!.validate()) {
+                _pageController.animateToPage(3,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.ease);
+
+                classroomLoader = true;
+                // }
+              },
+              label: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Utility.textWidget(
+                      text: 'Submit',
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Theme.of(context).backgroundColor)),
+                ],
+              )),
+        ),
+      ],
+    );
+  }
+
+  Widget _classroomCourseRadioList(int index, context, ClassroomCourse obj) {
+    return InkWell(
+      onTap: () {
+        if (index == 0) {
+          //In case of ALL no other course can be selected individually
+          selectedValueIndexList.clear();
+          selectedValueIndexList.add(index);
+        } else if (!selectedValueIndexList.contains(index)) {
+          selectedValueIndexList.remove(0);
+          selectedValueIndexList.add(index);
+        } else {
+          selectedValueIndexList.remove(index);
+        }
+
+        //Refresh value in the UI
+        selectionChange.value = !selectionChange.value;
+      },
+      child: Container(
+          height: 54,
+          padding: EdgeInsets.symmetric(
+            horizontal: 0,
+          ),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(0.0),
+              color: (index % 2 == 0)
+                  ? Theme.of(context).colorScheme.background ==
+                          Color(0xff000000)
+                      ? AppTheme.klistTilePrimaryDark
+                      : AppTheme
+                          .klistTilePrimaryLight //Theme.of(context).colorScheme.background
+                  : Theme.of(context).colorScheme.background ==
+                          Color(0xff000000)
+                      ? AppTheme.klistTileSecoandryDark
+                      : AppTheme
+                          .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
+              ),
+          child: IgnorePointer(
+            child: Theme(
+              data: ThemeData(
+                unselectedWidgetColor: AppTheme.kButtonColor,
+              ),
+              child: RadioListTile(
+                  groupValue:
+                      selectedValueIndexList.contains(index) ? true : false,
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  activeColor: AppTheme
+                      .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
+
+                  contentPadding: EdgeInsets.zero,
+                  value: true,
+                  // value: selectedIndex.value == index ||
+                  //         widget.filterNotifier.value == text
+                  //     ? true
+                  //     : false,
+                  onChanged: (dynamic val) {},
+                  // groupValue: true,
+                  title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Utility.textWidget(
+                          text: obj.name!,
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(fontWeight: FontWeight.bold)))),
+            ),
+          )),
+    );
+  }
+
+//page value=3
+  Widget commonLoaderWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SpacerWidget(50),
+        CircularProgressIndicator.adaptive(
+          backgroundColor: AppTheme.kButtonColor,
+        ),
+        SpacerWidget(30),
+        Utility.textWidget(
+            context: context,
+            textAlign: TextAlign.center,
+            text: classroomLoader
+                ? 'Preparing Google Classroom Assignment'
+                : 'Preparing Google Spreadsheet',
+            textTheme:
+                Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
+      ],
     );
   }
 }

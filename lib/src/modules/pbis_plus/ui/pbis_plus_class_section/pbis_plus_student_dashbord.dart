@@ -384,6 +384,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         context: context,
         builder: (BuildContext context) {
           return PBISPlusBottomSheet(
+            googleClassroomCourseworkList: [], //No list is required since no list is used from this bottomsheet
             content: false,
             height: 100,
             title: '',

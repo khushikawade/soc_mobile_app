@@ -31,10 +31,13 @@ class PBISPlusClass extends StatefulWidget {
 class _PBISPlusClassState extends State<PBISPlusClass> {
   PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
   PBISPlusBloc pbisPlusTotalInteractionBloc = PBISPlusBloc();
+  final List<ClassroomCourse> googleClassroomCourseworkList =
+      []; //Used to send the value in bottomsheet coursework list
 
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final double profilePictureSize = 30;
   static const double _KVertcalSpace = 60.0;
 
@@ -95,6 +98,15 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   }
                   if (state is PBISPlusImportRosterSuccess &&
                       (state.googleClassroomCourseList.isNotEmpty ?? false)) {
+                    ///Used to send the list of courseWork to the bottomsheet list
+                    /*----------------------START--------------------------*/
+                    googleClassroomCourseworkList.clear();
+                    googleClassroomCourseworkList
+                        .add(ClassroomCourse(name: 'All'));
+                    googleClassroomCourseworkList
+                        .addAll(state.googleClassroomCourseList);
+                    /*----------------------END--------------------------*/
+
                     return buildList(state.googleClassroomCourseList);
                   }
 
@@ -448,8 +460,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         context: context,
         builder: (BuildContext context) {
           return PBISPlusBottomSheet(
+            googleClassroomCourseworkList: googleClassroomCourseworkList,
             padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height * 0.35,
             title: 'Save and Share',
           );
         },
