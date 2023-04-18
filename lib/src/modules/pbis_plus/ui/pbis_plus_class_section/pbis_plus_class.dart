@@ -98,7 +98,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   }
                   if (state is PBISPlusImportRosterSuccess &&
                       (state.googleClassroomCourseList.isNotEmpty ?? false)) {
-                    ///Used to send is of courseWork to the bottomsheet list
+                    ///Used to send the list of courseWork to the bottomsheet list
                     /*----------------------START--------------------------*/
                     googleClassroomCourseworkList.clear();
                     googleClassroomCourseworkList
