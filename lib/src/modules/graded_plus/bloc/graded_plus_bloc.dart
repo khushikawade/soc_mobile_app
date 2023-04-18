@@ -1043,7 +1043,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     try {
       final ResponseModel response = await _dbServices.postApi(
         Uri.encodeFull(
-            "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/createRecord?objectName=Graded_Activity_Logs"),
+            "https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/createRecord?objectName=User_Activity_Logs"),
         body: body,
         headers: {
           'Content-Type': 'application/json',
