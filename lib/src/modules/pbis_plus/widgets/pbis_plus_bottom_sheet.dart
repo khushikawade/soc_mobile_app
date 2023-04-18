@@ -33,9 +33,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
 
   int pageValue = 0;
   bool classroomLoader = false;
-  List<int> selectedValueIndexList = [0];
 
-  // double _progress;
+  //default value '0' to show 'All' in the course bottomsheet list by default selected
+  List<int> selectedValueIndexList = [0];
 
   @override
   void initState() {
@@ -48,8 +48,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final double progress =
-        _pageController.hasClients ? (_pageController.page ?? 0) : 0;
+    // final double progress =
+    //     _pageController.hasClients ? (_pageController.page ?? 0) : 0;
 
     return Container(
         padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
