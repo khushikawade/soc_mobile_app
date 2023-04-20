@@ -346,6 +346,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     curve: Curves.ease);
 
                 classroomLoader = true;
+                if (selectedCoursesList.length == 0) {
+                  //Remove manually added 'All' option from the list
+                  widget.googleClassroomCourseworkList.removeAt(0);
+                }
 
                 classroomBloc.add(CreatePBISClassroomCoursework(
                   pointPossible: pointPossibleController.text,

@@ -336,7 +336,7 @@ class GoogleClassroomBloc
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        bool result = await _createPBISCoursework(
+        var result = await _createPBISCoursework(
             authorizationToken:
                 userProfileLocalData[0].authorizationToken ?? '',
             refreshToken: userProfileLocalData[0].refreshToken ?? '',
@@ -345,13 +345,13 @@ class GoogleClassroomBloc
             // studentProfileDetails: [],
             courseAndStudentList: event.courseAndStudentList);
 
-        if (result) {
+        if (result[1] == '') {
           yield CreateClassroomCourseWorkSuccess();
         } else {
-          yield GoogleClassroomErrorState(
-              errorMsg: 'ReAuthentication is required');
+          yield GoogleClassroomErrorState(errorMsg: result[1]);
         }
       } catch (e) {
+        print(e);
         yield GoogleClassroomErrorState(errorMsg: e.toString());
       }
     }
@@ -567,9 +567,12 @@ class GoogleClassroomBloc
               title: title,
               studentClassObj: studentClassObj);
         }
+      } else if ((response.statusCode == 401 ||
+          // response.data['body'][" status"] != 401 ||
+          response.data['statusCode'] == 500)) {
+        return [false, 'ReAuthentication is required'];
       }
-
-      return [false, 'ReAuthentication is required'];
+      return [];
     } catch (e) {
       return [false, e.toString()];
     }
@@ -636,33 +639,35 @@ class GoogleClassroomBloc
     }
   }
 
-  Future<bool> _createPBISCoursework(
-      {required String authorizationToken,
-      required String refreshToken,
-      required String teacherEmail,
-      required int maxPoints,
-      // required List<ClassRoomStudentProfile> studentProfileDetails,
-      required List<ClassroomCourse> courseAndStudentList,
-      int retry = 3}) async {
-    PBISPlusBloc _pbisBloc = new PBISPlusBloc();
+  Future<List<dynamic>> _createPBISCoursework({
+    required String authorizationToken,
+    required String refreshToken,
+    required String teacherEmail,
+    required int maxPoints,
+    required List<ClassroomCourse> courseAndStudentList,
+    int retry = 3,
+  }) async {
+    final pbisBloc = PBISPlusBloc();
+
     try {
-      var currentDate =
+      final currentDate =
           Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+
       for (int i = 0; i < courseAndStudentList.length; i++) {
         print('index i : $i');
-        //To add only course related student for single course
-        List<ClassRoomStudentProfile> studentProfileDetails = [];
 
-        for (int j = 0; j < courseAndStudentList[i].students!.length; j++) {
-          print('index j : $j');
-          studentProfileDetails.add(ClassRoomStudentProfile(
-              studentId: courseAndStudentList[i].students![j].profile!.id,
-              studentAssessmentImage: '',
-              earnedPoint:
-                  courseAndStudentList[i].students![j].profile!.engaged! +
-                      courseAndStudentList[i].students![j].profile!.niceWork! +
-                      courseAndStudentList[i].students![j].profile!.helpful!));
-        }
+        // To add only course related student for single course
+        final studentProfileDetails = courseAndStudentList[i]
+            .students!
+            .map((student) => ClassRoomStudentProfile(
+                  studentId: student.profile!.id,
+                  studentAssessmentImage: '',
+                  earnedPoint: student.profile!.engaged! +
+                      student.profile!.niceWork! +
+                      student.profile!.helpful!,
+                ))
+            .toList();
+
         final url =
             'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/googleClassroomCoursework';
 
@@ -670,54 +675,139 @@ class GoogleClassroomBloc
           'G_AuthToken': authorizationToken,
           'G_RefreshToken': refreshToken,
           'Content-Type': 'application/json',
-          'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
         };
 
-        Map<String, dynamic> body = {
+        final body = {
           "courseId": courseAndStudentList[i].id,
           "title": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
           "description": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
           "maxPoints": maxPoints,
           "studentAssessmentDetails":
-              studentProfileDetails.map((data) => data.toJson()).toList()
+              studentProfileDetails.map((data) => data.toJson()).toList(),
         };
 
-        final ResponseModel response = await _dbServices.postApi(url,
+        final response = await _dbServices.postApi(url,
             headers: headers, body: body, isGoogleApi: true);
 
+        print('_createPBISCoursework :$response');
         if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-          await _pbisBloc.createPBISPlusHistoryData(
-              type: 'Classroom',
-              url: response.data['body']['courseWorkURL'],
-              teacherEmail: teacherEmail,
-              classroomCourseName: courseAndStudentList[i].name);
+          //If classroom assignment successfully created, add the record with url in the database
 
-          // return [true, data];
+          await pbisBloc.createPBISPlusHistoryData(
+            type: 'Classroom',
+            url: response.data['courseWorkURL'],
+            teacherEmail: teacherEmail,
+            classroomCourseName: courseAndStudentList[i].name,
+          );
         } else if (retry > 0) {
-          var result = await toRefreshAuthenticationToken(refreshToken);
+          final result = await toRefreshAuthenticationToken(refreshToken);
+
           if (result == true) {
-            List<UserInformation> _userProfileLocalData =
+            final userProfileLocalData =
                 await UserGoogleProfile.getUserProfile();
 
-            return await _createPBISCoursework(
-                retry: retry - 1,
-                authorizationToken:
-                    _userProfileLocalData[0].authorizationToken!,
-                teacherEmail: teacherEmail,
-                maxPoints: maxPoints,
-                refreshToken: _userProfileLocalData[0].refreshToken!,
-                // studentProfileDetails: studentProfileDetails,
-                courseAndStudentList: courseAndStudentList);
+            return _createPBISCoursework(
+              retry: retry - 1,
+              authorizationToken: userProfileLocalData[0].authorizationToken!,
+              teacherEmail: teacherEmail,
+              maxPoints: maxPoints,
+              refreshToken: userProfileLocalData[0].refreshToken!,
+              courseAndStudentList: courseAndStudentList,
+            );
           }
         }
-
-        //retry =3 max
-
       }
 
-      return true;
+      return [true, ''];
     } catch (e) {
-      return false;
+      print(e);
+      return [false, e];
     }
   }
+
+  // Future<bool> _createPBISCoursework(
+  //     {required String authorizationToken,
+  //     required String refreshToken,
+  //     required String teacherEmail,
+  //     required int maxPoints,
+  //     // required List<ClassRoomStudentProfile> studentProfileDetails,
+  //     required List<ClassroomCourse> courseAndStudentList,
+  //     int retry = 3}) async {
+  //   PBISPlusBloc _pbisBloc = new PBISPlusBloc();
+  //   try {
+  //     var currentDate =
+  //         Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+  //     for (int i = 0; i < courseAndStudentList.length; i++) {
+  //       print('index i : $i');
+  //       //To add only course related student for single course
+  //       List<ClassRoomStudentProfile> studentProfileDetails = [];
+
+  //       for (int j = 0; j < courseAndStudentList[i].students!.length; j++) {
+  //         print('index j : $j');
+  //         studentProfileDetails.add(ClassRoomStudentProfile(
+  //             studentId: courseAndStudentList[i].students![j].profile!.id,
+  //             studentAssessmentImage: '',
+  //             earnedPoint:
+  //                 courseAndStudentList[i].students![j].profile!.engaged! +
+  //                     courseAndStudentList[i].students![j].profile!.niceWork! +
+  //                     courseAndStudentList[i].students![j].profile!.helpful!));
+  //       }
+  //       final url =
+  //           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/googleClassroomCoursework';
+
+  //       final headers = {
+  //         'G_AuthToken': authorizationToken,
+  //         'G_RefreshToken': refreshToken,
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //       };
+
+  //       Map<String, dynamic> body = {
+  //         "courseId": courseAndStudentList[i].id,
+  //         "title": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+  //         "description": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+  //         "maxPoints": maxPoints,
+  //         "studentAssessmentDetails":
+  //             studentProfileDetails.map((data) => data.toJson()).toList()
+  //       };
+
+  //       final ResponseModel response = await _dbServices.postApi(url,
+  //           headers: headers, body: body, isGoogleApi: true);
+
+  //       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+  //         await _pbisBloc.createPBISPlusHistoryData(
+  //             type: 'Classroom',
+  //             url: response.data['body']['courseWorkURL'],
+  //             teacherEmail: teacherEmail,
+  //             classroomCourseName: courseAndStudentList[i].name);
+
+  //         // return [true, data];
+  //       } else if (retry > 0) {
+  //         var result = await toRefreshAuthenticationToken(refreshToken);
+  //         if (result == true) {
+  //           List<UserInformation> _userProfileLocalData =
+  //               await UserGoogleProfile.getUserProfile();
+
+  //           return await _createPBISCoursework(
+  //               retry: retry - 1,
+  //               authorizationToken:
+  //                   _userProfileLocalData[0].authorizationToken!,
+  //               teacherEmail: teacherEmail,
+  //               maxPoints: maxPoints,
+  //               refreshToken: _userProfileLocalData[0].refreshToken!,
+  //               // studentProfileDetails: studentProfileDetails,
+  //               courseAndStudentList: courseAndStudentList);
+  //         }
+  //       }
+
+  //       //retry =3 max
+
+  //     }
+
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 }

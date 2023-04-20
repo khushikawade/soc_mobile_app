@@ -570,8 +570,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       required String? classroomCourseName,
       int retry = 3}) async {
     try {
+      print('createPBISPlusHistoryData');
+
       var currentDate =
           Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+
+      var headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
 
       var body = {
         "Type": type,
@@ -584,15 +591,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       };
 
       final ResponseModel response = await _dbServices.postApi(
-        'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/history',
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
-        },
-        body: body,
-      );
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/history',
+          headers: headers,
+          body: body,
+          isGoogleApi: true);
 
-      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+      print('createPBISPlusHistoryData :$response');
+      if (response.statusCode == 200 && response.data['statusCode'] != 500) {
         return true;
       } else if (retry > 0) {
         return createPBISPlusHistoryData(
