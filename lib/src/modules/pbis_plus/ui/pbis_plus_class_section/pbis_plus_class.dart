@@ -456,7 +456,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         useRootNavigator: true,
         isScrollControlled: true,
         isDismissible: false,
-        enableDrag: true,
+        enableDrag: false,
         backgroundColor: Colors.transparent,
         // animationCurve: Curves.easeOutQuart,
         elevation: 10,

@@ -333,7 +333,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
           leading: IconButton(
             onPressed: () {
-              _pageController.animateToPage(pageValue - 1,
+              _pageController.animateToPage(
+                  classroomLoader == false ? 0 : pageValue - 1,
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.ease);
             },
@@ -376,15 +377,17 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.ease);
 
-                classroomLoader = true;
+                if (classroomLoader == true) {
+                  // classroomLoader = true;
 
-                classroomBloc.add(CreatePBISClassroomCoursework(
-                  pointPossible: pointPossibleController.text,
-                  courseAndStudentList: selectedCoursesList.length == 0
-                      ? widget.googleClassroomCourseworkList
-                      : selectedCoursesList,
-                  // studentAssessmentInfoDb: studentAssessmentInfoDb
-                ));
+                  classroomBloc.add(CreatePBISClassroomCoursework(
+                    pointPossible: pointPossibleController.text,
+                    courseAndStudentList: selectedCoursesList.length == 0
+                        ? widget.googleClassroomCourseworkList
+                        : selectedCoursesList,
+                    // studentAssessmentInfoDb: studentAssessmentInfoDb
+                  ));
+                }
               },
               label: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
