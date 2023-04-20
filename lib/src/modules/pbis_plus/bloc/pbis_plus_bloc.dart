@@ -246,49 +246,49 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
       yield PBISPlusLoading();
       yield AddPBISHistorySuccess();
-      /* -------------------------------------------------------------------------- */
-      /*                    Event to get student details by email                   */
-      /* -------------------------------------------------------------------------- */
-      if (event is GetPBISPlusStudentDashboardLogs) {
-        try {
-          List<UserInformation> userProfileLocalData =
-              await UserGoogleProfile.getUserProfile();
+    }
+    /* -------------------------------------------------------------------------- */
+    /*                    Event to get student details by email                   */
+    /* -------------------------------------------------------------------------- */
+    if (event is GetPBISPlusStudentDashboardLogs) {
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
 
-          LocalDatabase<PBISPlusTotalInteractionModal> _localDb = LocalDatabase(
-              "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}");
-          List<PBISPlusTotalInteractionModal>? _localData =
-              await _localDb.getData();
+        LocalDatabase<PBISPlusTotalInteractionModal> _localDb = LocalDatabase(
+            "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}");
+        List<PBISPlusTotalInteractionModal>? _localData =
+            await _localDb.getData();
 
-          if (_localData.isNotEmpty) {
-            yield PBISPlusStudentDashboardLogSuccess(
-                pbisStudentInteractionList: _localData);
-          } else {
-            yield PBISPlusLoading();
-          }
-
-          List<PBISPlusTotalInteractionModal> pbisStudentDetails =
-              await getPBISPlusStudentDashboardLogs(
-                  studentId: event.studentId,
-                  teacherEmail: userProfileLocalData[0].userEmail!);
-
-          //   pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-
-          await _localDb.clear();
-          pbisStudentDetails
-              .forEach((PBISPlusTotalInteractionModal element) async {
-            await _localDb.addData(element);
-          });
-          yield PBISPlusLoading();
-          yield PBISPlusStudentDashboardLogSuccess(
-              pbisStudentInteractionList: pbisStudentDetails);
-        } catch (e) {
-          LocalDatabase<PBISPlusTotalInteractionModal> _localDb = LocalDatabase(
-              "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}");
-          List<PBISPlusTotalInteractionModal>? _localData =
-              await _localDb.getData();
+        if (_localData.isNotEmpty) {
           yield PBISPlusStudentDashboardLogSuccess(
               pbisStudentInteractionList: _localData);
+        } else {
+          yield PBISPlusLoading();
         }
+
+        List<PBISPlusTotalInteractionModal> pbisStudentDetails =
+            await getPBISPlusStudentDashboardLogs(
+                studentId: event.studentId,
+                teacherEmail: userProfileLocalData[0].userEmail!);
+
+        //   pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+        await _localDb.clear();
+        pbisStudentDetails
+            .forEach((PBISPlusTotalInteractionModal element) async {
+          await _localDb.addData(element);
+        });
+        yield PBISPlusLoading();
+        yield PBISPlusStudentDashboardLogSuccess(
+            pbisStudentInteractionList: pbisStudentDetails);
+      } catch (e) {
+        LocalDatabase<PBISPlusTotalInteractionModal> _localDb = LocalDatabase(
+            "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}");
+        List<PBISPlusTotalInteractionModal>? _localData =
+            await _localDb.getData();
+        yield PBISPlusStudentDashboardLogSuccess(
+            pbisStudentInteractionList: _localData);
       }
     }
   }
