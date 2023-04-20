@@ -1,5 +1,6 @@
 //custom floating action button
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,10 @@ class PBISPlusCustomFloatingActionButton extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: AppTheme.kButtonColor,
           onPressed: onPressed,
-          child: Icon(PBISPlusIcons.PBISPlus_plus_floating,
+          child: Icon(
+              IconData(0xe868,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
               color: Theme.of(context).backgroundColor),
         ));
   }

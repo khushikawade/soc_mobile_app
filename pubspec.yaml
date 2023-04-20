@@ -170,9 +170,9 @@ flutter:
       fonts:
         - asset: fonts/CustomFlutterIcons.ttf
 
-    - family: PBISPlusIcons
-      fonts:
-        - asset: fonts/PBISPlusIcons.ttf
+    # - family: PBISPlusIcons
+    #   fonts:
+    #     - asset: fonts/PBISPlusIcons.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

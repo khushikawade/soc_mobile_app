@@ -2,6 +2,7 @@ import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:like_button/like_button.dart';
@@ -10,6 +11,9 @@ import 'package:like_button/like_button.dart';
 class PBISPlusActionInteractionButton extends StatefulWidget {
   final PBISPlusActionInteractionModal iconData;
   ValueNotifier<ClassroomStudents> studentValueNotifier;
+  final bool?
+      isFromStudentPlus; // to check it is from pbis plus or student plus
+  final bool? isLoading; // to maintain loading when user came from student plus
   final Key? scaffoldKey;
   final String? classroomCourseId;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
@@ -17,6 +21,8 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
 
   PBISPlusActionInteractionButton(
       {Key? key,
+      this.isLoading,
+      this.isFromStudentPlus,
       required this.iconData,
       required this.studentValueNotifier,
       required this.scaffoldKey,
@@ -80,11 +86,20 @@ class PBISPlusActionInteractionButtonState
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     likeCountAnimationType: LikeCountAnimationType.none,
                     likeCountPadding: const EdgeInsets.only(left: 5.0),
-                    animationDuration: Duration(milliseconds: 1000),
+                    animationDuration: Duration(
+                        milliseconds:
+                            widget.isFromStudentPlus == true ? 0 : 1000),
                     countPostion: CountPostion.right,
                     isLiked: null,
+
                     size: 20,
-                    onTap: _onLikeButtonTapped,
+                    onTap: widget.isLoading == true
+                        ?
+                        // Interaction should not be tappable in STUDENT+ module
+                        (bool isLiked) async {
+                            return false;
+                          }
+                        : _onLikeButtonTapped,
                     circleColor: CircleColor(
                       start: widget.iconData.color,
                       end: widget.iconData.color,
@@ -109,7 +124,15 @@ class PBISPlusActionInteractionButtonState
                           (BuildContext context, dynamic value, Widget? child) {
                         // print('only likes count');
                         // print(widget.obj.likeCount);
-                        return _getCounts();
+                        return widget.isLoading == true
+                            ? ShimmerLoading(
+                                child: Container(
+                                  color: Colors.green,
+                                  height: 20,
+                                  width: 20,
+                                ),
+                                isLoading: widget.isLoading)
+                            : _getCounts();
                       })
                 ],
               ),
@@ -165,13 +188,19 @@ class PBISPlusActionInteractionButtonState
 
     if (widget.iconData.title == 'Engaged') {
       widget.studentValueNotifier.value.profile!.engaged =
-          widget.studentValueNotifier.value.profile!.engaged! + 1;
+          widget.isFromStudentPlus == true
+              ? widget.studentValueNotifier.value.profile!.engaged
+              : widget.studentValueNotifier.value.profile!.engaged! + 1;
     } else if (widget.iconData.title == 'Nice work') {
       widget.studentValueNotifier.value.profile!.niceWork =
-          widget.studentValueNotifier.value.profile!.niceWork! + 1;
+          widget.isFromStudentPlus == true
+              ? widget.studentValueNotifier.value.profile!.niceWork
+              : widget.studentValueNotifier.value.profile!.niceWork! + 1;
     } else {
       widget.studentValueNotifier.value.profile!.helpful =
-          widget.studentValueNotifier.value.profile!.helpful! + 1;
+          widget.isFromStudentPlus == true
+              ? widget.studentValueNotifier.value.profile!.helpful
+              : widget.studentValueNotifier.value.profile!.helpful! + 1;
     }
 
     onTapDetect.value =
@@ -180,14 +209,16 @@ class PBISPlusActionInteractionButtonState
     widget.onValueUpdate(
         widget.studentValueNotifier); //return updated count to other screens
 
-    interactionBloc.add(AddPBISInteraction(
-        context: context,
-        scaffoldKey: widget.scaffoldKey,
-        studentId: widget.studentValueNotifier.value.profile!.id,
-        classroomCourseId: widget.classroomCourseId,
-        engaged: widget.iconData.title == 'Engaged' ? 1 : 0,
-        niceWork: widget.iconData.title == 'Nice work' ? 1 : 0,
-        helpful: widget.iconData.title == 'Helpful' ? 1 : 0));
+    if (widget.isFromStudentPlus != true) {
+      interactionBloc.add(AddPBISInteraction(
+          context: context,
+          scaffoldKey: widget.scaffoldKey,
+          studentId: widget.studentValueNotifier.value.profile!.id,
+          classroomCourseId: widget.classroomCourseId,
+          engaged: widget.iconData.title == 'Engaged' ? 1 : 0,
+          niceWork: widget.iconData.title == 'Nice work' ? 1 : 0,
+          helpful: widget.iconData.title == 'Helpful' ? 1 : 0));
+    }
 
     /// send your request here
     // final bool success = await sendRequest();

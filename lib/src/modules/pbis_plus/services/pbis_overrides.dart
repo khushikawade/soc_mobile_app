@@ -6,10 +6,12 @@ class PBISPlusOverrides {
   static final String PBISPlusTotalInteractionByTeacherDB =
       'PBISPlus_total_interactions_by_teacher';
   static final String pbisStudentInteractionDB = 'pbis_student_interaction';
-
+  // base url used for PBIS plus section
+  static final String pbisBaseUrl =
+      "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/";
   static final double profilePictureSize = 40;
   static final double circleSize = 25;
-
+  static final String PBISPlusStudentDetail = 'PBISPlus_student_details'; // used to save local db of student details
   static final List<Map<String, dynamic>> data = [
     {
       'Date': DateFormat('dd/MM/yyyy').format(DateTime.now()),

@@ -228,6 +228,51 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       yield PBISPlusLoading();
       yield PBISPlusHistorySuccess(pbisHistoryData: pbisHistoryData);
     }
+
+    /* -------------------------------------------------------------------------- */
+    /*                    Event to get student details by email                   */
+    /* -------------------------------------------------------------------------- */
+    if (event is GetPBISPlusStudentDashboardLogs) {
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        LocalDatabase<PBISPlusTotalInteractionModal> _localDb = LocalDatabase(
+            "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}");
+        List<PBISPlusTotalInteractionModal>? _localData =
+            await _localDb.getData();
+
+        if (_localData.isNotEmpty) {
+          yield PBISPlusStudentDashboardLogSuccess(
+              pbisStudentInteractionList: _localData);
+        } else {
+          yield PBISPlusLoading();
+        }
+
+        List<PBISPlusTotalInteractionModal> pbisStudentDetails =
+            await getPBISPlusStudentDashboardLogs(
+                studentId: event.studentId,
+                teacherEmail: userProfileLocalData[0].userEmail!);
+
+        //   pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+        await _localDb.clear();
+        pbisStudentDetails
+            .forEach((PBISPlusTotalInteractionModal element) async {
+          await _localDb.addData(element);
+        });
+        yield PBISPlusLoading();
+        yield PBISPlusStudentDashboardLogSuccess(
+            pbisStudentInteractionList: pbisStudentDetails);
+      } catch (e) {
+        LocalDatabase<PBISPlusTotalInteractionModal> _localDb = LocalDatabase(
+            "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}");
+        List<PBISPlusTotalInteractionModal>? _localData =
+            await _localDb.getData();
+        yield PBISPlusStudentDashboardLogSuccess(
+            pbisStudentInteractionList: _localData);
+      }
+    }
   }
 
   /*----------------------------------------------------------------------------------------------*/
@@ -467,6 +512,38 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       } else if (retry > 0) {
         return getPBISPlusHistoryData(
             teacherEmail: teacherEmail, retry: retry - 1);
+      }
+      return [];
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* -------Function to get student previous date log details from email ------ */
+  /* -------------------------------------------------------------------------- */
+
+  Future<List<PBISPlusTotalInteractionModal>> getPBISPlusStudentDashboardLogs(
+      {required String studentId, //Id/Email
+      required String teacherEmail,
+      int retry = 3}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/student/$studentId?teacher_email=$teacherEmail',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        return response.data['body']
+            .map<PBISPlusTotalInteractionModal>(
+                (i) => PBISPlusTotalInteractionModal.fromJson(i))
+            .toList();
+      } else if (retry > 0) {
+        return getPBISPlusStudentDashboardLogs(
+            studentId: studentId, teacherEmail: teacherEmail, retry: retry - 1);
       }
       return [];
     } catch (e) {

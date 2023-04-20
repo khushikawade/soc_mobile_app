@@ -21,26 +21,39 @@ import 'package:open_apps_settings/open_apps_settings.dart';
 import 'package:open_apps_settings/settings_enum.dart';
 
 // ignore: must_be_immutable
-class StudentPlusAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final double height = 60;
+class StudentPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? isWorkPage;
   final int? titleIconCode;
-  final ValueChanged? refresh;
+  //final ValueChanged? refresh;
+  StudentPlusAppBar(
+      {Key? key,
+      this.titleIconCode,
+     // required this.refresh,
+      this.isWorkPage,
+     })
+      :preferredSize = Size.fromHeight(60.0),
+       super(key: key);
+    @override
+  final Size preferredSize;
+  @override
+  State<StudentPlusAppBar> createState() => _StudentPlusAppBarState();
+}
+
+class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
+  final double height = 60;
 
   final ValueNotifier<String> languageChanged =
       ValueNotifier<String>("English");
 
-  StudentPlusAppBar(
-      {Key? key, this.titleIconCode, required this.refresh, this.isWorkPage})
-      : super(key: key);
-
   @override
   Size get preferredSize => Size.fromHeight(height);
-  // final GlobalKey _openSettingShowCaseKey = GlobalKey();
+
+  final GlobalKey _openSettingShowCaseKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
-    return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
+    // return StatefulBuilder(
+    //     builder: (BuildContext context, StateSetter setState) {
       return AppBar(
         backgroundColor: Colors.transparent,
         leading: Container(
@@ -49,7 +62,7 @@ class StudentPlusAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Row(
             children: [
               _translateButton(setState, context),
-              // _openSettingsButton(context),
+              _openSettingsButton(context),
             ],
           ),
         ),
@@ -100,9 +113,9 @@ class StudentPlusAppBar extends StatelessWidget implements PreferredSizeWidget {
         // leading: leading,
         leadingWidth: 110,
 
-        title: isWorkPage == true
+        title: widget.isWorkPage == true
             ? wordScreenIconWidget()
-            : titleIconCode != null
+            : widget.titleIconCode != null
                 ? allScreenIconWidget()
                 : Container(),
 
@@ -118,7 +131,7 @@ class StudentPlusAppBar extends StatelessWidget implements PreferredSizeWidget {
         // ),
         elevation: 0,
       );
-    });
+    // });
   }
 
   Widget _translateButton(StateSetter setState, BuildContext context) {
@@ -135,7 +148,7 @@ class StudentPlusAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-              refresh!(true);
+             // widget.refresh!(true);
             }
           });
         },
@@ -183,36 +196,36 @@ class StudentPlusAppBar extends StatelessWidget implements PreferredSizeWidget {
     // );
   }
 
-  // Widget _openSettingsButton(BuildContext context) {
-  //   return IconButton(
-  //     iconSize: 28,
-  //     onPressed: () async {
-  //       await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //           "settings_drawer");
-  //       if (Platform.isAndroid) {
-  //         OpenAppsSettings.openAppsSettings(
-  //             settingsCode: SettingsCode.ACCESSIBILITY);
-  //       } else {
-  //         // AppSettings.openAccessibilitySettings(asAnotherTask: true);
-  //         Navigator.push(
-  //             context,
-  //             MaterialPageRoute(
-  //                 builder: (BuildContext context) =>
-  //                     IosAccessibilityGuidePage()));
-  //       }
-  //     },
-  //     icon: Icon(
-  //       FontAwesomeIcons.universalAccess,
-  //       color: Colors.blue,
-  //       key: _openSettingShowCaseKey,
-  //       size: !Overrides.STANDALONE_GRADED_APP
-  //           ? Globals.deviceType == "phone"
-  //               ? 25
-  //               : 32
-  //           : null,
-  //     ),
-  //   );
-  // }
+  Widget _openSettingsButton(BuildContext context) {
+    return IconButton(
+      iconSize: 28,
+      onPressed: () async {
+        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            "settings_drawer");
+        if (Platform.isAndroid) {
+          OpenAppsSettings.openAppsSettings(
+              settingsCode: SettingsCode.ACCESSIBILITY);
+        } else {
+          // AppSettings.openAccessibilitySettings(asAnotherTask: true);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      IosAccessibilityGuidePage()));
+        }
+      },
+      icon: Icon(
+        FontAwesomeIcons.universalAccess,
+        color: Colors.blue,
+        key: _openSettingShowCaseKey,
+        size: !Overrides.STANDALONE_GRADED_APP
+            ? Globals.deviceType == "phone"
+                ? 25
+                : 32
+            : null,
+      ),
+    );
+  }
 
   Widget wordScreenIconWidget() {
     return Container(
@@ -231,10 +244,10 @@ class StudentPlusAppBar extends StatelessWidget implements PreferredSizeWidget {
       padding: EdgeInsets.only(right: 7),
       child: Icon(
         IconData(
-          titleIconCode!,
-          fontFamily: Overrides.kFontFam,
-          fontPackage: Overrides.kFontPkg,
-        ),
+                widget.titleIconCode!,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg,
+              ),
         color: AppTheme.kButtonColor,
       ),
     );

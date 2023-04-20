@@ -14,7 +14,8 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusHome extends StatefulWidget {
   final StudentPlusDetailsModel studentPlusStudentInfo;
-  const StudentPlusHome({Key? key, required this.studentPlusStudentInfo}) : super(key: key);
+  const StudentPlusHome({Key? key, required this.studentPlusStudentInfo})
+      : super(key: key);
 
   @override
   State<StudentPlusHome> createState() => _StudentPlusHomeState();
@@ -26,7 +27,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
   // persistent tab controller use for navigate
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
- // final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
+  // final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
 
   // list of bottom navigation bar icons
   List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
@@ -48,9 +49,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: body()
-    );
+    return Scaffold(body: body());
   }
 
   // widget  to show loader while fetching information
@@ -80,7 +79,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
                 studentInfo: widget.studentPlusStudentInfo),
             onItemSelected: (i) {
               //To go back to the staff screen of standard app
-              if (i == 4) {
+              if (i == 5) {
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                         builder: (context) => HomePage(
