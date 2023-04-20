@@ -652,9 +652,14 @@ class GoogleClassroomBloc
     try {
       final currentDate =
           Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+      //Remove manually added 'All' option from the list
+      if (courseAndStudentList.length > 0 &&
+          courseAndStudentList[0].name == 'All') {
+        courseAndStudentList.removeAt(0);
+      }
 
       for (int i = 0; i < courseAndStudentList.length; i++) {
-        print('index i : $i');
+        // print('index i : $i');
 
         // To add only course related student for single course
         final studentProfileDetails = courseAndStudentList[i]
@@ -690,7 +695,7 @@ class GoogleClassroomBloc
         final response = await _dbServices.postApi(url,
             headers: headers, body: body, isGoogleApi: true);
 
-        print('_createPBISCoursework :$response');
+        // print('_createPBISCoursework :$response');
         if (response.statusCode == 200 && response.data['statusCode'] == 200) {
           //If classroom assignment successfully created, add the record with url in the database
 

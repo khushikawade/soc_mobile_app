@@ -56,7 +56,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         key: _scaffoldKey,
         extendBody: true,
         backgroundColor: Colors.transparent,
-        appBar: PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
+        appBar:
+            PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
         floatingActionButton: saveAndShareFAB(
           context,
         ),
@@ -454,7 +455,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
-        isDismissible: true,
+        isDismissible: false,
         enableDrag: true,
         backgroundColor: Colors.transparent,
         // animationCurve: Curves.easeOutQuart,

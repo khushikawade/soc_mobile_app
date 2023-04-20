@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
-import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -74,9 +73,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
           height: pageValue == 1
-              ? widget.height * 1.3
+              ? widget.height * 1.4
               : pageValue == 2
-                  ? widget.height * 1.7
+                  ? widget.height * 1.8
                   : pageValue == 3
                       ? widget.height * 0.8
                       : widget.height,
@@ -203,6 +202,22 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Container(
+            alignment: Alignment.topRight,
+
+            // padding: EdgeInsets.only(top: 16),
+            //color: Colors.amber,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              icon: Icon(
+                Icons.clear,
+                color: AppTheme.kButtonColor,
+                size: Globals.deviceType == "phone" ? 28 : 36,
+              ),
+            )),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 0),
           minLeadingWidth: 70,
@@ -289,6 +304,22 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Container(
+            alignment: Alignment.topRight,
+
+            // padding: EdgeInsets.only(top: 16),
+            //color: Colors.amber,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              icon: Icon(
+                Icons.clear,
+                color: AppTheme.kButtonColor,
+                size: Globals.deviceType == "phone" ? 28 : 36,
+              ),
+            )),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 0),
           // minLeadingWidth: 70,
@@ -346,10 +377,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     curve: Curves.ease);
 
                 classroomLoader = true;
-                if (selectedCoursesList.length == 0) {
-                  //Remove manually added 'All' option from the list
-                  widget.googleClassroomCourseworkList.removeAt(0);
-                }
 
                 classroomBloc.add(CreatePBISClassroomCoursework(
                   pointPossible: pointPossibleController.text,
@@ -468,7 +495,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             context: context,
             textAlign: TextAlign.center,
             text: classroomLoader
-                ? 'Preparing Google Classroom Assignment'
+                ? 'Please be patient while your \'Google Classroom\' assignment is being created. It may take a while.'
                 : 'Preparing Google Spreadsheet',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
@@ -487,7 +514,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             if (state is CreateClassroomCourseWorkSuccess) {
               Navigator.pop(context);
               Utility.currentScreenSnackBar(
-                  "Assignments created successfully.", null);
+                  "Google Classroom Assignments Created Successfully.", null);
             }
             if (state is GoogleClassroomErrorState) {
               if (state.errorMsg == 'ReAuthentication is required') {
