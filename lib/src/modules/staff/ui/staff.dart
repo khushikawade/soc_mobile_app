@@ -611,23 +611,34 @@ class _StaffPageState extends State<StaffPage> {
                                     borderRadius: BorderRadius.circular(20)),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: height / 3,
+                                      width: element.iconUrl.contains('pbis')
+                                          ? height / 4
+                                          : height / 3,
                                       margin: EdgeInsets.all(6),
                                       child: Image(
                                         image:
                                             Image.asset(element.iconUrl).image,
                                       ),
                                     ),
-                                    SpacerWidget(4),
-                                    Utility.textWidget(
-                                        text: element.iconName,
-                                        textTheme: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1,
-                                        context: context)
+                                    element.iconUrl
+                                            .contains('landingPage_image')
+                                        ? Container()
+                                        : SpacerWidget(4),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: FittedBox(
+                                        child: Utility.textWidget(
+                                            text: element.iconName,
+                                            textTheme: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1,
+                                            context: context),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
