@@ -209,24 +209,44 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       LocalDatabase<PBISPlusHistoryModal> _localDb =
           LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
       List<PBISPlusHistoryModal>? _localData = await _localDb.getData();
+      List<PBISPlusHistoryModal> classRoomData = [];
+      List<PBISPlusHistoryModal> sheetData = [];
 
       if (_localData?.isNotEmpty ?? false) {
-        yield PBISPlusHistorySuccess(pbisHistoryData: _localData);
+        yield PBISPlusHistorySuccess(
+            pbisHistoryList: _localData,
+            pbisClassroomHistoryList: classRoomData,
+            pbisSheetHistoryList: sheetData);
       } else {
         yield PBISPlusLoading();
       }
 
-      List<PBISPlusHistoryModal> pbisHistoryData = await getPBISPlusHistoryData(
+      List<PBISPlusHistoryModal> pbisHistoryList = await getPBISPlusHistoryData(
           teacherEmail: userProfileLocalData[0].userEmail!);
 
-      pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      pbisHistoryList.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
       await _localDb.clear();
-      pbisHistoryData.forEach((element) async {
+      pbisHistoryList.forEach((element) async {
         await _localDb.addData(element);
       });
+
+      //---------------------------getting api data and make two list & add the value-------------//
+
+      pbisHistoryList.asMap().forEach((index, element) {
+        if (pbisHistoryList[index].type == 'Classroom') {
+          classRoomData.add(pbisHistoryList[index]);
+        } else if (pbisHistoryList[index].type == 'Sheet') {
+          sheetData.add(pbisHistoryList[index]);
+        }
+      });
+
       yield PBISPlusLoading();
-      yield PBISPlusHistorySuccess(pbisHistoryData: pbisHistoryData);
+
+      yield PBISPlusHistorySuccess(
+          pbisHistoryList: pbisHistoryList ?? [],
+          pbisClassroomHistoryList: classRoomData ?? [],
+          pbisSheetHistoryList: sheetData ?? []);
     }
 
     /*----------------------------------------------------------------------------------------------*/
@@ -524,9 +544,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           },
           isCompleteUrl: true);
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
-        return response.data['body']
+        List<PBISPlusHistoryModal> historyList = response.data['body']
             .map<PBISPlusHistoryModal>((i) => PBISPlusHistoryModal.fromJson(i))
             .toList();
+        return historyList;
       } else if (retry > 0) {
         return getPBISPlusHistoryData(
             teacherEmail: teacherEmail, retry: retry - 1);

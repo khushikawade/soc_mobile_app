@@ -236,6 +236,7 @@ class StudentPlusGraphMethod {
                 .spots[i]),
       ]));
     }
+
     return list;
   }
 

@@ -2,9 +2,11 @@
 
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_filtter_bottom_sheet.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -27,6 +29,8 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
   PBISPlusBloc PBISPlusBlocInstance = PBISPlusBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  ValueNotifier<String> filterNotifier =
+      ValueNotifier<String>(PBISPlusOverrides.pbisPlusFilterValue);
 
   @override
   void initState() {
@@ -41,7 +45,8 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
       Scaffold(
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
-          appBar: PBISPlusUtility.pbisAppBar(context, widget.titleIconData),
+          appBar: PBISPlusUtility.pbisAppBar(
+              context, widget.titleIconData, 'Class'),
           extendBody: true,
           body: body(context))
     ]);
@@ -53,17 +58,65 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
       mainAxisSize: MainAxisSize.max,
       children: [
         SpacerWidget(_KVertcalSpace / 4),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Utility.textWidget(
-            text: 'History',
-            context: context,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline6!
-                .copyWith(fontWeight: FontWeight.bold),
+        // Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: 20),
+        //   child: Utility.textWidget(
+        //     text: 'History',
+        //     context: context,
+        //     textTheme: Theme.of(context)
+        //         .textTheme
+        //         .headline6!
+        //         .copyWith(fontWeight: FontWeight.bold),
+        //   ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width / 30),
+            child: Utility.textWidget(
+              text: 'History',
+              context: context,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           ),
-        ),
+          Stack(
+            alignment: Alignment.topRight,
+            children: [
+              IconButton(
+                  onPressed: () {
+                    filterBottomSheet(context);
+                  },
+                  icon: Icon(
+                    IconData(0xe87d,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kButtonColor,
+                    size: 28,
+                  )),
+              ValueListenableBuilder(
+                  valueListenable: filterNotifier,
+                  child: Container(),
+                  builder:
+                      (BuildContext context, dynamic value, Widget? child) {
+                    return filterNotifier.value == "All"
+                        ? Container()
+                        : Wrap(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(top: 6, right: 6),
+                                height: 7,
+                                width: 7,
+                                decoration: BoxDecoration(
+                                    color: Colors.red, shape: BoxShape.circle),
+                              ),
+                            ],
+                          );
+                  })
+            ],
+          )
+        ]),
         SpacerWidget(_KVertcalSpace / 3),
         SpacerWidget(_KVertcalSpace / 5),
         Container(
@@ -72,55 +125,68 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           child: RefreshIndicator(
               key: refreshKey,
               onRefresh: refreshPage,
-              child: ListView(children: [
-                BlocConsumer(
-                    bloc: PBISPlusBlocInstance,
-                    builder: (context, state) {
-                      if (state is PBISPlusLoading) {
-                        return Container(
-                            alignment: Alignment.center,
-                            child: CircularProgressIndicator(
-                              color:
-                                  Theme.of(context).colorScheme.primaryVariant,
-                            ));
-                      }
-                      if (state is PBISPlusHistorySuccess &&
-                          (state.pbisHistoryData.isNotEmpty ?? false)) {
-                        return
-                            // Text('data');
-                            _listBuilder(state.pbisHistoryData);
-                      }
-
-                      return NoDataFoundErrorWidget(
-                          isResultNotFoundMsg: true,
-                          isNews: false,
-                          isEvents: false);
-                    },
-                    listener: (context, state) {})
-              ])),
+              child: ValueListenableBuilder(
+                  valueListenable: filterNotifier,
+                  builder: (BuildContext context, String value, Widget? child) {
+                    return ListView(children: [
+                      BlocConsumer(
+                          bloc: PBISPlusBlocInstance,
+                          builder: (context, state) {
+                            if (state is PBISPlusLoading) {
+                              return Container(
+                                  alignment: Alignment.center,
+                                  child: CircularProgressIndicator(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                  ));
+                            }
+                            if (state is PBISPlusHistorySuccess
+                                // &&
+                                // (state.pbisHistoryList.isNotEmpty ?? false) &&
+                                // (state.pbisClassroomHistoryList.isNotEmpty ??
+                                //     false) &&
+                                // (state.pbisSheetHistoryList.isNotEmpty ??
+                                //     false)
+                                ) {
+                              //---------------------return the filter list to UI-----------//
+                              if (filterNotifier.value ==
+                                  PBISPlusOverrides.pbisGoogleClassroom) {
+                                return _listBuilder(
+                                    state.pbisClassroomHistoryList);
+                              } else if (filterNotifier.value ==
+                                  PBISPlusOverrides.pbisGoogleSheet) {
+                                return _listBuilder(state.pbisSheetHistoryList);
+                              } else {
+                                return _listBuilder(state.pbisHistoryList);
+                              }
+                            }
+                            return Container();
+                          },
+                          listener: (context, state) {})
+                    ]);
+                  })),
         ),
       ],
     );
   }
 
-  Widget _listBuilder(List<PBISPlusHistoryModal> historyData) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.65,
-      child: ListView.builder(
-        // padding: EdgeInsets.only(bottom: 20),
-        itemBuilder: (BuildContext context, int index) {
-          // final bool isDarkMode =
-          //     Theme.of(context).colorScheme.background == Color(0xff000000);
-          // final Color evenColor =
-          //     isDarkMode ? Color(0xff162429) : Color(0xffF7F8F9);
-          // final Color oddColor =
-          //     isDarkMode ? Color(0xff111C20) : Color(0xffE9ECEE);
-          return listTile(historyData[index], index);
-        },
-        itemCount: historyData.length,
-        // scrollDirection: Axis.vertical,
-      ),
-    );
+  Widget _listBuilder(List<PBISPlusHistoryModal> historyList) {
+    return historyList.length > 0
+        ? ValueListenableBuilder(
+            valueListenable: filterNotifier,
+            builder: (BuildContext context, String value, Widget? child) {
+              return Container(
+                  height: MediaQuery.of(context).size.height * 0.65,
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      return listTile(historyList[index], index);
+                    },
+                    itemCount: historyList.length,
+                  ));
+            })
+        : NoDataFoundErrorWidget(
+            isResultNotFoundMsg: true, isNews: false, isEvents: false);
   }
 
   Widget listTile(PBISPlusHistoryModal obj, index) {
@@ -193,5 +259,27 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
     PBISPlusBlocInstance.add(GetPBISPlusHistory());
+  }
+
+//------------------------------for filter call bottom sheet"-------------------//
+  filterBottomSheet(context) {
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        elevation: 10,
+        context: context,
+        builder: (context) => PBISPlusHistoryFilterBottomSheet(
+              title: 'Filter Assignment',
+              selectedValue: filterNotifier.value,
+              update: ({String? filterValue}) async {
+                // update the filter value
+                filterNotifier.value = filterValue!;
+                PBISPlusOverrides.pbisPlusFilterValue = filterNotifier.value;
+              },
+              scaffoldKey: _scaffoldKey,
+            ));
   }
 }

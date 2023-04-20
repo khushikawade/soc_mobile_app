@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
+
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
@@ -14,9 +15,13 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final IconData? titleIconData;
   final String title;
   final bool? backButton;
-  PBISPlusAppBar(
-      {Key? key, this.titleIconData, this.backButton, required this.title})
-      : preferredSize = Size.fromHeight(60.0),
+
+  PBISPlusAppBar({
+    Key? key,
+    this.titleIconData,
+    this.backButton,
+    required this.title,
+  })  : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   @override
   final Size preferredSize;
@@ -27,43 +32,43 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   @override
   Widget build(BuildContext context) {
-    Widget leading = widget.backButton == true
-        ? Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(
-                  IconData(0xe80d,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kButtonColor,
-                ),
-              ),
-            ],
-          )
-        : Container(
-            child: Row(
-              children: [
-                _translateButton(setState, context),
-                _openPBISSettingsButton(context),
-              ],
-            ),
-          );
+    Widget leading =
+        // widget.backButton == true
+        //     ? Row(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           IconButton(
+        //             onPressed: () {
+        //               // Navigator.of(context).pop();
+        //             },
+        //             icon: Icon(
+        //               PBISPlusIcons.backarrow_icon_1,
+        //               color: AppTheme.kButtonColor,
+        //             ),
+        //           ),
+        //         ],
+        //       )
+        //     :
+        Container(
+      child: Row(
+        children: [
+          _translateButton(setState, context),
+          _openAccessibility(context),
+        ],
+      ),
+    );
 
     List<Widget>? actions = [
       IconButton(
         onPressed: () {},
         icon: Icon(
-          widget.title == "History"
-              ? IconData(0xe87d,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg)
-              : IconData(0xe867,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
+          // widget.title == "History"
+          //     ? IconData(0xe87d,
+          //         fontFamily: Overrides.kFontFam,
+          //         fontPackage: Overrides.kFontPkg)
+          //     :
+          IconData(0xe867,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
           color: AppTheme.kButtonColor,
         ),
       )
@@ -113,7 +118,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
         ));
   }
 
-  Widget _openPBISSettingsButton(BuildContext context) {
+  Widget _openAccessibility(BuildContext context) {
     return IconButton(
       iconSize: 28,
       onPressed: () async {

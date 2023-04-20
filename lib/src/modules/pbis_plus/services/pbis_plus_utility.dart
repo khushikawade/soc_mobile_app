@@ -22,9 +22,9 @@ class PBISPlusUtility {
   }
 
   static PreferredSizeWidget pbisAppBar(
-      BuildContext context, IconData titleIconData) {
+      BuildContext context, IconData titleIconData, title) {
     return PBISPlusAppBar(
-      title: 'Class',
+      title: title,
       titleIconData: titleIconData,
     );
   }

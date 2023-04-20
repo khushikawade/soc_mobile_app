@@ -6,14 +6,15 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // ignore: must_be_immutable
 class FilterBottomSheet extends StatefulWidget {
-  FilterBottomSheet(
-      {Key? key,
-      required this.update,
-      required this.title,
-      required this.selectedValue})
-      : super(key: key);
+  FilterBottomSheet({
+    Key? key,
+    required this.update,
+    required this.title,
+    required this.selectedValue,
+  }) : super(key: key);
   final String title;
   final String selectedValue;
+
   final Function({String? filterValue}) update;
   @override
   State<FilterBottomSheet> createState() => _FilterBottomSheetState();
@@ -21,11 +22,13 @@ class FilterBottomSheet extends StatefulWidget {
 
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
   List<String> filterList = ['All', 'Constructed Response', 'Multiple Choice'];
+
   final ValueNotifier<String> selectedValue = ValueNotifier<String>('');
   @override
   void initState() {
     selectedValue.value = widget.selectedValue;
     // TODO: implement initState
+
     super.initState();
   }
 
@@ -73,7 +76,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       topLeft: Radius.circular(15))),
               child: Container(
                 alignment: Alignment.center,
-                // padding: EdgeInsets.symmetric(vertical: 10),
                 child: Utility.textWidget(
                     context: context,
                     text: widget.title,
@@ -128,13 +130,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         ? Color(0xff111C20)
                         : Color(0xffE9ECEE)),
             child: Theme(
-              data: ThemeData(
-                unselectedWidgetColor:
-                    Theme.of(context).colorScheme.onBackground,
-              ),
+              data: ThemeData(unselectedWidgetColor: AppTheme.kButtonColor
+                  // Theme.of(context).colorScheme.onBackground,
+                  ),
               child: RadioListTile(
                 controlAffinity: ListTileControlAffinity.trailing,
-                activeColor: AppTheme.kSelectedColor,
+                activeColor: AppTheme.kButtonColor,
                 title: selectedValue.value == filterList[index]
                     ? InkWell(
                         onTap: () {
