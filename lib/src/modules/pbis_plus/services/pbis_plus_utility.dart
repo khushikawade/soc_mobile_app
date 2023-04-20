@@ -31,7 +31,7 @@ class PBISPlusUtility {
 
   static String convertDateString(String? dateString) {
     final inputFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-    final outputFormat = DateFormat('dd/MM/yyyy');
+    final outputFormat = DateFormat('MM/dd/yyyy');
 
     final date = dateString?.isNotEmpty == true
         ? inputFormat.parse(dateString!)

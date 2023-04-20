@@ -13,6 +13,7 @@ class StudentPlusOverrides {
   static final String errorMessageOnSearchPage =
       'Please Search With Minimum 3 Characters';
   static final String studentInfoPageTitle = 'Student Info';
+  static final String studentPBISPageTitle = 'PBIS Plus Dashboard';
   static final String studentGradesPageTitle = 'Grades';
   static final String studentPlusWorkTitle = 'GRADED+ Scanned Work';
   static final String studentPlusExamsTitle = 'Exams';

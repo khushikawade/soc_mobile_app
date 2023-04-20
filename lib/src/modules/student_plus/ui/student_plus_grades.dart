@@ -36,9 +36,9 @@ class individual extends State<StudentPlusGradesPage> {
           backgroundColor: Colors.transparent,
           appBar: StudentPlusAppBar(
             titleIconCode: 0xe883,
-            refresh: (v) {
-              setState(() {});
-            },
+            // refresh: (v) {
+            //   setState(() {});
+            // },
           ),
           body: Container(
             padding: EdgeInsets.symmetric(

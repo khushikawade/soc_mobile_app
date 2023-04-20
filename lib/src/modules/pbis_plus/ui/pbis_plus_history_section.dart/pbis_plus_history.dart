@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -179,7 +180,8 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           ],
         ),
         trailing: Icon(
-          PBISPlusIcons.eye1,
+          IconData(0xe88c,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
           color: AppTheme.kButtonColor,
         ),
         onTap: (() {}),

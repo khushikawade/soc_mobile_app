@@ -1,12 +1,16 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_exams.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_grades.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_info.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_pbis.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_work.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +33,24 @@ class StudentPlusBottomNavBar {
     _screens.add(StudentPlusGradesPage(
       studentDetails: studentInfo,
     ));
+    _screens.add(StudentPlusPBISScreen(
+      studentDetails: studentInfo,
+    )
+        // studentInfo.emailC == null
+        //     ? NoDataFoundErrorWidget(
+        //         isResultNotFoundMsg: true, isNews: false, isEvents: false)
+        //     : PBISPlusStudentDashBoard(
+        //         isValueChangeNotice: isValueChangeNotice,
+        //         isFromStudentPlus: true,
+        //         studentValueNotifier: studentValueNotifier,
+        //         StudentDetailWidget: Column(),
+        //         onValueUpdate: (ValueNotifier<ClassroomStudents> data) {},
+        //         heroTag: '',
+        //         scaffoldKey: scaffoldKey,
+        //       ),
+        );
     _screens.add(Container());
+
     return _screens;
   }
 
@@ -57,11 +78,19 @@ class StudentPlusBottomNavBar {
       activeColorPrimary: AppTheme.kButtonColor,
       inactiveColorPrimary: CupertinoColors.systemGrey,
     ));
+    persistentBottomNavBarItemList.add(
+      PersistentBottomNavBarItem(
+        icon: bottomIcon("0xe825", 'PBIS+', context),
+        activeColorPrimary: AppTheme.kButtonColor,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+    );
     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
       icon: bottomIcon(getStaffIconCode(), 'Staff', context),
       activeColorPrimary: AppTheme.kButtonColor,
       inactiveColorPrimary: CupertinoColors.systemGrey,
     ));
+
     return persistentBottomNavBarItemList;
   }
 

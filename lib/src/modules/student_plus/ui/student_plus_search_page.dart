@@ -90,9 +90,9 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
         Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: StudentPlusAppBar(
-            refresh: (v) {
-              setState(() {});
-            },
+            // refresh: (v) {
+            //   setState(() {});
+            // },
           ),
           backgroundColor: Colors.transparent,
           body: OfflineBuilder(

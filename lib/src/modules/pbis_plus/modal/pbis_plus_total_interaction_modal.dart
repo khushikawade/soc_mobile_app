@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'pbis_plus_total_interaction_modal.g.dart';
 
-@HiveType(typeId: 40)
+@HiveType(typeId: 41)
 class PBISPlusTotalInteractionModal {
   @HiveField(0)
   String? schoolId;
@@ -16,6 +16,8 @@ class PBISPlusTotalInteractionModal {
   @HiveField(5)
   int? helpful;
   @HiveField(6)
+  String? studentEmail;
+  @HiveField(7)
   String? createdAt;
 
   PBISPlusTotalInteractionModal(
@@ -24,7 +26,9 @@ class PBISPlusTotalInteractionModal {
       this.teacherEmail,
       this.engaged,
       this.niceWork,
-      this.helpful});
+      this.helpful,
+      this.createdAt,
+      this.studentEmail});
 
   PBISPlusTotalInteractionModal.fromJson(Map<String, dynamic> json) {
     schoolId = json['School_Id'] ?? '';
@@ -33,7 +37,8 @@ class PBISPlusTotalInteractionModal {
     engaged = json['Engaged'] ?? 0;
     niceWork = json['Nice_Work'] ?? 0;
     helpful = json['Helpful'] ?? 0;
-    createdAt = json['CreatedAt'] ?? '';
+    studentEmail = json["Student_Email"];
+    createdAt = json["CreatedAt"];
   }
 
   Map<String, dynamic> toJson() {
@@ -44,7 +49,9 @@ class PBISPlusTotalInteractionModal {
     data['Engaged'] = this.engaged;
     data['Nice_Work'] = this.niceWork;
     data['Helpful'] = this.helpful;
+    data['Student_Email'] = this.studentEmail;
     data['CreatedAt'] = this.createdAt;
+
     return data;
   }
 }

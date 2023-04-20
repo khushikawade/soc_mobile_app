@@ -36,7 +36,9 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                   Navigator.of(context).pop();
                 },
                 icon: Icon(
-                  PBISPlusIcons.backarrow_icon_1,
+                  IconData(0xe80d,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
                   color: AppTheme.kButtonColor,
                 ),
               ),
@@ -56,8 +58,12 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
         onPressed: () {},
         icon: Icon(
           widget.title == "History"
-              ? PBISPlusIcons.filter
-              : PBISPlusIcons.PBISPlus_plus_settings,
+              ? IconData(0xe87d,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg)
+              : IconData(0xe867,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
           color: AppTheme.kButtonColor,
         ),
       )

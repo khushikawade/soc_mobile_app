@@ -45,9 +45,9 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
               titleIconCode: 0xe883,
-              refresh: (v) {
-                setState(() {});
-              },
+              // refresh: (v) {
+              //   setState(() {});
+              // },
             ),
             body: body()),
       ],

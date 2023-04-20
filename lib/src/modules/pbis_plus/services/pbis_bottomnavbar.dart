@@ -15,10 +15,12 @@ class PBISBottomNavBar {
   static List<Widget> pbisBuildPersistentScreens() {
     return [
       PBISPlusClass(
-        titleIconData: PBISPlusIcons.PBISPlus_plus_class,
+        titleIconData: IconData(0xe825,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),
       PBISPlusHistory(
-        titleIconData: PBISPlusIcons.PBISPlus_plus_history,
+        titleIconData: IconData(0xe824,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),
       Container()
     ];
@@ -30,13 +32,21 @@ class PBISBottomNavBar {
     return [
       PersistentBottomNavBarItem(
         icon: pbisBottomNavBarIcons(
-            PBISPlusIcons.PBISPlus_plus_class, 'Class', context),
+            IconData(0xe825,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            'Class',
+            context),
         activeColorPrimary: AppTheme.kButtonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: pbisBottomNavBarIcons(
-            PBISPlusIcons.PBISPlus_plus_history, 'History', context),
+            IconData(0xe824,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            'History',
+            context),
         activeColorPrimary: AppTheme.kButtonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),

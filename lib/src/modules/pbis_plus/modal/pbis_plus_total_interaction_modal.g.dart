@@ -9,7 +9,7 @@ part of 'pbis_plus_total_interaction_modal.dart';
 class PBISPlusTotalInteractionModalAdapter
     extends TypeAdapter<PBISPlusTotalInteractionModal> {
   @override
-  final int typeId = 40;
+  final int typeId = 41;
 
   @override
   PBISPlusTotalInteractionModal read(BinaryReader reader) {
@@ -24,13 +24,15 @@ class PBISPlusTotalInteractionModalAdapter
       engaged: fields[3] as int?,
       niceWork: fields[4] as int?,
       helpful: fields[5] as int?,
-    )..createdAt = fields[6] as String?;
+      createdAt: fields[7] as String?,
+      studentEmail: fields[6] as String?,
+    );
   }
 
   @override
   void write(BinaryWriter writer, PBISPlusTotalInteractionModal obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.schoolId)
       ..writeByte(1)
@@ -44,6 +46,8 @@ class PBISPlusTotalInteractionModalAdapter
       ..writeByte(5)
       ..write(obj.helpful)
       ..writeByte(6)
+      ..write(obj.studentEmail)
+      ..writeByte(7)
       ..write(obj.createdAt);
   }
 

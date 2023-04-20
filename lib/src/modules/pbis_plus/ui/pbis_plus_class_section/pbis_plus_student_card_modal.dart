@@ -10,12 +10,17 @@ import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/PBISPlus_action_interaction_button.dart';
 
 class PBISPlusStudentCardModal extends StatefulWidget {
   ValueNotifier<ClassroomStudents> studentValueNotifier;
+  final bool? isFromDashboardPage;
+  final bool?
+      isFromStudentPlus; // to check it is from pbis plus or student plus
+  final bool? isLoading; // to maintain loading when user came from student plus
   final String heroTag;
   final Key? scaffoldKey;
   final String classroomCourseId;
@@ -25,8 +30,11 @@ class PBISPlusStudentCardModal extends StatefulWidget {
 
   PBISPlusStudentCardModal(
       {Key? key,
+      this.isFromDashboardPage,
       required this.studentValueNotifier,
       required this.heroTag,
+      this.isFromStudentPlus,
+      this.isLoading,
       required this.scaffoldKey,
       required this.classroomCourseId,
       required this.onValueUpdate})
@@ -38,7 +46,7 @@ class PBISPlusStudentCardModal extends StatefulWidget {
 }
 
 class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
-  ValueNotifier<bool> valueChnage = ValueNotifier<bool>(false);
+  ValueNotifier<bool> valueChange = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -65,9 +73,12 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                   updatedStudentValueNotifier); //Return to class screen //Roster screen count update
               widget.studentValueNotifier =
                   updatedStudentValueNotifier; //Used on current screen to update the value
-              valueChnage.value =
-                  !valueChnage.value; //update the changes on bool change detect
+              valueChange.value =
+                  !valueChange.value; //update the changes on bool change detect
             },
+            isLoading: widget.isLoading,
+            isFromStudentPlus: widget.isFromStudentPlus,
+
             studentValueNotifier: widget.studentValueNotifier,
             iconData: iconData,
             classroomCourseId: widget.classroomCourseId,
@@ -128,8 +139,12 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
             Container(
                 alignment: Alignment.center,
                 height: MediaQuery.of(context).size.height * 0.17,
-                width: MediaQuery.of(context).size.width * 0.7,
-                margin: EdgeInsets.only(top: 45),
+                width: widget.isFromDashboardPage == true
+                    ? MediaQuery.of(context).size.width
+                    : MediaQuery.of(context).size.width * 0.7,
+                margin: widget.isFromDashboardPage == true
+                    ? EdgeInsets.fromLTRB(16, 40, 16, 20)
+                    : EdgeInsets.only(top: 45),
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(5),
@@ -158,23 +173,26 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
             Positioned(
               top: 0,
               child: GestureDetector(
-                onTap: () async {
-                  Navigator.of(context).pushReplacement(
-                    HeroDialogRoute(
-                      builder: (context) => PBISPlusStudentDashBoard(
-                        isValueChangeNotice: valueChnage,
-                        onValueUpdate: (updatedStudentValueNotifier) {
-                          widget.studentValueNotifier =
-                              updatedStudentValueNotifier;
-                        },
-                        // StudentDetailWidget: StudentDetailWidget,
-                        studentValueNotifier: widget.studentValueNotifier,
-                        heroTag: widget.heroTag,
-                        StudentDetailWidget: pbisStudentDetailWidget,
-                      ),
-                    ),
-                  );
-                },
+                onTap: widget.isFromStudentPlus == true
+                    ? () {}
+                    : () async {
+                        Navigator.of(context).pushReplacement(
+                          HeroDialogRoute(
+                            builder: (context) => PBISPlusStudentDashBoard(
+                              scaffoldKey: widget.scaffoldKey!,
+                              isValueChangeNotice: valueChange,
+                              onValueUpdate: (updatedStudentValueNotifier) {
+                                widget.studentValueNotifier =
+                                    updatedStudentValueNotifier;
+                              },
+                              // StudentDetailWidget: StudentDetailWidget,
+                              studentValueNotifier: widget.studentValueNotifier,
+                              heroTag: widget.heroTag,
+                              StudentDetailWidget: pbisStudentDetailWidget,
+                            ),
+                          ),
+                        );
+                      },
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -186,14 +204,15 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                     //   width: 2,
                     // ),
                   ),
-                  child: widget.studentValueNotifier.value!.profile!.photoUrl!
+                  child: widget.studentValueNotifier.value.profile!.photoUrl!
                           .contains('default-user')
                       ? PBISCircularProfileName(
                           firstLetter: widget.studentValueNotifier.value
                               .profile!.name!.givenName!
                               .substring(0, 1),
-                          lastLetter: widget.studentValueNotifier.value.profile!
-                              .name!.familyName!
+                          lastLetter: (widget.studentValueNotifier.value
+                                      .profile!.name!.familyName ??
+                                  ' ')
                               .substring(0, 1),
                           profilePictureSize:
                               PBISPlusOverrides.profilePictureSize,
@@ -208,7 +227,9 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
             ),
             Positioned(
               top: MediaQuery.of(context).size.height * 0.03,
-              right: MediaQuery.of(context).size.width * 0.22,
+              right: widget.isFromDashboardPage == true
+                  ? MediaQuery.of(context).size.width * 0.34
+                  : MediaQuery.of(context).size.width * 0.22,
               child: Container(
                 padding: EdgeInsets.all(5),
                 width: PBISPlusOverrides.circleSize,
@@ -223,26 +244,38 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                   child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: ValueListenableBuilder(
-                          valueListenable: valueChnage,
+                          valueListenable: valueChange,
                           builder:
                               (BuildContext context, value, Widget? child) {
                             return ValueListenableBuilder<ClassroomStudents>(
                               valueListenable: widget.studentValueNotifier,
                               builder: (BuildContext context,
                                   ClassroomStudents value, Widget? child) {
-                                return Text(
-                                  PBISPlusUtility.numberAbbreviationFormat(
-                                      widget.studentValueNotifier.value.profile!
-                                              .engaged! +
-                                          widget.studentValueNotifier.value
-                                              .profile!.niceWork! +
-                                          widget.studentValueNotifier.value
-                                              .profile!.helpful!),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(fontWeight: FontWeight.bold),
-                                );
+                                return widget.isLoading == true
+                                    ? ShimmerLoading(
+                                        child: Container(
+                                          height: 10,
+                                          width: 10,
+                                          color: Colors.black,
+                                        ),
+                                        isLoading: widget.isLoading)
+                                    : Text(
+                                        PBISPlusUtility
+                                            .numberAbbreviationFormat(widget
+                                                    .studentValueNotifier
+                                                    .value
+                                                    .profile!
+                                                    .engaged! +
+                                                widget.studentValueNotifier
+                                                    .value.profile!.niceWork! +
+                                                widget.studentValueNotifier
+                                                    .value.profile!.helpful!),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      );
                               },
                             );
                           })),

@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 
 class PBISPlusActionInteractionModal {
@@ -10,11 +11,20 @@ class PBISPlusActionInteractionModal {
 
   static List<PBISPlusActionInteractionModal> PBISPlusActionInteractionIcons = [
     PBISPlusActionInteractionModal(
-        iconData: PBISPlusIcons.like, color: Colors.red, title: 'Engaged'),
+        iconData: IconData(0xe87e,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: Colors.red,
+        title: 'Engaged'),
     PBISPlusActionInteractionModal(
-        iconData: PBISPlusIcons.thanks, color: Colors.blue, title: 'Nice work'),
+        iconData: IconData(0xe87f,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: Colors.blue,
+        title: 'Nice work'),
     PBISPlusActionInteractionModal(
-        iconData: PBISPlusIcons.help, color: Colors.green, title: 'Helpful')
+        iconData: IconData(0xe880,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: Colors.green,
+        title: 'Helpful')
   ];
 }
 
@@ -27,14 +37,29 @@ class PBISPlusDataTableModal {
 
   static List<PBISPlusDataTableModal> PBISPlusDataTableHeadingRaw = [
     PBISPlusDataTableModal(
-        iconData: PBISPlusIcons.like, color: Colors.transparent, title: 'Date'),
+        iconData: IconData(0xe87e,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: Colors.transparent,
+        title: 'Date'),
     PBISPlusDataTableModal(
-        iconData: PBISPlusIcons.like, color: Colors.red, title: 'Engaged'),
+        iconData: IconData(0xe87e,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: Colors.red,
+        title: 'Engaged'),
     PBISPlusDataTableModal(
-        iconData: PBISPlusIcons.thanks, color: Colors.blue, title: 'Nice work'),
+        iconData: IconData(0xe87f,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: Colors.blue,
+        title: 'Nice work'),
     PBISPlusDataTableModal(
-        iconData: PBISPlusIcons.help, color: Colors.green, title: 'Helpful'),
+        iconData: IconData(0xe880,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: Colors.green,
+        title: 'Helpful'),
     PBISPlusDataTableModal(
-        iconData: PBISPlusIcons.help, color: Colors.transparent, title: 'Total')
+        iconData: IconData(0xe880,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        color: Colors.transparent,
+        title: 'Total')
   ];
 }

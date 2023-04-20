@@ -46,9 +46,9 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
-              refresh: (v) {
-                setState(() {});
-              },
+              // refresh: (v) {
+              //   setState(() {});
+              // },
               titleIconCode: 0xe881,
             ),
             body: body()),
