@@ -1,12 +1,17 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class PBISPlusBottomSheet extends StatefulWidget {
   final double height;
@@ -14,13 +19,15 @@ class PBISPlusBottomSheet extends StatefulWidget {
   final String? title;
   final EdgeInsetsGeometry? padding;
   final List<ClassroomCourse> googleClassroomCourseworkList;
+  final GlobalKey<State<StatefulWidget>>? scaffoldKey;
   PBISPlusBottomSheet(
       {Key? key,
       this.height = 200,
       this.title,
       this.content = true,
       this.padding,
-      required this.googleClassroomCourseworkList});
+      required this.googleClassroomCourseworkList,
+      required this.scaffoldKey});
   @override
   State<PBISPlusBottomSheet> createState() => _PBISPlusBottomSheetState();
 }
@@ -31,11 +38,13 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
   final ValueNotifier<bool> selectionChange = ValueNotifier<bool>(false);
   final _formKey = GlobalKey<FormState>();
 
+  GoogleClassroomBloc classroomBloc = GoogleClassroomBloc();
+
   int pageValue = 0;
   bool classroomLoader = false;
 
   //default value '0' to show 'All' in the course bottomsheet list by default selected
-  List<int> selectedValueIndexList = [0];
+  List<ClassroomCourse> selectedCoursesList = [];
 
   @override
   void initState() {
@@ -51,42 +60,46 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
     // final double progress =
     //     _pageController.hasClients ? (_pageController.page ?? 0) : 0;
 
-    return Container(
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        // padding: widget.padding ?? EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Color(0xffF7F8F9)
-              : Color(0xff111C20),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-        ),
-        height: pageValue == 1
-            ? widget.height * 1.3
-            : pageValue == 2
-                ? widget.height * 1.7
-                : pageValue == 3
-                    ? widget.height * 0.8
-                    : widget.height,
-        child: PageView(
-          physics:
-              // pageValue == 0
-              // ?
-              NeverScrollableScrollPhysics(),
-          // : BouncingScrollPhysics(),
-          onPageChanged: ((value) {
-            pageValue = value;
-          }),
-          allowImplicitScrolling: false,
-          pageSnapping: false,
-          controller: _pageController,
-          children: [
-            saveAndShareOptions(),
-            classroomMaxPointQue(),
-            buildGoogleClassroomCourseWidget(),
-            commonLoaderWidget()
-          ],
-        ));
+    return SingleChildScrollView(
+      padding: MediaQuery.of(context).viewInsets / 1.3,
+      controller: ModalScrollController.of(context),
+      child: Container(
+          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          // padding: widget.padding ?? EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: Color(0xff000000) != Theme.of(context).backgroundColor
+                ? Color(0xffF7F8F9)
+                : Color(0xff111C20),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          ),
+          height: pageValue == 1
+              ? widget.height * 1.3
+              : pageValue == 2
+                  ? widget.height * 1.7
+                  : pageValue == 3
+                      ? widget.height * 0.8
+                      : widget.height,
+          child: PageView(
+            physics:
+                // pageValue == 0
+                // ?
+                NeverScrollableScrollPhysics(),
+            // : BouncingScrollPhysics(),
+            onPageChanged: ((value) {
+              pageValue = value;
+            }),
+            allowImplicitScrolling: false,
+            pageSnapping: false,
+            controller: _pageController,
+            children: [
+              saveAndShareOptions(),
+              classroomMaxPointQue(),
+              buildGoogleClassroomCourseWidget(),
+              commonLoaderWidget()
+            ],
+          )),
+    );
   }
 
 //page value=0
@@ -230,8 +243,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 horizontal: 20,
               ),
               child: TextFieldWidget(
-                  hintText: 'Point Possible',
+                  hintText: 'Points Possible',
                   msg: "Field is required",
+                  keyboardType: TextInputType.number,
                   controller: pointPossibleController,
                   onSaved: (String value) {})),
         ),
@@ -315,8 +329,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   scrollDirection: Axis.vertical,
                   itemCount: widget.googleClassroomCourseworkList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return _classroomCourseRadioList(index, context,
-                        widget.googleClassroomCourseworkList[index]);
+                    return _classroomCourseRadioList(
+                        index, context, widget.googleClassroomCourseworkList);
                   },
                 ),
               );
@@ -327,13 +341,19 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           child: FloatingActionButton.extended(
               backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
               onPressed: () async {
-                // if (_formKey.currentState!.validate()) {
                 _pageController.animateToPage(3,
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.ease);
 
                 classroomLoader = true;
-                // }
+
+                classroomBloc.add(CreatePBISClassroomCoursework(
+                  pointPossible: pointPossibleController.text,
+                  courseAndStudentList: selectedCoursesList.length == 0
+                      ? widget.googleClassroomCourseworkList
+                      : selectedCoursesList,
+                  // studentAssessmentInfoDb: studentAssessmentInfoDb
+                ));
               },
               label: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -348,22 +368,23 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 ],
               )),
         ),
+        blocListener()
       ],
     );
   }
 
-  Widget _classroomCourseRadioList(int index, context, ClassroomCourse obj) {
+  Widget _classroomCourseRadioList(
+      int index, context, List<ClassroomCourse> courseList) {
     return InkWell(
       onTap: () {
         if (index == 0) {
           //In case of ALL no other course can be selected individually
-          selectedValueIndexList.clear();
-          selectedValueIndexList.add(index);
-        } else if (!selectedValueIndexList.contains(index)) {
-          selectedValueIndexList.remove(0);
-          selectedValueIndexList.add(index);
+          selectedCoursesList.clear();
+          // selectedCoursesList.addAll(courseList);
+        } else if (!selectedCoursesList.contains(courseList[index])) {
+          selectedCoursesList.add(courseList[index]);
         } else {
-          selectedValueIndexList.remove(index);
+          selectedCoursesList.remove(courseList[index]);
         }
 
         //Refresh value in the UI
@@ -394,14 +415,19 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 unselectedWidgetColor: AppTheme.kButtonColor,
               ),
               child: RadioListTile(
-                  groupValue:
-                      selectedValueIndexList.contains(index) ? true : false,
+                  groupValue: selectedCoursesList.contains(courseList[index])
+                      ? true
+                      : false,
                   controlAffinity: ListTileControlAffinity.trailing,
                   activeColor: AppTheme
                       .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
 
                   contentPadding: EdgeInsets.zero,
-                  value: true,
+                  value: selectedCoursesList.length == 0
+                      ? index == 0
+                          ? false
+                          : true
+                      : true,
                   // value: selectedIndex.value == index ||
                   //         widget.filterNotifier.value == text
                   //     ? true
@@ -411,7 +437,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Utility.textWidget(
-                          text: obj.name!,
+                          text: courseList[index].name!,
                           context: context,
                           textTheme: Theme.of(context)
                               .textTheme
@@ -442,7 +468,49 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 : 'Preparing Google Spreadsheet',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
+        blocListener()
       ],
+    );
+  }
+
+  Widget blocListener() {
+    return Container(
+      height: 0,
+      width: 0,
+      child: BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
+          bloc: classroomBloc,
+          listener: (context, state) async {
+            if (state is CreateClassroomCourseWorkSuccess) {
+              Navigator.pop(context);
+              Utility.currentScreenSnackBar(
+                  "Assignments created successfully.", null);
+            }
+            if (state is GoogleClassroomErrorState) {
+              if (state.errorMsg == 'ReAuthentication is required') {
+                await Utility.refreshAuthenticationToken(
+                    isNavigator: true,
+                    errorMsg: state.errorMsg!,
+                    context: context,
+                    scaffoldKey: widget.scaffoldKey);
+
+                classroomBloc.add(CreatePBISClassroomCoursework(
+                  pointPossible: pointPossibleController.text,
+                  courseAndStudentList: selectedCoursesList.length == 0
+                      ? widget.googleClassroomCourseworkList
+                      : selectedCoursesList,
+                  // studentAssessmentInfoDb: studentAssessmentInfoDb
+                ));
+              } else {
+                Navigator.of(context).pop();
+                Utility.currentScreenSnackBar(
+                    state.errorMsg == 'NO_CONNECTION'
+                        ? 'No Internet Connection'
+                        : "Something Went Wrong. Please Try Again.",
+                    null);
+              }
+            }
+          },
+          child: EmptyContainer()),
     );
   }
 }

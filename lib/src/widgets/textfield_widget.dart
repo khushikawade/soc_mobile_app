@@ -8,13 +8,15 @@ class TextFieldWidget extends StatefulWidget {
   final onSaved;
   final String? msg;
   final String? hintText;
+  final TextInputType? keyboardType;
 
   TextFieldWidget(
       {Key? key,
       required this.controller,
       required this.onSaved,
       required this.msg,
-      this.hintText})
+      this.hintText,
+      this.keyboardType})
       : super(key: key);
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
@@ -30,6 +32,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         }
         return null;
       },
+      keyboardType: widget.keyboardType ?? TextInputType.text,
       textInputAction: TextInputAction.next,
       inputFormatters: <TextInputFormatter>[
         //To capitalize first letter of the textfield

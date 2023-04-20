@@ -44,3 +44,19 @@ class GetPBISPlusHistory extends PBISPlusEvent {
   @override
   List<Object> get props => [];
 }
+
+class AddPBISHistory extends PBISPlusEvent {
+  final String? type; //Sheet //Classroom
+  final String? url;
+  final String? studentEmail;
+  final String? classroomCourseName;
+
+  AddPBISHistory(
+      {required this.type,
+      required this.url,
+      this.studentEmail,
+      this.classroomCourseName});
+
+  @override
+  List<Object> get props => [type!, url!, studentEmail!, classroomCourseName!];
+}

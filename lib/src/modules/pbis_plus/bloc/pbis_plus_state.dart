@@ -54,3 +54,13 @@ class PBISPlusHistorySuccess extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
+
+class AddPBISHistorySuccess extends PBISPlusState {
+  AddPBISHistorySuccess();
+  AddPBISHistorySuccess copyWith() {
+    return AddPBISHistorySuccess();
+  }
+
+  @override
+  List<Object> get props => [];
+}
