@@ -1,6 +1,6 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+// import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 //import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../app_colors.dart';
 import '../constants.dart';
@@ -314,14 +314,14 @@ class _AddEventWidgetState extends State<AddEventWidget> {
             height: 1.0,
             color: AppColors.bluishGrey,
           ),
-          ColorPicker(
-            displayThumbColor: true,
-            enableAlpha: false,
-            pickerColor: _color,
-            onColorChanged: (c) {
-              color = c;
-            },
-          ),
+          // ColorPicker(
+          //   displayThumbColor: true,
+          //   enableAlpha: false,
+          //   pickerColor: _color,
+          //   onColorChanged: (c) {
+          //     color = c;
+          //   },
+          // ),
           Center(
             child: Padding(
               padding: EdgeInsets.only(top: 50.0, bottom: 30.0),

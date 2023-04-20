@@ -49,8 +49,13 @@ class AddPBISInteractionSuccess extends PBISPlusState {
 // }
 
 class PBISPlusHistorySuccess extends PBISPlusState {
-  final List<PBISPlusHistoryModal> pbisHistoryData;
-  PBISPlusHistorySuccess({required this.pbisHistoryData});
+  final List<PBISPlusHistoryModal> pbisHistoryList;
+  List<PBISPlusHistoryModal> pbisClassroomHistoryList;
+  List<PBISPlusHistoryModal> pbisSheetHistoryList;
+  PBISPlusHistorySuccess(
+      {required this.pbisHistoryList,
+      required this.pbisClassroomHistoryList,
+      required this.pbisSheetHistoryList});
   @override
   List<Object> get props => [];
 }

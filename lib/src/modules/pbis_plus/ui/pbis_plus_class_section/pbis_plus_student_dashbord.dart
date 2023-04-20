@@ -4,8 +4,6 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_mod
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';

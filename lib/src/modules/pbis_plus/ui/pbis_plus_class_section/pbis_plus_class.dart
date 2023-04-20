@@ -55,7 +55,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         key: _scaffoldKey,
         extendBody: true,
         backgroundColor: Colors.transparent,
-        appBar: PBISPlusUtility.pbisAppBar(context, widget.titleIconData),
+        appBar: PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
         floatingActionButton: saveAndShareFAB(
           context,
         ),
