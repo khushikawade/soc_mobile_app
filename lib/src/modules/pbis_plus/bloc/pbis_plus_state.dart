@@ -60,6 +60,12 @@ class PBISPlusHistorySuccess extends PBISPlusState {
   List<Object> get props => [];
 }
 
+class AddPBISHistorySuccess extends PBISPlusState {
+  AddPBISHistorySuccess();
+  @override
+  List<Object> get props => [];
+}
+
 /* --------------------- state to return student details -------------------- */
 class PBISPlusStudentDashboardLogSuccess extends PBISPlusState {
   final List<PBISPlusTotalInteractionModal> pbisStudentInteractionList;

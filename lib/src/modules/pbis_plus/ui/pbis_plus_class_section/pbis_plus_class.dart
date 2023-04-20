@@ -52,10 +52,12 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     return Stack(children: [
       CommonBackgroundImgWidget(),
       Scaffold(
+        resizeToAvoidBottomInset: false,
         key: _scaffoldKey,
         extendBody: true,
         backgroundColor: Colors.transparent,
-        appBar: PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
+        appBar:
+            PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
         floatingActionButton: saveAndShareFAB(
           context,
         ),
@@ -450,16 +452,18 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       );
 
   void _saveAndShareBottomSheetMenu() => showModalBottomSheet(
-        clipBehavior: Clip.antiAliasWithSaveLayer, useRootNavigator: true,
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        useRootNavigator: true,
         isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
+        isDismissible: false,
+        enableDrag: false,
         backgroundColor: Colors.transparent,
         // animationCurve: Curves.easeOutQuart,
         elevation: 10,
         context: context,
         builder: (BuildContext context) {
           return PBISPlusBottomSheet(
+            scaffoldKey: _scaffoldKey,
             googleClassroomCourseworkList: googleClassroomCourseworkList,
             padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
             height: MediaQuery.of(context).size.height * 0.35,

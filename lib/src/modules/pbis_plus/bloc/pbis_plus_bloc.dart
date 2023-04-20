@@ -249,6 +249,24 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           pbisSheetHistoryList: sheetData ?? []);
     }
 
+    /*----------------------------------------------------------------------------------------------*/
+    /*---------------------------------GetPBISPlusHistory-------------------------------------------*/
+    /*----------------------------------------------------------------------------------------------*/
+
+    if (event is AddPBISHistory) {
+      List<UserInformation> userProfileLocalData =
+          await UserGoogleProfile.getUserProfile();
+
+      var result = await createPBISPlusHistoryData(
+          type: event.type!,
+          url: event.url,
+          // studentEmail: event.studentEmail,
+          teacherEmail: userProfileLocalData[0].userEmail,
+          classroomCourseName: event.classroomCourseName);
+
+      yield PBISPlusLoading();
+      yield AddPBISHistorySuccess();
+    }
     /* -------------------------------------------------------------------------- */
     /*                    Event to get student details by email                   */
     /* -------------------------------------------------------------------------- */
@@ -540,6 +558,60 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
+  /*----------------------------------------------------------------------------------------------*/
+  /*---------------------------------Function createPBISPlusHistoryData------------------------------*/
+  /*----------------------------------------------------------------------------------------------*/
+
+  Future<bool> createPBISPlusHistoryData(
+      {required String type,
+      required String? url,
+      // required String? studentEmail,
+      required String? teacherEmail,
+      required String? classroomCourseName,
+      int retry = 3}) async {
+    try {
+      // print('createPBISPlusHistoryData');
+
+      var currentDate =
+          Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+
+      var headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+      };
+
+      var body = {
+        "Type": type,
+        "URL": url,
+        "Teacher_Email": teacherEmail,
+        // "Student_Email": studentEmail,
+        "School_Id": Globals.appSetting.schoolNameC,
+        "Title": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+        "Classroom_Course": classroomCourseName
+      };
+
+      final ResponseModel response = await _dbServices.postApi(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/history',
+          headers: headers,
+          body: body,
+          isGoogleApi: true);
+
+      // print('createPBISPlusHistoryData :$response');
+      if (response.statusCode == 200 && response.data['statusCode'] != 500) {
+        return true;
+      } else if (retry > 0) {
+        return createPBISPlusHistoryData(
+            type: type,
+            url: url,
+            // studentEmail: studentEmail,
+            teacherEmail: teacherEmail,
+            classroomCourseName: classroomCourseName);
+      }
+      return true;
+    } catch (e) {
+      throw (e);
+    }
+  }
   /* -------------------------------------------------------------------------- */
   /* -------Function to get student previous date log details from email ------ */
   /* -------------------------------------------------------------------------- */

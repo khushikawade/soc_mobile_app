@@ -103,42 +103,4 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
       navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
     );
   }
-
-  // Widget saveAndShareFAB(BuildContext context,
-  //     PersistentTabController? PBISPlusPersistentTabController) {
-  //   return ValueListenableBuilder<bool>(
-  //       valueListenable: _isFABVisible,
-  //       builder: (BuildContext context, bool value, Widget? child) {
-  //         return Visibility(
-  //           visible: _isFABVisible.value,
-  //           child: CustomFloatingActionButton(
-  //             onPressed: () {
-  //               _modalBottomSheetMenu();
-  //               // Navigator.of(context).push(HeroDialogRoute(builder: (context) {
-  //               //   return Container();
-  //               // }));
-  //             },
-  //           ),
-  //         );
-  //       });
-  // }
-
-  // void _modalBottomSheetMenu() {
-  //   showModalBottomSheet(
-  //     clipBehavior: Clip.antiAliasWithSaveLayer,
-  //     isScrollControlled: true,
-  //     isDismissible: true,
-  //     enableDrag: true,
-  //     backgroundColor: Colors.transparent,
-  //     // animationCurve: Curves.easeOutQuart,
-  //     elevation: 10,
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return PBISPlusBottomSheet(
-  //         height: 250,
-  //         title: 'Save and Share',
-  //       );
-  //     },
-  //   );
-  // }
 }

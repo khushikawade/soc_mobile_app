@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/classroom_student_profile_modal.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_modal.dart';
@@ -6,6 +7,8 @@ import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +32,7 @@ class GoogleClassroomBloc
   int _totalRetry = 0;
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final OcrBloc _bloc = new OcrBloc();
+
   @override
   Stream<GoogleClassroomState> mapEventToState(
     GoogleClassroomEvent event,
@@ -95,6 +99,10 @@ class GoogleClassroomBloc
         yield GoogleClassroomCourseListSuccess(obj: _localData);
       }
     }
+
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
 
     if (event is CreateClassRoomCourseWork) {
       try {
@@ -296,6 +304,10 @@ class GoogleClassroomBloc
         yield GoogleClassroomErrorState(errorMsg: e.toString());
       }
     }
+
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
     if (event is GetClassroomCourseWorkURL) {
       try {
         List<UserInformation> _userProfileLocalData =
@@ -311,6 +323,36 @@ class GoogleClassroomBloc
       } catch (e) {
         yield GetClassroomCourseWorkURLSuccess(
             isLinkAvailable: false, classroomCouseWorkURL: e.toString());
+      }
+    }
+
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    if (event is CreatePBISClassroomCoursework) {
+      try {
+        yield GoogleClassroomLoading();
+        //Fetch logged in user profile
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        var result = await _createPBISCoursework(
+            authorizationToken:
+                userProfileLocalData[0].authorizationToken ?? '',
+            refreshToken: userProfileLocalData[0].refreshToken ?? '',
+            teacherEmail: userProfileLocalData[0].userEmail ?? '',
+            maxPoints: int.parse(event.pointPossible ?? "0") ?? 0,
+            // studentProfileDetails: [],
+            courseAndStudentList: event.courseAndStudentList);
+
+        if (result[1] == '') {
+          yield CreateClassroomCourseWorkSuccess();
+        } else {
+          yield GoogleClassroomErrorState(errorMsg: result[1]);
+        }
+      } catch (e) {
+        print(e);
+        yield GoogleClassroomErrorState(errorMsg: e.toString());
       }
     }
   }
@@ -525,9 +567,12 @@ class GoogleClassroomBloc
               title: title,
               studentClassObj: studentClassObj);
         }
+      } else if ((response.statusCode == 401 ||
+          // response.data['body'][" status"] != 401 ||
+          response.data['statusCode'] == 500)) {
+        return [false, 'ReAuthentication is required'];
       }
-
-      return [false, 'ReAuthentication is required'];
+      return [];
     } catch (e) {
       return [false, e.toString()];
     }
@@ -593,4 +638,181 @@ class GoogleClassroomBloc
       return [false, e.toString()];
     }
   }
+
+  Future<List<dynamic>> _createPBISCoursework({
+    required String authorizationToken,
+    required String refreshToken,
+    required String teacherEmail,
+    required int maxPoints,
+    required List<ClassroomCourse> courseAndStudentList,
+    int retry = 3,
+  }) async {
+    final pbisBloc = PBISPlusBloc();
+
+    try {
+      final currentDate =
+          Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+      //Remove manually added 'All' option from the list
+      if (courseAndStudentList.length > 0 &&
+          courseAndStudentList[0].name == 'All') {
+        courseAndStudentList.removeAt(0);
+      }
+
+      for (int i = 0; i < courseAndStudentList.length; i++) {
+        // print('index i : $i');
+
+        // To add only course related student for single course
+        final studentProfileDetails = courseAndStudentList[i]
+            .students!
+            .map((student) => ClassRoomStudentProfile(
+                  studentId: student.profile!.id,
+                  studentAssessmentImage: '',
+                  earnedPoint: student.profile!.engaged! +
+                      student.profile!.niceWork! +
+                      student.profile!.helpful!,
+                ))
+            .toList();
+
+        final url =
+            'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/googleClassroomCoursework';
+
+        final headers = {
+          'G_AuthToken': authorizationToken,
+          'G_RefreshToken': refreshToken,
+          'Content-Type': 'application/json',
+          'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
+        };
+
+        final body = {
+          "courseId": courseAndStudentList[i].id,
+          "title": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+          "description": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+          "maxPoints": maxPoints,
+          "studentAssessmentDetails":
+              studentProfileDetails.map((data) => data.toJson()).toList(),
+        };
+
+        final response = await _dbServices.postApi(url,
+            headers: headers, body: body, isGoogleApi: true);
+
+        // print('_createPBISCoursework :$response');
+        if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+          //If classroom assignment successfully created, add the record with url in the database
+
+          await pbisBloc.createPBISPlusHistoryData(
+            type: 'Classroom',
+            url: response.data['courseWorkURL'],
+            teacherEmail: teacherEmail,
+            classroomCourseName: courseAndStudentList[i].name,
+          );
+        } else if (retry > 0) {
+          final result = await toRefreshAuthenticationToken(refreshToken);
+
+          if (result == true) {
+            final userProfileLocalData =
+                await UserGoogleProfile.getUserProfile();
+
+            return _createPBISCoursework(
+              retry: retry - 1,
+              authorizationToken: userProfileLocalData[0].authorizationToken!,
+              teacherEmail: teacherEmail,
+              maxPoints: maxPoints,
+              refreshToken: userProfileLocalData[0].refreshToken!,
+              courseAndStudentList: courseAndStudentList,
+            );
+          }
+        }
+      }
+
+      return [true, ''];
+    } catch (e) {
+      print(e);
+      return [false, e];
+    }
+  }
+
+  // Future<bool> _createPBISCoursework(
+  //     {required String authorizationToken,
+  //     required String refreshToken,
+  //     required String teacherEmail,
+  //     required int maxPoints,
+  //     // required List<ClassRoomStudentProfile> studentProfileDetails,
+  //     required List<ClassroomCourse> courseAndStudentList,
+  //     int retry = 3}) async {
+  //   PBISPlusBloc _pbisBloc = new PBISPlusBloc();
+  //   try {
+  //     var currentDate =
+  //         Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+  //     for (int i = 0; i < courseAndStudentList.length; i++) {
+  //       print('index i : $i');
+  //       //To add only course related student for single course
+  //       List<ClassRoomStudentProfile> studentProfileDetails = [];
+
+  //       for (int j = 0; j < courseAndStudentList[i].students!.length; j++) {
+  //         print('index j : $j');
+  //         studentProfileDetails.add(ClassRoomStudentProfile(
+  //             studentId: courseAndStudentList[i].students![j].profile!.id,
+  //             studentAssessmentImage: '',
+  //             earnedPoint:
+  //                 courseAndStudentList[i].students![j].profile!.engaged! +
+  //                     courseAndStudentList[i].students![j].profile!.niceWork! +
+  //                     courseAndStudentList[i].students![j].profile!.helpful!));
+  //       }
+  //       final url =
+  //           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/googleClassroomCoursework';
+
+  //       final headers = {
+  //         'G_AuthToken': authorizationToken,
+  //         'G_RefreshToken': refreshToken,
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //       };
+
+  //       Map<String, dynamic> body = {
+  //         "courseId": courseAndStudentList[i].id,
+  //         "title": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+  //         "description": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+  //         "maxPoints": maxPoints,
+  //         "studentAssessmentDetails":
+  //             studentProfileDetails.map((data) => data.toJson()).toList()
+  //       };
+
+  //       final ResponseModel response = await _dbServices.postApi(url,
+  //           headers: headers, body: body, isGoogleApi: true);
+
+  //       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+  //         await _pbisBloc.createPBISPlusHistoryData(
+  //             type: 'Classroom',
+  //             url: response.data['body']['courseWorkURL'],
+  //             teacherEmail: teacherEmail,
+  //             classroomCourseName: courseAndStudentList[i].name);
+
+  //         // return [true, data];
+  //       } else if (retry > 0) {
+  //         var result = await toRefreshAuthenticationToken(refreshToken);
+  //         if (result == true) {
+  //           List<UserInformation> _userProfileLocalData =
+  //               await UserGoogleProfile.getUserProfile();
+
+  //           return await _createPBISCoursework(
+  //               retry: retry - 1,
+  //               authorizationToken:
+  //                   _userProfileLocalData[0].authorizationToken!,
+  //               teacherEmail: teacherEmail,
+  //               maxPoints: maxPoints,
+  //               refreshToken: _userProfileLocalData[0].refreshToken!,
+  //               // studentProfileDetails: studentProfileDetails,
+  //               courseAndStudentList: courseAndStudentList);
+  //         }
+  //       }
+
+  //       //retry =3 max
+
+  //     }
+
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 }

@@ -250,7 +250,12 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
               fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
           color: AppTheme.kButtonColor,
         ),
-        onTap: (() {}),
+        onTap: (() {
+          obj.uRL == null || obj.uRL == '' || !obj.uRL!.contains('http')
+              ? Utility.showSnackBar(
+                  _scaffoldKey, 'Launch URL not found', context, null)
+              : Utility.launchUrlOnExternalBrowser(obj.uRL!);
+        }),
       ),
     );
   }
