@@ -224,7 +224,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       List<PBISPlusHistoryModal> pbisHistoryList = await getPBISPlusHistoryData(
           teacherEmail: userProfileLocalData[0].userEmail!);
 
-      pbisHistoryList.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      pbisHistoryList.sort((a, b) => b.id!.compareTo(a
+          .id!)); //Sorting on the basis of id as its serial in type and date is creating confusion
 
       await _localDb.clear();
       pbisHistoryList.forEach((element) async {

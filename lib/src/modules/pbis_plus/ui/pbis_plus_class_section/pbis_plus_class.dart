@@ -266,14 +266,17 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           : Container(
               height: 65,
               padding: EdgeInsets.only(left: 20),
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.center,
               width: MediaQuery.of(context).size.width,
               color:
                   Theme.of(context).colorScheme.background == Color(0xff000000)
                       ? Color(0xff162429)
                       : Color(0xffF7F8F9),
-              child: Text('No student found'),
-            )
+              child: Utility.textWidget(
+                  textTheme: Theme.of(context).textTheme.bodyText1!,
+                  textAlign: TextAlign.center,
+                  text: 'No Student Found',
+                  context: context))
     ]);
   }
 

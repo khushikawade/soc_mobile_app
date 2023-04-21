@@ -23,7 +23,7 @@ class PBISPlusStudentCardModal extends StatefulWidget {
   final bool? isLoading; // to maintain loading when user came from student plus
   final String heroTag;
   final Key? scaffoldKey;
-  final String classroomCourseId;
+  String classroomCourseId;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
 
   //final Function(bool) onValueUpdate;
@@ -69,6 +69,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
               // child:
               PBISPlusActionInteractionButton(
             onValueUpdate: (updatedStudentValueNotifier) {
+              widget.classroomCourseId = widget.classroomCourseId;
               widget.onValueUpdate(
                   updatedStudentValueNotifier); //Return to class screen //Roster screen count update
               widget.studentValueNotifier =
@@ -190,6 +191,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                               studentValueNotifier: widget.studentValueNotifier,
                               heroTag: widget.heroTag,
                               StudentDetailWidget: pbisStudentDetailWidget,
+                              classroomCourseId: widget.classroomCourseId,
                             ),
                           ),
                         );

@@ -124,6 +124,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
       onValueUpdate: (ValueNotifier<ClassroomStudents> data) {},
       heroTag: '',
       scaffoldKey: scaffoldKey,
+      classroomCourseId: '',
     );
   }
 }

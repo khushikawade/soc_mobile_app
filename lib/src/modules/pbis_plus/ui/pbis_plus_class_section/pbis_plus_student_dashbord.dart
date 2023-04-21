@@ -21,6 +21,7 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
   final Key scaffoldKey;
   final bool? isFromStudentPlus; // to check user from student plus or PBIS plus
   Column StudentDetailWidget;
+  final String? classroomCourseId;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
 
   ValueNotifier<bool> isValueChangeNotice = ValueNotifier<bool>(false);
@@ -33,7 +34,8 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
       required this.studentValueNotifier,
       required this.StudentDetailWidget,
       required this.onValueUpdate,
-      required this.isValueChangeNotice})
+      required this.isValueChangeNotice,
+      required this.classroomCourseId})
       : super(key: key);
 
   @override
@@ -102,7 +104,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     scaffoldKey: widget.scaffoldKey,
                     studentValueNotifier: widget.studentValueNotifier,
                     isFromStudentPlus: widget.isFromStudentPlus,
-                    classroomCourseId: '');
+                    classroomCourseId: widget.classroomCourseId!);
               } else if (state is PBISPlusStudentDashboardLogSuccess) {
                 if (widget.isFromStudentPlus == true) {
                   updateActionCountStudentPlusModuleWidget(
@@ -117,7 +119,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     scaffoldKey: widget.scaffoldKey,
                     studentValueNotifier: widget.studentValueNotifier,
                     isFromStudentPlus: widget.isFromStudentPlus,
-                    classroomCourseId: '');
+                    classroomCourseId: widget.classroomCourseId!);
               } else {
                 // In case of student email not found in STUDENT+ Module
 
@@ -135,7 +137,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     scaffoldKey: widget.scaffoldKey,
                     studentValueNotifier: widget.studentValueNotifier,
                     isFromStudentPlus: widget.isFromStudentPlus,
-                    classroomCourseId: '');
+                    classroomCourseId: widget.classroomCourseId!);
               }
             }),
 
