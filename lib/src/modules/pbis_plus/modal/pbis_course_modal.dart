@@ -40,6 +40,8 @@ class ClassroomCourse {
       json['students'].forEach((v) {
         students!.add(new ClassroomStudents.fromJson(v));
       });
+    } else {
+      students = [];
     }
   }
 
@@ -53,6 +55,8 @@ class ClassroomCourse {
     data['courseState'] = this.courseState;
     if (this.students != null) {
       data['students'] = this.students!.map((v) => v.toJson()).toList();
+    } else {
+      data['students'] = [];
     }
     return data;
   }
