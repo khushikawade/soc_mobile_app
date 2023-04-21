@@ -13,14 +13,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class PBISPlusBottomSheet extends StatefulWidget {
-  final double height;
-  final bool content;
+  final double? constraintDeviceHeight;
+  final double? height;
+  final bool? content;
   final String? title;
   final EdgeInsetsGeometry? padding;
   final List<ClassroomCourse> googleClassroomCourseworkList;
   final GlobalKey<State<StatefulWidget>>? scaffoldKey;
   PBISPlusBottomSheet(
       {Key? key,
+      this.constraintDeviceHeight,
       this.height = 200,
       this.title,
       this.content = true,
@@ -60,7 +62,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
     //     _pageController.hasClients ? (_pageController.page ?? 0) : 0;
 
     return SingleChildScrollView(
-      padding: MediaQuery.of(context).viewInsets / 1.3,
+      padding: MediaQuery.of(context).viewInsets,
       controller: ModalScrollController.of(context),
       child: Container(
           padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -73,11 +75,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
           height: pageValue == 1
-              ? widget.height * 1.4
+              ? widget.height! * 1.2
               : pageValue == 2
-                  ? widget.height * 1.8
+                  ? widget.height! *
+                      (widget.constraintDeviceHeight! < 800 ? 1.4 : 1.5)
                   : pageValue == 3
-                      ? widget.height * 0.8
+                      ? widget.height! * 0.8
                       : widget.height,
           child: PageView(
             physics:
@@ -107,7 +110,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       padding: EdgeInsets.only(left: 16),
       child: Column(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: !widget.content
+          mainAxisAlignment: !widget.content!
               ? MainAxisAlignment.center
               : MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,7 +140,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       .headline5!
                       .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
             SpacerWidget(20),
-            if (widget.content) ...[
+            if (widget.content!) ...[
               _listTileMenu(
                   leading: SvgPicture.asset(
                     "assets/ocr_result_section_bottom_button_icons/Classroom.svg",
@@ -204,9 +207,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       children: [
         Container(
             alignment: Alignment.topRight,
-
-            // padding: EdgeInsets.only(top: 16),
-            //color: Colors.amber,
             child: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -264,7 +264,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   controller: pointPossibleController,
                   onSaved: (String value) {})),
         ),
-        SpacerWidget(30),
+        SpacerWidget(20),
         Container(
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
@@ -326,7 +326,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           title: Utility.textWidget(
               context: context,
               // textAlign: TextAlign.center,
-              text: 'Select Google Classroom Course',
+              text: 'Select Course',
               textTheme: Theme.of(context)
                   .textTheme
                   .headline5!
@@ -498,7 +498,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             context: context,
             textAlign: TextAlign.center,
             text: classroomLoader
-                ? 'Please be patient while your \'Google Classroom\' assignment is being created. It may take a while.'
+                ? 'Please be patience while your \'Google Classroom\' assignment is being created. It may take a while.'
                 : 'Preparing Google Spreadsheet',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),

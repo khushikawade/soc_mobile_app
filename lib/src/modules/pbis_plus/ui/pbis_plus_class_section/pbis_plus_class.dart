@@ -452,23 +452,31 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       );
 
   void _saveAndShareBottomSheetMenu() => showModalBottomSheet(
-        // clipBehavior: Clip.antiAliasWithSaveLayer,
-        useRootNavigator: true,
-        isScrollControlled: true,
-        isDismissible: false,
-        enableDrag: false,
-        backgroundColor: Colors.transparent,
-        // animationCurve: Curves.easeOutQuart,
-        elevation: 10,
-        context: context,
-        builder: (BuildContext context) {
-          return PBISPlusBottomSheet(
-            scaffoldKey: _scaffoldKey,
-            googleClassroomCourseworkList: googleClassroomCourseworkList,
-            padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
-            height: MediaQuery.of(context).size.height * 0.35,
-            title: 'Save and Share',
-          );
-        },
-      );
+      // clipBehavior: Clip.antiAliasWithSaveLayer,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      // animationCurve: Curves.easeOutQuart,
+      elevation: 10,
+      context: context,
+      builder: (BuildContext context) {
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            // Set the maximum height of the bottom sheet based on the screen size
+            print(constraints.maxHeight);
+            return PBISPlusBottomSheet(
+              constraintDeviceHeight: constraints.maxHeight,
+              scaffoldKey: _scaffoldKey,
+              googleClassroomCourseworkList: googleClassroomCourseworkList,
+              padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
+              height: constraints.maxHeight < 800
+                  ? MediaQuery.of(context).size.height * 0.5
+                  : MediaQuery.of(context).size.height * 0.43,
+              title: 'Save and Share',
+            );
+          },
+        );
+      });
 }
