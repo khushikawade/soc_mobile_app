@@ -122,9 +122,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 // In case of student email not found in STUDENT+ Module
 
                 List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
-                updateActionCountStudentPlusModuleWidget(
-                  pbisHistoryData: pbisHistoryData,
-                );
+                if (widget.isFromStudentPlus == true) {
+                  updateActionCountStudentPlusModuleWidget(
+                    pbisHistoryData: pbisHistoryData,
+                  );
+                }
                 return PBISPlusStudentCardModal(
                     isLoading: false,
                     isFromDashboardPage: true,
