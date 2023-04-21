@@ -14,7 +14,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusHome extends StatefulWidget {
   final StudentPlusDetailsModel studentPlusStudentInfo;
-  const StudentPlusHome({Key? key, required this.studentPlusStudentInfo})
+  final int index;
+  const StudentPlusHome(
+      {Key? key, required this.studentPlusStudentInfo, required this.index})
       : super(key: key);
 
   @override
@@ -37,7 +39,7 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
 
   @override
   void initState() {
-    _controller.index = 0;
+    _controller.index = widget.index;
     //_studentPlusBloc.add(GetStudentPlusDetails(studentId: widget.studentId));
     super.initState();
   }
@@ -76,14 +78,17 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             context,
             controller: _controller,
             screens: StudentPlusBottomNavBar.buildScreens(
-                studentInfo: widget.studentPlusStudentInfo),
+              studentInfo: widget.studentPlusStudentInfo,
+              // index: widget.index
+            ),
+
             onItemSelected: (i) {
               //To go back to the staff screen of standard app
               if (i == 5) {
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              index: 4,
+                        builder: (context) => HomePage(index: 4
+                            // widget.index,
                             )),
                     (_) => false);
                 // pushNewScreen(context,

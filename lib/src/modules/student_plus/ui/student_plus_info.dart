@@ -14,7 +14,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusInfoScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
-  const StudentPlusInfoScreen({Key? key, required this.studentDetails})
+ 
+  const StudentPlusInfoScreen(
+      {Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -62,19 +64,18 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding ),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           StudentPlusScreenTitleWidget(
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentInfoPageTitle),
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding ),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           StudentPlusInfoSearchBar(
             hintText:
                 '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
             onTap: () async {
               var result = await pushNewScreen(context,
                   screen: StudentPlusSearchScreen(
-                    fromStudentPlusDetailPage: true,
-                  ),
+                      fromStudentPlusDetailPage: true, index: 0, studentDetails: widget.studentDetails),
                   withNavBar: false,
                   pageTransitionAnimation: PageTransitionAnimation.fade);
               if (result == true) {

@@ -1,11 +1,16 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
-
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:open_apps_settings/open_apps_settings.dart';
@@ -58,20 +63,66 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       ),
     );
 
+    // List<Widget>? actions = [
+    //   IconButton(
+    //     onPressed: () {},
+    //     icon: Icon(
+    //       PBISPlusIcons.PBISPlus_plus_settings,
+    //       color: AppTheme.kButtonColor,
+    //     ),
+    //   )
+    // ];
     List<Widget>? actions = [
       IconButton(
-        onPressed: () {},
-        icon: Icon(
-          // widget.title == "History"
-          //     ? IconData(0xe87d,
-          //         fontFamily: Overrides.kFontFam,
-          //         fontPackage: Overrides.kFontPkg)
-          //     :
-          IconData(0xe867,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          color: AppTheme.kButtonColor,
-        ),
-      )
+          padding: EdgeInsets.zero,
+          onPressed: () {},
+          icon: Icon(
+            IconData(
+              0xe867,
+              fontFamily: Overrides.kFontFam,
+              fontPackage: Overrides.kFontPkg,
+            ),
+            color: AppTheme.kButtonColor,
+          )),
+      FutureBuilder(
+          future: getUserProfile(),
+          builder: (context, AsyncSnapshot<UserInformation> snapshot) {
+            if (snapshot.hasData) {
+              return Container(
+                padding: EdgeInsets.only(right: 5.0),
+                child: IconButton(
+                  icon: ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(50),
+                    ),
+                    child: CachedNetworkImage(
+                      height: 28,
+                      width: 28,
+                      imageUrl: snapshot.data!.profilePicture!,
+                      placeholder: (context, url) => CupertinoActivityIndicator(
+                          animating: true, radius: 10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        "profile");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfilePage(
+                                hideStateSelection: true,
+                                profile: snapshot.data!,
+                              )),
+                    );
+
+                    // _showPopUp(snapshot.data!);
+                    //print("profile url");
+                  },
+                ),
+              );
+            }
+            return IconButton(icon: Container(), onPressed: (() {}));
+          }),
     ];
 
     return AppBar(
@@ -84,6 +135,14 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       elevation: 0,
       automaticallyImplyLeading: false,
     );
+  }
+
+  Future<UserInformation> getUserProfile() async {
+    LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
+    List<UserInformation> _userInformation = await _localDb.getData();
+    Globals.teacherEmailId = _userInformation[0].userEmail!;
+    //print("//printing _userInformation length : ${_userInformation[0]}");
+    return _userInformation[0];
   }
 
   Widget _translateButton(StateSetter setState, BuildContext context) {

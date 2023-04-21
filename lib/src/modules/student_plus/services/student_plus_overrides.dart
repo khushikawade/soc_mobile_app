@@ -19,7 +19,7 @@ class StudentPlusOverrides {
   static final String studentPlusExamsTitle = 'Exams';
   static final String studentWorkSnackbar = "No Image Found";
   static final String studentWorkErrorMessage = 'No Student Work Found';
-  static final String gradesTitleLeft = 'Class';
+  static final String gradesTitleLeft = 'Subject';
   static final String gradesTitleRight = 'Grades';
   static final String examScreenPopupText =
       'The student’s position relative to students in the same grade level nationwide. For example, if a student’s percentile rank is 90%, this means the student scored better than or equal to 90% of their peers.';

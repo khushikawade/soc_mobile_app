@@ -22,8 +22,13 @@ import 'package:flutter_offline/flutter_offline.dart';
 
 class StudentPlusSearchScreen extends StatefulWidget {
   final bool fromStudentPlusDetailPage;
+  final int index;
+  final StudentPlusDetailsModel studentDetails;
   const StudentPlusSearchScreen(
-      {Key? key, required this.fromStudentPlusDetailPage})
+      {Key? key,
+      required this.fromStudentPlusDetailPage,
+      required this.index,
+      required this.studentDetails})
       : super(key: key);
 
   @override
@@ -90,10 +95,10 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
         Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: StudentPlusAppBar(
-            // refresh: (v) {
-            //   setState(() {});
-            // },
-          ),
+              // refresh: (v) {
+              //   setState(() {});
+              // },
+              ),
           backgroundColor: Colors.transparent,
           body: OfflineBuilder(
               connectivityBuilder: (
@@ -126,6 +131,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                                   ScaffoldMessenger.of(context)
                                       .removeCurrentSnackBar();
                                   Utility.closeKeyboard(context);
+
                                   Navigator.pop(context, true);
                                 },
                                 icon: Icon(
@@ -173,6 +179,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
               MaterialPageRoute(
                   builder: (context) => StudentPlusHome(
                         studentPlusStudentInfo: state.obj,
+                        index: widget.index,
                       )),
               (_) => true);
         }

@@ -11,6 +11,7 @@ class CommonLineGraphWidget extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
   final bool isIReadyGraph;
   final bool isMathsSection;
+
   const CommonLineGraphWidget(
       {Key? key,
       required this.isIReadyGraph,
@@ -57,10 +58,11 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
           minY: widget.isIReadyGraph == true ? 0 : 0,
           showingTooltipIndicators:
               StudentPlusGraphMethod.showingTooltipIndicators(
-                  context: context,
-                  isIReadyGraph: widget.isIReadyGraph,
-                  isMathSection: widget.isMathsSection,
-                  studentDetails: widget.studentDetails),
+            context: context,
+            isIReadyGraph: widget.isIReadyGraph,
+            isMathSection: widget.isMathsSection,
+            studentDetails: widget.studentDetails,
+          ),
           lineTouchData: LineTouchData(
             enabled: false, // false because it will show always
             getTouchedSpotIndicator:

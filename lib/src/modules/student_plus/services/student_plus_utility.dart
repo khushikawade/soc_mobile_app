@@ -75,14 +75,22 @@ class StudentPlusUtility {
           label: 'Class', value: '${studentDetails.classC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Teacher', value: '${studentDetails.teacherProperC ?? '-'}'),
-      StudentPlusInfoModel(label: 'Attend%', value: '${studentDetails.currentAttendance ?? '-'}'),
+      StudentPlusInfoModel(
+          label: 'Attend%',
+          value: '${studentDetails.currentAttendance ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Gender', value: '${studentDetails.genderFullC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Ethnicity', value: '${studentDetails.ethnicityNameC ?? '-'}'),
       StudentPlusInfoModel(label: 'Age', value: '-'),
       StudentPlusInfoModel(
-          label: 'DOB', value: '${studentDetails.dobC ?? '-'}'),
+          label: 'DOB',
+          value: studentDetails.dobC == " " || studentDetails.dobC == null
+              ? '${studentDetails.dobC ?? '-'}'
+              : '${DateFormat('MM/dd/yyyy').format(DateTime.parse(studentDetails.dobC ?? ''))}'),
+      // value: '${studentDetails.dobC ?? '-'}'
+      // value:
+      //     '${DateFormat('MM/dd/yyyy').format(DateTime.parse(studentDetails.dobC ?? '-')) ?? ''}'),
       StudentPlusInfoModel(
           label: 'ELL Status', value: '${studentDetails.ellC ?? '-'}'),
       StudentPlusInfoModel(

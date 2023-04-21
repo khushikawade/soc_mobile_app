@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
 import 'package:Soc/src/modules/staff/models/staff_icons_List.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_home.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
@@ -76,6 +77,7 @@ class _StaffPageState extends State<StaffPage> {
   int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(99);
+  final StudentPlusDetailsModel studentDetails = new StudentPlusDetailsModel();
 
   @override
   void initState() {
@@ -436,7 +438,10 @@ class _StaffPageState extends State<StaffPage> {
       } else if (actionName == 'STUDENT+') {
         pushNewScreen(
           context,
-          screen: StudentPlusSearchScreen(fromStudentPlusDetailPage: false),
+          screen: StudentPlusSearchScreen(
+              fromStudentPlusDetailPage: false,
+              index: 0,
+              studentDetails: studentDetails),
           withNavBar: false,
         );
       }
