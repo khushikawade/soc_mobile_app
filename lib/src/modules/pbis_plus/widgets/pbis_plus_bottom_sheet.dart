@@ -117,10 +117,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           children: [
             Container(
                 alignment: Alignment.topRight,
-
-                // padding: EdgeInsets.only(top: 16),
-                //color: Colors.amber,
                 child: IconButton(
+                  padding: EdgeInsets.all(0),
                   onPressed: () {
                     Navigator.pop(context);
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -139,7 +137,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       .textTheme
                       .headline5!
                       .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
-            SpacerWidget(20),
+            SpacerWidget(widget?.title?.isNotEmpty == true ? 20 : 0),
             if (widget.content!) ...[
               _listTileMenu(
                   leading: SvgPicture.asset(

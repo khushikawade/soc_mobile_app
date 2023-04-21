@@ -98,8 +98,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                           color: Theme.of(context).colorScheme.primaryVariant,
                         ));
                   }
-                  if (state is PBISPlusImportRosterSuccess &&
-                      (state.googleClassroomCourseList.isNotEmpty ?? false)) {
+                  if (state is PBISPlusImportRosterSuccess) if (state
+                          .googleClassroomCourseList.isNotEmpty ??
+                      false) {
                     ///Used to send the list of courseWork to the bottomsheet list
                     /*----------------------START--------------------------*/
                     googleClassroomCourseworkList.clear();
@@ -110,12 +111,14 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                     /*----------------------END--------------------------*/
 
                     return buildList(state.googleClassroomCourseList);
+                  } else {
+                    return NoDataFoundErrorWidget(
+                        isResultNotFoundMsg: true,
+                        isNews: false,
+                        isEvents: false);
                   }
 
-                  return NoDataFoundErrorWidget(
-                      isResultNotFoundMsg: true,
-                      isNews: false,
-                      isEvents: false);
+                  return Container();
                 },
                 listener: (context, state) {}),
           ),

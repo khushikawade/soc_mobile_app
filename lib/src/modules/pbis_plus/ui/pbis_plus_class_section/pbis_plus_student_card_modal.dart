@@ -151,7 +151,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                   boxShadow: [
                     BoxShadow(
                         color: Colors.black,
-                        offset: Offset(0, 10),
+                        offset: Offset(0, 2),
                         blurRadius: 10),
                   ],
                   gradient: LinearGradient(

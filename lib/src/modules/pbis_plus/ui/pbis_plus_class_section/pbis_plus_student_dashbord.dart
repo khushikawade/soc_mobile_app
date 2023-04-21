@@ -383,7 +383,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             scaffoldKey: _scaffoldKey,
             googleClassroomCourseworkList: [], //No list is required since no list is used from this bottomsheet
             content: false,
-            height: 100,
+            height: MediaQuery.of(context).size.height * 0.23,
             title: '',
             padding: EdgeInsets.fromLTRB(30, 10, 10, 10),
           );
