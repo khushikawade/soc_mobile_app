@@ -238,7 +238,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             .headline2!
             .copyWith(fontWeight: FontWeight.bold),
         headingRowColor: MaterialStateColor.resolveWith(
-            (states) => Color.fromRGBO(50, 52, 67, 1)),
+            (states) => AppTheme.kButtonColor //Color.fromRGBO(50, 52, 67, 1)
+            ),
         dividerThickness: 5.0,
         border: TableBorder(
           horizontalInside: BorderSide(
