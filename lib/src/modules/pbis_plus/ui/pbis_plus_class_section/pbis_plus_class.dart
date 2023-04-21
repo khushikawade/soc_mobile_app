@@ -37,6 +37,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   final double profilePictureSize = 30;
   static const double _KVertcalSpace = 60.0;
@@ -144,7 +145,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 scrollDirection: Axis.horizontal,
               ),
             )),
-        studentListCourseWiseView(googleClassroomCourseList)
+        RefreshIndicator(
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: studentListCourseWiseView(googleClassroomCourseList))
       ],
     );
   }
@@ -482,4 +486,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           },
         );
       });
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+    pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+  }
 }

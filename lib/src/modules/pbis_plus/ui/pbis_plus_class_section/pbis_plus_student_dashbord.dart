@@ -269,12 +269,14 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           Utility.textWidget(
             context: context,
             text: item.title,
-            textTheme: Theme.of(context).textTheme.headline5!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff000000) != Theme.of(context).backgroundColor
-                      ? Color(0xffF7F8F9)
-                      : Color(0xff111C20),
-                ),
+            textTheme: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold, color: Color(0xff000000)
+                    // != Theme.of(context).backgroundColor
+                    //     ? Color(0xffF7F8F9)
+                    //     : Color(0xff111C20),
+                    ),
           ),
         ],
       ));
