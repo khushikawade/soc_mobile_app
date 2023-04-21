@@ -37,6 +37,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   final double profilePictureSize = 30;
   static const double _KVertcalSpace = 60.0;
@@ -98,8 +99,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                           color: Theme.of(context).colorScheme.primaryVariant,
                         ));
                   }
-                  if (state is PBISPlusImportRosterSuccess &&
-                      (state.googleClassroomCourseList.isNotEmpty ?? false)) {
+                  if (state is PBISPlusImportRosterSuccess) if (state
+                          .googleClassroomCourseList.isNotEmpty ??
+                      false) {
                     ///Used to send the list of courseWork to the bottomsheet list
                     /*----------------------START--------------------------*/
                     googleClassroomCourseworkList.clear();
@@ -110,12 +112,14 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                     /*----------------------END--------------------------*/
 
                     return buildList(state.googleClassroomCourseList);
+                  } else {
+                    return NoDataFoundErrorWidget(
+                        isResultNotFoundMsg: true,
+                        isNews: false,
+                        isEvents: false);
                   }
 
-                  return NoDataFoundErrorWidget(
-                      isResultNotFoundMsg: true,
-                      isNews: false,
-                      isEvents: false);
+                  return Container();
                 },
                 listener: (context, state) {}),
           ),
@@ -141,7 +145,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 scrollDirection: Axis.horizontal,
               ),
             )),
-        studentListCourseWiseView(googleClassroomCourseList)
+        RefreshIndicator(
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: studentListCourseWiseView(googleClassroomCourseList))
       ],
     );
   }
@@ -452,23 +459,37 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       );
 
   void _saveAndShareBottomSheetMenu() => showModalBottomSheet(
-        // clipBehavior: Clip.antiAliasWithSaveLayer,
-        useRootNavigator: true,
-        isScrollControlled: true,
-        isDismissible: false,
-        enableDrag: false,
-        backgroundColor: Colors.transparent,
-        // animationCurve: Curves.easeOutQuart,
-        elevation: 10,
-        context: context,
-        builder: (BuildContext context) {
-          return PBISPlusBottomSheet(
-            scaffoldKey: _scaffoldKey,
-            googleClassroomCourseworkList: googleClassroomCourseworkList,
-            padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
-            height: MediaQuery.of(context).size.height * 0.35,
-            title: 'Save and Share',
-          );
-        },
-      );
+      // clipBehavior: Clip.antiAliasWithSaveLayer,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      // animationCurve: Curves.easeOutQuart,
+      elevation: 10,
+      context: context,
+      builder: (BuildContext context) {
+        return LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            // Set the maximum height of the bottom sheet based on the screen size
+            print(constraints.maxHeight);
+            return PBISPlusBottomSheet(
+              constraintDeviceHeight: constraints.maxHeight,
+              scaffoldKey: _scaffoldKey,
+              googleClassroomCourseworkList: googleClassroomCourseworkList,
+              padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
+              height: constraints.maxHeight < 800
+                  ? MediaQuery.of(context).size.height * 0.5
+                  : MediaQuery.of(context).size.height * 0.43,
+              title: 'Save and Share',
+            );
+          },
+        );
+      });
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+    pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+  }
 }

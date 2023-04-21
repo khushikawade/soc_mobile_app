@@ -122,50 +122,57 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
         Container(
           // color: Colors.red,
           height: MediaQuery.of(context).size.height * 0.65,
-          child: RefreshIndicator(
-              key: refreshKey,
-              onRefresh: refreshPage,
-              child: ValueListenableBuilder(
-                  valueListenable: filterNotifier,
-                  builder: (BuildContext context, String value, Widget? child) {
-                    return ListView(children: [
-                      BlocConsumer(
-                          bloc: PBISPlusBlocInstance,
-                          builder: (context, state) {
-                            if (state is PBISPlusLoading) {
-                              return Container(
-                                  alignment: Alignment.center,
-                                  child: CircularProgressIndicator(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryVariant,
-                                  ));
-                            }
-                            if (state is PBISPlusHistorySuccess
-                                // &&
-                                // (state.pbisHistoryList.isNotEmpty ?? false) &&
-                                // (state.pbisClassroomHistoryList.isNotEmpty ??
-                                //     false) &&
-                                // (state.pbisSheetHistoryList.isNotEmpty ??
-                                //     false)
-                                ) {
-                              //---------------------return the filter list to UI-----------//
-                              if (filterNotifier.value ==
-                                  PBISPlusOverrides.pbisGoogleClassroom) {
-                                return _listBuilder(
-                                    state.pbisClassroomHistoryList);
-                              } else if (filterNotifier.value ==
-                                  PBISPlusOverrides.pbisGoogleSheet) {
-                                return _listBuilder(state.pbisSheetHistoryList);
-                              } else {
-                                return _listBuilder(state.pbisHistoryList);
-                              }
-                            }
-                            return Container();
-                          },
-                          listener: (context, state) {})
-                    ]);
-                  })),
+          child: ValueListenableBuilder(
+              valueListenable: filterNotifier,
+              builder: (BuildContext context, String value, Widget? child) {
+                return ListView(children: [
+                  BlocConsumer(
+                      bloc: PBISPlusBlocInstance,
+                      builder: (context, state) {
+                        if (state is PBISPlusLoading) {
+                          return Container(
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryVariant,
+                              ));
+                        }
+                        if (state is PBISPlusHistorySuccess
+                            // &&
+                            // (state.pbisHistoryList.isNotEmpty ?? false) &&
+                            // (state.pbisClassroomHistoryList.isNotEmpty ??
+                            //     false) &&
+                            // (state.pbisSheetHistoryList.isNotEmpty ??
+                            //     false)
+                            ) {
+                          //---------------------return the filter list to UI-----------//
+                          if (filterNotifier.value ==
+                              PBISPlusOverrides.pbisGoogleClassroom) {
+                            return RefreshIndicator(
+                                key: refreshKey,
+                                onRefresh: refreshPage,
+                                child: _listBuilder(
+                                    state.pbisClassroomHistoryList));
+                          } else if (filterNotifier.value ==
+                              PBISPlusOverrides.pbisGoogleSheet) {
+                            return RefreshIndicator(
+                                key: refreshKey,
+                                onRefresh: refreshPage,
+                                child:
+                                    _listBuilder(state.pbisSheetHistoryList));
+                          } else {
+                            return RefreshIndicator(
+                                key: refreshKey,
+                                onRefresh: refreshPage,
+                                child: _listBuilder(state.pbisHistoryList));
+                          }
+                        }
+                        return Container();
+                      },
+                      listener: (context, state) {})
+                ]);
+              }),
         ),
       ],
     );

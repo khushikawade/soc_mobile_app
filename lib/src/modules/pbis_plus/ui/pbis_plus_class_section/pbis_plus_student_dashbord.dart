@@ -122,9 +122,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 // In case of student email not found in STUDENT+ Module
 
                 List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
-                updateActionCountStudentPlusModuleWidget(
-                  pbisHistoryData: pbisHistoryData,
-                );
+                if (widget.isFromStudentPlus == true) {
+                  updateActionCountStudentPlusModuleWidget(
+                    pbisHistoryData: pbisHistoryData,
+                  );
+                }
                 return PBISPlusStudentCardModal(
                     isLoading: false,
                     isFromDashboardPage: true,
@@ -236,7 +238,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             .headline2!
             .copyWith(fontWeight: FontWeight.bold),
         headingRowColor: MaterialStateColor.resolveWith(
-            (states) => Color.fromRGBO(50, 52, 67, 1)),
+            (states) => AppTheme.kButtonColor //Color.fromRGBO(50, 52, 67, 1)
+            ),
         dividerThickness: 5.0,
         border: TableBorder(
           horizontalInside: BorderSide(
@@ -269,7 +272,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             textTheme: Theme.of(context)
                 .textTheme
                 .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+                .copyWith(fontWeight: FontWeight.bold, color: Color(0xff000000)
+                    // != Theme.of(context).backgroundColor
+                    //     ? Color(0xffF7F8F9)
+                    //     : Color(0xff111C20),
+                    ),
           ),
         ],
       ));
@@ -381,7 +388,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             scaffoldKey: _scaffoldKey,
             googleClassroomCourseworkList: [], //No list is required since no list is used from this bottomsheet
             content: false,
-            height: 100,
+            height: MediaQuery.of(context).size.height * 0.23,
             title: '',
             padding: EdgeInsets.fromLTRB(30, 10, 10, 10),
           );

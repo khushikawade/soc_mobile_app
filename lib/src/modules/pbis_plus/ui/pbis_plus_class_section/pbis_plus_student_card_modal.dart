@@ -138,7 +138,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
           children: <Widget>[
             Container(
                 alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.17,
+                height: MediaQuery.of(context).size.height * 0.2,
                 width: widget.isFromDashboardPage == true
                     ? MediaQuery.of(context).size.width
                     : MediaQuery.of(context).size.width * 0.7,
@@ -151,7 +151,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                   boxShadow: [
                     BoxShadow(
                         color: Colors.black,
-                        offset: Offset(0, 10),
+                        offset: Offset(0, 2),
                         blurRadius: 10),
                   ],
                   gradient: LinearGradient(
@@ -173,8 +173,9 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
             Positioned(
               top: 0,
               child: GestureDetector(
-                onTap: widget.isFromStudentPlus == true
-                    ? () {}
+                onTap: widget.isFromStudentPlus == true ||
+                        widget.isFromDashboardPage == true
+                    ? null
                     : () async {
                         Navigator.of(context).pushReplacement(
                           HeroDialogRoute(
@@ -226,10 +227,12 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
               ),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.03,
-              right: widget.isFromDashboardPage == true
-                  ? MediaQuery.of(context).size.width * 0.34
-                  : MediaQuery.of(context).size.width * 0.22,
+              top: widget.isFromDashboardPage == true
+                  ? MediaQuery.of(context).size.height * 0.04
+                  : MediaQuery.of(context).size.height * 0.05,
+              right: widget.isFromDashboardPage == true //from PBIS
+                  ? MediaQuery.of(context).size.width * 0.36
+                  : MediaQuery.of(context).size.width * 0.21,
               child: Container(
                 padding: EdgeInsets.all(5),
                 width: PBISPlusOverrides.circleSize,
