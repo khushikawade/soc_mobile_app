@@ -23,7 +23,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
-  const StudentPlusWorkScreen({Key? key, required this.studentDetails})
+  
+  const StudentPlusWorkScreen(
+      {Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -99,8 +101,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     pushNewScreen(
                       context,
                       screen: StudentPlusSearchScreen(
-                        fromStudentPlusDetailPage: true,
-                      ),
+                          fromStudentPlusDetailPage: true,
+                          index: 2,
+                          studentDetails: widget.studentDetails),
                       withNavBar: false,
                     );
                   },

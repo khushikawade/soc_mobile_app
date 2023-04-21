@@ -35,6 +35,7 @@ class StudentPlusBottomNavBar {
     ));
     _screens.add(StudentPlusPBISScreen(
       studentDetails: studentInfo,
+      index: 4,
     )
         // studentInfo.emailC == null
         //     ? NoDataFoundErrorWidget(

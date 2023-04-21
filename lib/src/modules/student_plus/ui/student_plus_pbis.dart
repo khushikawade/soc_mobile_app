@@ -15,7 +15,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusPBISScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
-  const StudentPlusPBISScreen({Key? key, required this.studentDetails})
+  final int index;
+  const StudentPlusPBISScreen(
+      {Key? key, required this.studentDetails, required this.index})
       : super(key: key);
 
   @override
@@ -89,6 +91,8 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
               var result = await pushNewScreen(context,
                   screen: StudentPlusSearchScreen(
                     fromStudentPlusDetailPage: true,
+                    studentDetails: widget.studentDetails,
+                    index: widget.index,
                   ),
                   withNavBar: false,
                   pageTransitionAnimation: PageTransitionAnimation.fade);

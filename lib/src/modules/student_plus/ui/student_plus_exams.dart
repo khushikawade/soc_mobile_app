@@ -21,6 +21,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusExamsScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
+
   const StudentPlusExamsScreen({Key? key, required this.studentDetails})
       : super(key: key);
 
@@ -78,6 +79,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
                 context,
                 screen: StudentPlusSearchScreen(
                   fromStudentPlusDetailPage: true,
+                  index: 1,
+                  studentDetails: widget.studentDetails,
                 ),
                 withNavBar: false,
               );
@@ -143,7 +146,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             Container(
               height: Globals.deviceType == "phone" &&
                       MediaQuery.of(context).orientation == Orientation.portrait
-                  ? (MediaQuery.of(context).size.height * 0.59) //61
+                  ? (MediaQuery.of(context).size.height * 0.57) //61
                   : Globals.deviceType == "phone" &&
                           MediaQuery.of(context).orientation ==
                               Orientation.landscape
@@ -203,12 +206,12 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
         SpacerWidget(_kLabelSpacing),
         Row(
           children: [
-            HeadingWidget(isInfoIcon: true, title: 'iReady Percentile Growth'),
+            HeadingWidget(isInfoIcon: true, title: 'iReady Percentile'),
             IconButton(
               padding: EdgeInsets.only(top: 2),
               onPressed: () {
                 StudentPlusCommonBottomSheet.showBottomSheet(
-                    title: 'iReady Percentile Growth',
+                    title: 'iReady Percentile',
                     kLabelSpacing: _kLabelSpacing,
                     context: context,
                     text: StudentPlusOverrides.examScreenPopupText);
@@ -244,9 +247,10 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
         padding: EdgeInsets.only(left: 20, right: 40, bottom: 20, top: 0),
         height: MediaQuery.of(context).size.height * 0.55,
         child: CommonLineGraphWidget(
-            isIReadyGraph: false,
-            isMathsSection: isMathSection,
-            studentDetails: widget.studentDetails),
+          isIReadyGraph: false,
+          isMathsSection: isMathSection,
+          studentDetails: widget.studentDetails,
+        ),
       ),
     );
   }
@@ -362,7 +366,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
 
   Widget HeadingWidget({required String title, required bool isInfoIcon}) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.only(left: 20),
         child: Utility.textWidget(
             text: title,
             context: context,

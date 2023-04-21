@@ -264,6 +264,14 @@ class StudentPlusDetailsModel {
               json["IReady_ELA_EOY_Overall_Relative_Place__c"],
           currentAttendance: json["Current_Attendance__c"]);
 
+  get nysElaPrScore2021C => null;
+
+  get nysElaPrScore2022C => null;
+
+  get nysMathScore2020C => null;
+
+  get nysElaPrScore2020C => null;
+
   Map<String, String?> toJson() => {
         "First_Name__c": firstNameC,
         "Grade__c": gradeC,

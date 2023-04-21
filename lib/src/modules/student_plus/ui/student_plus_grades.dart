@@ -15,7 +15,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusGradesPage extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
-  const StudentPlusGradesPage({Key? key, required this.studentDetails})
+ 
+  const StudentPlusGradesPage(
+      {Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -50,7 +52,7 @@ class individual extends State<StudentPlusGradesPage> {
                 StudentPlusScreenTitleWidget(
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding ),
+                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 StudentPlusInfoSearchBar(
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
@@ -58,6 +60,9 @@ class individual extends State<StudentPlusGradesPage> {
                     var result = await pushNewScreen(context,
                         screen: StudentPlusSearchScreen(
                           fromStudentPlusDetailPage: true,
+                          index:3,
+                          studentDetails: widget.studentDetails
+                          
                         ),
                         withNavBar: false,
                         pageTransitionAnimation: PageTransitionAnimation.fade);

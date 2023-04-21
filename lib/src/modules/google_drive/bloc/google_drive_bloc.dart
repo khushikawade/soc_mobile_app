@@ -1139,10 +1139,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
       final ResponseModel response = await _dbServices.getApiNew(
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
-              'https://www.googleapis.com/drive/v3/files?fields=%2A%26q=' +
+              'https://www.googleapis.com/drive/v3/files?fields=%2A%26q=' 
+              +
               Uri.encodeFull(query),
           headers: headers,
           isCompleteUrl: true);
+          
 
       // if (response.statusCode != 401 &&
       //     response.statusCode == 200 &&
