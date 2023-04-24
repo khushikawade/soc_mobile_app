@@ -1255,7 +1255,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 AppTheme.kButtonColor.withOpacity(1.0),
                             onPressed: () async {
                               Utility.updateLogs(
-                                  // ,
+                                  activityType: 'GRADED+',
                                   activityId: '18',
                                   description: 'Skip subject selection process',
                                   operationResult: 'Success');
@@ -1599,7 +1599,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "save_to_drive_from_subject_selection");
     Utility.updateLogs(
-        // ,
+        activityType: 'GRADED+',
         activityId: '14',
         description: 'Save to drive',
         operationResult: 'Success');

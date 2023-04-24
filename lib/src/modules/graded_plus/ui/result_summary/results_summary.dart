@@ -219,6 +219,7 @@ class studentRecordList extends State<ResultsSummary> {
                                     .replaceAll(" ", "_") ??
                                 '');
                         Utility.updateLogs(
+                            activityType: 'GRADED+',
                             activityId: '19',
                             description: assignmentCompletedLogMsg,
                             operationResult: 'Success');
@@ -727,7 +728,7 @@ class studentRecordList extends State<ResultsSummary> {
 
                             dashboardState.value = 'Success';
                             Utility.updateLogs(
-                                // accountType: 'Free',
+                                activityType: 'GRADED+',
                                 activityId: '14',
                                 description: 'Save to dashboard success',
                                 operationResult: 'Success');
@@ -1415,7 +1416,7 @@ class studentRecordList extends State<ResultsSummary> {
       FirebaseAnalyticsService.addCustomAnalyticsEvent(
           editingLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
       Utility.updateLogs(
-          // ,
+          activityType: 'GRADED+',
           activityId: '17',
           description: editingLogMsg,
           operationResult: 'Success');
@@ -1677,6 +1678,7 @@ class studentRecordList extends State<ResultsSummary> {
                                   '');
 
                           Utility.updateLogs(
+                              activityType: 'GRADED+',
                               activityId: '17',
                               description: deleteRecordLogMsg,
                               operationResult: 'Success');
@@ -1816,6 +1818,7 @@ class studentRecordList extends State<ResultsSummary> {
           onPressed: () async {
             if (iconsName[index] == 'Share') {
               Utility.updateLogs(
+                  activityType: 'GRADED+',
                   activityId: '13',
                   sessionId: widget.assessmentDetailPage == true
                       ? widget.obj!.sessionId
@@ -1829,6 +1832,7 @@ class studentRecordList extends State<ResultsSummary> {
                   : print("no link ");
             } else if (iconsName[index] == 'History') {
               Utility.updateLogs(
+                  activityType: 'GRADED+',
                   activityId: '15',
                   description: 'History Assesment button pressed',
                   operationResult: 'Success');
@@ -1858,7 +1862,7 @@ class studentRecordList extends State<ResultsSummary> {
                 if (widget.assessmentDetailPage == true &&
                     widget.createdAsPremium == false) {
                   Utility.updateLogs(
-                      // ,
+                      activityType: 'GRADED+',
                       activityId: '14',
                       description:
                           'Oops! Teacher cannot save the assessment to the dashboard which was scanned before the premium account',
@@ -1878,7 +1882,7 @@ class studentRecordList extends State<ResultsSummary> {
                       widget.assessmentListLength != null &&
                       widget.assessmentListLength! < list.length) {
                     Utility.updateLogs(
-                        // accountType: 'Free',
+                        activityType: 'GRADED+',
                         activityId: '14',
                         description:
                             'Save to deshboard pressed in case for scanmore',
@@ -1946,7 +1950,7 @@ class studentRecordList extends State<ResultsSummary> {
                 }
               } else {
                 Utility.updateLogs(
-                    // ,
+                    activityType: 'GRADED+',
                     activityId: '14',
                     description:
                         'Free User tried to save the data to the dashboard',
@@ -2034,6 +2038,7 @@ class studentRecordList extends State<ResultsSummary> {
         context: context,
         builder: (context) {
           return CustomDialogBox(
+            activityType: 'GRADED+',
             isMcqSheet: widget.isMcqSheet,
             title: widget.assessmentName == null
                 ? 'Assignment Name'
@@ -2271,6 +2276,7 @@ class studentRecordList extends State<ResultsSummary> {
         FirebaseAnalyticsService.addCustomAnalyticsEvent(
             shareLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Utility.updateLogs(
+            activityType: 'GRADED+',
             activityId: '13',
             sessionId: widget.assessmentDetailPage == true
                 ? widget.obj!.sessionId
@@ -2282,35 +2288,13 @@ class studentRecordList extends State<ResultsSummary> {
         }
         break;
 
-      // case 'Drive':
-      //   String driveLogMsg =
-      //       'Drive Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-
-      //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
-      //       driveLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-      //   Fluttertoast.cancel();
-      //   Utility.updateLogs(
-      //       activityId: '16',
-      //       sessionId: widget.assessmentDetailPage == true
-      //           ? widget.obj!.sessionId
-      //           : '',
-      //       description: driveLogMsg,
-      //       operationResult: 'Success');
-      //   // url != null
-      //   //     ? Utility.launchUrlOnExternalBrowser(url)
-      //   //     : getGoogleFolderPath();
-      //   if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-      //     Utility.launchUrlOnExternalBrowser(url);
-      //   } else {
-      //     getGoogleFolderPath();
-      //   }
-      //   break;
       case 'History':
         String historyLogMsg =
             'History Assessment button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
         FirebaseAnalyticsService.addCustomAnalyticsEvent(
             historyLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
         Utility.updateLogs(
+            activityType: 'GRADED+',
             activityId: '15',
             description: historyLogMsg,
             operationResult: 'Success');
@@ -2335,7 +2319,7 @@ class studentRecordList extends State<ResultsSummary> {
                         .replaceAll(" ", "_") ??
                     '');
             Utility.updateLogs(
-                // ,
+                activityType: 'GRADED+',
                 activityId: '14',
                 description: dashboardLogMsgNotPremiumAccount,
                 operationResult: 'Failed');
@@ -2361,7 +2345,7 @@ class studentRecordList extends State<ResultsSummary> {
                           .replaceAll(" ", "_") ??
                       '');
               Utility.updateLogs(
-                  // accountType: 'Free',
+                  activityType: 'GRADED+',
                   activityId: '14',
                   description: dashboardLogMsgPremiumAccount,
                   operationResult: 'Success');
@@ -2427,7 +2411,7 @@ class studentRecordList extends State<ResultsSummary> {
               dashboardLogMsgForFreeUser.toLowerCase().replaceAll(" ", "_") ??
                   '');
           Utility.updateLogs(
-              // ,
+              activityType: 'GRADED+',
               activityId: '14',
               description: dashboardLogMsgForFreeUser,
               operationResult: 'Failed');
@@ -2446,6 +2430,7 @@ class studentRecordList extends State<ResultsSummary> {
         Fluttertoast.cancel();
 
         Utility.updateLogs(
+            activityType: 'GRADED+',
             activityId: '31',
             sessionId: widget.assessmentDetailPage == true
                 ? widget.obj!.sessionId ?? ''
@@ -2505,7 +2490,7 @@ class studentRecordList extends State<ResultsSummary> {
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         scanMoreLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
     Utility.updateLogs(
-        //,
+         activityType: 'GRADED+',
         activityId: '22',
         sessionId:
             widget.assessmentDetailPage == true ? widget.obj!.sessionId : '',

@@ -111,6 +111,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                   Utility.currentScreenSnackBar("Select the Answer Key", null);
                 } else if (selectedAnswerKey.value == 'Multiple Choice') {
                   Utility.updateLogs(
+                      activityType: 'GRADED+',
                       activityId: '28',
                       description: 'MCQ Type Selection',
                       operationResult: 'Success');
@@ -121,6 +122,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                       builder: (context) => MultipleChoiceSection()));
                 } else {
                   Utility.updateLogs(
+                      activityType: 'GRADED+',
                       activityId: '27',
                       description: 'Constructive Type Selection',
                       operationResult: 'Success');
@@ -260,6 +262,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                             "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
                       }
                       _ocrBlocLogs.add(LogUserActivityEvent(
+                          activityType: 'GRADED+',
                           sessionId: Globals.sessionId,
                           teacherId: Globals.teacherId,
                           activityId: '1',
@@ -348,6 +351,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: 'GRADED+',
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
         activityId: '4',

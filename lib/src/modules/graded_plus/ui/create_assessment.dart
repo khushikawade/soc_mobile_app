@@ -913,6 +913,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     });
 
     Utility.updateLogs(
+        activityType: 'GRADED+',
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');

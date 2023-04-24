@@ -181,6 +181,12 @@ class PBISPlusActionInteractionButtonState
       Utility.currentScreenSnackBar("No Internet Connection", null);
       return isLiked;
     }
+    Utility.updateLogs(
+        activityType: 'PBIS+',
+        activityId: '38',
+        description: 'User Interaction PBIS+',
+        operationResult: 'Success');
+
     _showMessage.value = true;
     Future.delayed(Duration(seconds: 1), () {
       _showMessage.value = false;

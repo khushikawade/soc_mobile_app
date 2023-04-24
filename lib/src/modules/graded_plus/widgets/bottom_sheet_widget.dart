@@ -269,6 +269,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                         if (widget.isSubjectScreen!) {
                           widget.valueChanged!(studentNameController);
                           Utility.updateLogs(
+                              activityType: 'GRADED+',
                               activityId: '21',
                               description: 'Teacher added custom subject ',
                               operationResult: 'Success');
@@ -299,6 +300,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                           } else {
                             //print("save score and name on local db");
                             Utility.updateLogs(
+                                activityType: 'GRADED+',
                                 activityId: '21',
                                 description: 'Teacher added custom rubric ',
                                 operationResult: 'Success');

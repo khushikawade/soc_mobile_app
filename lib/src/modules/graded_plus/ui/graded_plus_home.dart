@@ -640,6 +640,7 @@ class _OpticalCharacterRecognitionPageState
     }
 
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: 'GRADED+',
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
         activityId: '1',
@@ -657,6 +658,7 @@ class _OpticalCharacterRecognitionPageState
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: 'GRADED+',
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
         activityId: '4',

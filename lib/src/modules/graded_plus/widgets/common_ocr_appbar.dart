@@ -189,6 +189,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             //print(
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
                             Utility.updateLogs(
+                                activityType: 'GRADED+',
                                 activityId: '16',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -504,6 +505,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         context: context,
         builder: (context) {
           return CustomDialogBox(
+            activityType: 'GRADED+',
             profileData: userInformation,
             isUserInfoPop: true,
           );

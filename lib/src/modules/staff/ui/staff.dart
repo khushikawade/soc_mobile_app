@@ -33,7 +33,7 @@ import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
 import '../../graded_plus/modal/user_info.dart';
-import '../../graded_plus/widgets/google_login.dart';
+import '../../../../google_login.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -94,7 +94,6 @@ class _StaffPageState extends State<StaffPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -266,97 +265,6 @@ class _StaffPageState extends State<StaffPage> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  // Widget ocrSectionButton() {
-  //   return ValueListenableBuilder<bool>(
-  //       valueListenable: isScrolling,
-  //       child: Container(),
-  //       builder: (BuildContext context, bool value, Widget? child) {
-  //         return AnimatedPositioned(
-  //           bottom: 40,
-  //           right: !isScrolling.value
-  //               ? 8
-  //               : (Utility.displayWidth(context) / 2) - 80,
-  //           duration: const Duration(milliseconds: 650),
-  //           curve: Curves.decelerate,
-  //           child: Container(
-  //             width: !isScrolling.value ? 50 : null,
-  //             height: !isScrolling.value ? 50 : null,
-  //             child: FloatingActionButton.extended(
-  //                 isExtended: isScrolling.value,
-  //                 backgroundColor: AppTheme.kButtonColor,
-  //                 onPressed: () async {
-  //                   await Utility.clearStudentInfo(tableName: 'student_info');
-  //                   await Utility.clearStudentInfo(
-  //                       tableName: 'history_student_info');
-
-  //                   await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-  //                       "assignment");
-
-  //                   FirebaseAnalyticsService.logLogin();
-
-  //                   Globals.lastIndex = Globals.controller!.index;
-
-  //                   List<UserInformation> _profileData =
-  //                       await UserGoogleProfile.getUserProfile();
-
-  //                   if (_profileData.isEmpty) {
-  //                     // await _launchURL('Google Authentication');
-  //                     await GoogleLogin.launchURL(
-  //                         'Google Authentication', context, _scaffoldKey, '');
-  //                   } else {
-  //                     GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
-
-  //                     Globals.teacherEmailId =
-  //                         _profileData[0].userEmail!.split('@')[0];
-  //                     Globals.sessionId =
-  //                         "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-  //                     DateTime currentDateTime = DateTime.now();
-  //                     _ocrBlocLogs.add(LogUserActivityEvent(
-  //                         sessionId: Globals.sessionId,
-  //                         teacherId: Globals.teacherId,
-  //                         activityId: '2',
-  //                         accountId: Globals.appSetting.schoolNameC,
-  //                         accountType: Globals.isPremiumUser == true
-  //                             ? "Premium"
-  //                             : "Free",
-  //                         dateTime: currentDateTime.toString(),
-  //                         description: 'Graded+ Accessed(Login)',
-  //                         operationResult: 'Success'));
-  //                     //    await _getLocalDb();
-  //                     pushNewScreen(
-  //                       context,
-  //                       screen: StartupPage(
-  //                         isOcrSection: true, //since always opens OCR
-  //                         isMultipleChoice: false,
-  //                       ),
-  //                       withNavBar: false,
-  //                     );
-  //                   }
-  //                 },
-  //                 icon: Container(
-  //                   padding: EdgeInsets.only(left: !isScrolling.value ? 4 : 0),
-  //                   //alignment: Alignment.center,
-  //                   child: Center(
-  //                     child: Icon(Icons.add,
-  //                         size: Globals.deviceType == 'tablet' ? 30 : null,
-  //                         color: Theme.of(context).backgroundColor),
-  //                   ),
-  //                 ),
-  //                 label: !isScrolling.value
-  //                     ? Container()
-  //                     : Utility.textWidget(
-  //                         text: 'Assignment',
-  //                         context: context,
-  //                         textTheme: Theme.of(context)
-  //                             .textTheme
-  //                             .headline2!
-  //                             .copyWith(
-  //                                 color: Theme.of(context).backgroundColor))),
-  //           ),
-  //         );
-  //       });
-  // }
-
   staffActionIconsOnTap({required String actionName}) async {
     await Utility.clearStudentInfo(tableName: 'student_info');
     await Utility.clearStudentInfo(tableName: 'history_student_info');
@@ -384,11 +292,7 @@ class _StaffPageState extends State<StaffPage> {
     if (_profileData.isEmpty) {
       // await _launchURL('Google Authentication');
       var value = await GoogleLogin.launchURL(
-        'Google Authentication',
-        context,
-        _scaffoldKey,
-        '',
-      );
+          'Google Authentication', context, _scaffoldKey, '', '');
       if (value == true) {
         navigatorToScreen(actionName: actionName);
       }
@@ -412,6 +316,7 @@ class _StaffPageState extends State<StaffPage> {
       if (actionName == 'GRADED+') {
         //Graded+ login activity
         _ocrBlocLogs.add(LogUserActivityEvent(
+            activityType: 'GRADED+',
             sessionId: Globals.sessionId,
             teacherId: Globals.teacherId,
             activityId: '2',
@@ -430,12 +335,34 @@ class _StaffPageState extends State<StaffPage> {
           withNavBar: false,
         );
       } else if (actionName == 'PBIS+') {
+        _ocrBlocLogs.add(LogUserActivityEvent(
+            activityType: 'PBIS+',
+            sessionId: Globals.sessionId,
+            teacherId: Globals.teacherId,
+            activityId: '2',
+            accountId: Globals.appSetting.schoolNameC,
+            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            dateTime: currentDateTime.toString(),
+            description: 'PBIS+ Accessed(Login)',
+            operationResult: 'Success'));
+
         pushNewScreen(
           context,
           screen: PBISPlusHome(),
           withNavBar: false,
         );
       } else if (actionName == 'STUDENT+') {
+        _ocrBlocLogs.add(LogUserActivityEvent(
+            activityType: 'STUDENT+',
+            sessionId: Globals.sessionId,
+            teacherId: Globals.teacherId,
+            activityId: '2',
+            accountId: Globals.appSetting.schoolNameC,
+            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            dateTime: currentDateTime.toString(),
+            description: 'STUDENT+ Accessed(Login)',
+            operationResult: 'Success'));
+
         pushNewScreen(
           context,
           screen: StudentPlusSearchScreen(
@@ -448,75 +375,6 @@ class _StaffPageState extends State<StaffPage> {
     }
   }
 
-  // staffActionIconsOnTap({required String actionName}) async {
-  //   await Utility.clearStudentInfo(tableName: 'student_info');
-  //   await Utility.clearStudentInfo(tableName: 'history_student_info');
-
-  //   await FirebaseAnalyticsService.addCustomAnalyticsEvent("assignment");
-
-  //   FirebaseAnalyticsService.logLogin();
-
-  //   Globals.lastIndex = Globals.controller!.index;
-
-  //   List<UserInformation> _profileData =
-  //       await UserGoogleProfile.getUserProfile();
-
-  //   if (_profileData.isEmpty) {
-  //     // await _launchURL('Google Authentication');
-  //     var value = await GoogleLogin.launchURL(
-  //       'Google Authentication',
-  //       context,
-  //       _scaffoldKey,
-  //       '',
-  //     );
-  //     if (value == true) {
-  //       navigatorToScreen(actionName: actionName);
-  //     }
-  //   } else {
-  //     GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
-
-  //     Globals.teacherEmailId = _profileData[0].userEmail!.split('@')[0];
-  //     Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-  //     DateTime currentDateTime = DateTime.now();
-  //     _ocrBlocLogs.add(LogUserActivityEvent(
-  //         sessionId: Globals.sessionId,
-  //         teacherId: Globals.teacherId,
-  //         activityId: '2',
-  //         accountId: Globals.appSetting.schoolNameC,
-  //         accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
-  //         dateTime: currentDateTime.toString(),
-  //         description: 'Graded+ Accessed(Login)',
-  //         operationResult: 'Success'));
-  //     //    await _getLocalDb();
-  //     navigatorToScreen(actionName: actionName);
-  //   }
-  // }
-
-  // navigatorToScreen({required String actionName}) {
-  //   if (Overrides.STANDALONE_GRADED_APP == true) {
-  //     Navigator.of(context).pushReplacement(
-  //         MaterialPageRoute(builder: (context) => GradedLandingPage()));
-  //   } else {
-  //     if (actionName == 'GRADED+') {
-  //       pushNewScreen(
-  //         context,
-  //         screen: StartupPage(
-  //           isOcrSection: true, //since always opens OCR
-  //           isMultipleChoice: false,
-  //         ),
-  //         withNavBar: false,
-  //       );
-  //     } else if (actionName == 'PBIS+') {
-  //     } else if (actionName == 'STUDENT+') {
-  //       pushNewScreen(
-  //         context,
-  //         screen: StudentPlusSearchPage(fromStudentPlus: false),
-  //         withNavBar: false,
-  //       );
-  //     }
-  //   }
-  // }
-
   Widget textwidget({required String text, required dynamic textTheme}) {
     return TranslationWidget(
       message: text,
@@ -528,23 +386,6 @@ class _StaffPageState extends State<StaffPage> {
       ),
     );
   }
-
-  // _getLocalDb() async {
-  //   LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
-
-  //   List<CustomRubricModal> _localData = await _localDb.getData();
-
-  //   if (_localData.isEmpty) {
-  //     RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
-  //       await _localDb.addData(e);
-  //     });
-  //     await _localDb.close();
-  //   } else {
-  //     RubricScoreList.scoringList = [];
-  //     RubricScoreList.scoringList.addAll(_localData);
-  //     // _localDb.close()
-  //   }
-  // }
 
   Widget topActionButtonWidget({required double height}) {
     return ValueListenableBuilder(
@@ -564,18 +405,6 @@ class _StaffPageState extends State<StaffPage> {
                             selectedIndex.value =
                                 StaffIconsList.staffIconsList.indexOf(element);
                             staffActionIconsOnTap(actionName: element.iconName);
-                            // if (element.iconName == 'GRADED+') {
-                            //   await gradedPlusOnTap();
-                            // } else if (element.iconName == 'PBIS+') {
-                            // } else if (element.iconName == 'STUDENT+') {
-                            //   pushNewScreen(
-                            //     context,
-                            //     screen: StudentPlusSearchScreen(
-                            //       fromStudentPlusDetailPage: false,
-                            //     ),
-                            //     withNavBar: false,
-                            //   );
-                            // }
                           },
                           child: Bouncing(
                               child: AnimatedContainer(
@@ -648,157 +477,10 @@ class _StaffPageState extends State<StaffPage> {
                                 ),
                               ),
                             ),
-                          )
-
-                              // Container(
-                              //   height: height,
-                              //   width: height / 1.5,
-                              //   decoration: BoxDecoration(
-                              //       color: Colors.blue,
-                              //       borderRadius: BorderRadius.circular(20)),
-                              //   child: Container(
-                              //     height: height / 1.7,
-                              //     width: height / 1.7,
-                              //     decoration: BoxDecoration(
-                              //         color: AppTheme.kButtonColor,
-                              //         borderRadius: BorderRadius.circular(20)),
-                              //     child: Column(
-                              //       mainAxisAlignment: MainAxisAlignment.center,
-                              //       // crossAxisAlignment: CrossAxisAlignment.center,
-                              //       children: [
-                              //         CircleAvatar(
-                              //           backgroundColor:
-                              //               indicator.oppositeBackgroundColor(
-                              //                   context: context),
-                              //           radius: height / 6,
-                              //           child: Container(
-                              //             margin: EdgeInsets.all(6),
-                              //             child: Image(
-                              //               image: Image.asset(element.iconUrl)
-                              //                   .image,
-                              //             ),
-                              //           ),
-                              //         ),
-                              //         SpacerWidget(4),
-                              //         Utility.textWidget(
-                              //             text: element.iconName,
-                              //             textTheme: Theme.of(context)
-                              //                 .textTheme
-                              //                 .subtitle1,
-                              //             context: context)
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
-                              ),
+                          )),
                         ))
                     .toList(),
-              )
-
-              // ListView.separated(
-              //     physics: NeverScrollableScrollPhysics(),
-              //     scrollDirection: Axis.horizontal,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       return GestureDetector(
-              //         onTap: () async {
-              //           if (StaffIconsList.staffIconsList[index].iconName ==
-              //               'GRADED+') {
-              //             await gradedPlusOnTap();
-              //           } else if (StaffIconsList
-              //                   .staffIconsList[index].iconName ==
-              //               'PBIS+') {
-              //           } else if (StaffIconsList
-              //                   .staffIconsList[index].iconName ==
-              //               'STUDENT+') {
-              //             pushNewScreen(
-              //               context,
-              //               screen: StudentPlusSearchScreen(
-              //                 fromStudentPlusDetailPage: false,
-              //               ),
-              //               withNavBar: false,
-              //             );
-              //           }
-              //         },
-              //         child: Bouncing(
-              //           child: Column(
-              //             mainAxisAlignment: MainAxisAlignment.center,
-              //             children: [
-              //               CircleAvatar(
-              //                 backgroundColor: Color(0xff000000) !=
-              //                         Theme.of(context).backgroundColor
-              //                     ? Color.fromARGB(255, 0, 0, 0)
-              //                     : Color.fromARGB(255, 250, 251, 251),
-              //                 radius: Globals.deviceType == 'phone'
-              //                     ? MediaQuery.of(context).size.width * 0.11
-              //                     : 50,
-              //                 child: Container(
-              //                   margin: EdgeInsets.all(18),
-              //                   child: Image(
-              //                     image: Image.asset(StaffIconsList
-              //                             .staffIconsList[index].iconUrl)
-              //                         .image,
-              //                   ),
-              //                 ),
-              //               ),
-              //               SpacerWidget(10),
-              //               Utility.textWidget(
-              //                   text: StaffIconsList
-              //                       .staffIconsList[index].iconName,
-              //                   textTheme:
-              //                       Theme.of(context).textTheme.headline3,
-              //                   context: context)
-              //             ],
-              //           ),
-              //         ),
-              //       );
-              //     },
-              //     separatorBuilder: (BuildContext context, int index) {
-              //       return SizedBox(
-              //         width: 25,
-              //       );
-              //     },
-              //     itemCount: StaffIconsList.staffIconsList.length),
-              );
+              ));
         });
   }
-
-  // Widget topActionHideButtonWidget() {
-  //   return ValueListenableBuilder(
-  //       valueListenable: showHideValue,
-  //       child: Container(),
-  //       builder: (BuildContext context, dynamic value, Widget? child) {
-  //         return Container(
-  //           padding: EdgeInsets.only(
-  //               right: MediaQuery.of(context).size.width * 0.05),
-  //           margin:
-  //               EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.7),
-  //           child: GestureDetector(
-  //             onTap: () {
-  //               if (showHideValue.value == "Hide") {
-  //                 showHideValue.value = 'Show';
-  //                 _width = _height = MediaQuery.of(context).size.height * 0.16;
-  //                 //  _
-  //               } else {
-  //                 showHideValue.value = 'Hide';
-  //                 _width = 0;
-  //                 _height = 0;
-  //               }
-  //             },
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.end,
-  //               children: [
-  //                 Utility.textWidget(
-  //                     text: showHideValue.value == "Hide" ? 'Show' : 'Hide',
-  //                     context: context,
-  //                     textTheme: Theme.of(context).textTheme.headline3,
-  //                     textAlign: TextAlign.right),
-  //                 Icon(showHideValue.value == "Show"
-  //                     ? Icons.keyboard_arrow_up
-  //                     : Icons.keyboard_arrow_down_outlined)
-  //               ],
-  //             ),
-  //           ),
-  //         );
-  //       });
-  // }
 }

@@ -124,11 +124,13 @@ class Utility {
       //  required String accountType,
       required String description,
       required String operationResult,
-      String? sessionId}) {
+      String? sessionId,
+      required String? activityType}) {
     DateTime currentDateTime = DateTime.now(); //DateTime
     // instance for maintaining logs
     final OcrBloc _ocrBlocLogs = new OcrBloc();
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: activityType,
         sessionId: sessionId != null && sessionId != ''
             ? sessionId
             : Globals.sessionId,

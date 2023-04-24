@@ -640,7 +640,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                 .replaceAll(" ", "_") ??
                             '');
                     Utility.updateLogs(
-                        // ,
+                       activityType: 'GRADED+',
                         activityId: widget.isMcqSheet == true ? "30 " : '8',
                         description: editScoreOrAnserKeyLogMsg,
                         operationResult: 'Success');

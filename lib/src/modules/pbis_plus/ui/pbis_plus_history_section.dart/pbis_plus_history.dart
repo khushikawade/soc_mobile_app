@@ -86,6 +86,12 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             children: [
               IconButton(
                   onPressed: () {
+                    Utility.updateLogs(
+                        activityType: 'PBIS+',
+                        activityId: '39',
+                        description: 'Filter History PBIS+',
+                        operationResult: 'Success');
+
                     filterBottomSheet(context);
                   },
                   icon: Icon(

@@ -13,7 +13,7 @@ import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/google_login.dart';
+import 'package:Soc/google_login.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -386,6 +386,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                                     "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
                                               }
                                               _ocrBlocLogs.add(LogUserActivityEvent(
+                                                  activityType: 'GRADED+',
                                                   sessionId: Globals.sessionId,
                                                   teacherId: Globals.teacherId,
                                                   activityId: '1',
@@ -440,6 +441,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: 'GRADED+',
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
         activityId: '4',
@@ -494,6 +496,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                             List<UserInformation> _profileData =
                                 await UserGoogleProfile.getUserProfile();
                             Utility.updateLogs(
+                                activityType: 'GRADED+',
                                 activityId: '1',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -509,7 +512,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                   'Google Authentication',
                                   context,
                                   _scaffoldKey,
-                                  text);
+                                  text,
+                                  'GRADED+');
                               if (result == true) {
                                 updateAppBar.value = !updateAppBar.value;
                                 List<UserInformation> _profileData =
@@ -525,6 +529,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
                                 DateTime currentDateTime = DateTime.now();
                                 _ocrBlocLogs.add(LogUserActivityEvent(
+                                    activityType: 'GRADED+',
                                     sessionId: Globals.sessionId,
                                     teacherId: Globals.teacherId,
                                     activityId: '2',
@@ -551,10 +556,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                 }
                               } else if (text == 'View Imported Roster') {
                                 Utility.updateLogs(
+                                    activityType: 'GRADED+',
                                     activityId: '25',
-                                    // sessionId: widget.assessmentDetailPage == true
-                                    //     ? widget.obj!.sessionId
-                                    //     : '',
                                     description:
                                         'User goes to View Imported Roster ',
                                     operationResult: 'Success');
@@ -573,6 +576,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
 
                                 DateTime currentDateTime = DateTime.now();
                                 _ocrBlocLogs.add(LogUserActivityEvent(
+                                    activityType: 'GRADED+',
                                     sessionId: Globals.sessionId,
                                     teacherId: Globals.teacherId,
                                     activityId: '2',

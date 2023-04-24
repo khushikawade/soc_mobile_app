@@ -878,7 +878,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "save_to_drive_from_subject_search");
     Utility.updateLogs(
-        // ,
+       activityType: 'GRADED+',
         activityId: '14',
         description: 'Save to drive',
         operationResult: 'Success');

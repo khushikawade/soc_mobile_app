@@ -457,6 +457,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   ) =>
       PBISPlusCustomFloatingActionButton(
         onPressed: () {
+          Utility.updateLogs(
+              activityType: 'PBIS+',
+              activityId: '36',
+              description: 'Save and Share button open from All Courses',
+              operationResult: 'Success');
           _saveAndShareBottomSheetMenu();
         },
       );

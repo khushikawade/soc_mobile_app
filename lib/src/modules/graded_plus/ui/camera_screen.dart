@@ -438,6 +438,7 @@ class _CameraScreenState extends State<CameraScreen>
                           } catch (e) {}
 
                           Utility.updateLogs(
+                              activityType: 'GRADED+',
                               activityId: '19',
                               description: 'Assessment scan finished',
                               operationResult: 'Success');

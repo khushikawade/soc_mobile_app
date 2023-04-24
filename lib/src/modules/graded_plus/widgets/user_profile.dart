@@ -24,6 +24,7 @@ class CustomDialogBox extends StatefulWidget {
   final double? height;
   final double? width;
   final bool? isMcqSheet;
+  final String? activityType;
   const CustomDialogBox(
       {Key? key,
       this.isMcqSheet,
@@ -33,7 +34,8 @@ class CustomDialogBox extends StatefulWidget {
       this.studentAssessmentInfo,
       this.title,
       this.height,
-      this.width})
+      this.width,
+      required this.activityType})
       : super(key: key);
 
   @override
@@ -188,7 +190,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox>
                           UserGoogleProfile.clearUserProfile();
                           GoogleClassroom.clearClassroomCourses();
                           Utility.updateLogs(
-                              // ,
+                              activityType: widget.activityType,
                               activityId: '3',
                               description: 'User profile logout',
                               operationResult: 'Success');
