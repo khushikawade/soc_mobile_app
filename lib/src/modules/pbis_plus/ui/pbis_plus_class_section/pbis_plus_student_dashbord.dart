@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
@@ -9,6 +10,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart'
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -56,6 +58,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         studentId: widget.isFromStudentPlus == true
             ? widget.studentValueNotifier.value.profile!.emailAddress!
             : widget.studentValueNotifier.value.profile!.id ?? ''));
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_student_dashboard_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_student_dashboard_screen',
+        screenClass: 'PBISPlusStudentDashBoard');
+
     super.initState();
   }
 

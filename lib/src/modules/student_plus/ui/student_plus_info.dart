@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
@@ -6,6 +7,7 @@ import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -14,9 +16,8 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusInfoScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
- 
-  const StudentPlusInfoScreen(
-      {Key? key, required this.studentDetails})
+
+  const StudentPlusInfoScreen({Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -36,6 +37,12 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
         studentDetails: widget
             .studentDetails); // function to get student details with label
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "student_plus_info_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student_plus_info_screen',
+        screenClass: 'StudentPlusGradesPage');
   }
 
   @override
@@ -75,7 +82,9 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
             onTap: () async {
               var result = await pushNewScreen(context,
                   screen: StudentPlusSearchScreen(
-                      fromStudentPlusDetailPage: true, index: 0, studentDetails: widget.studentDetails),
+                      fromStudentPlusDetailPage: true,
+                      index: 0,
+                      studentDetails: widget.studentDetails),
                   withNavBar: false,
                   pageTransitionAnimation: PageTransitionAnimation.fade);
               if (result == true) {

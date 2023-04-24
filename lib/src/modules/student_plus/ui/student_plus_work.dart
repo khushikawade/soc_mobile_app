@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/image_popup.dart';
@@ -44,9 +45,14 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   void initState() {
     _studentPlusBloc.add(
         FetchStudentWorkEvent(studentId: widget.studentDetails.studentIdC));
-    // TODO: implement initState
 
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "student_plus_work_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student_plus_work_screen',
+        screenClass: 'StudentPlusWorkScreen');
   }
 
   @override

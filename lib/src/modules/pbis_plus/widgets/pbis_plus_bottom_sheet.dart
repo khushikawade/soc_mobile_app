@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -53,6 +54,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       ..addListener(() {
         setState(() {});
       });
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_save_and_share_bottomsheet");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_save_and_share_bottomsheet',
+        screenClass: 'PBISPlusBottomSheet');
     super.initState();
   }
 

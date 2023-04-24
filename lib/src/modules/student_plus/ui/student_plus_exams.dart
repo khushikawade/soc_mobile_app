@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_bottomsheet.dart';
@@ -12,6 +13,7 @@ import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -37,6 +39,12 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
   @override
   void initState() {
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "student_plus_exams_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student_plus_exams_screen',
+        screenClass: 'StudentPlusExamsScreen');
   }
 
   @override

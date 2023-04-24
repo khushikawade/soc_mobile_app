@@ -3,7 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';

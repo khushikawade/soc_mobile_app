@@ -11,7 +11,7 @@ import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/animation_button.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/suggestion_chip.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';

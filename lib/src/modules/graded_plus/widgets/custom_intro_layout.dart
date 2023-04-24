@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_content_modal.dart';
 import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';

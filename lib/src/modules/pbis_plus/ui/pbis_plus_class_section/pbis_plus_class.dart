@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
@@ -8,12 +9,11 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -49,6 +49,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   void initState() {
     super.initState();
     pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("pbis_plus_class_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_class_screen', screenClass: 'PBISPlusClass');
   }
 
   @override
@@ -368,21 +372,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   //  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    studentValueNotifier.value!.profile!.photoUrl!
-                            .contains('default-user')
-                        ? PBISCircularProfileName(
-                            firstLetter: studentValueNotifier
-                                .value.profile!.name!.givenName!
-                                .substring(0, 1),
-                            lastLetter: studentValueNotifier
-                                .value.profile!.name!.familyName!
-                                .substring(0, 1),
-                            profilePictureSize: profilePictureSize,
-                          )
-                        : PBISCommonProfileWidget(
-                            profilePictureSize: profilePictureSize,
-                            imageUrl:
-                                studentValueNotifier.value!.profile!.photoUrl!),
+                    PBISCommonProfileWidget(
+                        studentValueNotifier: studentValueNotifier,
+                        profilePictureSize: profilePictureSize,
+                        imageUrl:
+                            studentValueNotifier.value!.profile!.photoUrl!),
                     // SizedBox(height: 15),
                     Column(
                       children: [

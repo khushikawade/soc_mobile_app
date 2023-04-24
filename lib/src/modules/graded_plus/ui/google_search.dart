@@ -1,6 +1,6 @@
 import 'package:Soc/src/modules/graded_plus/ui/google_file_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:flutter/material.dart';
 

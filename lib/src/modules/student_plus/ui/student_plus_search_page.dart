@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
@@ -9,6 +10,7 @@ import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/debouncer.dart';
@@ -69,6 +71,12 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
       _width = 0;
     }
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "student_plus_search_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student_plus_search_screen',
+        screenClass: 'StudentPlusSearchScreen');
   }
 
   @override

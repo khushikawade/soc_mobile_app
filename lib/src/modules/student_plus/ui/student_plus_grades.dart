@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -6,6 +7,7 @@ import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/bouncing_widget.dart';
@@ -15,9 +17,8 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusGradesPage extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
- 
-  const StudentPlusGradesPage(
-      {Key? key, required this.studentDetails})
+
+  const StudentPlusGradesPage({Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -29,6 +30,18 @@ class individual extends State<StudentPlusGradesPage> {
   FocusNode myFocusNode = new FocusNode();
   final _controller = TextEditingController(); // textController for search
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
+
+  @override
+  void initState() {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "student_plus_grades_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student_plus_grades_screen',
+        screenClass: 'StudentPlusGradesPage');
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -59,11 +72,9 @@ class individual extends State<StudentPlusGradesPage> {
                   onTap: () async {
                     var result = await pushNewScreen(context,
                         screen: StudentPlusSearchScreen(
-                          fromStudentPlusDetailPage: true,
-                          index:3,
-                          studentDetails: widget.studentDetails
-                          
-                        ),
+                            fromStudentPlusDetailPage: true,
+                            index: 3,
+                            studentDetails: widget.studentDetails),
                         withNavBar: false,
                         pageTransitionAnimation: PageTransitionAnimation.fade);
                     if (result == true) {

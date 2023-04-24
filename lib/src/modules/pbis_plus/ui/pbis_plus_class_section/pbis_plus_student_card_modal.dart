@@ -7,8 +7,9 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_profile_name_shortcut.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
@@ -52,13 +53,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
   @override
   void initState() {
     super.initState();
-
-    Utility.updateLogs(
-        activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
-        activityId: '37',
-        description:
-            'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
-        operationResult: 'Success');
+    trackUserActivity();
     // widget.studentValueNotifier.value = widget.student!;
   }
 
@@ -215,24 +210,11 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                     //   width: 2,
                     // ),
                   ),
-                  child: widget.studentValueNotifier.value.profile!.photoUrl!
-                          .contains('default-user')
-                      ? PBISCircularProfileName(
-                          firstLetter: widget.studentValueNotifier.value
-                              .profile!.name!.givenName!
-                              .substring(0, 1),
-                          lastLetter: (widget.studentValueNotifier.value
-                                      .profile!.name!.familyName ??
-                                  ' ')
-                              .substring(0, 1),
-                          profilePictureSize:
-                              PBISPlusOverrides.profilePictureSize,
-                        )
-                      : PBISCommonProfileWidget(
-                          profilePictureSize:
-                              PBISPlusOverrides.profilePictureSize,
-                          imageUrl: widget
-                              .studentValueNotifier.value.profile!.photoUrl!),
+                  child: PBISCommonProfileWidget(
+                      studentValueNotifier: widget.studentValueNotifier,
+                      profilePictureSize: PBISPlusOverrides.profilePictureSize,
+                      imageUrl:
+                          widget.studentValueNotifier.value.profile!.photoUrl!),
                 ),
               ),
             ),
@@ -297,5 +279,20 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
             ),
           ],
         ));
+  }
+
+  void trackUserActivity() {
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_student_card_modal_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_student_card_modal_screen',
+        screenClass: 'PBISPlusStudentCardModal');
+/*------------------------------------------------------------------------------------------- */
+    Utility.updateLogs(
+        activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
+        activityId: '37',
+        description:
+            'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
+        operationResult: 'Success');
   }
 }

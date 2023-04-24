@@ -7,7 +7,7 @@ import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/graded_plus_home.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';

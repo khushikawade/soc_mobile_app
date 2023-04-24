@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,8 @@ class PBISPlusHistoryFilterBottomSheet extends StatefulWidget {
       _PBISPlusHistoryFilterBottomSheetState();
 }
 
-class _PBISPlusHistoryFilterBottomSheetState extends State<PBISPlusHistoryFilterBottomSheet> {
+class _PBISPlusHistoryFilterBottomSheetState
+    extends State<PBISPlusHistoryFilterBottomSheet> {
   List<String> filterList = ['All', 'Google Classroom', 'Google Sheet'];
 
   final ValueNotifier<String> selectedValue =
@@ -33,7 +35,14 @@ class _PBISPlusHistoryFilterBottomSheetState extends State<PBISPlusHistoryFilter
   @override
   void initState() {
     selectedValue.value = widget.selectedValue;
+
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_filter_bottomsheet");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_filter_bottomsheet',
+        screenClass: 'PBISPlusHistoryFilterBottomSheet');
   }
 
   @override
