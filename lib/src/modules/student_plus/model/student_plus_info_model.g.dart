@@ -68,13 +68,17 @@ class StudentPlusDetailsModelAdapter
       ELACurrentMOYOverallRelativePlace: fields[47] as String?,
       ELAPreviousEOYOverallRelPlace: fields[45] as String?,
       currentAttendance: fields[49] as String?,
+      age: fields[50] as String?,
+      grade19_20: fields[51] as String?,
+      grade20_21: fields[52] as String?,
+      grade21_22: fields[53] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StudentPlusDetailsModel obj) {
     writer
-      ..writeByte(50)
+      ..writeByte(54)
       ..writeByte(0)
       ..write(obj.firstNameC)
       ..writeByte(1)
@@ -174,7 +178,15 @@ class StudentPlusDetailsModelAdapter
       ..writeByte(48)
       ..write(obj.ELACurrentEOYOverallRelativePlace)
       ..writeByte(49)
-      ..write(obj.currentAttendance);
+      ..write(obj.currentAttendance)
+      ..writeByte(50)
+      ..write(obj.age)
+      ..writeByte(51)
+      ..write(obj.grade19_20)
+      ..writeByte(52)
+      ..write(obj.grade20_21)
+      ..writeByte(53)
+      ..write(obj.grade21_22);
   }
 
   @override

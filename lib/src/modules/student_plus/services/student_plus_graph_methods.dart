@@ -89,74 +89,87 @@ class StudentPlusGraphMethod {
       {required bool removeLast,
       required StudentPlusDetailsModel studentDetails,
       required bool isMathsSection}) {
-    List<FlSpot> list = [
-      // FlSpot(2020, 60),
-      FlSpot(
-          2020,
-          double.parse((isMathsSection == true
-                  ? studentDetails.nysMathScore2019C
-                  : studentDetails.nysElaScore2019C) ??
-              "0.00")),
-      FlSpot(
-          2021,
-          double.parse((isMathsSection == true
-                  ? studentDetails.nysMathScore2021C
-                  : studentDetails.nysElaScore2021C) ??
-              "0.00")),
-      FlSpot(
-          2022,
-          double.parse((isMathsSection == true
-                  ? studentDetails.nysMathScore2022C
-                  : studentDetails.nysElaScore2022C) ??
-              "0.00")),
-      FlSpot(
-          2023,
-          double.parse((isMathsSection == true
-                  ? studentDetails.nysMath2023PredictionC
-                  : studentDetails.nysEla2023PredictionC) ??
-              "0.00")),
-    ];
-    // List<FlSpot> list = [];
-    // list.add(FlSpot(2020, 2.02));
-    // if ((isMathsSection == true
-    //         ? studentDetails.nysMathPrScore2021C
-    //         : studentDetails.nysElaPrScore2021C) !=
-    //     null) {
-    //   list.add(
-    //     FlSpot(
-    //         2021,
-    //         double.parse((isMathsSection == true
-    //                 ? studentDetails.nysMathPrScore2021C
-    //                 : studentDetails.nysElaPrScore2021C) ??
-    //             "0.00")),
-    //   );
-    // }
-    // if ((isMathsSection == true
-    //         ? studentDetails.nysMathPrScore2022C
-    //         : studentDetails.nysElaPrScore2022C) !=
-    //     null) {
-    //   list.add(
-    //     FlSpot(
-    //         2022,
-    //         double.parse((isMathsSection == true
-    //                 ? studentDetails.nysMathPrScore2022C
-    //                 : studentDetails.nysElaPrScore2022C) ??
-    //             "0.00")),
-    //   );
-    // }
-
-    // if ((isMathsSection == true
-    //         ? studentDetails.nysMath2023PredictionC
-    //         : studentDetails.nysEla2023PredictionC) !=
-    //     null) {
-    //   list.add(FlSpot(
+    // List<FlSpot> list = [
+    //   // FlSpot(2020, 60),
+    //   FlSpot(
+    //       2020,
+    //       double.parse((isMathsSection == true
+    //               ? studentDetails.nysMathScore2019C
+    //               : studentDetails.nysElaScore2019C) ??
+    //           "0.00")),
+    //   FlSpot(
+    //       2021,
+    //       double.parse((isMathsSection == true
+    //               ? studentDetails.nysMathScore2021C
+    //               : studentDetails.nysElaScore2021C) ??
+    //           "0.00")),
+    //   FlSpot(
+    //       2022,
+    //       double.parse((isMathsSection == true
+    //               ? studentDetails.nysMathScore2022C
+    //               : studentDetails.nysElaScore2022C) ??
+    //           "0.00")),
+    //   FlSpot(
     //       2023,
     //       double.parse((isMathsSection == true
     //               ? studentDetails.nysMath2023PredictionC
     //               : studentDetails.nysEla2023PredictionC) ??
-    //           "0.00")));
-    // }
-    if (removeLast) {
+    //           "0.00")),
+    // ];
+
+    List<FlSpot> list = [];
+    if ((isMathsSection == true
+            ? studentDetails.nysMathScore2019C
+            : studentDetails.nysElaScore2019C) !=
+        null) {
+      list.add(
+        FlSpot(
+            2020,
+            double.parse((isMathsSection == true
+                    ? studentDetails.nysMathScore2019C
+                    : studentDetails.nysElaScore2019C) ??
+                "0.00")),
+      );
+    }
+    if ((isMathsSection == true
+            ? studentDetails.nysMathScore2021C
+            : studentDetails.nysElaScore2021C) !=
+        null) {
+      list.add(
+        FlSpot(
+            2021,
+            double.parse((isMathsSection == true
+                    ? studentDetails.nysMathScore2021C
+                    : studentDetails.nysElaScore2021C) ??
+                "0.00")),
+      );
+    }
+    if ((isMathsSection == true
+            ? studentDetails.nysMathScore2022C
+            : studentDetails.nysElaScore2022C) !=
+        null) {
+      list.add(
+        FlSpot(
+            2022,
+            double.parse((isMathsSection == true
+                    ? studentDetails.nysMathScore2022C
+                    : studentDetails.nysElaScore2022C) ??
+                "0.00")),
+      );
+    }
+
+    if ((isMathsSection == true
+            ? studentDetails.nysMath2023PredictionC
+            : studentDetails.nysEla2023PredictionC) !=
+        null) {
+      list.add(FlSpot(
+          2023,
+          double.parse((isMathsSection == true
+                  ? studentDetails.nysMath2023PredictionC
+                  : studentDetails.nysEla2023PredictionC) ??
+              "0.00")));
+    }
+    if (removeLast && list.length > 1) {
       list.removeLast();
       return list;
     } else {
@@ -171,32 +184,90 @@ class StudentPlusGraphMethod {
   static List<FlSpot> listIReadyFlPoint(
       {required StudentPlusDetailsModel studentDetails,
       required bool isMathsSection}) {
-    return [
-      FlSpot(
-          0,
-          double.parse((isMathsSection == true
-                  ? studentDetails.mathPreviousSyEOYPercentile
-                  : studentDetails.ELAPreviousSyEOYPercentile) ??
-              "0.00")),
-      FlSpot(
-          1,
-          double.parse((isMathsSection == true
-                  ? studentDetails.mathCurrentSyBOYPercentile
-                  : studentDetails.ELACurrentSyBOYPercentile) ??
-              "0.00")),
-      FlSpot(
-          2,
-          double.parse((isMathsSection == true
-                  ? studentDetails.mathCurrentSyMOYPercentile
-                  : studentDetails.ELACurrentSyMOYPercentile) ??
-              "0.00")),
-      FlSpot(
+    List<FlSpot> list = [];
+
+    // condition to remove null value from the graph
+    if ((isMathsSection == true
+            ? studentDetails.mathPreviousSyEOYPercentile
+            : studentDetails.ELAPreviousSyEOYPercentile) !=
+        null) {
+      list.add(
+        FlSpot(
+            0,
+            double.parse((isMathsSection == true
+                    ? studentDetails.mathPreviousSyEOYPercentile
+                    : studentDetails.ELAPreviousSyEOYPercentile) ??
+                "0.00")),
+      );
+    }
+    if ((isMathsSection == true
+            ? studentDetails.mathCurrentSyBOYPercentile
+            : studentDetails.ELACurrentSyBOYPercentile) !=
+        null) {
+      list.add(
+        FlSpot(
+            1,
+            double.parse((isMathsSection == true
+                    ? studentDetails.mathCurrentSyBOYPercentile
+                    : studentDetails.ELACurrentSyBOYPercentile) ??
+                "0.00")),
+      );
+    }
+    if ((isMathsSection == true
+            ? studentDetails.mathCurrentSyMOYPercentile
+            : studentDetails.ELACurrentSyMOYPercentile) !=
+        null) {
+      list.add(
+        FlSpot(
+            2,
+            double.parse((isMathsSection == true
+                    ? studentDetails.mathCurrentSyMOYPercentile
+                    : studentDetails.ELACurrentSyMOYPercentile) ??
+                "0.00")),
+      );
+    }
+
+    if ((isMathsSection == true
+            ? studentDetails.mathCurrentSyEOYPercentile
+            : studentDetails.ELACurrentSyEOYPercentile) !=
+        null) {
+      list.add(FlSpot(
           3,
           double.parse((isMathsSection == true
                   ? studentDetails.mathCurrentSyEOYPercentile
                   : studentDetails.ELACurrentSyEOYPercentile) ??
-              "0.00")),
-    ];
+              "0.00")));
+    }
+
+    return list;
+
+    // old condition(pull 0 in graph in case of null)
+    // return [
+    //   FlSpot(
+    //       0,
+    //       double.parse((isMathsSection == true
+    //               ? studentDetails.mathPreviousSyEOYPercentile
+    //               : studentDetails.ELAPreviousSyEOYPercentile) ??
+    //           "0.00")),
+    //   FlSpot(
+    //       1,
+    //       double.parse((isMathsSection == true
+    //               ? studentDetails.mathCurrentSyBOYPercentile
+    //               : studentDetails.ELACurrentSyBOYPercentile) ??
+    //           "0.00")),
+    //   FlSpot(
+    //       2,
+    //       double.parse((isMathsSection == true
+    //               ? studentDetails.mathCurrentSyMOYPercentile
+    //               : studentDetails.ELACurrentSyMOYPercentile) ??
+    //           "0.00")),
+    //   FlSpot(
+    //       3,
+    //       double.parse((isMathsSection == true
+    //               ? studentDetails.mathCurrentSyEOYPercentile
+    //               : studentDetails.ELACurrentSyEOYPercentile) ??
+    //           "0.00")),
+    // ];
   }
 
   /* -------------------------------------------------------------------------- */
@@ -210,7 +281,20 @@ class StudentPlusGraphMethod {
       required bool isMathSection}) {
     List<ShowingTooltipIndicators> list = [];
 
-    for (var i = 0; i < 4; i++) {
+    //length should be dynamic because every graph have different number of tooltips
+    for (var i = 0;
+        i <
+            (isIReadyGraph == true
+                ? (listIReadyFlPoint(
+                        isMathsSection: isMathSection,
+                        studentDetails: studentDetails)
+                    .length)
+                : (listNysFlPoint(
+                        isMathsSection: isMathSection,
+                        removeLast: false,
+                        studentDetails: studentDetails)
+                    .length));
+        i++) {
       list.add(ShowingTooltipIndicators([
         LineBarSpot(
             StudentPlusGraphMethod.graphLineBarsData(

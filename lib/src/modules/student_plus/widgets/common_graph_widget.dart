@@ -1,7 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_graph_methods.dart';
-import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -55,7 +54,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
           maxX: widget.isIReadyGraph == true ? 3 : 2023,
           minX: widget.isIReadyGraph == true ? 0 : 2020,
           maxY: widget.isIReadyGraph == true ? 110 : 5,
-          minY: widget.isIReadyGraph == true ? 0 : 0,
+          minY: widget.isIReadyGraph == true ? 0 : 0.5,
           showingTooltipIndicators:
               StudentPlusGraphMethod.showingTooltipIndicators(
             context: context,
@@ -114,9 +113,9 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                 : LineTouchTooltipData(
                     tooltipBgColor: AppTheme.kButtonColor.withOpacity(0.2),
                     tooltipRoundedRadius: 5,
-                    fitInsideHorizontally: true,
+                    fitInsideHorizontally: false,
                     fitInsideVertically: true,
-                    tooltipHorizontalAlignment: FLHorizontalAlignment.left,
+                    tooltipHorizontalAlignment: FLHorizontalAlignment.center,
                     tooltipPadding: EdgeInsets.all(5),
                     getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
                       return lineBarsSpot.map((lineBarSpot) {
@@ -134,12 +133,14 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                                                 value: lineBarSpot.y),
                                         fontWeight: FontWeight.bold),
                               ),
-                              lineBarSpot.y.toString() ==
+                              lineBarSpot.y ==
                                       (widget.isMathsSection == true
-                                          ? widget.studentDetails
-                                              .nysMath2023PredictionC
-                                          : widget.studentDetails
-                                              .nysEla2023PredictionC)
+                                          ? double.parse(widget.studentDetails
+                                                  .nysMath2023PredictionC ??
+                                              '')
+                                          : double.parse(widget.studentDetails
+                                                  .nysEla2023PredictionC ??
+                                              ''))
                                   ? TextSpan(
                                       text: '\n' + 'Prediction',
                                       style: Theme.of(context)
@@ -170,18 +171,23 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
         reservedSize: Globals.deviceType == 'phone' ? 45 : 65,
         getTitlesWidget: (value, meta) {
           String text = '';
+          String grade = '';
           switch (value.toString()) {
             case '2020.0':
               text = '19-20';
+              grade = "grade ${widget.studentDetails.grade19_20 ?? ''}";
               break;
             case '2021.0':
-              text = '20-21';
+              text = '21-22';
+              grade = "grade ${widget.studentDetails.grade21_22 ?? ''}";
               break;
             case '2022.0':
-              text = '21-22';
+              text = '22-23';
+              grade = "grade ${widget.studentDetails.gradeC ?? ''}";
               break;
             case '2023.0':
-              text = '22-23';
+              text = '23-24';
+              grade = "grade";
               break;
           }
 
@@ -196,7 +202,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                     context: context,
                     textTheme: Theme.of(context).textTheme.headline4),
                 Utility.textWidget(
-                    text: 'Grade 3',
+                    text: grade,
                     context: context,
                     textTheme: Theme.of(context).textTheme.subtitle2)
               ],
@@ -214,7 +220,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
         reservedSize: Globals.deviceType == 'phone' ? 35 : 45,
         getTitlesWidget: (value, meta) {
           String text = value.toString();
-          return text == '0.0' || text == '5.0'
+          return text == '0.0' || text == '5.0' || text == '0.5'
               ? Container()
               : Utility.textWidget(
                   text: text,

@@ -82,7 +82,7 @@ class StudentPlusUtility {
           label: 'Gender', value: '${studentDetails.genderFullC ?? '-'}'),
       StudentPlusInfoModel(
           label: 'Ethnicity', value: '${studentDetails.ethnicityNameC ?? '-'}'),
-      StudentPlusInfoModel(label: 'Age', value: '-'),
+      StudentPlusInfoModel(label: 'Age', value: '${studentDetails.age ?? '-'}'),
       StudentPlusInfoModel(
           label: 'DOB',
           value: studentDetails.dobC == " " || studentDetails.dobC == null

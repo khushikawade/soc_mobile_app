@@ -76,7 +76,11 @@ class StudentPlusDetailsModel {
       this.ELACurrentEOYOverallRelativePlace,
       this.ELACurrentMOYOverallRelativePlace,
       this.ELAPreviousEOYOverallRelPlace,
-      this.currentAttendance});
+      this.currentAttendance,
+      this.age,
+      this.grade19_20,
+      this.grade20_21,
+      this.grade21_22});
 
   /* --------------------- Field use to show student info --------------------- */
   @HiveField(0)
@@ -191,6 +195,15 @@ class StudentPlusDetailsModel {
   @HiveField(49)
   final String? currentAttendance;
 
+  @HiveField(50)
+  final String? age;
+  @HiveField(51)
+  final String? grade19_20;
+  @HiveField(52)
+  final String? grade20_21;
+  @HiveField(53)
+  final String? grade21_22;
+
   factory StudentPlusDetailsModel.fromJson(Map<String, dynamic> json) =>
       StudentPlusDetailsModel(
           firstNameC: json["First_Name__c"],
@@ -207,22 +220,28 @@ class StudentPlusDetailsModel {
           iepProgramC: json["IEP_Program__c"],
           genderFullC: json["Gender_Full__c"],
           dobC: json["DOB__c"],
+          age: json["Age__c"],
+
+          /* ------------------------ field use to show grades ------------------------ */
+          grade19_20: json["Grade_19_20__c"],
+          grade20_21: json["Grade_20_21__c"],
+          grade21_22: json["Grade_21_22__c"],
 
           /* ---------------------- Fields use to show NYS graph ---------------------- */
           nysElaScore2019C: json["NYS_ELA_2019__c"],
           nysMathScore2019C: json["NYS_Math_2019__c"],
-          nysElaScore2021C: json["NYS_ELA_Score_2021__c"],
-          nysMathScore2021C: json["NYS_Math_Score_2021__c"],
-          nysElaScore2022C: json["NYS_ELA_Score_2022__c"],
-          nysMathScore2022C: json["NYS_Math_Score_2022__c"],
+          nysElaScore2021C: json["NYS_ELA_PR_Score_2021__c"],
+          nysMathScore2021C: json["NYS_Math_PR_Score_2021__c"],
+          nysElaScore2022C: json["NYS_ELA_PR_Score_2022__c"],
+          nysMathScore2022C: json["NYS_Math_PR_Score_2022__c"],
           nysMath2023PredictionC: json["NYS_Math_2023_Prediction__c"],
           nysEla2023PredictionC: json["NYS_ELA_2023_Prediction__c"],
 
           /* ------------------ Field use in Exams Page - iReady Math ----------------- */
-          mathPreviousSyEOY: json["iReady_Math_EOY_21_22_Score__c"],
-          mathCurrentSyBOY: json["iReady_Math_BOY_Score__c"],
-          mathCurrentSyMOY: json["iReady_Math_MOY_Score__c"],
-          mathCurrentSyEOY: json["iReady_Math_EOY_Score__c"],
+          mathPreviousSyEOY: json["iReady_Math_EOY_21_22_ORP_STUDENT__c"],
+          mathCurrentSyBOY: json["IReady_Math_BOY_ORP_STUDENT__c"],
+          mathCurrentSyMOY: json["IReady_Math_MOY_ORP_STUDENT__c"],
+          mathCurrentSyEOY: json["IReady_Math_EOY_ORP_STUDENT__c"],
           mathPreviousSyEOYPercentile:
               json["iReady_Math_EOY_21_22_Percentile__c"],
           mathCurrentSyBOYPercentile: json["IReady_MATH_BOY_Percentile__c"],
@@ -230,10 +249,10 @@ class StudentPlusDetailsModel {
           mathCurrentSyEOYPercentile: json["IReady_MATH_EOY_Percentile__c"],
 
           /* ------------------ Field use in Exams Page - iReady Math ----------------- */
-          ELAPreviousSyEOY: json["iReady_ELA_EOY_21_22_Score__c"],
-          ELACurrentSyBOY: json["iReady_ELA_BOY_Score__c"],
-          ELACurrentSyMOY: json["iReady_ELA_MOY_Score__c"],
-          ELACurrentSyEOY: json["iReady_ELA_EOY_Score__c"],
+          ELAPreviousSyEOY: json["iReady_ELA_EOY_21_22_ORP_STUDENT__c"],
+          ELACurrentSyBOY: json["IReady_ELA_BOY_ORP_STUDENT__c"],
+          ELACurrentSyMOY: json["IReady_ELA_MOY_ORP_STUDENT__c"],
+          ELACurrentSyEOY: json["IReady_ELA_EOY_ORP_STUDENT__c"],
           ELAPreviousSyEOYPercentile:
               json["iReady_ELA_EOY_21_22_Percentile__c"],
           ELACurrentSyBOYPercentile: json["IReady_ELA_BOY_Percentile__c"],
@@ -289,28 +308,28 @@ class StudentPlusDetailsModel {
         "DOB__c": dobC,
         "NYS_ELA_2019__c": nysElaScore2019C,
         "NYS_Math_2019__c": nysMathScore2019C,
-        "NYS_ELA_2022__c": nysElaScore2022C,
-        "NYS_Math_2022__c": nysMathScore2022C,
-        "NYS_ELA_2021__c": nysElaScore2021C,
-        "NYS_Math_2021__c": nysMathScore2021C,
+        "NYS_ELA_PR_Score_2022__c": nysElaScore2022C,
+        "NYS_Math_PR_Score_2022__c": nysMathScore2022C,
+        "NYS_ELA_PR_Score_2021__c": nysElaScore2021C,
+        "NYS_Math_PR_Score_2021__c": nysMathScore2021C,
         "NYS_Math_2023_Prediction__c": nysMath2023PredictionC,
         "NYS_ELA_2023_Prediction__c": nysEla2023PredictionC,
 
         /* ------------------ Field use in Exams Page - iReady Math ----------------- */
-        "iReady_Math_EOY_21_22_Score__c": mathPreviousSyEOY,
-        "iReady_Math_BOY_Score__c": mathCurrentSyBOY,
-        "iReady_Math_MOY_Score__c": mathCurrentSyMOY,
-        "iReady_Math_EOY_Score__c": mathCurrentSyEOY,
+        "iReady_Math_EOY_21_22_ORP_STUDENT__c": mathPreviousSyEOY,
+        "IReady_Math_BOY_ORP_STUDENT__c": mathCurrentSyBOY,
+        "IReady_Math_MOY_ORP_STUDENT__c": mathCurrentSyMOY,
+        "IReady_Math_EOY_ORP_STUDENT__c": mathCurrentSyEOY,
         "iReady_Math_EOY_21_22_Percentile__c": mathPreviousSyEOYPercentile,
         "IReady_MATH_BOY_Percentile__c": mathCurrentSyBOYPercentile,
         "IReady_MATH_MOY_Percentile__c": mathCurrentSyMOYPercentile,
         "IReady_MATH_EOY_Percentile__c": mathCurrentSyEOYPercentile,
 
         /* ------------------ Field use in Exams Page - iReady ELA ----------------- */
-        "iReady_ELA_EOY_21_22_Score__c": ELAPreviousSyEOY,
-        "iReady_ELA_BOY_Score__c": ELACurrentSyBOY,
-        "iReady_ELA_MOY_Score__c": ELACurrentSyMOY,
-        "iReady_ELA_EOY_Score__c": ELACurrentSyEOY,
+        "iReady_ELA_EOY_21_22_ORP_STUDENT__c": ELAPreviousSyEOY,
+        "IReady_ELA_BOY_ORP_STUDENT__c": ELACurrentSyBOY,
+        "IReady_ELA_MOY_ORP_STUDENT__c": ELACurrentSyMOY,
+        "IReady_ELA_EOY_ORP_STUDENT__c": ELACurrentSyEOY,
         "iReady_ELA_EOY_21_22_Percentile__c": ELAPreviousSyEOYPercentile,
         "IReady_ELA_BOY_Percentile__c": ELACurrentSyBOYPercentile,
         "IReady_ELA_MOY_Percentile__c": ELACurrentSyMOYPercentile,
@@ -339,6 +358,11 @@ class StudentPlusDetailsModel {
         "IReady_ELA_EOY_Overall_Relative_Place__c":
             ELACurrentEOYOverallRelativePlace,
         "Current_Attendance__c": currentAttendance,
+        "Age__c": age,
+        /* ------------------------ field use to show grades ------------------------ */
+        "Grade_19_20__c": grade19_20,
+        "Grade_20_21__c": grade20_21,
+        "Grade_21_22__c": grade21_22,
       };
 }
 
