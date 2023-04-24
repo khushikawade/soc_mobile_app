@@ -95,9 +95,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   if (state is PBISPlusLoading) {
                     return Container(
                         alignment: Alignment.center,
-                        child: CircularProgressIndicator(
-                          color: Theme.of(context).colorScheme.primaryVariant,
-                        ));
+                        child: Container(
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator.adaptive(
+                              backgroundColor: AppTheme.kButtonColor,
+                            )));
                   }
                   if (state is PBISPlusImportRosterSuccess) if (state
                           .googleClassroomCourseList.isNotEmpty ??
@@ -111,7 +113,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                         .addAll(state.googleClassroomCourseList);
                     /*----------------------END--------------------------*/
 
-                    return buildList(state.googleClassroomCourseList);
+                    return RefreshIndicator(
+                        key: refreshKey,
+                        onRefresh: refreshPage,
+                        child: buildList(state.googleClassroomCourseList));
                   } else {
                     return NoDataFoundErrorWidget(
                         isResultNotFoundMsg: true,
@@ -145,10 +150,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 scrollDirection: Axis.horizontal,
               ),
             )),
-        RefreshIndicator(
-            key: refreshKey,
-            onRefresh: refreshPage,
-            child: studentListCourseWiseView(googleClassroomCourseList))
+        studentListCourseWiseView(googleClassroomCourseList)
       ],
     );
   }
@@ -282,24 +284,6 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
   renderStudents(List<ClassroomStudents> studentList, String cLassName, i,
       String classroomCourseId) {
-    // return GridView.custom(
-    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //     crossAxisCount: 4,
-    //     mainAxisSpacing: 10,
-    //     crossAxisSpacing: 10,
-    //     childAspectRatio: 1.0,
-    //   ),
-    //   childrenDelegate: SliverChildBuilderDelegate(
-    //     (BuildContext context, int index) {
-    //       return _buildStudent(
-    //         ValueNotifier<Students>(studentList[index]),
-    //         index,
-    //         cLassName,
-    //       );
-    //     },
-    //     childCount: studentList.length, // Set the number of items in the grid
-    //   ),
-    // );
     return GridView.count(
         padding: EdgeInsets.all(10.0),
         childAspectRatio: 7.0 / 9.0,
@@ -317,9 +301,6 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
   Widget _buildStudent(ValueNotifier<ClassroomStudents> studentValueNotifier,
       int index, String cLassName, String classroomCourseId) {
-    // String imageNum = generateRandomUniqueNumber().toString();
-    // studentValueNotifier.value.profile!.photoUrl =
-    //     'https://source.unsplash.com/random/200x200?sig=$imageNum';
     String heroTag = "HeroTag_${cLassName}_${index}";
 
     return GestureDetector(

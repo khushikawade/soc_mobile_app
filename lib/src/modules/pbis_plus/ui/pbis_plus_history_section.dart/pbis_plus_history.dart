@@ -132,10 +132,8 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                         if (state is PBISPlusLoading) {
                           return Container(
                               alignment: Alignment.center,
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryVariant,
+                              child: CircularProgressIndicator.adaptive(
+                                backgroundColor: AppTheme.kButtonColor,
                               ));
                         }
                         if (state is PBISPlusHistorySuccess
