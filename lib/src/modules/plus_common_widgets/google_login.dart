@@ -4,16 +4,16 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'src/globals.dart';
-import 'src/services/Strings.dart';
-import 'src/services/local_database/local_db.dart';
-import 'src/services/utility.dart';
-import 'src/startup.dart';
-import 'src/widgets/google_auth_webview.dart';
-import 'src/modules/google_classroom/modal/google_classroom_courses.dart';
-import 'src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'src/modules/google_drive/model/user_profile.dart';
-import 'src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import '../../globals.dart';
+import '../../services/Strings.dart';
+import '../../services/local_database/local_db.dart';
+import '../../services/utility.dart';
+import '../../startup.dart';
+import '../../widgets/google_auth_webview.dart';
+import '../google_classroom/modal/google_classroom_courses.dart';
+import '../google_drive/bloc/google_drive_bloc.dart';
+import '../google_drive/model/user_profile.dart';
+import '../graded_plus/bloc/graded_plus_bloc.dart';
 
 class GoogleLogin {
   //To authenticate the user via google

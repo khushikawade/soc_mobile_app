@@ -6,7 +6,7 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/overrides.dart';

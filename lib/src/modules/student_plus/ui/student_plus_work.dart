@@ -23,9 +23,8 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
-  
-  const StudentPlusWorkScreen(
-      {Key? key, required this.studentDetails})
+
+  const StudentPlusWorkScreen({Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -129,6 +128,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       children: [
         IconButton(
             onPressed: () {
+              Utility.updateLogs(
+                  activityType: 'STUDENT+',
+                  activityId: '39',
+                  description: 'Filter Record',
+                  operationResult: 'Success');
+
               List<String> subjectList =
                   StudentPlusUtility.getSubjectList(list: list);
               List<String> teacherList =
@@ -251,6 +256,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       {required StudentPlusWorkModel studentWorkModel, required int index}) {
     return InkWell(
       onTap: () {
+        Utility.updateLogs(
+            activityType: 'STUDENT+',
+            activityId: '42',
+            description: 'View Student Work',
+            operationResult: 'Success');
+
         if (studentWorkModel.assessmentImageC == null ||
             studentWorkModel.assessmentImageC == '') {
           Utility.currentScreenSnackBar(

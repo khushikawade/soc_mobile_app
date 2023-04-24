@@ -55,6 +55,12 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
 
   @override
   void initState() {
+    Utility.updateLogs(
+        activityType: 'STUDENT+',
+        activityId: '41',
+        description: 'Search STUDENT+',
+        operationResult: 'Success');
+
     StudentPlusUtility.setLocked();
     if (widget.fromStudentPlusDetailPage == true) {
       moveToTopNotifier.value = true;

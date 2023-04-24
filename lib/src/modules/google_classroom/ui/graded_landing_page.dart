@@ -13,7 +13,7 @@ import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
-import 'package:Soc/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';

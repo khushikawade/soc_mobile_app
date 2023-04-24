@@ -54,7 +54,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
     super.initState();
 
     Utility.updateLogs(
-        activityType: 'PBIS+',
+        activityType: widget.isFromStudentPlus == true ? 'STUDENT+' : 'PBIS+',
         activityId: '37',
         description:
             'Student ${widget.studentValueNotifier.value.profile!.name} Card View',
