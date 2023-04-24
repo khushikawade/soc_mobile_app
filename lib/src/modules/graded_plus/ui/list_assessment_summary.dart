@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/ui/google_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -611,7 +611,6 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         elevation: 10,
         context: context,
         builder: (context) => FilterBottomSheet(
-           
               title: 'Filter Assignment',
               selectedValue: selectedValue.value,
               update: ({String? filterValue}) async {
@@ -640,6 +639,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
         GestureDetector(
             onTap: () {
               Utility.updateLogs(
+                  activityType: 'GRADED+',
                   activityId: '31',
                   sessionId: element.sessionId ?? '',
                   description:
@@ -658,6 +658,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
       GestureDetector(
         onTap: () {
           Utility.updateLogs(
+              activityType: 'GRADED+',
               activityId: '13',
               sessionId: element.sessionId != null ? element.sessionId : '',
               description:

@@ -125,7 +125,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                     //  WarningPopupModel();
 
                     popupModal(
-                        message: "Are you sure you want to log out of GRADED+?",
+                        message:
+                            "Are you sure you want to log out of all PLUS(+) apps?",
                         //  'You are about to Signout from the google account. This may restricts you to use the app without google SignIn. \n\nContinue Signout?',
                         title: "Log Out"
                         //'Signout'
@@ -189,6 +190,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             //print(
                             // 'Google drive folder path : ${Globals.googleDriveFolderPath}');
                             Utility.updateLogs(
+                                activityType: 'GRADED+',
                                 activityId: '16',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -504,6 +506,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         context: context,
         builder: (context) {
           return CustomDialogBox(
+            activityType: 'GRADED+',
             profileData: userInformation,
             isUserInfoPop: true,
           );

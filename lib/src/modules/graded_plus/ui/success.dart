@@ -11,7 +11,7 @@ import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/animation_button.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/suggestion_chip.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -211,7 +211,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                   scanFailure.value = 'Success';
                   _performAnimation();
                   Utility.updateLogs(
-                      //  ,
+                      activityType: 'GRADED+',
                       activityId: '23',
                       description: 'Scan Assessment sheet successfully',
                       operationResult: 'Success');
@@ -334,7 +334,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                   }
 
                   Utility.updateLogs(
-                      // ,
+                      activityType: 'GRADED+',
                       activityId: '23',
                       description: state.grade == '' && state.studentId == ''
                           ? (Overrides.STANDALONE_GRADED_APP == true
@@ -440,7 +440,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                         child: retryButton(
                           onPressed: () {
                             Utility.updateLogs(
-                                // ,
+                                activityType: 'GRADED+',
                                 activityId: '9',
                                 description:
                                     'Scan Failure and teacher retry scan',
@@ -563,7 +563,7 @@ class _SuccessScreenState extends State<SuccessScreen>
           isFromHistoryAssessmentScanMore:
               widget.isFromHistoryAssessmentScanMore);
       Utility.updateLogs(
-          //  ,
+          activityType: 'GRADED+',
           activityId: '10',
           description: 'Next Scan',
           operationResult: 'Success');
@@ -1319,7 +1319,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                       onTap: () {
                         // updateDetails(isUpdateData: true);
                         Utility.updateLogs(
-                            // ,
+                            activityType: 'GRADED+',
                             activityId: '8',
                             description:
                                 'Teacher change score rubric \'${pointScored.value.toString()}\' to \'${index.toString()}\'',
@@ -1328,7 +1328,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                           isRubricChanged = true;
                           if (widget.isMcqSheet == true) {
                             Utility.updateLogs(
-                                //  ,
+                                activityType: 'GRADED+',
                                 activityId: '30',
                                 description:
                                     'Answer Key changed from ${pointScored.value} to ${index.toString()}',

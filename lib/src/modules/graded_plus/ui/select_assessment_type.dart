@@ -7,7 +7,7 @@ import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/graded_plus_home.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -111,6 +111,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                   Utility.currentScreenSnackBar("Select the Answer Key", null);
                 } else if (selectedAnswerKey.value == 'Multiple Choice') {
                   Utility.updateLogs(
+                      activityType: 'GRADED+',
                       activityId: '28',
                       description: 'MCQ Type Selection',
                       operationResult: 'Success');
@@ -121,6 +122,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                       builder: (context) => MultipleChoiceSection()));
                 } else {
                   Utility.updateLogs(
+                      activityType: 'GRADED+',
                       activityId: '27',
                       description: 'Constructive Type Selection',
                       operationResult: 'Success');
@@ -260,6 +262,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                             "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
                       }
                       _ocrBlocLogs.add(LogUserActivityEvent(
+                          activityType: 'GRADED+',
                           sessionId: Globals.sessionId,
                           teacherId: Globals.teacherId,
                           activityId: '1',
@@ -348,6 +351,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: 'GRADED+',
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
         activityId: '4',

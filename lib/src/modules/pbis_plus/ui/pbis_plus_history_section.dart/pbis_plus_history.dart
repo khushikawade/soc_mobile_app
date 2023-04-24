@@ -1,13 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_filtter_bottom_sheet.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -36,6 +36,14 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
   void initState() {
     super.initState();
     PBISPlusBlocInstance.add(GetPBISPlusHistory());
+
+    /*-------------------------User Activity Track START----------------------------*/
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_history_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_history_screen',
+        screenClass: 'PBISPlusHistory');
+    /*-------------------------User Activity Track END----------------------------*/
   }
 
   @override
@@ -58,16 +66,6 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
       mainAxisSize: MainAxisSize.max,
       children: [
         SpacerWidget(_KVertcalSpace / 4),
-        // Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 20),
-        //   child: Utility.textWidget(
-        //     text: 'History',
-        //     context: context,
-        //     textTheme: Theme.of(context)
-        //         .textTheme
-        //         .headline6!
-        //         .copyWith(fontWeight: FontWeight.bold),
-        //   ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Padding(
             padding: EdgeInsets.symmetric(
@@ -86,6 +84,19 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             children: [
               IconButton(
                   onPressed: () {
+                    /*-------------------------User Activity Track START----------------------------*/
+                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        'Filter History PBIS+'
+                            .toLowerCase()
+                            .replaceAll(" ", "_"));
+
+                    Utility.updateLogs(
+                        activityType: 'PBIS+',
+                        activityId: '39',
+                        description: 'Filter History PBIS+',
+                        operationResult: 'Success');
+                    /*-------------------------User Activity Track END----------------------------*/
+
                     filterBottomSheet(context);
                   },
                   icon: Icon(
@@ -117,7 +128,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             ],
           )
         ]),
-        SpacerWidget(_KVertcalSpace / 3),
+        // SpacerWidget(_KVertcalSpace / 3),
         SpacerWidget(_KVertcalSpace / 5),
         Container(
           // color: Colors.red,
@@ -256,6 +267,11 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           color: AppTheme.kButtonColor,
         ),
         onTap: (() {
+          /*-------------------------User Activity Track START----------------------------*/
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              'History record view PBIS+'.toLowerCase().replaceAll(" ", "_"));
+          /*-------------------------User Activity Track END----------------------------*/
+
           obj.uRL == null || obj.uRL == '' || !obj.uRL!.contains('http')
               ? Utility.showSnackBar(
                   _scaffoldKey, 'Launch URL not found', context, null)
@@ -269,6 +285,11 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
     PBISPlusBlocInstance.add(GetPBISPlusHistory());
+
+    /*-------------------------User Activity Track START----------------------------*/
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));
+    /*-------------------------User Activity Track END----------------------------*/
   }
 
 //------------------------------for filter call bottom sheet"-------------------//

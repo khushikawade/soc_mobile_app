@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -37,24 +38,7 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
   @override
   Widget build(BuildContext context) {
-    Widget leading =
-        // widget.backButton == true
-        //     ? Row(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           IconButton(
-        //             onPressed: () {
-        //               // Navigator.of(context).pop();
-        //             },
-        //             icon: Icon(
-        //               PBISPlusIcons.backarrow_icon_1,
-        //               color: AppTheme.kButtonColor,
-        //             ),
-        //           ),
-        //         ],
-        //       )
-        //     :
-        Container(
+    Widget leading = Container(
       child: Row(
         children: [
           _translateButton(setState, context),
@@ -63,15 +47,6 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       ),
     );
 
-    // List<Widget>? actions = [
-    //   IconButton(
-    //     onPressed: () {},
-    //     icon: Icon(
-    //       PBISPlusIcons.PBISPlus_plus_settings,
-    //       color: AppTheme.kButtonColor,
-    //     ),
-    //   )
-    // ];
     List<Widget>? actions = [
       IconButton(
           padding: EdgeInsets.zero,
@@ -104,8 +79,11 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                     ),
                   ),
                   onPressed: () async {
+                    /*-------------------------User Activity Track START----------------------------*/
                     await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        "profile");
+                        "Teacher profile screen PBIS+");
+                    /*-------------------------User Activity Track END----------------------------*/
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -159,6 +137,16 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
               // refresh!(true);
             }
           });
+          /*-------------------------User Activity Track START----------------------------*/
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
+
+          Utility.updateLogs(
+              activityType: 'PBIS+',
+              activityId: '43',
+              description: 'Google Translation',
+              operationResult: 'Success');
+          /*-------------------------User Activity Track END----------------------------*/
         },
         icon: Container(
           child: Image(

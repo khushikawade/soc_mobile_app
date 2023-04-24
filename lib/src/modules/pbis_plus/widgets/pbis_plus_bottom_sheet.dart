@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
@@ -53,6 +54,15 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       ..addListener(() {
         setState(() {});
       });
+
+    /*-------------------------User Activity Track START----------------------------*/
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_save_and_share_bottomsheet");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_save_and_share_bottomsheet',
+        screenClass: 'PBISPlusBottomSheet');
+    /*-------------------------User Activity Track END----------------------------*/
+
     super.initState();
   }
 
@@ -147,6 +157,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Classroom',
                   onTap: () {
+                    Utility.updateLogs(
+                        activityType: 'PBIS+',
+                        activityId: '35',
+                        description: 'G-Classroom Action Button',
+                        operationResult: 'Success');
+
                     _pageController.animateToPage(1,
                         duration: const Duration(milliseconds: 400),
                         curve: Curves.ease);
@@ -159,6 +175,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   ),
                   title: 'Spreadsheet',
                   onTap: () {
+                    Utility.updateLogs(
+                        activityType: 'PBIS+',
+                        activityId: '32',
+                        description: 'G-Excel Action Button',
+                        operationResult: 'Success');
+
                     classroomLoader = false;
                     _pageController.animateToPage(2,
                         duration: const Duration(milliseconds: 100),
@@ -178,7 +200,13 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   color: Colors.grey,
                 ),
                 title: 'Share',
-                onTap: (() {})),
+                onTap: (() {
+                  Utility.updateLogs(
+                      activityType: 'PBIS+',
+                      activityId: '13',
+                      description: 'Share copy of screen as PDF',
+                      operationResult: 'Success');
+                })),
           ]),
     );
   }
@@ -513,6 +541,12 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           bloc: classroomBloc,
           listener: (context, state) async {
             if (state is CreateClassroomCourseWorkSuccess) {
+              Utility.updateLogs(
+                  activityType: 'PBIS+',
+                  activityId: '34',
+                  description: 'G-Classroom Created',
+                  operationResult: 'Success');
+
               Navigator.pop(context);
               Utility.currentScreenSnackBar(
                   "Google Classroom Assignments Created Successfully.", null);

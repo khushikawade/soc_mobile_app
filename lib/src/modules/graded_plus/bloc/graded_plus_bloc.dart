@@ -560,6 +560,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       //yield OcrLoading();
       try {
         var body = {
+          "Activity_Type": event.activityType,
           "Session_Id": "${event.sessionId ?? ''}",
           "Teacher_Id": "${event.teacherId ?? ''}",
           "Activity_Id": "${event.activityId ?? ''}",

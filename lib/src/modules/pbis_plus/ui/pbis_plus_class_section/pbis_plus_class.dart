@@ -1,22 +1,25 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_circular_profile_name.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
+import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -35,6 +38,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       []; //Used to send the value in bottomsheet coursework list
 
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
+  final ValueNotifier<int> courseLength = ValueNotifier<int>(0);
+
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -46,6 +51,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   void initState() {
     super.initState();
     pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent("pbis_plus_class_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_class_screen', screenClass: 'PBISPlusClass');
   }
 
   @override
@@ -59,9 +68,16 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         backgroundColor: Colors.transparent,
         appBar:
             PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
-        floatingActionButton: saveAndShareFAB(
-          context,
-        ),
+        floatingActionButton: ValueListenableBuilder(
+            valueListenable: courseLength,
+            child: Container(),
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return courseLength.value > 0
+                  ? saveAndShareFAB(
+                      context,
+                    )
+                  : Container();
+            }),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         body: body(),
       )
@@ -75,9 +91,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         mainAxisSize: MainAxisSize.max,
         children: [
           SpacerWidget(_KVertcalSpace / 4),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Utility.textWidget(
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+            // minLeadingWidth: 70,
+            title: Utility.textWidget(
               text: 'All Courses',
               context: context,
               textTheme: Theme.of(context)
@@ -85,8 +102,24 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   .headline6!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
+            leading: IconButton(
+              onPressed: () {
+                pushNewScreen(context,
+                    screen: HomePage(
+                      index: 4,
+                    ),
+                    withNavBar: false,
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino);
+              },
+              icon: Icon(
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kButtonColor,
+              ),
+            ),
           ),
-          SpacerWidget(_KVertcalSpace / 3),
+          // SpacerWidget(_KVertcalSpace / 3),
           SpacerWidget(_KVertcalSpace / 5),
           Expanded(
             child: BlocConsumer(
@@ -101,32 +134,36 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                               backgroundColor: AppTheme.kButtonColor,
                             )));
                   }
-                  if (state is PBISPlusImportRosterSuccess) if (state
-                          .googleClassroomCourseList.isNotEmpty ??
-                      false) {
-                    ///Used to send the list of courseWork to the bottomsheet list
-                    /*----------------------START--------------------------*/
-                    googleClassroomCourseworkList.clear();
-                    googleClassroomCourseworkList
-                        .add(ClassroomCourse(name: 'All'));
-                    googleClassroomCourseworkList
-                        .addAll(state.googleClassroomCourseList);
-                    /*----------------------END--------------------------*/
-
-                    return RefreshIndicator(
-                        key: refreshKey,
-                        onRefresh: refreshPage,
-                        child: buildList(state.googleClassroomCourseList));
-                  } else {
-                    return NoDataFoundErrorWidget(
-                        isResultNotFoundMsg: true,
-                        isNews: false,
-                        isEvents: false);
+                  if (state is PBISPlusImportRosterSuccess) {
+                    if (state.googleClassroomCourseList.isNotEmpty ?? false) {
+                      return buildList(state.googleClassroomCourseList);
+                    } else {
+                      return noClassroomFound();
+                    }
                   }
 
                   return Container();
                 },
-                listener: (context, state) {}),
+                listener: (context, state) {
+                  if (state is PBISPlusImportRosterSuccess) {
+                    if (state.googleClassroomCourseList.isNotEmpty ?? false) {
+                      //To manage FAB
+                      courseLength.value =
+                          state.googleClassroomCourseList.length;
+
+                      ///Used to send the list of courseWork to the bottomsheet list
+                      /*----------------------START--------------------------*/
+                      googleClassroomCourseworkList.clear();
+                      googleClassroomCourseworkList
+                          .add(ClassroomCourse(name: 'All'));
+                      googleClassroomCourseworkList
+                          .addAll(state.googleClassroomCourseList);
+
+                      /*----------------------END--------------------------*/
+
+                    }
+                  }
+                }),
           ),
         ],
       ),
@@ -171,6 +208,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 currentIndex,
                 courseList[currentIndex].students!.length,
               );
+
+              FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                  'Course chip tap PBIS+'.toLowerCase().replaceAll(" ", "_"));
             },
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -219,19 +259,22 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   }
 
   Widget studentListCourseWiseView(googleClassroomCourseList) {
-    return Container(
-        height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height * 0.60 //7
-            : MediaQuery.of(context).size.height * 0.45,
-        child: ScrollablePositionedList.builder(
-            padding: EdgeInsets.only(bottom: 30),
-            shrinkWrap: true,
-            itemScrollController: _itemScrollController,
-            itemCount: googleClassroomCourseList.length,
-            itemBuilder: (context, index) {
-              return _buildCourseSeparationList(
-                  googleClassroomCourseList, index);
-            }));
+    return RefreshIndicator(
+        key: refreshKey,
+        onRefresh: refreshPage,
+        child: Container(
+            height: MediaQuery.of(context).orientation == Orientation.portrait
+                ? MediaQuery.of(context).size.height * 0.60 //7
+                : MediaQuery.of(context).size.height * 0.45,
+            child: ScrollablePositionedList.builder(
+                padding: EdgeInsets.only(bottom: 30),
+                shrinkWrap: true,
+                itemScrollController: _itemScrollController,
+                itemCount: googleClassroomCourseList.length,
+                itemBuilder: (context, index) {
+                  return _buildCourseSeparationList(
+                      googleClassroomCourseList, index);
+                })));
   }
 
   Widget _buildCourseSeparationList(
@@ -349,21 +392,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   //  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    studentValueNotifier.value!.profile!.photoUrl!
-                            .contains('default-user')
-                        ? PBISCircularProfileName(
-                            firstLetter: studentValueNotifier
-                                .value.profile!.name!.givenName!
-                                .substring(0, 1),
-                            lastLetter: studentValueNotifier
-                                .value.profile!.name!.familyName!
-                                .substring(0, 1),
-                            profilePictureSize: profilePictureSize,
-                          )
-                        : PBISCommonProfileWidget(
-                            profilePictureSize: profilePictureSize,
-                            imageUrl:
-                                studentValueNotifier.value!.profile!.photoUrl!),
+                    PBISCommonProfileWidget(
+                        studentValueNotifier: studentValueNotifier,
+                        profilePictureSize: profilePictureSize,
+                        imageUrl:
+                            studentValueNotifier.value!.profile!.photoUrl!),
                     // SizedBox(height: 15),
                     Column(
                       children: [
@@ -438,6 +471,19 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   ) =>
       PBISPlusCustomFloatingActionButton(
         onPressed: () {
+          /*-------------------------User Activity Track START----------------------------*/
+          Utility.updateLogs(
+              activityType: 'PBIS+',
+              activityId: '36',
+              description: 'Save and Share button open from All Courses',
+              operationResult: 'Success');
+
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              'save and share from class screen PBIS+'
+                  .toLowerCase()
+                  .replaceAll(" ", "_"));
+          /*-------------------------User Activity Track END----------------------------*/
+
           _saveAndShareBottomSheetMenu();
         },
       );
@@ -471,9 +517,61 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         );
       });
 
+  Widget noClassroomFound() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Utility.textWidget(
+              text:
+                  'Uh oh! Looks like we\'re unable to import your roster from Google Classroom.',
+              context: context,
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context).textTheme.headline2!),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+            child: FloatingActionButton.extended(
+                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                onPressed: () async {
+                  FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      'Contact solved button pressed class screen PBIS+'
+                          .toLowerCase()
+                          .replaceAll(" ", "_"));
+
+                  Utility.launchMailto(
+                      'PBIS+ | Google Classroom Import | ${Globals.appSetting.schoolNameC}',
+                      '');
+                },
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Utility.textWidget(
+                        text: 'Contact Solved',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(
+                                color: Theme.of(context).backgroundColor)),
+                  ],
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
     pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        'Sync Google Classroom Course List PBIS+'
+            .toLowerCase()
+            .replaceAll(" ", "_"));
   }
 }

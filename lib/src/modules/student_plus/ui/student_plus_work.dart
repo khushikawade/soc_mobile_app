@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/image_popup.dart';
@@ -23,9 +24,8 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class StudentPlusWorkScreen extends StatefulWidget {
   final StudentPlusDetailsModel studentDetails;
-  
-  const StudentPlusWorkScreen(
-      {Key? key, required this.studentDetails})
+
+  const StudentPlusWorkScreen({Key? key, required this.studentDetails})
       : super(key: key);
 
   @override
@@ -45,9 +45,14 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   void initState() {
     _studentPlusBloc.add(
         FetchStudentWorkEvent(studentId: widget.studentDetails.studentIdC));
-    // TODO: implement initState
 
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "student_plus_work_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student_plus_work_screen',
+        screenClass: 'StudentPlusWorkScreen');
   }
 
   @override
@@ -129,6 +134,17 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       children: [
         IconButton(
             onPressed: () {
+              /*-------------------------User Activity Track START----------------------------*/
+              Utility.updateLogs(
+                  activityType: 'STUDENT+',
+                  activityId: '39',
+                  description: 'Filter Record STUDENT+',
+                  operationResult: 'Success');
+
+              FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                  'Filter Record STUDENT+'.toLowerCase().replaceAll(" ", "_"));
+              /*-------------------------User Activity Track END----------------------------*/
+
               List<String> subjectList =
                   StudentPlusUtility.getSubjectList(list: list);
               List<String> teacherList =
@@ -251,6 +267,17 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       {required StudentPlusWorkModel studentWorkModel, required int index}) {
     return InkWell(
       onTap: () {
+        /*-------------------------User Activity Track START----------------------------*/
+        Utility.updateLogs(
+            activityType: 'STUDENT+',
+            activityId: '42',
+            description: 'View Student Work STUDENT+',
+            operationResult: 'Success');
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'View Student Work STUDENT+'.toLowerCase().replaceAll(" ", "_"));
+        /*-------------------------User Activity Track END----------------------------*/
+
         if (studentWorkModel.assessmentImageC == null ||
             studentWorkModel.assessmentImageC == '') {
           Utility.currentScreenSnackBar(

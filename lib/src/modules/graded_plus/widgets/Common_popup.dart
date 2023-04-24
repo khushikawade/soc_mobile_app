@@ -144,6 +144,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
 
                             //Log Activity to database
                             _ocrBlocLogs.add(LogUserActivityEvent(
+                                activityType: 'GRADED+',
                                 sessionId: '',
                                 teacherId: Globals.teacherId,
                                 activityId: '2',
@@ -156,8 +157,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                 operationResult: 'Success'));
 
                             Utility.updateLogs(
-                                // ,
-                                // sessionId: Globals.sessionId,
+                                activityType: 'GRADED+',
                                 activityId: '3',
                                 description: 'User profile logout',
                                 operationResult: 'Success');
@@ -228,8 +228,7 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                           UserGoogleProfile.clearUserProfile();
                           GoogleClassroom.clearClassroomCourses();
                           Utility.updateLogs(
-                              // ,
-                              // sessionId: Globals.sessionId,
+                              activityType: 'GRADED+',
                               activityId: '3',
                               description: 'User profile logout',
                               operationResult: 'Success');

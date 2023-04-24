@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
@@ -9,6 +10,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart'
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
@@ -56,6 +58,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         studentId: widget.isFromStudentPlus == true
             ? widget.studentValueNotifier.value.profile!.emailAddress!
             : widget.studentValueNotifier.value.profile!.id ?? ''));
+
+    /*-------------------------User Activity Track START----------------------------*/
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_student_dashboard_screen");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_student_dashboard_screen',
+        screenClass: 'PBISPlusStudentDashBoard');
+    /*-------------------------User Activity Track END----------------------------*/
+
     super.initState();
   }
 
@@ -271,6 +282,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           Utility.textWidget(
             context: context,
             text: item.title,
+            textAlign: TextAlign.center,
             textTheme: Theme.of(context)
                 .textTheme
                 .headline5!
@@ -290,42 +302,50 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           return Theme.of(context).backgroundColor; // Use the default value.
         }),
         cells: [
-          DataCell(Utility.textWidget(
-            text:
-                PBISPlusUtility.convertDateString(list[index].createdAt ?? ''),
-            context: context,
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+          DataCell(Center(
+            child: Utility.textWidget(
+              text: PBISPlusUtility.convertDateString(
+                  list[index].createdAt ?? ''),
+              context: context,
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           )),
-          DataCell(Utility.textWidget(
-            context: context,
-            text: (list[index].engaged ?? 0).toString(),
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].engaged ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           )),
-          DataCell(Utility.textWidget(
-            context: context,
-            text: (list[index].niceWork ?? 0).toString(),
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].niceWork ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           )),
-          DataCell(Utility.textWidget(
-            context: context,
-            text: (list[index].helpful ?? 0).toString(),
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].helpful ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           )),
           DataCell(
             Container(

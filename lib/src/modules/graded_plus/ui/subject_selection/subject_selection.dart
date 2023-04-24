@@ -9,7 +9,7 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_search_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -1255,7 +1255,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                                 AppTheme.kButtonColor.withOpacity(1.0),
                             onPressed: () async {
                               Utility.updateLogs(
-                                  // ,
+                                  activityType: 'GRADED+',
                                   activityId: '18',
                                   description: 'Skip subject selection process',
                                   operationResult: 'Success');
@@ -1599,7 +1599,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "save_to_drive_from_subject_selection");
     Utility.updateLogs(
-        // ,
+        activityType: 'GRADED+',
         activityId: '14',
         description: 'Save to drive',
         operationResult: 'Success');

@@ -12,7 +12,7 @@ import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
@@ -913,6 +913,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
     });
 
     Utility.updateLogs(
+        activityType: 'GRADED+',
         activityId: '11',
         description: 'Created G-Excel file',
         operationResult: 'Success');

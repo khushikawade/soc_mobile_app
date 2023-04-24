@@ -4,7 +4,7 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/answer_key_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -108,6 +108,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
                       "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
                 }
                 _ocrBlocLogs.add(LogUserActivityEvent(
+                    activityType: 'GRADED+',
                     sessionId: Globals.sessionId,
                     teacherId: Globals.teacherId,
                     activityId: '1',
@@ -180,86 +181,6 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
                                 color: Theme.of(context).backgroundColor)),
                   ));
             }),
-        // BlocListener<GoogleDriveBloc, GoogleDriveState>(
-        //     bloc: _googleDriveBloc,
-        //     child: Container(),
-        //     listener: (context, state) async {
-        //       if (state is GoogleDriveLoading) {
-        //         Utility.showLoadingDialog(context, true);
-        //       }
-        //       if (state is GoogleSuccess) {
-        //         if (state.assessmentSection == true) {
-        //           Navigator.of(context).pop();
-        //           _beforenavigateOnAssessmentSection();
-        //         }
-        //       }
-        //       if (state is ErrorState) {
-        //         if (Globals.sessionId == '') {
-        //           Globals.sessionId =
-        //               "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-        //         }
-        //         _ocrBlocLogs.add(LogUserActivityEvent(
-        //             sessionId: Globals.sessionId,
-        //             teacherId: Globals.teacherId,
-        //             activityId: '1',
-        //             accountId: Globals.appSetting.schoolNameC,
-        //             accountType:
-        //                 Globals.isPremiumUser == true ? "Premium" : "Free",
-        //             dateTime: currentDateTime.toString(),
-        //             description: 'Start Scanning Failed',
-        //             operationResult: 'Failed'));
-        //         if (state.errorMsg == 'ReAuthentication is required') {
-        //           await Utility.refreshAuthenticationToken(
-        //               isNavigator: true,
-        //               errorMsg: state.errorMsg!,
-        //               context: context,
-        //               scaffoldKey: _scaffoldKey);
-
-        //           _triggerDriveFolderEvent(state.isAssessmentSection);
-        //         } else {
-        //           Navigator.of(context).pop();
-        //           Utility.currentScreenSnackBar(
-        //               "Something Went Wrong. Please Try Again.", null);
-        //         }
-        //         // Utility.refreshAuthenticationToken(
-        //         //     state.errorMsg!, context, _scaffoldKey);
-
-        //         //  await _launchURL('Google Authentication');
-
-        //       }
-        //     }),
-        // OfflineBuilder(
-        //     child: Container(),
-        //     connectivityBuilder: (BuildContext context,
-        //         ConnectivityResult connectivity, Widget child) {
-        //       final bool connected = connectivity != ConnectivityResult.none;
-        //       return GestureDetector(
-        //         onTap: () async {
-        //           await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-        //               "assessment_history");
-        //           if (!connected) {
-        //             Utility.currentScreenSnackBar(
-        //                 "No Internet Connection", null);
-        //             return;
-        //           }
-        //           if (Globals.googleDriveFolderId!.isEmpty) {
-        //             _triggerDriveFolderEvent(true);
-        //           } else {
-        //             _beforenavigateOnAssessmentSection();
-        //           }
-        //         },
-        //         child: Container(
-        //             padding: EdgeInsets.only(top: 10),
-        //             // color: Colors.red,
-        //             child: Utility.textWidget(
-        //                 text: 'Assignment History',
-        //                 context: context,
-        //                 textTheme:
-        //                     Theme.of(context).textTheme.headline2!.copyWith(
-        //                           decoration: TextDecoration.underline,
-        //                         ))),
-        //       );
-        //     }),
       ],
     );
   }
@@ -310,6 +231,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
             FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 "answer_key_selected_${value.title}");
             Utility.updateLogs(
+                activityType: 'GRADED+',
                 activityId: '29',
                 description: 'MCQ Selection Answer key selected ${value.title}',
                 operationResult: 'Success');
@@ -359,6 +281,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: 'GRADED+',
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
         activityId: '1',

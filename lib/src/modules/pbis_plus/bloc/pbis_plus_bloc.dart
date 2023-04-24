@@ -76,6 +76,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           });
 
           Utility.updateLogs(
+              activityType: 'PBIS+',
               activityId: '24',
               description: 'Import Roster Successfully From PBIS+',
               operationResult: 'Success');
@@ -360,6 +361,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       }
     } catch (e) {
       Utility.updateLogs(
+          activityType: 'PBIS+',
           activityId: '24',
           description: 'Import Roster failure From PBIS+',
           operationResult: 'failure');

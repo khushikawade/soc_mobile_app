@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,8 @@ class PBISPlusHistoryFilterBottomSheet extends StatefulWidget {
       _PBISPlusHistoryFilterBottomSheetState();
 }
 
-class _PBISPlusHistoryFilterBottomSheetState extends State<PBISPlusHistoryFilterBottomSheet> {
+class _PBISPlusHistoryFilterBottomSheetState
+    extends State<PBISPlusHistoryFilterBottomSheet> {
   List<String> filterList = ['All', 'Google Classroom', 'Google Sheet'];
 
   final ValueNotifier<String> selectedValue =
@@ -33,7 +35,14 @@ class _PBISPlusHistoryFilterBottomSheetState extends State<PBISPlusHistoryFilter
   @override
   void initState() {
     selectedValue.value = widget.selectedValue;
+
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "pbis_plus_filter_bottomsheet");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'pbis_plus_filter_bottomsheet',
+        screenClass: 'PBISPlusHistoryFilterBottomSheet');
   }
 
   @override
@@ -138,24 +147,28 @@ class _PBISPlusHistoryFilterBottomSheetState extends State<PBISPlusHistoryFilter
               child: RadioListTile(
                 controlAffinity: ListTileControlAffinity.trailing,
                 activeColor: AppTheme.kButtonColor,
-                title: selectedValue.value == filterList[index]
-                    ? InkWell(
-                        onTap: () {
-                          Utility.showSnackBar(
-                              widget.scaffoldKey,
-                              '\'${filterList[index]}\' filter is already selected',
-                              context,
-                              null);
-                        },
-                        child: Utility.textWidget(
-                            text: filterList[index],
-                            context: context,
-                            textTheme: Theme.of(context).textTheme.headline2),
-                      )
-                    : Utility.textWidget(
-                        text: filterList[index],
-                        context: context,
-                        textTheme: Theme.of(context).textTheme.headline2),
+                title: InkWell(
+                  onTap: () {
+                    /*-------------------------User Activity Track START----------------------------*/
+                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        'Filter option click PBIS+'
+                            .toLowerCase()
+                            .replaceAll(" ", "_"));
+                    /*-------------------------User Activity Track END----------------------------*/
+
+                    if (selectedValue.value == filterList[index]) {
+                      Utility.showSnackBar(
+                          widget.scaffoldKey,
+                          '\'${filterList[index]}\' filter is already selected',
+                          context,
+                          null);
+                    }
+                  },
+                  child: Utility.textWidget(
+                      text: filterList[index],
+                      context: context,
+                      textTheme: Theme.of(context).textTheme.headline2),
+                ),
                 groupValue: true,
                 value: selectedValue.value == filterList[index] ? true : false,
                 onChanged: (bool? value) {

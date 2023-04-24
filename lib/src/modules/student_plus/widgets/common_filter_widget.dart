@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dar
 import 'package:Soc/src/modules/student_plus/widgets/header_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -39,6 +40,12 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
         setState(() {});
       });
     super.initState();
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        "student_plus_filter_widget");
+    FirebaseAnalyticsService.setCurrentScreen(
+        screenTitle: 'student_plus_filter_widget',
+        screenClass: 'StudentPlusFilterWidget');
   }
 
   @override

@@ -142,6 +142,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
         context: context,
         builder: (context) {
           return CustomDialogBox(
+              activityType: 'Schedule',
               isUserInfoPop: true,
               profileData: userInformation,
               onSignOut: () async {

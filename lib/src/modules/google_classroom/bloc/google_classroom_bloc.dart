@@ -72,10 +72,8 @@ class GoogleClassroomBloc
             _localDb.addData(e);
           });
           Utility.updateLogs(
+              activityType: 'GRADED+',
               activityId: '24',
-              // sessionId: widget.assessmentDetailPage == true
-              //     ? widget.obj!.sessionId
-              //     : '',
               description: 'Import Roster Successfully',
               operationResult: 'Success');
 
@@ -406,10 +404,8 @@ class GoogleClassroomBloc
       }
     } catch (e) {
       Utility.updateLogs(
+          activityType: 'GRADED+',
           activityId: '24',
-          // sessionId: widget.assessmentDetailPage == true
-          //     ? widget.obj!.sessionId
-          //     : '',
           description: 'Import Roster failure',
           operationResult: 'failure');
 
