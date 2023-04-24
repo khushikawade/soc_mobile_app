@@ -271,6 +271,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           Utility.textWidget(
             context: context,
             text: item.title,
+            textAlign: TextAlign.center,
             textTheme: Theme.of(context)
                 .textTheme
                 .headline5!
@@ -290,33 +291,39 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           return Theme.of(context).backgroundColor; // Use the default value.
         }),
         cells: [
-          DataCell(Utility.textWidget(
-            text:
-                PBISPlusUtility.convertDateString(list[index].createdAt ?? ''),
-            context: context,
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+          DataCell(Center(
+            child: Utility.textWidget(
+              text: PBISPlusUtility.convertDateString(
+                  list[index].createdAt ?? ''),
+              context: context,
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           )),
-          DataCell(Utility.textWidget(
-            context: context,
-            text: (list[index].engaged ?? 0).toString(),
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].engaged ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           )),
-          DataCell(Utility.textWidget(
-            context: context,
-            text: (list[index].niceWork ?? 0).toString(),
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].niceWork ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           )),
           DataCell(Utility.textWidget(
             context: context,

@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
@@ -12,12 +13,13 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart'
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -78,9 +80,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         mainAxisSize: MainAxisSize.max,
         children: [
           SpacerWidget(_KVertcalSpace / 4),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Utility.textWidget(
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+            // minLeadingWidth: 70,
+            title: Utility.textWidget(
               text: 'All Courses',
               context: context,
               textTheme: Theme.of(context)
@@ -88,8 +91,24 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   .headline6!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
+            leading: IconButton(
+              onPressed: () {
+                pushNewScreen(context,
+                    screen: HomePage(
+                      index: 4,
+                    ),
+                    withNavBar: false,
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino);
+              },
+              icon: Icon(
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kButtonColor,
+              ),
+            ),
           ),
-          SpacerWidget(_KVertcalSpace / 3),
+          // SpacerWidget(_KVertcalSpace / 3),
           SpacerWidget(_KVertcalSpace / 5),
           Expanded(
             child: BlocConsumer(
