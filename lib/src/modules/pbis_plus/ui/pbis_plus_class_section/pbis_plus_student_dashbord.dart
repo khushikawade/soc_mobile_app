@@ -59,11 +59,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             ? widget.studentValueNotifier.value.profile!.emailAddress!
             : widget.studentValueNotifier.value.profile!.id ?? ''));
 
+    /*-------------------------User Activity Track START----------------------------*/
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "pbis_plus_student_dashboard_screen");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_student_dashboard_screen',
         screenClass: 'PBISPlusStudentDashBoard');
+    /*-------------------------User Activity Track END----------------------------*/
 
     super.initState();
   }

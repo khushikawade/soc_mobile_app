@@ -149,10 +149,12 @@ class _PBISPlusHistoryFilterBottomSheetState
                 activeColor: AppTheme.kButtonColor,
                 title: InkWell(
                   onTap: () {
+                    /*-------------------------User Activity Track START----------------------------*/
                     FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        'Filter option click'
+                        'Filter option click PBIS+'
                             .toLowerCase()
                             .replaceAll(" ", "_"));
+                    /*-------------------------User Activity Track END----------------------------*/
 
                     if (selectedValue.value == filterList[index]) {
                       Utility.showSnackBar(

@@ -79,8 +79,10 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                     ),
                   ),
                   onPressed: () async {
+                    /*-------------------------User Activity Track START----------------------------*/
                     await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                         "Teacher profile screen PBIS+");
+                    /*-------------------------User Activity Track END----------------------------*/
 
                     Navigator.push(
                       context,
@@ -135,7 +137,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
               // refresh!(true);
             }
           });
-
+          /*-------------------------User Activity Track START----------------------------*/
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
 
@@ -144,6 +146,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
               activityId: '43',
               description: 'Google Translation',
               operationResult: 'Success');
+          /*-------------------------User Activity Track END----------------------------*/
         },
         icon: Container(
           child: Image(

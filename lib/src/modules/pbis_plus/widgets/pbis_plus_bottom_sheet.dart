@@ -55,11 +55,14 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
         setState(() {});
       });
 
+    /*-------------------------User Activity Track START----------------------------*/
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "pbis_plus_save_and_share_bottomsheet");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_save_and_share_bottomsheet',
         screenClass: 'PBISPlusBottomSheet');
+    /*-------------------------User Activity Track END----------------------------*/
+
     super.initState();
   }
 

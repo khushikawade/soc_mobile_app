@@ -182,6 +182,8 @@ class PBISPlusActionInteractionButtonState
       Utility.currentScreenSnackBar("No Internet Connection", null);
       return isLiked;
     }
+
+    /*-------------------------User Activity Track START----------------------------*/
     Utility.updateLogs(
         activityType: 'PBIS+',
         activityId: '38',
@@ -190,6 +192,7 @@ class PBISPlusActionInteractionButtonState
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         'pbis plus user interaction'.toLowerCase().replaceAll(" ", "_"));
+    /*-------------------------User Activity Track END----------------------------*/
 
     _showMessage.value = true;
     Future.delayed(Duration(seconds: 1), () {

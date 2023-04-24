@@ -57,12 +57,17 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
 
   @override
   void initState() {
-    Utility.updateLogs(
-        activityType: 'STUDENT+',
-        activityId: '41',
-        description: 'Search STUDENT+',
-        operationResult: 'Success');
+    initMethod();
+    super.initState();
+  }
 
+  @override
+  void dispose() {
+    _studentPlusBloc.close();
+    super.dispose();
+  }
+
+  initMethod() {
     StudentPlusUtility.setLocked();
     if (widget.fromStudentPlusDetailPage == true) {
       moveToTopNotifier.value = true;
@@ -70,19 +75,20 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
       _height = 0;
       _width = 0;
     }
-    super.initState();
+
+    /*-------------------------User Activity Track START----------------------------*/
+    Utility.updateLogs(
+        activityType: 'STUDENT+',
+        activityId: '41',
+        description: 'Search STUDENT+',
+        operationResult: 'Success');
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "student_plus_search_screen");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'student_plus_search_screen',
         screenClass: 'StudentPlusSearchScreen');
-  }
-
-  @override
-  void dispose() {
-    _studentPlusBloc.close();
-    super.dispose();
+    /*-------------------------User Activity Track End----------------------------*/
   }
 
   /* --------------- Things Perform on On changes in search bar --------------- */

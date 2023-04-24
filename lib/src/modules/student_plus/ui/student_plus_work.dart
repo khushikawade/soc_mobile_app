@@ -134,11 +134,16 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       children: [
         IconButton(
             onPressed: () {
+              /*-------------------------User Activity Track START----------------------------*/
               Utility.updateLogs(
                   activityType: 'STUDENT+',
                   activityId: '39',
-                  description: 'Filter Record',
+                  description: 'Filter Record STUDENT+',
                   operationResult: 'Success');
+
+              FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                  'Filter Record STUDENT+'.toLowerCase().replaceAll(" ", "_"));
+              /*-------------------------User Activity Track END----------------------------*/
 
               List<String> subjectList =
                   StudentPlusUtility.getSubjectList(list: list);
@@ -262,11 +267,16 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
       {required StudentPlusWorkModel studentWorkModel, required int index}) {
     return InkWell(
       onTap: () {
+        /*-------------------------User Activity Track START----------------------------*/
         Utility.updateLogs(
             activityType: 'STUDENT+',
             activityId: '42',
-            description: 'View Student Work',
+            description: 'View Student Work STUDENT+',
             operationResult: 'Success');
+
+        FirebaseAnalyticsService.addCustomAnalyticsEvent(
+            'View Student Work STUDENT+'.toLowerCase().replaceAll(" ", "_"));
+        /*-------------------------User Activity Track END----------------------------*/
 
         if (studentWorkModel.assessmentImageC == null ||
             studentWorkModel.assessmentImageC == '') {

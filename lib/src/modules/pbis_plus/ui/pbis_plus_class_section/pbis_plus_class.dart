@@ -471,6 +471,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   ) =>
       PBISPlusCustomFloatingActionButton(
         onPressed: () {
+          /*-------------------------User Activity Track START----------------------------*/
           Utility.updateLogs(
               activityType: 'PBIS+',
               activityId: '36',
@@ -481,6 +482,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
               'save and share from class screen PBIS+'
                   .toLowerCase()
                   .replaceAll(" ", "_"));
+          /*-------------------------User Activity Track END----------------------------*/
 
           _saveAndShareBottomSheetMenu();
         },
@@ -535,7 +537,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
                   FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      'Contact solved button pressed class screen'
+                      'Contact solved button pressed class screen PBIS+'
                           .toLowerCase()
                           .replaceAll(" ", "_"));
 
@@ -568,6 +570,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     pbisPlusClassroomBloc.add(PBISPlusImportRoster());
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
-        'Sync Google Classroom Course List'.toLowerCase().replaceAll(" ", "_"));
+        'Sync Google Classroom Course List PBIS+'
+            .toLowerCase()
+            .replaceAll(" ", "_"));
   }
 }

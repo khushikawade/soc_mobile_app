@@ -37,11 +37,13 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
     super.initState();
     PBISPlusBlocInstance.add(GetPBISPlusHistory());
 
+    /*-------------------------User Activity Track START----------------------------*/
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
         "pbis_plus_history_screen");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_history_screen',
         screenClass: 'PBISPlusHistory');
+    /*-------------------------User Activity Track END----------------------------*/
   }
 
   @override
@@ -82,6 +84,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             children: [
               IconButton(
                   onPressed: () {
+                    /*-------------------------User Activity Track START----------------------------*/
                     FirebaseAnalyticsService.addCustomAnalyticsEvent(
                         'Filter History PBIS+'
                             .toLowerCase()
@@ -92,6 +95,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                         activityId: '39',
                         description: 'Filter History PBIS+',
                         operationResult: 'Success');
+                    /*-------------------------User Activity Track END----------------------------*/
 
                     filterBottomSheet(context);
                   },
@@ -263,8 +267,10 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           color: AppTheme.kButtonColor,
         ),
         onTap: (() {
+          /*-------------------------User Activity Track START----------------------------*/
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
-              'History record view'.toLowerCase().replaceAll(" ", "_"));
+              'History record view PBIS+'.toLowerCase().replaceAll(" ", "_"));
+          /*-------------------------User Activity Track END----------------------------*/
 
           obj.uRL == null || obj.uRL == '' || !obj.uRL!.contains('http')
               ? Utility.showSnackBar(
@@ -280,8 +286,10 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
     await Future.delayed(Duration(seconds: 1));
     PBISPlusBlocInstance.add(GetPBISPlusHistory());
 
+    /*-------------------------User Activity Track START----------------------------*/
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
-        'Sync history records'.toLowerCase().replaceAll(" ", "_"));
+        'Sync history records PBIS+'.toLowerCase().replaceAll(" ", "_"));
+    /*-------------------------User Activity Track END----------------------------*/
   }
 
 //------------------------------for filter call bottom sheet"-------------------//

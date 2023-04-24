@@ -218,6 +218,11 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
             IconButton(
               padding: EdgeInsets.only(top: 2),
               onPressed: () {
+                FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                    'iReady Percentile info STUDENT+'
+                        .toLowerCase()
+                        .replaceAll(" ", "_"));
+
                 StudentPlusCommonBottomSheet.showBottomSheet(
                     title: 'iReady Percentile',
                     kLabelSpacing: _kLabelSpacing,
