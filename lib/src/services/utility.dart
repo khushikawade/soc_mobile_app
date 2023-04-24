@@ -19,6 +19,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
+import 'package:mailto/mailto.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
@@ -1093,5 +1094,15 @@ class Utility {
     } else {
       return string1.isNotEmpty ? string1 : string2;
     }
+  }
+
+  static launchMailto(subject, body) async {
+    final mailtoLink = Mailto(
+      to: ["admin@solvedconsulting.com"],
+      cc: [],
+      subject: subject,
+      body: body,
+    );
+    await Utility.launchUrlOnExternalBrowser('$mailtoLink');
   }
 }

@@ -24,22 +24,12 @@ class NeedSupportWidget extends StatelessWidget {
     );
   }
 
-// Removed informations : DrawingNo. : -' \nDeployment time : - \nDeployment: -
+// Removed information's : DrawingNo. : -' \nDeployment time : - \nDeployment: -
   void iNeedSupport(BuildContext context) {
     final String body =
         '''Description of the problem : [Please describe the issue you are encountering here...] \n\nApp : ${Globals.appSetting.contactNameC} \nVersion : ${Globals.packageInfo!.version} \nBuild : ${Globals.packageInfo!.buildNumber} \nDevice : ${Globals.manufacturer} ${Globals.systemVersion} ${Globals.versionRelease} ${Globals.name} 
          ${Globals.model} \nUser/Release-keys OS : ${Globals.baseOS} \nLocale : ${Globals.myLocale!}  \nUserToken : ${Globals.deviceID}  \nDeviceToken : ${Globals.deviceToken} ''';
     final subject = "Problem with the ${Globals.appSetting.contactNameC}";
-    launchMailto(subject, body);
-  }
-
-  launchMailto(subject, body) async {
-    final mailtoLink = Mailto(
-      to: ["admin@solvedconsulting.com"],
-      cc: [],
-      subject: subject,
-      body: body,
-    );
-    await Utility.launchUrlOnExternalBrowser('$mailtoLink');
+    Utility.launchMailto(subject, body);
   }
 }

@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
@@ -59,9 +60,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         backgroundColor: Colors.transparent,
         appBar:
             PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
-        floatingActionButton: saveAndShareFAB(
-          context,
-        ),
+        floatingActionButton: googleClassroomCourseworkList.length > 0
+            ? saveAndShareFAB(
+                context,
+              )
+            : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         body: body(),
       )
@@ -101,27 +104,24 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                               backgroundColor: AppTheme.kButtonColor,
                             )));
                   }
-                  if (state is PBISPlusImportRosterSuccess) if (state
-                          .googleClassroomCourseList.isNotEmpty ??
-                      false) {
-                    ///Used to send the list of courseWork to the bottomsheet list
-                    /*----------------------START--------------------------*/
-                    googleClassroomCourseworkList.clear();
-                    googleClassroomCourseworkList
-                        .add(ClassroomCourse(name: 'All'));
-                    googleClassroomCourseworkList
-                        .addAll(state.googleClassroomCourseList);
-                    /*----------------------END--------------------------*/
+                  if (state is PBISPlusImportRosterSuccess) {
+                    if (state.googleClassroomCourseList.isNotEmpty ?? false) {
+                      ///Used to send the list of courseWork to the bottomsheet list
+                      /*----------------------START--------------------------*/
+                      googleClassroomCourseworkList.clear();
+                      googleClassroomCourseworkList
+                          .add(ClassroomCourse(name: 'All'));
+                      googleClassroomCourseworkList
+                          .addAll(state.googleClassroomCourseList);
+                      /*----------------------END--------------------------*/
 
-                    return RefreshIndicator(
-                        key: refreshKey,
-                        onRefresh: refreshPage,
-                        child: buildList(state.googleClassroomCourseList));
-                  } else {
-                    return NoDataFoundErrorWidget(
-                        isResultNotFoundMsg: true,
-                        isNews: false,
-                        isEvents: false);
+                      return RefreshIndicator(
+                          key: refreshKey,
+                          onRefresh: refreshPage,
+                          child: buildList(state.googleClassroomCourseList));
+                    } else {
+                      return noClassroomFound();
+                    }
                   }
 
                   return Container();
@@ -470,6 +470,48 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           },
         );
       });
+
+  Widget noClassroomFound() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Utility.textWidget(
+              text:
+                  'Uh oh! Looks like we\'re unable to import your roster from Google Classroom.',
+              context: context,
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context).textTheme.headline2!),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+            child: FloatingActionButton.extended(
+                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                onPressed: () async {
+                  Utility.launchMailto(
+                      'PBIS+ | Google Classroom Import | ${Globals.appSetting.schoolNameC}',
+                      '');
+                },
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Utility.textWidget(
+                        text: 'Contact Solved',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(
+                                color: Theme.of(context).backgroundColor)),
+                  ],
+                )),
+          ),
+        ],
+      ),
+    );
+  }
 
   Future refreshPage() async {
     refreshKey.currentState?.show(atTop: false);
