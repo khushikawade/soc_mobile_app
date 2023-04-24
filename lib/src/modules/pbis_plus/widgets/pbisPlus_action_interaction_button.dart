@@ -227,6 +227,7 @@ class PBISPlusActionInteractionButtonState
           context: context,
           scaffoldKey: widget.scaffoldKey,
           studentId: widget.studentValueNotifier.value.profile!.id,
+          studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
           classroomCourseId: widget.classroomCourseId,
           engaged: widget.iconData.title == 'Engaged' ? 1 : 0,
           niceWork: widget.iconData.title == 'Nice work' ? 1 : 0,

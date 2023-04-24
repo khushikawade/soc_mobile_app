@@ -169,6 +169,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         var data = await addPBISInteraction({
           "Student_Id": event.studentId!,
+          "Student_Email": event.studentEmail,
           "Classroom_Course_Id": "${event.classroomCourseId}",
           "Engaged": "${event.engaged}",
           "Nice_Work": "${event.niceWork}",
