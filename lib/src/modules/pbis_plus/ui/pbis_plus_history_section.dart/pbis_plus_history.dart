@@ -4,9 +4,7 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_filtter_bottom_sheet.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -66,16 +64,6 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
       mainAxisSize: MainAxisSize.max,
       children: [
         SpacerWidget(_KVertcalSpace / 4),
-        // Padding(
-        //   padding: EdgeInsets.symmetric(horizontal: 20),
-        //   child: Utility.textWidget(
-        //     text: 'History',
-        //     context: context,
-        //     textTheme: Theme.of(context)
-        //         .textTheme
-        //         .headline6!
-        //         .copyWith(fontWeight: FontWeight.bold),
-        //   ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Padding(
             padding: EdgeInsets.symmetric(
@@ -94,6 +82,11 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             children: [
               IconButton(
                   onPressed: () {
+                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        'Filter History PBIS+'
+                            .toLowerCase()
+                            .replaceAll(" ", "_"));
+
                     Utility.updateLogs(
                         activityType: 'PBIS+',
                         activityId: '39',
@@ -131,7 +124,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             ],
           )
         ]),
-        SpacerWidget(_KVertcalSpace / 3),
+        // SpacerWidget(_KVertcalSpace / 3),
         SpacerWidget(_KVertcalSpace / 5),
         Container(
           // color: Colors.red,
@@ -270,6 +263,9 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           color: AppTheme.kButtonColor,
         ),
         onTap: (() {
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              'History record view'.toLowerCase().replaceAll(" ", "_"));
+
           obj.uRL == null || obj.uRL == '' || !obj.uRL!.contains('http')
               ? Utility.showSnackBar(
                   _scaffoldKey, 'Launch URL not found', context, null)
@@ -283,6 +279,9 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
     PBISPlusBlocInstance.add(GetPBISPlusHistory());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        'Sync history records'.toLowerCase().replaceAll(" ", "_"));
   }
 
 //------------------------------for filter call bottom sheet"-------------------//

@@ -147,24 +147,26 @@ class _PBISPlusHistoryFilterBottomSheetState
               child: RadioListTile(
                 controlAffinity: ListTileControlAffinity.trailing,
                 activeColor: AppTheme.kButtonColor,
-                title: selectedValue.value == filterList[index]
-                    ? InkWell(
-                        onTap: () {
-                          Utility.showSnackBar(
-                              widget.scaffoldKey,
-                              '\'${filterList[index]}\' filter is already selected',
-                              context,
-                              null);
-                        },
-                        child: Utility.textWidget(
-                            text: filterList[index],
-                            context: context,
-                            textTheme: Theme.of(context).textTheme.headline2),
-                      )
-                    : Utility.textWidget(
-                        text: filterList[index],
-                        context: context,
-                        textTheme: Theme.of(context).textTheme.headline2),
+                title: InkWell(
+                  onTap: () {
+                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                        'Filter option click'
+                            .toLowerCase()
+                            .replaceAll(" ", "_"));
+
+                    if (selectedValue.value == filterList[index]) {
+                      Utility.showSnackBar(
+                          widget.scaffoldKey,
+                          '\'${filterList[index]}\' filter is already selected',
+                          context,
+                          null);
+                    }
+                  },
+                  child: Utility.textWidget(
+                      text: filterList[index],
+                      context: context,
+                      textTheme: Theme.of(context).textTheme.headline2),
+                ),
                 groupValue: true,
                 value: selectedValue.value == filterList[index] ? true : false,
                 onChanged: (bool? value) {

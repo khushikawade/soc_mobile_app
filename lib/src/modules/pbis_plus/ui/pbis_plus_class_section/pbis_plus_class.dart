@@ -67,9 +67,14 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         appBar:
             PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
         floatingActionButton: googleClassroomCourseworkList.length > 0
-            ? saveAndShareFAB(
-                context,
-              )
+            ? ValueListenableBuilder(
+                valueListenable: selectedValue,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return saveAndShareFAB(
+                    context,
+                  );
+                })
             : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         body: body(),
@@ -194,6 +199,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 currentIndex,
                 courseList[currentIndex].students!.length,
               );
+
+              FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                  'Course chip tap PBIS+'.toLowerCase().replaceAll(" ", "_"));
             },
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -456,6 +464,12 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
               activityId: '36',
               description: 'Save and Share button open from All Courses',
               operationResult: 'Success');
+
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              'save and share from class screen PBIS+'
+                  .toLowerCase()
+                  .replaceAll(" ", "_"));
+
           _saveAndShareBottomSheetMenu();
         },
       );
@@ -508,6 +522,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
+                  FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                      'Contact solved button pressed class screen'
+                          .toLowerCase()
+                          .replaceAll(" ", "_"));
+
                   Utility.launchMailto(
                       'PBIS+ | Google Classroom Import | ${Globals.appSetting.schoolNameC}',
                       '');
@@ -535,5 +554,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     refreshKey.currentState?.show(atTop: false);
     await Future.delayed(Duration(seconds: 1));
     pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        'Sync Google Classroom Course List'.toLowerCase().replaceAll(" ", "_"));
   }
 }

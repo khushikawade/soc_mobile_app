@@ -334,14 +334,16 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                   .copyWith(fontWeight: FontWeight.bold),
             ),
           )),
-          DataCell(Utility.textWidget(
-            context: context,
-            text: (list[index].helpful ?? 0).toString(),
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold),
+          DataCell(Center(
+            child: Utility.textWidget(
+              context: context,
+              text: (list[index].helpful ?? 0).toString(),
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           )),
           DataCell(
             Container(

@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
+import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:flutter/material.dart';
@@ -186,6 +187,9 @@ class PBISPlusActionInteractionButtonState
         activityId: '38',
         description: 'User Interaction PBIS+',
         operationResult: 'Success');
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        'pbis plus user interaction'.toLowerCase().replaceAll(" ", "_"));
 
     _showMessage.value = true;
     Future.delayed(Duration(seconds: 1), () {
