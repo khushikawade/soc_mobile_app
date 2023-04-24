@@ -38,6 +38,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       []; //Used to send the value in bottomsheet coursework list
 
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
+  final ValueNotifier<int> courseLength = ValueNotifier<int>(0);
+
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -66,16 +68,16 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         backgroundColor: Colors.transparent,
         appBar:
             PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
-        floatingActionButton: googleClassroomCourseworkList.length > 0
-            ? ValueListenableBuilder(
-                valueListenable: selectedValue,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  return saveAndShareFAB(
-                    context,
-                  );
-                })
-            : null,
+        floatingActionButton: ValueListenableBuilder(
+            valueListenable: courseLength,
+            child: Container(),
+            builder: (BuildContext context, dynamic value, Widget? child) {
+              return courseLength.value > 0
+                  ? saveAndShareFAB(
+                      context,
+                    )
+                  : Container();
+            }),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         body: body(),
       )
@@ -134,19 +136,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   }
                   if (state is PBISPlusImportRosterSuccess) {
                     if (state.googleClassroomCourseList.isNotEmpty ?? false) {
-                      ///Used to send the list of courseWork to the bottomsheet list
-                      /*----------------------START--------------------------*/
-                      googleClassroomCourseworkList.clear();
-                      googleClassroomCourseworkList
-                          .add(ClassroomCourse(name: 'All'));
-                      googleClassroomCourseworkList
-                          .addAll(state.googleClassroomCourseList);
-                      /*----------------------END--------------------------*/
-
-                      return RefreshIndicator(
-                          key: refreshKey,
-                          onRefresh: refreshPage,
-                          child: buildList(state.googleClassroomCourseList));
+                      return buildList(state.googleClassroomCourseList);
                     } else {
                       return noClassroomFound();
                     }
@@ -154,7 +144,26 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
                   return Container();
                 },
-                listener: (context, state) {}),
+                listener: (context, state) {
+                  if (state is PBISPlusImportRosterSuccess) {
+                    if (state.googleClassroomCourseList.isNotEmpty ?? false) {
+                      //To manage FAB
+                      courseLength.value =
+                          state.googleClassroomCourseList.length;
+
+                      ///Used to send the list of courseWork to the bottomsheet list
+                      /*----------------------START--------------------------*/
+                      googleClassroomCourseworkList.clear();
+                      googleClassroomCourseworkList
+                          .add(ClassroomCourse(name: 'All'));
+                      googleClassroomCourseworkList
+                          .addAll(state.googleClassroomCourseList);
+
+                      /*----------------------END--------------------------*/
+
+                    }
+                  }
+                }),
           ),
         ],
       ),
@@ -250,19 +259,22 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   }
 
   Widget studentListCourseWiseView(googleClassroomCourseList) {
-    return Container(
-        height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height * 0.60 //7
-            : MediaQuery.of(context).size.height * 0.45,
-        child: ScrollablePositionedList.builder(
-            padding: EdgeInsets.only(bottom: 30),
-            shrinkWrap: true,
-            itemScrollController: _itemScrollController,
-            itemCount: googleClassroomCourseList.length,
-            itemBuilder: (context, index) {
-              return _buildCourseSeparationList(
-                  googleClassroomCourseList, index);
-            }));
+    return RefreshIndicator(
+        key: refreshKey,
+        onRefresh: refreshPage,
+        child: Container(
+            height: MediaQuery.of(context).orientation == Orientation.portrait
+                ? MediaQuery.of(context).size.height * 0.60 //7
+                : MediaQuery.of(context).size.height * 0.45,
+            child: ScrollablePositionedList.builder(
+                padding: EdgeInsets.only(bottom: 30),
+                shrinkWrap: true,
+                itemScrollController: _itemScrollController,
+                itemCount: googleClassroomCourseList.length,
+                itemBuilder: (context, index) {
+                  return _buildCourseSeparationList(
+                      googleClassroomCourseList, index);
+                })));
   }
 
   Widget _buildCourseSeparationList(
