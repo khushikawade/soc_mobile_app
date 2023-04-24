@@ -20,6 +20,7 @@ class AddPBISInteraction extends PBISPlusEvent {
   final context;
   final scaffoldKey;
   final String? studentId;
+  final String? studentEmail;
   final String? classroomCourseId;
   final int? engaged;
   final int? niceWork;
@@ -29,6 +30,7 @@ class AddPBISInteraction extends PBISPlusEvent {
       {required this.context,
       required this.scaffoldKey,
       required this.studentId,
+      required this.studentEmail,
       required this.classroomCourseId,
       this.engaged,
       this.niceWork,
