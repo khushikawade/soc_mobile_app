@@ -3,9 +3,10 @@ class StudentPlusOverrides {
   /*                  List of Static word used in student plus                  */
   /* -------------------------------------------------------------------------- */
   // Student Plus Module Local Db
-  static final String studentInfoRecentList = "student_info_recent_search_list";
-  static final String studentWorkList = "student_work_list";
-  static final String studentPlusDetails = "student_plus_details";
+  static final String studentInfoRecentList =
+      "student_info_recent_search_list1";
+  static final String studentWorkList = "student_work_list1";
+  static final String studentPlusDetails = "student_plus_details1";
   static final String searchTileStaticWord = 'Class';
   static final String recentSearchHeader = "Recent Search";
   static final String titleSearchPage = 'Search Any Student';
