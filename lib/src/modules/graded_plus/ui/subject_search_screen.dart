@@ -801,7 +801,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                               }
                             }),
                         Utility.textWidget(
-                            text: 'Save to drive',
+                            text: 'Save',
                             context: context,
                             textTheme: Theme.of(context)
                                 .textTheme

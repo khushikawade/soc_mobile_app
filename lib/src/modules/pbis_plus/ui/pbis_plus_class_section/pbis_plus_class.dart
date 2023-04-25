@@ -144,7 +144,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
                   return Container();
                 },
-                listener: (context, state) {
+                listener: (context, state) async {
                   if (state is PBISPlusImportRosterSuccess) {
                     if (state.googleClassroomCourseList.isNotEmpty ?? false) {
                       //To manage FAB
@@ -162,6 +162,25 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                       /*----------------------END--------------------------*/
 
                     }
+                  }
+                  if (state is PBISErrorState) {
+                    if (state.error == 'ReAuthentication is required') {
+                      await Utility.refreshAuthenticationToken(
+                          isNavigator: true,
+                          errorMsg: state.error!,
+                          context: context,
+                          scaffoldKey: _scaffoldKey);
+
+                      pbisPlusClassroomBloc.add(PBISPlusImportRoster());
+                    } else {
+                      Navigator.of(context).pop();
+                      Utility.currentScreenSnackBar(
+                          "Something Went Wrong. Please Try Again.", null);
+                    }
+
+                    // Navigator.of(context).pop();
+                    // Utility.currentScreenSnackBar(
+                    //     "Something Went Wrong. Please Try Again.");
                   }
                 }),
           ),

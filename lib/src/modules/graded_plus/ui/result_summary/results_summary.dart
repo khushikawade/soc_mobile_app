@@ -1839,9 +1839,9 @@ class studentRecordList extends State<ResultsSummary> {
 
               _showDataSavedPopup(
                   historyAssessmentSection: true,
-                  title: 'Action Required',
+                  title: 'Are you sure?',
                   msg:
-                      'If you navigate to the history section, You will not be able to return back to the current screen. \n\nDo you still want to move forward?',
+                      'If you exit now, you will not be able to return to this page. Continue?',
                   noActionText: 'No',
                   yesActionText: 'Yes, Take Me There');
             } else if ((iconName[index] == 'Sheet' ||
@@ -2301,9 +2301,9 @@ class studentRecordList extends State<ResultsSummary> {
 
         _showDataSavedPopup(
             historyAssessmentSection: true,
-            title: 'Action Required',
+            title: 'Are you sure?',
             msg:
-                'If you navigate to the history section, You will not be able to return back to the current screen. \n\nDo you still want to move forward?',
+                'If you exit now, you will not be able to return to this page. Continue?',
             noActionText: 'No',
             yesActionText: 'Yes, Take Me There');
         break;

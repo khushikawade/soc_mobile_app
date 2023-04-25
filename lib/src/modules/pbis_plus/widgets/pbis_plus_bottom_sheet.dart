@@ -542,7 +542,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             context: context,
             textAlign: TextAlign.center,
             text: classroomLoader
-                ? 'Please be patience while your \'Google Classroom\' assignment is being created. It may take a while.'
+                ? 'Preparing Google Classroom Assignment'
                 : 'Preparing Google Spreadsheet',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
