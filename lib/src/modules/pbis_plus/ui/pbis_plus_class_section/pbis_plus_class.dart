@@ -142,7 +142,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                     }
                   }
 
-                  return Container();
+                  return noClassroomFound();
                 },
                 listener: (context, state) async {
                   if (state is PBISPlusImportRosterSuccess) {
