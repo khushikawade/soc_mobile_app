@@ -1,6 +1,10 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -11,6 +15,7 @@ import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class PBISPlusBottomSheet extends StatefulWidget {
@@ -41,7 +46,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
   final _formKey = GlobalKey<FormState>();
 
   GoogleClassroomBloc classroomBloc = GoogleClassroomBloc();
-
+  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
   int pageValue = 0;
   bool classroomLoader = false;
 
@@ -403,9 +408,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.ease);
 
-                if (classroomLoader == true) {
-                  // classroomLoader = true;
-
+                //Create Google Classroom Assignment for Selected Courses if classroomLoader = true
+                if (classroomLoader) {
                   classroomBloc.add(CreatePBISClassroomCoursework(
                     pointPossible: pointPossibleController.text,
                     courseAndStudentList: selectedCoursesList.length == 0
@@ -413,6 +417,18 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                         : selectedCoursesList,
                     // studentAssessmentInfoDb: studentAssessmentInfoDb
                   ));
+                }
+                //Create Google Spreadsheet for Selected Courses if classroomLoader = false
+                else {
+                  if (PBISPlusOverrides
+                          .pbisPlusGoogleDriveFolderId.isNotEmpty ==
+                      true) {
+                    //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+                    _createSpreadSheet();
+                  } else {
+                    //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+                    _checkDriveFolderExistsOrNot();
+                  }
                 }
               },
               label: Row(
@@ -428,7 +444,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 ],
               )),
         ),
-        blocListener()
+        // classroomLoader
+        //     ? googleClassroomBlocListener()
+        //     : googleDriveBlocListener()
       ],
     );
   }
@@ -528,12 +546,14 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                 : 'Preparing Google Spreadsheet',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
-        blocListener()
+        classroomLoader
+            ? googleClassroomBlocListener()
+            : googleDriveBlocListener()
       ],
     );
   }
 
-  Widget blocListener() {
+  Widget googleClassroomBlocListener() {
     return Container(
       height: 0,
       width: 0,
@@ -578,5 +598,78 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           },
           child: EmptyContainer()),
     );
+  }
+
+  Widget googleDriveBlocListener() {
+    return Container(
+      height: 0,
+      width: 0,
+      child: BlocListener<GoogleDriveBloc, GoogleDriveState>(
+          bloc: googleDriveBloc,
+          listener: (context, state) async {
+            if (state is GoogleSuccess) {
+              //In case of Folder Id received
+              _createSpreadSheet();
+            }
+            if (state is ExcelSheetCreated) {
+              PBISPlusOverrides.pbisPlusGoogleSpreadSheetsId =
+                  state.googleSpreadSheetFileId;
+              googleDriveBloc.add(PBISPlusUpdateDataOnSpreadSheetTabs(
+                  fileId: state.googleSpreadSheetFileId,
+                  classroomCourseworkList: selectedCoursesList?.isEmpty ?? true
+                      ? widget.googleClassroomCourseworkList
+                      : selectedCoursesList));
+            }
+            if (state is PBISPlusUpdateDataOnSpreadSheetSuccess) {
+              Navigator.pop(context);
+              Utility.currentScreenSnackBar(
+                  "Google SpreadSheet Created Successfully.", null);
+            }
+            if (state is ErrorState) {
+              if (state.errorMsg == 'ReAuthentication is required') {
+                await Utility.refreshAuthenticationToken(
+                    isNavigator: true,
+                    errorMsg: state.errorMsg!,
+                    context: context,
+                    scaffoldKey: widget.scaffoldKey);
+
+                Navigator.of(context).pop();
+                Utility.currentScreenSnackBar('Please try again', null);
+              } else {
+                Navigator.of(context).pop();
+                Utility.currentScreenSnackBar(
+                    state.errorMsg == 'NO_CONNECTION'
+                        ? 'No Internet Connection'
+                        : "Something Went Wrong. Please Try Again.",
+                    null);
+              }
+            }
+          },
+          child: EmptyContainer()),
+    );
+  }
+
+  //check drive folder exists or not if not exists create one
+  void _checkDriveFolderExistsOrNot() async {
+    final List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+    final UserInformation userProfile = _profileData[0];
+
+    googleDriveBloc.add(GetDriveFolderIdEvent(
+        fromGradedPlusAssessmentSection: false,
+        isReturnState: true,
+        token: userProfile.authorizationToken,
+        folderName: "SOLVED PBIS+",
+        refreshToken: userProfile.refreshToken));
+  }
+
+  void _createSpreadSheet() {
+    PBISPlusOverrides.pbisPlusGoogleSpreadSheetsId = '';
+    //CREATE SPREADSHEET ON DRIVE
+    googleDriveBloc.add(CreateExcelSheetToDrive(
+        isMcqSheet: false,
+        name:
+            "PBIS_${Globals.appSetting.contactNameC}_${DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())}",
+        folderId: PBISPlusOverrides.pbisPlusGoogleDriveFolderId));
   }
 }

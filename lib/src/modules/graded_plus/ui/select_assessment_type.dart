@@ -251,7 +251,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                       Utility.showLoadingDialog(context: context, isOCR: true);
                     }
                     if (state is GoogleSuccess) {
-                      if (state.assessmentSection == true) {
+                      if (state.fromGradedPlusAssessmentSection == true) {
                         Navigator.of(context).pop();
                         _beforenavigateOnAssessmentSection();
                       }
@@ -338,8 +338,9 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
         await UserGoogleProfile.getUserProfile();
 
     _googleDriveBloc.add(GetDriveFolderIdEvent(
-        assessmentSection: isTriggerdbyAssessmentSection ? true : null,
-        isFromOcrHome: true,
+        fromGradedPlusAssessmentSection:
+            isTriggerdbyAssessmentSection ? true : null,
+        isReturnState: true,
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",

@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
@@ -20,4 +18,8 @@ class PBISPlusOverrides {
   // base url used for PBIS plus section
   static final String pbisBaseUrl =
       "https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/";
+
+  static String pbisPlusGoogleDriveFolderId = '';
+  static String pbisPlusGoogleDriveFolderPath = '';
+  static String pbisPlusGoogleSpreadSheetsId = '';
 }

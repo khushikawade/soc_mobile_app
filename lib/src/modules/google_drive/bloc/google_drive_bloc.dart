@@ -11,6 +11,8 @@ import 'package:Soc/src/modules/google_drive/model/spreadsheet_model.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -28,6 +30,7 @@ import 'package:path/path.dart';
 import '../../google_classroom/google_classroom_globals.dart';
 import '../../graded_plus/modal/custom_rubic_modal.dart';
 import '../../graded_plus/modal/student_assessment_info_modal.dart';
+
 import 'package:dio/dio.dart';
 import '../model/user_profile.dart';
 part 'google_drive_event.dart';
@@ -50,11 +53,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     if (event is GetDriveFolderIdEvent) {
       try {
         var folderObject;
-        if (event.isFromOcrHome!) {
+
+        //isReturnState is used to check if the we are waiting for state on UI or not to move further
+        if (event.isReturnState!) {
           yield GoogleDriveLoading();
         }
         //  folderObject = await _getGoogleDriveFolderId(
         //     token: event.token, folderName: event.folderName);
+
+        //Get Folder Id if folder already exist
         folderObject = await _getGoogleDriveFolderId(
             token: event.token,
             folderName: event.folderName,
@@ -62,22 +69,43 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
         //Condition To Create Folder In Case Of It Is Not Exist
         if (folderObject != 401 && folderObject != 500) {
+          //Which means folder API return 200 but folder not found
           if (folderObject.length == 0) {
-            await _createFolderOnDrive(
+            //Create the folder now
+            String? folderId = await _createFolderOnDrive(
                 token: event.token, folderName: event.folderName);
 
-            if (event.isFromOcrHome! &&
-                Globals.googleDriveFolderId!.isNotEmpty) {
-              yield GoogleSuccess(assessmentSection: event.assessmentSection);
+            if (event.isReturnState! && (folderId?.isNotEmpty ?? false)) {
+              //fromGradedPlusAssessmentSection is used to check if API call from assessment section or not //Used in Graded+ //No used in PBIS+
+              yield GoogleSuccess(
+                  fromGradedPlusAssessmentSection:
+                      event.fromGradedPlusAssessmentSection);
             }
           } else {
-            Globals.googleDriveFolderId = folderObject['id'];
-            Globals.googleDriveFolderPath = folderObject['webViewLink'];
+            // Globals.googleDriveFolderId = folderObject['id'];
+            // Globals.googleDriveFolderPath = folderObject['webViewLink'];
 
-            if (event.isFromOcrHome! &&
-                Globals.googleDriveFolderId!.isNotEmpty) {
-              yield GoogleSuccess(assessmentSection: event.assessmentSection);
+            //FOR GRADED+
+            if (event.folderName == "SOLVED GRADED+") {
+              Globals.googleDriveFolderId = folderObject['id'];
+              Globals.googleDriveFolderPath = folderObject['webViewLink'];
+            } else if (event.folderName == "SOLVED PBIS+") {
+              //FOR PBIS PLUS
+              PBISPlusOverrides.pbisPlusGoogleDriveFolderId =
+                  folderObject['id'];
+              PBISPlusOverrides.pbisPlusGoogleDriveFolderPath =
+                  folderObject['webViewLink'];
             }
+
+            if (event.isReturnState! &&
+                (folderObject['id'].isNotEmpty == true)) {
+              //fromGradedPlusAssessmentSection is used to check if API call from assessment section or not //Used in Graded+ //No used in PBIS+
+              yield GoogleSuccess(
+                  fromGradedPlusAssessmentSection:
+                      event.fromGradedPlusAssessmentSection);
+            }
+
+            //Used to fetch Graded+ assessment history
             if (event.fetchHistory == true) {
               GetHistoryAssessmentFromDrive(
                   filterType: event.filterType!, isSearchPage: false);
@@ -91,17 +119,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 await UserGoogleProfile.getUserProfile();
 
             GetDriveFolderIdEvent(
-                isFromOcrHome: true,
+                isReturnState: true,
                 token: _userProfileLocalData[0].authorizationToken,
                 folderName: event.folderName,
                 refreshToken: _userProfileLocalData[0].refreshToken);
-            yield GoogleSuccess(assessmentSection: event.assessmentSection);
+
+            //fromGradedPlusAssessmentSection is used to check if API call from assessment section or not //Used in Graded+ //No used in PBIS+
+            yield GoogleSuccess(
+                fromGradedPlusAssessmentSection:
+                    event.fromGradedPlusAssessmentSection);
           } else {
             yield ErrorState(
                 errorMsg: 'ReAuthentication is required',
-                isAssessmentSection: event.assessmentSection);
+                isAssessmentSection: event.fromGradedPlusAssessmentSection);
           }
         }
+
+        //Return the final state of Folder Created
         if (Globals.googleDriveFolderId != "") {
           yield GoogleFolderCreated();
         }
@@ -127,23 +161,34 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         yield GoogleDriveLoading();
         List<UserInformation> _userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
-        Globals.assessmentName = event.name;
-        String result = await createSheetOnDrive(
+
+        // Globals.assessmentName = event.name;
+
+        // String result = await createSheetOnDrive(
+        //   isMcqSheet: event.isMcqSheet,
+        //   name: event.name!,
+        //   folderId: Globals.googleDriveFolderId,
+        //   accessToken: _userProfileLocalData[0].authorizationToken,
+        //   refreshToken: _userProfileLocalData[0].refreshToken,
+        // );
+
+        final List result = await createSheetOnDrive(
           isMcqSheet: event.isMcqSheet,
           name: event.name!,
-          folderId: Globals.googleDriveFolderId,
+          folderId: event.folderId,
           accessToken: _userProfileLocalData[0].authorizationToken,
           refreshToken: _userProfileLocalData[0].refreshToken,
         );
-        if (result == '') {
+
+        if (result[1] == '') {
           //Managing extra state to call the same event again in case of token expired
           yield RecallTheEvent();
-        } else if (result == 'ReAuthentication is required') {
+        } else if (result[1] == 'ReAuthentication is required') {
           yield ErrorState(
             errorMsg: 'ReAuthentication is required',
           );
-        } else {
-          yield ExcelSheetCreated();
+        } else if (result[0]) {
+          yield ExcelSheetCreated(googleSpreadSheetFileId: result[1]);
         }
       } on SocketException catch (e) {
         yield ErrorState(errorMsg: e.toString());
@@ -637,7 +682,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           GetDriveFolderIdEvent(
               filterType: event.filterType,
-              isFromOcrHome: false,
+              isReturnState: false,
               //  filePath: file,
               token: _userProfileLocalData[0].authorizationToken,
               folderName: "SOLVED GRADED+",
@@ -720,7 +765,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         } else {
           GetDriveFolderIdEvent(
               filterType: event.filterType,
-              isFromOcrHome: false,
+              isReturnState: false,
               //  filePath: file,
               token: _userProfileLocalData[0].authorizationToken,
               folderName: "SOLVED GRADED+",
@@ -1060,6 +1105,52 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print(e);
       }
     }
+    if (event is PBISPlusUpdateDataOnSpreadSheetTabs) {
+      try {
+        //GET THE USER DETAILS
+        final List<UserInformation> _profileData =
+            await UserGoogleProfile.getUserProfile();
+
+        //REMOVE THE ALL OBJECT FROM LIST IF EXISTS
+        if (event.classroomCourseworkList.length > 0 &&
+            event.classroomCourseworkList[0].name == 'All') {
+          event.classroomCourseworkList.removeAt(0);
+        }
+
+        var isBlankSpreadsheetTabsAdded;
+        var isSpreadsheetTabsUpdated;
+
+        //FIRST CREATE TABS ON SPREADSHEET DRIVE AS PER THE CHOSEN COURSES
+        isBlankSpreadsheetTabsAdded = await addTabsOnSpreadSheet(
+            fileId: event.fileId,
+            userProfile: _profileData[0],
+            classroomCourseList: event.classroomCourseworkList);
+
+        //only if tabs created then update tabs on sheet
+        if (isBlankSpreadsheetTabsAdded == true) {
+          //update all tabs with data once blank tabs crated in the sheet
+          isSpreadsheetTabsUpdated = await updateAllTabsDataInsideSpreadSheet(
+            fileId: event.fileId,
+            classroomCourseworkList: event.classroomCourseworkList,
+            userProfile: _profileData[0],
+          );
+        }
+
+        if (isBlankSpreadsheetTabsAdded == true &&
+            isSpreadsheetTabsUpdated == true) {
+          yield PBISPlusUpdateDataOnSpreadSheetSuccess();
+        } else {
+          ErrorState(
+              errorMsg: isBlankSpreadsheetTabsAdded != true
+                  ? isBlankSpreadsheetTabsAdded.toString()
+                  : isSpreadsheetTabsUpdated.toString());
+        }
+      } catch (e) {
+        yield ErrorState(
+          errorMsg: e.toString(),
+        );
+      }
+    }
   }
 
   void errorThrow(msg) {
@@ -1093,7 +1184,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> _createFolderOnDrive(
+  Future<String?> _createFolderOnDrive(
       {required String? token, required String? folderName}) async {
     try {
       final body = {
@@ -1111,12 +1202,27 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           body: body,
           isGoogleApi: true);
 
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
+      // if (response.statusCode != 401 &&
+      //     response.statusCode == 200 &&
+      //     response.data['statusCode'] != 500) {
+      //   //  String id = response.data['id'];
+
+      //   return Globals.googleDriveFolderId = response.data['body']['id'];
+      // }
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
         //  String id = response.data['id'];
 
-        return Globals.googleDriveFolderId = response.data['body']['id'];
+        //   return Globals.googleDriveFolderId = response.data['body']['id'];
+
+        String folderId = response.data['body']['id'];
+        //for GARDED+
+        if (folderName == "SOLVED GRADED+") {
+          Globals.googleDriveFolderId = folderId;
+        } else if (folderName == "SOLVED PBIS+") {
+          //FOR PBIS PLUS
+          PBISPlusOverrides.pbisPlusGoogleDriveFolderId = folderId;
+        }
+        return folderId;
       }
       return "";
     } catch (e) {
@@ -1135,16 +1241,17 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         'authorization': 'Bearer $token'
       };
       String query =
-          '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
+          //   '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')';
+          folderName == "SOLVED GRADED+"
+              ? '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED GRADED%2B\')'
+              : '(trashed = false and mimeType = \'application/vnd.google-apps.folder\' and name = \'SOLVED PBIS%2B\')';
 
       final ResponseModel response = await _dbServices.getApiNew(
           '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}' +
-              'https://www.googleapis.com/drive/v3/files?fields=%2A%26q=' 
-              +
+              'https://www.googleapis.com/drive/v3/files?fields=%2A%26q=' +
               Uri.encodeFull(query),
           headers: headers,
           isCompleteUrl: true);
-          
 
       // if (response.statusCode != 401 &&
       //     response.statusCode == 200 &&
@@ -1191,7 +1298,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> createSheetOnDrive(
+  Future<List> createSheetOnDrive(
       {String? name,
       bool? isMcqSheet,
       //  File? image,
@@ -1199,6 +1306,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       String? accessToken,
       String? refreshToken}) async {
     try {
+      print(accessToken);
+      print(folderId);
+      print(name);
       Map body = {
         'name': name,
         // 'description': 'Assessment \'$name\' result has been generated.',
@@ -1223,9 +1333,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
         String fileId = response.data['body']['id'];
-        Globals.googleExcelSheetId = fileId;
+        // Globals.googleExcelSheetId = fileId;
 
-        return 'Done';
+        return [true, fileId];
       } else if ((response.statusCode == 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
@@ -1236,7 +1346,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
-          String result = await createSheetOnDrive(
+          final List res = await createSheetOnDrive(
             isMcqSheet: isMcqSheet,
             name: name!,
             folderId: folderId,
@@ -1245,14 +1355,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
             //  image: file
           );
-          return result;
+          return res;
         } else {
-          return 'ReAuthentication is required';
+          return [false, 'ReAuthentication is required'];
         }
       }
-      return '';
+      return [false, ''];
     } catch (e) {
-      throw (e);
+      return [false, e.toString()];
     }
   }
 
@@ -2510,6 +2620,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
+  /*----------------------------------------------------------------------------------------------*/
+  /*--------------------------------prepareAddAndUpdateSlideRequestBody---------------------------*/
+  /*----------------------------------------------------------------------------------------------*/
+
   prepareAddAndUpdateSlideRequestBody({
     required LocalDatabase<StudentAssessmentInfo> studentInfoDb,
     required bool? isScanMore,
@@ -2629,6 +2743,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
+  /*----------------------------------------------------------------------------------------------*/
+  /*------------------------------------_editSlideFromPresentation--------------------------------*/
+  /*-----------------------------------------PART A-----------------------------------------------*/
+
   Future _editSlideFromPresentation(
       {required StudentAssessmentInfo studentAssessmentInfo,
       required String? presentationId,
@@ -2678,6 +2796,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
+  /*----------------------------------------------------------------------------------------------*/
+  /*------------------------------------_editSlideFromPresentation--------------------------------*/
+  /*-----------------------------------------PART B-----------------------------------------------*/
+
   List prepareEditAndUpdateSlideRequestBody(
       {required StudentAssessmentInfo studentAssessmentInfo}) {
     try {
@@ -2716,6 +2838,195 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return slideObjects;
     } catch (e) {
       print(e);
+      return [];
+    }
+  }
+
+  /*----------------------------------------------------------------------------------------------*/
+  /*----------------------Add Blank Tabs to Spreadsheet and Preparing API Body--------------------*/
+  /*------------------------------------------PART A----------------------------------------------*/
+
+  Future<dynamic> addTabsOnSpreadSheet(
+      {required String fileId,
+      required UserInformation userProfile,
+      required List<ClassroomCourse> classroomCourseList,
+      int retry = 3}) async {
+    try {
+      // Prepare body to create blank tabs to the spreadsheet on Drive.
+      List<Map<String, Map<String, dynamic>>> allTabs =
+          buildBlankTabsInsideSpreadSheet(
+              classroomCourseList: classroomCourseList);
+
+      final body = {
+        'requests': allTabs,
+      };
+
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${userProfile.authorizationToken}',
+      };
+
+      final url =
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://sheets.googleapis.com/v4/spreadsheets/$fileId:batchUpdate';
+
+      final ResponseModel response = await _dbServices.postApi(url,
+          headers: headers, body: body, isGoogleApi: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        return true;
+      } else if (retry > 0) {
+        var result =
+            await _toRefreshAuthenticationToken(userProfile.refreshToken!);
+
+        if (result == true) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+          return await addTabsOnSpreadSheet(
+              fileId: fileId,
+              classroomCourseList: classroomCourseList,
+              userProfile: _userProfileLocalData[0],
+              retry: retry - 1);
+        } else {
+          return 'ReAuthentication is required';
+        }
+      }
+      return response.statusCode;
+    } catch (e) {
+      print(e);
+      return e;
+    }
+  }
+
+  /*----------------------------------------------------------------------------------------------*/
+  /*----------------------Add Blank Tabs to Spreadsheet and Preparing API Body--------------------*/
+  /*------------------------------------------PART B----------------------------------------------*/
+
+  List<Map<String, Map<String, dynamic>>> buildBlankTabsInsideSpreadSheet({
+    required List<ClassroomCourse> classroomCourseList,
+  }) {
+    try {
+      return [
+        // Update first default tab title.
+        {
+          'updateSheetProperties': {
+            'properties': {'sheetId': 0, 'title': classroomCourseList[0].name},
+            'fields': 'title',
+          },
+        },
+        // Build new tabs inside sheet for all other selected courses.
+        ...classroomCourseList
+            .sublist(1)
+            .map((course) => {
+                  'addSheet': {
+                    'properties': {'title': course.name},
+                  },
+                })
+            .toList(),
+      ];
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  /*----------------------------------------------------------------------------------------------*/
+  /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
+  /*------------------------------------------PART A----------------------------------------------*/
+
+  Future updateAllTabsDataInsideSpreadSheet(
+      {required String fileId,
+      required UserInformation userProfile,
+      required List<ClassroomCourse> classroomCourseworkList,
+      int retry = 3}) async {
+    try {
+      // Update data to each tab of the spreadsheet
+      final List<Map<String, dynamic>> updatedTabs = updateTabsInSpreadSheet(
+          classroomCourseworkList: classroomCourseworkList);
+
+      final Map<String, dynamic> body = {
+        "data": updatedTabs,
+        "valueInputOption": "USER_ENTERED",
+        "includeValuesInResponse": false,
+        "responseDateTimeRenderOption": "SERIAL_NUMBER",
+        "responseValueRenderOption": "FORMATTED_VALUE"
+      };
+
+      final Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer ${userProfile.authorizationToken}'
+      };
+
+      final ResponseModel response = await _dbServices.postApi(
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://sheets.googleapis.com/v4/spreadsheets/$fileId/values:batchUpdate',
+          headers: headers,
+          body: body,
+          isGoogleApi: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        return true;
+      } else if (retry > 0) {
+        var result =
+            await _toRefreshAuthenticationToken(userProfile.refreshToken!);
+        if (result == true) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+          return await updateAllTabsDataInsideSpreadSheet(
+              classroomCourseworkList: classroomCourseworkList,
+              fileId: fileId,
+              userProfile: _userProfileLocalData[0],
+              retry: retry - 1);
+        } else {
+          return 'ReAuthentication is required';
+        }
+      }
+      return response.statusCode;
+    } catch (e) {
+      print(e);
+      return e;
+    }
+  }
+
+  /*----------------------------------------------------------------------------------------------*/
+  /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
+  /*------------------------------------------PART B----------------------------------------------*/
+  List<Map<String, dynamic>> updateTabsInSpreadSheet({
+    required List<ClassroomCourse> classroomCourseworkList,
+  }) {
+    try {
+      return classroomCourseworkList.map((course) {
+        return {
+          'range': '${course.name}!A1:E${course.students!.length + 1}',
+          'majorDimension': 'ROWS',
+          //building row with the student information
+          'values': _buildRows(students: course.students ?? []),
+        };
+      }).toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /*----------------------------------------------------------------------------------------------*/
+  /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
+  /*------------------------------------------PART C----------------------------------------------*/
+
+  List<List<dynamic>> _buildRows({required List<ClassroomStudents> students}) {
+    try {
+      return [
+        // always first row for the Headings
+        ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'],
+        //stduent information
+        ...students.map((student) => [
+              student.profile!.name!.fullName,
+              student.profile!.engaged,
+              student.profile!.niceWork,
+              student.profile!.helpful,
+              student.profile!.engaged! +
+                  student.profile!.niceWork! +
+                  student.profile!.helpful!,
+            ]),
+      ];
+    } catch (e) {
       return [];
     }
   }

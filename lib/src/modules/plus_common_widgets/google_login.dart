@@ -172,10 +172,10 @@ class GoogleLogin {
     _ocrBloc
         .add(VerifyUserWithDatabase(email: _userProfileLocalData[0].userEmail));
 
-    //Creating a assessment folder in users google drive to maintain all the assessments together at one place
+    // Creating a assessment folder in users google drive to maintain all the assessments together at one place
     Globals.googleDriveFolderId = '';
     _googleDriveBloc.add(GetDriveFolderIdEvent(
-        isFromOcrHome: false,
+        isReturnState: false,
         //  filePath: file,
         token: _userProfileLocalData[0].authorizationToken,
         folderName: "SOLVED GRADED+",

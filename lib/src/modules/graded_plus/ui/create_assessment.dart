@@ -780,13 +780,17 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       //   Utility.showLoadingDialog(
                       //       context: context, isOCR: true);
                       // }
+                      Globals.assessmentName =
+                          "${assessmentController.text}_${classController.text}";
 
                       if (state is ExcelSheetCreated) {
+                        Globals.googleExcelSheetId =
+                            state.googleSpreadSheetFileId;
                         //Create Google Presentation once Spreadsheet created
                         _googleDriveBloc.add(CreateSlideToDrive(
                             isMcqSheet: widget.isMcqSheet ?? false,
-                            fileTitle:
-                                "${assessmentController.text}_${classController.text}",
+                            fileTitle: Globals.assessmentName,
+                            // "${assessmentController.text}_${classController.text}",
                             excelSheetId: Globals.googleExcelSheetId));
                       }
                       if (state is ErrorState) {
@@ -796,11 +800,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               errorMsg: state.errorMsg!,
                               context: context,
                               scaffoldKey: scaffoldKey);
-
+                          // Globals.assessmentName =
+                          //     "${assessmentController.text}_${classController.text}";
                           _googleDriveBloc.add(CreateExcelSheetToDrive(
                               isMcqSheet: widget.isMcqSheet,
-                              name:
-                                  "${assessmentController.text}_${classController.text}"));
+                              name: Globals.assessmentName,
+                              folderId: Globals.googleDriveFolderId!));
                         } else {
                           Navigator.of(context).pop();
                           Utility.currentScreenSnackBar(
@@ -811,10 +816,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         }
                       }
                       if (state is RecallTheEvent) {
+                        // Globals.assessmentName =
+                        //     "${assessmentController.text}_${classController.text}";
                         _googleDriveBloc.add(CreateExcelSheetToDrive(
                             isMcqSheet: widget.isMcqSheet,
-                            name:
-                                "${assessmentController.text}_${classController.text}"));
+                            name: Globals.assessmentName,
+                            folderId: Globals.googleDriveFolderId!));
                       }
 
                       if (state is GoogleSlideCreated) {
@@ -1132,9 +1139,12 @@ class _CreateAssessmentState extends State<CreateAssessment>
   }
 
   void _callToCreateExcelSheetAndClassRoomIfStandAlone() {
+    Globals.assessmentName =
+        "${assessmentController.text}_${classController.text}";
     _googleDriveBloc.add(CreateExcelSheetToDrive(
         isMcqSheet: widget.isMcqSheet,
-        name: "${assessmentController.text}_${classController.text}"));
+        name: Globals.assessmentName,
+        folderId: Globals.googleDriveFolderId!));
 
 //Create google classroom assignment in case of standalone only
     if (Overrides.STANDALONE_GRADED_APP) {

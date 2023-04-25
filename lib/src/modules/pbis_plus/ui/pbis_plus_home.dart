@@ -1,6 +1,10 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_bottomnavbar.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
@@ -19,11 +23,14 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
   final ValueNotifier<bool> _isFABVisible = ValueNotifier(true);
 
   List<PersistentBottomNavBarItem> PBISPlusPersistentBottomNavBarItems = [];
+  GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
 
   @override
   void initState() {
     super.initState();
     PBISPlusPersistentTabController = PersistentTabController(initialIndex: 0);
+
+    _checkDriveFolderExistsOrNot();
   }
 
   @override
@@ -102,5 +109,22 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
       navBarStyle: NavBarStyle.style6,
       navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
     );
+  }
+
+//check drive folder exists or not if not exists create one
+  void _checkDriveFolderExistsOrNot() async {
+    //FOR PBIS PLUS
+    PBISPlusOverrides.pbisPlusGoogleDriveFolderId = '';
+    PBISPlusOverrides.pbisPlusGoogleDriveFolderPath = '';
+    final List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
+    final UserInformation userProfile = _profileData[0];
+
+    googleDriveBloc.add(GetDriveFolderIdEvent(
+        fromGradedPlusAssessmentSection: false,
+        isReturnState: false,
+        token: userProfile.authorizationToken,
+        folderName: "SOLVED PBIS+",
+        refreshToken: userProfile.refreshToken));
   }
 }

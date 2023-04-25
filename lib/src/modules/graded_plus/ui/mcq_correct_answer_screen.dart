@@ -268,8 +268,9 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
         await UserGoogleProfile.getUserProfile();
 
     _googleDriveBloc.add(GetDriveFolderIdEvent(
-        assessmentSection: isTriggeredAssessmentSection ? true : null,
-        isFromOcrHome: true,
+        fromGradedPlusAssessmentSection:
+            isTriggeredAssessmentSection ? true : null,
+        isReturnState: true,
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",

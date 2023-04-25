@@ -356,7 +356,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         null);
 
     _googleDriveBloc.add(GetDriveFolderIdEvent(
-        isFromOcrHome: false,
+        isReturnState: false,
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",

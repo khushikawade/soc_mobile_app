@@ -10,8 +10,8 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? folderName;
   final bool? fetchHistory;
   final String? refreshToken;
-  final bool? isFromOcrHome;
-  final bool? assessmentSection;
+  final bool? isReturnState;
+  final bool? fromGradedPlusAssessmentSection;
   //final File? filePath;
   GetDriveFolderIdEvent(
       {required this.token,
@@ -19,8 +19,8 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
       this.filterType,
       this.fetchHistory,
       this.refreshToken,
-      required this.isFromOcrHome,
-      this.assessmentSection});
+      required this.isReturnState,
+      this.fromGradedPlusAssessmentSection});
 
   @override
   List<Object> get props => [token!, folderName!];
@@ -29,7 +29,8 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
 class CreateExcelSheetToDrive extends GoogleDriveEvent {
   final String? name;
   final bool? isMcqSheet;
-  CreateExcelSheetToDrive({this.isMcqSheet, this.name});
+  final String folderId;
+  CreateExcelSheetToDrive({this.isMcqSheet, this.name, required this.folderId});
   @override
   List<Object> get props => [];
 }
@@ -252,6 +253,16 @@ class EditSlideFromPresentation extends GoogleDriveEvent {
   final StudentAssessmentInfo studentAssessmentInfo;
   EditSlideFromPresentation(
       {required this.slidePresentationId, required this.studentAssessmentInfo});
+
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusUpdateDataOnSpreadSheetTabs extends GoogleDriveEvent {
+  final String fileId;
+  final List<ClassroomCourse> classroomCourseworkList;
+  PBISPlusUpdateDataOnSpreadSheetTabs(
+      {required this.fileId, required this.classroomCourseworkList});
 
   @override
   List<Object> get props => [];

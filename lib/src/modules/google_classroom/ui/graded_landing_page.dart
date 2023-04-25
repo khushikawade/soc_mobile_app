@@ -465,8 +465,9 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
         await UserGoogleProfile.getUserProfile();
 
     _googleDriveBloc.add(GetDriveFolderIdEvent(
-        assessmentSection: isTriggerdbyAssessmentSection ? true : null,
-        isFromOcrHome: true,
+        fromGradedPlusAssessmentSection:
+            isTriggerdbyAssessmentSection ? true : null,
+        isReturnState: true,
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
