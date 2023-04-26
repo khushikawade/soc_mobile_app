@@ -2853,9 +2853,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       int retry = 3}) async {
     try {
       // Prepare body to create blank tabs to the spreadsheet on Drive.
-      List<Map<String, Map<String, dynamic>>> allTabs =
-          buildBlankTabsInsideSpreadSheet(
-              classroomCourseList: classroomCourseList);
+      List<Map<String, dynamic>> allTabs = buildBlankTabsInsideSpreadSheet(
+          classroomCourseList: classroomCourseList);
 
       final body = {
         'requests': allTabs,
@@ -2900,12 +2899,11 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   /*----------------------------------------------------------------------------------------------*/
   /*----------------------Add Blank Tabs to Spreadsheet and Preparing API Body--------------------*/
   /*------------------------------------------PART B----------------------------------------------*/
-
   List<Map<String, Map<String, dynamic>>> buildBlankTabsInsideSpreadSheet({
     required List<ClassroomCourse> classroomCourseList,
   }) {
     try {
-      return [
+      List<Map<String, Map<String, dynamic>>> tabs = [
         // Update first default tab title.
         {
           'updateSheetProperties': {
@@ -2913,16 +2911,50 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             'fields': 'title',
           },
         },
-        // Build new tabs inside sheet for all other selected courses.
-        ...classroomCourseList
-            .sublist(1)
-            .map((course) => {
-                  'addSheet': {
-                    'properties': {'title': course.name},
-                  },
-                })
-            .toList(),
       ];
+
+      classroomCourseList.asMap().forEach((index, course) {
+        if (index == 0) {
+          //  change first default tab heading row text style.
+          tabs.add({
+            "repeatCell": {
+              "range": {"sheetId": index, "startRowIndex": 0, "endRowIndex": 1},
+              "cell": {
+                "userEnteredFormat": {
+                  "horizontalAlignment": "CENTER",
+                  "textFormat": {"bold": true}
+                }
+              },
+              "fields":
+                  "userEnteredFormat(textFormat,borders,backgroundColor,horizontalAlignment)"
+            }
+          });
+        } else {
+          // Build new tabs inside sheet for all other selected courses.
+          Map<String, Map<String, dynamic>> addSheet = {
+            'addSheet': {
+              'properties': {'title': course.name, 'sheetId': index},
+            },
+          };
+          // change every tab heading row text style.
+          Map<String, Map<String, dynamic>> headingRowTextStyle = {
+            "repeatCell": {
+              "range": {"sheetId": index, "startRowIndex": 0, "endRowIndex": 1},
+              "cell": {
+                "userEnteredFormat": {
+                  "horizontalAlignment": "CENTER",
+                  "textFormat": {"bold": true}
+                }
+              },
+              "fields":
+                  "userEnteredFormat(textFormat,borders,backgroundColor,horizontalAlignment)"
+            }
+          };
+          tabs.add(addSheet);
+          tabs.add(headingRowTextStyle);
+        }
+      });
+      return tabs;
     } catch (e) {
       print(e);
       return [];
