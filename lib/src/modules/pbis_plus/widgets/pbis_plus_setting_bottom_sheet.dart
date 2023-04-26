@@ -614,7 +614,8 @@ class _PBISPlusSettingBottomSheetState
         Utility.textWidget(
             context: context,
             textAlign: TextAlign.center,
-            text: 'Preparing Google Spreadsheet',
+            text:
+                'Resetting Selected ${isResetStudent! ? 'Students' : 'Courses'} and Preparing Google Spreadsheet',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
       ],
