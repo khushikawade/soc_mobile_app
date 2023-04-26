@@ -5,7 +5,6 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import '../../../styles/theme.dart';
 
 // ignore: must_be_immutable

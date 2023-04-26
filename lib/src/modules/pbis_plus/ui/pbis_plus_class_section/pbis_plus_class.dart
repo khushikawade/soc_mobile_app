@@ -1,6 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -14,6 +17,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
+import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -122,6 +126,20 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   color: AppTheme.kButtonColor,
                 ),
               ),
+              trailing: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    //----------setting bottom sheet funtion------------//
+                    settingBottomSheet(context);
+                  },
+                  icon: Icon(
+                    IconData(
+                      0xe867,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg,
+                    ),
+                    color: AppTheme.kButtonColor,
+                  )),
             ),
           ),
           // SpacerWidget(_KVertcalSpace / 3),
@@ -607,5 +625,39 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         'Sync Google Classroom Course List PBIS+'
             .toLowerCase()
             .replaceAll(" ", "_"));
+  }
+
+  //------------------------------for setting bottom sheet"-------------------//
+  settingBottomSheet(context) async {
+    final List<ClassroomCourse> googleClassroomCourseworkList = [];
+    LocalDatabase<ClassroomCourse> _localDb =
+        LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+    List<ClassroomCourse>? _localData = await _localDb.getData();
+
+//Adding 'All' as a default selected option
+    googleClassroomCourseworkList.add(ClassroomCourse(name: 'All'));
+    googleClassroomCourseworkList.addAll(_localData);
+
+    showModalBottomSheet(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: Colors.transparent,
+        elevation: 10,
+        context: context,
+        builder: (context) => LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                // Set the maximum height of the bottom sheet based on the screen size
+                print(constraints.maxHeight);
+                return PBISPlusSettingBottomSheet(
+                    constraintDeviceHeight: constraints.maxHeight,
+                    googleClassroomCourseworkList:
+                        googleClassroomCourseworkList,
+                    height: constraints.maxHeight < 750
+                        ? MediaQuery.of(context).size.height * 0.6
+                        : MediaQuery.of(context).size.height * 0.45);
+              },
+            ));
   }
 }

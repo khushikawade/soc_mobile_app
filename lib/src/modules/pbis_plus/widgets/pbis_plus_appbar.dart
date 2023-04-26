@@ -53,20 +53,6 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     );
 
     List<Widget>? actions = [
-      IconButton(
-          padding: EdgeInsets.zero,
-          onPressed: () {
-            //----------setting bottom sheet funtion------------//
-            settingBottomSheet(context);
-          },
-          icon: Icon(
-            IconData(
-              0xe867,
-              fontFamily: Overrides.kFontFam,
-              fontPackage: Overrides.kFontPkg,
-            ),
-            color: AppTheme.kButtonColor,
-          )),
       FutureBuilder(
           future: getUserProfile(),
           builder: (context, AsyncSnapshot<UserInformation> snapshot) {
@@ -212,37 +198,4 @@ Widget titleBuilder(BuildContext context, IconData? iconData) {
     color: isDarkMode ? Colors.white : Colors.black,
     // size: 22,
   );
-}
-
-//------------------------------for setting bottom sheet"-------------------//
-settingBottomSheet(context) async {
-  final List<ClassroomCourse> googleClassroomCourseworkList = [];
-  LocalDatabase<ClassroomCourse> _localDb =
-      LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
-  List<ClassroomCourse>? _localData = await _localDb.getData();
-
-//Adding 'All' as a default selected option
-  googleClassroomCourseworkList.add(ClassroomCourse(name: 'All'));
-  googleClassroomCourseworkList.addAll(_localData);
-
-  showModalBottomSheet(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      isScrollControlled: true,
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Colors.transparent,
-      elevation: 10,
-      context: context,
-      builder: (context) => LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
-              // Set the maximum height of the bottom sheet based on the screen size
-              print(constraints.maxHeight);
-              return PBISPlusSettingBottomSheet(
-                  constraintDeviceHeight: constraints.maxHeight,
-                  googleClassroomCourseworkList: googleClassroomCourseworkList,
-                  height: constraints.maxHeight < 750
-                      ? MediaQuery.of(context).size.height * 0.6
-                      : MediaQuery.of(context).size.height * 0.45);
-            },
-          ));
 }

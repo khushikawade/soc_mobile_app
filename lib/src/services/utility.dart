@@ -392,7 +392,7 @@ class Utility {
 
   static Widget textWidget(
       {required String text,
-      textTheme,
+      TextStyle? textTheme,
       required context,
       textAlign,
       maxLines}) {
