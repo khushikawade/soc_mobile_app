@@ -282,7 +282,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           : Colors.black,
       child: Container(
         padding: EdgeInsets.only(left: 20, right: 30, bottom: 20, top: 30),
-        height: MediaQuery.of(context).size.height * 0.38,
+        height: MediaQuery.of(context).size.height * 0.40,
         width: MediaQuery.of(context).size.width * 0.9,
         child: CommonLineGraphWidget(
           isIReadyGraph: true,

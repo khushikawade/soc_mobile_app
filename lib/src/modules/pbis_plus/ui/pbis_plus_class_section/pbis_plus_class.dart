@@ -20,7 +20,7 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-
+import 'package:screenshot/screenshot.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class PBISPlusClass extends StatefulWidget {
@@ -36,16 +36,17 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   PBISPlusBloc pbisPlusTotalInteractionBloc = PBISPlusBloc();
   final List<ClassroomCourse> googleClassroomCourseworkList =
       []; //Used to send the value in bottomsheet coursework list
-
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
   final ValueNotifier<int> courseLength = ValueNotifier<int>(0);
-
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
-
   final double profilePictureSize = 30;
-  static const double _KVertcalSpace = 60.0;
+  static const double _KVerticalSpace = 60.0;
+  ScreenshotController headerScreenshotController =
+      ScreenshotController(); // screenshot for header widget
+  ScreenshotController screenshotController =
+      ScreenshotController(); // screenshot of whole list
 
   @override
   void initState() {
@@ -90,37 +91,41 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          SpacerWidget(_KVertcalSpace / 4),
-          ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 0),
-            // minLeadingWidth: 70,
-            title: Utility.textWidget(
-              text: 'All Courses',
-              context: context,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            leading: IconButton(
-              onPressed: () {
-                pushNewScreen(context,
-                    screen: HomePage(
-                      index: 4,
-                    ),
-                    withNavBar: false,
-                    pageTransitionAnimation: PageTransitionAnimation.cupertino);
-              },
-              icon: Icon(
-                IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kButtonColor,
+          SpacerWidget(_KVerticalSpace / 4),
+          Screenshot(
+            controller: headerScreenshotController,
+            child: ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 0),
+              // minLeadingWidth: 70,
+              title: Utility.textWidget(
+                text: 'All Courses',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              leading: IconButton(
+                onPressed: () {
+                  pushNewScreen(context,
+                      screen: HomePage(
+                        index: 4,
+                      ),
+                      withNavBar: false,
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino);
+                },
+                icon: Icon(
+                  IconData(0xe80d,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kButtonColor,
+                ),
               ),
             ),
           ),
           // SpacerWidget(_KVertcalSpace / 3),
-          SpacerWidget(_KVertcalSpace / 5),
+          SpacerWidget(_KVerticalSpace / 5),
           Expanded(
             child: BlocConsumer(
                 bloc: pbisPlusClassroomBloc,
@@ -285,15 +290,21 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
             height: MediaQuery.of(context).orientation == Orientation.portrait
                 ? MediaQuery.of(context).size.height * 0.60 //7
                 : MediaQuery.of(context).size.height * 0.45,
-            child: ScrollablePositionedList.builder(
-                padding: EdgeInsets.only(bottom: 30),
-                shrinkWrap: true,
-                itemScrollController: _itemScrollController,
-                itemCount: googleClassroomCourseList.length,
-                itemBuilder: (context, index) {
-                  return _buildCourseSeparationList(
-                      googleClassroomCourseList, index);
-                })));
+            child: SingleChildScrollView(
+              // SingleChildScrollView to take whole screen screenshot
+              child: Screenshot(
+                controller: screenshotController,
+                child: ScrollablePositionedList.builder(
+                    padding: EdgeInsets.only(bottom: 30),
+                    shrinkWrap: true,
+                    itemScrollController: _itemScrollController,
+                    itemCount: googleClassroomCourseList.length,
+                    itemBuilder: (context, index) {
+                      return _buildCourseSeparationList(
+                          googleClassroomCourseList, index);
+                    }),
+              ),
+            )));
   }
 
   Widget _buildCourseSeparationList(
@@ -429,7 +440,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                               .subtitle2!
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 2),
+                        SizedBox(height: 1),
                         Utility.textWidget(
                           maxLines: 2,
                           text: studentValueNotifier
@@ -523,6 +534,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
             // Set the maximum height of the bottom sheet based on the screen size
             print(constraints.maxHeight);
             return PBISPlusBottomSheet(
+              isClassPage: true,
+              screenshotController: screenshotController,
+              headerScreenshotController: headerScreenshotController,
               constraintDeviceHeight: constraints.maxHeight,
               scaffoldKey: _scaffoldKey,
               googleClassroomCourseworkList: googleClassroomCourseworkList,

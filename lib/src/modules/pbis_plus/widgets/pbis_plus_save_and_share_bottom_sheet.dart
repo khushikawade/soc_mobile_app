@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -17,6 +20,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pdfWidget;
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share/share.dart';
 
 class PBISPlusBottomSheet extends StatefulWidget {
   final double? constraintDeviceHeight;
@@ -26,15 +34,22 @@ class PBISPlusBottomSheet extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
   final List<ClassroomCourse> googleClassroomCourseworkList;
   final GlobalKey<State<StatefulWidget>>? scaffoldKey;
+  final bool? isClassPage;
+
+  final ScreenshotController? screenshotController;
+  final ScreenshotController? headerScreenshotController;
   PBISPlusBottomSheet(
       {Key? key,
       this.constraintDeviceHeight,
       this.height = 200,
+      this.isClassPage,
       this.title,
       this.content = true,
       this.padding,
       required this.googleClassroomCourseworkList,
-      required this.scaffoldKey});
+      required this.scaffoldKey,
+      this.screenshotController,
+      this.headerScreenshotController});
   @override
   State<PBISPlusBottomSheet> createState() => _PBISPlusBottomSheetState();
 }
@@ -49,6 +64,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
   int pageValue = 0;
   bool classroomLoader = false;
+  bool isShareLoader = false;
 
   //default value '0' to show 'All' in the course bottomsheet list by default selected
   List<ClassroomCourse> selectedCoursesList = [];
@@ -161,7 +177,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     width: 30,
                   ),
                   title: 'Classroom',
-                  onTap: () {
+                  onTap: () async {
                     Utility.updateLogs(
                         activityType: 'PBIS+',
                         activityId: '35',
@@ -205,7 +221,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   color: Colors.grey,
                 ),
                 title: 'Share',
-                onTap: (() {
+                onTap: (() async {
+                  await shareScreenDetails();
                   Utility.updateLogs(
                       activityType: 'PBIS+',
                       activityId: '13',
@@ -215,6 +232,122 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           ]),
     );
   }
+
+  /* ------------------ Function to share screenshot as a pdf ----------------- */
+  shareScreenDetails() async {
+    try {
+      isShareLoader = true;
+      // to show loading
+      _pageController.jumpToPage(
+        3,
+      );
+      //Utility.showLoadingDialog(context: context, isOCR: false);
+
+      // taking screenshot and save it on Uint8List
+      final headerUint8List =
+          await widget.headerScreenshotController!.capture();
+      final uint8List = widget.screenshotController != null
+          ? await widget.screenshotController!.capture()
+          : null;
+      // create pdf
+      final pdf = pdfWidget.Document();
+      // to get image size
+      Size headerSize = await getImageSize(headerUint8List!);
+      Size size = uint8List != null
+          ? await getImageSize(uint8List)
+          : Size(headerSize.width, 0);
+
+      // adding page to pdf
+      pdf.addPage(
+        pdfWidget.MultiPage(
+          header: (context) {
+            return pdfWidget.Container(height: 50);
+          },
+          pageFormat: PdfPageFormat(
+              size.width,
+              (headerSize.height + size.height) > 2000
+                  ? (headerSize.height + size.height)
+                  : (headerSize.height + size.height) + 500),
+          mainAxisAlignment: pdfWidget.MainAxisAlignment.start,
+          crossAxisAlignment: pdfWidget.CrossAxisAlignment.start,
+          margin: pdfWidget.EdgeInsets.all(0),
+          maxPages: 2000,
+          build: (context) {
+            return [
+              pdfWidget.Center(
+                child: pdfWidget.Image(pdfWidget.MemoryImage(headerUint8List),
+                    fit: pdfWidget.BoxFit.contain),
+              ),
+              uint8List != null
+                  ? pdfWidget.Container(
+                      padding: pdfWidget.EdgeInsets.symmetric(horizontal: 50),
+                      child: pdfWidget.Image(
+                        pdfWidget.MemoryImage(uint8List),
+                      ),
+                    )
+                  : pdfWidget.Container(),
+            ];
+          },
+        ),
+      );
+
+      var directory = (await getApplicationDocumentsDirectory()).path;
+      final currentDate =
+          Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")
+              .replaceAll('/', '-');
+      String value = widget.isClassPage == true ? 'Class' : 'Student';
+      final file = File(
+          '$directory/PBIS_${value}_${Globals.appSetting.contactNameC}_$currentDate.pdf');
+
+      await file.writeAsBytes(await pdf.save());
+
+      // closing to loading dialog and bottom sheet
+      // Navigator.pop(context);
+      _pageController.animateToPage(3,
+          duration: const Duration(milliseconds: 400), curve: Curves.ease);
+
+      Navigator.pop(context);
+      FocusScope.of(context).requestFocus(FocusNode());
+      isShareLoader = false;
+
+      //share the file
+      Share.shareFiles(
+        [file.path],
+      );
+    } catch (e) {
+      Utility.currentScreenSnackBar(
+          'Something went wrong! Please try again', '');
+      Navigator.pop(context);
+      FocusScope.of(context).requestFocus(FocusNode());
+    }
+  }
+
+  /* ---------------------- Function to get size of image --------------------- */
+  Future<Size> getImageSize(Uint8List imageData) async {
+    final image = await decodeImageFromList(imageData);
+
+    return Size(image.width.toDouble(), image.height.toDouble());
+  }
+
+  // pdfWidget.TableRow profileTile(
+  //     {required String title,
+  //     required String value,
+  //     required pdfWidget.Context context}) {
+  //   return pdfWidget.TableRow(children: [
+  //     pdfWidget.Container(
+  //       alignment: pdfWidget.Alignment.centerLeft,
+  //       margin: pdfWidget.EdgeInsets.all(5),
+  //       child: pdfWidget.Text(title,
+  //           style: pdfWidget.Theme.of(context).tableHeader),
+  //     ),
+  //     pdfWidget.Container(
+  //       alignment: pdfWidget.Alignment.centerLeft,
+  //       margin: pdfWidget.EdgeInsets.all(5),
+  //       child: pdfWidget.Text(value.toUpperCase(),
+  //           style: pdfWidget.Theme.of(context).tableCell),
+  //     ),
+  //   ]);
+  // }
 
   ListTile _listTileMenu({Widget? leading, String? title, Function()? onTap}) {
     return ListTile(
@@ -543,7 +676,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             textAlign: TextAlign.center,
             text: classroomLoader
                 ? 'Preparing Google Classroom Assignment'
-                : 'Preparing Google Spreadsheet',
+                : isShareLoader == true
+                    ? 'Preparing PDF'
+                    : 'Preparing Google Spreadsheet',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
         classroomLoader
@@ -612,7 +747,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
               _createSpreadSheet();
             }
             if (state is ExcelSheetCreated) {
-            
               googleDriveBloc.add(PBISPlusUpdateDataOnSpreadSheetTabs(
                   spreadSheetFileObj: state.googleSpreadSheetFileObj,
                   classroomCourseworkList: selectedCoursesList?.isEmpty ?? true

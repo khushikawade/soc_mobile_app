@@ -17,6 +17,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class PBISPlusStudentDashBoard extends StatefulWidget {
@@ -53,6 +54,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   final double circleSize = 35;
   final PBISPlusBloc _bloc = PBISPlusBloc();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  ScreenshotController screenshotController =
+      ScreenshotController(); // screenshot of whole list
+  ScreenshotController headerScreenshotController =
+      ScreenshotController(); // screenshot for header widget
 
   void initState() {
     //  Event call to get dashboard details of interaction
@@ -123,54 +128,58 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               )
             : Container(),
         // widget.isFromStudentPlus == true
-        BlocBuilder<PBISPlusBloc, PBISPlusState>(
-            bloc: _bloc,
-            builder: (BuildContext contxt, PBISPlusState state) {
-              if (state is PBISPlusLoading) {
-                return PBISPlusStudentCardModal(
-                    isLoading: widget.isFromStudentPlus == true ? true : false,
-                    isFromDashboardPage: true,
-                    heroTag: widget.heroTag,
-                    onValueUpdate: widget.onValueUpdate,
-                    scaffoldKey: widget.scaffoldKey,
-                    studentValueNotifier: widget.studentValueNotifier,
-                    isFromStudentPlus: widget.isFromStudentPlus,
-                    classroomCourseId: widget.classroomCourseId!);
-              } else if (state is PBISPlusStudentDashboardLogSuccess) {
-                if (widget.isFromStudentPlus == true) {
-                  updateActionCountStudentPlusModuleWidget(
-                    pbisHistoryData: state.pbisStudentInteractionList,
-                  );
-                }
-                return PBISPlusStudentCardModal(
-                    isLoading: false,
-                    isFromDashboardPage: true,
-                    heroTag: widget.heroTag,
-                    onValueUpdate: widget.onValueUpdate,
-                    scaffoldKey: widget.scaffoldKey,
-                    studentValueNotifier: widget.studentValueNotifier,
-                    isFromStudentPlus: widget.isFromStudentPlus,
-                    classroomCourseId: widget.classroomCourseId!);
-              } else {
-                // In case of student email not found in STUDENT+ Module
+        Screenshot(
+          controller: headerScreenshotController,
+          child: BlocBuilder<PBISPlusBloc, PBISPlusState>(
+              bloc: _bloc,
+              builder: (BuildContext contxt, PBISPlusState state) {
+                if (state is PBISPlusLoading) {
+                  return PBISPlusStudentCardModal(
+                      isLoading:
+                          widget.isFromStudentPlus == true ? true : false,
+                      isFromDashboardPage: true,
+                      heroTag: widget.heroTag,
+                      onValueUpdate: widget.onValueUpdate,
+                      scaffoldKey: widget.scaffoldKey,
+                      studentValueNotifier: widget.studentValueNotifier,
+                      isFromStudentPlus: widget.isFromStudentPlus,
+                      classroomCourseId: widget.classroomCourseId!);
+                } else if (state is PBISPlusStudentDashboardLogSuccess) {
+                  if (widget.isFromStudentPlus == true) {
+                    updateActionCountStudentPlusModuleWidget(
+                      pbisHistoryData: state.pbisStudentInteractionList,
+                    );
+                  }
+                  return PBISPlusStudentCardModal(
+                      isLoading: false,
+                      isFromDashboardPage: true,
+                      heroTag: widget.heroTag,
+                      onValueUpdate: widget.onValueUpdate,
+                      scaffoldKey: widget.scaffoldKey,
+                      studentValueNotifier: widget.studentValueNotifier,
+                      isFromStudentPlus: widget.isFromStudentPlus,
+                      classroomCourseId: widget.classroomCourseId!);
+                } else {
+                  // In case of student email not found in STUDENT+ Module
 
-                List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
-                if (widget.isFromStudentPlus == true) {
-                  updateActionCountStudentPlusModuleWidget(
-                    pbisHistoryData: pbisHistoryData,
-                  );
+                  List<PBISPlusTotalInteractionModal> pbisHistoryData = [];
+                  if (widget.isFromStudentPlus == true) {
+                    updateActionCountStudentPlusModuleWidget(
+                      pbisHistoryData: pbisHistoryData,
+                    );
+                  }
+                  return PBISPlusStudentCardModal(
+                      isLoading: false,
+                      isFromDashboardPage: true,
+                      heroTag: widget.heroTag,
+                      onValueUpdate: widget.onValueUpdate,
+                      scaffoldKey: widget.scaffoldKey,
+                      studentValueNotifier: widget.studentValueNotifier,
+                      isFromStudentPlus: widget.isFromStudentPlus,
+                      classroomCourseId: widget.classroomCourseId!);
                 }
-                return PBISPlusStudentCardModal(
-                    isLoading: false,
-                    isFromDashboardPage: true,
-                    heroTag: widget.heroTag,
-                    onValueUpdate: widget.onValueUpdate,
-                    scaffoldKey: widget.scaffoldKey,
-                    studentValueNotifier: widget.studentValueNotifier,
-                    isFromStudentPlus: widget.isFromStudentPlus,
-                    classroomCourseId: widget.classroomCourseId!);
-              }
-            }),
+              }),
+        ),
 
         // to remove hero widget for STUDENT+
         Container(
@@ -199,8 +208,11 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                           child: ListView(
                             children: [
                               FittedBox(
-                                  child: _buildDataTable(
-                                      list: state.pbisStudentInteractionList)),
+                                  child: Screenshot(
+                                controller: screenshotController,
+                                child: _buildDataTable(
+                                    list: state.pbisStudentInteractionList),
+                              )),
                             ],
                           ),
                         )
@@ -409,25 +421,46 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   Widget floatingActionButton(
     BuildContext context,
   ) =>
-      PBISPlusCustomFloatingActionButton(
-        onPressed: () {
-          _modalBottomSheetMenu();
-        },
-      );
+      BlocBuilder<PBISPlusBloc, PBISPlusState>(
+          bloc: _bloc,
+          builder: (BuildContext contxt, PBISPlusState state) {
+            if (state is PBISPlusLoading) {
+              return CircularProgressIndicator.adaptive(
+                backgroundColor: AppTheme.kButtonColor,
+              );
+            } else if (state is PBISPlusStudentDashboardLogSuccess) {
+              return PBISPlusCustomFloatingActionButton(
+                onPressed: () {
+                  _modalBottomSheetMenu(
+                      pbisStudentInteractionList:
+                          state.pbisStudentInteractionList);
+                },
+              );
+            } else {
+              //  shows in condition where email is not not their in case of student plus
+              return Container();
+            }
+          });
 
-  void _modalBottomSheetMenu() => showModalBottomSheet(
+  void _modalBottomSheetMenu(
+          {required List<PBISPlusTotalInteractionModal>
+              pbisStudentInteractionList}) =>
+      showModalBottomSheet(
         useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,
         enableDrag: true,
         backgroundColor: Colors.transparent,
+
         // animationCurve: Curves.easeOutQuart,
         elevation: 10,
         context: context,
         builder: (BuildContext context) {
           return PBISPlusBottomSheet(
             scaffoldKey: _scaffoldKey,
+            screenshotController: screenshotController,
+            headerScreenshotController: headerScreenshotController,
             googleClassroomCourseworkList: [], //No list is required since no list is used from this bottomsheet
             content: false,
             height: MediaQuery.of(context).size.height * 0.23,

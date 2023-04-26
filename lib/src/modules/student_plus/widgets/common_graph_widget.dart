@@ -86,7 +86,8 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
             },
             touchTooltipData: widget.isIReadyGraph == true
                 ? LineTouchTooltipData(
-                    tooltipBgColor: Colors.blue.withOpacity(0.2),
+                    tooltipBgColor:
+                        Colors.grey, // Colors.blue.withOpacity(0.4),
                     tooltipRoundedRadius: 5,
                     fitInsideHorizontally: true,
                     fitInsideVertically: true,
