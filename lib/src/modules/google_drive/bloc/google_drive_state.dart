@@ -69,8 +69,8 @@ class AssessmentDetailSuccess extends GoogleDriveState {
 }
 
 class ExcelSheetCreated extends GoogleDriveState {
-  final String googleSpreadSheetFileId;
-  ExcelSheetCreated({required this.googleSpreadSheetFileId});
+  final Map<String,dynamic> googleSpreadSheetFileObj;
+  ExcelSheetCreated({required this.googleSpreadSheetFileObj});
 
   @override
   List<Object> get props => [];

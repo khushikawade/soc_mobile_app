@@ -785,7 +785,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
 
                       if (state is ExcelSheetCreated) {
                         Globals.googleExcelSheetId =
-                            state.googleSpreadSheetFileId;
+                            state.googleSpreadSheetFileObj['fileId'];
                         //Create Google Presentation once Spreadsheet created
                         _googleDriveBloc.add(CreateSlideToDrive(
                             isMcqSheet: widget.isMcqSheet ?? false,
@@ -803,7 +803,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           // Globals.assessmentName =
                           //     "${assessmentController.text}_${classController.text}";
                           _googleDriveBloc.add(CreateExcelSheetToDrive(
-                              isMcqSheet: widget.isMcqSheet,
+                              description: widget.isMcqSheet == true
+                                  ? "Multiple Choice Sheet"
+                                  : "Graded+",
                               name: Globals.assessmentName,
                               folderId: Globals.googleDriveFolderId!));
                         } else {
@@ -819,7 +821,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
                         // Globals.assessmentName =
                         //     "${assessmentController.text}_${classController.text}";
                         _googleDriveBloc.add(CreateExcelSheetToDrive(
-                            isMcqSheet: widget.isMcqSheet,
+                            description: widget.isMcqSheet == true
+                                ? "Multiple Choice Sheet"
+                                : "Graded+",
                             name: Globals.assessmentName,
                             folderId: Globals.googleDriveFolderId!));
                       }
@@ -1142,7 +1146,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
     Globals.assessmentName =
         "${assessmentController.text}_${classController.text}";
     _googleDriveBloc.add(CreateExcelSheetToDrive(
-        isMcqSheet: widget.isMcqSheet,
+        description:
+            widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
         name: Globals.assessmentName,
         folderId: Globals.googleDriveFolderId!));
 

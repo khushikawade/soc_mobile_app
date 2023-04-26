@@ -28,9 +28,10 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
 
 class CreateExcelSheetToDrive extends GoogleDriveEvent {
   final String? name;
-  final bool? isMcqSheet;
+  final String? description;
   final String folderId;
-  CreateExcelSheetToDrive({this.isMcqSheet, this.name, required this.folderId});
+  CreateExcelSheetToDrive(
+      {this.description, this.name, required this.folderId});
   @override
   List<Object> get props => [];
 }
@@ -259,10 +260,10 @@ class EditSlideFromPresentation extends GoogleDriveEvent {
 }
 
 class PBISPlusUpdateDataOnSpreadSheetTabs extends GoogleDriveEvent {
-  final String fileId;
+  final Map<String,dynamic> spreadSheetFileObj;
   final List<ClassroomCourse> classroomCourseworkList;
   PBISPlusUpdateDataOnSpreadSheetTabs(
-      {required this.fileId, required this.classroomCourseworkList});
+      {required this.spreadSheetFileObj, required this.classroomCourseworkList});
 
   @override
   List<Object> get props => [];

@@ -612,10 +612,9 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
               _createSpreadSheet();
             }
             if (state is ExcelSheetCreated) {
-              PBISPlusOverrides.pbisPlusGoogleSpreadSheetsId =
-                  state.googleSpreadSheetFileId;
+            
               googleDriveBloc.add(PBISPlusUpdateDataOnSpreadSheetTabs(
-                  fileId: state.googleSpreadSheetFileId,
+                  spreadSheetFileObj: state.googleSpreadSheetFileObj,
                   classroomCourseworkList: selectedCoursesList?.isEmpty ?? true
                       ? widget.googleClassroomCourseworkList
                       : selectedCoursesList));
@@ -664,12 +663,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
   }
 
   void _createSpreadSheet() {
-    PBISPlusOverrides.pbisPlusGoogleSpreadSheetsId = '';
     //CREATE SPREADSHEET ON DRIVE
     googleDriveBloc.add(CreateExcelSheetToDrive(
-        isMcqSheet: false,
         name:
-            "PBIS_${Globals.appSetting.contactNameC}_${DateFormat('yyyy-MM-dd hh:mm a').format(DateTime.now())}",
+            "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
         folderId: PBISPlusOverrides.pbisPlusGoogleDriveFolderId));
   }
 }
