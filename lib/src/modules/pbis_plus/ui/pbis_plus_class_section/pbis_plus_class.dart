@@ -534,6 +534,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
             // Set the maximum height of the bottom sheet based on the screen size
             print(constraints.maxHeight);
             return PBISPlusBottomSheet(
+              fromClassScreen: true,
               isClassPage: true,
               screenshotController: screenshotController,
               headerScreenshotController: headerScreenshotController,

@@ -27,6 +27,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share/share.dart';
 
 class PBISPlusBottomSheet extends StatefulWidget {
+  final bool? fromClassScreen;
   final double? constraintDeviceHeight;
   final double? height;
   final bool? content;
@@ -40,6 +41,7 @@ class PBISPlusBottomSheet extends StatefulWidget {
   final ScreenshotController? headerScreenshotController;
   PBISPlusBottomSheet(
       {Key? key,
+      required this.fromClassScreen,
       this.constraintDeviceHeight,
       this.height = 200,
       this.isClassPage,
@@ -105,14 +107,16 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
-          height: pageValue == 1
+          height: pageValue == 1 //classroomMaxPointQue
               ? widget.height! * 1.2
-              : pageValue == 2
+              : pageValue == 2 //buildGoogleClassroomCourseWidget
                   ? widget.height! *
                       (widget.constraintDeviceHeight! < 800 ? 1.4 : 1.5)
-                  : pageValue == 3
-                      ? widget.height! * 0.8
-                      : widget.height,
+                  : pageValue == 3 //commonLoaderWidget
+                      ? widget.fromClassScreen!
+                          ? (widget.height! * 0.6)
+                          : (widget.height! * 1.3)
+                      : widget.height, //saveAndShareOptions
           child: PageView(
             physics:
                 // pageValue == 0
@@ -203,9 +207,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                         operationResult: 'Success');
 
                     classroomLoader = false;
-                    _pageController.animateToPage(2,
-                        duration: const Duration(milliseconds: 100),
-                        curve: Curves.ease);
+                    _pageController.jumpToPage(2);
                   }),
               Container(
                 padding: EdgeInsets.only(right: 16),
@@ -303,8 +305,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
 
       // closing to loading dialog and bottom sheet
       // Navigator.pop(context);
-      _pageController.animateToPage(3,
-          duration: const Duration(milliseconds: 400), curve: Curves.ease);
+      _pageController.jumpTo(3);
 
       Navigator.pop(context);
       FocusScope.of(context).requestFocus(FocusNode());
@@ -537,9 +538,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           child: FloatingActionButton.extended(
               backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
               onPressed: () async {
-                _pageController.animateToPage(3,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.ease);
+                _pageController.jumpToPage(3);
 
                 //Create Google Classroom Assignment for Selected Courses if classroomLoader = true
                 if (classroomLoader) {

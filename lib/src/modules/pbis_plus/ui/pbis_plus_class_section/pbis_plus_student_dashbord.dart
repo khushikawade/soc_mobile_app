@@ -458,6 +458,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         context: context,
         builder: (BuildContext context) {
           return PBISPlusBottomSheet(
+            fromClassScreen: false,
             scaffoldKey: _scaffoldKey,
             screenshotController: screenshotController,
             headerScreenshotController: headerScreenshotController,
