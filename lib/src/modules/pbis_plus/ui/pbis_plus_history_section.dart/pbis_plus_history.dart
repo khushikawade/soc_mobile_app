@@ -54,7 +54,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: PBISPlusUtility.pbisAppBar(
-              context, widget.titleIconData, 'Class'),
+              context, widget.titleIconData, 'Class', _scaffoldKey),
           extendBody: true,
           body: body(context))
     ]);
@@ -311,7 +311,6 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                 PBISPlusOverrides.pbisPlusFilterValue = filterNotifier.value;
               },
               scaffoldKey: _scaffoldKey,
-            )
-            );
+            ));
   }
 }

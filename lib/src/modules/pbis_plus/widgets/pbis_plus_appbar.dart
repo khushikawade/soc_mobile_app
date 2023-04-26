@@ -25,13 +25,14 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final IconData? titleIconData;
   final String title;
   final bool? backButton;
-
-  PBISPlusAppBar({
-    Key? key,
-    this.titleIconData,
-    this.backButton,
-    required this.title,
-  })  : preferredSize = Size.fromHeight(60.0),
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  PBISPlusAppBar(
+      {Key? key,
+      this.titleIconData,
+      this.backButton,
+      required this.title,
+      required this.scaffoldKey})
+      : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   @override
   final Size preferredSize;
@@ -40,7 +41,6 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     Widget leading = Container(

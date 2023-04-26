@@ -71,8 +71,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         key: _scaffoldKey,
         extendBody: true,
         backgroundColor: Colors.transparent,
-        appBar:
-            PBISPlusUtility.pbisAppBar(context, widget.titleIconData, 'Class'),
+        appBar: PBISPlusUtility.pbisAppBar(
+            context, widget.titleIconData, 'Class', _scaffoldKey),
         floatingActionButton: ValueListenableBuilder(
             valueListenable: courseLength,
             child: Container(),
@@ -651,6 +651,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 // Set the maximum height of the bottom sheet based on the screen size
                 print(constraints.maxHeight);
                 return PBISPlusSettingBottomSheet(
+                    scaffoldKey: _scaffoldKey,
                     constraintDeviceHeight: constraints.maxHeight,
                     googleClassroomCourseworkList:
                         googleClassroomCourseworkList,

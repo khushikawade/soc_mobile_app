@@ -199,7 +199,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     //     throw (e);
     //   }
     // }
-
     // --------------------Event To Create Excel Sheet On Drive------------------
     else if (event is CreateExcelSheetToDrive) {
       try {
@@ -223,7 +222,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         throw (e);
       }
     }
-
     // bloc to update google Slide on scan more condition
     else if (event is UpdateGoogleSlideOnScanMore) {
       try {
@@ -826,7 +824,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               _userProfileLocalData[0].authorizationToken,
               _userProfileLocalData[0].refreshToken,
               savePath);
-          print(summaryList);
+
           if (summaryList != []) {
             bool deleted = await GoogleDriveAccess.deleteFile(File(savePath));
             if (!deleted) {
@@ -2596,7 +2594,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   String prepareTableCellValue(StudentAssessmentInfo studentAssessmentInfoObj,
       int index, String? assignmentName) {
     try {
-      print(index);
       // detail update on cell in slide table
       Map map = {
         0: assignmentName ?? 'NA',

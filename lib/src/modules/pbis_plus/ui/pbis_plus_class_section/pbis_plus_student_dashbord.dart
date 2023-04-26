@@ -94,6 +94,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     : PBISPlusAppBar(
                         title: "Dashboard",
                         backButton: true,
+                        scaffoldKey: _scaffoldKey,
                       ),
                 body: body(context),
                 floatingActionButton: floatingActionButton(
