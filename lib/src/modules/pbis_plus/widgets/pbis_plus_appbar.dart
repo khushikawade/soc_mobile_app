@@ -2,7 +2,11 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_bottom_sheet.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -36,6 +40,7 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     Widget leading = Container(
@@ -50,7 +55,10 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     List<Widget>? actions = [
       IconButton(
           padding: EdgeInsets.zero,
-          onPressed: () {},
+          onPressed: () {
+            //----------setting bottom sheet funtion------------//
+            settingBottomSheet(context);
+          },
           icon: Icon(
             IconData(
               0xe867,
@@ -203,4 +211,28 @@ Widget titleBuilder(BuildContext context, IconData? iconData) {
     color: isDarkMode ? Colors.white : Colors.black,
     // size: 22,
   );
+}
+
+//------------------------------for setting bottom sheet"-------------------//
+settingBottomSheet(context) async {
+  final List<ClassroomCourse> googleClassroomCourseworkList = [];
+  LocalDatabase<ClassroomCourse> _localDb =
+      LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+  List<ClassroomCourse>? _localData = await _localDb.getData();
+
+//Adding 'All' as a default selected option
+  googleClassroomCourseworkList.add(ClassroomCourse(name: 'All'));
+  googleClassroomCourseworkList.addAll(_localData);
+
+  showModalBottomSheet(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      elevation: 10,
+      context: context,
+      builder: (context) => PBISPlusSettingBottomSheet(
+            googleClassroomCourseworkList: googleClassroomCourseworkList,
+          ));
 }

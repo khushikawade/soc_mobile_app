@@ -6,8 +6,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_moda
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_card_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_bottom_sheet.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/services/analytics.dart';

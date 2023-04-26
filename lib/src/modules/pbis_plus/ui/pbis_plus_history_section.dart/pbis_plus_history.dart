@@ -311,6 +311,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                 PBISPlusOverrides.pbisPlusFilterValue = filterNotifier.value;
               },
               scaffoldKey: _scaffoldKey,
-            ));
+            )
+            );
   }
 }

@@ -7,7 +7,6 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_profile_name_shortcut.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';

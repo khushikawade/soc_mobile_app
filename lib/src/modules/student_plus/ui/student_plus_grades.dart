@@ -1,5 +1,4 @@
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
