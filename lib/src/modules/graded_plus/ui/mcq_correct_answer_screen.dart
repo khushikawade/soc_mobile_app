@@ -53,6 +53,7 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            fromGradedPlus: true,
             isSuccessState: ValueNotifier<bool>(true),
             isBackOnSuccess: ValueNotifier<bool>(false),
             key: GlobalKey(),

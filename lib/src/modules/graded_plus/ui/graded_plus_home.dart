@@ -92,6 +92,7 @@ class _OpticalCharacterRecognitionPageState
           key: _scaffoldKey,
           backgroundColor: Color.fromRGBO(0, 0, 0, 0),
           appBar: CustomOcrAppBarWidget(
+              fromGradedPlus: true,
               //Show home button in standard app and hide in standalone
               assessmentDetailPage:
                   Overrides.STANDALONE_GRADED_APP ? true : null,

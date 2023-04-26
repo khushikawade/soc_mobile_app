@@ -9,7 +9,7 @@ import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
-import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
+import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
@@ -173,6 +173,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => ProfilePage(
+                                                    fromGradedPlus: true,
                                                     profile: snapshot.data!,
                                                   )),
                                         );

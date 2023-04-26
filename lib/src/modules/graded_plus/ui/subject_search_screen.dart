@@ -117,6 +117,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
           backgroundColor: Colors.transparent,
           floatingActionButton: submitAssessmentButton(),
           appBar: CustomOcrAppBarWidget(
+            fromGradedPlus: true,
             onTap: () {
               Utility.scrollToTop(scrollController: _scrollController);
             },

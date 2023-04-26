@@ -2,7 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
+import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart'
     as customIntroLayout;
@@ -43,7 +43,8 @@ class CustomOcrAppBarWidget extends StatefulWidget
       required this.isBackOnSuccess,
       this.isFromResultSection,
       this.navigateBack,
-      this.isProfilePage})
+      this.isProfilePage,
+      required this.fromGradedPlus})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   ValueListenable<bool>? isSuccessState;
@@ -63,6 +64,7 @@ class CustomOcrAppBarWidget extends StatefulWidget
   bool? isFromResultSection;
   bool? navigateBack;
   final VoidCallback? onTap;
+  bool? fromGradedPlus;
 
   final scaffoldKey;
 
@@ -108,7 +110,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                         height: 0,
                         width: 8.0,
                       ),
-            commonGradedLogo()
+            widget.fromGradedPlus == true ? commonGradedLogo() : Container()
           ],
         ),
         title: GestureDetector(
@@ -315,6 +317,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ProfilePage(
+                                        fromGradedPlus: widget.fromGradedPlus,
                                         hideStateSelection:
                                             widget.hideStateSelection ?? false,
                                         profile: snapshot.data!,

@@ -12,9 +12,11 @@ import '../../../styles/theme.dart';
 class PBISPlusSettingBottomSheet extends StatefulWidget {
   final List<ClassroomCourse> googleClassroomCourseworkList;
   final double? height;
+  final double? constraintDeviceHeight;
   PBISPlusSettingBottomSheet({
     Key? key,
     required this.googleClassroomCourseworkList,
+    required this.constraintDeviceHeight,
     this.height = 200,
   }) : super(key: key);
 
@@ -51,11 +53,11 @@ class _PBISPlusSettingBottomSheetState
       controller: ModalScrollController.of(context),
       child: Container(
           height: pageValue == 0
-              ? MediaQuery.of(context).size.height * 0.46
+              ? widget.height!
               : pageValue == 1
-                  ? MediaQuery.of(context).size.height * 0.62
+                  ? widget.height! * 1.15
                   : pageValue == 2
-                      ? MediaQuery.of(context).size.height * 0.65
+                      ? widget.height! * 1.2
                       : widget.height,
           decoration: BoxDecoration(
             color: Color(0xff000000) != Theme.of(context).backgroundColor
@@ -191,35 +193,35 @@ class _PBISPlusSettingBottomSheetState
 
 //-----------------text  widget for setting  design ------------//
   Widget textWidget(String? text, Color backgroundColor, int? index) {
-    return Container(
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        width: MediaQuery.of(context).size.width,
-        height: 40,
-        decoration: BoxDecoration(
-          color: backgroundColor == AppTheme.kButtonColor
-              ? backgroundColor
-              : Color(0xff000000) != Theme.of(context).backgroundColor
-                  ? Color(0xffF7F8F9)
-                  : Color(0xff111C20),
-        ),
-        child: InkWell(
-            onTap: () {
-              // setState(() {
-              //-----------------------------if user select the student or classes navigate to select course bottom sheet-------------------------------------//
+    return InkWell(
+        onTap: () {
+          // setState(() {
+          //-----------------------------if user select the student or classes navigate to select course bottom sheet-------------------------------------//
 
-              if (index == 1 || index == 2) {
-                _pageController.animateToPage(1,
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.ease);
-              }
-              if (index == 1) {
-                isResetStudent = true;
-              } else {
-                isResetStudent = false;
-              }
-              // });
-            },
+          if (index == 1 || index == 2) {
+            _pageController.animateToPage(1,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.ease);
+          }
+          if (index == 1) {
+            isResetStudent = true;
+          } else {
+            isResetStudent = false;
+          }
+          // });
+        },
+        child: Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            width: MediaQuery.of(context).size.width,
+            height: 40,
+            decoration: BoxDecoration(
+              color: backgroundColor == AppTheme.kButtonColor
+                  ? backgroundColor
+                  : Color(0xff000000) != Theme.of(context).backgroundColor
+                      ? Color(0xffF7F8F9)
+                      : Color(0xff111C20),
+            ),
             child: Utility.textWidget(
                 text: text!,
                 context: context,
@@ -279,7 +281,7 @@ class _PBISPlusSettingBottomSheetState
             ),
           ),
         ),
-        SpacerWidget(20),
+        // SpacerWidget(20),
         ValueListenableBuilder(
             valueListenable: selectionChange,
             child: Container(),
@@ -287,7 +289,7 @@ class _PBISPlusSettingBottomSheetState
               return Container(
                 padding:
                     EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 5),
-                height: MediaQuery.of(context).size.height * 0.36,
+                height: widget.height! * 0.65,
                 child: ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.only(
@@ -304,7 +306,7 @@ class _PBISPlusSettingBottomSheetState
             }),
         Container(
           width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 40),
           child: FloatingActionButton.extended(
               backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
               onPressed: () async {
@@ -318,18 +320,13 @@ class _PBISPlusSettingBottomSheetState
                       curve: Curves.ease);
                 }
               },
-              label: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Utility.textWidget(
-                      text: isResetStudent! ? 'Next' : 'Submit',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(color: Theme.of(context).backgroundColor)),
-                ],
-              )),
+              label: Utility.textWidget(
+                  text: isResetStudent! ? 'Next' : 'Submit',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline2!
+                      .copyWith(color: Theme.of(context).backgroundColor))),
         ),
       ],
     );
@@ -428,7 +425,7 @@ class _PBISPlusSettingBottomSheetState
           contentPadding: EdgeInsets.symmetric(horizontal: 0),
           title: Utility.textWidget(
               context: context,
-              text: 'Select Student',
+              text: 'Select Students',
               textTheme: Theme.of(context)
                   .textTheme
                   .headline5!
@@ -453,7 +450,7 @@ class _PBISPlusSettingBottomSheetState
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
               return Container(
-                height: MediaQuery.of(context).size.height * 0.36,
+                height: widget.height! * 0.65,
                 child: ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.only(

@@ -85,6 +85,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
+      fromGradedPlus: true,
       isSuccessState: ValueNotifier<bool>(true),
       isBackOnSuccess: widget.isBackFromCamera,
       key: GlobalKey(),

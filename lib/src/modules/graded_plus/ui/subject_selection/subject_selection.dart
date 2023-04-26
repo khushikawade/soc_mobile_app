@@ -223,6 +223,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 backgroundColor: Colors.transparent,
                 resizeToAvoidBottomInset: false,
                 appBar: CustomOcrAppBarWidget(
+                  fromGradedPlus: true,
                   hideStateSelection: true,
                   onTap: () {
                     Utility.scrollToTop(scrollController: _scrollController);

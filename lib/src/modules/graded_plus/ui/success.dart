@@ -165,6 +165,7 @@ class _SuccessScreenState extends State<SuccessScreen>
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            fromGradedPlus: true,
             isBackButton: false,
             isSuccessState: isSuccessResult,
             isHomeButtonPopup: true,

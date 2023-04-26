@@ -52,6 +52,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
         CommonBackgroundImgWidget(),
         Scaffold(
           appBar: CustomOcrAppBarWidget(
+            fromGradedPlus: true,
             //Show home button in standard app and hide in standalone
             assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
             isOcrHome: true,

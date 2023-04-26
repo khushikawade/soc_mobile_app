@@ -15,8 +15,13 @@ import 'package:flutter/material.dart';
 class ProfilePage extends StatefulWidget {
   final bool? hideStateSelection;
   final UserInformation profile;
+  final bool? fromGradedPlus;
 
-  const ProfilePage({Key? key, required this.profile, this.hideStateSelection})
+  const ProfilePage(
+      {Key? key,
+      required this.profile,
+      this.hideStateSelection,
+      required this.fromGradedPlus})
       : super(key: key);
 
   @override
@@ -46,6 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
           // key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
+            fromGradedPlus: widget.fromGradedPlus,
             isSuccessState: ValueNotifier<bool>(true),
             isBackOnSuccess: isBackFromCamera,
             key: GlobalKey(),

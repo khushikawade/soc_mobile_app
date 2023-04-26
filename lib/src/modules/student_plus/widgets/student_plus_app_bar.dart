@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
+import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
@@ -25,15 +25,14 @@ class StudentPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final bool? isWorkPage;
   final int? titleIconCode;
   //final ValueChanged? refresh;
-  StudentPlusAppBar(
-      {Key? key,
-      this.titleIconCode,
-     // required this.refresh,
-      this.isWorkPage,
-     })
-      :preferredSize = Size.fromHeight(60.0),
-       super(key: key);
-    @override
+  StudentPlusAppBar({
+    Key? key,
+    this.titleIconCode,
+    // required this.refresh,
+    this.isWorkPage,
+  })  : preferredSize = Size.fromHeight(60.0),
+        super(key: key);
+  @override
   final Size preferredSize;
   @override
   State<StudentPlusAppBar> createState() => _StudentPlusAppBarState();
@@ -54,83 +53,83 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
   Widget build(BuildContext context) {
     // return StatefulBuilder(
     //     builder: (BuildContext context, StateSetter setState) {
-      return AppBar(
-        backgroundColor: Colors.transparent,
-        leading: Container(
-          padding:
-              EdgeInsets.only(left: StudentPlusOverrides.kSymmetricPadding),
-          child: Row(
-            children: [
-              _translateButton(setState, context),
-              _openSettingsButton(context),
-            ],
-          ),
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      leading: Container(
+        padding: EdgeInsets.only(left: StudentPlusOverrides.kSymmetricPadding),
+        child: Row(
+          children: [
+            _translateButton(setState, context),
+            _openSettingsButton(context),
+          ],
         ),
+      ),
 
-        actions: [
-          FutureBuilder(
-              future: getUserProfile(),
-              builder: (context, AsyncSnapshot<UserInformation> snapshot) {
-                if (snapshot.hasData) {
-                  return Container(
-                    padding: EdgeInsets.only(
-                        right: StudentPlusOverrides.kSymmetricPadding),
-                    child: IconButton(
-                      icon: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(50),
-                        ),
-                        child: CachedNetworkImage(
-                          height: 28,
-                          width: 28,
-                          imageUrl: snapshot.data!.profilePicture!,
-                          placeholder: (context, url) =>
-                              CupertinoActivityIndicator(
-                                  animating: true, radius: 10),
-                        ),
+      actions: [
+        FutureBuilder(
+            future: getUserProfile(),
+            builder: (context, AsyncSnapshot<UserInformation> snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  padding: EdgeInsets.only(
+                      right: StudentPlusOverrides.kSymmetricPadding),
+                  child: IconButton(
+                    icon: ClipRRect(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(50),
                       ),
-                      onPressed: () async {
-                        await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                            "profile");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage(
-                                    hideStateSelection: true,
-                                    profile: snapshot.data!,
-                                  )),
-                        );
-
-                        // _showPopUp(snapshot.data!);
-                        //print("profile url");
-                      },
+                      child: CachedNetworkImage(
+                        height: 28,
+                        width: 28,
+                        imageUrl: snapshot.data!.profilePicture!,
+                        placeholder: (context, url) =>
+                            CupertinoActivityIndicator(
+                                animating: true, radius: 10),
+                      ),
                     ),
-                  );
-                }
-                return IconButton(icon: Container(), onPressed: (() {}));
-              }),
-        ],
-        // leading: leading,
-        leadingWidth: 110,
+                    onPressed: () async {
+                      await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                          "profile");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfilePage(
+                                  fromGradedPlus: false,
+                                  hideStateSelection: true,
+                                  profile: snapshot.data!,
+                                )),
+                      );
 
-        title: widget.isWorkPage == true
-            ? wordScreenIconWidget()
-            : widget.titleIconCode != null
-                ? allScreenIconWidget()
-                : Container(),
+                      // _showPopUp(snapshot.data!);
+                      //print("profile url");
+                    },
+                  ),
+                );
+              }
+              return IconButton(icon: Container(), onPressed: (() {}));
+            }),
+      ],
+      // leading: leading,
+      leadingWidth: 110,
 
-        // Utility.textWidget(
-        //   text: title,
-        //   context: context,
-        //   textTheme: Theme.of(context).textTheme.headline6,
-        // ),
+      title: widget.isWorkPage == true
+          ? wordScreenIconWidget()
+          : widget.titleIconCode != null
+              ? allScreenIconWidget()
+              : Container(),
 
-        //  Text(
-        //   title,
-        //   style: Theme.of(context).textTheme.headline6,
-        // ),
-        elevation: 0,
-      );
+      // Utility.textWidget(
+      //   text: title,
+      //   context: context,
+      //   textTheme: Theme.of(context).textTheme.headline6,
+      // ),
+
+      //  Text(
+      //   title,
+      //   style: Theme.of(context).textTheme.headline6,
+      // ),
+      elevation: 0,
+    );
     // });
   }
 
@@ -148,7 +147,7 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
                 Globals.selectedLanguage = language;
                 Globals.languageChanged.value = language;
               });
-             // widget.refresh!(true);
+              // widget.refresh!(true);
             }
           });
         },
@@ -244,10 +243,10 @@ class _StudentPlusAppBarState extends State<StudentPlusAppBar> {
       padding: EdgeInsets.only(right: 7),
       child: Icon(
         IconData(
-                widget.titleIconCode!,
-                fontFamily: Overrides.kFontFam,
-                fontPackage: Overrides.kFontPkg,
-              ),
+          widget.titleIconCode!,
+          fontFamily: Overrides.kFontFam,
+          fontPackage: Overrides.kFontPkg,
+        ),
         color: AppTheme.kButtonColor,
       ),
     );

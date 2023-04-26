@@ -80,6 +80,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
               backgroundColor: Colors.transparent,
               resizeToAvoidBottomInset: false,
               appBar: CustomOcrAppBarWidget(
+                fromGradedPlus: true,
                 isSuccessState: ValueNotifier<bool>(true),
                 isBackOnSuccess: isBackFromCamera,
                 isBackButton: true,

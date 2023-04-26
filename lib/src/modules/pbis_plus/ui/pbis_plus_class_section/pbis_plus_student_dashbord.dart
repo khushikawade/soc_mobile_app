@@ -1,3 +1,4 @@
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
@@ -9,12 +10,14 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class PBISPlusStudentDashBoard extends StatefulWidget {
   ValueNotifier<ClassroomStudents> studentValueNotifier;
@@ -100,7 +103,25 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
 
   Widget body(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        widget.isFromStudentPlus != true
+            ? IconButton(
+                onPressed: () {
+                  pushNewScreen(context,
+                      screen: PBISPlusHome(),
+                      withNavBar: false,
+                      pageTransitionAnimation: PageTransitionAnimation.fade);
+                },
+                icon: Icon(
+                  IconData(0xe80d,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kButtonColor,
+                ),
+              )
+            : Container(),
         // widget.isFromStudentPlus == true
         BlocBuilder<PBISPlusBloc, PBISPlusState>(
             bloc: _bloc,
@@ -154,7 +175,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         // to remove hero widget for STUDENT+
         Container(
           alignment: Alignment.topCenter,
-          height: MediaQuery.of(context).size.height * 0.41,
+          height: MediaQuery.of(context).size.height * 0.36,
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.symmetric(horizontal: 16),
           padding: EdgeInsets.only(bottom: 10),
@@ -278,18 +299,18 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             size: 35,
           ),
           Padding(padding: EdgeInsets.only(top: 5)),
-          Utility.textWidget(
-            context: context,
-            text: item.title,
-            textAlign: TextAlign.center,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline5!
-                .copyWith(fontWeight: FontWeight.bold, color: Color(0xff000000)
-                    // != Theme.of(context).backgroundColor
-                    //     ? Color(0xffF7F8F9)
-                    //     : Color(0xff111C20),
-                    ),
+          Center(
+            child: Utility.textWidget(
+              context: context,
+              text: item.title,
+              textAlign: TextAlign.center,
+              textTheme: Theme.of(context).textTheme.headline5!.copyWith(
+                  fontWeight: FontWeight.bold, color: Color(0xff000000)
+                  // != Theme.of(context).backgroundColor
+                  //     ? Color(0xffF7F8F9)
+                  //     : Color(0xff111C20),
+                  ),
+            ),
           ),
         ],
       ));

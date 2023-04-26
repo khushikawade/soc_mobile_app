@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
-import 'package:Soc/src/modules/graded_plus/ui/profile_page.dart';
+import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_icons.dart';
@@ -96,6 +96,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ProfilePage(
+                                fromGradedPlus: false,
                                 hideStateSelection: true,
                                 profile: snapshot.data!,
                               )),
@@ -232,7 +233,16 @@ settingBottomSheet(context) async {
       backgroundColor: Colors.transparent,
       elevation: 10,
       context: context,
-      builder: (context) => PBISPlusSettingBottomSheet(
-            googleClassroomCourseworkList: googleClassroomCourseworkList,
+      builder: (context) => LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              // Set the maximum height of the bottom sheet based on the screen size
+              print(constraints.maxHeight);
+              return PBISPlusSettingBottomSheet(
+                  constraintDeviceHeight: constraints.maxHeight,
+                  googleClassroomCourseworkList: googleClassroomCourseworkList,
+                  height: constraints.maxHeight < 750
+                      ? MediaQuery.of(context).size.height * 0.6
+                      : MediaQuery.of(context).size.height * 0.45);
+            },
           ));
 }

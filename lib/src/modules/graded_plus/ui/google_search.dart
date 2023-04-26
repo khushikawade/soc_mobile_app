@@ -25,6 +25,7 @@ class _GoogleSearchState extends State<GoogleSearchWidget> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+                fromGradedPlus: true,
                 onTap: () {
                   Utility.scrollToTop(scrollController: scrollController);
                 },

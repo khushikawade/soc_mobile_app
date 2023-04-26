@@ -105,6 +105,7 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: CustomOcrAppBarWidget(
+              fromGradedPlus: true,
               onTap: () {
                 Utility.scrollToTop(scrollController: _scrollController);
               },

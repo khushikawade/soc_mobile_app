@@ -72,6 +72,7 @@ class _CoursesListScreenState extends State<CoursesListScreen>
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         appBar: CustomOcrAppBarWidget(
+          fromGradedPlus: true,
           isSuccessState: ValueNotifier<bool>(true),
           isBackOnSuccess: ValueNotifier<bool>(false),
           key: GlobalKey(),
