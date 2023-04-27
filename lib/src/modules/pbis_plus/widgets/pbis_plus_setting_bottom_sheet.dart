@@ -206,12 +206,15 @@ class _PBISPlusSettingBottomSheetState
           // setState(() {
           //-----------------------------if user select the student or classes navigate to select course bottom sheet-------------------------------------//
 
-          if (index == 1 || index == 2) {
+          if (index == 2) {
             _pageController.animateToPage(1,
                 duration: const Duration(milliseconds: 100),
                 curve: Curves.ease);
           }
           if (index == 1) {
+            _pageController.animateToPage(2,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.ease);
             isResetStudent = true;
           } else {
             isResetStudent = false;
@@ -233,17 +236,15 @@ class _PBISPlusSettingBottomSheetState
             child: Utility.textWidget(
                 text: text!,
                 context: context,
-                textTheme: Theme.of(context).textTheme.headline5!.copyWith(
-                      color:
-                          Color(0xff000000) == Theme.of(context).backgroundColor
-                              ? backgroundColor == AppTheme.kButtonColor
-                                  ? Color(0xff000000)
-                                  : Color(0xffFFFFFF)
-                              : Color(0xff000000),
-                      fontSize: Globals.deviceType == "phone"
-                          ? AppTheme.kBottomSheetTitleSize
-                          : AppTheme.kBottomSheetTitleSize * 1.3,
-                    ))));
+                textTheme: Theme.of(context).textTheme.headline3!.copyWith(
+                    fontWeight: backgroundColor == AppTheme.kButtonColor
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: Color(0xff000000) !=
+                                Theme.of(context).backgroundColor ||
+                            backgroundColor == AppTheme.kButtonColor
+                        ? Color(0xff000000)
+                        : Color(0xffFFFFFF)))));
   }
 
 //------------------------Page 1 for course List-------------------------//
@@ -421,6 +422,10 @@ class _PBISPlusSettingBottomSheetState
 
 //----------------Student list------------------------------------//
   Widget buildSelectStudentBottomsheetWidget(context) {
+    if (widget.googleClassroomCourseworkList.length > 0 &&
+        widget.googleClassroomCourseworkList[0].name == "All") {
+      widget.googleClassroomCourseworkList.removeAt(0);
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -474,16 +479,11 @@ class _PBISPlusSettingBottomSheetState
                     bottom: 25,
                   ),
                   scrollDirection: Axis.vertical,
-                  itemCount: selectedCoursesList.length == 0
-                      ? widget.googleClassroomCourseworkList.length
-                      : selectedCoursesList.length,
+                  itemCount: widget.googleClassroomCourseworkList.length - 1,
                   itemBuilder: (BuildContext context, int index) {
                     return renderClassWiseStudentList(
                       index,
                       context,
-                      selectedCoursesList.length == 0
-                          ? widget.googleClassroomCourseworkList
-                          : selectedCoursesList,
                     );
                   },
                 ),
@@ -494,7 +494,16 @@ class _PBISPlusSettingBottomSheetState
           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
           child: FloatingActionButton.extended(
               backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-              onPressed: () async {},
+              onPressed: () async {
+                if (selectedStudentList.length > 0) {
+                  _pageController.animateToPage(3,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.ease);
+                } else {
+                  Utility.currentScreenSnackBar(
+                      "Please select at least one student.", null);
+                }
+              },
               label: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -514,29 +523,31 @@ class _PBISPlusSettingBottomSheetState
 
 //--------------------------------return selected class name on select student screen---------------//
   Widget renderClassWiseStudentList(
-      int index, context, List<ClassroomCourse> courseList) {
-    if (courseList.length > 0 && courseList[0].students == null) {
-      courseList.removeAt(0);
-    }
+    int index,
+    context,
+  ) {
     return Container(
-      key: ValueKey(courseList[index]),
+      key: ValueKey(widget.googleClassroomCourseworkList[index]),
       child: Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 5),
         child: Column(
           children: [
             Text(
-              courseList[index]
+              widget.googleClassroomCourseworkList[index]
                   .name!, // -----------------class name-----------------//
               style: Theme.of(context)
                   .textTheme
                   .headline2!
                   .copyWith(color: AppTheme.kButtonColor),
             ),
-            selectedCoursesList.length != 0
-                ? renderStudents(selectedCoursesList[index]
-                    .students!) // only particular class of student showing
-                : renderStudents(
-                    courseList[index].students!) // for all the student showing
+
+            widget.googleClassroomCourseworkList[index].students != null &&
+                    widget.googleClassroomCourseworkList[index].students!
+                            .length >
+                        0
+                ? renderStudents(
+                    widget.googleClassroomCourseworkList[index].students!)
+                : Text('No Student Found') // for all the student showing
           ],
         ),
       ),
@@ -553,14 +564,14 @@ class _PBISPlusSettingBottomSheetState
       itemBuilder: (BuildContext context, int index) {
         return InkWell(
           onTap: () {
-            if (!selectedStudentList.contains(studentList[index])) {
-              selectedStudentList.add(studentList[index]);
-            } else {
-              selectedStudentList.remove(studentList[index]);
-            }
-            //Refresh value in the UI
-            selectionChange.value = !selectionChange.value;
-            selectedStudentList.length;
+            // if (!selectedStudentList.contains(studentList[index])) {
+            //   selectedStudentList.add(studentList[index]);
+            // } else {
+            //   selectedStudentList.remove(studentList[index]);
+            // }
+            // //Refresh value in the UI
+            // selectionChange.value = !selectionChange.value;
+            // selectedStudentList.length;
           },
           child: Container(
               height: 54,
@@ -593,7 +604,7 @@ class _PBISPlusSettingBottomSheetState
                           .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
 
                       contentPadding: EdgeInsets.zero,
-                      value: selectedStudentList.contains(studentList[index]),
+                      value: studentList[index],
                       onChanged: (dynamic val) {},
                       title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
