@@ -210,7 +210,15 @@ class individual extends State<StudentPlusGradesPage> {
                 ),
                 child: Center(
                     child: Utility.textWidget(
-                        text: chipValue,
+                        text: chipValue == '1'
+                            ? 'First'
+                            : chipValue == '2'
+                                ? 'Second'
+                                : chipValue == '3'
+                                    ? 'Third'
+                                    : chipValue == '4'
+                                        ? 'Forth'
+                                        : chipValue,
                         context: context,
                         textTheme: Theme.of(context).textTheme.headline4)),
               ),

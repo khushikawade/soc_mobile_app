@@ -184,11 +184,11 @@ class StudentPlusGraphMethod {
       }
     }
 
-    addScoreData(
-        2020,
-        isMathsSection
-            ? studentDetails.nysMathScore2019C
-            : studentDetails.nysElaScore2019C);
+    // addScoreData(
+    //     2020,
+    //     isMathsSection
+    //         ? studentDetails.nysMathScore2019C
+    //         : studentDetails.nysElaScore2019C);
     addScoreData(
         2021,
         isMathsSection

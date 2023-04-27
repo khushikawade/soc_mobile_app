@@ -68,9 +68,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
             children: [
               Expanded(
                 child: PageView(
-                  physics: pageValue == 0
-                      ? NeverScrollableScrollPhysics()
-                      : BouncingScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   onPageChanged: ((value) {
                     pageValue = value;
                   }),

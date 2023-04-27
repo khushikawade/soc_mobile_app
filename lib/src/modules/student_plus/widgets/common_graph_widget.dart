@@ -52,7 +52,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                       width: 1)),
               show: true),
           maxX: widget.isIReadyGraph == true ? 3 : 2023,
-          minX: widget.isIReadyGraph == true ? 0 : 2020,
+          minX: widget.isIReadyGraph == true ? 0 : 2021,
           maxY: widget.isIReadyGraph == true ? 110 : 5,
           minY: widget.isIReadyGraph == true ? 0 : 0.5,
           showingTooltipIndicators:
@@ -174,20 +174,20 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
           String text = '';
           String grade = '';
           switch (value.toString()) {
-            case '2020.0':
-              text = '19-20';
-              grade = "grade ${widget.studentDetails.grade19_20 ?? ''}";
-              break;
+            // case '2020.0':
+            //   text = '19-20';
+            //   grade = "grade ${widget.studentDetails.grade19_20 ?? ''}";
+            //   break;
             case '2021.0':
-              text = '21-22';
+              text = '20-21';
               grade = "grade ${widget.studentDetails.grade21_22 ?? ''}";
               break;
             case '2022.0':
-              text = '22-23';
+              text = '21-22';
               grade = "grade ${widget.studentDetails.gradeC ?? ''}";
               break;
             case '2023.0':
-              text = '23-24';
+              text = '22-23';
               grade = "grade";
               break;
           }

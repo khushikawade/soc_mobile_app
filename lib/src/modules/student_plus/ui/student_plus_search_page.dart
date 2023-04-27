@@ -51,7 +51,7 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
   final ValueNotifier<bool> showErrorInSearch = ValueNotifier<bool>(false);
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
   double _width = 100;
-  double _height = Globals.deviceType == "phone" ? 250 : 450;
+  double _height = Globals.deviceType == "phone" ? 180 : 450;
   final _deBouncer = Debouncer(milliseconds: 500);
 
   @override
