@@ -26,6 +26,7 @@ import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
@@ -51,7 +52,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
 
-  // Initializing Fieebase Starts
+  // Initializing Firebase Starts
   // await Firebase.initializeApp();
   if (Platform.isAndroid) {
     await Firebase.initializeApp(
@@ -70,7 +71,7 @@ void main() async {
   }
 
   // await FirebaseAnalyticsService.firebaseCrashlytics(null, null, null);
-  // Initializing Fieebase Ends
+  // Initializing Firebase Ends
 
   if (!kIsWeb) {
     // Not running on the web!
@@ -113,6 +114,7 @@ void main() async {
           ..registerAdapter(PBISPlusHistoryModalAdapter())
           ..registerAdapter(PBISPlusTotalInteractionModalAdapter())
           ..registerAdapter(StudentPlusSearchModelAdapter())
+          ..registerAdapter(StudentPlusGradeModelAdapter())
 
         // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
         ;

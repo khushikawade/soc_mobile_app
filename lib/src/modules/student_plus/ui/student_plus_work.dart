@@ -1,5 +1,4 @@
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';

@@ -45,3 +45,18 @@ class GetStudentPlusDetails extends StudentPlusEvent {
   @override
   String toString() => '$studentId';
 }
+
+
+/* ---------------- Event use to trigger student grade details --------------- */
+class FetchStudentGradesEvent extends StudentPlusEvent {
+  final String? studentId;
+  FetchStudentGradesEvent({
+    @required this.studentId,
+  });
+
+  @override
+  List<Object> get props => [studentId!];
+
+  @override
+  String toString() => 'GlobalSearchEvent { keyword: $studentId}';
+}

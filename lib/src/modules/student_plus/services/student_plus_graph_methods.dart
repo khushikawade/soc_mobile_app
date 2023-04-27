@@ -117,64 +117,99 @@ class StudentPlusGraphMethod {
     //           "0.00")),
     // ];
 
-    List<FlSpot> list = [];
-    if ((isMathsSection == true
-            ? studentDetails.nysMathScore2019C
-            : studentDetails.nysElaScore2019C) !=
-        null) {
-      list.add(
-        FlSpot(
-            2020,
-            double.parse((isMathsSection == true
-                    ? studentDetails.nysMathScore2019C
-                    : studentDetails.nysElaScore2019C) ??
-                "0.00")),
-      );
-    }
-    if ((isMathsSection == true
-            ? studentDetails.nysMathScore2021C
-            : studentDetails.nysElaScore2021C) !=
-        null) {
-      list.add(
-        FlSpot(
-            2021,
-            double.parse((isMathsSection == true
-                    ? studentDetails.nysMathScore2021C
-                    : studentDetails.nysElaScore2021C) ??
-                "0.00")),
-      );
-    }
-    if ((isMathsSection == true
-            ? studentDetails.nysMathScore2022C
-            : studentDetails.nysElaScore2022C) !=
-        null) {
-      list.add(
-        FlSpot(
-            2022,
-            double.parse((isMathsSection == true
-                    ? studentDetails.nysMathScore2022C
-                    : studentDetails.nysElaScore2022C) ??
-                "0.00")),
-      );
+    // List<FlSpot> list = [];
+    // if ((isMathsSection == true
+    //         ? studentDetails.nysMathScore2019C
+    //         : studentDetails.nysElaScore2019C) !=
+    //     null) {
+    //   list.add(
+    //     FlSpot(
+    //         2020,
+    //         double.parse((isMathsSection == true
+    //                 ? studentDetails.nysMathScore2019C
+    //                 : studentDetails.nysElaScore2019C) ??
+    //             "0.00")),
+    //   );
+    // }
+    // if ((isMathsSection == true
+    //         ? studentDetails.nysMathScore2021C
+    //         : studentDetails.nysElaScore2021C) !=
+    //     null) {
+    //   list.add(
+    //     FlSpot(
+    //         2021,
+    //         double.parse((isMathsSection == true
+    //                 ? studentDetails.nysMathScore2021C
+    //                 : studentDetails.nysElaScore2021C) ??
+    //             "0.00")),
+    //   );
+    // }
+    // if ((isMathsSection == true
+    //         ? studentDetails.nysMathScore2022C
+    //         : studentDetails.nysElaScore2022C) !=
+    //     null) {
+    //   list.add(
+    //     FlSpot(
+    //         2022,
+    //         double.parse((isMathsSection == true
+    //                 ? studentDetails.nysMathScore2022C
+    //                 : studentDetails.nysElaScore2022C) ??
+    //             "0.00")),
+    //   );
+    // }
+
+    // if ((isMathsSection == true
+    //         ? studentDetails.nysMath2023PredictionC
+    //         : studentDetails.nysEla2023PredictionC) !=
+    //     null) {
+    //   list.add(FlSpot(
+    //       2023,
+    //       double.parse((isMathsSection == true
+    //               ? studentDetails.nysMath2023PredictionC
+    //               : studentDetails.nysEla2023PredictionC) ??
+    //           "0.00")));
+    // }
+    // if (removeLast && list.length > 1) {
+    //   list.removeLast();
+    //   return list;
+    // } else {
+    //   return list;
+    // }
+
+    final List<FlSpot> list = [];
+
+    void addScoreData(double year, String? score) {
+      if (score != null) {
+        list.add(FlSpot(year, double.parse(score)));
+      }
     }
 
-    if ((isMathsSection == true
+    addScoreData(
+        2020,
+        isMathsSection
+            ? studentDetails.nysMathScore2019C
+            : studentDetails.nysElaScore2019C);
+    addScoreData(
+        2021,
+        isMathsSection
+            ? studentDetails.nysMathScore2021C
+            : studentDetails.nysElaScore2021C);
+    addScoreData(
+        2022,
+        isMathsSection
+            ? studentDetails.nysMathScore2022C
+            : studentDetails.nysElaScore2022C);
+    addScoreData(
+        2023,
+        isMathsSection
             ? studentDetails.nysMath2023PredictionC
-            : studentDetails.nysEla2023PredictionC) !=
-        null) {
-      list.add(FlSpot(
-          2023,
-          double.parse((isMathsSection == true
-                  ? studentDetails.nysMath2023PredictionC
-                  : studentDetails.nysEla2023PredictionC) ??
-              "0.00")));
-    }
+            : studentDetails.nysEla2023PredictionC);
+
     if (removeLast && list.length > 1) {
       list.removeLast();
-      return list;
-    } else {
-      return list;
     }
+
+    return list;
   }
 
   /* -------------------------------------------------------------------------- */
