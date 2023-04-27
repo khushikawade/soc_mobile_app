@@ -205,51 +205,83 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*----------------------------------------------------------------------------------------------*/
 
     if (event is GetPBISPlusHistory) {
-      List<UserInformation> userProfileLocalData =
-          await UserGoogleProfile.getUserProfile();
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
 
-      LocalDatabase<PBISPlusHistoryModal> _localDb =
-          LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
-      List<PBISPlusHistoryModal>? _localData = await _localDb.getData();
-      List<PBISPlusHistoryModal> classRoomData = [];
-      List<PBISPlusHistoryModal> sheetData = [];
+        LocalDatabase<PBISPlusHistoryModal> _localDb =
+            LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
+        List<PBISPlusHistoryModal>? _localData = await _localDb.getData();
 
-      if (_localData?.isNotEmpty ?? false) {
+        if (_localData.isNotEmpty) {
+          List<PBISPlusHistoryModal> localClassRoomData = [];
+          List<PBISPlusHistoryModal> localSheetData = [];
+          _localData.asMap().forEach((index, element) {
+            if (_localData[index].type == 'Classroom') {
+              localClassRoomData.add(_localData[index]);
+            } else if (_localData[index].type == 'Sheet' ||
+                _localData[index].type == 'Spreadsheet') {
+              localSheetData.add(_localData[index]);
+            }
+          });
+          yield PBISPlusHistorySuccess(
+              pbisHistoryList: _localData,
+              pbisClassroomHistoryList: localClassRoomData,
+              pbisSheetHistoryList: localSheetData);
+        } else {
+          yield PBISPlusLoading();
+        }
+
+        List<PBISPlusHistoryModal> pbisHistoryList =
+            await getPBISPlusHistoryData(
+                teacherEmail: userProfileLocalData[0].userEmail!);
+
+        pbisHistoryList.sort((a, b) => b.id!.compareTo(a
+            .id!)); //Sorting on the basis of id as its serial in type and date is creating confusion
+
+        await _localDb.clear();
+        pbisHistoryList.forEach((element) async {
+          await _localDb.addData(element);
+        });
+
+        //---------------------------getting api data and make two list & add the value-------------//
+        List<PBISPlusHistoryModal> classRoomData = [];
+        List<PBISPlusHistoryModal> sheetData = [];
+        pbisHistoryList.asMap().forEach((index, element) {
+          if (pbisHistoryList[index].type == 'Classroom') {
+            classRoomData.add(pbisHistoryList[index]);
+          } else if (pbisHistoryList[index].type == 'Sheet' ||
+              pbisHistoryList[index].type == 'Spreadsheet') {
+            sheetData.add(pbisHistoryList[index]);
+          }
+        });
+
+        yield PBISPlusLoading();
+
         yield PBISPlusHistorySuccess(
-            pbisHistoryList: _localData,
+            pbisHistoryList: pbisHistoryList,
             pbisClassroomHistoryList: classRoomData,
             pbisSheetHistoryList: sheetData);
-      } else {
-        yield PBISPlusLoading();
+      } catch (e) {
+        LocalDatabase<PBISPlusHistoryModal> _localDb =
+            LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
+        List<PBISPlusHistoryModal>? _localData = await _localDb.getData();
+
+        List<PBISPlusHistoryModal> localClassRoomData = [];
+        List<PBISPlusHistoryModal> localSheetData = [];
+        _localData.asMap().forEach((index, element) {
+          if (_localData[index].type == 'Classroom') {
+            localClassRoomData.add(_localData[index]);
+          } else if (_localData[index].type == 'Sheet' ||
+              _localData[index].type == 'Spreadsheet') {
+            localSheetData.add(_localData[index]);
+          }
+        });
+        yield PBISPlusHistorySuccess(
+            pbisHistoryList: _localData,
+            pbisClassroomHistoryList: localClassRoomData,
+            pbisSheetHistoryList: localSheetData);
       }
-
-      List<PBISPlusHistoryModal> pbisHistoryList = await getPBISPlusHistoryData(
-          teacherEmail: userProfileLocalData[0].userEmail!);
-
-      pbisHistoryList.sort((a, b) => b.id!.compareTo(a
-          .id!)); //Sorting on the basis of id as its serial in type and date is creating confusion
-
-      await _localDb.clear();
-      pbisHistoryList.forEach((element) async {
-        await _localDb.addData(element);
-      });
-
-      //---------------------------getting api data and make two list & add the value-------------//
-
-      pbisHistoryList.asMap().forEach((index, element) {
-        if (pbisHistoryList[index].type == 'Classroom') {
-          classRoomData.add(pbisHistoryList[index]);
-        } else if (pbisHistoryList[index].type == 'Sheet') {
-          sheetData.add(pbisHistoryList[index]);
-        }
-      });
-
-      yield PBISPlusLoading();
-
-      yield PBISPlusHistorySuccess(
-          pbisHistoryList: pbisHistoryList ?? [],
-          pbisClassroomHistoryList: classRoomData ?? [],
-          pbisSheetHistoryList: sheetData ?? []);
     }
 
     /*----------------------------------------------------------------------------------------------*/
