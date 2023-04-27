@@ -147,7 +147,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   Future getStudentWorkDetails({required String studentId}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          '${StudentPlusOverrides.studentPlusBaseUrl}/getStudentWork/$studentId',
+          '${StudentPlusOverrides.studentPlusBaseUrl}/studentPlus/studentWork/$studentId',
           isCompleteUrl: true,
           headers: {
             "Content-Type": "application/json;charset=UTF-8",

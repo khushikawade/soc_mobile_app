@@ -18,7 +18,7 @@ import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
+
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidget;
@@ -27,6 +27,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:share/share.dart';
 
 class PBISPlusBottomSheet extends StatefulWidget {
+  final bool? fromClassScreen;
   final double? constraintDeviceHeight;
   final double? height;
   final bool? content;
@@ -40,6 +41,7 @@ class PBISPlusBottomSheet extends StatefulWidget {
   final ScreenshotController? headerScreenshotController;
   PBISPlusBottomSheet(
       {Key? key,
+      required this.fromClassScreen,
       this.constraintDeviceHeight,
       this.height = 200,
       this.isClassPage,
@@ -105,14 +107,16 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
           ),
-          height: pageValue == 1
+          height: pageValue == 1 //classroomMaxPointQue
               ? widget.height! * 1.2
-              : pageValue == 2
+              : pageValue == 2 //buildGoogleClassroomCourseWidget
                   ? widget.height! *
                       (widget.constraintDeviceHeight! < 800 ? 1.4 : 1.5)
-                  : pageValue == 3
-                      ? widget.height! * 0.8
-                      : widget.height,
+                  : pageValue == 3 //commonLoaderWidget
+                      ? widget.fromClassScreen!
+                          ? (widget.height! * 0.6)
+                          : (widget.height! * 1.3)
+                      : widget.height, //saveAndShareOptions
           child: PageView(
             physics:
                 // pageValue == 0
@@ -203,9 +207,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                         operationResult: 'Success');
 
                     classroomLoader = false;
-                    _pageController.animateToPage(2,
-                        duration: const Duration(milliseconds: 100),
-                        curve: Curves.ease);
+                    _pageController.jumpToPage(2);
                   }),
               Container(
                 padding: EdgeInsets.only(right: 16),
@@ -303,8 +305,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
 
       // closing to loading dialog and bottom sheet
       // Navigator.pop(context);
-      _pageController.animateToPage(3,
-          duration: const Duration(milliseconds: 400), curve: Curves.ease);
+      _pageController.jumpTo(3);
 
       Navigator.pop(context);
       FocusScope.of(context).requestFocus(FocusNode());
@@ -365,222 +366,226 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
 
 //page value=1
   Widget classroomMaxPointQue() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-            alignment: Alignment.topRight,
-            child: IconButton(
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: AppTheme.kButtonColor,
+                  size: Globals.deviceType == "phone" ? 28 : 36,
+                ),
+              )),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+            minLeadingWidth: 70,
+            title: Utility.textWidget(
+                context: context,
+                // textAlign: TextAlign.center,
+                text: 'Google Classroom',
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+            leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
-                FocusScope.of(context).requestFocus(FocusNode());
+                _pageController.animateToPage(pageValue - 1,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.ease);
               },
               icon: Icon(
-                Icons.clear,
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
                 color: AppTheme.kButtonColor,
-                size: Globals.deviceType == "phone" ? 28 : 36,
               ),
-            )),
-        ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          minLeadingWidth: 70,
-          title: Utility.textWidget(
-              context: context,
-              // textAlign: TextAlign.center,
-              text: 'Google Classroom',
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
-          leading: IconButton(
-            onPressed: () {
-              _pageController.animateToPage(pageValue - 1,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.ease);
-            },
-            icon: Icon(
-              IconData(0xe80d,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kButtonColor,
             ),
           ),
-        ),
-        SpacerWidget(15),
-        Utility.textWidget(
-            context: context,
-            textAlign: TextAlign.center,
-            text:
-                'This information will be saved to Google Classroom as an assignment. Please input the total points possible as required by Google Classroom.',
-            textTheme: Theme.of(context).textTheme.bodyText1!),
-        SpacerWidget(30),
-        Form(
-          key: _formKey,
-          child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              child: TextFieldWidget(
-                  hintText: 'Points Possible',
-                  msg: "Field is required",
-                  keyboardType: TextInputType.number,
-                  controller: pointPossibleController,
-                  onSaved: (String value) {})),
-        ),
-        SpacerWidget(20),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-          child: FloatingActionButton.extended(
-              backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  FocusScope.of(context).requestFocus(FocusNode());
+          SpacerWidget(15),
+          Utility.textWidget(
+              context: context,
+              textAlign: TextAlign.center,
+              text:
+                  'This information will be saved to Google Classroom as an assignment. Please input the total points possible as required by Google Classroom.',
+              textTheme: Theme.of(context).textTheme.bodyText1!),
+          SpacerWidget(30),
+          Form(
+            key: _formKey,
+            child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                child: TextFieldWidget(
+                    hintText: 'Points Possible',
+                    msg: "Field is required",
+                    keyboardType: TextInputType.number,
+                    controller: pointPossibleController,
+                    onSaved: (String value) {})),
+          ),
+          SpacerWidget(20),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+            child: FloatingActionButton.extended(
+                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    FocusScope.of(context).requestFocus(FocusNode());
 
-                  _pageController.animateToPage(2,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.ease);
+                    _pageController.animateToPage(2,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.ease);
 
-                  classroomLoader = true;
-                }
-              },
-              label: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Utility.textWidget(
-                      text: 'Next',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(color: Theme.of(context).backgroundColor)),
-                ],
-              )),
-        ),
-      ],
+                    classroomLoader = true;
+                  }
+                },
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Utility.textWidget(
+                        text: 'Next',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(
+                                color: Theme.of(context).backgroundColor)),
+                  ],
+                )),
+          ),
+        ],
+      ),
     );
   }
 
 //page value=2
   Widget buildGoogleClassroomCourseWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-            alignment: Alignment.topRight,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+              alignment: Alignment.topRight,
 
-            // padding: EdgeInsets.only(top: 16),
-            //color: Colors.amber,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              icon: Icon(
-                Icons.clear,
-                color: AppTheme.kButtonColor,
-                size: Globals.deviceType == "phone" ? 28 : 36,
-              ),
-            )),
-        ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          // minLeadingWidth: 70,
-          title: Utility.textWidget(
-              context: context,
-              // textAlign: TextAlign.center,
-              text: 'Select Course',
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
-          leading: IconButton(
-            onPressed: () {
-              _pageController.animateToPage(
-                  classroomLoader == false ? 0 : pageValue - 1,
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.ease);
-            },
-            icon: Icon(
-              IconData(0xe80d,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kButtonColor,
-            ),
-          ),
-        ),
-        SpacerWidget(20),
-        ValueListenableBuilder(
-            valueListenable: selectionChange,
-            child: Container(),
-            builder: (BuildContext context, dynamic value, Widget? child) {
-              return Container(
-                height: MediaQuery.of(context).size.height * 0.36,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(
-                    bottom: 25,
-                  ),
-                  scrollDirection: Axis.vertical,
-                  itemCount: widget.googleClassroomCourseworkList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _classroomCourseRadioList(
-                        index, context, widget.googleClassroomCourseworkList);
-                  },
+              // padding: EdgeInsets.only(top: 16),
+              //color: Colors.amber,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: AppTheme.kButtonColor,
+                  size: Globals.deviceType == "phone" ? 28 : 36,
                 ),
-              );
-            }),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-          child: FloatingActionButton.extended(
-              backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-              onPressed: () async {
-                _pageController.animateToPage(3,
+              )),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+            // minLeadingWidth: 70,
+            title: Utility.textWidget(
+                context: context,
+                // textAlign: TextAlign.center,
+                text: 'Select Course',
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+            leading: IconButton(
+              onPressed: () {
+                _pageController.animateToPage(
+                    classroomLoader == false ? 0 : pageValue - 1,
                     duration: const Duration(milliseconds: 400),
                     curve: Curves.ease);
-
-                //Create Google Classroom Assignment for Selected Courses if classroomLoader = true
-                if (classroomLoader) {
-                  classroomBloc.add(CreatePBISClassroomCoursework(
-                    pointPossible: pointPossibleController.text,
-                    courseAndStudentList: selectedCoursesList.length == 0
-                        ? widget.googleClassroomCourseworkList
-                        : selectedCoursesList,
-                    // studentAssessmentInfoDb: studentAssessmentInfoDb
-                  ));
-                }
-                //Create Google Spreadsheet for Selected Courses if classroomLoader = false
-                else {
-                  if (PBISPlusOverrides
-                          .pbisPlusGoogleDriveFolderId.isNotEmpty ==
-                      true) {
-                    //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
-                    _createSpreadSheet();
-                  } else {
-                    //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
-                    _checkDriveFolderExistsOrNot();
-                  }
-                }
               },
-              label: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Utility.textWidget(
-                      text: 'Submit',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(color: Theme.of(context).backgroundColor)),
-                ],
-              )),
-        ),
-        // classroomLoader
-        //     ? googleClassroomBlocListener()
-        //     : googleDriveBlocListener()
-      ],
+              icon: Icon(
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kButtonColor,
+              ),
+            ),
+          ),
+          SpacerWidget(20),
+          ValueListenableBuilder(
+              valueListenable: selectionChange,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.36,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(
+                      bottom: 25,
+                    ),
+                    scrollDirection: Axis.vertical,
+                    itemCount: widget.googleClassroomCourseworkList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _classroomCourseRadioList(
+                          index, context, widget.googleClassroomCourseworkList);
+                    },
+                  ),
+                );
+              }),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+            child: FloatingActionButton.extended(
+                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                onPressed: () async {
+                  _pageController.jumpToPage(3);
+
+                  //Create Google Classroom Assignment for Selected Courses if classroomLoader = true
+                  if (classroomLoader) {
+                    classroomBloc.add(CreatePBISClassroomCoursework(
+                      pointPossible: pointPossibleController.text,
+                      courseAndStudentList: selectedCoursesList.length == 0
+                          ? widget.googleClassroomCourseworkList
+                          : selectedCoursesList,
+                      // studentAssessmentInfoDb: studentAssessmentInfoDb
+                    ));
+                  }
+                  //Create Google Spreadsheet for Selected Courses if classroomLoader = false
+                  else {
+                    if (PBISPlusOverrides
+                            .pbisPlusGoogleDriveFolderId.isNotEmpty ==
+                        true) {
+                      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+                      _createSpreadSheet();
+                    } else {
+                      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+                      _checkDriveFolderExistsOrNot();
+                    }
+                  }
+                },
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Utility.textWidget(
+                        text: 'Submit',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(
+                                color: Theme.of(context).backgroundColor)),
+                  ],
+                )),
+          ),
+          // classroomLoader
+          //     ? googleClassroomBlocListener()
+          //     : googleDriveBlocListener()
+        ],
+      ),
     );
   }
 
@@ -766,7 +771,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                     context: context,
                     scaffoldKey: widget.scaffoldKey);
 
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
                 Utility.currentScreenSnackBar('Please try again', null);
               } else {
                 Navigator.of(context).pop();

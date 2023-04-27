@@ -94,6 +94,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     : PBISPlusAppBar(
                         title: "Dashboard",
                         backButton: true,
+                        scaffoldKey: _scaffoldKey,
                       ),
                 body: body(context),
                 floatingActionButton: floatingActionButton(
@@ -458,6 +459,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         context: context,
         builder: (BuildContext context) {
           return PBISPlusBottomSheet(
+            fromClassScreen: false,
             scaffoldKey: _scaffoldKey,
             screenshotController: screenshotController,
             headerScreenshotController: headerScreenshotController,
