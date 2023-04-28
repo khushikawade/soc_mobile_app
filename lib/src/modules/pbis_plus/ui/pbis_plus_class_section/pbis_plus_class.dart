@@ -43,6 +43,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       []; //Used to send the value in bottomsheet coursework list
   final ValueNotifier<int> selectedValue = ValueNotifier<int>(0);
   final ValueNotifier<int> courseLength = ValueNotifier<int>(0);
+  final ValueNotifier<bool> screenShotNotifier = ValueNotifier<bool>(false);
   final ItemScrollController _itemScrollController = ItemScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
@@ -303,28 +304,38 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   }
 
   Widget studentListCourseWiseView(googleClassroomCourseList) {
-    return RefreshIndicator(
-        key: refreshKey,
-        onRefresh: refreshPage,
-        child: Container(
-            height: MediaQuery.of(context).orientation == Orientation.portrait
-                ? MediaQuery.of(context).size.height * 0.60 //7
-                : MediaQuery.of(context).size.height * 0.45,
-            child: SingleChildScrollView(
-              // SingleChildScrollView to take whole screen screenshot
-              child: Screenshot(
-                controller: screenshotController,
-                child: ScrollablePositionedList.builder(
-                    padding: EdgeInsets.only(bottom: 30),
-                    shrinkWrap: true,
-                    itemScrollController: _itemScrollController,
-                    itemCount: googleClassroomCourseList.length,
-                    itemBuilder: (context, index) {
-                      return _buildCourseSeparationList(
-                          googleClassroomCourseList, index);
-                    }),
-              ),
-            )));
+    return ValueListenableBuilder(
+      valueListenable: screenShotNotifier,
+      builder: (context, value, child) {
+        return RefreshIndicator(
+            key: refreshKey,
+            onRefresh: refreshPage,
+            child: Container(
+                height:
+                    MediaQuery.of(context).orientation == Orientation.portrait
+                        ? MediaQuery.of(context).size.height * 0.60 //7
+                        : MediaQuery.of(context).size.height * 0.45,
+                child: screenShotNotifier.value == true
+                    ? SingleChildScrollView(
+                        child: Screenshot(
+                            controller: screenshotController,
+                            child:
+                                scrollableBuilder(googleClassroomCourseList)),
+                      )
+                    : scrollableBuilder(googleClassroomCourseList)));
+      },
+    );
+  }
+
+  Widget scrollableBuilder(googleClassroomCourseList) {
+    return ScrollablePositionedList.builder(
+        padding: EdgeInsets.only(bottom: 30),
+        shrinkWrap: true,
+        itemScrollController: _itemScrollController,
+        itemCount: googleClassroomCourseList.length,
+        itemBuilder: (context, index) {
+          return _buildCourseSeparationList(googleClassroomCourseList, index);
+        });
   }
 
   Widget _buildCourseSeparationList(
@@ -529,43 +540,47 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   .toLowerCase()
                   .replaceAll(" ", "_"));
           /*-------------------------User Activity Track END----------------------------*/
-
+          screenShotNotifier.value = true;
           _saveAndShareBottomSheetMenu();
         },
       );
 
-  void _saveAndShareBottomSheetMenu() => showModalBottomSheet(
-      // clipBehavior: Clip.antiAliasWithSaveLayer,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Colors.transparent,
-      // animationCurve: Curves.easeOutQuart,
-      elevation: 10,
-      context: context,
-      builder: (BuildContext context) {
-        return LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            // Set the maximum height of the bottom sheet based on the screen size
-            print(constraints.maxHeight);
-            return PBISPlusBottomSheet(
-              fromClassScreen: true,
-              isClassPage: true,
-              screenshotController: screenshotController,
-              headerScreenshotController: headerScreenshotController,
-              constraintDeviceHeight: constraints.maxHeight,
-              scaffoldKey: _scaffoldKey,
-              googleClassroomCourseworkList: googleClassroomCourseworkList,
-              padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
-              height: constraints.maxHeight < 800
-                  ? MediaQuery.of(context).size.height * 0.5
-                  : MediaQuery.of(context).size.height * 0.43,
-              title: 'Save and Share',
-            );
-          },
-        );
-      });
+  Future<void> _saveAndShareBottomSheetMenu() async {
+    await showModalBottomSheet(
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        useRootNavigator: true,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (BuildContext context) {
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              // Set the maximum height of the bottom sheet based on the screen size
+              print(constraints.maxHeight);
+              return PBISPlusBottomSheet(
+                fromClassScreen: true,
+                isClassPage: true,
+                screenshotController: screenshotController,
+                headerScreenshotController: headerScreenshotController,
+                constraintDeviceHeight: constraints.maxHeight,
+                scaffoldKey: _scaffoldKey,
+                googleClassroomCourseworkList: googleClassroomCourseworkList,
+                padding: EdgeInsets.fromLTRB(30, 30, 30, 10),
+                height: constraints.maxHeight < 800
+                    ? MediaQuery.of(context).size.height * 0.5
+                    : MediaQuery.of(context).size.height * 0.43,
+                title: 'Save and Share',
+              );
+            },
+          );
+        });
+
+    screenShotNotifier.value = false;
+  }
 
   Widget noClassroomFound() {
     return Container(

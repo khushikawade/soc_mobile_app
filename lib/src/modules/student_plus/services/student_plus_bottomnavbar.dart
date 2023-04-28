@@ -81,7 +81,7 @@ class StudentPlusBottomNavBar {
     ));
     persistentBottomNavBarItemList.add(
       PersistentBottomNavBarItem(
-        icon: bottomIcon("0xe825", 'PBIS+', context),
+        icon: bottomIcon("0xe891", 'PBIS+', context),
         activeColorPrimary: AppTheme.kButtonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),

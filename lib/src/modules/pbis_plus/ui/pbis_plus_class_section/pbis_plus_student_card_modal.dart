@@ -246,13 +246,14 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                               builder: (BuildContext context,
                                   ClassroomStudents value, Widget? child) {
                                 return widget.isLoading == true
-                                    ? ShimmerLoading(
-                                        child: Container(
-                                          height: 10,
-                                          width: 10,
-                                          color: Colors.black,
-                                        ),
-                                        isLoading: widget.isLoading)
+                                    ? Text(
+                                        '0',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      )
                                     : Text(
                                         PBISPlusUtility
                                             .numberAbbreviationFormat(widget

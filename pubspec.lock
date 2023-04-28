@@ -621,7 +621,7 @@ packages:
       name: flutter_pdfview
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.9"
+    version: "1.2.5"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -919,6 +919,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
+  linked_scroll_controller:
+    dependency: "direct main"
+    description:
+      name: linked_scroll_controller
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   linkify:
     dependency: transitive
     description:

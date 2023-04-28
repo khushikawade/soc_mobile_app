@@ -348,7 +348,7 @@ class StudentPlusDetailsModel {
         "IReady_Math_EOY_Overall_Relative_Place__c":
             mathCurrentEOYOverallRelativePlace,
 
-        /* ------------------------- iReady Math color code ------------------------- */
+        /* ------------------------- iReady ELA color code ------------------------- */
         "iReady_ELA_EOY_21_22_Overall_Rel_Place__c":
             ELAPreviousEOYOverallRelPlace,
         "IReady_ELA_BOY_Overall_Relative_Place__c":

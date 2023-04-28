@@ -70,7 +70,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
         Scaffold(
             backgroundColor: Colors.transparent,
             appBar: StudentPlusAppBar(
-              titleIconCode: 0xe825,
+              titleIconCode: 0xe891,
             ),
             body: body()),
       ],

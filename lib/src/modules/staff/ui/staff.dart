@@ -447,7 +447,7 @@ class _StaffPageState extends State<StaffPage> {
                                   children: [
                                     Container(
                                       width: element.iconUrl.contains('pbis')
-                                          ? height / 4
+                                          ? height / 4.3
                                           : height / 3,
                                       margin: EdgeInsets.all(6),
                                       child: Image(
