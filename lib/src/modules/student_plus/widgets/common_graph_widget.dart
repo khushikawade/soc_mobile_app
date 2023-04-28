@@ -138,10 +138,10 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                                       (widget.isMathsSection == true
                                           ? double.parse(widget.studentDetails
                                                   .nysMath2023PredictionC ??
-                                              '')
+                                              '0')
                                           : double.parse(widget.studentDetails
                                                   .nysEla2023PredictionC ??
-                                              ''))
+                                              '0'))
                                   ? TextSpan(
                                       text: '\n' + 'Prediction',
                                       style: Theme.of(context)
