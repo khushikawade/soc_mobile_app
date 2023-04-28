@@ -167,7 +167,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                           if (_animationControllerForSync!.isAnimating ==
                               true) {
                             Utility.currentScreenSnackBar(
-                                'Classes Synced Successfully', null,
+                                'Classes synced successfully', null,
                                 marginFromBottom: 90);
                             _animationControllerForSync!.stop();
                           }
@@ -182,7 +182,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                             if (_animationControllerForSync!.isAnimating ==
                                 true) {
                               Utility.currentScreenSnackBar(
-                                  'Please Wait, Sync Is In Progress', null,
+                                  'Please wait, sync is in progress', null,
                                   marginFromBottom: 90);
                             } else {
                               _animationControllerForSync!.repeat();
