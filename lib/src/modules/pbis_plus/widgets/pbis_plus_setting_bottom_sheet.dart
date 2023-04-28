@@ -1,4 +1,6 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -19,11 +21,13 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
   final List<ClassroomCourse> googleClassroomCourseworkList;
   final double? height;
   final double? constraintDeviceHeight;
+  final PBISPlusBloc? pbisBloc;
   final GlobalKey<ScaffoldState> scaffoldKey;
   PBISPlusSettingBottomSheet(
       {Key? key,
       required this.googleClassroomCourseworkList,
       required this.constraintDeviceHeight,
+      this.pbisBloc,
       this.height = 200,
       required this.scaffoldKey})
       : super(key: key);
@@ -33,17 +37,22 @@ class PBISPlusSettingBottomSheet extends StatefulWidget {
       _PBISPlusSettingBottomSheetState();
 }
 
-class _PBISPlusSettingBottomSheetState
-    extends State<PBISPlusSettingBottomSheet> {
+class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
+    with SingleTickerProviderStateMixin {
   late PageController _pageController;
   final ValueNotifier<bool> selectionChange = ValueNotifier<bool>(false);
+  PBISPlusBloc pbisBloc = new PBISPlusBloc();
 
   List<ClassroomCourse> selectedRecords = []; //Add selected student and courses
   List<ClassroomStudents> selectedStudentList = [];
+
+  AnimationController? _animationControllerForSync;
+  Animation? animation;
+  Animation? rotateAnimation;
+
   int pageValue = 0;
   String sectionName = '';
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
-  PBISPlusBloc pbisBloc = PBISPlusBloc();
 
   get heightMap => {
         0: widget.height!,
@@ -60,7 +69,17 @@ class _PBISPlusSettingBottomSheetState
           setState(() {});
         });
     }
+    _animationControllerForSync = AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 1),
+        animationBehavior: AnimationBehavior.normal);
+
     super.initState();
+  }
+
+  void dispose() {
+    _animationControllerForSync!.dispose();
+    super.dispose();
   }
 
   @override
@@ -93,7 +112,7 @@ class _PBISPlusSettingBottomSheetState
                   context), //----------select ClassroomCourse view-----------------//
               buildSelectStudentBottomsheetWidget(
                   context), //----------------------select student view---------------//
-              commonLoaderWidget()
+              commonLoaderWidget(),
             ],
           )),
     );
@@ -139,45 +158,55 @@ class _PBISPlusSettingBottomSheetState
                                     : AppTheme.kBottomSheetTitleSize * 1.3,
                               )),
                 ),
-                InkWell(
-                  onTap: () {},
-                  child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      width: MediaQuery.of(context).size.width / 5,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          color: AppTheme.kButtonColor,
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.sync,
-                            size: Globals.deviceType == "phone" ? 16 : 28,
-                            color: AppTheme.kBlackColor,
+                BlocListener<PBISPlusBloc, PBISPlusState>(
+                    bloc: widget.pbisBloc,
+                    listener: (context, state) async {
+                      if (state is PBISPlusImportRosterSuccess) {
+                        Future.delayed(Duration(seconds: 5), () {
+                          Navigator.pop(context, 'Sync');
+                          if (_animationControllerForSync!.isAnimating ==
+                              true) {
+                            Utility.currentScreenSnackBar(
+                                'Classes Synced Successfully', null,
+                                marginFromBottom: 90);
+                            _animationControllerForSync!.stop();
+                          }
+                        });
+                      }
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.036,
+                      child: FloatingActionButton.extended(
+                          backgroundColor: AppTheme.kButtonColor,
+                          onPressed: () async {
+                            if (_animationControllerForSync!.isAnimating ==
+                                true) {
+                              Utility.currentScreenSnackBar(
+                                  'Please Wait, Sync Is In Progress', null,
+                                  marginFromBottom: 90);
+                            } else {
+                              _animationControllerForSync!.repeat();
+                              widget.pbisBloc!.add(PBISPlusImportRoster());
+                            }
+                          },
+                          label: Row(
+                            children: [
+                              Utility.textWidget(
+                                  text: 'Sync',
+                                  context: context,
+                                  textTheme: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .backgroundColor)),
+                            ],
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          FittedBox(
-                            child: Utility.textWidget(
-                                text: 'Sync',
-                                context: context,
-                                textAlign: TextAlign.center,
-                                textTheme: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2!
-                                    .copyWith(
-                                      color: Color(0xff000000),
-                                      // fontSize: Globals.deviceType == "phone"
-                                      //     ? AppTheme.kBottomSheetTitleSize
-                                      //     : AppTheme.kBottomSheetTitleSize * 1.3,
-                                    )),
-                          ),
-                        ],
-                      )),
-                ),
+                          icon: SpinningIconButton(
+                            controller: _animationControllerForSync,
+                            iconData: Icons.sync,
+                          )),
+                    ))
               ],
             ),
           ),
