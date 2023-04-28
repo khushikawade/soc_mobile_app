@@ -52,6 +52,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       ScreenshotController(); // screenshot for header widget
   ScreenshotController screenshotController =
       ScreenshotController(); // screenshot of whole list
+  PBISPlusBloc pbisBloc = PBISPlusBloc();
 
   @override
   void initState() {
@@ -131,7 +132,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   padding: EdgeInsets.zero,
                   onPressed: () {
                     //----------setting bottom sheet funtion------------//
-                    settingBottomSheet(context);
+                    settingBottomSheet(context, pbisBloc);
                   },
                   icon: Icon(
                     IconData(
@@ -625,7 +626,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   }
 
   //------------------------------for setting bottom sheet"-------------------//
-  settingBottomSheet(context) async {
+  settingBottomSheet(context, PBISPlusBloc pbisBloc) async {
     final List<ClassroomCourse> googleClassroomCourseworkList = [];
     LocalDatabase<ClassroomCourse> _localDb =
         LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
@@ -650,6 +651,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
                 return PBISPlusSettingBottomSheet(
                     scaffoldKey: _scaffoldKey,
+                    pbisBloc: pbisBloc,
                     constraintDeviceHeight: constraints.maxHeight,
                     googleClassroomCourseworkList:
                         googleClassroomCourseworkList,
@@ -660,7 +662,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
             ));
     if (section == 'All Classes & Students' ||
         section == 'Classes' ||
-        section == 'Students') {
+        section == 'Students' ||
+        section == 'Sync') {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         refreshPage();
       });
