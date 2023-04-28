@@ -260,10 +260,11 @@ class EditSlideFromPresentation extends GoogleDriveEvent {
 }
 
 class PBISPlusUpdateDataOnSpreadSheetTabs extends GoogleDriveEvent {
-  final Map<String,dynamic> spreadSheetFileObj;
-  final List<ClassroomCourse> classroomCourseworkList;
+  final Map<String, dynamic> spreadSheetFileObj;
+   List<ClassroomCourse> classroomCourseworkList;
   PBISPlusUpdateDataOnSpreadSheetTabs(
-      {required this.spreadSheetFileObj, required this.classroomCourseworkList});
+      {required this.spreadSheetFileObj,
+      required this.classroomCourseworkList});
 
   @override
   List<Object> get props => [];

@@ -2997,7 +2997,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       classroomCourseList.asMap().forEach((index, course) {
         if (index == 0) {
           //  change first default tab heading row text style.
-          tabs.add({
+          // change every tab heading row text style.
+          Map<String, Map<String, dynamic>> headingRowTextStyle = {
             "repeatCell": {
               "range": {"sheetId": index, "startRowIndex": 0, "endRowIndex": 1},
               "cell": {
@@ -3009,7 +3010,22 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               "fields":
                   "userEnteredFormat(textFormat,borders,backgroundColor,horizontalAlignment)"
             }
-          });
+          };
+          Map<String, Map<String, dynamic>> allCellsTextStyle = {
+            "repeatCell": {
+              "range": {
+                "sheetId": index,
+                "startRowIndex": 1,
+                "startColumnIndex": 1
+              },
+              "cell": {
+                "userEnteredFormat": {"horizontalAlignment": "CENTER"}
+              },
+              "fields": "userEnteredFormat(horizontalAlignment)"
+            }
+          };
+          tabs.add(headingRowTextStyle);
+          tabs.add(allCellsTextStyle);
         } else {
           // Build new tabs inside sheet for all other selected courses.
           Map<String, Map<String, dynamic>> addSheet = {
@@ -3031,8 +3047,22 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   "userEnteredFormat(textFormat,borders,backgroundColor,horizontalAlignment)"
             }
           };
+          Map<String, Map<String, dynamic>> allCellsTextStyle = {
+            "repeatCell": {
+              "range": {
+                "sheetId": index,
+                "startRowIndex": 1,
+                "startColumnIndex": 1
+              },
+              "cell": {
+                "userEnteredFormat": {"horizontalAlignment": "CENTER"}
+              },
+              "fields": "userEnteredFormat(horizontalAlignment)"
+            }
+          };
           tabs.add(addSheet);
           tabs.add(headingRowTextStyle);
+          tabs.add(allCellsTextStyle);
         }
       });
       return tabs;

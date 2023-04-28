@@ -15,7 +15,8 @@ import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/services.dart' show rootBundle;
+
+import 'package:intl/intl.dart';
 
 part 'pbis_plus_event.dart';
 part 'pbis_plus_state.dart';
@@ -346,6 +347,31 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             pbisStudentInteractionList: _localData);
       }
     }
+    if (event is PBISPlusResetInteractions) {
+      try {
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        //REMOVE THE 'ALL' OBJECT FROM LIST IF EXISTS
+        if (event.selectedRecords.length > 0 &&
+            event.selectedRecords[0].name == 'All') {
+          event.selectedRecords.removeAt(0);
+        }
+
+        var result = await createPBISPlusResetInteractions(
+          type: event.type,
+          selectedCourses: event.selectedRecords,
+          userProfile: userProfileLocalData[0],
+        );
+        if (result == true) {
+          yield PBISPlusResetSuccess();
+        } else {
+          yield PBISErrorState(error: result);
+        }
+      } catch (e) {
+        yield PBISErrorState(error: e.toString());
+      }
+    }
   }
 
   /*----------------------------------------------------------------------------------------------*/
@@ -355,7 +381,6 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   Future<List> importPBISClassroomRoster(
       {required String? accessToken, required String? refreshToken}) async {
     try {
-      print(accessToken);
       final ResponseModel response = await _dbServices.getApiNew(
           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/importRoster/$accessToken',
           isCompleteUrl: true);
@@ -677,6 +702,61 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       return [];
     } catch (e) {
       throw (e);
+    }
+  }
+
+  Future createPBISPlusResetInteractions(
+      {required String? type,
+      required List<ClassroomCourse> selectedCourses,
+      required UserInformation? userProfile,
+      int retry = 3}) async {
+    try {
+      String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+      Map<String, dynamic> body = {
+        "Reset_Date": currentDate,
+        "Teacher_Email": userProfile!.userEmail ?? '',
+      };
+      //if user reset Course
+      if (type == "All Classes & Students" || type == "Classes") {
+        // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
+        String classroomCourseIds =
+            selectedCourses.map((course) => course.id).join("','");
+        body.addAll({"Classroom_Course_Id": "('$classroomCourseIds')"});
+      } else if //if user reset student
+          (type == "Students") {
+        // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
+        String studentIds = selectedCourses
+            .expand((course) => course.students ?? [])
+            .map((student) => student.profile?.id)
+            .where((id) => id != null && id.isNotEmpty)
+            .map((id) => "$id")
+            .join("', '");
+        // Surround the string with double quotes and  (parentheses)
+
+        body.addAll({"Student_Id": "('$studentIds')"});
+      }
+
+      final ResponseModel response = await _dbServices.postApi(
+          'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/reset',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+          },
+          body: body,
+          isGoogleApi: true);
+      if (response.statusCode == 200) {
+        return true;
+      } else if (retry > 0) {
+        return await createPBISPlusResetInteractions(
+            selectedCourses: selectedCourses,
+            type: type,
+            userProfile: userProfile,
+            retry: retry - 1);
+      }
+      return response.statusCode;
+    } catch (e) {
+      return e.toString();
     }
   }
 }

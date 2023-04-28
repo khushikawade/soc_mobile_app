@@ -73,4 +73,15 @@ class GetPBISPlusStudentDashboardLogs extends PBISPlusEvent {
   List<Object> get props => [studentId];
 }
 
+class PBISPlusResetInteractions extends PBISPlusEvent {
+  final String type;
+  final List<ClassroomCourse>
+      selectedRecords; //Can contain Classroom Course ids or Student ids
 
+  PBISPlusResetInteractions({
+    required this.type,
+    required this.selectedRecords,
+  });
+  @override
+  List<Object> get props => [];
+}

@@ -111,13 +111,14 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       engaged: fields[5] as int?,
       niceWork: fields[6] as int?,
       helpful: fields[7] as int?,
+      courseId: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ClassroomProfile obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -133,7 +134,9 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       ..writeByte(6)
       ..write(obj.niceWork)
       ..writeByte(7)
-      ..write(obj.helpful);
+      ..write(obj.helpful)
+      ..writeByte(8)
+      ..write(obj.courseId);
   }
 
   @override
