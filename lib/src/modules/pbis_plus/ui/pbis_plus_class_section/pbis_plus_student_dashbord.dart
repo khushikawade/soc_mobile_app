@@ -311,8 +311,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             size: 35,
           ),
           Padding(padding: EdgeInsets.only(top: 5)),
-          Container(
-            padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
+          Center(
+            widthFactor: item.title == 'Date' ? 2.5 : null,
+            // padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
             child: Utility.textWidget(
               context: context,
               text: item.title,
