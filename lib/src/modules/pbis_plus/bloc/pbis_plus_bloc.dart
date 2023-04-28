@@ -307,12 +307,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     /*                    Event to get student details by email                   */
     /* -------------------------------------------------------------------------- */
     if (event is GetPBISPlusStudentDashboardLogs) {
+      String sectionTableName = event.isStudentPlus == true
+          ? "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}"
+          : "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.classroomCourseId}_${event.studentId}";
       try {
         List<UserInformation> userProfileLocalData =
             await UserGoogleProfile.getUserProfile();
 
-        LocalDatabase<PBISPlusTotalInteractionModal> _localDb = LocalDatabase(
-            "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}");
+        LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
+            LocalDatabase(sectionTableName);
         List<PBISPlusTotalInteractionModal>? _localData =
             await _localDb.getData();
 
@@ -326,7 +329,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         List<PBISPlusTotalInteractionModal> pbisStudentDetails =
             await getPBISPlusStudentDashboardLogs(
                 studentId: event.studentId,
-                teacherEmail: userProfileLocalData[0].userEmail!);
+                teacherEmail: userProfileLocalData[0].userEmail!,
+                classroomCourseId: event.classroomCourseId,
+                isStudentPlus: event.isStudentPlus);
 
         //   pbisHistoryData.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
@@ -339,8 +344,8 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         yield PBISPlusStudentDashboardLogSuccess(
             pbisStudentInteractionList: pbisStudentDetails);
       } catch (e) {
-        LocalDatabase<PBISPlusTotalInteractionModal> _localDb = LocalDatabase(
-            "${PBISPlusOverrides.PBISPlusStudentDetail}_${event.studentId}");
+        LocalDatabase<PBISPlusTotalInteractionModal> _localDb =
+            LocalDatabase(sectionTableName);
         List<PBISPlusTotalInteractionModal>? _localData =
             await _localDb.getData();
         yield PBISPlusStudentDashboardLogSuccess(
@@ -680,13 +685,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
   /* -------Function to get student previous date log details from email ------ */
   /* -------------------------------------------------------------------------- */
 
-  Future<List<PBISPlusTotalInteractionModal>> getPBISPlusStudentDashboardLogs(
-      {required String studentId, //Id/Email
-      required String teacherEmail,
-      int retry = 3}) async {
+  Future<List<PBISPlusTotalInteractionModal>> getPBISPlusStudentDashboardLogs({
+    required String studentId, //Id/Email
+    required String teacherEmail,
+    int retry = 3,
+    required String classroomCourseId,
+    required bool? isStudentPlus,
+  }) async {
     try {
-      final ResponseModel response = await _dbServices.getApiNew(
-          '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/student/$studentId?teacher_email=$teacherEmail',
+      String url = isStudentPlus == true
+          ? '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/student/$studentId?teacher_email=$teacherEmail'
+          : '${PBISPlusOverrides.pbisBaseUrl}pbis/interactions/$classroomCourseId/student/$studentId?teacher_email=$teacherEmail';
+      final ResponseModel response = await _dbServices.getApiNew(url,
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
             'authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
@@ -700,7 +710,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .toList();
       } else if (retry > 0) {
         return getPBISPlusStudentDashboardLogs(
-            studentId: studentId, teacherEmail: teacherEmail, retry: retry - 1);
+            studentId: studentId,
+            teacherEmail: teacherEmail,
+            retry: retry - 1,
+            classroomCourseId: classroomCourseId,
+            isStudentPlus: isStudentPlus);
       }
       return [];
     } catch (e) {

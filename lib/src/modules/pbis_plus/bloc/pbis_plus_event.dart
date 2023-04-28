@@ -66,8 +66,13 @@ class AddPBISHistory extends PBISPlusEvent {
 /* ---------------- Event to get student details using email ---------------- */
 class GetPBISPlusStudentDashboardLogs extends PBISPlusEvent {
   final String studentId;
+  final String classroomCourseId;
+  final bool? isStudentPlus;
 
-  GetPBISPlusStudentDashboardLogs({required this.studentId});
+  GetPBISPlusStudentDashboardLogs(
+      {required this.studentId,
+      required this.classroomCourseId,
+      required this.isStudentPlus});
 
   @override
   List<Object> get props => [studentId];
