@@ -22,6 +22,7 @@ import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:screenshot/screenshot.dart';
@@ -448,23 +449,19 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                     // SizedBox(height: 15),
                     Column(
                       children: [
-                        Utility.textWidget(
+                        Text(
+                          studentValueNotifier.value.profile!.name!.givenName!,
                           maxLines: 1,
-                          text: studentValueNotifier
-                              .value.profile!.name!.givenName!,
-                          context: context,
-                          textTheme: Theme.of(context)
+                          style: Theme.of(context)
                               .textTheme
                               .subtitle2!
                               .copyWith(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 1),
-                        Utility.textWidget(
+                        Text(
+                          studentValueNotifier.value.profile!.name!.familyName!,
                           maxLines: 2,
-                          text: studentValueNotifier
-                              .value.profile!.name!.familyName!,
-                          context: context,
-                          textTheme: Theme.of(context)
+                          style: Theme.of(context)
                               .textTheme
                               .subtitle2!
                               .copyWith(fontWeight: FontWeight.bold),
@@ -638,7 +635,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     googleClassroomCourseworkList.add(ClassroomCourse(name: 'All'));
     googleClassroomCourseworkList.addAll(_localData);
 
-    showModalBottomSheet(
+    var section = await showModalBottomSheet(
+        useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: false,
@@ -649,7 +647,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         builder: (context) => LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
                 // Set the maximum height of the bottom sheet based on the screen size
-                print(constraints.maxHeight);
+
                 return PBISPlusSettingBottomSheet(
                     scaffoldKey: _scaffoldKey,
                     constraintDeviceHeight: constraints.maxHeight,
@@ -660,5 +658,12 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                         : MediaQuery.of(context).size.height * 0.45);
               },
             ));
+    if (section == 'All Classes & Students' ||
+        section == 'Classes' ||
+        section == 'Students') {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        refreshPage();
+      });
+    }
   }
 }

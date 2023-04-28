@@ -1,3 +1,5 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
@@ -115,18 +117,67 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
         );
       }
     }
+
+    if (event is FetchStudentGradesEvent) {
+      try {
+        LocalDatabase<StudentPlusGradeModel> _localDb = LocalDatabase(
+            "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
+
+        List<StudentPlusGradeModel>? _localData = await _localDb.getData();
+
+        if (_localData.isEmpty) {
+          yield StudentPlusLoading();
+        } else {
+          yield StudentPlusGradeSuccess(
+              obj: _localData, chipList: getChipsList(list: _localData));
+        }
+
+        //yield StudentPlusLoading();
+        List<StudentPlusGradeModel> list =
+            await getStudentGradesDetails(studentId: event.studentId ?? '');
+        await _localDb.clear();
+        // list.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+        list.forEach((StudentPlusGradeModel e) {
+          _localDb.addData(e);
+        });
+
+        yield StudentPlusGradeSuccess(
+            obj: list, chipList: getChipsList(list: list));
+      } catch (e) {
+        LocalDatabase<StudentPlusGradeModel> _localDb = LocalDatabase(
+            "${StudentPlusOverrides.studentGradeList}_${event.studentId}");
+
+        List<StudentPlusGradeModel>? _localData = await _localDb.getData();
+
+        //_localData.sort((a, b) => b.dateC!.compareTo(a.dateC!));
+        yield StudentPlusGradeSuccess(
+            obj: _localData, chipList: getChipsList(list: _localData));
+      }
+    }
   }
 
   /* -------------------------------------------------------------------------- */
   /*                              List of functions                             */
   /* -------------------------------------------------------------------------- */
 
+  /* --------------- Function to return chipList for grades page -------------- */
+  List<String> getChipsList({required List<StudentPlusGradeModel> list}) {
+    List<String> chipList = [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].markingPeriodC != null &&
+          !chipList.contains(list[i].markingPeriodC)) {
+        chipList.add(list[i].markingPeriodC!);
+      }
+    }
+    return chipList;
+  }
+
   /* ---- Function to call search api and return response according to that --- */
 
   Future getStudentPlusSearch({required String keyword}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          '${StudentPlusOverrides.studentPlusBaseUrl}/studentPlus/search/student?keyword=$keyword',
+          '${StudentPlusOverrides.studentPlusBaseUrl}/studentPlus/search/${Globals.schoolDbnC}/student?keyword=$keyword',
           isCompleteUrl: true,
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
@@ -175,6 +226,27 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
           }); //change DBN to dynamic
       if (response.statusCode == 200) {
         return StudentPlusDetailsModel.fromJson(response.data['body']);
+      }
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  /* ------------------ Function to call get student grades api ------------------ */
+  Future getStudentGradesDetails({required String studentId}) async {
+    try {
+      final ResponseModel response = await _dbServices.getApiNew(
+          '${StudentPlusOverrides.studentPlusBaseUrl}/studentPlus/grades/$studentId',
+          isCompleteUrl: true,
+          headers: {
+            "Content-Type": "application/json;charset=UTF-8",
+            "Authorization": "r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx"
+          });
+      if (response.statusCode == 200) {
+        return response.data["body"]
+            .map<StudentPlusGradeModel>(
+                (i) => StudentPlusGradeModel.fromJson(i))
+            .toList();
       }
     } catch (e) {
       throw (e);

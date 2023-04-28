@@ -1,5 +1,4 @@
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
@@ -35,10 +34,11 @@ class StudentPlusWorkScreen extends StatefulWidget {
 class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
   static const double _kLabelSpacing =
       20.0; // Used for space between the  widget
-  final _controller =
-      TextEditingController(); // controller used for search page
+  // controller used for search page
+  final _controller = TextEditingController();
   final StudentPlusBloc _studentPlusBloc = StudentPlusBloc();
   ValueNotifier<String> filterNotifier = ValueNotifier<String>('');
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
   FocusNode myFocusNode = new FocusNode();
   @override
@@ -75,6 +75,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -85,7 +86,8 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                         bloc: _studentPlusBloc,
                         builder: (BuildContext contxt, StudentPlusState state) {
                           if (state is StudentPlusLoading) {
-                            return CupertinoActivityIndicator();
+                            return Container();
+                            // return CupertinoActivityIndicator();
                           } else if (state is StudentPlusWorkSuccess) {
                             return state.obj.length > 0
                                 ? filterIcon(list: state.obj)
@@ -232,6 +234,9 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     //   },
                     // );
                     return Expanded(
+                        child: RefreshIndicator(
+                      key: refreshKey,
+                      onRefresh: refreshPage,
                       child: ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
@@ -243,7 +248,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                               index: index);
                         },
                       ),
-                    );
+                    ));
                   })
               : Expanded(
                   child: NoDataFoundErrorWidget(
@@ -398,5 +403,15 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
         ),
       ),
     );
+  }
+
+  Future refreshPage() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 1));
+    _studentPlusBloc.add(
+        FetchStudentWorkEvent(studentId: widget.studentDetails.studentIdC));
+
+    FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        'Sync Student Work STUDENT+'.toLowerCase().replaceAll(" ", "_"));
   }
 }

@@ -59,3 +59,16 @@ class StudentPlusInfoSuccess extends StudentPlusState {
   @override
   List<Object> get props => [];
 }
+
+/* ----------------------- state use to return student work ---------------------- */
+class StudentPlusGradeSuccess extends StudentPlusState {
+  final List<StudentPlusGradeModel> obj;
+  final List<String> chipList;
+  StudentPlusGradeSuccess({required this.obj, required this.chipList});
+  StudentPlusGradeSuccess copyWith({final obj}) {
+    return StudentPlusGradeSuccess(obj: obj ?? this.obj, chipList: chipList);
+  }
+
+  @override
+  List<Object> get props => [];
+}

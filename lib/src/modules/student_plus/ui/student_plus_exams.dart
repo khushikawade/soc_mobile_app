@@ -408,13 +408,20 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           //     ? Color(0xff111C20)
           //     : Color(0xffF7F8F9),
           radius: MediaQuery.of(context).size.width * 0.07,
-          child: Utility.textWidget(
-              text: centreText,
-              context: context,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline4!
-                  .copyWith(color: Colors.black)),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.12,
+            child: Center(
+              child: Utility.textWidget(
+                  text: centreText,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline4!
+                      .copyWith(color: Colors.black)),
+            ),
+          ),
         ),
         SpacerWidget(10),
         Utility.textWidget(

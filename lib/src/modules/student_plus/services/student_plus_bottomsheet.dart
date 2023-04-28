@@ -25,12 +25,13 @@ class StudentPlusCommonBottomSheet {
         builder: (context) {
           return SafeArea(
             child: Container(
+              //  padding: EdgeInsets.only(bottom: 100),
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30))),
-              height: MediaQuery.of(context).size.height * 0.3,
+              height: MediaQuery.of(context).size.height * 0.35,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [

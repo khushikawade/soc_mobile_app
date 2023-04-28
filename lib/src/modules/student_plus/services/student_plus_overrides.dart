@@ -6,6 +6,7 @@ class StudentPlusOverrides {
   static final String studentInfoRecentList =
       "student_info_recent_search_list1";
   static final String studentWorkList = "student_work_list1";
+   static final String studentGradeList = "student_grade_list";
   static final String studentPlusDetails = "student_plus_details1";
   static final String searchTileStaticWord = 'Class';
   static final String recentSearchHeader = "Recent Search";
