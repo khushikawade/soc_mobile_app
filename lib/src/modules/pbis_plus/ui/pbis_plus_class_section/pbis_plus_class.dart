@@ -540,7 +540,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   .toLowerCase()
                   .replaceAll(" ", "_"));
           /*-------------------------User Activity Track END----------------------------*/
-          screenShotNotifier.value = true;
+          screenShotNotifier.value =
+              true; // To manage the course chip onTap animation
           _saveAndShareBottomSheetMenu();
         },
       );
@@ -580,6 +581,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         });
 
     screenShotNotifier.value = false;
+    // To manage the course chip onTap animation
   }
 
   Widget noClassroomFound() {
