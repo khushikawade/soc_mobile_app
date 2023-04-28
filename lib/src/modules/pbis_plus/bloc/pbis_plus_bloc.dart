@@ -530,8 +530,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         for (int j = 0; j < classroomCourseList[i].students!.length; j++) {
           for (int k = 0; k < pbisTotalInteractionList.length; k++) {
-            if (classroomCourseList[i].students![j].profile!.id ==
-                pbisTotalInteractionList[k].studentId) {
+            if (classroomCourseList[i].id ==
+                    pbisTotalInteractionList[k].classroomCourseId &&
+                classroomCourseList[i].students![j].profile!.id ==
+                    pbisTotalInteractionList[k].studentId) {
               classroomCourse.students![j].profile!.engaged =
                   pbisTotalInteractionList[k].engaged;
               classroomCourse.students![j].profile!.niceWork =
@@ -539,6 +541,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
               classroomCourse.students![j].profile!.helpful =
                   pbisTotalInteractionList[k].helpful;
               interactionCountsFound = true;
+
               break;
             }
           }
