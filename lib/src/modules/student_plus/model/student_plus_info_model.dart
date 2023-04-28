@@ -230,8 +230,8 @@ class StudentPlusDetailsModel {
           /* ---------------------- Fields use to show NYS graph ---------------------- */
           nysElaScore2019C: json["NYS_ELA_2019__c"],
           nysMathScore2019C: json["NYS_Math_2019__c"],
-          nysElaScore2021C: json["NYS_ELA_PR_Score_2021__c"],
-          nysMathScore2021C: json["NYS_Math_PR_Score_2021__c"],
+          nysElaScore2021C: json["NYS_ELA_2021__c"],
+          nysMathScore2021C: json["NYS_Math_2021__c"],
           nysElaScore2022C: json["NYS_ELA_PR_Score_2022__c"],
           nysMathScore2022C: json["NYS_Math_PR_Score_2022__c"],
           nysMath2023PredictionC: json["NYS_Math_2023_Prediction__c"],
@@ -310,8 +310,8 @@ class StudentPlusDetailsModel {
         "NYS_Math_2019__c": nysMathScore2019C,
         "NYS_ELA_PR_Score_2022__c": nysElaScore2022C,
         "NYS_Math_PR_Score_2022__c": nysMathScore2022C,
-        "NYS_ELA_PR_Score_2021__c": nysElaScore2021C,
-        "NYS_Math_PR_Score_2021__c": nysMathScore2021C,
+        "NYS_ELA_2021__c": nysElaScore2021C,
+        "NYS_Math_2021__c": nysMathScore2021C,
         "NYS_Math_2023_Prediction__c": nysMath2023PredictionC,
         "NYS_ELA_2023_Prediction__c": nysEla2023PredictionC,
 

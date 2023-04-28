@@ -290,7 +290,7 @@ class individual extends State<StudentPlusGradesPage> {
         leading: Container(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Utility.textWidget(
-              text: studentPlusGradeModel.subjectC ?? '-',
+              text: studentPlusGradeModel.schoolSubjectC ?? '-',
               maxLines: 2,
               context: context,
               textTheme: Theme.of(context).textTheme.headline2!),
@@ -303,7 +303,7 @@ class individual extends State<StudentPlusGradesPage> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Utility.textWidget(
-              text: studentPlusGradeModel.gradeC ?? '-',
+              text: studentPlusGradeModel.resultC ?? '-',
               context: context,
               textTheme: Theme.of(context)
                   .textTheme
