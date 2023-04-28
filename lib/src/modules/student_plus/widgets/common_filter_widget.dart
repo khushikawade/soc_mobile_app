@@ -28,7 +28,7 @@ class StudentPlusFilterWidget extends StatefulWidget {
 
 class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
   late PageController _pageController;
-  List<String> filterOptionList = ["Subject", "Teacher"];
+  List<String> filterOptionList = ["All", "Subject", "Teacher"];
   int selectedTypeFilterIndex = 0;
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(999);
   int pageValue = 0;
@@ -169,7 +169,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                   minLeadingWidth: 70,
                   title: StudentPlusScreenTitleWidget(
                       kLabelSpacing: 20,
-                      text: selectedTypeFilterIndex == 0
+                      text: selectedTypeFilterIndex == 1
                           ? "Select Subject"
                           : 'Select Teacher'),
                   leading: IconButton(
@@ -192,14 +192,14 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                     shrinkWrap: true,
                     padding: EdgeInsets.only(bottom: 25, left: 10, right: 10),
                     scrollDirection: Axis.vertical,
-                    itemCount: selectedTypeFilterIndex == 0
+                    itemCount: selectedTypeFilterIndex == 1
                         ? widget.subjectList.length
                         : widget.teacherList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return _buildRadioList(
                         index,
                         context,
-                        selectedTypeFilterIndex == 0
+                        selectedTypeFilterIndex == 1
                             ? widget.subjectList[index]
                             : widget.teacherList[index],
                       );
@@ -232,9 +232,18 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
           ),
       child: ListTile(
         onTap: () {
-          selectedTypeFilterIndex = index;
-          _pageController.animateToPage(1,
-              duration: const Duration(milliseconds: 400), curve: Curves.ease);
+          // Index 0 represented selected All (Default option)
+          if (index == 0) {
+            widget.filterNotifier.value = '';
+            selectedIndex.value = 999;
+            Navigator.pop(context);
+            FocusScope.of(context).requestFocus(FocusNode());
+          } else {
+            selectedTypeFilterIndex = index;
+            _pageController.animateToPage(1,
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.ease);
+          }
         },
         leading: Container(
           width: MediaQuery.of(context).size.width * 0.6,
@@ -242,9 +251,32 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               text: text,
               maxLines: 2,
               context: context,
-              textTheme: Theme.of(context).textTheme.headline4),
+              // Checks to maintain selected colors
+              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                  color: widget.filterNotifier.value == '' && text == 'All'
+                      ? AppTheme.kButtonColor
+                      : widget.subjectList
+                                  .contains(widget.filterNotifier.value) &&
+                              text == 'Subject'
+                          ? AppTheme.kButtonColor
+                          : widget.teacherList
+                                      .contains(widget.filterNotifier.value) &&
+                                  text == 'Teacher'
+                              ? AppTheme.kButtonColor
+                              : null)),
         ),
-        trailing: Icon(Icons.chevron_right),
+        // Checks to maintain selected colors
+        trailing: Icon(
+            text == 'All'
+                ? (widget.filterNotifier.value == '' && text == 'All'
+                    ? Icons.radio_button_checked_outlined
+                    : Icons.radio_button_unchecked)
+                : Icons.chevron_right,
+            color: text == 'All'
+                ? (widget.filterNotifier.value == '' && text == 'All'
+                    ? AppTheme.kButtonColor
+                    : null)
+                : null),
       ),
     );
   }
