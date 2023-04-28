@@ -119,8 +119,8 @@ class individual extends State<StudentPlusGradesPage> {
                               chipList: state.chipList, obj: state.obj)
                           : Expanded(
                               child: NoDataFoundErrorWidget(
-                                errorMessage: StudentPlusOverrides
-                                    .studentWorkErrorMessage,
+                                errorMessage:
+                                    StudentPlusOverrides.gradesErrorMessage,
                                 //  marginTop: 0,
                                 isResultNotFoundMsg: false,
                                 isNews: false,
@@ -254,7 +254,7 @@ class individual extends State<StudentPlusGradesPage> {
                 height: MediaQuery.of(context).size.height * 0.5,
                 child: NoDataFoundErrorWidget(
                   marginTop: MediaQuery.of(context).size.height * 0.1,
-                  errorMessage: StudentPlusOverrides.studentWorkErrorMessage,
+                  errorMessage: StudentPlusOverrides.gradesErrorMessage,
                   isResultNotFoundMsg: false,
                   isNews: false,
                   isEvents: false,

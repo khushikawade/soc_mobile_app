@@ -6,7 +6,7 @@ class StudentPlusOverrides {
   static final String studentInfoRecentList =
       "student_info_recent_search_list1";
   static final String studentWorkList = "student_work_list1";
-   static final String studentGradeList = "student_grade_list";
+  static final String studentGradeList = "student_grade_list";
   static final String studentPlusDetails = "student_plus_details1";
   static final String searchTileStaticWord = 'Class';
   static final String recentSearchHeader = "Recent Search";
@@ -15,12 +15,13 @@ class StudentPlusOverrides {
   static final String errorMessageOnSearchPage =
       'Please Search With Minimum 3 Characters';
   static final String studentInfoPageTitle = 'Student Info';
-  static final String studentPBISPageTitle = 'PBIS Plus Dashboard';
+  static final String studentPBISPageTitle = 'PBIS+';
   static final String studentGradesPageTitle = 'Grades';
   static final String studentPlusWorkTitle = 'GRADED+ Scanned Work';
   static final String studentPlusExamsTitle = 'Exams';
   static final String studentWorkSnackbar = "No Image Found";
-  static final String studentWorkErrorMessage = 'No Student Work Found';
+  static final String studentWorkErrorMessage = 'No student work found';
+  static final String gradesErrorMessage = 'No grades found';
   static final String gradesTitleLeft = 'Subject';
   static final String gradesTitleRight = 'Grades';
   static final String examScreenPopupText =
