@@ -99,51 +99,48 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         mainAxisSize: MainAxisSize.max,
         children: [
           SpacerWidget(_KVerticalSpace / 4),
-          Screenshot(
-            controller: headerScreenshotController,
-            child: ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 0),
-              // minLeadingWidth: 70,
-              title: Utility.textWidget(
-                text: 'All Courses',
-                context: context,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .headline6!
-                    .copyWith(fontWeight: FontWeight.bold),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+            //minLeadingWidth: 70,
+            title: Utility.textWidget(
+              text: 'All Courses',
+              context: context,
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
+            leading: IconButton(
+              onPressed: () {
+                pushNewScreen(context,
+                    screen: HomePage(
+                      index: 4,
+                    ),
+                    withNavBar: false,
+                    pageTransitionAnimation:
+                        PageTransitionAnimation.cupertino);
+              },
+              icon: Icon(
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kButtonColor,
               ),
-              leading: IconButton(
+            ),
+            trailing: IconButton(
+                padding: EdgeInsets.zero,
                 onPressed: () {
-                  pushNewScreen(context,
-                      screen: HomePage(
-                        index: 4,
-                      ),
-                      withNavBar: false,
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino);
+                  //----------setting bottom sheet funtion------------//
+                  settingBottomSheet(context, pbisBloc);
                 },
                 icon: Icon(
-                  IconData(0xe80d,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
+                  IconData(
+                    0xe867,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg,
+                  ),
                   color: AppTheme.kButtonColor,
-                ),
-              ),
-              trailing: IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    //----------setting bottom sheet funtion------------//
-                    settingBottomSheet(context, pbisBloc);
-                  },
-                  icon: Icon(
-                    IconData(
-                      0xe867,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg,
-                    ),
-                    color: AppTheme.kButtonColor,
-                  )),
-            ),
+                )),
           ),
           // SpacerWidget(_KVertcalSpace / 3),
           SpacerWidget(_KVerticalSpace / 5),
@@ -319,8 +316,13 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                     ? SingleChildScrollView(
                         child: Screenshot(
                             controller: screenshotController,
-                            child:
-                                scrollableBuilder(googleClassroomCourseList)),
+                            child: Container(
+                                color: Color(0xff000000) !=
+                                        Theme.of(context).backgroundColor
+                                    ? Color(0xffF7F8F9)
+                                    : Color(0xff111C20),
+                                child: scrollableBuilder(
+                                    googleClassroomCourseList))),
                       )
                     : scrollableBuilder(googleClassroomCourseList)));
       },
@@ -447,38 +449,42 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   ),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: Column(
-                  //  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    PBISCommonProfileWidget(
-                        studentValueNotifier: studentValueNotifier,
-                        profilePictureSize: profilePictureSize,
-                        imageUrl:
-                            studentValueNotifier.value!.profile!.photoUrl!),
-                    // SizedBox(height: 15),
-                    Column(
-                      children: [
-                        Text(
-                          studentValueNotifier.value.profile!.name!.givenName!,
-                          maxLines: 1,
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle2!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 1),
-                        Text(
-                          studentValueNotifier.value.profile!.name!.familyName!,
-                          maxLines: 2,
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle2!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ],
+                child: Container(
+                  child: Column(
+                    //  mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      PBISCommonProfileWidget(
+                          studentValueNotifier: studentValueNotifier,
+                          profilePictureSize: profilePictureSize,
+                          imageUrl:
+                              studentValueNotifier.value!.profile!.photoUrl!),
+                      // SizedBox(height: 15),
+                      Column(
+                        children: [
+                          Text(
+                            studentValueNotifier
+                                .value.profile!.name!.givenName!,
+                            maxLines: 1,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 1),
+                          Text(
+                            studentValueNotifier
+                                .value.profile!.name!.familyName!,
+                            maxLines: 2,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Positioned(

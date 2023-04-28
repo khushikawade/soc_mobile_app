@@ -247,14 +247,14 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
 
       // taking screenshot and save it on Uint8List
       final headerUint8List =
-          await widget.headerScreenshotController!.capture();
+          widget.fromClassScreen == true ? null: await widget.headerScreenshotController!.capture();
       final uint8List = widget.screenshotController != null
           ? await widget.screenshotController!.capture()
           : null;
       // create pdf
       final pdf = pdfWidget.Document();
       // to get image size
-      Size headerSize = await getImageSize(headerUint8List!);
+      Size headerSize = widget.fromClassScreen == true ? Size(0,0) : await getImageSize(headerUint8List!);
       Size size = uint8List != null
           ? await getImageSize(uint8List)
           : Size(headerSize.width, 0);
@@ -276,8 +276,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           maxPages: 2000,
           build: (context) {
             return [
-              pdfWidget.Center(
-                child: pdfWidget.Image(pdfWidget.MemoryImage(headerUint8List),
+              widget.fromClassScreen == true ? pdfWidget.Container(): pdfWidget.Center(
+                child: pdfWidget.Image(pdfWidget.MemoryImage(headerUint8List!),
                     fit: pdfWidget.BoxFit.contain),
               ),
               uint8List != null
