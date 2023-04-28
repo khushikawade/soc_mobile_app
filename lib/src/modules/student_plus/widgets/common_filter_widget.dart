@@ -250,58 +250,67 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
   }
 
   Widget _buildRadioList(int index, context, String text) {
-    return Container(
-        height: 54,
-        padding: EdgeInsets.symmetric(
-          horizontal: 0,
-        ),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(0.0),
-            color: (index % 2 == 0)
-                ? Theme.of(context).colorScheme.background == Color(0xff000000)
-                    ? AppTheme.klistTilePrimaryDark
-                    : AppTheme
-                        .klistTilePrimaryLight //Theme.of(context).colorScheme.background
-                : Theme.of(context).colorScheme.background == Color(0xff000000)
-                    ? AppTheme.klistTileSecoandryDark
-                    : AppTheme
-                        .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
-            ),
-        child: Theme(
-          data: ThemeData(
-            unselectedWidgetColor: AppTheme.kButtonColor,
+    return InkWell(
+      onTap: () {
+        if (widget.filterNotifier.value == text) {
+          widget.filterNotifier.value = '';
+          selectedIndex.value = 999;
+          Navigator.pop(context);
+          FocusScope.of(context).requestFocus(FocusNode());
+        } else {
+          widget.filterNotifier.value = text;
+          selectedIndex.value = index;
+
+          Navigator.pop(context);
+          FocusScope.of(context).requestFocus(FocusNode());
+        }
+      },
+      child: Container(
+          height: 54,
+          padding: EdgeInsets.symmetric(
+            horizontal: 0,
           ),
-          child: RadioListTile(
-            controlAffinity: ListTileControlAffinity.trailing,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(0.0),
+              color: (index % 2 == 0)
+                  ? Theme.of(context).colorScheme.background ==
+                          Color(0xff000000)
+                      ? AppTheme.klistTilePrimaryDark
+                      : AppTheme
+                          .klistTilePrimaryLight //Theme.of(context).colorScheme.background
+                  : Theme.of(context).colorScheme.background ==
+                          Color(0xff000000)
+                      ? AppTheme.klistTileSecoandryDark
+                      : AppTheme
+                          .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
+              ),
+          child: IgnorePointer(
+            child: Theme(
+              data: ThemeData(
+                unselectedWidgetColor: AppTheme.kButtonColor,
+              ),
+              child: RadioListTile(
+                controlAffinity: ListTileControlAffinity.trailing,
 
-            activeColor: AppTheme
-                .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
+                activeColor: AppTheme
+                    .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
 
-            contentPadding: EdgeInsets.zero,
-            value: selectedIndex.value == index ||
-                    widget.filterNotifier.value == text
-                ? true
-                : false,
-            onChanged: (dynamic val) {
-              widget.filterNotifier.value = text;
-              selectedIndex.value = index;
+                contentPadding: EdgeInsets.zero,
+                value: selectedIndex.value == index ||
+                        widget.filterNotifier.value == text
+                    ? true
+                    : false,
+                onChanged: (dynamic val) {
+                  // widget.filterNotifier.value = text;
+                  // selectedIndex.value = index;
 
-              Navigator.pop(context);
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            groupValue: true,
-            title: selectedIndex.value == index ||
-                    widget.filterNotifier.value == text
-                ? InkWell(
-                    onTap: () {
-                      if (widget.filterNotifier.value == text) {
-                        widget.filterNotifier.value = '';
-                        selectedIndex.value = 999;
-                        Navigator.pop(context);
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      }
-                    },
-                    child: Padding(
+                  // Navigator.pop(context);
+                  // FocusScope.of(context).requestFocus(FocusNode());
+                },
+                groupValue: true,
+                title: selectedIndex.value == index ||
+                        widget.filterNotifier.value == text
+                    ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Utility.textWidget(
                             text: text,
@@ -316,16 +325,17 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                         //         .textTheme
                         //         .caption!
                         //         .copyWith(fontWeight: FontWeight.bold)),
-                        ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Utility.textWidget(
-                        text: text,
-                        context: context,
-                        textTheme: Theme.of(context).textTheme.headline4),
-                  ),
-          ),
-        ));
+                        )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Utility.textWidget(
+                            text: text,
+                            context: context,
+                            textTheme: Theme.of(context).textTheme.headline4),
+                      ),
+              ),
+            ),
+          )),
+    );
   }
 }
