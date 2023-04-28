@@ -23,7 +23,7 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   bool get barrierDismissible => true;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 300);
+  Duration get transitionDuration => const Duration(milliseconds: 50);
 
   @override
   bool get maintainState => true;
@@ -34,7 +34,10 @@ class HeroDialogRoute<T> extends PageRoute<T> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    return child;
+    return FadeTransition(
+      opacity: animation,
+      child: child,
+    );
   }
 
   @override

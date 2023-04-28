@@ -81,27 +81,10 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
             },
             isLoading: widget.isLoading,
             isFromStudentPlus: widget.isFromStudentPlus,
-
             studentValueNotifier: widget.studentValueNotifier,
             iconData: iconData,
             classroomCourseId: widget.classroomCourseId,
             scaffoldKey: widget.scaffoldKey,
-            // onTapCallback: (bool isLiked) async {
-            //   _getKeys(index).currentState?.updateState(isLiked);
-            //   if (index == 0) {
-            //     widget.studentValueNotifier.value.profile!.like =
-            //         widget.studentValueNotifier.value.profile!.like! + 1;
-            //   } else if (index == 1) {
-            //     widget.studentValueNotifier.value.profile!.thanks =
-            //         widget.studentValueNotifier.value.profile!.thanks! + 1;
-            //   } else {
-            //     widget.studentValueNotifier.value.profile!.helpful =
-            //         widget.studentValueNotifier.value.profile!.helpful! + 1;
-            //   }
-            //   setState(() {});
-            //   return isLiked;
-            // },
-            // ),
           );
         },
       ),
@@ -119,7 +102,6 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
               .bodyText2!
               .copyWith(fontWeight: FontWeight.bold),
         ),
-        // SpacerWidget(MediaQuery.of(context).size.width * 0.07),
         Container(
             alignment: Alignment.center,
             margin:
@@ -189,7 +171,6 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                                 widget.studentValueNotifier =
                                     updatedStudentValueNotifier;
                               },
-                              // StudentDetailWidget: StudentDetailWidget,
                               studentValueNotifier: widget.studentValueNotifier,
                               heroTag: widget.heroTag,
                               StudentDetailWidget: pbisStudentDetailWidget,
@@ -201,15 +182,11 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    // border: Border.all(
-                    //   color:
-                    //       Color(0xff000000) == Theme.of(context).backgroundColor
-                    //           ? Color(0xffF7F8F9)
-                    //           : Color(0xff111C20),
-                    //   width: 2,
-                    // ),
                   ),
                   child: PBISCommonProfileWidget(
+                      isLoading: widget.isLoading,
+                      valueChange: valueChange,
+                      countWidget: true,
                       studentValueNotifier: widget.studentValueNotifier,
                       profilePictureSize: PBISPlusOverrides.profilePictureSize,
                       imageUrl:
@@ -217,66 +194,65 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                 ),
               ),
             ),
-            Positioned(
-              top: widget.isFromDashboardPage == true
-                  ? MediaQuery.of(context).size.height * 0.04
-                  : MediaQuery.of(context).size.height * 0.05,
-              right: widget.isFromDashboardPage == true //from PBIS
-                  ? MediaQuery.of(context).size.width * 0.36
-                  : MediaQuery.of(context).size.width * 0.21,
-              child: Container(
-                padding: EdgeInsets.all(5),
-                width: PBISPlusOverrides.circleSize,
-                height: PBISPlusOverrides.circleSize,
-                decoration: BoxDecoration(
-                  color: Color(0xff000000) != Theme.of(context).backgroundColor
-                      ? Color(0xffF7F8F9)
-                      : Color(0xff111C20),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: ValueListenableBuilder(
-                          valueListenable: valueChange,
-                          builder:
-                              (BuildContext context, value, Widget? child) {
-                            return ValueListenableBuilder<ClassroomStudents>(
-                              valueListenable: widget.studentValueNotifier,
-                              builder: (BuildContext context,
-                                  ClassroomStudents value, Widget? child) {
-                                return widget.isLoading == true
-                                    ? Text(
-                                        '0',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1!
-                                            .copyWith(
-                                                fontWeight: FontWeight.bold),
-                                      )
-                                    : Text(
-                                        PBISPlusUtility
-                                            .numberAbbreviationFormat(widget
-                                                    .studentValueNotifier
-                                                    .value
-                                                    .profile!
-                                                    .engaged! +
-                                                widget.studentValueNotifier
-                                                    .value.profile!.niceWork! +
-                                                widget.studentValueNotifier
-                                                    .value.profile!.helpful!),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1!
-                                            .copyWith(
-                                                fontWeight: FontWeight.bold),
-                                      );
-                              },
-                            );
-                          })),
-                ),
-              ),
-            ),
+            // Positioned(
+            //   top: widget.isFromDashboardPage == true
+            //       ? MediaQuery.of(context).size.height * 0.04
+            //       : MediaQuery.of(context).size.height * 0.05,
+            //   right: widget.isFromDashboardPage == true //from PBIS
+            //       ? MediaQuery.of(context).size.width * 0.36
+            //       : MediaQuery.of(context).size.width * 0.21,
+            //   child: Container(
+            //     padding: EdgeInsets.all(5),
+            //     width: PBISPlusOverrides.circleSize,
+            //     height: PBISPlusOverrides.circleSize,
+            //     decoration: BoxDecoration(
+            //       color: Color(0xff000000) != Theme.of(context).backgroundColor
+            //           ? Color(0xffF7F8F9)
+            //           : Color(0xff111C20),
+            //       shape: BoxShape.circle,
+            //     ),
+            //     child: Center(
+            //       child: FittedBox(
+            //           fit: BoxFit.scaleDown,
+            //           child: ValueListenableBuilder(
+            //               valueListenable: valueChange,
+            //               builder:
+            //                   (BuildContext context, value, Widget? child) {
+            //                 return ValueListenableBuilder<ClassroomStudents>(
+            //                   valueListenable: widget.studentValueNotifier,
+            //                   builder: (BuildContext context,
+            //                       ClassroomStudents value, Widget? child) {
+            //                     return widget.isLoading == true
+            //                         ? ShimmerLoading(
+            //                             child: Container(
+            //                               height: 10,
+            //                               width: 10,
+            //                               color: Colors.black,
+            //                             ),
+            //                             isLoading: widget.isLoading)
+            //                         : Text(
+            //                             PBISPlusUtility
+            //                                 .numberAbbreviationFormat(widget
+            //                                         .studentValueNotifier
+            //                                         .value
+            //                                         .profile!
+            //                                         .engaged! +
+            //                                     widget.studentValueNotifier
+            //                                         .value.profile!.niceWork! +
+            //                                     widget.studentValueNotifier
+            //                                         .value.profile!.helpful!),
+            //                             style: Theme.of(context)
+            //                                 .textTheme
+            //                                 .subtitle1!
+            //                                 .copyWith(
+            //                                     fontWeight: FontWeight.bold),
+            //                           );
+            //                   },
+            //                 );
+            //               })),
+            //     ),
+            //   ),
+            // ),
           ],
         ));
   }

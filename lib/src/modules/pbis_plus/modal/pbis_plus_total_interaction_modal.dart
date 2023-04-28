@@ -19,7 +19,8 @@ class PBISPlusTotalInteractionModal {
   String? studentEmail;
   @HiveField(7)
   String? createdAt;
-
+  @HiveField(8)
+  String? classroomCourseId;
   PBISPlusTotalInteractionModal(
       {this.schoolId,
       this.studentId,
@@ -39,6 +40,7 @@ class PBISPlusTotalInteractionModal {
     helpful = json['Helpful'] ?? 0;
     studentEmail = json["Student_Email"];
     createdAt = json["CreatedAt"];
+    classroomCourseId = json["Classroom_Course_Id"];
   }
 
   Map<String, dynamic> toJson() {
@@ -51,7 +53,7 @@ class PBISPlusTotalInteractionModal {
     data['Helpful'] = this.helpful;
     data['Student_Email'] = this.studentEmail;
     data['CreatedAt'] = this.createdAt;
-
+    data["Classroom_Course_Id"] = this.classroomCourseId;
     return data;
   }
 }

@@ -413,8 +413,6 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           HeroDialogRoute(
             builder: (context) => Center(
               child: PBISPlusStudentCardModal(
-                //count: index,
-                // imageUrl: imageUrl,
                 onValueUpdate: (updatedStudentValueNotifier) {
                   studentValueNotifier = updatedStudentValueNotifier;
                 },
@@ -677,10 +675,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                         : MediaQuery.of(context).size.height * 0.45);
               },
             ));
-    if (section == 'All Classes & Students' ||
-        section == 'Classes' ||
-        section == 'Students' ||
-        section == 'Sync') {
+
+    if (section?.isNotEmpty ?? false) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         refreshPage();
       });

@@ -267,6 +267,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
               break;
+
             default:
               // Code to handle an unknown text value.
               break;
