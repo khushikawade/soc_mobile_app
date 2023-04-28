@@ -74,3 +74,9 @@ class PBISPlusStudentDashboardLogSuccess extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
+
+class PBISPlusResetSuccess extends PBISPlusState {
+  PBISPlusResetSuccess();
+  @override
+  List<Object> get props => [];
+}

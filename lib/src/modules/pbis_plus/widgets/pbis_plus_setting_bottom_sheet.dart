@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
@@ -37,11 +38,19 @@ class _PBISPlusSettingBottomSheetState
   late PageController _pageController;
   final ValueNotifier<bool> selectionChange = ValueNotifier<bool>(false);
 
-  List<ClassroomCourse> selectedCoursesList = [];
+  List<ClassroomCourse> selectedRecords = []; //Add selected student and courses
   List<ClassroomStudents> selectedStudentList = [];
   int pageValue = 0;
-  bool? isResetStudent = false;
+  String sectionName = '';
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
+  PBISPlusBloc pbisBloc = PBISPlusBloc();
+
+  get heightMap => {
+        0: widget.height!,
+        1: widget.height! * 1.15,
+        2: widget.height! * 1.2,
+        3: widget.height! / 2,
+      };
 
   @override
   void initState() {
@@ -60,13 +69,9 @@ class _PBISPlusSettingBottomSheetState
       padding: MediaQuery.of(context).viewInsets / 1.5,
       controller: ModalScrollController.of(context),
       child: Container(
-          height: pageValue == 0
-              ? widget.height!
-              : pageValue == 1
-                  ? widget.height! * 1.15
-                  : pageValue == 2
-                      ? widget.height! * 1.2
-                      : widget.height,
+          height: heightMap.containsKey(pageValue)
+              ? heightMap[pageValue]
+              : widget.height,
           decoration: BoxDecoration(
             color: Color(0xff000000) != Theme.of(context).backgroundColor
                 ? Color(0xffF7F8F9)
@@ -179,14 +184,14 @@ class _PBISPlusSettingBottomSheetState
         ),
         //------------------------remaining row-------------------------//
 
-        textWidget('Save & Reset Points', AppTheme.kButtonColor, null),
-        textWidget('All Classes & Students', Color(0xff111C20), 0),
+        textWidget('Save & Reset Points', AppTheme.kButtonColor),
+        textWidget('All Classes & Students', Color(0xff111C20)),
         divider(context),
-        textWidget('Select Students', Color(0xff111C20), 1),
+        textWidget('Select Students', Color(0xff111C20)),
         divider(context),
-        textWidget('Select Classes', Color(0xff111C20), 2),
-        textWidget('Edit Skills', AppTheme.kButtonColor, null),
-        textWidget('Coming Spetember 2023', Color(0xff111C20), null),
+        textWidget('Select Classes', Color(0xff111C20)),
+        textWidget('Edit Skills', AppTheme.kButtonColor),
+        textWidget('Coming Spetember 2023', Color(0xff111C20)),
       ],
     );
   }
@@ -200,26 +205,43 @@ class _PBISPlusSettingBottomSheetState
   }
 
 //-----------------text  widget for setting  design ------------//
-  Widget textWidget(String? text, Color backgroundColor, int? index) {
+  Widget textWidget(
+    String? text,
+    Color backgroundColor,
+  ) {
     return InkWell(
         onTap: () {
-          // setState(() {
-          //-----------------------------if user select the student or classes navigate to select course bottom sheet-------------------------------------//
+          // This code handles different text values to perform different actions.
+          //sectionName-To identify the selected section from the save and reset menu
+          sectionName = '';
+          selectedRecords.clear();
+          selectedStudentList.clear();
 
-          if (index == 2) {
-            _pageController.animateToPage(1,
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.ease);
+          switch (text) {
+            case 'All Classes & Students':
+              sectionName = 'All Classes & Students';
+              _pageController.animateToPage(3,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.ease);
+              break;
+            case 'Select Students':
+              sectionName = 'Students';
+
+              _pageController.animateToPage(2,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.ease);
+
+              break;
+            case 'Select Classes':
+              sectionName = 'Classes';
+              _pageController.animateToPage(1,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.ease);
+              break;
+            default:
+              // Code to handle an unknown text value.
+              break;
           }
-          if (index == 1) {
-            _pageController.animateToPage(2,
-                duration: const Duration(milliseconds: 100),
-                curve: Curves.ease);
-            isResetStudent = true;
-          } else {
-            isResetStudent = false;
-          }
-          // });
         },
         child: Container(
             alignment: Alignment.centerLeft,
@@ -319,27 +341,14 @@ class _PBISPlusSettingBottomSheetState
           child: FloatingActionButton.extended(
               backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
               onPressed: () async {
-                if (isResetStudent == true) {
-                  _pageController.animateToPage(2,
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.ease);
-                } else {
-                  if (PBISPlusOverrides
-                          .pbisPlusGoogleDriveFolderId.isNotEmpty ==
-                      true) {
-                    //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
-                    _exportDataToSpreadSheet();
-                  } else {
-                    //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
-                    _checkDriveFolderExistsOrNot();
-                  }
-                  _pageController.animateToPage(3,
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.ease);
-                }
+                // commaSeparatedStringForCourse();
+
+                _pageController.animateToPage(3,
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.ease);
               },
               label: Utility.textWidget(
-                  text: isResetStudent! ? 'Next' : 'Submit',
+                  text: 'Submit',
                   context: context,
                   textTheme: Theme.of(context)
                       .textTheme
@@ -357,13 +366,13 @@ class _PBISPlusSettingBottomSheetState
       onTap: () {
         if (index == 0) {
           //In case of ALL no other course can be selected individually
-          selectedCoursesList.clear();
+          selectedRecords.clear();
           // selectedCoursesList.addAll(courseList);
-        } else if (!selectedCoursesList.contains(courseList[index])) {
+        } else if (!selectedRecords.contains(courseList[index])) {
           // selectedCoursesList.add(ClassroomCourse(name: 'All'));
-          selectedCoursesList.add(courseList[index]);
+          selectedRecords.add(courseList[index]);
         } else {
-          selectedCoursesList.remove(courseList[index]);
+          selectedRecords.remove(courseList[index]);
         }
         //Refresh value in the UI
         selectionChange.value = !selectionChange.value;
@@ -393,14 +402,14 @@ class _PBISPlusSettingBottomSheetState
                 unselectedWidgetColor: AppTheme.kButtonColor,
               ),
               child: RadioListTile(
-                  groupValue: selectedCoursesList.contains(courseList[index])
+                  groupValue: selectedRecords.contains(courseList[index])
                       ? true
                       : false,
                   controlAffinity: ListTileControlAffinity.trailing,
                   activeColor: AppTheme
                       .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
                   contentPadding: EdgeInsets.zero,
-                  value: selectedCoursesList.length == 0
+                  value: selectedRecords.length == 0
                       ? index == 0
                           ? false
                           : true
@@ -426,98 +435,103 @@ class _PBISPlusSettingBottomSheetState
         widget.googleClassroomCourseworkList[0].name == "All") {
       widget.googleClassroomCourseworkList.removeAt(0);
     }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-            alignment: Alignment.topRight,
-            child: IconButton(
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: AppTheme.kButtonColor,
+                  size: Globals.deviceType == "phone" ? 28 : 36,
+                ),
+              )),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 0),
+            title: Utility.textWidget(
+                context: context,
+                text: 'Select Students',
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
+            leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
-                FocusScope.of(context).requestFocus(FocusNode());
+                _pageController.animateToPage(pageValue - 2,
+                    duration: const Duration(milliseconds: 100),
+                    curve: Curves.ease);
               },
               icon: Icon(
-                Icons.clear,
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
                 color: AppTheme.kButtonColor,
-                size: Globals.deviceType == "phone" ? 28 : 36,
               ),
-            )),
-        ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 0),
-          title: Utility.textWidget(
-              context: context,
-              text: 'Select Students',
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
-          leading: IconButton(
-            onPressed: () {
-              _pageController.animateToPage(pageValue - 1,
-                  duration: const Duration(milliseconds: 100),
-                  curve: Curves.ease);
-            },
-            icon: Icon(
-              IconData(0xe80d,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kButtonColor,
             ),
           ),
-        ),
-        SpacerWidget(20),
-        ValueListenableBuilder(
-            valueListenable: selectionChange,
-            child: Container(),
-            builder: (BuildContext context, dynamic value, Widget? child) {
-              return Container(
-                height: widget.height! * 0.65,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(
-                    bottom: 25,
+          SpacerWidget(20),
+          ValueListenableBuilder(
+              valueListenable: selectionChange,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return Container(
+                  height: widget.height! * 0.65,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(
+                      bottom: 25,
+                    ),
+                    scrollDirection: Axis.vertical,
+                    itemCount: widget.googleClassroomCourseworkList.length - 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      return renderClassWiseStudentList(
+                        index,
+                        context,
+                      );
+                    },
                   ),
-                  scrollDirection: Axis.vertical,
-                  itemCount: widget.googleClassroomCourseworkList.length - 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    return renderClassWiseStudentList(
-                      index,
-                      context,
-                    );
-                  },
-                ),
-              );
-            }),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-          child: FloatingActionButton.extended(
-              backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-              onPressed: () async {
-                if (selectedStudentList.length > 0) {
-                  _pageController.animateToPage(3,
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.ease);
-                } else {
-                  Utility.currentScreenSnackBar(
-                      "Please select at least one student.", null);
-                }
-              },
-              label: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Utility.textWidget(
-                      text: 'Submit',
-                      context: context,
-                      textTheme: Theme.of(context)
-                          .textTheme
-                          .headline2!
-                          .copyWith(color: Theme.of(context).backgroundColor)),
-                ],
-              )),
-        ),
-      ],
+                );
+              }),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+            child: FloatingActionButton.extended(
+                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                onPressed: () async {
+                  if (selectedStudentList.length > 0) {
+                    selectedRecords = await filterCourses(selectedStudentList);
+
+                    _pageController.animateToPage(3,
+                        duration: const Duration(milliseconds: 100),
+                        curve: Curves.ease);
+                  } else {
+                    Utility.currentScreenSnackBar(
+                        "Please select at least one student.", null);
+                  }
+                },
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Utility.textWidget(
+                        text: 'Submit',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline2!
+                            .copyWith(
+                                color: Theme.of(context).backgroundColor)),
+                  ],
+                )),
+          ),
+        ],
+      ),
     );
   }
 
@@ -546,7 +560,8 @@ class _PBISPlusSettingBottomSheetState
                             .length >
                         0
                 ? renderStudents(
-                    widget.googleClassroomCourseworkList[index].students!)
+                    widget.googleClassroomCourseworkList[index].students!,
+                    widget.googleClassroomCourseworkList[index].id ?? '')
                 : Text('No Student Found') // for all the student showing
           ],
         ),
@@ -555,7 +570,7 @@ class _PBISPlusSettingBottomSheetState
   }
 
 //---------------------return the student list-----------------//
-  renderStudents(List<ClassroomStudents> studentList) {
+  renderStudents(List<ClassroomStudents> studentList, String courseId) {
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.all(0),
@@ -564,14 +579,16 @@ class _PBISPlusSettingBottomSheetState
       itemBuilder: (BuildContext context, int index) {
         return InkWell(
           onTap: () {
-            // if (!selectedStudentList.contains(studentList[index])) {
-            //   selectedStudentList.add(studentList[index]);
-            // } else {
-            //   selectedStudentList.remove(studentList[index]);
-            // }
-            // //Refresh value in the UI
-            // selectionChange.value = !selectionChange.value;
-            // selectedStudentList.length;
+            if (!selectedStudentList.contains(studentList[index])) {
+              ClassroomStudents studentObj = studentList[index];
+              studentObj.profile!.courseId = courseId;
+              selectedStudentList.add(studentObj);
+            } else {
+              selectedStudentList.remove(studentList[index]);
+            }
+            //Refresh value in the UI
+            selectionChange.value = !selectionChange.value;
+            selectedStudentList.length;
           },
           child: Container(
               height: 54,
@@ -604,7 +621,7 @@ class _PBISPlusSettingBottomSheetState
                           .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
 
                       contentPadding: EdgeInsets.zero,
-                      value: studentList[index],
+                      value: selectedStudentList.contains(studentList[index]),
                       onChanged: (dynamic val) {},
                       title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -639,64 +656,91 @@ class _PBISPlusSettingBottomSheetState
         Utility.textWidget(
             context: context,
             textAlign: TextAlign.center,
-            text:
-                'Resetting Selected ${isResetStudent! ? 'Students' : 'Courses'} and Preparing Google Spreadsheet',
+            text: 'Resetting \'$sectionName\' and Preparing Google Spreadsheet',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
-        isResetStudent!
-            ? Container(
-                height: 0,
-                width: 0,
-              )
-            : googleDriveBlocListener()
+        if (pageValue == 3) googleDriveBlocListener()
       ],
     );
   }
 
   Container googleDriveBlocListener() {
+    if (PBISPlusOverrides.pbisPlusGoogleDriveFolderId.isNotEmpty == true) {
+      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+      _exportDataToSpreadSheet();
+    } else {
+      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+      _checkDriveFolderExistsOrNot();
+    }
     return Container(
       height: 0,
       width: 0,
-      child: BlocListener<GoogleDriveBloc, GoogleDriveState>(
-        bloc: googleDriveBloc,
-        child: EmptyContainer(),
-        listener: (context, state) async {
-          if (state is GoogleSuccess) {
-            //In case of Folder Id received
-            _exportDataToSpreadSheet();
-          }
-          if (state is ExcelSheetCreated) {
-            googleDriveBloc.add(PBISPlusUpdateDataOnSpreadSheetTabs(
-                spreadSheetFileObj: state.googleSpreadSheetFileObj,
-                classroomCourseworkList: selectedCoursesList?.isEmpty ?? true
-                    ? widget.googleClassroomCourseworkList
-                    : selectedCoursesList));
-          }
-          if (state is PBISPlusUpdateDataOnSpreadSheetSuccess) {
-            Navigator.pop(context);
-            Utility.currentScreenSnackBar(
-                "Google SpreadSheet Created Successfully.", null);
-          }
-          if (state is ErrorState) {
-            if (state.errorMsg == 'ReAuthentication is required') {
-              await Utility.refreshAuthenticationToken(
-                  isNavigator: true,
-                  errorMsg: state.errorMsg!,
-                  context: context,
-                  scaffoldKey: widget.scaffoldKey);
+      child: Column(
+        children: [
+          BlocListener<GoogleDriveBloc, GoogleDriveState>(
+            bloc: googleDriveBloc,
+            child: EmptyContainer(),
+            listener: (context, state) async {
+              if (state is GoogleSuccess) {
+                //In case of Folder Id received
+                _exportDataToSpreadSheet();
+              }
+              if (state is ExcelSheetCreated) {
+                googleDriveBloc.add(PBISPlusUpdateDataOnSpreadSheetTabs(
+                    spreadSheetFileObj: state.googleSpreadSheetFileObj,
+                    classroomCourseworkList:
+                        (sectionName == 'All Classes & Students' ||
+                                (selectedRecords?.isEmpty ?? true))
+                            ? widget.googleClassroomCourseworkList
+                            : selectedRecords));
+              }
+              if (state is PBISPlusUpdateDataOnSpreadSheetSuccess) {
+                resetData();
+                // Navigator.pop(context);
+                // Utility.currentScreenSnackBar(
+                //     "Google SpreadSheet Created Successfully.", null);
+              }
+              if (state is ErrorState) {
+                if (state.errorMsg == 'ReAuthentication is required') {
+                  await Utility.refreshAuthenticationToken(
+                      isNavigator: true,
+                      errorMsg: state.errorMsg!,
+                      context: context,
+                      scaffoldKey: widget.scaffoldKey);
 
-              // Navigator.of(context).pop();
-              Utility.currentScreenSnackBar('Please try again', null);
-            } else {
-              Navigator.of(context).pop();
-              Utility.currentScreenSnackBar(
-                  state.errorMsg == 'NO_CONNECTION'
-                      ? 'No Internet Connection'
-                      : "Something Went Wrong. Please Try Again.",
-                  null);
-            }
-          }
-        },
+                  // Navigator.of(context).pop();
+                  Utility.currentScreenSnackBar('Please try again', null);
+                } else {
+                  Navigator.of(context).pop();
+                  Utility.currentScreenSnackBar(
+                      state.errorMsg == 'NO_CONNECTION'
+                          ? 'No Internet Connection'
+                          : "Something Went Wrong. Please Try Again.",
+                      null);
+                }
+              }
+            },
+          ),
+          BlocListener<PBISPlusBloc, PBISPlusState>(
+            bloc: pbisBloc,
+            child: EmptyContainer(),
+            listener: (context, state) async {
+              if (state is PBISErrorState) {
+                Navigator.of(context).pop();
+                Utility.currentScreenSnackBar(
+                    state.error == 'NO_CONNECTION'
+                        ? 'No Internet Connection'
+                        : "Something Went Wrong. Please Try Again.",
+                    null);
+              }
+              if (state is PBISPlusResetSuccess) {
+                Navigator.pop(context, sectionName);
+                Utility.currentScreenSnackBar(
+                    "\'$sectionName\' have been reset successfully.", null);
+              }
+            },
+          ),
+        ],
       ),
     );
   }
@@ -721,5 +765,44 @@ class _PBISPlusSettingBottomSheetState
         name:
             "PBIS_${Globals.appSetting.contactNameC}_${Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")}",
         folderId: PBISPlusOverrides.pbisPlusGoogleDriveFolderId));
+  }
+
+//----------------------call method for reset data----------------//
+  resetData() async {
+    pbisBloc.add(PBISPlusResetInteractions(
+      type: sectionName,
+      selectedRecords: (sectionName == 'All Classes & Students' ||
+              (selectedRecords?.isEmpty ?? true))
+          ? widget.googleClassroomCourseworkList
+          : selectedRecords,
+    ));
+  }
+
+  List<ClassroomCourse> filterCourses(List<ClassroomStudents> students) {
+    try {
+      List<ClassroomCourse> filteredCourses = [];
+
+      for (ClassroomCourse course in widget.googleClassroomCourseworkList) {
+        List<ClassroomStudents>? filteredStudents = course.students
+            ?.where((student) => students?.contains(student) ?? false)
+            .toList();
+
+        if (filteredStudents?.isNotEmpty ?? false) {
+          filteredCourses.add(ClassroomCourse(
+            id: course.id,
+            name: course.name,
+            descriptionHeading: course.descriptionHeading,
+            ownerId: course.ownerId,
+            enrollmentCode: course.enrollmentCode,
+            courseState: course.courseState,
+            students: filteredStudents,
+          ));
+        }
+      }
+
+      return filteredCourses;
+    } catch (e) {
+      return [];
+    }
   }
 }

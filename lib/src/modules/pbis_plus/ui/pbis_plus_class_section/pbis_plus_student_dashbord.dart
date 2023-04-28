@@ -97,9 +97,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                         scaffoldKey: _scaffoldKey,
                       ),
                 body: body(context),
-                floatingActionButton: floatingActionButton(
-                  context,
-                ),
+                floatingActionButton: floatingActionButton(context),
                 floatingActionButtonLocation:
                     FloatingActionButtonLocation.miniEndDocked,
               ),
@@ -304,6 +302,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   DataColumn buildDataColumn(PBISPlusDataTableModal item) => DataColumn(
           label: Column(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
@@ -312,17 +311,14 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             size: 35,
           ),
           Padding(padding: EdgeInsets.only(top: 5)),
-          Center(
+          Container(
+            padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
             child: Utility.textWidget(
               context: context,
               text: item.title,
               textAlign: TextAlign.center,
               textTheme: Theme.of(context).textTheme.headline5!.copyWith(
-                  fontWeight: FontWeight.bold, color: Color(0xff000000)
-                  // != Theme.of(context).backgroundColor
-                  //     ? Color(0xffF7F8F9)
-                  //     : Color(0xff111C20),
-                  ),
+                  fontWeight: FontWeight.bold, color: Color(0xff000000)),
             ),
           ),
         ],
@@ -426,9 +422,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           bloc: _bloc,
           builder: (BuildContext contxt, PBISPlusState state) {
             if (state is PBISPlusLoading) {
-              return CircularProgressIndicator.adaptive(
-                backgroundColor: AppTheme.kButtonColor,
-              );
+              return Container();
             } else if (state is PBISPlusStudentDashboardLogSuccess) {
               return PBISPlusCustomFloatingActionButton(
                 onPressed: () {

@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
@@ -176,7 +177,7 @@ class StudentPlusBloc extends Bloc<StudentPlusEvent, StudentPlusState> {
   Future getStudentPlusSearch({required String keyword}) async {
     try {
       final ResponseModel response = await _dbServices.getApiNew(
-          '${StudentPlusOverrides.studentPlusBaseUrl}/studentPlus/search/student?keyword=$keyword',
+          '${StudentPlusOverrides.studentPlusBaseUrl}/studentPlus/search/${Globals.schoolDbnC}/student?keyword=$keyword',
           isCompleteUrl: true,
           headers: {
             "Content-Type": "application/json;charset=UTF-8",
