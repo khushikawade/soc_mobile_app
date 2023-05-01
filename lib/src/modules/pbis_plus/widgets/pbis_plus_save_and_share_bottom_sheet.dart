@@ -246,15 +246,18 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       //Utility.showLoadingDialog(context: context, isOCR: false);
 
       // taking screenshot and save it on Uint8List
-      final headerUint8List =
-          widget.fromClassScreen == true ? null: await widget.headerScreenshotController!.capture();
+      final headerUint8List = widget.fromClassScreen == true
+          ? null
+          : await widget.headerScreenshotController!.capture();
       final uint8List = widget.screenshotController != null
           ? await widget.screenshotController!.capture()
           : null;
       // create pdf
       final pdf = pdfWidget.Document();
       // to get image size
-      Size headerSize = widget.fromClassScreen == true ? Size(0,0) : await getImageSize(headerUint8List!);
+      Size headerSize = widget.fromClassScreen == true
+          ? Size(0, 0)
+          : await getImageSize(headerUint8List!);
       Size size = uint8List != null
           ? await getImageSize(uint8List)
           : Size(headerSize.width, 0);
@@ -276,10 +279,13 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           maxPages: 2000,
           build: (context) {
             return [
-              widget.fromClassScreen == true ? pdfWidget.Container(): pdfWidget.Center(
-                child: pdfWidget.Image(pdfWidget.MemoryImage(headerUint8List!),
-                    fit: pdfWidget.BoxFit.contain),
-              ),
+              widget.fromClassScreen == true
+                  ? pdfWidget.Container()
+                  : pdfWidget.Center(
+                      child: pdfWidget.Image(
+                          pdfWidget.MemoryImage(headerUint8List!),
+                          fit: pdfWidget.BoxFit.contain),
+                    ),
               uint8List != null
                   ? pdfWidget.Container(
                       padding: pdfWidget.EdgeInsets.symmetric(horizontal: 50),
@@ -652,13 +658,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   // groupValue: true,
                   title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Utility.textWidget(
-                          text: courseList[index].name!,
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(fontWeight: FontWeight.bold)))),
+                      child: Text(courseList[index].name!,
+                          style: Theme.of(context).textTheme.headline4!))),
             ),
           )),
     );

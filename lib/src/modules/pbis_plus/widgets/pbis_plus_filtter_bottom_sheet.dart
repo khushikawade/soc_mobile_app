@@ -127,55 +127,61 @@ class _PBISPlusHistoryFilterBottomSheetState
         valueListenable: selectedValue,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
-          return Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(0.0),
-                color: (index % 2 == 0)
-                    ? Theme.of(context).colorScheme.background ==
-                            Color(0xff000000)
-                        ? Color(0xff162429)
-                        : Color(
-                            0xffF7F8F9) //Theme.of(context).colorScheme.background
-                    : Theme.of(context).colorScheme.background ==
-                            Color(0xff000000)
-                        ? Color(0xff111C20)
-                        : Color(0xffE9ECEE)),
-            child: Theme(
-              data: ThemeData(unselectedWidgetColor: AppTheme.kButtonColor
-                  // Theme.of(context).colorScheme.onBackground,
-                  ),
-              child: RadioListTile(
-                controlAffinity: ListTileControlAffinity.trailing,
-                activeColor: AppTheme.kButtonColor,
-                title: InkWell(
-                  onTap: () {
-                    /*-------------------------User Activity Track START----------------------------*/
-                    FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        'Filter option click PBIS+'
-                            .toLowerCase()
-                            .replaceAll(" ", "_"));
-                    /*-------------------------User Activity Track END----------------------------*/
+          return InkWell(
+            onTap: () {
+              /*-------------------------User Activity Track START----------------------------*/
+              FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                  'Filter option click PBIS+'
+                      .toLowerCase()
+                      .replaceAll(" ", "_"));
+              /*-------------------------User Activity Track END----------------------------*/
 
-                    if (selectedValue.value == filterList[index]) {
-                      Utility.showSnackBar(
-                          widget.scaffoldKey,
-                          '\'${filterList[index]}\' filter is already selected',
-                          context,
-                          null);
-                    }
-                  },
-                  child: Utility.textWidget(
-                      text: filterList[index],
-                      context: context,
-                      textTheme: Theme.of(context).textTheme.headline2),
+              if (selectedValue.value == filterList[index]) {
+                Utility.showSnackBar(
+                    widget.scaffoldKey,
+                    '\'${filterList[index]}\' filter is already selected',
+                    context,
+                    null);
+              }
+              selectedValue.value = filterList[index];
+              widget.update(filterValue: filterList[index]);
+              Navigator.pop(context);
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(0.0),
+                  color: (index % 2 == 0)
+                      ? Theme.of(context).colorScheme.background ==
+                              Color(0xff000000)
+                          ? Color(0xff162429)
+                          : Color(
+                              0xffF7F8F9) //Theme.of(context).colorScheme.background
+                      : Theme.of(context).colorScheme.background ==
+                              Color(0xff000000)
+                          ? Color(0xff111C20)
+                          : Color(0xffE9ECEE)),
+              child: IgnorePointer(
+                child: Theme(
+                  data: ThemeData(unselectedWidgetColor: AppTheme.kButtonColor
+                      // Theme.of(context).colorScheme.onBackground,
+                      ),
+                  child: RadioListTile(
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    activeColor: AppTheme.kButtonColor,
+                    title: Utility.textWidget(
+                        text: filterList[index],
+                        context: context,
+                        textTheme: Theme.of(context).textTheme.headline2),
+                    groupValue: true,
+                    value:
+                        selectedValue.value == filterList[index] ? true : false,
+                    onChanged: (bool? value) {
+                      // selectedValue.value = filterList[index];
+                      // widget.update(filterValue: filterList[index]);
+                      // Navigator.pop(context);
+                    },
+                  ),
                 ),
-                groupValue: true,
-                value: selectedValue.value == filterList[index] ? true : false,
-                onChanged: (bool? value) {
-                  selectedValue.value = filterList[index];
-                  widget.update(filterValue: filterList[index]);
-                  Navigator.pop(context);
-                },
               ),
             ),
           );
