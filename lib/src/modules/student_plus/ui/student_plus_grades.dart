@@ -119,8 +119,8 @@ class individual extends State<StudentPlusGradesPage> {
                               chipList: state.chipList, obj: state.obj)
                           : Expanded(
                               child: NoDataFoundErrorWidget(
-                                errorMessage: StudentPlusOverrides
-                                    .studentWorkErrorMessage,
+                                errorMessage:
+                                    StudentPlusOverrides.gradesErrorMessage,
                                 //  marginTop: 0,
                                 isResultNotFoundMsg: false,
                                 isNews: false,
@@ -254,7 +254,7 @@ class individual extends State<StudentPlusGradesPage> {
                 height: MediaQuery.of(context).size.height * 0.5,
                 child: NoDataFoundErrorWidget(
                   marginTop: MediaQuery.of(context).size.height * 0.1,
-                  errorMessage: StudentPlusOverrides.studentWorkErrorMessage,
+                  errorMessage: StudentPlusOverrides.gradesErrorMessage,
                   isResultNotFoundMsg: false,
                   isNews: false,
                   isEvents: false,
@@ -290,7 +290,7 @@ class individual extends State<StudentPlusGradesPage> {
         leading: Container(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Utility.textWidget(
-              text: studentPlusGradeModel.subjectC ?? '-',
+              text: studentPlusGradeModel.schoolSubjectC ?? '-',
               maxLines: 2,
               context: context,
               textTheme: Theme.of(context).textTheme.headline2!),
@@ -303,7 +303,7 @@ class individual extends State<StudentPlusGradesPage> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Utility.textWidget(
-              text: studentPlusGradeModel.gradeC ?? '-',
+              text: studentPlusGradeModel.resultC ?? '-',
               context: context,
               textTheme: Theme.of(context)
                   .textTheme

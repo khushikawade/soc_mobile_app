@@ -164,7 +164,6 @@ class CustomFlutterIcons {
   static const IconData eye1 = IconData(0xe88c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData help_3 = IconData(0xe88d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData eye1_1 = IconData(0xe88e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData class_icon = IconData(0xe891, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData eye001 = IconData(0xe892, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData circle_eye = IconData(0xe893, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

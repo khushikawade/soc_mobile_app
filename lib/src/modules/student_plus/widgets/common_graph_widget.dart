@@ -138,10 +138,10 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
                                       (widget.isMathsSection == true
                                           ? double.parse(widget.studentDetails
                                                   .nysMath2023PredictionC ??
-                                              '')
+                                              '0')
                                           : double.parse(widget.studentDetails
                                                   .nysEla2023PredictionC ??
-                                              ''))
+                                              '0'))
                                   ? TextSpan(
                                       text: '\n' + 'Prediction',
                                       style: Theme.of(context)
@@ -180,15 +180,15 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
             //   break;
             case '2021.0':
               text = '20-21';
-              grade = "grade ${widget.studentDetails.grade21_22 ?? ''}";
+              grade = "grade ${widget.studentDetails.grade20_21 ?? ''}";
               break;
             case '2022.0':
               text = '21-22';
-              grade = "grade ${widget.studentDetails.gradeC ?? ''}";
+              grade = "grade ${widget.studentDetails.grade21_22 ?? ''}";
               break;
             case '2023.0':
               text = '22-23';
-              grade = "grade";
+              grade = "grade ${widget.studentDetails.gradeC ?? ''}";
               break;
           }
 

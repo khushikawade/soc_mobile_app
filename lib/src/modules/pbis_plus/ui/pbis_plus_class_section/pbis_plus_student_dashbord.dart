@@ -64,7 +64,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     _bloc.add(GetPBISPlusStudentDashboardLogs(
         studentId: widget.isFromStudentPlus == true
             ? widget.studentValueNotifier.value.profile!.emailAddress!
-            : widget.studentValueNotifier.value.profile!.id ?? ''));
+            : widget.studentValueNotifier.value.profile!.id ?? '',
+        isStudentPlus: widget.isFromStudentPlus,
+        classroomCourseId: widget.classroomCourseId ?? ''));
 
     /*-------------------------User Activity Track START----------------------------*/
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -267,7 +269,9 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
     _bloc.add(GetPBISPlusStudentDashboardLogs(
         studentId: widget.isFromStudentPlus == true
             ? widget.studentValueNotifier.value.profile!.emailAddress!
-            : widget.studentValueNotifier.value.profile!.id ?? ''));
+            : widget.studentValueNotifier.value.profile!.id ?? '',
+        isStudentPlus: widget.isFromStudentPlus,
+        classroomCourseId: widget.classroomCourseId ?? ''));
   }
 
   DataTable _buildDataTable(

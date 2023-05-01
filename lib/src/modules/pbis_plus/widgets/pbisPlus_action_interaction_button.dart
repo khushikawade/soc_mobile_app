@@ -126,13 +126,13 @@ class PBISPlusActionInteractionButtonState
                         // print('only likes count');
                         // print(widget.obj.likeCount);
                         return widget.isLoading == true
-                            ? ShimmerLoading(
-                                child: Container(
-                                  color: Colors.green,
-                                  height: 20,
-                                  width: 20,
-                                ),
-                                isLoading: widget.isLoading)
+                            ? Utility.textWidget(
+                                text: '0',
+                                context: context,
+                                textTheme: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(fontSize: 12))
                             : _getCounts();
                       })
                 ],

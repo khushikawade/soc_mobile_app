@@ -230,15 +230,15 @@ class StudentPlusDetailsModel {
           /* ---------------------- Fields use to show NYS graph ---------------------- */
           nysElaScore2019C: json["NYS_ELA_2019__c"],
           nysMathScore2019C: json["NYS_Math_2019__c"],
-          nysElaScore2021C: json["NYS_ELA_PR_Score_2021__c"],
-          nysMathScore2021C: json["NYS_Math_PR_Score_2021__c"],
+          nysElaScore2021C: json["NYS_ELA_2021__c"],
+          nysMathScore2021C: json["NYS_Math_2021__c"],
           nysElaScore2022C: json["NYS_ELA_PR_Score_2022__c"],
           nysMathScore2022C: json["NYS_Math_PR_Score_2022__c"],
           nysMath2023PredictionC: json["NYS_Math_2023_Prediction__c"],
           nysEla2023PredictionC: json["NYS_ELA_2023_Prediction__c"],
 
           /* ------------------ Field use in Exams Page - iReady Math ----------------- */
-          mathPreviousSyEOY: json["iReady_Math_EOY_21_22_ORP_STUDENT__c"],
+          mathPreviousSyEOY: json["iReady_Math_EOY_21_22_ORP_Place_STUDENT__c"],
           mathCurrentSyBOY: json["IReady_Math_BOY_ORP_STUDENT__c"],
           mathCurrentSyMOY: json["IReady_Math_MOY_ORP_STUDENT__c"],
           mathCurrentSyEOY: json["IReady_Math_EOY_ORP_STUDENT__c"],
@@ -264,7 +264,7 @@ class StudentPlusDetailsModel {
 
           /* ------------------------- iReady Math color code ------------------------- */
           mathPreviousEOYOverallRelPlace: json[
-              "iReady_Math_EOY_21_22_ORP_Place_STUDENT__c"], //iReady_Math_EOY_21_22_ORP_Place_STUDENT__c
+              "iReady_Math_EOY_21_22_Overall_Rel_Place__c"], //iReady_Math_EOY_21_22_ORP_Place_STUDENT__c
           mathCurrentBOYOverallRelativePlace:
               json["IReady_Math_BOY_Overall_Relative_Place__c"],
           mathCurrentMOYOverallRelativePlace:
@@ -310,13 +310,13 @@ class StudentPlusDetailsModel {
         "NYS_Math_2019__c": nysMathScore2019C,
         "NYS_ELA_PR_Score_2022__c": nysElaScore2022C,
         "NYS_Math_PR_Score_2022__c": nysMathScore2022C,
-        "NYS_ELA_PR_Score_2021__c": nysElaScore2021C,
-        "NYS_Math_PR_Score_2021__c": nysMathScore2021C,
+        "NYS_ELA_2021__c": nysElaScore2021C,
+        "NYS_Math_2021__c": nysMathScore2021C,
         "NYS_Math_2023_Prediction__c": nysMath2023PredictionC,
         "NYS_ELA_2023_Prediction__c": nysEla2023PredictionC,
 
         /* ------------------ Field use in Exams Page - iReady Math ----------------- */
-        "iReady_Math_EOY_21_22_ORP_STUDENT__c": mathPreviousSyEOY,
+        "iReady_Math_EOY_21_22_ORP_Place_STUDENT__c": mathPreviousSyEOY,
         "IReady_Math_BOY_ORP_STUDENT__c": mathCurrentSyBOY,
         "IReady_Math_MOY_ORP_STUDENT__c": mathCurrentSyMOY,
         "IReady_Math_EOY_ORP_STUDENT__c": mathCurrentSyEOY,
@@ -339,7 +339,7 @@ class StudentPlusDetailsModel {
         "Ethnicity_Name__c": ethnicityNameC,
 
         /* ------------------------- iReady Math color code ------------------------- */
-        "iReady_Math_EOY_21_22_ORP_Place_STUDENT__c":
+        "iReady_Math_EOY_21_22_Overall_Rel_Place__c":
             mathPreviousEOYOverallRelPlace,
         "IReady_Math_BOY_Overall_Relative_Place__c":
             mathCurrentBOYOverallRelativePlace,
@@ -348,7 +348,7 @@ class StudentPlusDetailsModel {
         "IReady_Math_EOY_Overall_Relative_Place__c":
             mathCurrentEOYOverallRelativePlace,
 
-        /* ------------------------- iReady Math color code ------------------------- */
+        /* ------------------------- iReady ELA color code ------------------------- */
         "iReady_ELA_EOY_21_22_Overall_Rel_Place__c":
             ELAPreviousEOYOverallRelPlace,
         "IReady_ELA_BOY_Overall_Relative_Place__c":

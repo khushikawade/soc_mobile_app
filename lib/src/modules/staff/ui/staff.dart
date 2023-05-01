@@ -277,10 +277,10 @@ class _StaffPageState extends State<StaffPage> {
     SharedPreferences clearGoogleLoginLocalDb =
         await SharedPreferences.getInstance();
     final clearCacheResult =
-        await clearGoogleLoginLocalDb.getBool('delete_local_login_details');
+        await clearGoogleLoginLocalDb.getBool('delete_local_login_details12');
     if (clearCacheResult != true) {
       await UserGoogleProfile.clearUserProfile();
-      await clearGoogleLoginLocalDb.setBool('delete_local_login_details', true);
+      await clearGoogleLoginLocalDb.setBool('delete_local_login_details12', true);
     }
     /* ---- Clear login local data base once because we added classroom scope --- */
 
@@ -447,7 +447,7 @@ class _StaffPageState extends State<StaffPage> {
                                   children: [
                                     Container(
                                       width: element.iconUrl.contains('pbis')
-                                          ? height / 4
+                                          ? height / 4.3
                                           : height / 3,
                                       margin: EdgeInsets.all(6),
                                       child: Image(
