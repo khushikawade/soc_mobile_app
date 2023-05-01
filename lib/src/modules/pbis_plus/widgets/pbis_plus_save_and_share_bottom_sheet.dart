@@ -239,9 +239,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
     try {
       isShareLoader = true;
       // to show loading
-      _pageController.jumpToPage(
-        3,
-      );
+      _pageController.jumpToPage(3);
       //Utility.showLoadingDialog(context: context, isOCR: false);
 
       // taking screenshot and save it on Uint8List
@@ -251,8 +249,10 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       final uint8List = widget.screenshotController != null
           ? await widget.screenshotController!.capture()
           : null;
+
       // create pdf
       final pdf = pdfWidget.Document();
+
       // to get image size
       Size headerSize = widget.fromClassScreen == true
           ? Size(0, 0)

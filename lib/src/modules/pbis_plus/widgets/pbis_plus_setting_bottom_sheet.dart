@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -454,10 +455,14 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
 //----------------Student list------------------------------------//
   Widget buildSelectStudentBottomsheetWidget(context) {
-    if (widget.googleClassroomCourseworkList.length > 0 &&
-        widget.googleClassroomCourseworkList[0].name == "All") {
-      widget.googleClassroomCourseworkList.removeAt(0);
-    }
+    // if (widget.googleClassroomCourseworkList.length > 0 &&
+    //     widget.googleClassroomCourseworkList[0].name == "All") {
+    //   widget.googleClassroomCourseworkList.removeAt(0);
+    // }
+// Combine all the students from different courses into a single list.
+    List<ClassroomStudents> allStudents = getClassroomStudents(
+        classroomCourses: widget.googleClassroomCourseworkList);
+
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -506,20 +511,36 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
                   height: widget.height! * 0.65,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.only(
-                      bottom: 25,
-                    ),
-                    scrollDirection: Axis.vertical,
-                    itemCount: widget.googleClassroomCourseworkList.length - 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      return renderClassWiseStudentList(
-                        index,
-                        context,
-                      );
-                    },
-                  ),
+                  child: (allStudents?.isNotEmpty ?? false)
+                      ? ListView.builder(
+                          padding: EdgeInsets.all(0),
+                          shrinkWrap: true,
+                          itemCount: allStudents.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return renderStudent(allStudents[index], index);
+                          },
+                        )
+                      : Center(
+                          child: NoDataFoundErrorWidget(
+                            errorMessage: 'No Students Found',
+                            marginTop: 16,
+                            isResultNotFoundMsg: false,
+                            isNews: false,
+                            isEvents: false,
+                            isSearchpage: true,
+                          ),
+                        ),
+
+                  // Center(
+                  //     child: Utility.textWidget(
+                  //         context: context,
+                  //         textAlign: TextAlign.center,
+                  //         text: 'Students are not available',
+                  //         textTheme: Theme.of(context)
+                  //             .textTheme
+                  //             .headline5!
+                  //             .copyWith(fontSize: 18)),
+                  //   ),
                 );
               }),
           Container(
@@ -528,15 +549,25 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
-                  if (selectedStudentList.length > 0) {
-                    selectedRecords = await filterCourses(selectedStudentList);
+                  // Check if there are any selected students.
 
+                  if (selectedStudentList.length > 0) {
+                    // Create a new ClassroomCourse object and add all selected students to it.
+                    selectedRecords.add(ClassroomCourse(
+                        id: '',
+                        name: 'Students',
+                        descriptionHeading: '',
+                        ownerId: '',
+                        enrollmentCode: '',
+                        courseState: '',
+                        students: selectedStudentList));
+                    // Navigate to the third page with a quick animation.
                     _pageController.animateToPage(3,
                         duration: const Duration(milliseconds: 100),
                         curve: Curves.ease);
                   } else {
                     Utility.currentScreenSnackBar(
-                        "Please select at least one student.", null);
+                        "No selected student found", null);
                   }
                 },
                 label: Row(
@@ -559,111 +590,93 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   }
 
 //--------------------------------return selected class name on select student screen---------------//
-  Widget renderClassWiseStudentList(
-    int index,
-    context,
-  ) {
-    return Container(
-      key: ValueKey(widget.googleClassroomCourseworkList[index]),
-      child: Container(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 5),
-        child: Column(
-          children: [
-            Text(
-              widget.googleClassroomCourseworkList[index]
-                  .name!, // -----------------class name-----------------//
-              style: Theme.of(context).textTheme.headline2!.copyWith(
-                  color: AppTheme.kButtonColor, fontWeight: FontWeight.bold),
-            ),
+  // Widget renderClassWiseStudentList(
+  //   int index,
+  //   context,
+  // ) {
+  //   return Container(
+  //     key: ValueKey(widget.googleClassroomCourseworkList[index]),
+  //     child: Container(
+  //       padding: EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 5),
+  //       child: Column(
+  //         children: [
+  //           Text(
+  //             widget.googleClassroomCourseworkList[index]
+  //                 .name!, // -----------------class name-----------------//
+  //             style: Theme.of(context)
+  //                 .textTheme
+  //                 .headline2!
+  //                 .copyWith(color: AppTheme.kButtonColor),
+  //           ),
 
-            widget.googleClassroomCourseworkList[index].students != null &&
-                    widget.googleClassroomCourseworkList[index].students!
-                            .length >
-                        0
-                ? renderStudents(
-                    widget.googleClassroomCourseworkList[index].students!,
-                    widget.googleClassroomCourseworkList[index].id ?? '')
-                : Container(
-                    height: 54,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 0,
-                    ),
-                    alignment: Alignment.center,
-                    child: Utility.textWidget(
-                        text: 'No Student Found',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline4!)) // for all the student showing
-          ],
-        ),
-      ),
-    );
-  }
+  //           widget.googleClassroomCourseworkList[index].students != null &&
+  //                   widget.googleClassroomCourseworkList[index].students!
+  //                           .length >
+  //                       0
+  //               ? renderStudents(
+  //                   widget.googleClassroomCourseworkList[index].students!,
+  //                   widget.googleClassroomCourseworkList[index].id ?? '')
+  //               : Text('No Student Found') // for all the student showing
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
 //---------------------return the student list-----------------//
-  renderStudents(List<ClassroomStudents> studentList, String courseId) {
-    return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(0),
-      shrinkWrap: true,
-      itemCount: studentList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return InkWell(
-          onTap: () {
-            if (!selectedStudentList.contains(studentList[index])) {
-              ClassroomStudents studentObj = studentList[index];
-              studentObj.profile!.courseId = courseId;
-              selectedStudentList.add(studentObj);
-            } else {
-              selectedStudentList.remove(studentList[index]);
-            }
-            //Refresh value in the UI
-            selectionChange.value = !selectionChange.value;
-            selectedStudentList.length;
-          },
-          child: Container(
-              height: 54,
-              padding: EdgeInsets.symmetric(
-                horizontal: 0,
-              ),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(0.0),
-                  color: (index % 2 == 0)
-                      ? Theme.of(context).colorScheme.background ==
-                              Color(0xff000000)
-                          ? AppTheme.klistTilePrimaryDark
-                          : AppTheme
-                              .klistTilePrimaryLight //Theme.of(context).colorScheme.background
-                      : Theme.of(context).colorScheme.background ==
-                              Color(0xff000000)
-                          ? AppTheme.klistTileSecoandryDark
-                          : AppTheme
-                              .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
-                  ),
-              child: IgnorePointer(
-                child: Theme(
-                  data: ThemeData(
-                    unselectedWidgetColor: AppTheme.kButtonColor,
-                  ),
-                  child: RadioListTile(
-                      groupValue: true,
-                      controlAffinity: ListTileControlAffinity.trailing,
-                      activeColor: AppTheme
-                          .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
-
-                      contentPadding: EdgeInsets.zero,
-                      value: selectedStudentList.contains(studentList[index]),
-                      onChanged: (dynamic val) {},
-                      title: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                              studentList[index].profile!.name!.fullName!,
-                              style: Theme.of(context).textTheme.headline4!))),
-                ),
-              )),
-        );
+  renderStudent(ClassroomStudents student, int index) {
+    return InkWell(
+      onTap: () {
+        if (!selectedStudentList.contains(student)) {
+          ClassroomStudents studentObj = student;
+          // studentObj.profile!.courseId = courseId;
+          selectedStudentList.add(studentObj);
+        } else {
+          selectedStudentList.remove(student);
+        }
+        //Refresh value in the UI
+        selectionChange.value = !selectionChange.value;
+        selectedStudentList.length;
       },
+      child: Container(
+          height: 54,
+          padding: EdgeInsets.symmetric(
+            horizontal: 0,
+          ),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(0.0),
+              color: (index % 2 == 0)
+                  ? Theme.of(context).colorScheme.background ==
+                          Color(0xff000000)
+                      ? AppTheme.klistTilePrimaryDark
+                      : AppTheme
+                          .klistTilePrimaryLight //Theme.of(context).colorScheme.background
+                  : Theme.of(context).colorScheme.background ==
+                          Color(0xff000000)
+                      ? AppTheme.klistTileSecoandryDark
+                      : AppTheme
+                          .klistTileSecoandryLight //Theme.of(context).colorScheme.secondary,
+              ),
+          child: IgnorePointer(
+            child: Theme(
+              data: ThemeData(
+                unselectedWidgetColor: AppTheme.kButtonColor,
+              ),
+              child: RadioListTile(
+                  groupValue: true,
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  activeColor: AppTheme
+                      .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
+
+                  contentPadding: EdgeInsets.zero,
+                  value: selectedStudentList.contains(student),
+                  onChanged: (dynamic val) {},
+                  title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(student.profile!.name!.fullName!,
+                          style: Theme.of(context).textTheme.headline4!))),
+            ),
+          )),
     );
   }
 
@@ -806,29 +819,59 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     ));
   }
 
-  List<ClassroomCourse> filterCourses(List<ClassroomStudents> students) {
+  // List<ClassroomCourse> filterCourses(List<ClassroomStudents> students) {
+  //   try {
+  //     List<ClassroomCourse> filteredCourses = [
+  //       ClassroomCourse(
+  //           id: '',
+  //           name: 'Students',
+  //           descriptionHeading: '',
+  //           ownerId: '',
+  //           enrollmentCode: '',
+  //           courseState: '',
+  //           students: students)
+  //     ];
+
+  //     // for (ClassroomCourse course in widget.googleClassroomCourseworkList) {
+  //     //   List<ClassroomStudents>? filteredStudents = course.students
+  //     //       ?.where((student) => students?.contains(student) ?? false)
+  //     //       .toList();
+
+  //     //   if (filteredStudents?.isNotEmpty ?? false) {
+  //     //     filteredCourses.add(ClassroomCourse(
+  //     //       id: course.id,
+  //     //       name: course.name,
+  //     //       descriptionHeading: course.descriptionHeading,
+  //     //       ownerId: course.ownerId,
+  //     //       enrollmentCode: course.enrollmentCode,
+  //     //       courseState: course.courseState,
+  //     //       students: filteredStudents,
+  //     //     ));
+  //     //   }
+  //     // }
+  //     print(filteredCourses);
+  //     return filteredCourses;
+  //   } catch (e) {
+  //     return [];
+  //   }
+  // }
+
+  List<ClassroomStudents> getClassroomStudents(
+      {required List<ClassroomCourse> classroomCourses}) {
     try {
-      List<ClassroomCourse> filteredCourses = [];
+      List<ClassroomStudents> uniqueStudents = [];
 
-      for (ClassroomCourse course in widget.googleClassroomCourseworkList) {
-        List<ClassroomStudents>? filteredStudents = course.students
-            ?.where((student) => students?.contains(student) ?? false)
-            .toList();
-
-        if (filteredStudents?.isNotEmpty ?? false) {
-          filteredCourses.add(ClassroomCourse(
-            id: course.id,
-            name: course.name,
-            descriptionHeading: course.descriptionHeading,
-            ownerId: course.ownerId,
-            enrollmentCode: course.enrollmentCode,
-            courseState: course.courseState,
-            students: filteredStudents,
-          ));
+      for (ClassroomCourse course in classroomCourses) {
+        for (ClassroomStudents student in course.students ?? []) {
+          bool alreadyExists = uniqueStudents.any(
+              (ClassroomStudents uniqueStudent) =>
+                  uniqueStudent.profile?.id == student.profile?.id);
+          if (!alreadyExists) {
+            uniqueStudents.add(student);
+          }
         }
       }
-
-      return filteredCourses;
+      return uniqueStudents ?? [];
     } catch (e) {
       return [];
     }
