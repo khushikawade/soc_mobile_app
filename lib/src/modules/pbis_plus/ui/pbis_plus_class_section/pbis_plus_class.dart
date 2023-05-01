@@ -117,8 +117,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                       index: 4,
                     ),
                     withNavBar: false,
-                    pageTransitionAnimation:
-                        PageTransitionAnimation.cupertino);
+                    pageTransitionAnimation: PageTransitionAnimation.cupertino);
               },
               icon: Icon(
                 IconData(0xe80d,
