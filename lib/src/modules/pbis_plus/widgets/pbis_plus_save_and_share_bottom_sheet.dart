@@ -246,7 +246,11 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       //Utility.showLoadingDialog(context: context, isOCR: false);
 
       // taking screenshot and save it on Uint8List
+<<<<<<< HEAD
+      final headerUint8List = widget.headerScreenshotController == null
+=======
       final headerUint8List = widget.fromClassScreen == true
+>>>>>>> dev_quarter2_2k23
           ? null
           : await widget.headerScreenshotController!.capture();
       final uint8List = widget.screenshotController != null
@@ -277,14 +281,20 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           crossAxisAlignment: pdfWidget.CrossAxisAlignment.start,
           margin: pdfWidget.EdgeInsets.all(0),
           maxPages: 2000,
-          build: (context) {
+          build: (contxt) {
             return [
-              widget.fromClassScreen == true
-                  ? pdfWidget.Container()
-                  : pdfWidget.Center(
-                      child: pdfWidget.Image(
-                          pdfWidget.MemoryImage(headerUint8List!),
-                          fit: pdfWidget.BoxFit.contain),
+              headerUint8List == null
+                  ? pdfWidget.Container() 
+                  : pdfWidget.Container(
+                      color:
+                          Color(0xff000000) != Theme.of(context).backgroundColor
+                              ? PdfColor.fromHex("F7F8F9")
+                              : PdfColor.fromHex("111C20"),
+                      margin: pdfWidget.EdgeInsets.symmetric(horizontal: 50),
+                      child: pdfWidget.Center(
+                          child: pdfWidget.Image(
+                              pdfWidget.MemoryImage(headerUint8List),
+                              fit: pdfWidget.BoxFit.contain)),
                     ),
               uint8List != null
                   ? pdfWidget.Container(

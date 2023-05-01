@@ -92,17 +92,27 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     ]);
   }
 
-  Widget body() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          SpacerWidget(_KVerticalSpace / 4),
-          ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 0),
-            //minLeadingWidth: 70,
-            title: Utility.textWidget(
+  Widget headerListTile() {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 0),
+      //minLeadingWidth: 70,
+      title: screenShotNotifier.value == true &&
+              Color(0xff000000) == Theme.of(context).backgroundColor
+          ? Container(
+              margin: EdgeInsets.only(right: 30),
+              color: Color(0xff000000) != Theme.of(context).backgroundColor
+                  ? Color(0xffF7F8F9)
+                  : Color(0xff111C20),
+              child: Utility.textWidget(
+                text: 'All Courses',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+            )
+          : Utility.textWidget(
               text: 'All Courses',
               context: context,
               textTheme: Theme.of(context)
@@ -110,38 +120,57 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   .headline6!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
-            leading: IconButton(
-              onPressed: () {
-                pushNewScreen(context,
-                    screen: HomePage(
-                      index: 4,
-                    ),
-                    withNavBar: false,
-                    pageTransitionAnimation:
-                        PageTransitionAnimation.cupertino);
-              },
-              icon: Icon(
-                IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kButtonColor,
+      leading: IconButton(
+        onPressed: () {
+          pushNewScreen(context,
+              screen: HomePage(
+                index: 4,
               ),
+              withNavBar: false,
+              pageTransitionAnimation: PageTransitionAnimation.cupertino);
+        },
+        icon: Icon(
+          IconData(0xe80d,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          color: AppTheme.kButtonColor,
+        ),
+      ),
+      trailing: IconButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            //----------setting bottom sheet funtion------------//
+            settingBottomSheet(context, pbisBloc);
+          },
+          icon: Icon(
+            IconData(
+              0xe867,
+              fontFamily: Overrides.kFontFam,
+              fontPackage: Overrides.kFontPkg,
             ),
-            trailing: IconButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {
-                  //----------setting bottom sheet funtion------------//
-                  settingBottomSheet(context, pbisBloc);
-                },
-                icon: Icon(
-                  IconData(
-                    0xe867,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg,
-                  ),
-                  color: AppTheme.kButtonColor,
-                )),
+            color: AppTheme.kButtonColor,
+          )),
+    );
+  }
+
+  Widget body() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          SpacerWidget(_KVerticalSpace / 4),
+          ValueListenableBuilder(
+            valueListenable: screenShotNotifier,
+            builder: (context, value, child) {
+              return screenShotNotifier.value == true
+                  ? Screenshot(
+                      controller: headerScreenshotController,
+                      child: Container(child: headerListTile()),
+                    )
+                  : headerListTile();
+            },
           ),
+
           // SpacerWidget(_KVertcalSpace / 3),
           SpacerWidget(_KVerticalSpace / 5),
           Expanded(
