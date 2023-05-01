@@ -47,9 +47,9 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                         Color(0xff000000) == Theme.of(context).backgroundColor
                             ? Color(0xffF7F8F9)
                             : Color(0xff111C20),
-                    child: Utility.textWidget(
-                      maxLines: 2,
-                      text: widget.studentValueNotifier.value.profile!.name!
+                    child: Text(
+                      // maxLines: 2,
+                      widget.studentValueNotifier.value.profile!.name!
                               .givenName!
                               .toUpperCase()
                               .substring(0, 1) +
@@ -57,14 +57,12 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                               .familyName!
                               .toUpperCase()
                               .substring(0, 1),
-                      context: context,
-                      textTheme:
-                          Theme.of(context).textTheme.headline2!.copyWith(
-                                color: Color(0xff000000) !=
-                                        Theme.of(context).backgroundColor
-                                    ? Color(0xffF7F8F9)
-                                    : Color(0xff111C20),
-                              ),
+                      style: Theme.of(context).textTheme.headline2!.copyWith(
+                            color: Color(0xff000000) !=
+                                    Theme.of(context).backgroundColor
+                                ? Color(0xffF7F8F9)
+                                : Color(0xff111C20),
+                          ),
                     ),
                   )
                 : CachedNetworkImage(

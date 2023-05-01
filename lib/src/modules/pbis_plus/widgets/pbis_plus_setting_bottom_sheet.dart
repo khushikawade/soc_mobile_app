@@ -147,14 +147,11 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                       context: context,
                       text: "Re-sync rosters",
                       textTheme:
-                          Theme.of(context).textTheme.headline5!.copyWith(
+                          Theme.of(context).textTheme.headline3!.copyWith(
                                 color: Color(0xff000000) ==
                                         Theme.of(context).backgroundColor
                                     ? Color(0xffFFFFFF)
                                     : Color(0xff000000),
-                                fontSize: Globals.deviceType == "phone"
-                                    ? AppTheme.kBottomSheetTitleSize
-                                    : AppTheme.kBottomSheetTitleSize * 1.3,
                               )),
                 ),
                 BlocListener<PBISPlusBloc, PBISPlusState>(
@@ -322,7 +319,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           contentPadding: EdgeInsets.symmetric(horizontal: 0),
           title: Utility.textWidget(
               context: context,
-              text: 'Select Course',
+              text: 'Select Classes',
               textTheme: Theme.of(context)
                   .textTheme
                   .headline5!
@@ -449,10 +446,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                       child: Utility.textWidget(
                           text: courseList[index].name!,
                           context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline4!
-                              .copyWith(fontWeight: FontWeight.bold)))),
+                          textTheme: Theme.of(context).textTheme.headline4!))),
             ),
           )),
     );
@@ -578,10 +572,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             Text(
               widget.googleClassroomCourseworkList[index]
                   .name!, // -----------------class name-----------------//
-              style: Theme.of(context)
-                  .textTheme
-                  .headline2!
-                  .copyWith(color: AppTheme.kButtonColor),
+              style: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: AppTheme.kButtonColor, fontWeight: FontWeight.bold),
             ),
 
             widget.googleClassroomCourseworkList[index].students != null &&
@@ -591,7 +583,18 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 ? renderStudents(
                     widget.googleClassroomCourseworkList[index].students!,
                     widget.googleClassroomCourseworkList[index].id ?? '')
-                : Text('No Student Found') // for all the student showing
+                : Container(
+                    height: 54,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 0,
+                    ),
+                    alignment: Alignment.center,
+                    child: Utility.textWidget(
+                        text: 'No Student Found',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline4!)) // for all the student showing
           ],
         ),
       ),
@@ -654,13 +657,9 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                       onChanged: (dynamic val) {},
                       title: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Utility.textWidget(
-                              text: studentList[index].profile!.name!.fullName!,
-                              context: context,
-                              textTheme: Theme.of(context)
-                                  .textTheme
-                                  .headline4!
-                                  .copyWith(fontWeight: FontWeight.bold)))),
+                          child: Text(
+                              studentList[index].profile!.name!.fullName!,
+                              style: Theme.of(context).textTheme.headline4!))),
                 ),
               )),
         );
