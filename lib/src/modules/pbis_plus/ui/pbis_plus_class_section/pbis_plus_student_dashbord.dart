@@ -202,31 +202,35 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     backgroundColor: AppTheme.kButtonColor,
                   ));
                 } else if (state is PBISPlusStudentDashboardLogSuccess) {
-                  return state.pbisStudentInteractionList.length > 0
-                      ? RefreshIndicator(
-                          key: refreshKey,
-                          onRefresh: refreshPage,
-                          child: ListView(
-                            children: [
-                              FittedBox(
-                                  child: Screenshot(
-                                controller: screenshotController,
-                                child: _buildDataTable(
-                                    list: state.pbisStudentInteractionList),
-                              )),
-                            ],
-                          ),
-                        )
-                      : RefreshIndicator(
-                          key: refreshKey,
-                          onRefresh: refreshPage,
-                          child: NoDataFoundErrorWidget(
-                              marginTop:
-                                  MediaQuery.of(context).size.height * 0.06,
-                              isResultNotFoundMsg: true,
-                              isNews: false,
-                              isEvents: false),
-                        );
+                  return
+
+                      // state.pbisStudentInteractionList.length > 0
+                      //     ?
+
+                      RefreshIndicator(
+                    key: refreshKey,
+                    onRefresh: refreshPage,
+                    child: ListView(
+                      children: [
+                        FittedBox(
+                            child: Screenshot(
+                          controller: screenshotController,
+                          child: _buildDataTable(
+                              list: state.pbisStudentInteractionList),
+                        )),
+                      ],
+                    ),
+                  );
+                  // : RefreshIndicator(
+                  //     key: refreshKey,
+                  //     onRefresh: refreshPage,
+                  //     child: NoDataFoundErrorWidget(
+                  //         marginTop:
+                  //             MediaQuery.of(context).size.height * 0.06,
+                  //         isResultNotFoundMsg: true,
+                  //         isNews: false,
+                  //         isEvents: false),
+                  //   );
                 } else {
                   //  shows in condition where email is not not their in case of student plus
                   return RefreshIndicator(
@@ -297,13 +301,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         ),
         columns: PBISPlusDataTableModal.PBISPlusDataTableHeadingRaw.map(
             (PBISPlusDataTableModal item) {
-          return buildDataColumn(item);
+          return buildDataColumn(item, list);
         }).toList(),
         rows: List<DataRow>.generate(
             list.length, (index) => buildDataRow(index, list)),
       );
 
-  DataColumn buildDataColumn(PBISPlusDataTableModal item) => DataColumn(
+  DataColumn buildDataColumn(PBISPlusDataTableModal item,
+          List<PBISPlusTotalInteractionModal> list) =>
+      DataColumn(
           label: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -316,7 +322,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           ),
           Padding(padding: EdgeInsets.only(top: 5)),
           Center(
-            widthFactor: item.title == 'Date' ? 2.0 : null,
+            widthFactor: item.title == 'Date' && list.length > 0 ? 2.45 : null,
             // padding: EdgeInsets.only(left: item.title == 'Date' ? 40 : 0),
             child: Utility.textWidget(
               context: context,

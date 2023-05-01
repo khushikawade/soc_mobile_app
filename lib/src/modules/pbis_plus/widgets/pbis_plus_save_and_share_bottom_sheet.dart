@@ -245,7 +245,6 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       //Utility.showLoadingDialog(context: context, isOCR: false);
 
       // taking screenshot and save it on Uint8List
-
       final headerUint8List = widget.headerScreenshotController == null
           ? null
           : await widget.headerScreenshotController!.capture();
