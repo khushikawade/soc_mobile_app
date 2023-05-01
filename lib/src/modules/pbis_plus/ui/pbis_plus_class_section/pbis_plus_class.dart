@@ -162,7 +162,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           ValueListenableBuilder(
             valueListenable: screenShotNotifier,
             builder: (context, value, child) {
-              return screenShotNotifier.value == true
+              return screenShotNotifier.value ==
+                      true //To manage the background color of title in the PDF
                   ? Screenshot(
                       controller: headerScreenshotController,
                       child: Container(child: headerListTile()),

@@ -18,7 +18,6 @@ import 'package:Soc/src/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdfWidget;
@@ -246,11 +245,8 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
       //Utility.showLoadingDialog(context: context, isOCR: false);
 
       // taking screenshot and save it on Uint8List
-<<<<<<< HEAD
+
       final headerUint8List = widget.headerScreenshotController == null
-=======
-      final headerUint8List = widget.fromClassScreen == true
->>>>>>> dev_quarter2_2k23
           ? null
           : await widget.headerScreenshotController!.capture();
       final uint8List = widget.screenshotController != null
@@ -284,7 +280,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
           build: (contxt) {
             return [
               headerUint8List == null
-                  ? pdfWidget.Container() 
+                  ? pdfWidget.Container()
                   : pdfWidget.Container(
                       color:
                           Color(0xff000000) != Theme.of(context).backgroundColor
