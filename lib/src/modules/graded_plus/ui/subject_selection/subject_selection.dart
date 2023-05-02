@@ -1601,7 +1601,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
         "save_to_drive_from_subject_selection");
     Utility.updateLogs(
         activityType: 'GRADED+',
-        activityId: '14',
+        activityId: '12',
         description: 'Save to drive',
         operationResult: 'Success');
     _googleDriveBloc.close();
