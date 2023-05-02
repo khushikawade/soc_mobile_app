@@ -132,22 +132,24 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
                 color: Theme.of(context).colorScheme.primaryVariant,
               ),
               tabs: [
-                TranslationWidget(
-                  message: "MATH",
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Tab(
-                    text: translatedMessage.toString(),
-                  ),
-                ),
-                TranslationWidget(
-                  message: "ELA",
-                  toLanguage: Globals.selectedLanguage,
-                  fromLanguage: "en",
-                  builder: (translatedMessage) => Tab(
-                    text: translatedMessage.toString(),
-                  ),
-                ),
+                Tab(text: "MATH"),
+                // TranslationWidget(
+                //   message: "MATH",
+                //   toLanguage: Globals.selectedLanguage,
+                //   fromLanguage: "en",
+                //   builder: (translatedMessage) => Tab(
+                //     text: translatedMessage.toString(),
+                //   ),
+                // ),
+                Tab(text: "ELA")
+                // TranslationWidget(
+                //   message: "ELA",
+                //   toLanguage: Globals.selectedLanguage,
+                //   fromLanguage: "en",
+                //   builder: (translatedMessage) => Tab(
+                //     text: translatedMessage.toString(),
+                //   ),
+                // ),
               ],
             ),
             Container(
@@ -424,10 +426,9 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           ),
         ),
         SpacerWidget(10),
-        Utility.textWidget(
-            text: subTitle,
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline4)
+        Text(subTitle,
+            //  context: context,
+            style: Theme.of(context).textTheme.headline4)
       ],
     );
   }

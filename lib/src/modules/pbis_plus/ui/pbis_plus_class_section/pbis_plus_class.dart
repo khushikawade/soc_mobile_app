@@ -172,7 +172,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
             },
           ),
 
-          // SpacerWidget(_KVertcalSpace / 3),
+          // SpacerWidget(_KVerticalSpace / 3),
           SpacerWidget(_KVerticalSpace / 5),
           Expanded(
             child: BlocConsumer(

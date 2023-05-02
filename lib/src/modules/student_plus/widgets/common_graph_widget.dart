@@ -260,10 +260,9 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
           return FittedBox(
             child: Container(
               margin: EdgeInsets.only(top: 10),
-              child: Utility.textWidget(
-                  text: text,
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.subtitle1),
+              child: Text(text,
+                  //  context: context,
+                  style: Theme.of(context).textTheme.subtitle1),
             ),
           );
         },

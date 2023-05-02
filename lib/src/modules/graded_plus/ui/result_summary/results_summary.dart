@@ -1886,7 +1886,7 @@ class studentRecordList extends State<ResultsSummary> {
                         activityType: 'GRADED+',
                         activityId: '14',
                         description:
-                            'Save to deshboard pressed in case for scanmore',
+                            'Save to dashboard pressed in case for scan more',
                         operationResult: 'Success');
                     //print(
                     // 'if     calling is scanMore -------------------------->');
@@ -2313,7 +2313,7 @@ class studentRecordList extends State<ResultsSummary> {
           if (widget.assessmentDetailPage == true &&
               widget.createdAsPremium == false) {
             String dashboardLogMsgNotPremiumAccount =
-                'None premium assessment tried to save from premium account using scan more option from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+                'Non-premium assessment tried to save from premium account using scan more option from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
             FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 dashboardLogMsgNotPremiumAccount
                         .toLowerCase()

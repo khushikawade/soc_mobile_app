@@ -170,18 +170,22 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
                                     : "tel:") +
                                 studentInfo.value);
                       },
-                      child: Utility.textWidget(
+                      child: Text(
+                        studentInfo.value,
+                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                              color: Colors.blue,
+                            ),
+                      ))
+                  : studentInfo.label == "Name" ||
+                          studentInfo.label == "Teacher"
+                      ? Text(
+                          studentInfo.value,
+                          style: Theme.of(context).textTheme.headline2!,
+                        )
+                      : Utility.textWidget(
                           text: studentInfo.value,
                           context: context,
-                          textTheme:
-                              Theme.of(context).textTheme.headline2!.copyWith(
-                                    color: Colors.blue,
-                                  )),
-                    )
-                  : Utility.textWidget(
-                      text: studentInfo.value,
-                      context: context,
-                      textTheme: Theme.of(context).textTheme.headline2!),
+                          textTheme: Theme.of(context).textTheme.headline2!),
             ),
           ],
         ));
