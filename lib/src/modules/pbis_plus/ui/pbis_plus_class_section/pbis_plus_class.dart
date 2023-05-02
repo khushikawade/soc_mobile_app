@@ -30,7 +30,11 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class PBISPlusClass extends StatefulWidget {
   final IconData titleIconData;
-  PBISPlusClass({Key? key, required this.titleIconData}) : super(key: key);
+  final VoidCallback backOnTap;
+
+  PBISPlusClass(
+      {Key? key, required this.titleIconData, required this.backOnTap})
+      : super(key: key);
 
   @override
   State<PBISPlusClass> createState() => _PBISPlusClassState();
@@ -63,6 +67,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("pbis_plus_class_screen");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_class_screen', screenClass: 'PBISPlusClass');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -122,12 +131,20 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
             ),
       leading: IconButton(
         onPressed: () {
-          pushNewScreen(context,
-              screen: HomePage(
-                index: 4,
-              ),
-              withNavBar: false,
-              pageTransitionAnimation: PageTransitionAnimation.cupertino);
+          // pushNewScreen(context,
+          //     screen: HomePage(
+          //       index: 4,
+          //     ),
+          //     withNavBar: false,
+          //     pageTransitionAnimation: PageTransitionAnimation.cupertino);
+          //To go back to the staff screen of standard app
+          // final route = MaterialPageRoute(
+          //   builder: (context) => HomePage(
+          //     index: 4,
+          //   ),
+          // );
+          // Navigator.pushAndRemoveUntil(context, route, (route) => false);
+          widget.backOnTap();
         },
         icon: Icon(
           IconData(0xe80d,
