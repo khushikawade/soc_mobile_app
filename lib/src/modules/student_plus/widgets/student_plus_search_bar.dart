@@ -50,27 +50,29 @@ class _StudentPlusInfoSearchBarState extends State<StudentPlusInfoSearchBar> {
         padding: EdgeInsets.symmetric(
             vertical: widget.kLabelSpacing / 3,
             horizontal: widget.kLabelSpacing / 3.5),
-        child: TranslationWidget(
-            message: widget.hintText,
-            fromLanguage: "en",
-            toLanguage: Globals.selectedLanguage,
-            builder: (translatedMessage) {
-              return Card(
-                  // shadowColor: Theme.of(context).colorScheme.background ==
-                  //         Color(0xff000000)
-                  //     ? Color.fromARGB(255, 114, 118, 119)
-                  //     : Color(0xffF7F8F9),
+        child: Card(
+            // shadowColor: Theme.of(context).colorScheme.background ==
+            //         Color(0xff000000)
+            //     ? Color.fromARGB(255, 114, 118, 119)
+            //     : Color(0xffF7F8F9),
 
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    //side: BorderSide(color: Colors.white70, width: 1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  color: Colors.transparent,
-                  child: widget.isMainPage == true
-                      ? mainSearchBar(translatedMessage)
-                      : innerSearchBar(translatedMessage));
-            }),
+            elevation: 10,
+            shape: RoundedRectangleBorder(
+              //side: BorderSide(color: Colors.white70, width: 1),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            color: Colors.transparent,
+            child: widget.isMainPage == true
+                ? mainSearchBar(widget.hintText)
+                : innerSearchBar(widget.hintText)),
+
+        //  TranslationWidget(
+        //     message: widget.hintText,
+        //     fromLanguage: "en",
+        //     toLanguage: Globals.selectedLanguage,
+        //     builder: (translatedMessage) {
+        //       return
+        //     }),
       ),
     );
   }

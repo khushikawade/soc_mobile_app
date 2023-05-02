@@ -394,7 +394,7 @@ class Utility {
       {required String text,
       TextStyle? textTheme,
       required context,
-      textAlign,
+      TextAlign? textAlign,
       maxLines}) {
     return TranslationWidget(
       message: text,

@@ -121,11 +121,10 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       pageTransitionAnimation: PageTransitionAnimation.fade);
                 },
                 icon: Icon(
-                  IconData(0xe80d,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kButtonColor,
-                ),
+                    IconData(0xe80d,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kButtonColor),
               )
             : Container(),
         // widget.isFromStudentPlus == true
