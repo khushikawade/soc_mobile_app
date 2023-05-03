@@ -70,7 +70,7 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
           StudentPlusScreenTitleWidget(
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentInfoPageTitle),

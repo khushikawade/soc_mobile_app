@@ -237,7 +237,7 @@ class _CommonLineGraphWidgetState extends State<CommonLineGraphWidget> {
   SideTitles get _iReadyBottomTitles => SideTitles(
         showTitles: true,
         interval: 1,
-        reservedSize: 35,
+        reservedSize: Globals.deviceType == 'phone' ? 45 : 65,
         //reservedSize: 25,
         getTitlesWidget: (value, meta) {
           String text = '';

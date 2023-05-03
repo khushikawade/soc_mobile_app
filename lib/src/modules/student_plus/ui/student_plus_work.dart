@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/student_plus/bloc/student_plus_bloc.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
@@ -75,7 +76,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+                SpacerWidget(StudentPlusOverrides.KVerticalSpace / 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -161,11 +162,20 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     topRight: Radius.circular(42),
                   ),
                 ),
-                builder: (_) => StudentPlusFilterWidget(
-                  filterNotifier: filterNotifier,
-                  subjectList: subjectList,
-                  teacherList: teacherList,
-                ),
+                builder: (_) => LayoutBuilder(builder:
+                    (BuildContext context, BoxConstraints constraints) {
+                  return StudentPlusFilterWidget(
+                    filterNotifier: filterNotifier,
+                    subjectList: subjectList,
+                    teacherList: teacherList,
+                    height: constraints.maxHeight < 750 &&
+                            Globals.deviceType == "phone"
+                        ? MediaQuery.of(context).size.height * 0.4 //0.45
+                        : Globals.deviceType == "phone"
+                            ? MediaQuery.of(context).size.height * 0.42 //0.45
+                            : MediaQuery.of(context).size.height * 0.25,
+                  );
+                }),
               );
               //  filterBottomSheet();
             },
@@ -389,15 +399,11 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                 width: (MediaQuery.of(context).size.width * 0.25) - 20,
                 //  color: Colors.yellow,0xe88c
                 child: Icon(
-                  IconData(0xe88c,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  // size: 20,
-                  color: Theme.of(context).colorScheme.background ==
-                          Color(0xff000000)
-                      ? Color(0xffF7F8F9)
-                      : Color(0xff162429),
-                ))
+                    IconData(0xe88c,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    // size: 20,
+                    color: AppTheme.kButtonColor))
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_history_section/pbis_plus_history.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_history.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';

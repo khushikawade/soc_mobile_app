@@ -86,7 +86,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
         physics: NeverScrollableScrollPhysics(),
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
           StudentPlusScreenTitleWidget(
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPBISPageTitle),

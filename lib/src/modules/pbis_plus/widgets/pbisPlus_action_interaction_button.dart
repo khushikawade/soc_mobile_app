@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_action_interaction_modal.dart';
@@ -18,20 +19,21 @@ class PBISPlusActionInteractionButton extends StatefulWidget {
   final Key? scaffoldKey;
   final String? classroomCourseId;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
+
   // final Future<bool?> Function(bool)? onTapCallback;
 
-  PBISPlusActionInteractionButton(
-      {Key? key,
-      this.isLoading,
-      this.isFromStudentPlus,
-      required this.iconData,
-      required this.studentValueNotifier,
-      required this.scaffoldKey,
-      required this.classroomCourseId,
-      required this.onValueUpdate
-      // required this.onTapCallback,
-      })
-      : super(key: key);
+  PBISPlusActionInteractionButton({
+    Key? key,
+    this.isLoading,
+    this.isFromStudentPlus,
+    required this.iconData,
+    required this.studentValueNotifier,
+    required this.scaffoldKey,
+    required this.classroomCourseId,
+    required this.onValueUpdate,
+
+    // required this.onTapCallback,
+  }) : super(key: key);
 
   @override
   State<PBISPlusActionInteractionButton> createState() =>
@@ -110,11 +112,12 @@ class PBISPlusActionInteractionButtonState
                       dotSecondaryColor: widget.iconData.color,
                     ),
                     likeBuilder: (bool isLiked) {
-                      return Icon(
-                        widget.iconData.iconData,
-                        color: widget.iconData.color,
-                        size: 20,
-                      );
+                      return Icon(widget.iconData.iconData,
+                          color: widget.iconData.color,
+                          size: Globals.deviceType == 'phone' ? 20 : 30
+                          // 20
+                          // widget.iconData.iconSize,
+                          );
                     },
 
                     // likeCount: _getCounts(),
@@ -139,13 +142,18 @@ class PBISPlusActionInteractionButtonState
               ),
             ),
 
-            Utility.textWidget(
-                text: widget.iconData.title,
-                context: context,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(fontSize: 12, fontWeight: FontWeight.w600)),
+            Padding(
+              padding: Globals.deviceType != 'phone'
+                  ? const EdgeInsets.all(16.0)
+                  : EdgeInsets.zero,
+              child: Utility.textWidget(
+                  text: widget.iconData.title,
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(fontSize: 12, fontWeight: FontWeight.w600)),
+            ),
             // ValueListenableBuilder<bool>(
             //   valueListenable: _showMessage,
             //   builder: (BuildContext context, bool value, Widget? child) {
@@ -204,7 +212,7 @@ class PBISPlusActionInteractionButtonState
           widget.isFromStudentPlus == true
               ? widget.studentValueNotifier.value.profile!.engaged
               : widget.studentValueNotifier.value.profile!.engaged! + 1;
-    } else if (widget.iconData.title == 'Nice work') {
+    } else if (widget.iconData.title == 'Nice Work') {
       widget.studentValueNotifier.value.profile!.niceWork =
           widget.isFromStudentPlus == true
               ? widget.studentValueNotifier.value.profile!.niceWork
@@ -230,7 +238,7 @@ class PBISPlusActionInteractionButtonState
           studentEmail: widget.studentValueNotifier.value.profile!.emailAddress,
           classroomCourseId: widget.classroomCourseId,
           engaged: widget.iconData.title == 'Engaged' ? 1 : 0,
-          niceWork: widget.iconData.title == 'Nice work' ? 1 : 0,
+          niceWork: widget.iconData.title == 'Nice Work' ? 1 : 0,
           helpful: widget.iconData.title == 'Helpful' ? 1 : 0));
     }
 
@@ -247,16 +255,21 @@ class PBISPlusActionInteractionButtonState
     String title = widget.iconData.title;
     var map = {
       'Engaged': widget.studentValueNotifier.value.profile!.engaged,
-      'Nice work': widget.studentValueNotifier.value.profile!.niceWork,
+      'Nice Work': widget.studentValueNotifier.value.profile!.niceWork,
       'Helpful': widget.studentValueNotifier.value.profile!.helpful,
     };
 
     int viewCount = map[title] ?? 0;
     // return viewCount;
-    return Utility.textWidget(
-        text: viewCount.toString(),
-        context: context,
-        textTheme:
-            Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12));
+    return Padding(
+      padding: Globals.deviceType != 'phone'
+          ? const EdgeInsets.only(top: 10, left: 10)
+          : EdgeInsets.zero,
+      child: Utility.textWidget(
+          text: viewCount.toString(),
+          context: context,
+          textTheme:
+              Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12)),
+    );
   }
 }

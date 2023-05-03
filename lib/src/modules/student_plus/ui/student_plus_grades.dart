@@ -67,7 +67,8 @@ class individual extends State<StudentPlusGradesPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+                SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+                // SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 StudentPlusScreenTitleWidget(
                     kLabelSpacing: _kLabelSpacing,
                     text: StudentPlusOverrides.studentGradesPageTitle),

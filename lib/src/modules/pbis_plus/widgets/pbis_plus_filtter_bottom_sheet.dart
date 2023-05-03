@@ -8,18 +8,20 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // ignore: must_be_immutable
 class PBISPlusHistoryFilterBottomSheet extends StatefulWidget {
-  PBISPlusHistoryFilterBottomSheet(
-      {Key? key,
-      required this.update,
-      required this.title,
-      required this.selectedValue,
-      required this.scaffoldKey})
-      : super(key: key);
+  PBISPlusHistoryFilterBottomSheet({
+    Key? key,
+    required this.update,
+    required this.title,
+    required this.selectedValue,
+    required this.scaffoldKey,
+    this.height = 150,
+  }) : super(key: key);
   final String title;
   final String selectedValue;
   final Key scaffoldKey;
 
   final Function({String? filterValue}) update;
+  final double? height;
   @override
   State<PBISPlusHistoryFilterBottomSheet> createState() =>
       _PBISPlusHistoryFilterBottomSheetState();
@@ -52,10 +54,14 @@ class _PBISPlusHistoryFilterBottomSheetState
       controller: ModalScrollController.of(context),
       physics: NeverScrollableScrollPhysics(),
       child: Container(
-        height: MediaQuery.of(context).orientation == Orientation.landscape
-            ? MediaQuery.of(context).size.height * 0.82
-            : MediaQuery.of(context).size.width *
-                0.8, //MediaQuery.of(context).size.height * 0.5,
+        height: widget.height!,
+        // MediaQuery.of(context).orientation == Orientation.landscape
+        //     ? MediaQuery.of(context).size.height * 0.82
+        //     : Globals.deviceType == "phone"
+        //         ? MediaQuery.of(context).size.height * 0.38 //0.8
+        //         : MediaQuery.of(context).size.height * 0.28,
+        // MediaQuery.of(context).size.width *
+        //     0.8, //MediaQuery.of(context).size.height * 0.5,
         decoration: BoxDecoration(
           color: Color(0xff000000) != Theme.of(context).backgroundColor
               ? Color(0xffF7F8F9)

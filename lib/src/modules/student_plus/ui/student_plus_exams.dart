@@ -68,10 +68,10 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
           StudentPlusScreenTitleWidget(
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPlusExamsTitle),
@@ -110,8 +110,8 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
       padding: EdgeInsets.symmetric(horizontal: 0),
       child: DefaultTabController(
         length: 2,
-        child: Column(
-          //shrinkWrap: true,
+        child: ListView(
+          shrinkWrap: true,
           children: [
             TabBar(
               indicatorSize: TabBarIndicatorSize.tab,
@@ -284,7 +284,7 @@ class _StudentPlusExamsScreenState extends State<StudentPlusExamsScreen> {
           : Colors.black,
       child: Container(
         padding: EdgeInsets.only(left: 20, right: 30, bottom: 20, top: 30),
-        height: MediaQuery.of(context).size.height * 0.40,
+        height: MediaQuery.of(context).size.height * 0.40, //0.40
         width: MediaQuery.of(context).size.width * 0.9,
         child: CommonLineGraphWidget(
           isIReadyGraph: true,

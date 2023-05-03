@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
@@ -16,15 +17,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class PBISPlusHistory extends StatefulWidget {
   final IconData titleIconData;
 
-  PBISPlusHistory(
-      {Key? key,
-      required this.titleIconData,
-     })
-      : super(key: key);
+  PBISPlusHistory({
+    Key? key,
+    required this.titleIconData,
+  }) : super(key: key);
 
   @override
   State<PBISPlusHistory> createState() => _PBISPlusHistoryState();
@@ -56,13 +55,16 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
   Widget build(BuildContext context) {
     return Stack(children: [
       CommonBackgroundImgWidget(),
-      Scaffold(
-          key: _scaffoldKey,
-          backgroundColor: Colors.transparent,
-          appBar: PBISPlusUtility.pbisAppBar(
-              context, widget.titleIconData, 'Class', _scaffoldKey),
-          extendBody: true,
-          body: body(context))
+      WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: Colors.transparent,
+            appBar: PBISPlusUtility.pbisAppBar(
+                context, widget.titleIconData, 'Class', _scaffoldKey),
+            extendBody: true,
+            body: body(context)),
+      )
     ]);
   }
 
@@ -136,31 +138,23 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
         ]),
         // SpacerWidget(_KVertcalSpace / 3),
         SpacerWidget(_KVertcalSpace / 5),
-        Container(
-          // color: Colors.red,
-          height: MediaQuery.of(context).size.height * 0.65,
-          child: ValueListenableBuilder(
-              valueListenable: filterNotifier,
-              builder: (BuildContext context, String value, Widget? child) {
-                return ListView(children: [
+        ValueListenableBuilder(
+            valueListenable: filterNotifier,
+            builder: (BuildContext context, String value, Widget? child) {
+              return Expanded(
+                child: ListView(children: [
                   BlocConsumer(
                       bloc: PBISPlusBlocInstance,
                       builder: (context, state) {
                         if (state is PBISPlusLoading) {
                           return Container(
+                              height: MediaQuery.of(context).size.height * 0.6,
                               alignment: Alignment.center,
                               child: CircularProgressIndicator.adaptive(
                                 backgroundColor: AppTheme.kButtonColor,
                               ));
                         }
-                        if (state is PBISPlusHistorySuccess
-                            // &&
-                            // (state.pbisHistoryList.isNotEmpty ?? false) &&
-                            // (state.pbisClassroomHistoryList.isNotEmpty ??
-                            //     false) &&
-                            // (state.pbisSheetHistoryList.isNotEmpty ??
-                            //     false)
-                            ) {
+                        if (state is PBISPlusHistorySuccess) {
                           //---------------------return the filter list to UI-----------//
                           if (filterNotifier.value ==
                               PBISPlusOverrides.pbisGoogleClassroom) {
@@ -183,12 +177,17 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                                 child: _listBuilder(state.pbisHistoryList));
                           }
                         }
-                        return Container();
+                        return Container(
+                            height: MediaQuery.of(context).size.height * 0.6,
+                            alignment: Alignment.center,
+                            child: CircularProgressIndicator.adaptive(
+                              backgroundColor: AppTheme.kButtonColor,
+                            ));
                       },
                       listener: (context, state) {})
-                ]);
-              }),
-        ),
+                ]),
+              );
+            }),
       ],
     );
   }
@@ -198,14 +197,18 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
         ? ValueListenableBuilder(
             valueListenable: filterNotifier,
             builder: (BuildContext context, String value, Widget? child) {
-              return Container(
-                  height: MediaQuery.of(context).size.height * 0.65,
-                  child: ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      return listTile(historyList[index], index);
-                    },
-                    itemCount: historyList.length,
-                  ));
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.only(
+                  bottom: 25,
+                ),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (BuildContext context, int index) {
+                  return listTile(historyList[index], index);
+                },
+                itemCount: historyList.length,
+              );
             })
         : NoDataFoundErrorWidget(
             isResultNotFoundMsg: true, isNews: false, isEvents: false);
@@ -301,23 +304,38 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
 //------------------------------for filter call bottom sheet"-------------------//
   filterBottomSheet(context) {
     showModalBottomSheet(
-        useRootNavigator: true,
+        // useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
-        isDismissible: true,
-        enableDrag: true,
+        isDismissible: false,
+        enableDrag: false,
         backgroundColor: Colors.transparent,
         elevation: 10,
         context: context,
-        builder: (context) => PBISPlusHistoryFilterBottomSheet(
-              title: 'Filter Assignment',
-              selectedValue: filterNotifier.value,
-              update: ({String? filterValue}) async {
-                // update the filter value
-                filterNotifier.value = filterValue!;
-                PBISPlusOverrides.pbisPlusFilterValue = filterNotifier.value;
-              },
-              scaffoldKey: _scaffoldKey,
-            ));
+        builder: (context) => LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              return PBISPlusHistoryFilterBottomSheet(
+                height: Globals.deviceType == "phone"
+                    ? MediaQuery.of(context).size.width - 60
+                    : MediaQuery.of(context).size.width / 2 - 40,
+                // constraints.maxHeight < 750
+                //     // ? MediaQuery.of(context).size.height * 0.5
+                //     // : MediaQuery.of(context).size.height * 0.43,
+                //     ? Globals.deviceType == "phone"
+                //         ? MediaQuery.of(context).size.height * 0.5 //0.45
+                //         : MediaQuery.of(context).size.height * 0.26
+                //     : Globals.deviceType == "phone"
+                //         ? MediaQuery.of(context).size.height * 0.40 //0.45
+                //         : MediaQuery.of(context).size.height * 0.26,
+                title: 'Filter Assignment',
+                selectedValue: filterNotifier.value,
+                update: ({String? filterValue}) async {
+                  // update the filter value
+                  filterNotifier.value = filterValue!;
+                  PBISPlusOverrides.pbisPlusFilterValue = filterNotifier.value;
+                },
+                scaffoldKey: _scaffoldKey,
+              );
+            }));
   }
 }
