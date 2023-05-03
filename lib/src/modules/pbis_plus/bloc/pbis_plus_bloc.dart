@@ -735,7 +735,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         "Teacher_Email": userProfile!.userEmail ?? '',
       };
       //if user reset Course
-      if (type == "All Classes & Students" || type == "Classes") {
+      if (type == "All Courses & Students" || type == "Courses") {
         // Create a comma-separated string of Courses for a list of selected classroom courses "('','','')"
         String classroomCourseIds =
             selectedCourses.map((course) => course.id).join("','");
