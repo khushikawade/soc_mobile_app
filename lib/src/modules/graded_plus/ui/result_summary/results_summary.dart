@@ -225,15 +225,18 @@ class studentRecordList extends State<ResultsSummary> {
                             description: assignmentCompletedLogMsg,
                             operationResult: 'Success');
                         Fluttertoast.cancel();
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    Overrides.STANDALONE_GRADED_APP == true
-                                        ? GradedLandingPage()
-                                        : HomePage(
-                                            isFromOcrSection: true,
-                                          )),
-                            (_) => false);
+                        // Navigator.of(context).pushAndRemoveUntil(
+                        //     MaterialPageRoute(
+                        //         builder: (context) =>
+                        //             Overrides.STANDALONE_GRADED_APP == true
+                        //                 ? GradedLandingPage()
+                        //                 : HomePage(
+                        //                     isFromOcrSection: true,
+                        //                   )),
+                        //     (_) => false);
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
+
                         // onFinishedPopup();
                       })),
               isResultScreen: true,

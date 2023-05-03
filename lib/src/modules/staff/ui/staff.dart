@@ -280,7 +280,8 @@ class _StaffPageState extends State<StaffPage> {
         await clearGoogleLoginLocalDb.getBool('delete_local_login_details12');
     if (clearCacheResult != true) {
       await UserGoogleProfile.clearUserProfile();
-      await clearGoogleLoginLocalDb.setBool('delete_local_login_details12', true);
+      await clearGoogleLoginLocalDb.setBool(
+          'delete_local_login_details12', true);
     }
     /* ---- Clear login local data base once because we added classroom scope --- */
 
