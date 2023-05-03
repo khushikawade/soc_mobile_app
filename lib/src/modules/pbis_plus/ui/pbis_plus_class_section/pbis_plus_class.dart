@@ -700,8 +700,12 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
     List<ClassroomCourse>? _localData = await _localDb.getData();
 
-//Adding 'All' as a default selected option
-    googleClassroomCourseworkList.add(ClassroomCourse(name: 'All'));
+//Adding 'All' as a default selected option for classess and student both
+    googleClassroomCourseworkList.add(ClassroomCourse(name: 'All', students: [
+      ClassroomStudents(
+          profile: ClassroomProfile(
+              name: ClassroomProfileName(fullName: 'All'), id: 'All'))
+    ]));
     googleClassroomCourseworkList.addAll(_localData);
 
     var section = await showModalBottomSheet(

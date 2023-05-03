@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -59,8 +61,9 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         1: widget.height! * 1.15,
         2: widget.height! * 1.2,
         3: widget.height! / 2,
+        4: widget.height! / 2
       };
-
+  List<ClassroomStudents> allStudents = [];
   @override
   void initState() {
     {
@@ -73,7 +76,9 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         vsync: this,
         duration: const Duration(seconds: 1),
         animationBehavior: AnimationBehavior.normal);
-
+// Combine all the students from different courses into a single list.
+    allStudents = getClassroomStudents(
+        classroomCourses: widget.googleClassroomCourseworkList);
     super.initState();
   }
 
@@ -112,7 +117,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   context), //----------select ClassroomCourse view-----------------//
               buildSelectStudentBottomsheetWidget(
                   context), //----------------------select student view---------------//
-              commonLoaderWidget(),
+              warningWidget(), commonLoaderWidget(),
             ],
           )),
     );
@@ -244,6 +249,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           switch (text) {
             case 'All Classes & Students':
               sectionName = 'All Classes & Students';
+
               _pageController.animateToPage(3,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
@@ -328,7 +334,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           leading: IconButton(
             onPressed: () {
               //--------------------------For back to previous screen---------------------//
-              _pageController.animateToPage(pageValue - 1,
+              _pageController.animateToPage(0,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
             },
@@ -370,7 +376,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               onPressed: () async {
                 // commaSeparatedStringForCourse();
 
-                _pageController.animateToPage(3,
+                _pageController.animateToPage(4,
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.ease);
               },
@@ -459,9 +465,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     //     widget.googleClassroomCourseworkList[0].name == "All") {
     //   widget.googleClassroomCourseworkList.removeAt(0);
     // }
-// Combine all the students from different courses into a single list.
-    List<ClassroomStudents> allStudents = getClassroomStudents(
-        classroomCourses: widget.googleClassroomCourseworkList);
 
     return SingleChildScrollView(
       child: Column(
@@ -492,7 +495,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     .copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
             leading: IconButton(
               onPressed: () {
-                _pageController.animateToPage(pageValue - 2,
+                _pageController.animateToPage(0,
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.ease);
               },
@@ -549,26 +552,26 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
-                  // Check if there are any selected students.
-
-                  if (selectedStudentList.length > 0) {
-                    // Create a new ClassroomCourse object and add all selected students to it.
-                    selectedRecords.add(ClassroomCourse(
-                        id: '',
-                        name: 'Students',
-                        descriptionHeading: '',
-                        ownerId: '',
-                        enrollmentCode: '',
-                        courseState: '',
-                        students: selectedStudentList));
-                    // Navigate to the third page with a quick animation.
-                    _pageController.animateToPage(3,
-                        duration: const Duration(milliseconds: 100),
-                        curve: Curves.ease);
-                  } else {
-                    Utility.currentScreenSnackBar(
-                        "No selected student found", null);
+                  //this is for default  'ALL' selected
+                  if (selectedStudentList?.isEmpty ?? true) {
+                    selectedStudentList = await getClassroomStudents(
+                        classroomCourses: widget.googleClassroomCourseworkList,
+                        isSubmitOnTap: true);
                   }
+
+                  // Create a new ClassroomCourse object and add all selected students to it.
+                  selectedRecords.add(ClassroomCourse(
+                      id: '',
+                      name: 'Students',
+                      descriptionHeading: '',
+                      ownerId: '',
+                      enrollmentCode: '',
+                      courseState: '',
+                      students: selectedStudentList));
+                  // Navigate to the third page with a quick animation.
+                  _pageController.animateToPage(4,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.ease);
                 },
                 label: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -627,16 +630,13 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   renderStudent(ClassroomStudents student, int index) {
     return InkWell(
       onTap: () {
-        if (!selectedStudentList.contains(student)) {
-          ClassroomStudents studentObj = student;
-          // studentObj.profile!.courseId = courseId;
-          selectedStudentList.add(studentObj);
-        } else {
-          selectedStudentList.remove(student);
-        }
-        //Refresh value in the UI
+        index == 0
+            ? selectedStudentList.clear()
+            : selectedStudentList.contains(student)
+                ? selectedStudentList.remove(student)
+                : selectedStudentList.add(student);
+        // Refresh value in the UI
         selectionChange.value = !selectionChange.value;
-        selectedStudentList.length;
       },
       child: Container(
           height: 54,
@@ -663,13 +663,11 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 unselectedWidgetColor: AppTheme.kButtonColor,
               ),
               child: RadioListTile(
-                  groupValue: true,
+                  groupValue: selectedStudentList.contains(student),
                   controlAffinity: ListTileControlAffinity.trailing,
-                  activeColor: AppTheme
-                      .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
-
+                  activeColor: AppTheme.kButtonColor,
                   contentPadding: EdgeInsets.zero,
-                  value: selectedStudentList.contains(student),
+                  value: selectedStudentList.isNotEmpty || index != 0,
                   onChanged: (dynamic val) {},
                   title: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -682,7 +680,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
 //-------------------------view of student name and radio button -------------//
 
-//page value=3
+//page value=4
   Widget commonLoaderWidget() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -700,7 +698,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             text: 'Exporting to Spreadsheet and resetting \'$sectionName\'',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
-        if (pageValue == 3) googleDriveBlocListener()
+        if (pageValue == 4) googleDriveBlocListener()
       ],
     );
   }
@@ -857,7 +855,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   // }
 
   List<ClassroomStudents> getClassroomStudents(
-      {required List<ClassroomCourse> classroomCourses}) {
+      {required List<ClassroomCourse> classroomCourses, bool? isSubmitOnTap}) {
     try {
       List<ClassroomStudents> uniqueStudents = [];
 
@@ -866,7 +864,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           bool alreadyExists = uniqueStudents.any(
               (ClassroomStudents uniqueStudent) =>
                   uniqueStudent.profile?.id == student.profile?.id);
-          if (!alreadyExists) {
+          if (!alreadyExists &&
+              (isSubmitOnTap == true
+                  ? (student.profile!.name!.fullName != 'All')
+                  : (true))) {
             uniqueStudents.add(student);
           }
         }
@@ -875,5 +876,81 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     } catch (e) {
       return [];
     }
+  }
+
+//page 3
+  Widget warningWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Utility.textWidget(
+              context: context,
+              textAlign: TextAlign.center,
+              text: 'This Action Will Reset \'All Classes and Students\'.',
+              textTheme: Theme.of(context)
+                  .textTheme
+                  .headline5!
+                  .copyWith(fontSize: 18)),
+        ),
+        SpacerWidget(20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            button(
+                title: 'YES',
+                color: AppTheme.kButtonColor,
+                onPressed: () {
+                  _pageController.animateToPage(4,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.ease);
+                }),
+            Container(
+              height: 35,
+              width: 1,
+              color: Colors.grey[300],
+            ),
+            button(
+                title: 'NO',
+                color: Colors.red,
+                onPressed: () {
+                  _pageController.animateToPage(0,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.ease);
+                }),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget button(
+      {required String title,
+      required Function()? onPressed,
+      required Color? color}) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: TextButton(
+          child: FittedBox(
+            child: TranslationWidget(
+                message: title,
+                fromLanguage: "en",
+                toLanguage: Globals.selectedLanguage,
+                builder: (translatedMessage) {
+                  return Text(translatedMessage.toString(),
+                      style: Theme.of(context).textTheme.headline4!.copyWith(
+                          color: color,
+                          fontSize: Globals.deviceType == 'phone' ? 18 : 20));
+                }),
+          ),
+          onPressed: onPressed,
+        ),
+      ),
+    );
   }
 }
