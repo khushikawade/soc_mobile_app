@@ -234,8 +234,15 @@ class studentRecordList extends State<ResultsSummary> {
                         //                     isFromOcrSection: true,
                         //                   )),
                         //     (_) => false);
-                        Navigator.of(context)
-                            .popUntil((route) => route.isFirst);
+                        if (Overrides.STANDALONE_GRADED_APP) {
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                  builder: (context) => GradedLandingPage()),
+                              (_) => false);
+                        } else {
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
+                        }
 
                         // onFinishedPopup();
                       })),
