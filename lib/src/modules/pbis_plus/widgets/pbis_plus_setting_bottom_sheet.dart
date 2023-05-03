@@ -139,11 +139,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         Container(
           height: 60,
           child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
+            padding: const EdgeInsets.only(left: 20, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
                   child: Utility.textWidget(
                       context: context,
                       text: "Re-sync rosters",
@@ -172,6 +173,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                       }
                     },
                     child: Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
                       height: MediaQuery.of(context).size.height * 0.036,
                       child: FloatingActionButton.extended(
                           backgroundColor: AppTheme.kButtonColor,
@@ -186,19 +188,15 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                               widget.pbisBloc!.add(PBISPlusImportRoster());
                             }
                           },
-                          label: Row(
-                            children: [
-                              Utility.textWidget(
-                                  text: 'Sync',
-                                  context: context,
-                                  textTheme: Theme.of(context)
-                                      .textTheme
-                                      .headline4!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .backgroundColor)),
-                            ],
-                          ),
+                          label: Utility.textWidget(
+                              text: 'Sync',
+                              context: context,
+                              textTheme: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).backgroundColor)),
                           icon: SpinningIconButton(
                             controller: _animationControllerForSync,
                             iconData: Icons.sync,
@@ -217,7 +215,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         divider(context),
         textWidget('Select Classes', Color(0xff111C20)),
         textWidget('Edit Skills', AppTheme.kButtonColor),
-        textWidget('Coming Spetember 2023', Color(0xff111C20)),
+        textWidget('Coming September 2023', AppTheme.kSecondaryColor),
       ],
     );
   }
@@ -289,11 +287,13 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     fontWeight: backgroundColor == AppTheme.kButtonColor
                         ? FontWeight.bold
                         : FontWeight.normal,
-                    color: Color(0xff000000) !=
-                                Theme.of(context).backgroundColor ||
-                            backgroundColor == AppTheme.kButtonColor
-                        ? Color(0xff000000)
-                        : Color(0xffFFFFFF)))));
+                    color: text.contains('2023')
+                        ? AppTheme.kSecondaryColor
+                        : Color(0xff000000) !=
+                                    Theme.of(context).backgroundColor ||
+                                backgroundColor == AppTheme.kButtonColor
+                            ? Color(0xff000000)
+                            : Color(0xffFFFFFF)))));
   }
 
 //------------------------Page 1 for course List-------------------------//

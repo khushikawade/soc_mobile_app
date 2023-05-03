@@ -276,11 +276,10 @@ class _StudentPlusSearchScreenState extends State<StudentPlusSearchScreen> {
                   }
                 },
                 contentPadding: EdgeInsets.only(left: 20),
-                title: Utility.textWidget(
-                  text:
-                      "${list[index].firstNameC ?? ''} ${list[index].lastNameC ?? ''}",
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.headline5,
+                title: Text(
+                  "${list[index].firstNameC ?? ''} ${list[index].lastNameC ?? ''}",
+                  // context: context,
+                  style: Theme.of(context).textTheme.headline5,
                 ),
                 trailing: Container(
                   margin: EdgeInsets.only(right: 20),

@@ -308,7 +308,7 @@ class individual extends State<StudentPlusGradesPage> {
               textTheme: Theme.of(context)
                   .textTheme
                   .subtitle1!
-                  .copyWith(fontWeight: FontWeight.bold)),
+                  .copyWith(fontWeight: FontWeight.bold, color: Colors.black)),
         ),
       ),
     );

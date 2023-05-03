@@ -880,7 +880,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
         "save_to_drive_from_subject_search");
     Utility.updateLogs(
         activityType: 'GRADED+',
-        activityId: '14',
+        activityId: '12',
         description: 'Save to drive',
         operationResult: 'Success');
 

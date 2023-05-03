@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_history_section.dart/pbis_plus_history.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_history_section/pbis_plus_history.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -11,17 +12,21 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class PBISBottomNavBar {
   /* ------- function to return list of widget for bottom navigation bar ------ */
-  static List<Widget> pbisBuildPersistentScreens() {
+  static List<Widget> pbisBuildPersistentScreens(
+      {required VoidCallback backOnTap}) {
     return [
       PBISPlusClass(
         titleIconData: IconData(0xe825,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        backOnTap: backOnTap,
       ),
       PBISPlusHistory(
         titleIconData: IconData(0xe824,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
       ),
-      Container()
+      PBISPlusStaff(
+        titleIconData: getStaffIconCode(),
+      )
     ];
   }
 

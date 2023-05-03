@@ -115,17 +115,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         widget.isFromStudentPlus != true
             ? IconButton(
                 onPressed: () {
-                  pushNewScreen(context,
-                      screen: PBISPlusHome(),
-                      withNavBar: false,
-                      pageTransitionAnimation: PageTransitionAnimation.fade);
+                  Navigator.pop(context);
                 },
                 icon: Icon(
-                  IconData(0xe80d,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kButtonColor,
-                ),
+                    IconData(0xe80d,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kButtonColor),
               )
             : Container(),
         // widget.isFromStudentPlus == true

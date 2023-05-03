@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_utility.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
-import 'package:Soc/src/modules/student_plus/widgets/common_filter_widget.dart';
+import 'package:Soc/src/modules/student_plus/widgets/work_filter_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_search_bar.dart';
@@ -348,13 +348,12 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                             height: 1,
                             color: Colors.grey,
                           ),
-                          Utility.textWidget(
-                              text: studentWorkModel.assessmentType ==
+                          Text(
+                              studentWorkModel.assessmentType ==
                                       "Multiple Choice"
                                   ? "MCQ"
                                   : 'CR',
-                              context: context,
-                              textTheme: Theme.of(context)
+                              style: Theme.of(context)
                                   .textTheme
                                   .subtitle2!
                                   .copyWith(color: Colors.grey
@@ -378,11 +377,11 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   SizedBox(
                     height: 5,
                   ),
-                  Utility.textWidget(
-                      context: context,
-                      textTheme: Theme.of(context).textTheme.subtitle2,
-                      text:
-                          "${Utility.convertDateUSFormat(studentWorkModel.dateC)}  |  ${studentWorkModel.firstName ?? ''} ${studentWorkModel.lastName ?? ''}"),
+                  Text(
+                    //  context: context,
+                    "${Utility.convertDateUSFormat(studentWorkModel.dateC)}  |  ${studentWorkModel.firstName ?? ''} ${studentWorkModel.lastName ?? ''}",
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
                 ],
               ),
             ),

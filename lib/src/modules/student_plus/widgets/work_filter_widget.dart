@@ -92,7 +92,8 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
         horizontal: StudentPlusOverrides.kSymmetricPadding * 2,
       ),
       child: Column(
-        //  crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: EdgeInsets.only(top: 16),
@@ -110,7 +111,9 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
             ),
           ),
           StudentPlusScreenTitleWidget(
-              kLabelSpacing: 20, text: 'Select Filter'),
+            kLabelSpacing: 20,
+            text: 'Select Filter',
+          ),
           SpacerWidget(10),
           Expanded(
             child: ListView.builder(
@@ -147,7 +150,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               horizontal: StudentPlusOverrides.kSymmetricPadding * 1,
             ),
             child: Column(
-              //  crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                     alignment: Alignment.topRight,
@@ -166,7 +169,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                     )),
                 ListTile(
                   contentPadding: EdgeInsets.symmetric(horizontal: 0),
-                  minLeadingWidth: 70,
+                  // minLeadingWidth: 70,
                   title: StudentPlusScreenTitleWidget(
                       kLabelSpacing: 20,
                       text: selectedTypeFilterIndex == 1
@@ -272,11 +275,16 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                     ? Icons.radio_button_checked_outlined
                     : Icons.radio_button_unchecked)
                 : Icons.chevron_right,
-            color: text == 'All'
-                ? (widget.filterNotifier.value == '' && text == 'All'
-                    ? AppTheme.kButtonColor
-                    : null)
-                : null),
+            color: //text == 'All'
+                // ?
+                AppTheme.kButtonColor
+            // ? (widget.filterNotifier.value == '' && text == 'All'
+            //     ? AppTheme.kButtonColor
+            //     : null)
+            // : Theme.of(context).colorScheme.background == Color(0xff000000)
+            //     ? AppTheme.klistTilePrimaryLight
+            //     : AppTheme.klistTilePrimaryDark
+            ),
       ),
     );
   }
@@ -344,10 +352,9 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                         widget.filterNotifier.value == text
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Utility.textWidget(
-                            text: text,
-                            context: context,
-                            textTheme: Theme.of(context)
+                        child: Text(text,
+                            // context: context,
+                            style: Theme.of(context)
                                 .textTheme
                                 .headline4!
                                 .copyWith(fontWeight: FontWeight.bold))
@@ -360,10 +367,9 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                         )
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Utility.textWidget(
-                            text: text,
-                            context: context,
-                            textTheme: Theme.of(context).textTheme.headline4),
+                        child: Text(text,
+                            // context: context,
+                            style: Theme.of(context).textTheme.headline4),
                       ),
               ),
             ),

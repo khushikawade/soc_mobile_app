@@ -19,7 +19,7 @@ class PBISPlusHome extends StatefulWidget {
 
 class _PBISPlusHomeState extends State<PBISPlusHome>
     with TickerProviderStateMixin {
-  PersistentTabController? PBISPlusPersistentTabController;
+  PersistentTabController? pBISPlusPersistentTabController;
   final ValueNotifier<bool> _isFABVisible = ValueNotifier(true);
 
   List<PersistentBottomNavBarItem> PBISPlusPersistentBottomNavBarItems = [];
@@ -28,7 +28,7 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
   @override
   void initState() {
     super.initState();
-    PBISPlusPersistentTabController = PersistentTabController(initialIndex: 0);
+    pBISPlusPersistentTabController = PersistentTabController(initialIndex: 0);
 
     _checkDriveFolderExistsOrNot();
   }
@@ -36,7 +36,8 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
   @override
   void dispose() {
     super.dispose();
-    PBISPlusPersistentTabController!.dispose();
+    print("dispose Pbis Plus Section");
+    pBISPlusPersistentTabController!.dispose();
   }
 
   @override
@@ -53,23 +54,22 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
   Widget body() {
     return PersistentTabView(
       context,
-      controller: PBISPlusPersistentTabController,
-      screens: PBISBottomNavBar.pbisBuildPersistentScreens(),
+      controller: pBISPlusPersistentTabController,
+      screens:
+          PBISBottomNavBar.pbisBuildPersistentScreens(backOnTap: backOnTap),
       onItemSelected: (i) {
-        if (i == 1) {
-          _isFABVisible.value = false;
-        } else {
-          _isFABVisible.value = true;
+        switch (i) {
+          case 1:
+            _isFABVisible.value = false;
+            break;
+          case 2: //To go back to the staff screen of standard app
+
+            backOnTap();
+            break;
+          default:
+            _isFABVisible.value = true;
+            break;
         }
-        if (i == 2) {
-          pushNewScreen(context,
-              screen: HomePage(
-                index: 4,
-              ),
-              withNavBar: false,
-              pageTransitionAnimation: PageTransitionAnimation.cupertino);
-        }
-        setState(() {});
       },
       items: PBISBottomNavBar.navBarsItems(context: context),
       confineInSafeArea: true,
@@ -126,5 +126,15 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
         token: userProfile.authorizationToken,
         folderName: "SOLVED PBIS+",
         refreshToken: userProfile.refreshToken));
+  }
+
+  void backOnTap() {
+    //To go back to the staff screen of standard app
+    final route = MaterialPageRoute(
+      builder: (context) => HomePage(
+        index: 4,
+      ),
+    );
+    Navigator.pushAndRemoveUntil(context, route, (route) => false);
   }
 }
