@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/student_plus/ui/student_plus_exams.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_grades.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_info.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_pbis.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_staff.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_work.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -50,8 +51,8 @@ class StudentPlusBottomNavBar {
         //         scaffoldKey: scaffoldKey,
         //       ),
         );
-    _screens.add(Container());
-
+    //_screens.add(Container());
+    _screens.add(StudentPlusStaffScreen());
     return _screens;
   }
 

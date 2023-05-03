@@ -61,7 +61,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         0: widget.height!,
         1: widget.height! * 1.15,
         2: widget.height! * 1.2,
-        3: widget.height! / 1.7,
+        3: widget.height! / 1.5,
         4: widget.height! / 2
       };
 
@@ -916,7 +916,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             child: Utility.textWidget(
                 context: context,
                 textAlign: TextAlign.center,
-                text: 'This Action Will Reset \' All Courses and Students \'.',
+                text:
+                    'This action will reset \'All Courses and Students\' PBIS scores. Do you still wants to continue?',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!
@@ -934,7 +935,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                       curve: Curves.ease);
                 },
                 label: Utility.textWidget(
-                    text: 'Continue',
+                    text: 'Continue to Reset',
                     context: context,
                     textTheme: Theme.of(context)
                         .textTheme
