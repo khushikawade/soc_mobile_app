@@ -33,6 +33,28 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
   //
   @override
   Widget build(BuildContext context) {
+    /*----------------------To manage the user profile in case of no profile picture found--------------------------*/
+    String firstName = widget
+                .studentValueNotifier.value.profile!.name!.fullName!
+                .split(' ')
+                .length >
+            0
+        ? widget.studentValueNotifier.value.profile!.name!.fullName!
+            .split(' ')[0]
+            .substring(0, 1)
+            .toUpperCase()
+        : '';
+    String lastName = widget.studentValueNotifier.value.profile!.name!.fullName!
+                .split(' ')
+                .length >
+            1
+        ? widget.studentValueNotifier.value.profile!.name!.fullName!
+            .split(' ')[1]
+            .substring(0, 1)
+            .toUpperCase()
+        : '';
+    /*-------------------------------------------------END--------------------------------------------------------*/
+
     return Stack(
       children: [
         Container(
@@ -40,7 +62,9 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                 ? EdgeInsets.all(10)
                 : EdgeInsets.zero,
             child: widget.studentValueNotifier.value!.profile!.photoUrl!
-                    .contains('default-user')
+                        .contains('default-user') &&
+                    !widget.studentValueNotifier.value!.profile!.photoUrl!
+                        .contains('default-user=')
                 ? CircleAvatar(
                     radius: widget.profilePictureSize,
                     backgroundColor:
@@ -48,15 +72,15 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                             ? Color(0xffF7F8F9)
                             : Color(0xff111C20),
                     child: Text(
-                      // maxLines: 2,
-                      widget.studentValueNotifier.value.profile!.name!
-                              .givenName!
-                              .toUpperCase()
-                              .substring(0, 1) +
-                          widget.studentValueNotifier.value.profile!.name!
-                              .familyName!
-                              .toUpperCase()
-                              .substring(0, 1),
+                      firstName + lastName,
+                      // widget.studentValueNotifier.value.profile!.name!
+                      //         .givenName!
+                      //         .toUpperCase()
+                      //         .substring(0, 1) +
+                      //     widget.studentValueNotifier.value.profile!.name!
+                      //         .familyName!
+                      //         .toUpperCase()
+                      //         .substring(0, 1),
                       style: Theme.of(context).textTheme.headline2!.copyWith(
                             color: Color(0xff000000) !=
                                     Theme.of(context).backgroundColor
