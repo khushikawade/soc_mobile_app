@@ -205,6 +205,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       //     ?
 
                       RefreshIndicator(
+                    color: AppTheme.kButtonColor,
                     key: refreshKey,
                     onRefresh: refreshPage,
                     child: ListView(
@@ -231,6 +232,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 } else {
                   //  shows in condition where email is not not their in case of student plus
                   return RefreshIndicator(
+                    color: AppTheme.kButtonColor,
                     key: refreshKey,
                     onRefresh: refreshPage,
                     child: NoDataFoundErrorWidget(

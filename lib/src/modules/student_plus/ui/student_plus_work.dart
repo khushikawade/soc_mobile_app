@@ -245,6 +245,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     // );
                     return Expanded(
                         child: RefreshIndicator(
+                      color: AppTheme.kButtonColor,
                       key: refreshKey,
                       onRefresh: refreshPage,
                       child: ListView.builder(

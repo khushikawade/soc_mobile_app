@@ -352,6 +352,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       valueListenable: screenShotNotifier,
       builder: (context, value, child) {
         return RefreshIndicator(
+            color: AppTheme.kButtonColor,
             key: refreshKey,
             onRefresh: refreshPage,
             child: Container(
