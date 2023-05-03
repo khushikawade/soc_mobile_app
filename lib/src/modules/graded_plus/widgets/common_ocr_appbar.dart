@@ -128,7 +128,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
                     popupModal(
                         message:
-                            "Are you sure you want to log out of all PLUS(+) apps?",
+                            "Are you sure you want to log out of all Staff+ apps?",
                         //  'You are about to Signout from the google account. This may restricts you to use the app without google SignIn. \n\nContinue Signout?',
                         title: "Log Out"
                         //'Signout'

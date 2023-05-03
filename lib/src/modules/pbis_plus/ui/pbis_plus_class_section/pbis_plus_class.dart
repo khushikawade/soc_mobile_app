@@ -499,6 +499,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 child: Container(
                   child: Column(
                     //  mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       PBISCommonProfileWidget(
@@ -507,28 +508,14 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                           imageUrl:
                               studentValueNotifier.value!.profile!.photoUrl!),
                       // SizedBox(height: 15),
-                      Column(
-                        children: [
-                          Text(
-                            studentValueNotifier
-                                .value.profile!.name!.givenName!,
-                            maxLines: 1,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 1),
-                          Text(
-                            studentValueNotifier
-                                .value.profile!.name!.familyName!,
-                            maxLines: 2,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      Text(
+                        studentValueNotifier.value.profile!.name!.fullName!
+                            .replaceAll(' ', '\n'),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -700,8 +687,12 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
     List<ClassroomCourse>? _localData = await _localDb.getData();
 
-//Adding 'All' as a default selected option
-    googleClassroomCourseworkList.add(ClassroomCourse(name: 'All'));
+//Adding 'All' as a default selected option for classess and student both
+    googleClassroomCourseworkList.add(ClassroomCourse(name: 'All', students: [
+      ClassroomStudents(
+          profile: ClassroomProfile(
+              name: ClassroomProfileName(fullName: 'All'), id: 'All'))
+    ]));
     googleClassroomCourseworkList.addAll(_localData);
 
     var section = await showModalBottomSheet(
