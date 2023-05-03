@@ -27,11 +27,17 @@ class StudentPlusCommonBottomSheet {
             child: Container(
               //  padding: EdgeInsets.only(bottom: 100),
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Color(0xff000000) != Theme.of(context).backgroundColor
+                      ? Color(0xffF7F8F9)
+                      : Color(0xff111C20),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30))),
-              height: MediaQuery.of(context).size.height * 0.35,
+              height: Globals.deviceType == 'phone'
+              ?MediaQuery.of(context).size.width / 2 + 50 :
+              MediaQuery.of(context).size.width / 3,
+                  // ? MediaQuery.of(context).size.height * 0.35
+                  // : MediaQuery.of(context).size.height * 0.25,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [

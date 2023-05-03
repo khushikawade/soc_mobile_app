@@ -1,19 +1,32 @@
-// import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_background_img.dart';
-// import 'package:flutter/material.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_bottomnavbar.dart';
+import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
+import 'package:flutter/material.dart';
 
-// class StudentPlusStaffPage extends StatefulWidget {
-//   const StudentPlusStaffPage({Key? key}) : super(key: key);
+class StudentPlusStaffScreen extends StatefulWidget {
+  const StudentPlusStaffScreen({Key? key}) : super(key: key);
 
-//   @override
-//   State<StudentPlusStaffPage> createState() => _StudentPlusStaffPageState();
-// }
+  @override
+  State<StudentPlusStaffScreen> createState() => _StudentPlusStaffScreenState();
+}
 
-// class _StudentPlusStaffPageState extends State<StudentPlusStaffPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.transparent,
-//       body: CommonBackgroundImgWidget(),
-//     );
-//   }
-// }
+class _StudentPlusStaffScreenState extends State<StudentPlusStaffScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CommonBackgroundImgWidget(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: StudentPlusAppBar(
+            titleIconCode:
+                int.parse(StudentPlusBottomNavBar.getStaffIconCode()),
+            // refresh: (v) {
+            //   setState(() {});
+            // },
+          ),
+        ),
+      ],
+    );
+  }
+}

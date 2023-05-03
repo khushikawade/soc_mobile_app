@@ -1,5 +1,4 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
@@ -9,7 +8,6 @@ import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/utility.dart';
-import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
@@ -58,10 +56,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   GoogleDriveBloc googleDriveBloc = GoogleDriveBloc();
 
   get heightMap => {
-        0: widget.height!,
-        1: widget.height! * 1.15,
+        0: widget.height! * 1.1,
+        1: widget.height! * 1.2,
         2: widget.height! * 1.2,
-        3: widget.height! / 1.7,
+        3: widget.height! / 1.5,
         4: widget.height! / 2
       };
 
@@ -94,39 +92,41 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: MediaQuery.of(context).viewInsets / 1.5,
-      controller: ModalScrollController.of(context),
-      child: Container(
-          height: heightMap.containsKey(pageValue)
-              ? heightMap[pageValue]
-              : widget.height,
-          decoration: BoxDecoration(
-            color: Color(0xff000000) != Theme.of(context).backgroundColor
-                ? Color(0xffF7F8F9)
-                : Color(0xff111C20),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: PageView(
-            physics: NeverScrollableScrollPhysics(),
-            onPageChanged: ((value) {
-              pageValue = value;
-            }),
-            allowImplicitScrolling: false,
-            pageSnapping: false,
-            controller: _pageController,
-            children: [
-              settingWidget(
-                  context), //-----------------setting widget design------------//
-              buildGoogleClassroomCourseWidget(
-                  context), //----------select ClassroomCourse view-----------------//
-              buildSelectStudentBottomsheetWidget(
-                  context), //----------------------select student view---------------//
-              warningWidget(),
-              commonLoaderWidget(),
-            ],
-          )),
-    );
+    return WillPopScope(
+        onWillPop: () async => false,
+        child: SingleChildScrollView(
+          padding: MediaQuery.of(context).viewInsets / 1.5,
+          controller: ModalScrollController.of(context),
+          child: Container(
+              height: heightMap.containsKey(pageValue)
+                  ? heightMap[pageValue]
+                  : widget.height,
+              decoration: BoxDecoration(
+                color: Color(0xff000000) != Theme.of(context).backgroundColor
+                    ? Color(0xffF7F8F9)
+                    : Color(0xff111C20),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: PageView(
+                physics: NeverScrollableScrollPhysics(),
+                onPageChanged: ((value) {
+                  pageValue = value;
+                }),
+                allowImplicitScrolling: false,
+                pageSnapping: false,
+                controller: _pageController,
+                children: [
+                  settingWidget(
+                      context), //-----------------setting widget design------------//
+                  buildGoogleClassroomCourseWidget(
+                      context), //----------select ClassroomCourse view-----------------//
+                  buildSelectStudentBottomsheetWidget(
+                      context), //----------------------select student view---------------//
+                  warningWidget(),
+                  commonLoaderWidget(),
+                ],
+              )),
+        ));
   }
 
 //-------------------------------Setting widget design------------------------------------------//
@@ -135,15 +135,20 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         //---------------------Cross Icon button-----------------//
-        IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-            FocusScope.of(context).requestFocus(FocusNode());
-          },
-          icon: Icon(
-            Icons.clear,
-            size: Globals.deviceType == "phone" ? 28 : 36,
-            color: AppTheme.kButtonColor,
+        Padding(
+          padding: Globals.deviceType == "phone"
+              ? const EdgeInsets.only(top: 8.0, right: 8)
+              : const EdgeInsets.only(top: 16.0, right: 16),
+          child: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            icon: Icon(
+              Icons.clear,
+              size: Globals.deviceType == "phone" ? 28 : 36,
+              color: AppTheme.kButtonColor,
+            ),
           ),
         ),
         //------------------------first row-------------------------//
@@ -274,7 +279,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
               break;
-
             default:
               // Code to handle an unknown text value.
               break;
@@ -317,15 +321,20 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       children: [
         Container(
             alignment: Alignment.topRight,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              icon: Icon(
-                Icons.clear,
-                color: AppTheme.kButtonColor,
-                size: Globals.deviceType == "phone" ? 28 : 36,
+            child: Padding(
+              padding: Globals.deviceType == "phone"
+                  ? const EdgeInsets.only(top: 8.0, right: 8)
+                  : const EdgeInsets.only(top: 16.0, right: 16),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: AppTheme.kButtonColor,
+                  size: Globals.deviceType == "phone" ? 28 : 36,
+                ),
               ),
             )),
         ListTile(
@@ -358,13 +367,14 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             builder: (BuildContext context, dynamic value, Widget? child) {
               return Container(
                 padding:
-                    EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 5),
+                    EdgeInsets.only(left: 10, right: 10, top: 15, bottom: 25),
                 height: widget.height! * 0.65,
                 child: ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.only(
-                    bottom: 25,
-                  ),
+                      // top:25,
+                      // bottom: 25,
+                      ),
                   scrollDirection: Axis.vertical,
                   itemCount: widget.googleClassroomCourseworkList.length,
                   itemBuilder: (BuildContext context, int index) {
@@ -466,6 +476,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   }
 
 //----------------Student list------------------------------------//
+
   Widget buildSelectStudentBottomsheetWidget(context) {
     return SingleChildScrollView(
       child: Column(
@@ -474,15 +485,20 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         children: [
           Container(
               alignment: Alignment.topRight,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                icon: Icon(
-                  Icons.clear,
-                  color: AppTheme.kButtonColor,
-                  size: Globals.deviceType == "phone" ? 28 : 36,
+              child: Padding(
+                padding: Globals.deviceType == "phone"
+                    ? const EdgeInsets.only(top: 8.0, right: 8)
+                    : const EdgeInsets.only(top: 16.0, right: 16),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  icon: Icon(
+                    Icons.clear,
+                    color: AppTheme.kButtonColor,
+                    size: Globals.deviceType == "phone" ? 28 : 36,
+                  ),
                 ),
               )),
           ListTile(
@@ -508,13 +524,15 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               ),
             ),
           ),
-          SpacerWidget(20),
+          SpacerWidget(10),
           ValueListenableBuilder(
               valueListenable: selectionChange,
               child: Container(),
               builder: (BuildContext context, dynamic value, Widget? child) {
                 return Container(
-                  height: widget.height! * 0.65,
+                  padding:
+                      EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 10),
+                  height: widget.height! * 0.60,
                   child: (allStudents?.isNotEmpty ?? false)
                       ? ListView.builder(
                           padding: EdgeInsets.all(0),
@@ -538,7 +556,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
               }),
           Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 40),
             child: FloatingActionButton.extended(
                 backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                 onPressed: () async {
@@ -582,7 +600,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       ),
     );
   }
-
 //--------------------------------return selected class name on select student screen---------------//
   // Widget renderClassWiseStudentList(
   //   int index,
@@ -597,10 +614,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   //           Text(
   //             widget.googleClassroomCourseworkList[index]
   //                 .name!, // -----------------class name-----------------//
-  //             style: Theme.of(context)
-  //                 .textTheme
-  //                 .headline2!
-  //                 .copyWith(color: AppTheme.kButtonColor),
+  //             style: Theme.of(context).textTheme.headline2!.copyWith(
+  //                 color: AppTheme.kButtonColor, fontWeight: FontWeight.bold),
   //           ),
 
   //           widget.googleClassroomCourseworkList[index].students != null &&
@@ -610,7 +625,10 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   //               ? renderStudents(
   //                   widget.googleClassroomCourseworkList[index].students!,
   //                   widget.googleClassroomCourseworkList[index].id ?? '')
-  //               : Text('No Student Found') // for all the student showing
+  //               : Padding(
+  //                   padding: const EdgeInsets.all(8.0),
+  //                   child: Text('No Student Found'),
+  //                 ) // for all the student showing
   //         ],
   //       ),
   //     ),
@@ -916,7 +934,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             child: Utility.textWidget(
                 context: context,
                 textAlign: TextAlign.center,
-                text: 'This Action Will Reset \' All Courses and Students \'.',
+                text:
+                    'This action will reset \'All Courses and Students\' PBIS scores. Do you still wants to continue?',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!
@@ -934,7 +953,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                       curve: Curves.ease);
                 },
                 label: Utility.textWidget(
-                    text: 'Continue',
+                    text: 'Continue to Reset',
                     context: context,
                     textTheme: Theme.of(context)
                         .textTheme
