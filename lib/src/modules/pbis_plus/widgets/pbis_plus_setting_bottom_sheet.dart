@@ -60,7 +60,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         0: widget.height!,
         1: widget.height! * 1.15,
         2: widget.height! * 1.2,
-        3: widget.height! / 2,
+        3: widget.height! / 1.7,
         4: widget.height! / 2
       };
   List<ClassroomStudents> allStudents = [];
@@ -117,7 +117,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   context), //----------select ClassroomCourse view-----------------//
               buildSelectStudentBottomsheetWidget(
                   context), //----------------------select student view---------------//
-              warningWidget(), commonLoaderWidget(),
+              warningWidget(),
+              commonLoaderWidget(),
             ],
           )),
     );
@@ -170,7 +171,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                           if (_animationControllerForSync!.isAnimating ==
                               true) {
                             Utility.currentScreenSnackBar(
-                                'Classes synced successfully', null,
+                                'Courses synced successfully', null,
                                 marginFromBottom: 90);
                             _animationControllerForSync!.stop();
                           }
@@ -214,11 +215,11 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         //------------------------remaining row-------------------------//
 
         textWidget('Save & Reset Points', AppTheme.kButtonColor),
-        textWidget('All Classes & Students', Color(0xff111C20)),
+        textWidget('All Courses & Students', Color(0xff111C20)),
         divider(context),
         textWidget('Select Students', Color(0xff111C20)),
         divider(context),
-        textWidget('Select Classes', Color(0xff111C20)),
+        textWidget('Select Courses', Color(0xff111C20)),
         textWidget('Edit Skills', AppTheme.kButtonColor),
         textWidget('Coming September 2023', AppTheme.kSecondaryColor),
       ],
@@ -247,8 +248,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           selectedStudentList.clear();
 
           switch (text) {
-            case 'All Classes & Students':
-              sectionName = 'All Classes & Students';
+            case 'All Courses & Students':
+              sectionName = 'All Courses & Students';
 
               _pageController.animateToPage(3,
                   duration: const Duration(milliseconds: 100),
@@ -262,8 +263,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   curve: Curves.ease);
 
               break;
-            case 'Select Classes':
-              sectionName = 'Classes';
+            case 'Select Courses':
+              sectionName = 'Courses';
               _pageController.animateToPage(1,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.ease);
@@ -326,7 +327,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           contentPadding: EdgeInsets.symmetric(horizontal: 0),
           title: Utility.textWidget(
               context: context,
-              text: 'Select Classes',
+              text: 'Select Courses',
               textTheme: Theme.of(context)
                   .textTheme
                   .headline5!
@@ -728,7 +729,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 googleDriveBloc.add(PBISPlusUpdateDataOnSpreadSheetTabs(
                     spreadSheetFileObj: state.googleSpreadSheetFileObj,
                     classroomCourseworkList:
-                        (sectionName == 'All Classes & Students' ||
+                        (sectionName == 'All Courses & Students' ||
                                 (selectedRecords?.isEmpty ?? true))
                             ? widget.googleClassroomCourseworkList
                             : selectedRecords));
@@ -810,7 +811,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   resetData() async {
     pbisBloc.add(PBISPlusResetInteractions(
       type: sectionName,
-      selectedRecords: (sectionName == 'All Classes & Students' ||
+      selectedRecords: (sectionName == 'All Courses & Students' ||
               (selectedRecords?.isEmpty ?? true))
           ? widget.googleClassroomCourseworkList
           : selectedRecords,
@@ -880,76 +881,58 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
 //page 3
   Widget warningWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Utility.textWidget(
-              context: context,
-              textAlign: TextAlign.center,
-              text: 'This Action Will Reset \'All Classes and Students\'.',
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontSize: 18)),
-        ),
-        SpacerWidget(20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            button(
-                title: 'YES',
-                color: AppTheme.kButtonColor,
-                onPressed: () {
-                  _pageController.animateToPage(4,
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.ease);
-                }),
-            Container(
-              height: 35,
-              width: 1,
-              color: Colors.grey[300],
-            ),
-            button(
-                title: 'NO',
-                color: Colors.red,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+              alignment: Alignment.topRight,
+              child: IconButton(
                 onPressed: () {
                   _pageController.animateToPage(0,
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.ease);
-                }),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget button(
-      {required String title,
-      required Function()? onPressed,
-      required Color? color}) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: TextButton(
-          child: FittedBox(
-            child: TranslationWidget(
-                message: title,
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) {
-                  return Text(translatedMessage.toString(),
-                      style: Theme.of(context).textTheme.headline4!.copyWith(
-                          color: color,
-                          fontSize: Globals.deviceType == 'phone' ? 18 : 20));
-                }),
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: AppTheme.kButtonColor,
+                  size: Globals.deviceType == "phone" ? 28 : 36,
+                ),
+              )),
+          SpacerWidget(10),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Utility.textWidget(
+                context: context,
+                textAlign: TextAlign.center,
+                text: 'This Action Will Reset \' All Courses and Students \'.',
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontSize: 18)),
           ),
-          onPressed: onPressed,
-        ),
+          SpacerWidget(30),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.symmetric(horizontal: 40),
+            child: FloatingActionButton.extended(
+                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                onPressed: () async {
+                  _pageController.animateToPage(4,
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.ease);
+                },
+                label: Utility.textWidget(
+                    text: 'Continue',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline2!
+                        .copyWith(color: Theme.of(context).backgroundColor))),
+          ),
+        ],
       ),
     );
   }
