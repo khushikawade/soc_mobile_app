@@ -47,6 +47,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
   List<ClassroomCourse> selectedRecords = []; //Add selected student and courses
   List<ClassroomStudents> selectedStudentList = [];
+  List<ClassroomStudents> allStudents = [];
 
   AnimationController? _animationControllerForSync;
   Animation? animation;
@@ -63,28 +64,32 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         3: widget.height! / 2,
         4: widget.height! / 2
       };
-  List<ClassroomStudents> allStudents = [];
+
   @override
   void initState() {
-    {
-      _pageController = PageController()
-        ..addListener(() {
-          setState(() {});
-        });
-    }
-    _animationControllerForSync = AnimationController(
-        vsync: this,
-        duration: const Duration(seconds: 1),
-        animationBehavior: AnimationBehavior.normal);
-// Combine all the students from different courses into a single list.
-    allStudents = getClassroomStudents(
-        classroomCourses: widget.googleClassroomCourseworkList);
+    initMethod();
     super.initState();
   }
 
   void dispose() {
     _animationControllerForSync!.dispose();
     super.dispose();
+  }
+
+  initMethod() async {
+    _pageController = PageController()
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _animationControllerForSync = AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 1),
+        animationBehavior: AnimationBehavior.normal);
+
+    // Combine all the students from different courses into a single list.
+    allStudents = await getClassroomStudents(
+        classroomCourses: widget.googleClassroomCourseworkList);
   }
 
   @override
@@ -117,7 +122,8 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   context), //----------select ClassroomCourse view-----------------//
               buildSelectStudentBottomsheetWidget(
                   context), //----------------------select student view---------------//
-              warningWidget(), commonLoaderWidget(),
+              warningWidget(),
+              commonLoaderWidget(),
             ],
           )),
     );
@@ -461,11 +467,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
 //----------------Student list------------------------------------//
   Widget buildSelectStudentBottomsheetWidget(context) {
-    // if (widget.googleClassroomCourseworkList.length > 0 &&
-    //     widget.googleClassroomCourseworkList[0].name == "All") {
-    //   widget.googleClassroomCourseworkList.removeAt(0);
-    // }
-
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -525,7 +526,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                         )
                       : Center(
                           child: NoDataFoundErrorWidget(
-                            errorMessage: 'No Students Found',
+                            errorMessage: 'No Student Found',
                             marginTop: 16,
                             isResultNotFoundMsg: false,
                             isNews: false,
@@ -533,17 +534,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                             isSearchpage: true,
                           ),
                         ),
-
-                  // Center(
-                  //     child: Utility.textWidget(
-                  //         context: context,
-                  //         textAlign: TextAlign.center,
-                  //         text: 'Students are not available',
-                  //         textTheme: Theme.of(context)
-                  //             .textTheme
-                  //             .headline5!
-                  //             .copyWith(fontSize: 18)),
-                  //   ),
                 );
               }),
           Container(
@@ -568,6 +558,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                       enrollmentCode: '',
                       courseState: '',
                       students: selectedStudentList));
+
                   // Navigate to the third page with a quick animation.
                   _pageController.animateToPage(4,
                       duration: const Duration(milliseconds: 100),
@@ -635,6 +626,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             : selectedStudentList.contains(student)
                 ? selectedStudentList.remove(student)
                 : selectedStudentList.add(student);
+
         // Refresh value in the UI
         selectionChange.value = !selectionChange.value;
       },
@@ -854,28 +846,46 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   //   }
   // }
 
+  // List<ClassroomStudents> getClassroomStudents(
+  //     {required List<ClassroomCourse> classroomCourses, bool? isSubmitOnTap}) {
+  //   try {
+  //     List<ClassroomStudents> uniqueStudents = [];
+
+  //     for (ClassroomCourse course in classroomCourses) {
+  //       for (ClassroomStudents student in course.students ?? []) {
+  //         bool alreadyExists = uniqueStudents.any(
+  //             (ClassroomStudents uniqueStudent) =>
+  //                 uniqueStudent.profile?.id == student.profile?.id);
+  //         if (!alreadyExists &&
+  //             (isSubmitOnTap == true
+  //                 ? (student.profile!.name!.fullName != 'All')
+  //                 : (true))) {
+  //           uniqueStudents.add(student);
+  //         }
+  //       }
+  //     }
+  //     return uniqueStudents ?? [];
+  //   } catch (e) {
+  //     return [];
+  //   }
+  // }
+
   List<ClassroomStudents> getClassroomStudents(
       {required List<ClassroomCourse> classroomCourses, bool? isSubmitOnTap}) {
-    try {
-      List<ClassroomStudents> uniqueStudents = [];
+    final uniqueStudents = <ClassroomStudents>[];
 
-      for (ClassroomCourse course in classroomCourses) {
-        for (ClassroomStudents student in course.students ?? []) {
-          bool alreadyExists = uniqueStudents.any(
-              (ClassroomStudents uniqueStudent) =>
-                  uniqueStudent.profile?.id == student.profile?.id);
-          if (!alreadyExists &&
-              (isSubmitOnTap == true
-                  ? (student.profile!.name!.fullName != 'All')
-                  : (true))) {
-            uniqueStudents.add(student);
-          }
-        }
-      }
-      return uniqueStudents ?? [];
-    } catch (e) {
-      return [];
+    for (final course in classroomCourses) {
+      uniqueStudents.addAll(course.students?.where((student) =>
+              !uniqueStudents
+                  .any((s) => s.profile?.id == student.profile?.id) &&
+              (isSubmitOnTap != true ||
+                  student.profile?.name?.fullName != 'All')) ??
+          []);
     }
+    uniqueStudents.sort((a, b) => a.profile!.name!.fullName!
+        .toLowerCase()
+        .compareTo(b.profile!.name!.fullName!.toLowerCase()));
+    return uniqueStudents;
   }
 
 //page 3
