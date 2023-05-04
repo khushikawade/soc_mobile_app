@@ -395,6 +395,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 _pageController.animateToPage(4,
                     duration: const Duration(milliseconds: 100),
                     curve: Curves.ease);
+                exportData();
               },
               label: Utility.textWidget(
                   text: 'Submit',
@@ -581,6 +582,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   _pageController.animateToPage(4,
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.ease);
+                  exportData();
                 },
                 label: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -708,19 +710,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
             text: 'Exporting to Spreadsheet and resetting \'$sectionName\'',
             textTheme:
                 Theme.of(context).textTheme.headline5!.copyWith(fontSize: 18)),
-        if (pageValue == 4) googleDriveBlocListener()
+        if (pageValue == 4) blocListener()
       ],
     );
   }
 
-  Container googleDriveBlocListener() {
-    if (PBISPlusOverrides.pbisPlusGoogleDriveFolderId.isNotEmpty == true) {
-      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
-      _exportDataToSpreadSheet();
-    } else {
-      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
-      _checkDriveFolderExistsOrNot();
-    }
+  Container blocListener() {
     return Container(
       height: 0,
       width: 0,
@@ -911,7 +906,6 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
           .compareTo(b.profile!.name!.fullName!.toLowerCase());
     });
 
-
     return uniqueStudents;
   }
 
@@ -944,7 +938,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 context: context,
                 textAlign: TextAlign.center,
                 text:
-                    'This action will reset \'All Courses and Students\' PBIS scores. Do you still wants to continue?',
+                    'This action will reset \'All Courses and Students\' PBIS scores. Do you still want to continue?',
                 textTheme: Theme.of(context)
                     .textTheme
                     .headline5!
@@ -960,6 +954,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                   _pageController.animateToPage(4,
                       duration: const Duration(milliseconds: 100),
                       curve: Curves.ease);
+                  exportData();
                 },
                 label: Utility.textWidget(
                     text: 'Continue to Reset',
@@ -972,5 +967,15 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
         ],
       ),
     );
+  }
+
+  void exportData() {
+    if (PBISPlusOverrides.pbisPlusGoogleDriveFolderId.isNotEmpty == true) {
+      //CREATE SPREADSHEET ON DRIVE IF FOLDER ID IS NOT EMPTY
+      _exportDataToSpreadSheet();
+    } else {
+      //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
+      _checkDriveFolderExistsOrNot();
+    }
   }
 }
