@@ -586,7 +586,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       );
 
   Future<void> _saveAndShareBottomSheetMenu() async {
-    await showModalBottomSheet(
+    if (!googleClassroomCourseworkList[0].name!.contains('All')) {
+      googleClassroomCourseworkList.insert(0, ClassroomCourse(name: 'All'));
+    }
+    var result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -600,7 +603,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               // Set the maximum height of the bottom sheet based on the screen size
-              print(constraints.maxHeight);
+              // print(constraints.maxHeight);
               return PBISPlusBottomSheet(
                 fromClassScreen: true,
                 isClassPage: true,
@@ -618,6 +621,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
             },
           );
         });
+
+    if (result == true) {
+      refreshPage();
+    }
 
     screenShotNotifier.value = false;
     // To manage the course chip onTap animation
