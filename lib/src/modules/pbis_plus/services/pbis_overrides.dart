@@ -1,3 +1,6 @@
+import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
+
 class PBISPlusOverrides {
   static final String pbisPlusClassroomDB = 'PBISPlus_student_course_details';
   static final String PBISPlusHistoryDB = 'PBISPlus_history_details';
@@ -11,8 +14,9 @@ class PBISPlusOverrides {
   static String pbisGoogleSheet = 'Google Sheet';
   static String pbisFilterAll = 'All';
 
-  static final double profilePictureSize = 40;
-  static final double circleSize = 25;
+  static final double profilePictureSize =
+      Globals.deviceType == "phone" ? 40 : 60;
+  static final double circleSize = Globals.deviceType == "phone" ? 25 : 35;
   static String pbisPlusFilterValue = 'All';
 
   // base url used for PBIS plus section
@@ -21,5 +25,4 @@ class PBISPlusOverrides {
 
   static String pbisPlusGoogleDriveFolderId = '';
   static String pbisPlusGoogleDriveFolderPath = '';
-  
 }

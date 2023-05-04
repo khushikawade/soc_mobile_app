@@ -1,3 +1,4 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -204,6 +205,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       //     ?
 
                       RefreshIndicator(
+                    color: AppTheme.kButtonColor,
                     key: refreshKey,
                     onRefresh: refreshPage,
                     child: ListView(
@@ -230,6 +232,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                 } else {
                   //  shows in condition where email is not not their in case of student plus
                   return RefreshIndicator(
+                    color: AppTheme.kButtonColor,
                     key: refreshKey,
                     onRefresh: refreshPage,
                     child: NoDataFoundErrorWidget(
@@ -277,8 +280,8 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
   DataTable _buildDataTable(
           {required List<PBISPlusTotalInteractionModal> list}) =>
       DataTable(
-        headingRowHeight: 90,
-        dataRowHeight: 60,
+        headingRowHeight: Globals.deviceType == 'phone' ? 90 : 60,
+        dataRowHeight: Globals.deviceType == 'phone' ? 60 : 40,
         dataTextStyle: Theme.of(context).textTheme.headline2,
         showBottomBorder: false,
         headingTextStyle: Theme.of(context)
@@ -314,7 +317,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           Icon(
             item.iconData,
             color: item.color,
-            size: 35,
+            size: Globals.deviceType == 'phone' ? 35 : 25,
           ),
           Padding(padding: EdgeInsets.only(top: 5)),
           Center(
@@ -324,8 +327,19 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               context: context,
               text: item.title,
               textAlign: TextAlign.center,
-              textTheme: Theme.of(context).textTheme.headline5!.copyWith(
-                  fontWeight: FontWeight.bold, color: Color(0xff000000)),
+              textTheme: Globals.deviceType == 'phone'
+                  ? Theme.of(context).textTheme.headline5!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Color(
+                          0xff000000,
+                        ),
+                      )
+                  : Theme.of(context).textTheme.headline1!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Color(
+                        0xff000000,
+                      ),
+                      fontSize: 16),
             ),
           ),
         ],
@@ -344,10 +358,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                   list[index].createdAt ?? ''),
               context: context,
               textAlign: TextAlign.center,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.bold),
+              textTheme: Globals.deviceType == 'phone'
+                  ? Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold)
+                  : Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           )),
           DataCell(Center(
@@ -355,10 +374,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               context: context,
               text: (list[index].engaged ?? 0).toString(),
               textAlign: TextAlign.center,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.bold),
+              textTheme: Globals.deviceType == 'phone'
+                  ? Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold)
+                  : Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           )),
           DataCell(Center(
@@ -366,10 +390,15 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               context: context,
               text: (list[index].niceWork ?? 0).toString(),
               textAlign: TextAlign.center,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.bold),
+              textTheme: Globals.deviceType == 'phone'
+                  ? Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold)
+                  : Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           )),
           DataCell(Center(
@@ -377,15 +406,22 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               context: context,
               text: (list[index].helpful ?? 0).toString(),
               textAlign: TextAlign.center,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.bold),
+              textTheme: Globals.deviceType == 'phone'
+                  ? Theme.of(context)
+                      .textTheme
+                      .headline5!
+                      .copyWith(fontWeight: FontWeight.bold)
+                  : Theme.of(context)
+                      .textTheme
+                      .headline1!
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           )),
           DataCell(
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              padding: Globals.deviceType == 'phone'
+                  ? EdgeInsets.symmetric(horizontal: 10, vertical: 5)
+                  : EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
               margin: EdgeInsets.only(left: 2),
               decoration: BoxDecoration(
                 boxShadow: [],
@@ -404,10 +440,13 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                       helpful: list[index].helpful ?? 0,
                     ),
                     textAlign: TextAlign.center,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(fontWeight: FontWeight.bold),
+                    textTheme: Globals.deviceType == 'phone'
+                        ? Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(fontWeight: FontWeight.bold)
+                        : Theme.of(context).textTheme.headline1!.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                   )
                 ],
               ),
@@ -448,7 +487,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
           {required List<PBISPlusTotalInteractionModal>
               pbisStudentInteractionList}) =>
       showModalBottomSheet(
-        useRootNavigator: true,
+        // useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,
@@ -459,16 +498,26 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
         elevation: 10,
         context: context,
         builder: (BuildContext context) {
-          return PBISPlusBottomSheet(
-            fromClassScreen: false,
-            scaffoldKey: _scaffoldKey,
-            screenshotController: screenshotController,
-            headerScreenshotController: headerScreenshotController,
-            googleClassroomCourseworkList: [], //No list is required since no list is used from this bottomsheet
-            content: false,
-            height: MediaQuery.of(context).size.height * 0.23,
-            title: '',
-            padding: EdgeInsets.fromLTRB(30, 10, 10, 10),
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return PBISPlusBottomSheet(
+                fromClassScreen: false,
+                scaffoldKey: _scaffoldKey,
+                screenshotController: screenshotController,
+                headerScreenshotController: headerScreenshotController,
+                googleClassroomCourseworkList: [], //No list is required since no list is used from this bottomsheet
+                content: false,
+                height:
+                    constraints.maxHeight < 750 && Globals.deviceType == "phone"
+                        ? MediaQuery.of(context).size.height * 0.22 //0.45
+                        : Globals.deviceType == "phone"
+                            ? MediaQuery.of(context).size.height * 0.19 //0.45
+                            : MediaQuery.of(context).size.height * 0.15,
+                // MediaQuery.of(context).size.height * 0.20,
+                title: '',
+                padding: EdgeInsets.fromLTRB(30, 10, 10, 10),
+              );
+            },
           );
         },
       );

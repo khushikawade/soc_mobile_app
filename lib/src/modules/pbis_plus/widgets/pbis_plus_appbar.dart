@@ -7,6 +7,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
+import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -183,13 +184,12 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     );
   }
 }
-
 Widget titleBuilder(BuildContext context, IconData? iconData) {
   final bool isDarkMode =
       Theme.of(context).colorScheme.background == Color(0xff000000);
   return Icon(
     iconData,
-    color: isDarkMode ? Colors.white : Colors.black,
-    // size: 22,
+    color: AppTheme.kButtonColor
+   
   );
 }

@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/widgets/header_widget.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -14,12 +13,15 @@ class StudentPlusFilterWidget extends StatefulWidget {
   ValueNotifier<String> filterNotifier;
   final List<String> subjectList;
   final List<String> teacherList;
-  StudentPlusFilterWidget(
-      {Key? key,
-      required this.filterNotifier,
-      required this.subjectList,
-      required this.teacherList})
-      : super(key: key);
+  final double height;
+
+  StudentPlusFilterWidget({
+    Key? key,
+    required this.filterNotifier,
+    required this.subjectList,
+    required this.teacherList,
+    this.height = 150,
+  }) : super(key: key);
 
   @override
   State<StudentPlusFilterWidget> createState() =>
@@ -60,7 +62,13 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               : Color(0xff111C20),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(40), topRight: Radius.circular(40))),
-      height: 300 + progress * 160,
+      height: widget.height,
+      // MediaQuery.of(context).orientation == Orientation.landscape
+      //     ? MediaQuery.of(context).size.height * 0.82
+      //     : Globals.deviceType == "phone"
+      //         ? MediaQuery.of(context).size.height * 0.32 //0.8
+      //         : MediaQuery.of(context).size.height * 0.26,
+      // 300 + progress * 160,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -118,6 +126,7 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.only(
                 bottom: 25,
               ),
@@ -199,13 +208,16 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                         ? widget.subjectList.length
                         : widget.teacherList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return _buildRadioList(
-                        index,
-                        context,
-                        selectedTypeFilterIndex == 1
-                            ? widget.subjectList[index]
-                            : widget.teacherList[index],
-                      );
+                      return widget.teacherList[index] != null &&
+                              widget.teacherList[index] != " "
+                          ? _buildRadioList(
+                              index,
+                              context,
+                              selectedTypeFilterIndex == 1
+                                  ? widget.subjectList[index]
+                                  : widget.teacherList[index],
+                            )
+                          : Container();
                     },
                   ),
                 ),
@@ -326,53 +338,52 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
               ),
           child: IgnorePointer(
             child: Theme(
-              data: ThemeData(
-                unselectedWidgetColor: AppTheme.kButtonColor,
-              ),
-              child: RadioListTile(
-                controlAffinity: ListTileControlAffinity.trailing,
+                data: ThemeData(
+                  unselectedWidgetColor: AppTheme.kButtonColor,
+                ),
+                child: RadioListTile(
+                  controlAffinity: ListTileControlAffinity.trailing,
 
-                activeColor: AppTheme
-                    .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
+                  activeColor: AppTheme
+                      .kButtonColor, //Theme.of(context).colorScheme.primaryVariant,
 
-                contentPadding: EdgeInsets.zero,
-                value: selectedIndex.value == index ||
-                        widget.filterNotifier.value == text
-                    ? true
-                    : false,
-                onChanged: (dynamic val) {
-                  // widget.filterNotifier.value = text;
-                  // selectedIndex.value = index;
+                  contentPadding: EdgeInsets.zero,
+                  value: selectedIndex.value == index ||
+                          widget.filterNotifier.value == text
+                      ? true
+                      : false,
+                  onChanged: (dynamic val) {
+                    // widget.filterNotifier.value = text;
+                    // selectedIndex.value = index;
 
-                  // Navigator.pop(context);
-                  // FocusScope.of(context).requestFocus(FocusNode());
-                },
-                groupValue: true,
-                title: selectedIndex.value == index ||
-                        widget.filterNotifier.value == text
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(text,
-                            // context: context,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4!
-                                .copyWith(fontWeight: FontWeight.bold))
+                    // Navigator.pop(context);
+                    // FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  groupValue: true,
+                  title: selectedIndex.value == index ||
+                          widget.filterNotifier.value == text
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(text,
+                              // context: context,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(fontWeight: FontWeight.bold))
 
-                        // Text(text,
-                        //     style: Theme.of(context)
-                        //         .textTheme
-                        //         .caption!
-                        //         .copyWith(fontWeight: FontWeight.bold)),
-                        )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(text,
-                            // context: context,
-                            style: Theme.of(context).textTheme.headline4),
-                      ),
-              ),
-            ),
+                          // Text(text,
+                          //     style: Theme.of(context)
+                          //         .textTheme
+                          //         .caption!
+                          //         .copyWith(fontWeight: FontWeight.bold)),
+                          )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(text,
+                              // context: context,
+                              style: Theme.of(context).textTheme.headline4),
+                        ),
+                )),
           )),
     );
   }

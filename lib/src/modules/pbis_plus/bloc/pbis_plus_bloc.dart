@@ -54,7 +54,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: _localData);
         }
-        print(userProfileLocalData[0].authorizationToken);
+        
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
             accessToken: userProfileLocalData[0].authorizationToken,
