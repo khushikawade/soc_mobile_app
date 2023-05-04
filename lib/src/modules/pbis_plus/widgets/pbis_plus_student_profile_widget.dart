@@ -145,28 +145,31 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                             valueListenable: widget.studentValueNotifier,
                             builder: (BuildContext context,
                                 ClassroomStudents value, Widget? child) {
-                              return widget.isLoading == true
-                                  ? ShimmerLoading(
-                                      child: Container(
-                                        height: 10,
-                                        width: 10,
-                                        color: Colors.black,
-                                      ),
-                                      isLoading: widget.isLoading)
-                                  : Text(
-                                      PBISPlusUtility.numberAbbreviationFormat(
-                                          widget.studentValueNotifier.value
-                                                  .profile!.engaged! +
-                                              widget.studentValueNotifier.value
-                                                  .profile!.niceWork! +
-                                              widget.studentValueNotifier.value
-                                                  .profile!.helpful!),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1!
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    );
+                              return
+                                  // widget.isLoading == true
+                                  //     ? ShimmerLoading(
+                                  //         child: Container(
+                                  //           height: 10,
+                                  //           width: 10,
+                                  //           color: Colors.black,
+                                  //         ),
+                                  //         isLoading: widget.isLoading)
+                                  //     :
+                                  Text(
+                                PBISPlusUtility.numberAbbreviationFormat(widget
+                                        .studentValueNotifier
+                                        .value
+                                        .profile!
+                                        .engaged! +
+                                    widget.studentValueNotifier.value.profile!
+                                        .niceWork! +
+                                    widget.studentValueNotifier.value.profile!
+                                        .helpful!),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              );
                             },
                           );
                         })),

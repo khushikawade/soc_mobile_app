@@ -25,6 +25,7 @@ class PBISPlusStudentCardModal extends StatefulWidget {
   final String heroTag;
   final Key? scaffoldKey;
   String classroomCourseId;
+  final double constraint;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
 
   //final Function(bool) onValueUpdate;
@@ -38,7 +39,8 @@ class PBISPlusStudentCardModal extends StatefulWidget {
       this.isLoading,
       required this.scaffoldKey,
       required this.classroomCourseId,
-      required this.onValueUpdate})
+      required this.onValueUpdate,
+      required this.constraint})
       : super(key: key);
 
   @override
@@ -90,11 +92,16 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
       ),
     );
 
-    final Column pbisStudentDetailWidget = Column(
+    final pbisStudentDetailWidget = Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
+      // mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        SpacerWidget(MediaQuery.of(context).size.width * 0.10),
+        SpacerWidget(
+            (widget.isFromStudentPlus == true && widget.constraint <= 553)
+                ? MediaQuery.of(context).size.width * 0.11
+                : (widget.constraint <= 115)
+                    ? MediaQuery.of(context).size.width * 0.12
+                    : MediaQuery.of(context).size.width * 0.13),
         Text(
           widget.studentValueNotifier.value.profile!.name!.fullName!,
           style: Theme.of(context)
@@ -104,14 +111,52 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
         ),
         Container(
             alignment: Alignment.center,
-            margin:
-                EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.07),
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            // margin:
+            //     EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.07),
+
+            padding: EdgeInsets.only(
+                left: 10,
+                right: 10,
+                top: (widget.isFromStudentPlus == true &&
+                        widget.constraint <= 552)
+                    ? 0
+                    : widget.constraint > 115
+                        ? 15
+                        : 0.0),
             // height: 60,
             width: MediaQuery.of(context).size.width * 0.7,
             child: ActionInteractionButtons)
       ],
     );
+
+    // final Column pbisStudentDetailWidget = Column(
+    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //   children: <Widget>[
+    //     Expanded(
+    //       child: SizedBox(
+    //         height: PBISPlusOverrides.profilePictureSize,
+    //       ),
+    //     ),
+    //     Expanded(
+    //       child: Container(
+    //         height: PBISPlusOverrides.profilePictureSize,
+    //         child: Text(
+    //           widget.studentValueNotifier.value.profile!.name!.fullName!,
+    //           style: Theme.of(context)
+    //               .textTheme
+    //               .bodyText2!
+    //               .copyWith(fontWeight: FontWeight.bold),
+    //         ),
+    //       ),
+    //     ),
+    //     Expanded(
+    //       child: Container(
+    //           height: PBISPlusOverrides.profilePictureSize,
+    //           width: MediaQuery.of(context).size.width * 0.65,
+    //           child: Center(child: ActionInteractionButtons)),
+    //     )
+    //   ],
+    // );
 
     return Hero(
         tag: widget.heroTag,
@@ -165,6 +210,7 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                         Navigator.of(context).pushReplacement(
                           HeroDialogRoute(
                             builder: (context) => PBISPlusStudentDashBoard(
+                              constraint: widget.constraint,
                               scaffoldKey: widget.scaffoldKey!,
                               isValueChangeNotice: valueChange,
                               onValueUpdate: (updatedStudentValueNotifier) {
