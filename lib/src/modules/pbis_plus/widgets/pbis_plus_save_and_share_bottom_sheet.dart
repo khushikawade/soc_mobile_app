@@ -713,7 +713,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                   description: 'G-Classroom Created',
                   operationResult: 'Success');
 
-              Navigator.pop(context);
+              Navigator.pop(context, true);
               Utility.currentScreenSnackBar(
                   "Google Classroom Assignments Created Successfully.", null);
             }
@@ -765,7 +765,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
                       : selectedCoursesList));
             }
             if (state is PBISPlusUpdateDataOnSpreadSheetSuccess) {
-              Navigator.pop(context);
+              Navigator.pop(context, true);
               Utility.currentScreenSnackBar(
                   "Google SpreadSheet Created Successfully.", null);
             }
