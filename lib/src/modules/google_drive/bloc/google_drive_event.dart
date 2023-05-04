@@ -10,8 +10,8 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
   final String? folderName;
   final bool? fetchHistory;
   final String? refreshToken;
-  final bool? isFromOcrHome;
-  final bool? assessmentSection;
+  final bool? isReturnState;
+  final bool? fromGradedPlusAssessmentSection;
   //final File? filePath;
   GetDriveFolderIdEvent(
       {required this.token,
@@ -19,8 +19,8 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
       this.filterType,
       this.fetchHistory,
       this.refreshToken,
-      required this.isFromOcrHome,
-      this.assessmentSection});
+      required this.isReturnState,
+      this.fromGradedPlusAssessmentSection});
 
   @override
   List<Object> get props => [token!, folderName!];
@@ -28,8 +28,10 @@ class GetDriveFolderIdEvent extends GoogleDriveEvent {
 
 class CreateExcelSheetToDrive extends GoogleDriveEvent {
   final String? name;
-  final bool? isMcqSheet;
-  CreateExcelSheetToDrive({this.isMcqSheet, this.name});
+  final String? description;
+  final String folderId;
+  CreateExcelSheetToDrive(
+      {this.description, this.name, required this.folderId});
   @override
   List<Object> get props => [];
 }
@@ -41,7 +43,7 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
   final bool isLoading;
   final bool? isCustomRubricSelected;
   final int? selectedRubric;
-  final String questionImage;
+  // final String questionImage;
   final String? assessmentName;
   final bool? createdAsPremium;
 
@@ -49,7 +51,7 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
       {this.studentData,
       required this.fileId,
       required this.isLoading,
-      required this.questionImage,
+      // required this.questionImage,
       this.isCustomRubricSelected,
       this.selectedRubric,
       required this.assessmentName,
@@ -126,13 +128,11 @@ class AssessmentImgToAwsBucked extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
-class QuestionImgToAwsBucked extends GoogleDriveEvent {
-  final String? imgBase64;
-  final String? imgExtension;
+class QuestionImgToAwsBucket extends GoogleDriveEvent {
+  final File? imageFile;
 
-  QuestionImgToAwsBucked({
-    required this.imgBase64,
-    required this.imgExtension,
+  QuestionImgToAwsBucket({
+    required this.imageFile,
   });
 
   @override
@@ -254,6 +254,17 @@ class EditSlideFromPresentation extends GoogleDriveEvent {
   final StudentAssessmentInfo studentAssessmentInfo;
   EditSlideFromPresentation(
       {required this.slidePresentationId, required this.studentAssessmentInfo});
+
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusUpdateDataOnSpreadSheetTabs extends GoogleDriveEvent {
+  final Map<String, dynamic> spreadSheetFileObj;
+   List<ClassroomCourse> classroomCourseworkList;
+  PBISPlusUpdateDataOnSpreadSheetTabs(
+      {required this.spreadSheetFileObj,
+      required this.classroomCourseworkList});
 
   @override
   List<Object> get props => [];

@@ -9,13 +9,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 // ignore: must_be_immutable
 class NoInternetErrorWidget extends StatelessWidget {
   var connected;
-  bool? issplashscreen = false;
+  bool? isSplashScreen = false;
   VoidCallback? onRefresh;
 
   NoInternetErrorWidget(
       {Key? key,
       @required this.connected,
-      @required this.issplashscreen,
+      @required this.isSplashScreen,
       this.onRefresh})
       : super(key: key);
 
@@ -31,7 +31,7 @@ class NoInternetErrorWidget extends StatelessWidget {
               height: Globals.deviceType == "phone" ? 22.0 : 35,
               left: 0.0,
               right: 0.0,
-              top: issplashscreen == true ? 30 : 0,
+              top: isSplashScreen == true ? 30 : 0,
               child: Container(
                 color: connected ? Color(0xFF00EE44) : Color(0xFFEE4400),
                 child: Center(

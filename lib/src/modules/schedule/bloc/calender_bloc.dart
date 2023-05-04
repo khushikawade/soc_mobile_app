@@ -1,6 +1,6 @@
 import 'dart:convert';
 //import 'package:Soc/src/modules/schedule/modal/calender_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/model_calender.dart';
 import 'package:Soc/src/services/db_service.dart';

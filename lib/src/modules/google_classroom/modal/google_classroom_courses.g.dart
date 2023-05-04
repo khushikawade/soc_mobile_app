@@ -27,13 +27,14 @@ class GoogleClassroomCoursesAdapter
       enrollmentCode: fields[6] as String?,
       courseWorkId: fields[7] as String?,
       assessmentCId: fields[8] as String?,
+      courseWorkURL: fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, GoogleClassroomCourses obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.courseId)
       ..writeByte(1)
@@ -51,7 +52,9 @@ class GoogleClassroomCoursesAdapter
       ..writeByte(7)
       ..write(obj.courseWorkId)
       ..writeByte(8)
-      ..write(obj.assessmentCId);
+      ..write(obj.assessmentCId)
+      ..writeByte(9)
+      ..write(obj.courseWorkURL);
   }
 
   @override

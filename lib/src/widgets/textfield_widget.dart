@@ -4,16 +4,20 @@ import '../services/firstLetterUpperCase.dart';
 import '../styles/theme.dart';
 
 class TextFieldWidget extends StatefulWidget {
+  final TextEditingController controller;
+  final onSaved;
+  final String? msg;
+  final String? hintText;
+  final TextInputType? keyboardType;
+
   TextFieldWidget(
       {Key? key,
       required this.controller,
       required this.onSaved,
-      required this.msg})
+      required this.msg,
+      this.hintText,
+      this.keyboardType})
       : super(key: key);
-  final TextEditingController controller;
-  final onSaved;
-  final String? msg;
-
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
 }
@@ -28,6 +32,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         }
         return null;
       },
+      keyboardType: widget.keyboardType ?? TextInputType.text,
       textInputAction: TextInputAction.next,
       inputFormatters: <TextInputFormatter>[
         //To capitalize first letter of the textfield
@@ -46,6 +51,11 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               : Color(
                   0xff000000), //Theme.of(context).colorScheme.primaryVariant,
       decoration: InputDecoration(
+        hintText: widget.hintText ?? '',
+        hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
+            color: Color(0xff000000) == Theme.of(context).backgroundColor
+                ? Colors.white.withOpacity(0.5)
+                : Colors.black.withOpacity(0.5)),
         fillColor: Colors.transparent,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(

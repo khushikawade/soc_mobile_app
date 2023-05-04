@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/overrides.dart';
 
 class FetchGoogleSheet {

@@ -1,8 +1,14 @@
+import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/classroom_student_profile_modal.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
+import 'package:Soc/src/modules/google_classroom/modal/google_classroom_modal.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/google_drive/overrides.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,12 +17,12 @@ import '../../../services/db_service.dart';
 import '../../../services/db_service_response.model.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../google_drive/model/user_profile.dart';
-import '../../ocr/modal/user_info.dart';
-import '../../ocr/graded_overrides.dart';
+import '../../graded_plus/modal/user_info.dart';
 import 'dart:convert';
 import 'dart:io';
 import '../google_classroom_globals.dart';
 part 'google_classroom_event.dart';
+
 part 'google_classroom_state.dart';
 
 class GoogleClassroomBloc
@@ -27,6 +33,7 @@ class GoogleClassroomBloc
   int _totalRetry = 0;
   GoogleDriveBloc _googleDriveBloc = GoogleDriveBloc();
   final OcrBloc _bloc = new OcrBloc();
+
   @override
   Stream<GoogleClassroomState> mapEventToState(
     GoogleClassroomEvent event,
@@ -65,10 +72,8 @@ class GoogleClassroomBloc
             _localDb.addData(e);
           });
           Utility.updateLogs(
+              activityType: 'GRADED+',
               activityId: '24',
-              // sessionId: widget.assessmentDetailPage == true
-              //     ? widget.obj!.sessionId
-              //     : '',
               description: 'Import Roster Successfully',
               operationResult: 'Success');
 
@@ -93,6 +98,10 @@ class GoogleClassroomBloc
         yield GoogleClassroomCourseListSuccess(obj: _localData);
       }
     }
+
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
 
     if (event is CreateClassRoomCourseWork) {
       try {
@@ -142,7 +151,7 @@ class GoogleClassroomBloc
                   in _googleClassRoomLocalData) {
                 // always check last "_" contains in title and get the subject
                 if ((event.title.split("_").last == classroom.name)) {
-                  print("insdie if loopppp");
+                  // print("insdie if loopppp");
                   isClassroomCourseAdded = true;
                   event.studentClassObj.courseId = classroom.courseId;
                   event.studentClassObj.studentList = classroom.studentList;
@@ -172,7 +181,7 @@ class GoogleClassroomBloc
 
         // print(event.studentClassObj);
         // get local stored classroom course list
-        List<dynamic> classRoomCoursesStuentList =
+        List<dynamic> classRoomCoursesStudentList =
             event.studentClassObj?.studentList ?? [];
 
         //create student details as per the request body keys
@@ -182,16 +191,29 @@ class GoogleClassroomBloc
         for (int i = 0; i < assessmentData.length; i++) {
           if (assessmentData[i].assessmentImage?.isNotEmpty != true) {
             // if any assessment images url is not updated
-            String imgUrl =
-                await updateAssessmentImg(assessmentData: assessmentData[i]);
+            String imgUrl = await updateImg(
+                filePath: assessmentData[i]?.assessmentImgPath ?? '');
+
             if (imgUrl?.isNotEmpty ?? false) {
               assessmentData[i].assessmentImage = imgUrl;
               await event.studentAssessmentInfoDb.putAt(i, assessmentData[i]);
             }
           }
 
+          //Check if assignment image and update in case found empty
+          if ((i == 0) &&
+              (assessmentData[0]?.questionImgUrl?.isEmpty ?? true) &&
+              (assessmentData[0]?.questionImgFilePath?.isNotEmpty ?? false)) {
+            String imgUrl = await updateImg(
+                filePath: assessmentData[0]?.questionImgFilePath ?? '');
+            if (imgUrl?.isNotEmpty ?? false) {
+              assessmentData[0].questionImgUrl = imgUrl;
+              await event.studentAssessmentInfoDb.putAt(0, assessmentData[0]);
+            }
+          }
+
           //update student googleClassRoomStudentProfileId into list
-          classRoomCoursesStuentList.forEach((studentProfileObj) async {
+          classRoomCoursesStudentList.forEach((studentProfileObj) async {
             if ((studentProfileObj['profile']['emailAddress']?.isNotEmpty ??
                     false) &&
                 (assessmentData[i]
@@ -214,8 +236,9 @@ class GoogleClassroomBloc
         }
 
         if (studentAssessmentDetails.isNotEmpty) {
-          var result = await _createClassRoomCourseWork(
-              isEditStudentinfo: event.isEditStudentInfo,
+          List<dynamic> result = await _createClassRoomCourseWork(
+              questionImageUrl: assessmentData.first.questionImgUrl,
+              isEditStudentInfo: event.isEditStudentInfo,
               isFromHistoryAssessmentScanMore:
                   event.isFromHistoryAssessmentScanMore,
               authorizationToken:
@@ -226,29 +249,108 @@ class GoogleClassroomBloc
               title: event.title,
               studentClassObj: event.studentClassObj);
 
-          if (result[0] && result[1]?.isNotEmpty == true) {
-            //   print("upting list and courseworid");
-            GoogleClassroomGlobals
-                .studentAssessmentAndClassroomObj.courseWorkId = result[1];
+          bool isClassRoomUpdated = result[0];
+
+          dynamic obj =
+              GoogleClassroomCourseworkModal(); // `dynamic` type is used here to allow either `GoogleClassroomCourseworkModal` or `String`
+
+          // Conditionally cast the `obj` based on the value of `isClassRoomUpdated`
+          if (isClassRoomUpdated) {
+            obj = result[1]
+                as GoogleClassroomCourseworkModal; // cast to `GoogleClassroomCourseworkModal` if `isClassRoomUpdated` is true
+          } else {
+            obj = result[1]
+                as String; // set to a string if `isClassRoomUpdated` is false
+          }
+
+          if (isClassRoomUpdated && obj?.courseWorkId?.isNotEmpty == true) {
+            if (event.studentClassObj?.courseWorkId?.isEmpty ?? true) {
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                  .courseWorkId = obj.courseWorkId;
+
+              GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                  .courseWorkURL = obj.courseWorkURL;
+            }
+
+// // Updating local database with already scanned students data true to avoid include them in next scan more case
+//             assessmentData.asMap().forEach((i, obj) {
+//               studentAssessmentDetails.forEach((e) async {
+//                 if (obj.googleClassRoomStudentProfileId == e.studentId) {
+//                   obj.isgoogleClassRoomStudentProfileUpdated = true;
+//                   await event.studentAssessmentInfoDb.putAt(i, obj);
+//                 }
+//               });
+//             });
 
 // Updating local database with already scanned students data true to avoid include them in next scan more case
-            assessmentData.asMap().forEach((i, obj) {
-              studentAssessmentDetails.forEach((e) async {
-                if (obj.googleClassRoomStudentProfileId == e.studentId) {
-                  obj.isgoogleClassRoomStudentProfileUpdated = true;
-                  await event.studentAssessmentInfoDb.putAt(i, obj);
+            assessmentData.asMap().forEach(
+              (i, element) async {
+                if (element.isgoogleClassRoomStudentProfileUpdated != true) {
+                  element.isgoogleClassRoomStudentProfileUpdated = true;
+                  await event.studentAssessmentInfoDb.putAt(i, element);
                 }
-              });
-            });
+              },
+            );
 
             yield CreateClassroomCourseWorkSuccess();
           } else {
-            yield GoogleClassroomErrorState(errorMsg: result[1].toString());
+            yield GoogleClassroomErrorState(errorMsg: obj[1].toString());
           }
         } else {
           yield CreateClassroomCourseWorkSuccess();
         }
       } catch (e) {
+        yield GoogleClassroomErrorState(errorMsg: e.toString());
+      }
+    }
+
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    if (event is GetClassroomCourseWorkURL) {
+      try {
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        List<dynamic> result = await _getClassroomCourseWorkURL(
+            obj: event.obj,
+            accessToken: _userProfileLocalData[0].authorizationToken,
+            refreshToken: _userProfileLocalData[0].refreshToken);
+
+        yield GetClassroomCourseWorkURLSuccess(
+            isLinkAvailable: result[0], classroomCouseWorkURL: result[1]);
+      } catch (e) {
+        yield GetClassroomCourseWorkURLSuccess(
+            isLinkAvailable: false, classroomCouseWorkURL: e.toString());
+      }
+    }
+
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    /*----------------------------------------------------------------*/
+    if (event is CreatePBISClassroomCoursework) {
+      try {
+        yield GoogleClassroomLoading();
+        //Fetch logged in user profile
+        List<UserInformation> userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
+
+        var result = await _createPBISCoursework(
+            authorizationToken:
+                userProfileLocalData[0].authorizationToken ?? '',
+            refreshToken: userProfileLocalData[0].refreshToken ?? '',
+            teacherEmail: userProfileLocalData[0].userEmail ?? '',
+            maxPoints: int.parse(event.pointPossible ?? "0") ?? 0,
+            // studentProfileDetails: [],
+            courseAndStudentList: event.courseAndStudentList);
+
+        if (result[1] == '') {
+          yield CreateClassroomCourseWorkSuccess();
+        } else {
+          yield GoogleClassroomErrorState(errorMsg: result[1]);
+        }
+      } catch (e) {
+        print(e);
         yield GoogleClassroomErrorState(errorMsg: e.toString());
       }
     }
@@ -281,7 +383,7 @@ class GoogleClassroomBloc
               // response.data['body'][" status"] != 401 ||
               response.data['statusCode'] == 500) &&
           _totalRetry < 3) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
+        var result = await toRefreshAuthenticationToken(refreshToken!);
 
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
@@ -301,10 +403,8 @@ class GoogleClassroomBloc
       }
     } catch (e) {
       Utility.updateLogs(
+          activityType: 'GRADED+',
           activityId: '24',
-          // sessionId: widget.assessmentDetailPage == true
-          //     ? widget.obj!.sessionId
-          //     : '',
           description: 'Import Roster failure',
           operationResult: 'failure');
 
@@ -327,7 +427,7 @@ class GoogleClassroomBloc
     } catch (e) {}
   }
 
-  Future<bool> _toRefreshAuthenticationToken(String refreshToken) async {
+  Future<bool> toRefreshAuthenticationToken(String refreshToken) async {
     try {
       final body = {"refreshToken": refreshToken};
       final ResponseModel response = await _dbServices.postApi(
@@ -365,7 +465,7 @@ class GoogleClassroomBloc
     }
   }
 
-  Future<List> _createClassRoomCourseWork(
+  Future<List<dynamic>> _createClassRoomCourseWork(
       {required String authorizationToken,
       required String refreshToken,
       required String title,
@@ -373,7 +473,8 @@ class GoogleClassroomBloc
       required List<ClassRoomStudentProfile> studentProfileDetails,
       required bool? isFromHistoryAssessmentScanMore,
       required GoogleClassroomCourses? studentClassObj,
-      required bool? isEditStudentinfo,
+      required bool? isEditStudentInfo,
+      required String? questionImageUrl,
       int retry = 3}) async {
     try {
       final url =
@@ -390,23 +491,46 @@ class GoogleClassroomBloc
         "courseId": studentClassObj!.courseId,
         "maxPoints": maxPoints,
         "studentAssessmentDetails": studentProfileDetails
-            .map((data) => isEditStudentinfo ?? false
+            .map((data) => isEditStudentInfo ?? false
                 //user edit the student info.
                 ? data.editStudentInfotoJson()
                 : data.toJson())
             .toList()
       };
+
 //if courseWorkId is available need to update the classroom with new student or edit the student info
-      if (studentClassObj.courseWorkId?.isNotEmpty == true) {
-        body['courseWorkId'] = studentClassObj.courseWorkId;
-      } else {
-        body['title'] = title;
+      body['courseWorkId'] = studentClassObj.courseWorkId?.isNotEmpty == true
+          ? studentClassObj.courseWorkId
+          : null;
+
+//If courseWorkId is null, prepare request body to add a assignment in Google Classroom
+      if (body['courseWorkId'] == null) {
+        int lastUnderscoreIndex = title.lastIndexOf(
+            "_"); // find the index of the last underscore character
+        title = lastUnderscoreIndex == -1
+            ? title
+            : title.substring(0, lastUnderscoreIndex);
+
+        body.addAll({
+          'title': title,
+          if (questionImageUrl?.isNotEmpty ?? false)
+            'materials': [
+              {
+                "link": {
+                  "thumbnailUrl": questionImageUrl,
+                  "url": questionImageUrl
+                }
+              }
+            ]
+        });
       }
 
       final ResponseModel response = await _dbServices.postApi(url,
           headers: headers, body: body, isGoogleApi: true);
 
       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        GoogleClassroomCourseworkModal data =
+            GoogleClassroomCourseworkModal.fromJson(response.data);
         if ((studentClassObj.courseWorkId?.isEmpty ?? true) &&
             (isFromHistoryAssessmentScanMore == true)) {
           // If courseWorkId is null or empty, and isHistorySanMore is either null or false
@@ -415,21 +539,22 @@ class GoogleClassroomBloc
           await _bloc.updateAssessmentOnDashboardOnHistoryScanMore(
               assessmentId: studentClassObj?.assessmentCId,
               classroomCourseId: studentClassObj?.courseId,
-              classroomCourseWorkId: response.data['courseWorkId']);
+              classroomCourseWorkId: data.courseWorkId);
         }
 
-        return [true, response.data['courseWorkId']];
+        return [true, data];
       }
       //retry =3 max
       else if (retry > 0) {
-        var result = await _toRefreshAuthenticationToken(refreshToken);
+        var result = await toRefreshAuthenticationToken(refreshToken);
         if (result == true) {
           List<UserInformation> _userProfileLocalData =
               await UserGoogleProfile.getUserProfile();
 
           return await _createClassRoomCourseWork(
+              questionImageUrl: questionImageUrl,
               retry: retry - 1,
-              isEditStudentinfo: isEditStudentinfo,
+              isEditStudentInfo: isEditStudentInfo,
               isFromHistoryAssessmentScanMore: isFromHistoryAssessmentScanMore,
               authorizationToken: _userProfileLocalData[0].authorizationToken!,
               maxPoints: maxPoints,
@@ -438,20 +563,21 @@ class GoogleClassroomBloc
               title: title,
               studentClassObj: studentClassObj);
         }
+      } else if ((response.statusCode == 401 ||
+          // response.data['body'][" status"] != 401 ||
+          response.data['statusCode'] == 500)) {
+        return [false, 'ReAuthentication is required'];
       }
-
-      return [false, 'ReAuthentication is required'];
+      return [];
     } catch (e) {
       return [false, e.toString()];
     }
   }
 
-  Future<String> updateAssessmentImg(
-      {required StudentAssessmentInfo assessmentData}) async {
+  Future<String> updateImg({required String filePath}) async {
     try {
-      String imgExtension = assessmentData.assessmentImgPath!
-          .substring(assessmentData.assessmentImgPath!.lastIndexOf(".") + 1);
-      File assessmentImageFile = File(assessmentData.assessmentImgPath!);
+      String imgExtension = filePath.substring(filePath.lastIndexOf(".") + 1);
+      File assessmentImageFile = File(filePath);
       List<int> imageBytes = assessmentImageFile.readAsBytesSync();
       String imageB64 = base64Encode(imageBytes);
 
@@ -463,4 +589,230 @@ class GoogleClassroomBloc
       return '';
     }
   }
+
+  Future<List<dynamic>> _getClassroomCourseWorkURL({
+    required GoogleClassroomCourses? obj,
+    required String? accessToken,
+    required String? refreshToken,
+    int retry = 3,
+  }) async {
+    try {
+      String? courseId = obj?.courseId ?? '';
+      String? courseWorkId = obj?.courseWorkId ?? '';
+
+      if ((courseId?.isEmpty ?? true) || (courseWorkId?.isEmpty ?? true)) {
+        return [true, ''];
+      }
+      final ResponseModel response = await _dbServices.getApiNew(
+          // 'https://www.googleapis.com/drive/v3/files/$fileId?fields=*',
+          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://classroom.googleapis.com/v1/courses/$courseId/courseWork/$courseWorkId',
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': 'Bearer $accessToken'
+          },
+          isCompleteUrl: true);
+
+      if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+        final url = response?.data?['body']?['alternateLink'] as String?;
+        return [url?.isNotEmpty == true, url ?? ''];
+      } else if (retry > 0) {
+        var result = await toRefreshAuthenticationToken(refreshToken!);
+
+        if (result == true) {
+          List<UserInformation> _userProfileLocalData =
+              await UserGoogleProfile.getUserProfile();
+          return await _getClassroomCourseWorkURL(
+              obj: obj,
+              accessToken: _userProfileLocalData[0].authorizationToken,
+              refreshToken: _userProfileLocalData[0].refreshToken,
+              retry: retry - 1);
+        }
+      }
+      return [false, ''];
+    } catch (e) {
+      print(e);
+      return [false, e.toString()];
+    }
+  }
+
+  Future<List<dynamic>> _createPBISCoursework({
+    required String authorizationToken,
+    required String refreshToken,
+    required String teacherEmail,
+    required int maxPoints,
+    required List<ClassroomCourse> courseAndStudentList,
+    int retry = 3,
+  }) async {
+    final pbisBloc = PBISPlusBloc();
+
+    try {
+      final currentDate =
+          Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+      //Remove manually added 'All' option from the list
+      if (courseAndStudentList.length > 0 &&
+          courseAndStudentList[0].name == 'All') {
+        courseAndStudentList.removeAt(0);
+      }
+
+      for (int i = 0; i < courseAndStudentList.length; i++) {
+        // print('index i : $i');
+
+        // To add only course related student for single course
+        if (courseAndStudentList[i].students!.length > 0) {
+          final studentProfileDetails = courseAndStudentList[i]
+              .students!
+              .map((student) => ClassRoomStudentProfile(
+                    studentId: student.profile!.id,
+                    studentAssessmentImage: '',
+                    earnedPoint: student.profile!.engaged! +
+                        student.profile!.niceWork! +
+                        student.profile!.helpful!,
+                  ))
+              .toList();
+
+          final url =
+              'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/googleClassroomCoursework';
+
+          final headers = {
+            'G_AuthToken': authorizationToken,
+            'G_RefreshToken': refreshToken,
+            'Content-Type': 'application/json',
+            'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx',
+          };
+
+          final body = {
+            "courseId": courseAndStudentList[i].id,
+            "title": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+            "description":
+                'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+            "maxPoints": maxPoints,
+            "studentAssessmentDetails":
+                studentProfileDetails.map((data) => data.toJson()).toList(),
+          };
+
+          final response = await _dbServices.postApi(url,
+              headers: headers, body: body, isGoogleApi: true);
+
+          // print('_createPBISCoursework :$response');
+          if (response.statusCode == 200 &&
+              response.data['statusCode'] == 200) {
+            //If classroom assignment successfully created, add the record with url in the database
+
+            await pbisBloc.createPBISPlusHistoryData(
+              type: 'Classroom',
+              url: response.data['courseWorkURL'],
+              teacherEmail: teacherEmail,
+              classroomCourseName: courseAndStudentList[i].name,
+            );
+          } else if (retry > 0) {
+            final result = await toRefreshAuthenticationToken(refreshToken);
+
+            if (result == true) {
+              final userProfileLocalData =
+                  await UserGoogleProfile.getUserProfile();
+
+              return _createPBISCoursework(
+                retry: retry - 1,
+                authorizationToken: userProfileLocalData[0].authorizationToken!,
+                teacherEmail: teacherEmail,
+                maxPoints: maxPoints,
+                refreshToken: userProfileLocalData[0].refreshToken!,
+                courseAndStudentList: courseAndStudentList,
+              );
+            }
+          }
+        }
+      }
+
+      return [true, ''];
+    } catch (e) {
+      print(e);
+      return [false, e];
+    }
+  }
+
+  // Future<bool> _createPBISCoursework(
+  //     {required String authorizationToken,
+  //     required String refreshToken,
+  //     required String teacherEmail,
+  //     required int maxPoints,
+  //     // required List<ClassRoomStudentProfile> studentProfileDetails,
+  //     required List<ClassroomCourse> courseAndStudentList,
+  //     int retry = 3}) async {
+  //   PBISPlusBloc _pbisBloc = new PBISPlusBloc();
+  //   try {
+  //     var currentDate =
+  //         Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy");
+  //     for (int i = 0; i < courseAndStudentList.length; i++) {
+  //       print('index i : $i');
+  //       //To add only course related student for single course
+  //       List<ClassRoomStudentProfile> studentProfileDetails = [];
+
+  //       for (int j = 0; j < courseAndStudentList[i].students!.length; j++) {
+  //         print('index j : $j');
+  //         studentProfileDetails.add(ClassRoomStudentProfile(
+  //             studentId: courseAndStudentList[i].students![j].profile!.id,
+  //             studentAssessmentImage: '',
+  //             earnedPoint:
+  //                 courseAndStudentList[i].students![j].profile!.engaged! +
+  //                     courseAndStudentList[i].students![j].profile!.niceWork! +
+  //                     courseAndStudentList[i].students![j].profile!.helpful!));
+  //       }
+  //       final url =
+  //           'https://ppwovzroa2.execute-api.us-east-2.amazonaws.com/production/googleClassroomCoursework';
+
+  //       final headers = {
+  //         'G_AuthToken': authorizationToken,
+  //         'G_RefreshToken': refreshToken,
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'r?ftDEZ_qdt=VjD#W@S2LM8FZT97Nx'
+  //       };
+
+  //       Map<String, dynamic> body = {
+  //         "courseId": courseAndStudentList[i].id,
+  //         "title": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+  //         "description": 'PBIS_${Globals.appSetting.contactNameC}_$currentDate',
+  //         "maxPoints": maxPoints,
+  //         "studentAssessmentDetails":
+  //             studentProfileDetails.map((data) => data.toJson()).toList()
+  //       };
+
+  //       final ResponseModel response = await _dbServices.postApi(url,
+  //           headers: headers, body: body, isGoogleApi: true);
+
+  //       if (response.statusCode == 200 && response.data['statusCode'] == 200) {
+  //         await _pbisBloc.createPBISPlusHistoryData(
+  //             type: 'Classroom',
+  //             url: response.data['body']['courseWorkURL'],
+  //             teacherEmail: teacherEmail,
+  //             classroomCourseName: courseAndStudentList[i].name);
+
+  //         // return [true, data];
+  //       } else if (retry > 0) {
+  //         var result = await toRefreshAuthenticationToken(refreshToken);
+  //         if (result == true) {
+  //           List<UserInformation> _userProfileLocalData =
+  //               await UserGoogleProfile.getUserProfile();
+
+  //           return await _createPBISCoursework(
+  //               retry: retry - 1,
+  //               authorizationToken:
+  //                   _userProfileLocalData[0].authorizationToken!,
+  //               teacherEmail: teacherEmail,
+  //               maxPoints: maxPoints,
+  //               refreshToken: _userProfileLocalData[0].refreshToken!,
+  //               // studentProfileDetails: studentProfileDetails,
+  //               courseAndStudentList: courseAndStudentList);
+  //         }
+  //       }
+
+  //       //retry =3 max
+
+  //     }
+
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 }

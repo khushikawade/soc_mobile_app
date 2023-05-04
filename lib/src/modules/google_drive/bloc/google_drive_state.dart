@@ -69,12 +69,8 @@ class AssessmentDetailSuccess extends GoogleDriveState {
 }
 
 class ExcelSheetCreated extends GoogleDriveState {
-  ExcelSheetCreated();
-  ExcelSheetCreated copyWith({
-    final obj,
-  }) {
-    return ExcelSheetCreated();
-  }
+  final Map<String,dynamic> googleSpreadSheetFileObj;
+  ExcelSheetCreated({required this.googleSpreadSheetFileObj});
 
   @override
   List<Object> get props => [];
@@ -99,8 +95,8 @@ class GoogleFolderCreated extends GoogleDriveState {
 
 // ignore: must_be_immutable
 class GoogleSuccess extends GoogleDriveState {
-  bool? assessmentSection;
-  GoogleSuccess({this.assessmentSection});
+  bool? fromGradedPlusAssessmentSection;
+  GoogleSuccess({this.fromGradedPlusAssessmentSection});
   @override
   List<Object> get props => [];
 }
@@ -185,6 +181,13 @@ class UpdateAssignmentDetailsOnSlideSuccess extends GoogleDriveState {
 class AddAndUpdateStudentAssessmentDetailsToSlideSuccess
     extends GoogleDriveState {
   AddAndUpdateStudentAssessmentDetailsToSlideSuccess();
+
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusUpdateDataOnSpreadSheetSuccess extends GoogleDriveState {
+  PBISPlusUpdateDataOnSpreadSheetSuccess();
 
   @override
   List<Object> get props => [];

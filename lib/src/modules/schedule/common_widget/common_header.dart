@@ -1,7 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/widgets/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
 import 'package:Soc/src/modules/schedule/modal/blackOutDate_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/contweek.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
@@ -142,6 +142,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
         context: context,
         builder: (context) {
           return CustomDialogBox(
+              activityType: 'Schedule',
               isUserInfoPop: true,
               profileData: userInformation,
               onSignOut: () async {

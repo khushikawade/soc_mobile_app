@@ -35,3 +35,26 @@ class CreateClassRoomCourseWork extends GoogleClassroomEvent {
   @override
   List<Object> get props => [];
 }
+
+// ignore: must_be_immutable
+class GetClassroomCourseWorkURL extends GoogleClassroomEvent {
+  GoogleClassroomCourses? obj;
+  GetClassroomCourseWorkURL({required this.obj});
+  @override
+  List<Object> get props => [];
+}
+
+class CreatePBISClassroomCoursework extends GoogleClassroomEvent {
+  final String pointPossible;
+  final List<ClassroomCourse> courseAndStudentList;
+  //get local store stduentinfoassessmentList
+  final List<ClassRoomStudentProfile>? studentAssessmentInfoDb;
+
+  CreatePBISClassroomCoursework({
+    required this.pointPossible,
+    required this.courseAndStudentList,
+    this.studentAssessmentInfoDb,
+  });
+  @override
+  List<Object> get props => [];
+}

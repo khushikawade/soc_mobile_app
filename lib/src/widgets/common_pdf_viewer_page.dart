@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
-import '../modules/ocr/widgets/common_ocr_appbar.dart';
+import '../modules/graded_plus/widgets/common_ocr_appbar.dart';
 
 // ignore: must_be_immutable
 class CommonPdfViewerPage extends StatefulWidget {
@@ -85,6 +85,7 @@ class _CommonPdfViewerPageState extends State<CommonPdfViewerPage> {
 
   appBarOCRWidget() {
     return CustomOcrAppBarWidget(
+      fromGradedPlus: true,
       isSuccessState: ValueNotifier<bool>(true),
       isBackOnSuccess: widget.isBackFromCamera,
       key: GlobalKey(),

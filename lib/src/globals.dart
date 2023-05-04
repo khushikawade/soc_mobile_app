@@ -110,7 +110,7 @@ class Globals {
   static String? scoringRubric;
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static String? questionImgUrl;
-  static File? questionImgFilePath;
+  // static File? questionImgFilePath;
   static String? historyAssessmentName = '';
   static String? historyAssessmentFileId = '';
   static late TabController tabController;
@@ -126,4 +126,5 @@ class Globals {
       ''; //Used to manage the count increment only in case of id change
 
 //  static EventController scheduleController = EventController();
+
 }

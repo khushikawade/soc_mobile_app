@@ -54,3 +54,13 @@ class CreateClassroomCourseWorkSuccess extends GoogleClassroomState {
   @override
   List<Object> get props => [];
 }
+
+// ignore: must_be_immutable
+class GetClassroomCourseWorkURLSuccess extends GoogleClassroomState {
+  String? classroomCouseWorkURL;
+  bool? isLinkAvailable;
+  GetClassroomCourseWorkURLSuccess(
+      {required this.classroomCouseWorkURL, required this.isLinkAvailable});
+  @override
+  List<Object> get props => [];
+}

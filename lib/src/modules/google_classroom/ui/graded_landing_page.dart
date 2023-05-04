@@ -6,15 +6,15 @@ import 'package:Soc/src/modules/google_classroom/ui/courses_list.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/list_assessment_summary.dart';
-import 'package:Soc/src/modules/ocr/ui/profile_page.dart';
-import 'package:Soc/src/modules/ocr/ui/select_assessment_type.dart';
-import 'package:Soc/src/modules/ocr/widgets/Common_popup.dart';
-import 'package:Soc/src/modules/ocr/widgets/custom_intro_layout.dart';
-import 'package:Soc/src/modules/ocr/widgets/google_login.dart';
-import 'package:Soc/src/modules/ocr/widgets/ocr_background_widget.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
+import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
+import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -27,6 +27,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class GradedLandingPage extends StatefulWidget {
   final bool? isFromLogoutPage;
@@ -113,7 +114,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        CommonBackGroundImgWidget(),
+        CommonBackgroundImgWidget(),
         Scaffold(
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
@@ -123,7 +124,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                 child: Row(
                   children: [
                     IconButton(
-                        iconSize: 33,
+                        iconSize: Globals.deviceType == "phone" ? 32 : 38,
                         onPressed: () async {
                           var result = await Navigator.of(context).push(
                             MaterialPageRoute(
@@ -148,53 +149,18 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                 builder: (context,
                                     AsyncSnapshot<UserInformation> snapshot) {
                                   if (snapshot.hasData) {
-                                    return
-
-                                        // Container(
-                                        //   margin:
-                                        //       EdgeInsets.symmetric(vertical: 14),
-                                        //   padding: EdgeInsets.only(left: 5),
-                                        //   // margin: EdgeInsets.all(10),
-                                        //   child: ClipRRect(
-                                        //     borderRadius: BorderRadius.all(
-                                        //       Radius.circular(60),
-                                        //     ), //.circular(60),
-                                        //     child: GestureDetector(
-                                        //       onTap: () {
-                                        //         Navigator.push(
-                                        //           context,
-                                        //           MaterialPageRoute(
-                                        //               builder: (context) =>
-                                        //                   ProfilePage(
-                                        //                     profile: snapshot.data!,
-                                        //                   )),
-                                        //         );
-
-                                        //         // _showPopUp(snapshot.data!);
-                                        //         //print("profile url");
-                                        //       },
-                                        //       child: CachedNetworkImage(
-                                        //         // height: 20,
-                                        //         fit: BoxFit.cover,
-                                        //         imageUrl:
-                                        //             snapshot.data!.profilePicture!,
-                                        //         placeholder: (context, url) =>
-                                        //             CupertinoActivityIndicator(
-                                        //                 animating: true,
-                                        //                 radius: 10),
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // );
-
-                                        IconButton(
+                                    return IconButton(
                                       icon: ClipRRect(
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(50),
                                         ),
                                         child: CachedNetworkImage(
-                                          height: 28,
-                                          width: 28,
+                                          height: Globals.deviceType == "phone"
+                                              ? 28
+                                              : 32,
+                                          width: Globals.deviceType == "phone"
+                                              ? 28
+                                              : 32,
                                           imageUrl:
                                               snapshot.data!.profilePicture!,
                                           placeholder: (context, url) =>
@@ -207,12 +173,10 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => ProfilePage(
+                                                    fromGradedPlus: true,
                                                     profile: snapshot.data!,
                                                   )),
                                         );
-
-                                        // _showPopUp(snapshot.data!);
-                                        //print("profile url");
                                       },
                                     );
                                   }
@@ -223,7 +187,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                   ],
                 ),
               ),
-              marginLeft: 30,
+              //  marginLeft: 30,
               refresh: (v) {
                 setState(() {});
               },
@@ -423,6 +387,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                                     "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
                                               }
                                               _ocrBlocLogs.add(LogUserActivityEvent(
+                                                  activityType: 'GRADED+',
                                                   sessionId: Globals.sessionId,
                                                   teacherId: Globals.teacherId,
                                                   activityId: '1',
@@ -477,6 +442,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
       Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
     }
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: 'GRADED+',
         sessionId: Globals.sessionId,
         teacherId: Globals.teacherId,
         activityId: '4',
@@ -500,8 +466,9 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
         await UserGoogleProfile.getUserProfile();
 
     _googleDriveBloc.add(GetDriveFolderIdEvent(
-        assessmentSection: isTriggerdbyAssessmentSection ? true : null,
-        isFromOcrHome: true,
+        fromGradedPlusAssessmentSection:
+            isTriggerdbyAssessmentSection ? true : null,
+        isReturnState: true,
         //  filePath: file,
         token: _profileData[0].authorizationToken,
         folderName: "SOLVED GRADED+",
@@ -531,6 +498,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                             List<UserInformation> _profileData =
                                 await UserGoogleProfile.getUserProfile();
                             Utility.updateLogs(
+                                activityType: 'GRADED+',
                                 activityId: '1',
                                 // sessionId: widget.assessmentDetailPage == true
                                 //     ? widget.obj!.sessionId
@@ -546,8 +514,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                   'Google Authentication',
                                   context,
                                   _scaffoldKey,
-                                  true,
-                                  text);
+                                  text,
+                                  'GRADED+');
                               if (result == true) {
                                 updateAppBar.value = !updateAppBar.value;
                                 List<UserInformation> _profileData =
@@ -563,6 +531,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
                                 DateTime currentDateTime = DateTime.now();
                                 _ocrBlocLogs.add(LogUserActivityEvent(
+                                    activityType: 'GRADED+',
                                     sessionId: Globals.sessionId,
                                     teacherId: Globals.teacherId,
                                     activityId: '2',
@@ -571,6 +540,9 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     dateTime: currentDateTime.toString(),
                                     description: 'Graded+ Accessed(Login)',
                                     operationResult: 'Success'));
+
+                                pushNewScreen(context,
+                                    screen: GradedLandingPage());
                               }
                             } else {
                               if (text == 'Import Roster') {
@@ -586,10 +558,8 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                 }
                               } else if (text == 'View Imported Roster') {
                                 Utility.updateLogs(
+                                    activityType: 'GRADED+',
                                     activityId: '25',
-                                    // sessionId: widget.assessmentDetailPage == true
-                                    //     ? widget.obj!.sessionId
-                                    //     : '',
                                     description:
                                         'User goes to View Imported Roster ',
                                     operationResult: 'Success');
@@ -608,6 +578,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
 
                                 DateTime currentDateTime = DateTime.now();
                                 _ocrBlocLogs.add(LogUserActivityEvent(
+                                    activityType: 'GRADED+',
                                     sessionId: Globals.sessionId,
                                     teacherId: Globals.teacherId,
                                     activityId: '2',
@@ -658,18 +629,25 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                                     rosterImport.value == 'loading'
                                 ? Container(
                                     margin: EdgeInsets.only(left: 10),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02,
-                                    width: MediaQuery.of(context).size.width *
+                                    height: MediaQuery.of(context)
+                                            .size
+                                            .shortestSide *
+                                        0.04,
+                                    width: MediaQuery.of(context)
+                                            .size
+                                            .shortestSide *
                                         0.04,
                                     alignment: Alignment.center,
                                     child: CircularProgressIndicator(
-                                      color: Color(0xff000000) ==
-                                              Theme.of(context).backgroundColor
-                                          ? Colors.black
-                                          : Colors.white,
-                                      strokeWidth: 2,
-                                    ))
+                                        color: Color(0xff000000) ==
+                                                Theme.of(context)
+                                                    .backgroundColor
+                                            ? Colors.black
+                                            : Colors.white,
+                                        strokeWidth: MediaQuery.of(context)
+                                                .size
+                                                .shortestSide *
+                                            0.005))
                                 : Container()
                           ],
                         )));

@@ -156,7 +156,7 @@ class _GoogleAuthWebviewState extends State<GoogleAuthWebview> {
                   ),
                 )
               : NoInternetErrorWidget(
-                  connected: connected, issplashscreen: false);
+                  connected: connected, isSplashScreen: false);
         },
         child: Container());
   }

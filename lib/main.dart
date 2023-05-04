@@ -11,18 +11,25 @@ import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/models/attributes.dart';
 import 'package:Soc/src/modules/home/models/recent.dart';
 import 'package:Soc/src/modules/news/model/notification_list.dart';
-import 'package:Soc/src/modules/ocr/modal/RubricPdfModal.dart';
-import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/state_object_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/student_details_standard_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
-import 'package:Soc/src/modules/ocr/ui/camera_screen.dart';
+import 'package:Soc/src/modules/graded_plus/modal/RubricPdfModal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pbis_plus_total_interaction_modal.dart';
+import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/schedule/modal/schedule_modal.dart';
 import 'package:Soc/src/modules/schools_directory/modal/school_directory_list.dart';
 import 'package:Soc/src/modules/shared/models/shared_list.dart';
 import 'package:Soc/src/modules/social/modal/item.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_grades_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_search_model.dart';
+import 'package:Soc/src/modules/student_plus/model/student_work_model.dart';
 import 'package:Soc/src/modules/students/models/student_app.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/translator/translation_modal.dart';
@@ -45,7 +52,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
 
-  // Initializing Fieebase Starts
+  // Initializing Firebase Starts
   // await Firebase.initializeApp();
   if (Platform.isAndroid) {
     await Firebase.initializeApp(
@@ -64,39 +71,53 @@ void main() async {
   }
 
   // await FirebaseAnalyticsService.firebaseCrashlytics(null, null, null);
-  // Initializing Fieebase Ends
+  // Initializing Firebase Ends
 
   if (!kIsWeb) {
     // Not running on the web!
     final appDocumentDirectory =
         await path_provider.getApplicationDocumentsDirectory();
     Hive
-      ..init(appDocumentDirectory.path)
-      ..registerAdapter(RecentAdapter())
-      ..registerAdapter(AttributesAdapter())
-      ..registerAdapter(SharedListAdapter())
-      ..registerAdapter(SDlistAdapter())
-      ..registerAdapter(SchoolDirectoryListAdapter())
-      ..registerAdapter(StudentAppAdapter())
-      ..registerAdapter(NotificationListAdapter())
-      ..registerAdapter(ItemAdapter())
-      ..registerAdapter(AppSettingAdapter())
-      ..registerAdapter(CalendarEventListAdapter())
-      ..registerAdapter(CustomSettingAdapter())
-      ..registerAdapter(UserInformationAdapter())
-      ..registerAdapter(SubjectDetailListAdapter())
-      ..registerAdapter(HistoryAssessmentAdapter())
-      ..registerAdapter(CustomRubricModalAdapter())
-      ..registerAdapter(TranslationModalAdapter())
-      ..registerAdapter(StudentAssessmentInfoAdapter())
-      ..registerAdapter(StateListObjectAdapter())
-      ..registerAdapter(GoogleClassroomCoursesAdapter())
-      ..registerAdapter(ScheduleAdapter())
-      ..registerAdapter(BlackoutDateAdapter())
-      ..registerAdapter(StudentDetailsModalAdapter())
-      ..registerAdapter(RecentGoogleFileSearchAdapter())
-      ..registerAdapter(CalendarBannerImageModalAdapter())
-      ..registerAdapter(RubricPdfModalAdapter());
+          ..init(appDocumentDirectory.path)
+          ..registerAdapter(RecentAdapter())
+          ..registerAdapter(AttributesAdapter())
+          ..registerAdapter(SharedListAdapter())
+          ..registerAdapter(SDlistAdapter())
+          ..registerAdapter(SchoolDirectoryListAdapter())
+          ..registerAdapter(StudentAppAdapter())
+          ..registerAdapter(NotificationListAdapter())
+          ..registerAdapter(ItemAdapter())
+          ..registerAdapter(AppSettingAdapter())
+          ..registerAdapter(CalendarEventListAdapter())
+          ..registerAdapter(CustomSettingAdapter())
+          ..registerAdapter(UserInformationAdapter())
+          ..registerAdapter(SubjectDetailListAdapter())
+          ..registerAdapter(HistoryAssessmentAdapter())
+          ..registerAdapter(CustomRubricModalAdapter())
+          ..registerAdapter(TranslationModalAdapter())
+          ..registerAdapter(StudentAssessmentInfoAdapter())
+          ..registerAdapter(StateListObjectAdapter())
+          ..registerAdapter(GoogleClassroomCoursesAdapter())
+          ..registerAdapter(ScheduleAdapter())
+          ..registerAdapter(BlackoutDateAdapter())
+          ..registerAdapter(StudentDetailsModalAdapter())
+          ..registerAdapter(RecentGoogleFileSearchAdapter())
+          ..registerAdapter(CalendarBannerImageModalAdapter())
+          ..registerAdapter(RubricPdfModalAdapter())
+          ..registerAdapter(StudentPlusDetailsModelAdapter())
+          ..registerAdapter(StudentPlusWorkModelAdapter())
+          ..registerAdapter(ClassroomCourseAdapter())
+          ..registerAdapter(ClassroomStudentsAdapter())
+          ..registerAdapter(ClassroomProfileNameAdapter())
+          ..registerAdapter(ClassroomProfileAdapter())
+          ..registerAdapter(ClassroomPermissionsAdapter())
+          ..registerAdapter(PBISPlusHistoryModalAdapter())
+          ..registerAdapter(PBISPlusTotalInteractionModalAdapter())
+          ..registerAdapter(StudentPlusSearchModelAdapter())
+          ..registerAdapter(StudentPlusGradeModelAdapter())
+
+        // ..registerAdapter(PBISPlusTotalInteractionByTeacherModalAdapter())
+        ;
   }
   clearTheme();
   await disableDarkMode();
