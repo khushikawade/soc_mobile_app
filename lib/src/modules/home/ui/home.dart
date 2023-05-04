@@ -8,7 +8,7 @@ import 'package:Soc/src/modules/news/bloc/news_bloc.dart';
 import 'package:Soc/src/modules/news/ui/news.dart';
 import 'package:Soc/src/modules/resources/resources.dart';
 import 'package:Soc/src/modules/schools_directory/ui/schools_directory.dart';
-import 'package:Soc/src/modules/social/ui/social_new.dart';
+import 'package:Soc/src/modules/social/ui/social_feeds.dart';
 import 'package:Soc/src/modules/staff/ui/staff.dart';
 import 'package:Soc/src/modules/staff_directory/staffdirectory.dart';
 import 'package:Soc/src/modules/students/ui/student.dart';
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     restart();
     Globals.controller = PersistentTabController(
         initialIndex: widget.index != null
-            ? 2
+            ? widget.index ?? 2
             : Globals.isNewTap == true
                 ? Globals.newsIndex ?? 0
                 : (widget.isFromOcrSection == true
@@ -149,7 +149,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     Globals.isNewTap = false;
     //     Globals.isNewTap ? Globals.newsIndex ?? 1 : Globals.homeIndex ?? 0);
     WidgetsBinding.instance.addObserver(this);
-    if (widget.isFromOcrSection != true) {
+    //To manage the recall of staff screen and avoid of showing new version popup
+    if (widget.isFromOcrSection != true && widget.index != 4) {
       _checkNewVersion();
     }
   }
@@ -256,7 +257,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
             addNewsIndex(Globals.newsIndex);
           }
-
           setState(() {});
 
           //This will return the options having below mentioned screens. For any other option name, it will not include in the bottom navbar list

@@ -34,9 +34,6 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: Overrides.STANDALONE_GRADED_APP == true
-          ? EdgeInsets.only(right: MediaQuery.of(context).size.width / 8)
-          : null,
       child: ClipRRect(
           child: Overrides.STANDALONE_GRADED_APP == true
               ? standAlonLogo()
@@ -97,8 +94,12 @@ class _CustomIconWidgetState extends State<CustomIconWidget> {
       Color(0xff000000) == Theme.of(context).backgroundColor
           ? "assets/images/graded+_light.png"
           : "assets/images/graded+_dark.png",
-      height: AppTheme.kTabIconSize * 1.2,
-      width: AppTheme.kTabIconSize * 1.5,
+      height: Globals.deviceType == "phone"
+          ? AppTheme.kIconSize * 2
+          : AppTheme.kTabIconSize * 2,
+      width: Globals.deviceType == "phone"
+          ? AppTheme.kIconSize * 2
+          : AppTheme.kTabIconSize * 2,
     );
   }
 }

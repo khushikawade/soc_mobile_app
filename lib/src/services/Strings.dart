@@ -1,5 +1,8 @@
 class Strings {
   static final String hiveLogName = "recent_items";
+  // Student Plus Module Local Db
+  static final String studentInfoRecentList = "student_info_recent_list";
+  static final String studentWorkList = "student_work_list";
   static final String googleRecentSearch = "google_file_recent_search";
   static final String SplashUrl = "SPLASHURL";
   static final String deviceType = "Device";
@@ -50,6 +53,9 @@ class Strings {
   // static final String blackoutDateObjectDetails = 'blackoutdate_object_details';
   static final String studentDetailList = 'student_detail_List';
   static final String keyArrowSvgIconPath = "assets/images/arrow.svg";
+  static final String gradedPlusImage = "assets/images/landingPage_image.png";
   static final String latestNewsId =
       "last_news_id"; // to maintain news id for showing red indicator
+  static final String studentInfoDbName = "student_info";
+  static final String historyStudentInfoDbName = "history_student_info";
 }

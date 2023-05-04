@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/home/ui/iconsmenu.dart';
-import 'package:Soc/src/modules/ocr/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
-import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/graded_overrides.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
@@ -19,12 +19,13 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:html/parser.dart';
+import 'package:mailto/mailto.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import '../modules/google_drive/model/user_profile.dart';
-import '../modules/ocr/modal/user_info.dart';
+import '../modules/graded_plus/modal/user_info.dart';
 import 'local_database/local_db.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -123,11 +124,13 @@ class Utility {
       //  required String accountType,
       required String description,
       required String operationResult,
-      String? sessionId}) {
+      String? sessionId,
+      required String? activityType}) {
     DateTime currentDateTime = DateTime.now(); //DateTime
     // instance for maintaining logs
     final OcrBloc _ocrBlocLogs = new OcrBloc();
     _ocrBlocLogs.add(LogUserActivityEvent(
+        activityType: activityType,
         sessionId: sessionId != null && sessionId != ''
             ? sessionId
             : Globals.sessionId,
@@ -203,7 +206,7 @@ class Utility {
     return new DateFormat.jm().format(picked.toLocal()).toString();
   }
 
-  String convertUSADateFormat(picked) {
+  static String convertUSADateFormat(picked) {
     return new DateFormat.yMMMd('en_US').format(picked.toLocal()).toString();
   }
 
@@ -216,6 +219,21 @@ class Utility {
     final DateFormat formatNew = DateFormat('dd/MM/yyyy  hh:mm');
     final String formatted = formatNew.format(dateTime);
     return formatted;
+  }
+
+  static convertDateUSFormat(date) {
+    try {
+      String dateNew = date;
+      final string = dateNew.toString();
+      final formatter = DateFormat('yyyy-MM-dd');
+      final dateTime = formatter.parse(string);
+      final DateFormat formatNew = DateFormat('MM/dd/yyyy');
+      final String formatted = formatNew.format(dateTime);
+
+      return formatted;
+    } catch (e) {
+      return date.toString();
+    }
   }
 
   static convertDateFormat(date) {
@@ -374,9 +392,9 @@ class Utility {
 
   static Widget textWidget(
       {required String text,
-      textTheme,
+      TextStyle? textTheme,
       required context,
-      textAlign,
+      TextAlign? textAlign,
       maxLines}) {
     return TranslationWidget(
       message: text,
@@ -595,7 +613,8 @@ class Utility {
   static void showLoadingDialog(
       {BuildContext? context,
       bool? isOCR,
-      Function(StateSetter)? state}) async {
+      Function(StateSetter)? state,
+      String? msg}) async {
     return showDialog<void>(
         useRootNavigator: false,
         context: context!,
@@ -628,7 +647,8 @@ class Utility {
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: FittedBox(
                                 child: Utility.textWidget(
-                                    text: GradedGlobals.loadingMessage ??
+                                    text: msg ??
+                                        GradedGlobals.loadingMessage ??
                                         'Please Wait...',
                                     context: context,
                                     textTheme: Theme.of(context)
@@ -1076,5 +1096,15 @@ class Utility {
     } else {
       return string1.isNotEmpty ? string1 : string2;
     }
+  }
+
+  static launchMailto(subject, body) async {
+    final mailtoLink = Mailto(
+      to: ["admin@solvedconsulting.com"],
+      cc: [],
+      subject: subject,
+      body: body,
+    );
+    await Utility.launchUrlOnExternalBrowser('$mailtoLink');
   }
 }

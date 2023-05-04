@@ -1,4 +1,4 @@
-import 'package:Soc/src/modules/ocr/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/schedule/bloc/calender_bloc.dart';
 import 'package:Soc/src/modules/schedule/common_widget/animatedcontainer.dart';
 import 'package:Soc/src/modules/schedule/common_widget/common_header.dart';

@@ -8,8 +8,17 @@ class BannerImageWidget extends StatefulWidget {
   final String imageUrl;
   final Color? bgColor;
   final double? bannerHeight;
+  final bool? isStaffPage;
+  final Widget? staffActionWidget;
+  final double? staffActionHeight;
 
-  BannerImageWidget({required this.imageUrl, this.bgColor, this.bannerHeight});
+  BannerImageWidget(
+      {required this.imageUrl,
+      this.bgColor,
+      this.bannerHeight,
+      this.isStaffPage,
+      this.staffActionWidget,
+      this.staffActionHeight});
   @override
   _BannerImageWidgetState createState() => _BannerImageWidgetState();
 }
@@ -23,30 +32,46 @@ class _BannerImageWidgetState extends State<BannerImageWidget> {
       //     : Utility.displayHeight(context) *
       //         (AppTheme.kBannerHeight * 1.3 / 100),
       expandedHeight: widget.bannerHeight != null && widget.bannerHeight != ''
-          ? Utility.displayHeight(context) * (widget.bannerHeight! / 100)
-          : Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100),
+          ? (Utility.displayHeight(context) * (widget.bannerHeight! / 100)) +
+              (widget.staffActionHeight ?? 0.0)
+          : (Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100)) +
+              (widget.staffActionHeight ?? 0.0),
       floating: false,
       // pinned: true,
       flexibleSpace: FlexibleSpaceBar(
           // centerTitle: true,
-          background: Container(
-        color: widget.bgColor,
-        child: CachedNetworkImage(
-          imageUrl: widget.imageUrl,
-          // fit: BoxFit.fill,
-          placeholder: (BuildContext context, _) => ShimmerLoading(
-            isLoading: true,
-            child: SizedBox(
-              height: Utility.displayHeight(context) *
-                  (AppTheme.kBannerHeight / 100),
-              width: Utility.displayWidth(context),
-            ),
+          background: widget.isStaffPage == true
+              ? Column(
+                  children: [
+                    Container(
+                        height: (Utility.displayHeight(context) *
+                            (AppTheme.kBannerHeight / 100)),
+                        child: bannerWidget()),
+                    widget.staffActionWidget!
+                  ],
+                )
+              : bannerWidget()),
+    );
+  }
+
+  Widget bannerWidget() {
+    return Container(
+      color: widget.bgColor,
+      child: CachedNetworkImage(
+        imageUrl: widget.imageUrl,
+        // fit: BoxFit.fill,
+        placeholder: (BuildContext context, _) => ShimmerLoading(
+          isLoading: true,
+          child: SizedBox(
+            height:
+                Utility.displayHeight(context) * (AppTheme.kBannerHeight / 100),
+            width: Utility.displayWidth(context),
           ),
-          errorWidget: (context, url, error) {
-            return Container();
-          },
         ),
-      )),
+        errorWidget: (context, url, error) {
+          return Container();
+        },
+      ),
     );
   }
 }

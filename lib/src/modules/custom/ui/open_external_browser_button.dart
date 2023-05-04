@@ -25,7 +25,7 @@ class _OpenExternalBrowserState extends State<OpenExternalBrowser> {
   Widget build(BuildContext context) {
     return widget.connected == false
         ? NoInternetErrorWidget(
-            issplashscreen: false,
+            isSplashScreen: false,
             connected: widget.connected,
           )
         : OrientationBuilder(builder: (context, orientation) {

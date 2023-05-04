@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class NoDataFoundErrorWidget extends StatelessWidget {
+  String? customText;
   String? errorMessage;
   bool? isCalendarPageOrientationLandscape;
   bool? isOcrSearch;
@@ -20,8 +21,10 @@ class NoDataFoundErrorWidget extends StatelessWidget {
   bool? isScheduleFound;
   NoDataFoundErrorWidget(
       {Key? key,
+      this.customText,
       required this.isResultNotFoundMsg,
       required this.isNews,
+      this.errorMessage,
       this.connected,
       this.isCalendarPageOrientationLandscape,
       required this.isEvents,
@@ -34,13 +37,14 @@ class NoDataFoundErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return connected == false
         ? NoInternetErrorWidget(
-            issplashscreen: false,
+            isSplashScreen: false,
             connected: connected,
           )
         : OrientationBuilder(builder: (context, orientation) {
             return Container(
               height: MediaQuery.of(context).size.height * 0.8,
               child: ListView(
+               
                 children: [
                   Container(
                       margin: EdgeInsets.only(
@@ -70,17 +74,19 @@ class NoDataFoundErrorWidget extends StatelessWidget {
                   Container(
                       alignment: Alignment.center,
                       child: TranslationWidget(
-                        message: isNews == true
-                            ? "No Message Yet"
-                            : isEvents == true
-                                ? "No Event Found"
-                                : isResultNotFoundMsg == true
-                                    ? "No result found"
-                                    : isOcrSearch == true
-                                        ? "No recent search"
-                                        : isScheduleFound == true
-                                            ? "Schedule not found"
-                                            : "No data found",
+                        message: errorMessage != null && errorMessage != ''
+                            ? errorMessage
+                            : isNews == true
+                                ? "No Message Yet"
+                                : isEvents == true
+                                    ? "No Event Found"
+                                    : isResultNotFoundMsg == true
+                                        ? "No result found"
+                                        : isOcrSearch == true
+                                            ? "No recent search"
+                                            : isScheduleFound == true
+                                                ? "Schedule not found"
+                                                : "No data found",
                         toLanguage: Globals.selectedLanguage,
                         fromLanguage: "en",
                         builder: (translatedMessage) => Text(

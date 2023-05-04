@@ -1,6 +1,6 @@
 import '../../../services/local_database/hive_db_services.dart';
 import '../../../services/local_database/local_db.dart';
-import '../../ocr/modal/user_info.dart';
+import '../../graded_plus/modal/user_info.dart';
 
 class UserGoogleProfile {
   // static updateUserProfileIntoDB(updatedObj) async {
@@ -31,7 +31,8 @@ class UserGoogleProfile {
     }
   }
 
-  static Future<void> updateUserProfile(UserInformation _userInformation) async {
+  static Future<void> updateUserProfile(
+      UserInformation _userInformation) async {
     await clearUserProfile();
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
     await _localDb.addData(_userInformation);

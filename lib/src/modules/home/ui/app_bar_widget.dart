@@ -43,7 +43,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   AppBarWidget(
       {Key? key,
       required this.refresh,
-      required this.marginLeft,
+      this.marginLeft = 0.0,
       this.hideAccessibilityButton,
       this.onTap,
       this.showClosebutton,
@@ -149,8 +149,18 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             showCloseButton: false,
             bubbleShowcaseId: 'my_bubble_showcase',
             bubbleSlides: [
-              _firstSlide(context),
-              _openSettingsButtonSlide(context)
+              // _firstSlide(context),
+              // _openSettingsButtonSlide(context)
+              _bubbleSlideWidget(
+                context: context,
+                msg: "Translate/Traducción/翻译/ترجمة/Traduction",
+                widgetKey: _bshowcase,
+              ),
+              _bubbleSlideWidget(
+                  context: context,
+                  msg: "Accessibility Settings",
+                  leftDx: 2,
+                  widgetKey: _openSettingShowCaseKey),
             ],
             bubbleShowcaseVersion: 1,
             onFinished: () {
@@ -229,6 +239,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _translateButton(StateSetter setState, BuildContext context) {
     return IconButton(
+        iconSize: Globals.deviceType == "phone" ? 28 : 32,
         key: _bshowcase,
         onPressed: () async {
           await FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -247,16 +258,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         },
         icon: Container(
           child: Image(
-            width: !Overrides.STANDALONE_GRADED_APP
-                ? Globals.deviceType == "phone"
-                    ? 26
-                    : 32
-                : 28,
-            height: !Overrides.STANDALONE_GRADED_APP
-                ? Globals.deviceType == "phone"
-                    ? 26
-                    : 32
-                : 28,
+            // width: Globals.deviceType == "phone" ? 28 : 32,
+            // height: Globals.deviceType == "phone" ? 28 : 32,
             image: AssetImage("assets/images/gtranslate.png"),
           ),
         ));
@@ -291,7 +294,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _openSettingsButton(BuildContext context) {
     return IconButton(
-      iconSize: 28,
+      iconSize: Globals.deviceType == "phone" ? 28 : 32,
       onPressed: () async {
         await FirebaseAnalyticsService.addCustomAnalyticsEvent(
             "settings_drawer");
@@ -311,82 +314,118 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         FontAwesomeIcons.universalAccess,
         color: Colors.blue,
         key: _openSettingShowCaseKey,
-        size: !Overrides.STANDALONE_GRADED_APP
-            ? Globals.deviceType == "phone"
-                ? 25
-                : 32
-            : null,
       ),
     );
   }
 
-  BubbleSlide _firstSlide(context) => RelativeBubbleSlide(
-      widgetKey: _bshowcase,
-      shape: const Circle(
-        spreadRadius: 8,
-      ),
-      passThroughMode: PassthroughMode.NONE,
-      child: AbsoluteBubbleSlideChild(
-        widget: Padding(
-          padding: const EdgeInsets.only(top: 0.5),
-          child: SpeechBubble(
-            borderRadius: 8,
-            nipLocation: NipLocation.TOP_LEFT,
-            // nipHeight: 30,
-            color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
-            child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Text(
-                "Translate/Traducción/翻译/ترجمة/Traduction",
-                style: TextStyle(
-                  color: Globals.themeType == 'Dark'
-                      ? Colors.black87
-                      : Colors.white,
-                  fontSize: 18.0,
-                ),
-              )
-            ]),
+  BubbleSlide _bubbleSlideWidget(
+          {required BuildContext context,
+          required String msg,
+          required GlobalKey<State<StatefulWidget>> widgetKey,
+          int leftDx = 0}) =>
+      RelativeBubbleSlide(
+          widgetKey: widgetKey,
+          shape: const Circle(
+            spreadRadius: 8,
           ),
-        ),
-        positionCalculator: (size) => Position(
-            // top: Utility.displayHeight(context) * .120,
-            // left: Utility.displayWidth(context) * 0.030,
-            top: _calculateWidgetOffset(_bshowcase).dy + 45,
-            left: _calculateWidgetOffset(_bshowcase).dx),
-      ));
+          passThroughMode: PassthroughMode.NONE,
+          child: AbsoluteBubbleSlideChild(
+            widget: Padding(
+              padding: const EdgeInsets.only(top: 0.5),
+              child: SpeechBubble(
+                borderRadius: 8,
+                nipLocation: NipLocation.TOP_LEFT,
+                // nipHeight: 30,
+                color:
+                    Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
+                child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  Text(
+                    msg,
+                    //  "Translate/Traducción/翻译/ترجمة/Traduction",
+                    style: TextStyle(
+                      color: Globals.themeType == 'Dark'
+                          ? Colors.black87
+                          : Colors.white,
+                      fontSize: 18.0,
+                    ),
+                  )
+                ]),
+              ),
+            ),
+            positionCalculator: (size) => Position(
+                // top: Utility.displayHeight(context) * .120,
+                // left: Utility.displayWidth(context) * 0.030,
+                top: _calculateWidgetOffset(widgetKey).dy + 45,
+                left: _calculateWidgetOffset(widgetKey).dx + leftDx),
+          ));
 
-  BubbleSlide _openSettingsButtonSlide(context) => RelativeBubbleSlide(
-      widgetKey: _openSettingShowCaseKey,
-      shape: const Circle(
-        spreadRadius: 8,
-      ),
-      passThroughMode: PassthroughMode.NONE,
-      child: AbsoluteBubbleSlideChild(
-        widget: Padding(
-          padding: const EdgeInsets.only(top: 0.5),
-          child: SpeechBubble(
-            borderRadius: 2,
-            nipLocation: NipLocation.TOP_LEFT,
-            // nipHeight: 30,
-            color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
-            child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Text(
-                "Accessibility Settings",
-                style: TextStyle(
-                  color: Globals.themeType == 'Dark'
-                      ? Colors.black87
-                      : Colors.white,
-                ),
-              )
-            ]),
-          ),
-        ),
-        positionCalculator: (size) => Position(
-          // top: Utility.displayHeight(context) * .120,
-          // left: Utility.displayWidth(context) * 0.120,
-          top: _calculateWidgetOffset(_openSettingShowCaseKey).dy + 45,
-          left: _calculateWidgetOffset(_openSettingShowCaseKey).dx + 2,
-        ),
-      ));
+  // BubbleSlide _firstSlide(context) => RelativeBubbleSlide(
+  //     widgetKey: _bshowcase,
+  //     shape: const Circle(
+  //       spreadRadius: 8,
+  //     ),
+  //     passThroughMode: PassthroughMode.NONE,
+  //     child: AbsoluteBubbleSlideChild(
+  //       widget: Padding(
+  //         padding: const EdgeInsets.only(top: 0.5),
+  //         child: SpeechBubble(
+  //           borderRadius: 8,
+  //           nipLocation: NipLocation.TOP_LEFT,
+  //           // nipHeight: 30,
+  //           color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
+  //           child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+  //             Text(
+  //               "Translate/Traducción/翻译/ترجمة/Traduction",
+  //               style: TextStyle(
+  //                 color: Globals.themeType == 'Dark'
+  //                     ? Colors.black87
+  //                     : Colors.white,
+  //                 fontSize: 18.0,
+  //               ),
+  //             )
+  //           ]),
+  //         ),
+  //       ),
+  //       positionCalculator: (size) => Position(
+  //           // top: Utility.displayHeight(context) * .120,
+  //           // left: Utility.displayWidth(context) * 0.030,
+  //           top: _calculateWidgetOffset(_bshowcase).dy + 45,
+  //           left: _calculateWidgetOffset(_bshowcase).dx),
+  //     ));
+
+  // BubbleSlide _openSettingsButtonSlide(context) => RelativeBubbleSlide(
+  //     widgetKey: _openSettingShowCaseKey,
+  //     shape: const Circle(
+  //       spreadRadius: 8,
+  //     ),
+  //     passThroughMode: PassthroughMode.NONE,
+  //     child: AbsoluteBubbleSlideChild(
+  //       widget: Padding(
+  //         padding: const EdgeInsets.only(top: 0.5),
+  //         child: SpeechBubble(
+  //           borderRadius: 2,
+  //           nipLocation: NipLocation.TOP_LEFT,
+  //           // nipHeight: 30,
+  //           color: Globals.themeType == 'Dark' ? Colors.white : Colors.black87,
+  //           child: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+  //             Text(
+  //               "Accessibility Settings",
+  //               style: TextStyle(
+  //                 color: Globals.themeType == 'Dark'
+  //                     ? Colors.black87
+  //                     : Colors.white,
+  //               ),
+  //             )
+  //           ]),
+  //         ),
+  //       ),
+  //       positionCalculator: (size) => Position(
+  //         // top: Utility.displayHeight(context) * .120,
+  //         // left: Utility.displayWidth(context) * 0.120,
+  //         top: _calculateWidgetOffset(_openSettingShowCaseKey).dy + 45,
+  //         left: _calculateWidgetOffset(_openSettingShowCaseKey).dx + 2,
+  //       ),
+  //     ));
 
   Offset _calculateWidgetOffset(GlobalKey key) {
     RenderBox box = key.currentContext?.findRenderObject() as RenderBox;

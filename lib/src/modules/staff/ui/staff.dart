@@ -1,10 +1,16 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
-import 'package:Soc/src/modules/ocr/bloc/ocr_bloc.dart';
-import 'package:Soc/src/modules/ocr/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
+import 'package:Soc/src/modules/plus_common_widgets/google_login.dart';
 import 'package:Soc/src/modules/staff/bloc/staff_bloc.dart';
+import 'package:Soc/src/modules/staff/models/staff_icons_List.dart';
+import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
+import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -13,17 +19,19 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/banner_image_widget.dart';
 import 'package:Soc/src/modules/shared/ui/common_list_widget.dart';
+import 'package:Soc/src/widgets/bouncing_widget.dart';
 import 'package:Soc/src/widgets/empty_container_widget.dart';
 import 'package:Soc/src/widgets/error_widget.dart';
+import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../custom/model/custom_setting.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
-import '../../ocr/modal/user_info.dart';
-import '../../ocr/widgets/google_login.dart';
+import '../../graded_plus/modal/user_info.dart';
 import '../../shared/ui/common_grid_widget.dart';
 
 class StaffPage extends StatefulWidget {
@@ -46,8 +54,10 @@ class StaffPage extends StatefulWidget {
 }
 
 class _StaffPageState extends State<StaffPage> {
+  double _width = 100;
+  double _height = 100;
   FocusNode myFocusNode = new FocusNode();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   StaffBloc _bloc = StaffBloc();
   final HomeBloc _homeBloc = new HomeBloc();
@@ -64,10 +74,13 @@ class _StaffPageState extends State<StaffPage> {
   DateTime currentDateTime = DateTime.now(); //DateTime
   int myTimeStamp = DateTime.now().microsecondsSinceEpoch; //To TimeStamp
   final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<int> selectedIndex = ValueNotifier<int>(99);
+  final StudentPlusDetailsModel studentDetails = new StudentPlusDetailsModel();
 
   @override
   void initState() {
     super.initState();
+    _height = 150;
     _bloc.add(StaffPageEvent());
     if (widget.isFromOcr) {
       _homeBloc.add(FetchStandardNavigationBar());
@@ -79,7 +92,6 @@ class _StaffPageState extends State<StaffPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -133,6 +145,7 @@ class _StaffPageState extends State<StaffPage> {
                         height: MediaQuery.of(context).size.height,
                         child: ListView(
                           children: [
+                            //ActionButtonWidget(),
                             BlocBuilder<StaffBloc, StaffState>(
                                 bloc: _bloc,
                                 builder:
@@ -195,9 +208,9 @@ class _StaffPageState extends State<StaffPage> {
               },
               child: EmptyContainer()),
         ),
-        Globals.appSetting.enableGraded == 'false'
-            ? Container()
-            : ocrSectionButton(),
+        // Globals.appSetting.enableGraded == 'false'
+        //     ? Container()
+        //     : ocrSectionButton(),
       ]);
 
   Widget build(BuildContext context) {
@@ -218,17 +231,23 @@ class _StaffPageState extends State<StaffPage> {
                   Globals.appSetting.staffBannerImageC != ''
               ? NestedScrollView(
                   controller: _scrollController,
-                  //  key: globalKey,
+                  // key: _scaffoldKey,
                   headerSliverBuilder:
                       (BuildContext context, bool innerBoxIsScrolled) {
                     return <Widget>[
                       BannerImageWidget(
+                          isStaffPage: true,
+                          staffActionHeight:
+                              MediaQuery.of(context).size.height * 0.18,
+                          staffActionWidget: topActionButtonWidget(
+                            height: MediaQuery.of(context).size.height * 0.18,
+                          ),
                           imageUrl: Globals.appSetting.staffBannerImageC!,
                           bgColor:
                               Globals.appSetting.studentBannerColorC != null
                                   ? Utility.getColorFromHex(
                                       Globals.appSetting.studentBannerColorC!)
-                                  : Colors.transparent)
+                                  : Colors.transparent),
                     ];
                   },
                   body: _body('body1'),
@@ -244,100 +263,114 @@ class _StaffPageState extends State<StaffPage> {
     _homeBloc.add(FetchStandardNavigationBar());
   }
 
-  Widget ocrSectionButton() {
-    return ValueListenableBuilder<bool>(
-        valueListenable: isScrolling,
-        child: Container(),
-        builder: (BuildContext context, bool value, Widget? child) {
-          return AnimatedPositioned(
-            bottom: 40,
-            right: !isScrolling.value
-                ? 8
-                : (Utility.displayWidth(context) / 2) - 80,
-            duration: const Duration(milliseconds: 650),
-            curve: Curves.decelerate,
-            child: Container(
-              width: !isScrolling.value ? 50 : null,
-              height: !isScrolling.value ? 50 : null,
-              // width: !isScrolling.value
-              //     ? null
-              //     : Globals.deviceType == 'phone'
-              //         ? 150
-              //         : 210,
-              child: FloatingActionButton.extended(
-                  isExtended: isScrolling.value,
-                  backgroundColor: AppTheme.kButtonColor,
-                  onPressed: () async {
-                    await Utility.clearStudentInfo(tableName: 'student_info');
-                    await Utility.clearStudentInfo(
-                        tableName: 'history_student_info');
+  staffActionIconsOnTap({required String actionName}) async {
+    await Utility.clearStudentInfo(tableName: 'student_info');
+    await Utility.clearStudentInfo(tableName: 'history_student_info');
 
-                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        "assignment");
+    await FirebaseAnalyticsService.addCustomAnalyticsEvent("assignment");
 
-                    FirebaseAnalyticsService.logLogin();
+    FirebaseAnalyticsService.logLogin();
 
-                    Globals.lastIndex = Globals.controller!.index;
+    Globals.lastIndex = Globals.controller!.index;
 
-                    List<UserInformation> _profileData =
-                        await UserGoogleProfile.getUserProfile();
+    /* ---- Clear login local data base once because we added classroom scope --- */
+    SharedPreferences clearGoogleLoginLocalDb =
+        await SharedPreferences.getInstance();
+    final clearCacheResult =
+        await clearGoogleLoginLocalDb.getBool('delete_local_login_details12');
+    if (clearCacheResult != true) {
+      await UserGoogleProfile.clearUserProfile();
+      await clearGoogleLoginLocalDb.setBool('delete_local_login_details12', true);
+    }
+    /* ---- Clear login local data base once because we added classroom scope --- */
 
-                    if (_profileData.isEmpty) {
-                      // await _launchURL('Google Authentication');
-                      await GoogleLogin.launchURL('Google Authentication',
-                          context, _scaffoldKey, true, '');
-                    } else {
-                      GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+    List<UserInformation> _profileData =
+        await UserGoogleProfile.getUserProfile();
 
-                      Globals.teacherEmailId =
-                          _profileData[0].userEmail!.split('@')[0];
-                      Globals.sessionId =
-                          "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
-                      DateTime currentDateTime = DateTime.now();
-                      _ocrBlocLogs.add(LogUserActivityEvent(
-                          sessionId: Globals.sessionId,
-                          teacherId: Globals.teacherId,
-                          activityId: '2',
-                          accountId: Globals.appSetting.schoolNameC,
-                          accountType: Globals.isPremiumUser == true
-                              ? "Premium"
-                              : "Free",
-                          dateTime: currentDateTime.toString(),
-                          description: 'Graded+ Accessed(Login)',
-                          operationResult: 'Success'));
-                      //    await _getLocalDb();
-                      pushNewScreen(
-                        context,
-                        screen: StartupPage(
-                          isOcrSection: true, //since always opens OCR
-                          isMultipleChoice: false,
-                        ),
-                        withNavBar: false,
-                      );
-                    }
-                  },
-                  icon: Container(
-                    padding: EdgeInsets.only(left: !isScrolling.value ? 4 : 0),
-                    //alignment: Alignment.center,
-                    child: Center(
-                      child: Icon(Icons.add,
-                          size: Globals.deviceType == 'tablet' ? 30 : null,
-                          color: Theme.of(context).backgroundColor),
-                    ),
-                  ),
-                  label: !isScrolling.value
-                      ? Container()
-                      : Utility.textWidget(
-                          text: 'Assignment',
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline2!
-                              .copyWith(
-                                  color: Theme.of(context).backgroundColor))),
-            ),
-          );
-        });
+    if (_profileData.isEmpty) {
+      // await _launchURL('Google Authentication');
+      var value = await GoogleLogin.launchURL(
+          'Google Authentication', context, _scaffoldKey, '', '');
+      if (value == true) {
+        navigatorToScreen(actionName: actionName);
+      }
+    } else {
+      GoogleLogin.verifyUserAndGetDriveFolder(_profileData);
+
+      Globals.teacherEmailId = _profileData[0].userEmail!.split('@')[0];
+      Globals.sessionId = "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+      DateTime currentDateTime = DateTime.now();
+
+      //    await _getLocalDb();
+      navigatorToScreen(actionName: actionName);
+    }
+  }
+
+  navigatorToScreen({required String actionName}) {
+    if (Overrides.STANDALONE_GRADED_APP == true) {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => GradedLandingPage()));
+    } else {
+      if (actionName == 'GRADED+') {
+        //Graded+ login activity
+        _ocrBlocLogs.add(LogUserActivityEvent(
+            activityType: 'GRADED+',
+            sessionId: Globals.sessionId,
+            teacherId: Globals.teacherId,
+            activityId: '2',
+            accountId: Globals.appSetting.schoolNameC,
+            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            dateTime: currentDateTime.toString(),
+            description: 'Graded+ Accessed(Login)',
+            operationResult: 'Success'));
+
+        pushNewScreen(
+          context,
+          screen: StartupPage(
+            isOcrSection: true, //since always opens OCR
+            isMultipleChoice: false,
+          ),
+          withNavBar: false,
+        );
+      } else if (actionName == 'PBIS+') {
+        _ocrBlocLogs.add(LogUserActivityEvent(
+            activityType: 'PBIS+',
+            sessionId: Globals.sessionId,
+            teacherId: Globals.teacherId,
+            activityId: '2',
+            accountId: Globals.appSetting.schoolNameC,
+            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            dateTime: currentDateTime.toString(),
+            description: 'PBIS+ Accessed(Login)',
+            operationResult: 'Success'));
+
+        pushNewScreen(
+          context,
+          screen: PBISPlusHome(),
+          withNavBar: false,
+        );
+      } else if (actionName == 'STUDENT+') {
+        _ocrBlocLogs.add(LogUserActivityEvent(
+            activityType: 'STUDENT+',
+            sessionId: Globals.sessionId,
+            teacherId: Globals.teacherId,
+            activityId: '2',
+            accountId: Globals.appSetting.schoolNameC,
+            accountType: Globals.isPremiumUser == true ? "Premium" : "Free",
+            dateTime: currentDateTime.toString(),
+            description: 'STUDENT+ Accessed(Login)',
+            operationResult: 'Success'));
+
+        pushNewScreen(
+          context,
+          screen: StudentPlusSearchScreen(
+              fromStudentPlusDetailPage: false,
+              index: 0,
+              studentDetails: studentDetails),
+          withNavBar: false,
+        );
+      }
+    }
   }
 
   Widget textwidget({required String text, required dynamic textTheme}) {
@@ -352,20 +385,100 @@ class _StaffPageState extends State<StaffPage> {
     );
   }
 
-  _getLocalDb() async {
-    LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
-
-    List<CustomRubricModal> _localData = await _localDb.getData();
-
-    if (_localData.isEmpty) {
-      RubricScoreList.scoringList.forEach((CustomRubricModal e) async {
-        await _localDb.addData(e);
-      });
-      await _localDb.close();
-    } else {
-      RubricScoreList.scoringList = [];
-      RubricScoreList.scoringList.addAll(_localData);
-      // _localDb.close()
-    }
+  Widget topActionButtonWidget({required double height}) {
+    return ValueListenableBuilder(
+        valueListenable: selectedIndex,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return Container(
+              //alignment: AlignmentGeometry(),
+              // padding: EdgeInsets.symmetric(horizontal: 36),
+              height: height,
+              width: MediaQuery.of(context).size.height * 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: StaffIconsList.staffIconsList
+                    .map<Widget>((element) => GestureDetector(
+                          onTap: () async {
+                            selectedIndex.value =
+                                StaffIconsList.staffIconsList.indexOf(element);
+                            staffActionIconsOnTap(actionName: element.iconName);
+                          },
+                          child: Bouncing(
+                              child: AnimatedContainer(
+                            padding: EdgeInsets.only(bottom: 5),
+                            decoration: BoxDecoration(
+                              color: selectedIndex.value ==
+                                      StaffIconsList.staffIconsList
+                                          .indexOf(element)
+                                  ? AppTheme.kSelectedColor
+                                  : Colors.grey,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                            ),
+                            duration: Duration(microseconds: 100),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xff000000) !=
+                                        Theme.of(context).backgroundColor
+                                    ? Color(0xffF7F8F9)
+                                    : Color(0xff111C20),
+                                border: Border.all(
+                                  color: selectedIndex.value ==
+                                          StaffIconsList.staffIconsList
+                                              .indexOf(element)
+                                      ? AppTheme.kSelectedColor
+                                      : Colors.grey,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
+                              child: Container(
+                                height: height / 1.7,
+                                width: height / 1.7,
+                                decoration: BoxDecoration(
+                                    //color: AppTheme.kButtonColor,
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: element.iconUrl.contains('pbis')
+                                          ? height / 4.3
+                                          : height / 3,
+                                      margin: EdgeInsets.all(6),
+                                      child: Image(
+                                        image:
+                                            Image.asset(element.iconUrl).image,
+                                      ),
+                                    ),
+                                    element.iconUrl
+                                            .contains('landingPage_image')
+                                        ? Container()
+                                        : SpacerWidget(4),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: FittedBox(
+                                        child: Utility.textWidget(
+                                            text: element.iconName,
+                                            textTheme: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1,
+                                            context: context),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )),
+                        ))
+                    .toList(),
+              ));
+        });
   }
 }

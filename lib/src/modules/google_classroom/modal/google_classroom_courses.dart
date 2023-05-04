@@ -1,4 +1,3 @@
-import 'package:Soc/src/modules/google_classroom/modal/classroom_student_list.dart';
 import 'package:hive/hive.dart';
 part 'google_classroom_courses.g.dart';
 
@@ -22,17 +21,19 @@ class GoogleClassroomCourses {
   String? courseWorkId;
   @HiveField(8)
   String? assessmentCId;
-  GoogleClassroomCourses({
-    this.courseId = '',
-    this.name,
-    this.section,
-    this.descriptionHeading,
-    this.room,
-    this.studentList,
-    this.enrollmentCode,
-    this.courseWorkId = '',
-    this.assessmentCId,
-  });
+  @HiveField(9)
+  String? courseWorkURL;
+  GoogleClassroomCourses(
+      {this.courseId = '',
+      this.name,
+      this.section,
+      this.descriptionHeading,
+      this.room,
+      this.studentList,
+      this.enrollmentCode,
+      this.courseWorkId = '',
+      this.assessmentCId,
+      this.courseWorkURL});
 
   factory GoogleClassroomCourses.fromJson(Map<dynamic, dynamic> json) =>
       GoogleClassroomCourses(

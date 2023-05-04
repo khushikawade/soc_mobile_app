@@ -1,7 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/news/ui/newdescription.dart';
 import 'package:Soc/src/modules/staff_directory/staff_detail_page.dart';
-import 'package:Soc/src/modules/social/ui/socialeventdescription.dart';
+import 'package:Soc/src/modules/social/ui/social_detail_page.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/app_logo_widget.dart';
 import 'package:Soc/src/widgets/backbuttonwidget.dart';

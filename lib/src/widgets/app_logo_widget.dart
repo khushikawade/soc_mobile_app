@@ -22,6 +22,7 @@ class AppLogoWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
+
               //width: 130,
               padding: EdgeInsets.only(left: marginLeft ?? 0),
               height:
