@@ -260,58 +260,58 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           setState(() {});
 
           //This will return the options having below mentioned screens. For any other option name, it will not include in the bottom navbar list
-          item = item.toLowerCase();
+          // item = item.toLowerCase();
           if (persistentBottomNavBarItemList.length <
               Globals.appSetting.bottomNavigationC!.split(";").length) {
-            if (item.contains('news')) {
+            if (item.toLowerCase().contains('news')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
               ));
-            } else if (item.contains('student')) {
+            } else if (item.toLowerCase().contains('student')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
               ));
-            } else if (item.contains('families')) {
+            } else if (item.toLowerCase().contains('families')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
               ));
-            } else if (item.contains('staff')) {
+            } else if (item.toLowerCase().contains('staff')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
               ));
-            } else if (item.contains('social')) {
+            } else if (item.toLowerCase().contains('social')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
               ));
-            } else if (item.contains('about')) {
+            } else if (item.toLowerCase().contains('about')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
               ));
-            } else if (item.contains('school')) {
+            } else if (item.toLowerCase().contains('school')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
               ));
-            } else if (item.contains('resource')) {
+            } else if (item.toLowerCase().contains('resource')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
               ));
-            } else if (item.contains('calendar')) {
+            } else if (item.toLowerCase().contains('calendar')) {
               persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
                 icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
                 activeColorPrimary: Theme.of(context).primaryColor,
