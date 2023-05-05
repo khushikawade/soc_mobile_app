@@ -170,70 +170,59 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<Widget> _buildScreens() {
     _screens.clear();
 
-    Globals.appSetting.isCustomApp!
-        ? addScreen()
-        : Globals.appSetting.bottomNavigationC!
-            .split(";")
-            .forEach((String element) {
-            element = element.toLowerCase();
-            if (_screens.length <
-                Globals.appSetting.bottomNavigationC!.split(";").length) {
-              if (element.contains('news')) {
-                _screens.add(NewsPage());
-              } else if (element.contains('student')) {
-                _screens.add(StudentPage(
-                  homeObj: widget.homeObj,
-                  isCustomSection: false,
-                ));
-              } else if (element.contains('families')) {
-                _screens.add(
-                  FamilyPage(
-                    obj: widget.homeObj,
-                    isCustomSection: false,
-                  ),
-                );
-              } else if (element.contains('staff')) {
-                _screens.add(StaffPage(
-                  isFromOcr: false,
-                  isCustomSection: false,
-                ));
-              } else if (element.contains('social')) {
-                _screens.add(
-                  SocialNewPage(),
-                );
-              } else if (element.contains('about')) {
-                _screens.add(
-                  AboutPage(isCustomSection: false),
-                );
-              } else if (element.contains('school')) {
-                _screens.add(
-                  SchoolDirectoryPage(
-                    isStandardPage: true,
-                    isSubmenu: false,
-                    isCustomSection: false,
-                  ),
-                );
-              } else if (element.contains('resource')) {
-                _screens.add(
-                  ResourcesPage(isCustomSection: false),
-                );
-              } else if (element.contains('calendar')) {
-                _screens.add(
-                  EventPage(
-                    isStandardSelection: true,
-                    isMainPage: true,
-                    appBarTitle: '',
-                    isAppBar: true,
-                    isBottomSheet: true,
-                    language: Globals.selectedLanguage,
-                    calendarId: Globals.appSetting.calendarId.toString(),
-                  ),
-                );
-              }
-            }
-          });
+    if (Globals.appSetting.isCustomApp!) {
+      addScreen();
+      return _screens;
+    } else {
+      return Globals.appSetting.bottomNavigationC!.split(";").map<Widget>(
+        (item) {
+          // setState(() {});
 
-    return _screens;
+          if (item.contains('News')) {
+            return NewsPage();
+          } else if (item.contains('Student')) {
+            return StudentPage(
+              homeObj: widget.homeObj,
+              isCustomSection: false,
+            );
+          } else if (item.contains('Families')) {
+            return FamilyPage(
+              obj: widget.homeObj,
+              isCustomSection: false,
+            );
+          } else if (item.contains('Staff')) {
+            return StaffPage(
+              isFromOcr: false,
+              isCustomSection: false,
+            );
+          } else if (item.contains('Social')) {
+            return SocialNewPage();
+          } else if (item.contains('About')) {
+            return AboutPage(isCustomSection: false);
+          } else if (item.contains('School')) {
+            return SchoolDirectoryPage(
+              isStandardPage: true,
+              isSubmenu: false,
+              isCustomSection: false,
+            );
+          } else if (item.contains('Resource')) {
+            return ResourcesPage(isCustomSection: false);
+          } else if (item.contains('Calendar')) {
+            return EventPage(
+              isStandardSelection: true,
+              isMainPage: true,
+              appBarTitle: '',
+              isAppBar: true,
+              isBottomSheet: true,
+              language: Globals.selectedLanguage,
+              calendarId: Globals.appSetting.calendarId.toString(),
+            );
+          }
+
+          return Container();
+        },
+      ).toList();
+    }
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -248,80 +237,29 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         },
       ).toList();
     } else {
-      Globals.appSetting.bottomNavigationC!.split(";").forEach(
+      // Don't use forEach This lead to not update the colors at bottom navbar
+      return Globals.appSetting.bottomNavigationC!
+          .split(";")
+          .map<PersistentBottomNavBarItem>(
         (item) {
-          //For red dot indictor of news section
+          /*---------------Check for red dot indicator---------------*/
           if (item.split("_")[0].toString().toLowerCase().contains("news")) {
             Globals.newsIndex =
                 Globals.appSetting.bottomNavigationC!.split(";").indexOf(item);
 
             addNewsIndex(Globals.newsIndex);
           }
-          setState(() {});
 
-          //This will return the options having below mentioned screens. For any other option name, it will not include in the bottom navbar list
-          item = item.toLowerCase();
-          if (persistentBottomNavBarItemList.length <
-              Globals.appSetting.bottomNavigationC!.split(";").length) {
-            if (item.contains('news')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.contains('student')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.contains('families')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.contains('staff')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.contains('social')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.contains('about')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.contains('school')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.contains('resource')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.contains('calendar')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            }
-          }
+          setState(() {});
+          /*---------------Check for red dot indicator---------------*/
+
+          return PersistentBottomNavBarItem(
+            icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+            activeColorPrimary: Theme.of(context).primaryColor,
+            inactiveColorPrimary: CupertinoColors.systemGrey,
+          );
         },
-      );
-      return persistentBottomNavBarItemList;
+      ).toList();
     }
   }
 
