@@ -724,7 +724,7 @@ class _ActionInteractionButtonWidgetState
         _socialBloc.add(SocialAction(
             context: context,
             scaffoldKey: widget.scaffoldKey,
-            id: recordObject.id,
+            id: widget.obj.id, //recordObject.id,
             title: widget.title,
             like: 0,
             thanks: 0,
