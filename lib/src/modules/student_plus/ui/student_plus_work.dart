@@ -76,7 +76,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SpacerWidget(StudentPlusOverrides.KVerticalSpace / 12),
+                SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -100,6 +100,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                     // filterIcon()
                   ],
                 ),
+                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 StudentPlusInfoSearchBar(
                   hintText:
                       '${widget.studentDetails.firstNameC ?? ''} ${widget.studentDetails.lastNameC ?? ''}',
@@ -119,7 +120,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   kLabelSpacing: _kLabelSpacing,
                   focusNode: myFocusNode,
                 ),
-                SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
+                SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
                 listViewWidget(),
                 SpacerWidget(20)
               ],
@@ -135,57 +136,57 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
     return Stack(
       alignment: Alignment.topRight,
       children: [
-        IconButton(
-            onPressed: () {
-              /*-------------------------User Activity Track START----------------------------*/
-              Utility.updateLogs(
-                  activityType: 'STUDENT+',
-                  activityId: '39',
-                  description: 'Filter Record STUDENT+',
-                  operationResult: 'Success');
+        GestureDetector(
+          onTap: () {
+            /*-------------------------User Activity Track START----------------------------*/
+            Utility.updateLogs(
+                activityType: 'STUDENT+',
+                activityId: '39',
+                description: 'Filter Record STUDENT+',
+                operationResult: 'Success');
 
-              FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                  'Filter Record STUDENT+'.toLowerCase().replaceAll(" ", "_"));
-              /*-------------------------User Activity Track END----------------------------*/
+            FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                'Filter Record STUDENT+'.toLowerCase().replaceAll(" ", "_"));
+            /*-------------------------User Activity Track END----------------------------*/
 
-              List<String> subjectList =
-                  StudentPlusUtility.getSubjectList(list: list);
-              List<String> teacherList =
-                  StudentPlusUtility.getTeacherList(list: list);
-              showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                isScrollControlled: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(42),
-                    topRight: Radius.circular(42),
-                  ),
+            List<String> subjectList =
+                StudentPlusUtility.getSubjectList(list: list);
+            List<String> teacherList =
+                StudentPlusUtility.getTeacherList(list: list);
+            showModalBottomSheet(
+              backgroundColor: Colors.transparent,
+              context: context,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(42),
+                  topRight: Radius.circular(42),
                 ),
-                builder: (_) => LayoutBuilder(builder:
-                    (BuildContext context, BoxConstraints constraints) {
-                  return StudentPlusFilterWidget(
-                    filterNotifier: filterNotifier,
-                    subjectList: subjectList,
-                    teacherList: teacherList,
-                    height: constraints.maxHeight < 750 &&
-                            Globals.deviceType == "phone"
-                        ? MediaQuery.of(context).size.height * 0.4 //0.45
-                        : Globals.deviceType == "phone"
-                            ? MediaQuery.of(context).size.height * 0.42 //0.45
-                            : MediaQuery.of(context).size.height * 0.25,
-                  );
-                }),
-              );
-              //  filterBottomSheet();
-            },
-            icon: Icon(
-              IconData(0xe87d,
-                  fontFamily: Overrides.kFontFam,
-                  fontPackage: Overrides.kFontPkg),
-              color: AppTheme.kButtonColor,
-              size: 26,
-            )),
+              ),
+              builder: (_) => LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                return StudentPlusFilterWidget(
+                  filterNotifier: filterNotifier,
+                  subjectList: subjectList,
+                  teacherList: teacherList,
+                  height: constraints.maxHeight < 750 &&
+                          Globals.deviceType == "phone"
+                      ? MediaQuery.of(context).size.height * 0.4 //0.45
+                      : Globals.deviceType == "phone"
+                          ? MediaQuery.of(context).size.height * 0.42 //0.45
+                          : MediaQuery.of(context).size.height * 0.25,
+                );
+              }),
+            );
+          },
+          child: Icon(
+            IconData(0xe87d,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            color: AppTheme.kButtonColor,
+            size: 26,
+          ),
+        ),
         ValueListenableBuilder(
             valueListenable: filterNotifier,
             child: Container(),
