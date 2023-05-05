@@ -78,7 +78,7 @@ class _SocialNewPageState extends State<SocialNewPage> {
     return ListView.builder(
       physics: AlwaysScrollableScrollPhysics(),
       controller: _scrollController,
-      shrinkWrap: true,
+      // shrinkWrap: true,
       scrollDirection: Axis.vertical,
       itemCount:
           obj.length + 1, //+1 to show loading indicator at end of the list
@@ -187,13 +187,8 @@ class _SocialNewPageState extends State<SocialNewPage> {
           description: obj.title! != null && obj.title!.length > 1
               ? "${obj.title!.toString().replaceAll(new RegExp(r'[\\]+'), '\n').replaceAll("n.", " ").replaceAll("\nn", "\n").replaceAll('⁦', '').replaceAll('⁩', '')}"
               : '',
-          actionIcon: Container(
-              child: actionButton(
-            mainObj,
-            obj,
-            index,
-            reLoad,
-          )),
+          actionIcon:
+              Container(child: actionButton(mainObj, obj, index, reLoad)),
           url: (obj.mediaContent != null &&
                   obj.mediaContent != '' &&
                   obj.mediaContent != null &&

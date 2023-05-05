@@ -92,7 +92,7 @@ class _ActionInteractionButtonWidgetState
     support.value = widget.obj.supportCount ?? 0;
     view.value = widget.obj.viewCount ?? 0;
 
-    viewCountIncrement(widget.obj); //Calling in second time
+    // viewCountIncrement(widget.obj); //Calling in second time
   }
 
   Widget build(BuildContext context) {
@@ -698,6 +698,7 @@ class _ActionInteractionButtonWidgetState
     // print('Current Post View : ${widget.obj.id}');
 
     //To make sure not increasing the count in bulk for same feed
+
     if (widget.obj.id != Globals.feedPostId) {
       Globals.feedPostId = widget.obj.id;
 
