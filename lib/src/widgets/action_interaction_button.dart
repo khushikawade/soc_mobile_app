@@ -92,6 +92,7 @@ class _ActionInteractionButtonWidgetState
     support.value = widget.obj.supportCount ?? 0;
     view.value = widget.obj.viewCount ?? 0;
 
+    //commented due to adversely increasing the view count
     // viewCountIncrement(widget.obj); //Calling in second time
   }
 
