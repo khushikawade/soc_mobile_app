@@ -250,68 +250,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             addNewsIndex(Globals.newsIndex);
           }
 
-<<<<<<< HEAD
-          //This will return the options having below mentioned screens. For any other option name, it will not include in the bottom navbar list
-          // item = item.toLowerCase();
-          if (persistentBottomNavBarItemList.length <
-              Globals.appSetting.bottomNavigationC!.split(";").length) {
-            if (item.toLowerCase().contains('news')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.toLowerCase().contains('student')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.toLowerCase().contains('families')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.toLowerCase().contains('staff')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.toLowerCase().contains('social')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.toLowerCase().contains('about')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.toLowerCase().contains('school')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.toLowerCase().contains('resource')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            } else if (item.toLowerCase().contains('calendar')) {
-              persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-                icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
-                activeColorPrimary: Theme.of(context).primaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-              ));
-            }
-          }
-=======
           setState(() {});
           /*---------------Check for red dot indicator---------------*/
 
@@ -320,7 +258,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
->>>>>>> dev_quarter2_2k23
         },
       ).toList();
     }
