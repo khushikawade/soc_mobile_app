@@ -196,7 +196,7 @@ class _StudentPlusWorkScreenState extends State<StudentPlusWorkScreen> {
                   : Wrap(
                       children: [
                         Container(
-                          margin: EdgeInsets.only(top: 6, right: 6),
+                          // margin: EdgeInsets.only(top: 6, right: 6),
                           height: 7,
                           width: 7,
                           decoration: BoxDecoration(
