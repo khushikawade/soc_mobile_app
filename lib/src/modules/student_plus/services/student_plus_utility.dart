@@ -167,7 +167,9 @@ class StudentPlusUtility {
     for (var i = 0; i < list.length; i++) {
       if (!teacherList.contains(
               "${list[i].firstName ?? ''} ${list[i].lastName ?? ''}") &&
-          list[i].subjectC != null) {
+          list[i].subjectC != null &&
+          (list[i].firstName != " " && list[i].lastName != " ") &&
+          (list[i].firstName != null && list[i].lastName != null)) {
         teacherList.add("${list[i].firstName ?? ''} ${list[i].lastName ?? ''}");
       }
     }

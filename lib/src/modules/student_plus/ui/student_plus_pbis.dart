@@ -72,13 +72,19 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
             appBar: StudentPlusAppBar(
               titleIconCode: 0xe891,
             ),
-            body: body()),
+            body: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+              print(constraints.maxHeight);
+              // Set the maximum height of the bottom sheet based on the screen size
+              // print(constraints.maxHeight);
+              return body(constraints.maxHeight);
+            })),
       ],
     );
   }
 
   /*--------------------- Main Body ---------------------*/
-  Widget body() {
+  Widget body(constraint) {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
@@ -115,15 +121,16 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
             onItemChanged: null,
           ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding / 2),
-          pbisDashboardWidget()
+          pbisDashboardWidget(constraint)
         ],
       ),
     );
   }
 
   /* --------------------- widget to show pbis Dashboard --------------------- */
-  Widget pbisDashboardWidget() {
+  Widget pbisDashboardWidget(constraint) {
     return PBISPlusStudentDashBoard(
+      constraint: constraint,
       isValueChangeNotice: isValueChangeNotice,
       isFromStudentPlus: true,
       studentValueNotifier: studentValueNotifier,

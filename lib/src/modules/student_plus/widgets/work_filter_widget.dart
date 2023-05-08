@@ -5,6 +5,7 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -208,8 +209,9 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                         ? widget.subjectList.length
                         : widget.teacherList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return widget.teacherList[index] != null &&
-                              widget.teacherList[index] != " "
+                      return (selectedTypeFilterIndex != 1
+                              ? (widget.teacherList.length > 0)
+                              : widget.subjectList.length > 0)
                           ? _buildRadioList(
                               index,
                               context,
@@ -217,7 +219,13 @@ class _StudentPlusFilterWidgetState extends State<StudentPlusFilterWidget> {
                                   ? widget.subjectList[index]
                                   : widget.teacherList[index],
                             )
-                          : Container();
+                          : NoDataFoundErrorWidget(
+                              marginTop: 0,
+                              isResultNotFoundMsg: false,
+                              isNews: false,
+                              isEvents: false,
+                              errorMessage: 'No Data Found',
+                            );
                     },
                   ),
                 ),
