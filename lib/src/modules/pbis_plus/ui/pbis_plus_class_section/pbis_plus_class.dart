@@ -638,50 +638,57 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   }
 
   Widget noClassroomFound() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Utility.textWidget(
-              text:
-                  'Uh oh! Looks like we\'re unable to import your roster from Google Classroom.',
-              context: context,
-              textAlign: TextAlign.center,
-              textTheme: Theme.of(context).textTheme.headline2!),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-            child: FloatingActionButton.extended(
-                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-                onPressed: () async {
-                  FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      'Contact solved button pressed class screen PBIS+'
-                          .toLowerCase()
-                          .replaceAll(" ", "_"));
+    return RefreshIndicator(
+        color: AppTheme.kButtonColor,
+        key: refreshKey,
+        onRefresh: refreshPage,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: ListView(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                  height: MediaQuery.of(context).size.height *
+                      0.22), //Required to manage the ceneter alignment of listview
+              Utility.textWidget(
+                  text:
+                      'Uh oh! Looks like we\'re unable to import your roster from Google Classroom.',
+                  context: context,
+                  textAlign: TextAlign.center,
+                  textTheme: Theme.of(context).textTheme.headline2!),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                child: FloatingActionButton.extended(
+                    backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                    onPressed: () async {
+                      FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                          'Contact solved button pressed class screen PBIS+'
+                              .toLowerCase()
+                              .replaceAll(" ", "_"));
 
-                  Utility.launchMailto(
-                      'PBIS+ | Google Classroom Import | ${Globals.appSetting.schoolNameC}',
-                      '');
-                },
-                label: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Utility.textWidget(
-                        text: 'Contact Solved',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(
-                                color: Theme.of(context).backgroundColor)),
-                  ],
-                )),
+                      Utility.launchMailto(
+                          'PBIS+ | Google Classroom Import | ${Globals.appSetting.schoolNameC}',
+                          '');
+                    },
+                    label: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Utility.textWidget(
+                            text: 'Contact Solved',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(
+                                    color: Theme.of(context).backgroundColor)),
+                      ],
+                    )),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 
   Future refreshPage() async {

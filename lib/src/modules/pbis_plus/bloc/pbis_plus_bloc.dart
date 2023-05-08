@@ -54,7 +54,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: _localData);
         }
-        
+
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
             accessToken: userProfileLocalData[0].authorizationToken,
@@ -93,11 +93,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
       } catch (e) {
         print(e);
-        LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(Strings.googleClassroomCoursesList);
 
+        LocalDatabase<ClassroomCourse> _localDb =
+            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
-        _localDb.close();
+        // _localDb.close();
 
         yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
         // sort(obj: _localData);
