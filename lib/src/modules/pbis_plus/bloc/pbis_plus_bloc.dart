@@ -17,6 +17,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'pbis_plus_event.dart';
 part 'pbis_plus_state.dart';
@@ -46,6 +47,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         LocalDatabase<ClassroomCourse> _localDb =
             LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
+
+        //Clear Roster local data to manage loading issue
+        SharedPreferences clearRosterCache =
+            await SharedPreferences.getInstance();
+        final clearCacheResult =
+            await clearRosterCache.getBool('delete_local_Roster_cache');
+
+        if (clearCacheResult != true) {
+          await _localDb.close();
+          _localData.clear();
+          await clearRosterCache.setBool('delete_local_Roster_cache', true);
+        }
 
         if (_localData.isEmpty) {
           yield PBISPlusLoading();
