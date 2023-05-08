@@ -768,14 +768,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             .map((student) => student.profile?.id)
             .where((id) => id != null && id.isNotEmpty)
             .toSet() // Convert to Set to remove duplicates
-            .map((id) => "'$id'")
-            .join(', ');
+            .map((id) => "$id")
+            .join("', '");
 
         // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
       }
-
+      print(body);
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/reset',
           headers: {
