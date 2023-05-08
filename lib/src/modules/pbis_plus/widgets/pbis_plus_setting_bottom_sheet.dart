@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -15,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../../styles/theme.dart';
+import 'package:collection/collection.dart';
 
 // ignore: must_be_immutable
 class PBISPlusSettingBottomSheet extends StatefulWidget {
@@ -563,9 +566,15 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 onPressed: () async {
                   //this is for default  'ALL' selected
                   if (selectedStudentList?.isEmpty ?? true) {
-                    selectedStudentList = await getClassroomStudents(
+                    selectedStudentList = getClassroomStudents(
                         classroomCourses: widget.googleClassroomCourseworkList,
                         isSubmitOnTap: true);
+                  } else {
+                    //this is for selected students
+                    selectedStudentList = getAllStudentsForCourse(
+                      selectedStudentList: selectedStudentList,
+                      classroomCourses: widget.googleClassroomCourseworkList,
+                    );
                   }
 
                   // Create a new ClassroomCourse object and add all selected students to it.
@@ -888,12 +897,17 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     final uniqueStudents = <ClassroomStudents>[];
 
     for (final course in classroomCourses) {
-      uniqueStudents.addAll(course.students?.where((student) =>
-              !uniqueStudents
-                  .any((s) => s.profile?.id == student.profile?.id) &&
-              (isSubmitOnTap != true ||
-                  student.profile?.name?.fullName != 'All')) ??
-          []);
+      for (final student in course.students!) {
+        final isStudentUnique = (isSubmitOnTap != true ||
+                student.profile?.name?.fullName != 'All') &&
+            (isSubmitOnTap == true ||
+                !uniqueStudents
+                    .any((s) => s.profile?.id == student.profile?.id));
+        if (isStudentUnique) {
+          student.profile!.courseName = course.name;
+          uniqueStudents.add(student);
+        }
+      }
     }
 
     uniqueStudents.sort((a, b) {
@@ -976,6 +990,47 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     } else {
       //CHECK AND FETCH FOLDER ID TO CREATE SPREADSHEET In
       _checkDriveFolderExistsOrNot();
+    }
+  }
+
+  List<ClassroomStudents> getAllStudentsForCourse(
+      {required List<ClassroomStudents> selectedStudentList,
+      required List<ClassroomCourse> classroomCourses}) {
+    try {
+      //add all student that contains same ids
+      List<ClassroomStudents> newStudentList = [];
+
+      for (ClassroomStudents student in selectedStudentList) {
+        for (ClassroomCourse course in classroomCourses) {
+          if (course.name != 'All' && course.students != null) {
+            for (ClassroomStudents studentInCourse in course.students!) {
+              if (studentInCourse.profile?.id == student.profile?.id) {
+                ClassroomStudents newStudent = ClassroomStudents(
+                  profile: ClassroomProfile(
+                    courseName: course.name,
+                    emailAddress: studentInCourse.profile?.emailAddress,
+                    engaged: studentInCourse.profile?.engaged,
+                    helpful: studentInCourse.profile?.helpful,
+                    id: studentInCourse.profile?.id,
+                    name: studentInCourse.profile?.name,
+                    niceWork: studentInCourse.profile?.niceWork,
+                    permissions: studentInCourse.profile?.permissions,
+                    photoUrl: studentInCourse.profile?.photoUrl,
+                  ),
+                );
+
+                newStudentList.add(newStudent);
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      return newStudentList;
+    } catch (e) {
+      print(e);
+      return [];
     }
   }
 }

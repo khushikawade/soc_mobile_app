@@ -1163,7 +1163,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isSpreadsheetTabsUpdated == true) {
           yield PBISPlusUpdateDataOnSpreadSheetSuccess();
         } else {
-          ErrorState(
+          yield ErrorState(
               errorMsg: isBlankSpreadsheetTabsAdded != true
                   ? isBlankSpreadsheetTabsAdded.toString()
                   : isSpreadsheetTabsUpdated.toString());
@@ -1749,7 +1749,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                           Uri.encodeFull(query),
           headers: headers,
           isCompleteUrl: true);
-      // print(response.statusCode);
+
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
@@ -2995,6 +2995,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       ];
 
       classroomCourseList.asMap().forEach((index, course) {
+        int startColumnIndex =
+            (course.name == 'Students' && classroomCourseList.length == 1)
+                ? 2
+                : 1;
         if (index == 0) {
           //  change first default tab heading row text style.
           // change every tab heading row text style.
@@ -3016,7 +3020,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               "range": {
                 "sheetId": index,
                 "startRowIndex": 1,
-                "startColumnIndex": 1
+                "startColumnIndex": startColumnIndex
               },
               "cell": {
                 "userEnteredFormat": {"horizontalAlignment": "CENTER"}
@@ -3052,7 +3056,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               "range": {
                 "sheetId": index,
                 "startRowIndex": 1,
-                "startColumnIndex": 1
+                "startColumnIndex": startColumnIndex
               },
               "cell": {
                 "userEnteredFormat": {"horizontalAlignment": "CENTER"}
@@ -3149,10 +3153,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     try {
       return classroomCourseworkList.map((course) {
         return {
-          'range': '${course.name}!A1:E${course.students!.length + 1}',
+          // 'range': '${course.name}!A1:E${course.students!.length + 1}',
+          'range':
+              '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}',
           'majorDimension': 'ROWS',
           //building row with the student information
-          'values': _buildRows(students: course.students ?? []),
+          'values': _buildRows(
+              students: course.students ?? [],
+              course: (course.name == 'Students' &&
+                  classroomCourseworkList.length == 1)),
         };
       }).toList();
     } catch (e) {
@@ -3164,14 +3173,39 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
   /*------------------------------------------PART C----------------------------------------------*/
 
-  List<List<dynamic>> _buildRows({required List<ClassroomStudents> students}) {
+  List<List<dynamic>> _buildRows(
+      {required List<ClassroomStudents> students, required bool course}) {
     try {
+      List<String> headingRowName = // always first row for the Headings
+          ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'];
+
+      if (course == true) {
+        headingRowName.insert(1, 'Course');
+      }
+
+      // return [
+      //   // always first row for the Headings
+      //   ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'],
+
+      //   //stduent information
+      //   ...students.map((student) => [
+      //         student.profile!.name!.fullName,
+      //         student.profile!.engaged,
+      //         student.profile!.niceWork,
+      //         student.profile!.helpful,
+      //         student.profile!.engaged! +
+      //             student.profile!.niceWork! +
+      //             student.profile!.helpful!,
+      //       ]),
+      // ];
       return [
         // always first row for the Headings
-        ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'],
+        headingRowName,
+
         //stduent information
         ...students.map((student) => [
               student.profile!.name!.fullName,
+              if (course == true) student.profile!.courseName,
               student.profile!.engaged,
               student.profile!.niceWork,
               student.profile!.helpful,
@@ -3180,6 +3214,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   student.profile!.helpful!,
             ]),
       ];
+
+      // students
+      //     .map((ClassroomStudents student) => [
+      //           student.profile!.name!.fullName,
+      //           student.profile!.engaged,
+      //           student.profile!.niceWork,
+      //           student.profile!.helpful,
+      //           student.profile!.engaged! +
+      //               student.profile!.niceWork! +
+      //               student.profile!.helpful!,
+      //           if (course == true)
+      //             student.profile!.courseName, // Add this line
+      //         ])
+      //     .toList();
     } catch (e) {
       return [];
     }

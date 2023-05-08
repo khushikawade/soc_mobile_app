@@ -744,12 +744,20 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       } else if //if user reset student
           (type == "Students") {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
+        // String studentIds = selectedCourses
+        //     .expand((course) => course.students ?? [])
+        //     .map((student) => student.profile?.id)
+        //     .where((id) => id != null && id.isNotEmpty)
+        //     .map((id) => "$id")
+        //     .join("', '");
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
             .map((student) => student.profile?.id)
             .where((id) => id != null && id.isNotEmpty)
-            .map((id) => "$id")
-            .join("', '");
+            .toSet() // Convert to Set to remove duplicates
+            .map((id) => "'$id'")
+            .join(', ');
+
         // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
@@ -763,6 +771,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           },
           body: body,
           isGoogleApi: true);
+
       if (response.statusCode == 200) {
         return true;
       } else if (retry > 0) {
