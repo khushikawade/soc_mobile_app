@@ -97,6 +97,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         LocalDatabase<ClassroomCourse> _localDb =
             LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
+        sort(obj: _localData);
         // _localDb.close();
 
         yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
