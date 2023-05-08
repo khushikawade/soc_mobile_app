@@ -1,5 +1,4 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
@@ -19,7 +18,6 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class PBISPlusStudentDashBoard extends StatefulWidget {
   ValueNotifier<ClassroomStudents> studentValueNotifier;

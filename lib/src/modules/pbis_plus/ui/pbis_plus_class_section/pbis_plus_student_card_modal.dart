@@ -240,65 +240,6 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                 ),
               ),
             ),
-            // Positioned(
-            //   top: widget.isFromDashboardPage == true
-            //       ? MediaQuery.of(context).size.height * 0.04
-            //       : MediaQuery.of(context).size.height * 0.05,
-            //   right: widget.isFromDashboardPage == true //from PBIS
-            //       ? MediaQuery.of(context).size.width * 0.36
-            //       : MediaQuery.of(context).size.width * 0.21,
-            //   child: Container(
-            //     padding: EdgeInsets.all(5),
-            //     width: PBISPlusOverrides.circleSize,
-            //     height: PBISPlusOverrides.circleSize,
-            //     decoration: BoxDecoration(
-            //       color: Color(0xff000000) != Theme.of(context).backgroundColor
-            //           ? Color(0xffF7F8F9)
-            //           : Color(0xff111C20),
-            //       shape: BoxShape.circle,
-            //     ),
-            //     child: Center(
-            //       child: FittedBox(
-            //           fit: BoxFit.scaleDown,
-            //           child: ValueListenableBuilder(
-            //               valueListenable: valueChange,
-            //               builder:
-            //                   (BuildContext context, value, Widget? child) {
-            //                 return ValueListenableBuilder<ClassroomStudents>(
-            //                   valueListenable: widget.studentValueNotifier,
-            //                   builder: (BuildContext context,
-            //                       ClassroomStudents value, Widget? child) {
-            //                     return widget.isLoading == true
-            //                         ? ShimmerLoading(
-            //                             child: Container(
-            //                               height: 10,
-            //                               width: 10,
-            //                               color: Colors.black,
-            //                             ),
-            //                             isLoading: widget.isLoading)
-            //                         : Text(
-            //                             PBISPlusUtility
-            //                                 .numberAbbreviationFormat(widget
-            //                                         .studentValueNotifier
-            //                                         .value
-            //                                         .profile!
-            //                                         .engaged! +
-            //                                     widget.studentValueNotifier
-            //                                         .value.profile!.niceWork! +
-            //                                     widget.studentValueNotifier
-            //                                         .value.profile!.helpful!),
-            //                             style: Theme.of(context)
-            //                                 .textTheme
-            //                                 .subtitle1!
-            //                                 .copyWith(
-            //                                     fontWeight: FontWeight.bold),
-            //                           );
-            //                   },
-            //                 );
-            //               })),
-            //     ),
-            //   ),
-            // ),
           ],
         ));
   }

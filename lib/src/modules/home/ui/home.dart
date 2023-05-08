@@ -249,7 +249,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
             addNewsIndex(Globals.newsIndex);
           }
-
           setState(() {});
           /*---------------Check for red dot indicator---------------*/
 
