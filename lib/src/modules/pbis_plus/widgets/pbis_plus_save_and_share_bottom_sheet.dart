@@ -717,6 +717,7 @@ class _PBISPlusBottomSheetState extends State<PBISPlusBottomSheet> {
               Utility.currentScreenSnackBar(
                   "Google Classroom Assignments Created Successfully.", null);
             }
+
             if (state is GoogleClassroomErrorState) {
               if (state.errorMsg == 'ReAuthentication is required') {
                 await Utility.refreshAuthenticationToken(
