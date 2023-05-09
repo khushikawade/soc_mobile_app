@@ -2994,11 +2994,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         },
       ];
 
+      /*--------------------------------------------START OF SHEET FORMATTING---------------------------------------------*/
+
       classroomCourseList.asMap().forEach((index, course) {
+        //Managing the center text property start column
         int startColumnIndex =
             (course.name == 'Students' && classroomCourseList.length == 1)
                 ? 2
                 : 1;
+
         if (index == 0) {
           //  change first default tab heading row text style.
           // change every tab heading row text style.
@@ -3015,6 +3019,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   "userEnteredFormat(textFormat,borders,backgroundColor,horizontalAlignment)"
             }
           };
+
           Map<String, Map<String, dynamic>> allCellsTextStyle = {
             "repeatCell": {
               "range": {
@@ -3028,6 +3033,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               "fields": "userEnteredFormat(horizontalAlignment)"
             }
           };
+
+          /*-------------------------------------------END OF SHEET FORMATTING-----------------------------------------------------*/
+
           tabs.add(headingRowTextStyle);
           tabs.add(allCellsTextStyle);
         } else {
@@ -3154,12 +3162,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       return classroomCourseworkList.map((course) {
         return {
           // 'range': '${course.name}!A1:E${course.students!.length + 1}',
+
+          //Checking the tab is either for Student or for Courses and adding the columns accordingly
           'range':
               '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}',
           'majorDimension': 'ROWS',
           //building row with the student information
           'values': _buildRows(
               students: course.students ?? [],
+              //Checking if the tab is building for courses or tabs //returns true or false
               course: (course.name == 'Students' &&
                   classroomCourseworkList.length == 1)),
         };

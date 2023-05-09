@@ -898,11 +898,19 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
 
     for (final course in classroomCourses) {
       for (final student in course.students!) {
+        //Used for UI and onSubmit with different data sets required
+        //-------------------------------------------------------------------------------------
+        //student.profile?.name?.fullName != 'All' checking if visible on UI or not
+        //-------------------------------------------------------------------------------------
+        //!uniqueStudents.any((s) => s.profile?.id == student.profile?.id used to show unique students on UI only
+
         final isStudentUnique = (isSubmitOnTap != true ||
                 student.profile?.name?.fullName != 'All') &&
             (isSubmitOnTap == true ||
                 !uniqueStudents
                     .any((s) => s.profile?.id == student.profile?.id));
+
+        //Adding all objects of single student if exists multiple time in different courses
         if (isStudentUnique) {
           student.profile!.courseName = course.name;
           uniqueStudents.add(student);
@@ -993,6 +1001,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     }
   }
 
+//Used to add all courses data of single student if exist in multiple classes
   List<ClassroomStudents> getAllStudentsForCourse(
       {required List<ClassroomStudents> selectedStudentList,
       required List<ClassroomCourse> classroomCourses}) {
@@ -1003,6 +1012,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       for (ClassroomStudents student in selectedStudentList) {
         for (ClassroomCourse course in classroomCourses) {
           if (course.name != 'All' && course.students != null) {
+            //Checking selected students in each course of the classroom
             for (ClassroomStudents studentInCourse in course.students!) {
               if (studentInCourse.profile?.id == student.profile?.id) {
                 ClassroomStudents newStudent = ClassroomStudents(
