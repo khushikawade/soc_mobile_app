@@ -259,9 +259,10 @@ class EditSlideFromPresentation extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
+// ignore: must_be_immutable
 class PBISPlusUpdateDataOnSpreadSheetTabs extends GoogleDriveEvent {
   final Map<String, dynamic> spreadSheetFileObj;
-   List<ClassroomCourse> classroomCourseworkList;
+  List<ClassroomCourse> classroomCourseworkList;
   PBISPlusUpdateDataOnSpreadSheetTabs(
       {required this.spreadSheetFileObj,
       required this.classroomCourseworkList});
