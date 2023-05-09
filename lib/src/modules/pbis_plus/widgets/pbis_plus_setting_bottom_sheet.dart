@@ -897,7 +897,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     final uniqueStudents = <ClassroomStudents>[];
 
     for (final course in classroomCourses) {
-      for (final student in course.students!) {
+      for (final student in course?.students ?? []) {
         //Used for UI and onSubmit with different data sets required
         //-------------------------------------------------------------------------------------
         //student.profile?.name?.fullName != 'All' checking if visible on UI or not
@@ -918,15 +918,15 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       }
     }
 
-    uniqueStudents.sort((a, b) {
-      if ((isSubmitOnTap != true) &&
-          (a == uniqueStudents[0] || b == uniqueStudents[0])) {
-        return 0;
-      }
-      return a.profile!.name!.fullName!
-          .toLowerCase()
-          .compareTo(b.profile!.name!.fullName!.toLowerCase());
-    });
+    // uniqueStudents.sort((a, b) {
+    //   if ((isSubmitOnTap != true) &&
+    //       (a == uniqueStudents[0] || b == uniqueStudents[0])) {
+    //     return 0;
+    //   }
+    //   return a.profile!.name!.fullName!
+    //       .toLowerCase()
+    //       .compareTo(b.profile!.name!.fullName!.toLowerCase());
+    // });
 
     return uniqueStudents;
   }

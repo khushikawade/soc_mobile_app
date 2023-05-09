@@ -1144,7 +1144,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             localClassroomCourseworkList[0].name == 'All') {
           localClassroomCourseworkList.removeAt(0);
         }
-
+        //sub Join Count To Duplicates courses
+        localClassroomCourseworkList =
+            subJoinCountToDuplicates(allCourses: localClassroomCourseworkList);
         var isBlankSpreadsheetTabsAdded;
         var isSpreadsheetTabsUpdated;
 
@@ -3026,6 +3028,21 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           };
 
+          // update the textformat of all cells in sheet
+          Map<String, Map<String, dynamic>> allCellsTextFormat = {
+            "repeatCell": {
+              "range": {
+                "sheetId": index,
+              },
+              "cell": {
+                "userEnteredFormat": {
+                  "numberFormat": {"type": "TEXT"}
+                }
+              },
+              "fields": "userEnteredFormat(numberFormat)"
+            }
+          };
+          //now update the textstyle of all cells in sheet
           Map<String, Map<String, dynamic>> allCellsTextStyle = {
             "repeatCell": {
               "range": {
@@ -3042,8 +3059,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
           /*-------------------------------------------END OF SHEET FORMATTING-----------------------------------------------------*/
 
-          tabs.add(headingRowTextStyle);
-          tabs.add(allCellsTextStyle);
+          tabs.addAll(
+              [headingRowTextStyle, allCellsTextFormat, allCellsTextStyle]);
         } else {
           // Build new tabs inside sheet for all other selected courses.
           Map<String, Map<String, dynamic>> addSheet = {
@@ -3065,6 +3082,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   "userEnteredFormat(textFormat,borders,backgroundColor,horizontalAlignment)"
             }
           };
+
+          // update the textformat of all cells in sheet
+          Map<String, Map<String, dynamic>> allCellsTextFormat = {
+            "repeatCell": {
+              "range": {
+                "sheetId": index,
+              },
+              "cell": {
+                "userEnteredFormat": {
+                  "numberFormat": {"type": "TEXT"}
+                }
+              },
+              "fields": "userEnteredFormat( numberFormat)"
+            }
+          };
+
+          //now update the textstyle of all cells in sheet
           Map<String, Map<String, dynamic>> allCellsTextStyle = {
             "repeatCell": {
               "range": {
@@ -3078,9 +3112,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               "fields": "userEnteredFormat(horizontalAlignment)"
             }
           };
-          tabs.add(addSheet);
-          tabs.add(headingRowTextStyle);
-          tabs.add(allCellsTextStyle);
+
+          tabs.addAll([
+            addSheet,
+            headingRowTextStyle,
+            allCellsTextFormat,
+            allCellsTextStyle
+          ]);
         }
       });
       return tabs;
@@ -3257,6 +3295,45 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       //     .toList();
     } catch (e) {
       return [];
+    }
+  }
+
+  List<ClassroomCourse> subJoinCountToDuplicates(
+      {required final List<ClassroomCourse> allCourses}) {
+    try {
+      List<ClassroomCourse> localAllCourses = [];
+      localAllCourses.addAll(allCourses);
+
+      Map<String, int> courseCount = {};
+      List<ClassroomCourse> subJoinAllCourses = [];
+
+      for (ClassroomCourse course in localAllCourses) {
+        String courseName = course.name ?? '';
+        //check if course already present or not
+        if (courseCount.containsKey(courseName)) {
+          int count = courseCount[courseName]! +
+              1; //get old count and update with new value
+          courseCount[courseName] = count; // update on courseCount
+          courseName =
+              '${courseName}_$count'; //update the name with latest count
+        } else {
+          courseCount[courseName] = 0; // update with default count
+        }
+        //update the new list with updated news
+        subJoinAllCourses.add(ClassroomCourse(
+          id: course.id,
+          name: courseName, // Use the updated courseName value
+          descriptionHeading: course.descriptionHeading,
+          ownerId: course.ownerId,
+          enrollmentCode: course.enrollmentCode,
+          courseState: course.courseState,
+          students: course.students,
+        ));
+      }
+
+      return subJoinAllCourses;
+    } catch (e) {
+      throw (e);
     }
   }
 }

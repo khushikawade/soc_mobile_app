@@ -156,7 +156,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           padding: EdgeInsets.zero,
           onPressed: () {
             //----------setting bottom sheet funtion------------//
-            settingBottomSheet(context, pbisBloc);
+            settingBottomSheet(
+                context, pbisBloc, googleClassroomCourseworkList);
           },
           icon: Icon(
             IconData(
@@ -224,8 +225,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                       ///Used to send the list of courseWork to the bottomsheet list
                       /*----------------------START--------------------------*/
                       googleClassroomCourseworkList.clear();
-                      googleClassroomCourseworkList
-                          .add(ClassroomCourse(name: 'All'));
+                      // googleClassroomCourseworkList
+                      //     .add(ClassroomCourse(name: 'All'));
                       googleClassroomCourseworkList
                           .addAll(state.googleClassroomCourseList);
 
@@ -416,7 +417,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       googleClassroomCourseList[index].students!.length > 0
           ? renderStudents(
               googleClassroomCourseList[index].students!,
-              googleClassroomCourseList[index].name!,
+              googleClassroomCourseList[index].id!,
               index,
               googleClassroomCourseList[index].id!)
           : Container(
@@ -436,7 +437,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     ]);
   }
 
-  renderStudents(List<ClassroomStudents> studentList, String cLassName, i,
+  renderStudents(List<ClassroomStudents> studentList, String courseId, i,
       String classroomCourseId) {
     return GridView.count(
         padding: EdgeInsets.all(10.0),
@@ -448,14 +449,14 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           return _buildStudent(
               ValueNotifier<ClassroomStudents>(studentList[index]),
               index,
-              cLassName,
+              courseId,
               classroomCourseId);
         }));
   }
 
   Widget _buildStudent(ValueNotifier<ClassroomStudents> studentValueNotifier,
-      int index, String cLassName, String classroomCourseId) {
-    String heroTag = "HeroTag_${cLassName}_${index}";
+      int index, String courseId, String classroomCourseId) {
+    String heroTag = "HeroTag_${courseId}_${index}";
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -588,13 +589,20 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           /*-------------------------User Activity Track END----------------------------*/
           screenShotNotifier.value =
               true; // To manage the course chip onTap animation
-          _saveAndShareBottomSheetMenu();
+          _saveAndShareBottomSheetMenu(googleClassroomCourseworkList);
         },
       );
 
-  Future<void> _saveAndShareBottomSheetMenu() async {
-    if (!googleClassroomCourseworkList[0].name!.contains('All')) {
-      googleClassroomCourseworkList.insert(0, ClassroomCourse(name: 'All'));
+  Future<void> _saveAndShareBottomSheetMenu(
+      List<ClassroomCourse> allClassroomCourses) async {
+    if (!allClassroomCourses[0].name!.contains('All')) {
+      allClassroomCourses.insert(
+          0,
+          ClassroomCourse(name: 'All', students: [
+            ClassroomStudents(
+                profile: ClassroomProfile(
+                    name: ClassroomProfileName(fullName: 'All'), id: 'All'))
+          ]));
     }
     var result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -703,20 +711,29 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   }
 
   //------------------------------for setting bottom sheet"-------------------//
-  settingBottomSheet(context, PBISPlusBloc pbisBloc) async {
-    final List<ClassroomCourse> googleClassroomCourseworkList = [];
-    LocalDatabase<ClassroomCourse> _localDb =
-        LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
-    List<ClassroomCourse>? _localData = await _localDb.getData();
+  settingBottomSheet(context, PBISPlusBloc pbisBloc,
+      List<ClassroomCourse> allClassroomCourses) async {
+//     final List<ClassroomCourse> googleClassroomCourseworkList = [];
+//     LocalDatabase<ClassroomCourse> _localDb =
+//         LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
+//     List<ClassroomCourse>? _localData = await _localDb.getData();
 
-//Adding 'All' as a default selected option for classess and student both
-    googleClassroomCourseworkList.add(ClassroomCourse(name: 'All', students: [
-      ClassroomStudents(
-          profile: ClassroomProfile(
-              name: ClassroomProfileName(fullName: 'All'), id: 'All'))
-    ]));
-    googleClassroomCourseworkList.addAll(_localData);
-
+// //Adding 'All' as a default selected option for classess and student both
+//     googleClassroomCourseworkList.add(ClassroomCourse(name: 'All', students: [
+//       ClassroomStudents(
+//           profile: ClassroomProfile(
+//               name: ClassroomProfileName(fullName: 'All'), id: 'All'))
+//     ]));
+//     googleClassroomCourseworkList.addAll(_localData);
+    if (!allClassroomCourses[0].name!.contains('All')) {
+      allClassroomCourses.insert(
+          0,
+          ClassroomCourse(name: 'All', students: [
+            ClassroomStudents(
+                profile: ClassroomProfile(
+                    name: ClassroomProfileName(fullName: 'All'), id: 'All'))
+          ]));
+    }
     var section = await showModalBottomSheet(
         useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -734,8 +751,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                     scaffoldKey: _scaffoldKey,
                     pbisBloc: pbisBloc,
                     constraintDeviceHeight: constraints.maxHeight,
-                    googleClassroomCourseworkList:
-                        googleClassroomCourseworkList,
+                    googleClassroomCourseworkList: allClassroomCourses,
                     height: constraints.maxHeight < 750
                         ? MediaQuery.of(context).size.height * 0.6
                         : MediaQuery.of(context).size.height * 0.45);
