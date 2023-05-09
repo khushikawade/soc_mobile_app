@@ -111,7 +111,7 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       engaged: fields[5] as int?,
       niceWork: fields[6] as int?,
       helpful: fields[7] as int?,
-      courseId: fields[8] as String?,
+      courseName: fields[8] as String?,
     );
   }
 
@@ -136,7 +136,7 @@ class ClassroomProfileAdapter extends TypeAdapter<ClassroomProfile> {
       ..writeByte(7)
       ..write(obj.helpful)
       ..writeByte(8)
-      ..write(obj.courseId);
+      ..write(obj.courseName);
   }
 
   @override
