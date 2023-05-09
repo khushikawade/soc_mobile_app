@@ -1128,12 +1128,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print(e);
       }
     }
+
     if (event is PBISPlusUpdateDataOnSpreadSheetTabs) {
       try {
         //GET THE USER DETAILS
         final List<UserInformation> _profileData =
             await UserGoogleProfile.getUserProfile();
 
+        //Just to save the event data to the local list to make sure data is not getting empty on continue hitting the spreadsheet
         List<ClassroomCourse> localClassroomCourseworkList = [];
         localClassroomCourseworkList.addAll(event.classroomCourseworkList);
 
@@ -3151,10 +3153,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     required final List<ClassroomCourse> classroomCourseworkList,
   }) {
     try {
-      print(classroomCourseworkList.length);
-      classroomCourseworkList.forEach((element) {
-        print(element.name);
-      });
+      // print(classroomCourseworkList.length);
+      // classroomCourseworkList.forEach((element) {
+      //   print(element.name);
+      // });
       return classroomCourseworkList.map((course) {
         return {
           'range': '${course.name}!A1:E${course.students!.length + 1}',
@@ -3164,12 +3166,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         };
       }).toList();
     } catch (e) {
-      print("errorr ------------------->>");
-      print(classroomCourseworkList.length);
-      classroomCourseworkList.forEach((element) {
-        print(element.name);
-      });
-      print("errorr ------------------->>");
+      // print("errorr ------------------->>");
+      // print(classroomCourseworkList.length);
+      // classroomCourseworkList.forEach((element) {
+      //   print(element.name);
+      // });
+      // print("errorr ------------------->>");
       return [];
     }
   }
