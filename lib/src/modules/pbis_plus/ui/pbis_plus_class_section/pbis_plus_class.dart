@@ -457,109 +457,116 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       int index, String cLassName, String classroomCourseId) {
     String heroTag = "HeroTag_${cLassName}_${index}";
 
-    return GestureDetector(
-      onTap: () async {
-        await Navigator.of(context).push(
-          HeroDialogRoute(
-            builder: (context) => Center(
-              child: PBISPlusStudentCardModal(
-                onValueUpdate: (updatedStudentValueNotifier) {
-                  studentValueNotifier = updatedStudentValueNotifier;
-                },
-                studentValueNotifier: studentValueNotifier,
-                heroTag: heroTag,
-                classroomCourseId: classroomCourseId,
-                scaffoldKey: _scaffoldKey,
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      print(constraints.maxHeight);
+      // Set the maximum height of the bottom sheet based on the screen size
+      // print(constraints.maxHeight);
+      return GestureDetector(
+        onTap: () async {
+          await Navigator.of(context).push(
+            HeroDialogRoute(
+              builder: (context) => Center(
+                child: PBISPlusStudentCardModal(
+                  constraint: constraints.maxHeight,
+                  onValueUpdate: (updatedStudentValueNotifier) {
+                    studentValueNotifier = updatedStudentValueNotifier;
+                  },
+                  studentValueNotifier: studentValueNotifier,
+                  heroTag: heroTag,
+                  classroomCourseId: classroomCourseId,
+                  scaffoldKey: _scaffoldKey,
+                ),
               ),
             ),
-          ),
-        );
-      },
-      child: Hero(
-          createRectTween: (begin, end) {
-            return CustomRectTween(begin: begin!, end: end!);
-          },
-          tag: heroTag,
-          child: Stack(
-            // alignment: Alignment.bottomCenter,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
-                alignment: Alignment.center,
-                margin: EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color:
-                        Color(0xff000000) == Theme.of(context).backgroundColor
-                            ? Color(0xffF7F8F9)
-                            : Color(0xff111C20),
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Container(
-                  child: Column(
-                    //  mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      PBISCommonProfileWidget(
-                          studentValueNotifier: studentValueNotifier,
-                          profilePictureSize: profilePictureSize,
-                          imageUrl:
-                              studentValueNotifier.value!.profile!.photoUrl!),
-                      // SizedBox(height: 15),
-                      Text(
-                        studentValueNotifier.value.profile!.name!.fullName!
-                            .replaceAll(' ', '\n'),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle2!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Container(
-                  padding: EdgeInsets.all(2),
-                  width: 20,
-                  height: 20,
+          );
+        },
+        child: Hero(
+            createRectTween: (begin, end) {
+              return CustomRectTween(begin: begin!, end: end!);
+            },
+            tag: heroTag,
+            child: Stack(
+              // alignment: Alignment.bottomCenter,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.all(3),
                   decoration: BoxDecoration(
-                    color: AppTheme.kButtonColor,
-                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color:
+                          Color(0xff000000) == Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(5),
                   ),
-                  child: Center(
-                    child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: ValueListenableBuilder<ClassroomStudents>(
-                            valueListenable: studentValueNotifier,
-                            builder: (BuildContext context,
-                                ClassroomStudents value, Widget? child) {
-                              return Text(
-                                PBISPlusUtility.numberAbbreviationFormat(
-                                    studentValueNotifier
-                                            .value!.profile!.engaged! +
-                                        studentValueNotifier
-                                            .value!.profile!.niceWork! +
-                                        studentValueNotifier
-                                            .value!.profile!.helpful!),
-                                style: TextStyle(
-                                  color: Theme.of(context).backgroundColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              );
-                            })),
+                  child: Container(
+                    child: Column(
+                      //  mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        PBISCommonProfileWidget(
+                            studentValueNotifier: studentValueNotifier,
+                            profilePictureSize: profilePictureSize,
+                            imageUrl:
+                                studentValueNotifier.value!.profile!.photoUrl!),
+                        // SizedBox(height: 15),
+                        Text(
+                          studentValueNotifier.value.profile!.name!.fullName!
+                              .replaceAll(' ', '\n'),
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          )),
-    );
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: AppTheme.kButtonColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: ValueListenableBuilder<ClassroomStudents>(
+                              valueListenable: studentValueNotifier,
+                              builder: (BuildContext context,
+                                  ClassroomStudents value, Widget? child) {
+                                return Text(
+                                  PBISPlusUtility.numberAbbreviationFormat(
+                                      studentValueNotifier
+                                              .value!.profile!.engaged! +
+                                          studentValueNotifier
+                                              .value!.profile!.niceWork! +
+                                          studentValueNotifier
+                                              .value!.profile!.helpful!),
+                                  style: TextStyle(
+                                    color: Theme.of(context).backgroundColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              })),
+                    ),
+                  ),
+                ),
+              ],
+            )),
+      );
+    });
   }
 
   Widget saveAndShareFAB(
@@ -586,7 +593,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       );
 
   Future<void> _saveAndShareBottomSheetMenu() async {
-    await showModalBottomSheet(
+    if (!googleClassroomCourseworkList[0].name!.contains('All')) {
+      googleClassroomCourseworkList.insert(0, ClassroomCourse(name: 'All'));
+    }
+    var result = await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -600,7 +610,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               // Set the maximum height of the bottom sheet based on the screen size
-              print(constraints.maxHeight);
+              // print(constraints.maxHeight);
               return PBISPlusBottomSheet(
                 fromClassScreen: true,
                 isClassPage: true,
@@ -619,55 +629,66 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           );
         });
 
+    if (result == true) {
+      refreshPage();
+    }
+
     screenShotNotifier.value = false;
     // To manage the course chip onTap animation
   }
 
   Widget noClassroomFound() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Utility.textWidget(
-              text:
-                  'Uh oh! Looks like we\'re unable to import your roster from Google Classroom.',
-              context: context,
-              textAlign: TextAlign.center,
-              textTheme: Theme.of(context).textTheme.headline2!),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-            child: FloatingActionButton.extended(
-                backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
-                onPressed: () async {
-                  FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                      'Contact solved button pressed class screen PBIS+'
-                          .toLowerCase()
-                          .replaceAll(" ", "_"));
+    return RefreshIndicator(
+        color: AppTheme.kButtonColor,
+        key: refreshKey,
+        onRefresh: refreshPage,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: ListView(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                  height: MediaQuery.of(context).size.height *
+                      0.22), //Required to manage the ceneter alignment of listview
+              Utility.textWidget(
+                  text:
+                      'Uh oh! Looks like we\'re unable to import your roster from Google Classroom.',
+                  context: context,
+                  textAlign: TextAlign.center,
+                  textTheme: Theme.of(context).textTheme.headline2!),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                child: FloatingActionButton.extended(
+                    backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+                    onPressed: () async {
+                      FirebaseAnalyticsService.addCustomAnalyticsEvent(
+                          'Contact solved button pressed class screen PBIS+'
+                              .toLowerCase()
+                              .replaceAll(" ", "_"));
 
-                  Utility.launchMailto(
-                      'PBIS+ | Google Classroom Import | ${Globals.appSetting.schoolNameC}',
-                      '');
-                },
-                label: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Utility.textWidget(
-                        text: 'Contact Solved',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(
-                                color: Theme.of(context).backgroundColor)),
-                  ],
-                )),
+                      Utility.launchMailto(
+                          'PBIS+ | Google Classroom Import | ${Globals.appSetting.schoolNameC}',
+                          '');
+                    },
+                    label: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Utility.textWidget(
+                            text: 'Contact Solved',
+                            context: context,
+                            textTheme: Theme.of(context)
+                                .textTheme
+                                .headline2!
+                                .copyWith(
+                                    color: Theme.of(context).backgroundColor)),
+                      ],
+                    )),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 
   Future refreshPage() async {

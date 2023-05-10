@@ -69,9 +69,10 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
   }
 
   Widget body(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
+    return ListView(
+      physics: NeverScrollableScrollPhysics(),
+      // crossAxisAlignment: CrossAxisAlignment.start,
+      // mainAxisSize: MainAxisSize.max,
       children: [
         SpacerWidget(_KVertcalSpace / 4),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -141,41 +142,37 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
         ValueListenableBuilder(
             valueListenable: filterNotifier,
             builder: (BuildContext context, String value, Widget? child) {
-              return Expanded(
-                child: ListView(children: [
-                  BlocConsumer(
-                      bloc: PBISPlusBlocInstance,
-                      builder: (context, state) {
-                        if (state is PBISPlusLoading) {
-                          return Container(
-                              height: MediaQuery.of(context).size.height * 0.6,
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator.adaptive(
-                                backgroundColor: AppTheme.kButtonColor,
-                              ));
-                        }
-                        if (state is PBISPlusHistorySuccess) {
-                          //---------------------return the filter list to UI-----------//
-                          if (filterNotifier.value ==
-                              PBISPlusOverrides.pbisGoogleClassroom) {
-                            return _listBuilder(state.pbisClassroomHistoryList);
-                          } else if (filterNotifier.value ==
-                              PBISPlusOverrides.pbisGoogleSheet) {
-                            return _listBuilder(state.pbisSheetHistoryList);
-                          } else {
-                            return _listBuilder(state.pbisHistoryList);
-                          }
-                        }
-                        return Container(
-                            height: MediaQuery.of(context).size.height * 0.6,
-                            alignment: Alignment.center,
-                            child: CircularProgressIndicator.adaptive(
-                              backgroundColor: AppTheme.kButtonColor,
-                            ));
-                      },
-                      listener: (context, state) {})
-                ]),
-              );
+              return BlocConsumer(
+                  bloc: PBISPlusBlocInstance,
+                  builder: (context, state) {
+                    if (state is PBISPlusLoading) {
+                      return Container(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator.adaptive(
+                            backgroundColor: AppTheme.kButtonColor,
+                          ));
+                    }
+                    if (state is PBISPlusHistorySuccess) {
+                      //---------------------return the filter list to UI-----------//
+                      if (filterNotifier.value ==
+                          PBISPlusOverrides.pbisGoogleClassroom) {
+                        return _listBuilder(state.pbisClassroomHistoryList);
+                      } else if (filterNotifier.value ==
+                          PBISPlusOverrides.pbisGoogleSheet) {
+                        return _listBuilder(state.pbisSheetHistoryList);
+                      } else {
+                        return _listBuilder(state.pbisHistoryList);
+                      }
+                    }
+                    return Container(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator.adaptive(
+                          backgroundColor: AppTheme.kButtonColor,
+                        ));
+                  },
+                  listener: (context, state) {});
             }),
       ],
     );
@@ -183,26 +180,30 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
 
   Widget _listBuilder(List<PBISPlusHistoryModal> historyList) {
     return historyList.length > 0
-        ? ValueListenableBuilder(
-            valueListenable: filterNotifier,
-            builder: (BuildContext context, String value, Widget? child) {
-              return RefreshIndicator(
-                  color: AppTheme.kButtonColor,
-                  key: refreshKey,
-                  onRefresh: refreshPage,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    // physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.only(
-                      bottom: 25,
-                    ),
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index) {
-                      return listTile(historyList[index], index);
-                    },
-                    itemCount: historyList.length,
-                  ));
-            })
+        ? Container(
+            height: MediaQuery.of(context).size.height * 0.7,
+            // color: Colors.red,
+            child: ValueListenableBuilder(
+                valueListenable: filterNotifier,
+                builder: (BuildContext context, String value, Widget? child) {
+                  return RefreshIndicator(
+                      color: AppTheme.kButtonColor,
+                      key: refreshKey,
+                      onRefresh: refreshPage,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        // physics: NeverScrollableScrollPhysics(),
+                        padding: EdgeInsets.only(
+                          bottom: 40,
+                        ),
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context, int index) {
+                          return listTile(historyList[index], index);
+                        },
+                        itemCount: historyList.length,
+                      ));
+                }),
+          )
         : RefreshIndicator(
             color: AppTheme.kButtonColor,
             key: refreshKey,

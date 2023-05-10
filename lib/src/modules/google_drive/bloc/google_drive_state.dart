@@ -69,7 +69,7 @@ class AssessmentDetailSuccess extends GoogleDriveState {
 }
 
 class ExcelSheetCreated extends GoogleDriveState {
-  final Map<String,dynamic> googleSpreadSheetFileObj;
+  final Map<String, dynamic> googleSpreadSheetFileObj;
   ExcelSheetCreated({required this.googleSpreadSheetFileObj});
 
   @override

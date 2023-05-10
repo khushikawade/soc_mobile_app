@@ -17,6 +17,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'pbis_plus_event.dart';
 part 'pbis_plus_state.dart';
@@ -47,6 +48,18 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
             LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
 
+        //Clear Roster local data to manage loading issue
+        SharedPreferences clearRosterCache =
+            await SharedPreferences.getInstance();
+        final clearCacheResult =
+            await clearRosterCache.getBool('delete_local_Roster_cache');
+
+        if (clearCacheResult != true) {
+          await _localDb.close();
+          _localData.clear();
+          await clearRosterCache.setBool('delete_local_Roster_cache', true);
+        }
+
         if (_localData.isEmpty) {
           yield PBISPlusLoading();
         } else {
@@ -54,7 +67,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           yield PBISPlusImportRosterSuccess(
               googleClassroomCourseList: _localData);
         }
-        
+
         //API call to refresh with the latest data in the local DB
         List responseList = await importPBISClassroomRoster(
             accessToken: userProfileLocalData[0].authorizationToken,
@@ -93,11 +106,12 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
       } catch (e) {
         print(e);
-        LocalDatabase<ClassroomCourse> _localDb =
-            LocalDatabase(Strings.googleClassroomCoursesList);
 
+        LocalDatabase<ClassroomCourse> _localDb =
+            LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
         List<ClassroomCourse>? _localData = await _localDb.getData();
-        _localDb.close();
+        sort(obj: _localData);
+        // _localDb.close();
 
         yield PBISPlusLoading(); // Just to mimic the state change otherwise UI won't update unless if there's no state change.
         // sort(obj: _localData);
@@ -743,17 +757,25 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       } else if //if user reset student
           (type == "Students") {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
+        // String studentIds = selectedCourses
+        //     .expand((course) => course.students ?? [])
+        //     .map((student) => student.profile?.id)
+        //     .where((id) => id != null && id.isNotEmpty)
+        //     .map((id) => "$id")
+        //     .join("', '");
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
             .map((student) => student.profile?.id)
             .where((id) => id != null && id.isNotEmpty)
+            .toSet() // Convert to Set to remove duplicates
             .map((id) => "$id")
             .join("', '");
+
         // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
       }
-
+      print(body);
       final ResponseModel response = await _dbServices.postApi(
           'https://ea5i2uh4d4.execute-api.us-east-2.amazonaws.com/production/pbis/interactions/reset',
           headers: {
@@ -762,6 +784,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           },
           body: body,
           isGoogleApi: true);
+
       if (response.statusCode == 200) {
         return true;
       } else if (retry > 0) {

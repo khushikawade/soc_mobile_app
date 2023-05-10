@@ -16,7 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/dom.dart' as dom;
-import 'package:visibility_detector/visibility_detector.dart';
+// import 'package:visibility_detector/visibility_detector.dart';
 
 // ignore: must_be_immutable
 class SocialDescription extends StatelessWidget {

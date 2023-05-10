@@ -1,5 +1,4 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
@@ -19,15 +18,16 @@ import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class PBISPlusStudentDashBoard extends StatefulWidget {
   ValueNotifier<ClassroomStudents> studentValueNotifier;
   final String heroTag;
   final Key scaffoldKey;
   final bool? isFromStudentPlus; // to check user from student plus or PBIS plus
-  Column StudentDetailWidget;
+  Widget StudentDetailWidget;
   final String? classroomCourseId;
+  final double constraint;
+
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
 
   ValueNotifier<bool> isValueChangeNotice = ValueNotifier<bool>(false);
@@ -41,7 +41,8 @@ class PBISPlusStudentDashBoard extends StatefulWidget {
       required this.StudentDetailWidget,
       required this.onValueUpdate,
       required this.isValueChangeNotice,
-      required this.classroomCourseId})
+      required this.classroomCourseId,
+      required this.constraint})
       : super(key: key);
 
   @override
@@ -133,6 +134,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
               builder: (BuildContext contxt, PBISPlusState state) {
                 if (state is PBISPlusLoading) {
                   return PBISPlusStudentCardModal(
+                      constraint: widget.constraint,
                       isLoading:
                           widget.isFromStudentPlus == true ? true : false,
                       isFromDashboardPage: true,
@@ -149,6 +151,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     );
                   }
                   return PBISPlusStudentCardModal(
+                      constraint: widget.constraint,
                       isLoading: false,
                       isFromDashboardPage: true,
                       heroTag: widget.heroTag,
@@ -167,6 +170,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
                     );
                   }
                   return PBISPlusStudentCardModal(
+                      constraint: widget.constraint,
                       isLoading: false,
                       isFromDashboardPage: true,
                       heroTag: widget.heroTag,

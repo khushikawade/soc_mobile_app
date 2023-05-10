@@ -1128,16 +1128,21 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         print(e);
       }
     }
+
     if (event is PBISPlusUpdateDataOnSpreadSheetTabs) {
       try {
         //GET THE USER DETAILS
         final List<UserInformation> _profileData =
             await UserGoogleProfile.getUserProfile();
 
+        //Just to save the event data to the local list to make sure data is not getting empty on continue hitting the spreadsheet
+        List<ClassroomCourse> localClassroomCourseworkList = [];
+        localClassroomCourseworkList.addAll(event.classroomCourseworkList);
+
         //REMOVE THE ALL OBJECT FROM LIST IF EXISTS
-        if (event.classroomCourseworkList.length > 0 &&
-            event.classroomCourseworkList[0].name == 'All') {
-          event.classroomCourseworkList.removeAt(0);
+        if (localClassroomCourseworkList.length > 0 &&
+            localClassroomCourseworkList[0].name == 'All') {
+          localClassroomCourseworkList.removeAt(0);
         }
 
         var isBlankSpreadsheetTabsAdded;
@@ -1147,14 +1152,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         isBlankSpreadsheetTabsAdded = await addTabsOnSpreadSheet(
             spreadSheetFileObj: event.spreadSheetFileObj,
             userProfile: _profileData[0],
-            classroomCourseList: event.classroomCourseworkList);
+            classroomCourseList: localClassroomCourseworkList);
 
         //only if tabs created then update tabs on sheet
         if (isBlankSpreadsheetTabsAdded == true) {
           //update all tabs with data once blank tabs crated in the sheet
           isSpreadsheetTabsUpdated = await updateAllTabsDataInsideSpreadSheet(
             spreadSheetFileObj: event.spreadSheetFileObj,
-            classroomCourseworkList: event.classroomCourseworkList,
+            classroomCourseworkList: localClassroomCourseworkList,
             userProfile: _profileData[0],
           );
         }
@@ -1163,7 +1168,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             isSpreadsheetTabsUpdated == true) {
           yield PBISPlusUpdateDataOnSpreadSheetSuccess();
         } else {
-          ErrorState(
+          yield ErrorState(
               errorMsg: isBlankSpreadsheetTabsAdded != true
                   ? isBlankSpreadsheetTabsAdded.toString()
                   : isSpreadsheetTabsUpdated.toString());
@@ -1749,7 +1754,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                           Uri.encodeFull(query),
           headers: headers,
           isCompleteUrl: true);
-      // print(response.statusCode);
+
       if (response.statusCode != 401 &&
           response.statusCode == 200 &&
           response.data['statusCode'] != 500) {
@@ -2929,13 +2934,14 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future<dynamic> addTabsOnSpreadSheet(
       {required Map<String, dynamic> spreadSheetFileObj,
       required UserInformation userProfile,
-      required List<ClassroomCourse> classroomCourseList,
+      required final List<ClassroomCourse> classroomCourseList,
       int retry = 3}) async {
     try {
       String spreadSheetFileId = spreadSheetFileObj['fileId'] ?? '';
       // Prepare body to create blank tabs to the spreadsheet on Drive.
-      List<Map<String, dynamic>> allTabs = buildBlankTabsInsideSpreadSheet(
-          classroomCourseList: classroomCourseList);
+      final List<Map<String, dynamic>> allTabs =
+          buildBlankTabsInsideSpreadSheet(
+              classroomCourseList: classroomCourseList);
 
       final body = {
         'requests': allTabs,
@@ -2981,7 +2987,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   /*----------------------Add Blank Tabs to Spreadsheet and Preparing API Body--------------------*/
   /*------------------------------------------PART B----------------------------------------------*/
   List<Map<String, Map<String, dynamic>>> buildBlankTabsInsideSpreadSheet({
-    required List<ClassroomCourse> classroomCourseList,
+    required final List<ClassroomCourse> classroomCourseList,
   }) {
     try {
       List<Map<String, Map<String, dynamic>>> tabs = [
@@ -2994,7 +3000,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         },
       ];
 
+      /*--------------------------------------------START OF SHEET FORMATTING---------------------------------------------*/
+
       classroomCourseList.asMap().forEach((index, course) {
+        //Managing the center text property start column
+        int startColumnIndex =
+            (course.name == 'Students' && classroomCourseList.length == 1)
+                ? 2
+                : 1;
+
         if (index == 0) {
           //  change first default tab heading row text style.
           // change every tab heading row text style.
@@ -3011,12 +3025,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   "userEnteredFormat(textFormat,borders,backgroundColor,horizontalAlignment)"
             }
           };
+
           Map<String, Map<String, dynamic>> allCellsTextStyle = {
             "repeatCell": {
               "range": {
                 "sheetId": index,
                 "startRowIndex": 1,
-                "startColumnIndex": 1
+                "startColumnIndex": startColumnIndex
               },
               "cell": {
                 "userEnteredFormat": {"horizontalAlignment": "CENTER"}
@@ -3024,6 +3039,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               "fields": "userEnteredFormat(horizontalAlignment)"
             }
           };
+
+          /*-------------------------------------------END OF SHEET FORMATTING-----------------------------------------------------*/
+
           tabs.add(headingRowTextStyle);
           tabs.add(allCellsTextStyle);
         } else {
@@ -3052,7 +3070,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               "range": {
                 "sheetId": index,
                 "startRowIndex": 1,
-                "startColumnIndex": 1
+                "startColumnIndex": startColumnIndex
               },
               "cell": {
                 "userEnteredFormat": {"horizontalAlignment": "CENTER"}
@@ -3079,7 +3097,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   Future updateAllTabsDataInsideSpreadSheet(
       {required Map<String, dynamic> spreadSheetFileObj,
       required UserInformation userProfile,
-      required List<ClassroomCourse> classroomCourseworkList,
+      required final List<ClassroomCourse> classroomCourseworkList,
       int retry = 3}) async {
     try {
       final pbisBloc = PBISPlusBloc();
@@ -3144,18 +3162,36 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
   /*------------------------------------------PART B----------------------------------------------*/
   List<Map<String, dynamic>> updateTabsInSpreadSheet({
-    required List<ClassroomCourse> classroomCourseworkList,
+    required final List<ClassroomCourse> classroomCourseworkList,
   }) {
     try {
+      // print(classroomCourseworkList.length);
+      // classroomCourseworkList.forEach((element) {
+      //   print(element.name);
+      // });
       return classroomCourseworkList.map((course) {
         return {
-          'range': '${course.name}!A1:E${course.students!.length + 1}',
+          // 'range': '${course.name}!A1:E${course.students!.length + 1}',
+
+          //Checking the tab is either for Student or for Courses and adding the columns accordingly
+          'range':
+              '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}',
           'majorDimension': 'ROWS',
           //building row with the student information
-          'values': _buildRows(students: course.students ?? []),
+          'values': _buildRows(
+              students: course.students ?? [],
+              //Checking if the tab is building for courses or tabs //returns true or false
+              course: (course.name == 'Students' &&
+                  classroomCourseworkList.length == 1)),
         };
       }).toList();
     } catch (e) {
+      // print("errorr ------------------->>");
+      // print(classroomCourseworkList.length);
+      // classroomCourseworkList.forEach((element) {
+      //   print(element.name);
+      // });
+      // print("errorr ------------------->>");
       return [];
     }
   }
@@ -3164,14 +3200,39 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
   /*-------------------Updating Data to Spreadsheet Tabs and Preparing API Body-------------------*/
   /*------------------------------------------PART C----------------------------------------------*/
 
-  List<List<dynamic>> _buildRows({required List<ClassroomStudents> students}) {
+  List<List<dynamic>> _buildRows(
+      {required List<ClassroomStudents> students, required bool course}) {
     try {
+      List<String> headingRowName = // always first row for the Headings
+          ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'];
+
+      if (course == true) {
+        headingRowName.insert(1, 'Course');
+      }
+
+      // return [
+      //   // always first row for the Headings
+      //   ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'],
+
+      //   //stduent information
+      //   ...students.map((student) => [
+      //         student.profile!.name!.fullName,
+      //         student.profile!.engaged,
+      //         student.profile!.niceWork,
+      //         student.profile!.helpful,
+      //         student.profile!.engaged! +
+      //             student.profile!.niceWork! +
+      //             student.profile!.helpful!,
+      //       ]),
+      // ];
       return [
         // always first row for the Headings
-        ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'],
+        headingRowName,
+
         //stduent information
         ...students.map((student) => [
               student.profile!.name!.fullName,
+              if (course == true) student.profile!.courseName,
               student.profile!.engaged,
               student.profile!.niceWork,
               student.profile!.helpful,
@@ -3180,6 +3241,20 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   student.profile!.helpful!,
             ]),
       ];
+
+      // students
+      //     .map((ClassroomStudents student) => [
+      //           student.profile!.name!.fullName,
+      //           student.profile!.engaged,
+      //           student.profile!.niceWork,
+      //           student.profile!.helpful,
+      //           student.profile!.engaged! +
+      //               student.profile!.niceWork! +
+      //               student.profile!.helpful!,
+      //           if (course == true)
+      //             student.profile!.courseName, // Add this line
+      //         ])
+      //     .toList();
     } catch (e) {
       return [];
     }
