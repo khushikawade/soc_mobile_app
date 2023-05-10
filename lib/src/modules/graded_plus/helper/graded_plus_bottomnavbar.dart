@@ -1,4 +1,8 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
+import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
+import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -12,12 +16,17 @@ class GradedBottomNavBar {
   /* ------- function to return list of widget for bottom navigation bar ------ */
   static List<Widget> gradedPlusBuildPersistentScreens() {
     return [
-      PBISPlusStaff(
-        titleIconData: getStaffIconCode(),
+      PBISPlusClass(
+        titleIconData: IconData(0xe825,
+            fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+        backOnTap: (() {}),
       ),
-      PBISPlusStaff(
-        titleIconData: getStaffIconCode(),
+      AssessmentSummary(
+        isFromHomeSection: true,
+        selectedFilterValue: 'All',
       ),
+      SelectAssessmentType(),
+      CustomIntroWidget(),
       PBISPlusStaff(
         titleIconData: getStaffIconCode(),
       )
@@ -49,6 +58,26 @@ class GradedBottomNavBar {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
+        icon: gardedPlusBottomNavBarIcons(
+            IconData(0xe875,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            'Scan',
+            context),
+        activeColorPrimary: AppTheme.kButtonColor,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: gardedPlusBottomNavBarIcons(
+            IconData(0xe849,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            'Help',
+            context),
+        activeColorPrimary: AppTheme.kButtonColor,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
         icon: gardedPlusBottomNavBarIcons(getStaffIconCode(), 'Staff', context),
         activeColorPrimary: AppTheme.kButtonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -68,25 +97,26 @@ class GradedBottomNavBar {
             children: [
               Icon(
                 iconData,
-                size: 22,
+                size: title == 'Scan' ? 30 : 22,
               ),
-              SpacerWidget(2),
-              TranslationWidget(
-                shimmerHeight: 8,
-                message: title,
-                fromLanguage: "en",
-                toLanguage: Globals.selectedLanguage,
-                builder: (translatedMessage) => Expanded(
-                  child: FittedBox(
-                    child: Text(
-                      translatedMessage.toString(),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: Theme.of(context).textTheme.headline4!,
+              if (title != 'Scan') SpacerWidget(2),
+              if (title != 'Scan')
+                TranslationWidget(
+                  shimmerHeight: 8,
+                  message: title,
+                  fromLanguage: "en",
+                  toLanguage: Globals.selectedLanguage,
+                  builder: (translatedMessage) => Expanded(
+                    child: FittedBox(
+                      child: Text(
+                        translatedMessage.toString(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: Theme.of(context).textTheme.headline4!,
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

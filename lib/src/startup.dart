@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/graded_plus/ui/graded_plus_navbar_home.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -251,7 +252,8 @@ class _StartupPageState extends State<StartupPage> {
                                         ? GradedLandingPage(
                                             isMultiplechoice:
                                                 widget.isMultipleChoice)
-                                        : SelectAssessmentType() // OpticalCharacterRecognition()
+                                        //  : SelectAssessmentType() // OpticalCharacterRecognition()
+                                        : GradedPlusNavBarHome()
                                     : CustomIntroWidget(
                                         isMcqSheet: widget.isMultipleChoice),
                               ));
@@ -312,20 +314,20 @@ class _StartupPageState extends State<StartupPage> {
               ));
   }
 
-  _navigateToOcrSection() async {
-    HiveDbServices _hiveDbServices = HiveDbServices();
+  // _navigateToOcrSection() async {
+  //   HiveDbServices _hiveDbServices = HiveDbServices();
 
-    var isOldUser = await _hiveDbServices.getSingleData('new_user', 'new_user');
+  //   var isOldUser = await _hiveDbServices.getSingleData('new_user', 'new_user');
 
-    Timer(Duration(seconds: 1), () async {
-      Navigator.pushReplacement<void, void>(
-        context,
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => isOldUser == true
-              ? SelectAssessmentType() //OpticalCharacterRecognition()
-              : CustomIntroWidget(),
-        ),
-      );
-    });
-  }
+  //   Timer(Duration(seconds: 1), () async {
+  //     Navigator.pushReplacement<void, void>(
+  //       context,
+  //       MaterialPageRoute<void>(
+  //         builder: (BuildContext context) => isOldUser == true
+  //             ? SelectAssessmentType() //OpticalCharacterRecognition()
+  //             : CustomIntroWidget(),
+  //       ),
+  //     );
+  //   });
+  // }
 }

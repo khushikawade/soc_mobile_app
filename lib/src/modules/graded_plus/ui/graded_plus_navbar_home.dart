@@ -19,7 +19,7 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
   void initState() {
     super.initState();
     gradedPlusPersistentTabController =
-        PersistentTabController(initialIndex: 1);
+        PersistentTabController(initialIndex: 2);
   }
 
   @override
@@ -42,7 +42,8 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
       controller: gradedPlusPersistentTabController,
       screens: GradedBottomNavBar.gradedPlusBuildPersistentScreens(),
       onItemSelected: (i) {
-        if (i == 2) {
+        if (GradedBottomNavBar.gradedPlusBuildPersistentScreens().length - 1 ==
+            i) {
           Navigator.of(context).pop();
         }
       },
