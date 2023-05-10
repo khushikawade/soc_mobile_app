@@ -918,15 +918,15 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
       }
     }
 
-    // uniqueStudents.sort((a, b) {
-    //   if ((isSubmitOnTap != true) &&
-    //       (a == uniqueStudents[0] || b == uniqueStudents[0])) {
-    //     return 0;
-    //   }
-    //   return a.profile!.name!.fullName!
-    //       .toLowerCase()
-    //       .compareTo(b.profile!.name!.fullName!.toLowerCase());
-    // });
+    uniqueStudents.sort((a, b) {
+      if ((isSubmitOnTap != true) &&
+          (a == uniqueStudents[0] || b == uniqueStudents[0])) {
+        return 0;
+      }
+      return a.profile!.name!.fullName!
+          .toLowerCase()
+          .compareTo(b.profile!.name!.fullName!.toLowerCase());
+    });
 
     return uniqueStudents;
   }
