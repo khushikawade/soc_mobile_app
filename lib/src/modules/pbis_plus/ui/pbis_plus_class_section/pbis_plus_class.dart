@@ -1,11 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
@@ -17,14 +14,12 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
-import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -230,6 +225,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                     //To manage FAB and setting button
                     courseLength.value =
                         state?.googleClassroomCourseList?.length ?? 0;
+
                     if (state.googleClassroomCourseList.isNotEmpty ?? false) {
                       ///Used to send the list of courseWork to the bottomsheet list
                       /*----------------------START--------------------------*/
@@ -601,6 +597,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
   Future<void> _saveAndShareBottomSheetMenu(
       List<ClassroomCourse> allClassroomCourses) async {
+    //Check and add 'All' option in the course list in case of not exist
     if (!allClassroomCourses[0].name!.contains('All')) {
       allClassroomCourses.insert(
           0,
@@ -719,18 +716,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   //------------------------------for setting bottom sheet"-------------------//
   settingBottomSheet(context, PBISPlusBloc pbisBloc,
       List<ClassroomCourse> allClassroomCourses) async {
-//     final List<ClassroomCourse> googleClassroomCourseworkList = [];
-//     LocalDatabase<ClassroomCourse> _localDb =
-//         LocalDatabase(PBISPlusOverrides.pbisPlusClassroomDB);
-//     List<ClassroomCourse>? _localData = await _localDb.getData();
-
-// //Adding 'All' as a default selected option for classess and student both
-//     googleClassroomCourseworkList.add(ClassroomCourse(name: 'All', students: [
-//       ClassroomStudents(
-//           profile: ClassroomProfile(
-//               name: ClassroomProfileName(fullName: 'All'), id: 'All'))
-//     ]));
-//     googleClassroomCourseworkList.addAll(_localData);
+    //Check and add 'All' option in the course and student list in case of not exist
     if (!allClassroomCourses[0].name!.contains('All')) {
       allClassroomCourses.insert(
           0,
