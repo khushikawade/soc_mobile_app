@@ -1841,7 +1841,6 @@ class _SuccessScreenState extends State<SuccessScreen>
             studentAssessmentInfo.isScanMore = widget?.isScanMore ?? false;
             // studentAssessmentInfo.assessmentName = Globals.assessmentName;
             if (!studentInfo.contains(id)) {
-              //print('added in record ----------------->>>>');
               await _studentInfoDb.addData(studentAssessmentInfo);
             }
           }

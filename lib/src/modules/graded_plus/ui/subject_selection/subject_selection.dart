@@ -517,7 +517,6 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             BlocListener(
               bloc: _ocrBloc,
               listener: (context, state) async {
-                // print("---------------------------------->>>>> $state");
                 if (state is SubjectDataSuccess) {
                   pageIndex.value = 0;
                 } else if (state is NycDataSuccess) {
