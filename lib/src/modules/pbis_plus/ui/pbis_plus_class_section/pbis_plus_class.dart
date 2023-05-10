@@ -227,11 +227,10 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 },
                 listener: (context, state) async {
                   if (state is PBISPlusImportRosterSuccess) {
+                    //To manage FAB and setting button
+                    courseLength.value =
+                        state?.googleClassroomCourseList?.length ?? 0;
                     if (state.googleClassroomCourseList.isNotEmpty ?? false) {
-                      //To manage FAB
-                      courseLength.value =
-                          state.googleClassroomCourseList.length;
-
                       ///Used to send the list of courseWork to the bottomsheet list
                       /*----------------------START--------------------------*/
                       googleClassroomCourseworkList.clear();
