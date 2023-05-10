@@ -152,21 +152,31 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           color: AppTheme.kButtonColor,
         ),
       ),
-      trailing: IconButton(
-          padding: EdgeInsets.zero,
-          onPressed: () {
-            //----------setting bottom sheet funtion------------//
-            settingBottomSheet(
-                context, pbisBloc, googleClassroomCourseworkList);
-          },
-          icon: Icon(
-            IconData(
-              0xe867,
-              fontFamily: Overrides.kFontFam,
-              fontPackage: Overrides.kFontPkg,
-            ),
-            color: AppTheme.kButtonColor,
-          )),
+      trailing: ValueListenableBuilder(
+          valueListenable: courseLength,
+          child: Container(),
+          builder: (BuildContext context, dynamic value, Widget? child) {
+            return courseLength.value > 0
+                ? IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      //----------setting bottom sheet funtion------------//
+                      settingBottomSheet(
+                          context, pbisBloc, googleClassroomCourseworkList);
+                    },
+                    icon: Icon(
+                      IconData(
+                        0xe867,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg,
+                      ),
+                      color: AppTheme.kButtonColor,
+                    ))
+                : SizedBox(
+                    height: 0,
+                    width: 0,
+                  );
+          }),
     );
   }
 
@@ -456,12 +466,12 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      print(constraints.maxHeight);
+      //  print(constraints.maxHeight);
       // Set the maximum height of the bottom sheet based on the screen size
       // print(constraints.maxHeight);
       return GestureDetector(
         onTap: () async {
-          print(heroTag);
+          // print(heroTag);
           await Navigator.of(context).push(
             HeroDialogRoute(
               builder: (context) => Center(
