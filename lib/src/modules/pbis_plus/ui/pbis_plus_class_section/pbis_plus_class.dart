@@ -415,10 +415,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         )),
       ),
       googleClassroomCourseList[index].students!.length > 0
-          ? renderStudents(
-              googleClassroomCourseList[index].students!,
-              googleClassroomCourseList[index].id!,
-              index,
+          ? renderStudents(googleClassroomCourseList[index].students!, index,
               googleClassroomCourseList[index].id!)
           : Container(
               height: 65,
@@ -437,8 +434,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     ]);
   }
 
-  renderStudents(List<ClassroomStudents> studentList, String courseId, i,
-      String classroomCourseId) {
+  renderStudents(
+      List<ClassroomStudents> studentList, i, String classroomCourseId) {
     return GridView.count(
         padding: EdgeInsets.all(10.0),
         childAspectRatio: 7.0 / 9.0,
@@ -449,14 +446,13 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           return _buildStudent(
               ValueNotifier<ClassroomStudents>(studentList[index]),
               index,
-              courseId,
               classroomCourseId);
         }));
   }
 
   Widget _buildStudent(ValueNotifier<ClassroomStudents> studentValueNotifier,
-      int index, String courseId, String classroomCourseId) {
-    String heroTag = "HeroTag_${courseId}_${index}";
+      int index, String classroomCourseId) {
+    String heroTag = "HeroTag_${classroomCourseId}_${index}";
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -465,6 +461,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       // print(constraints.maxHeight);
       return GestureDetector(
         onTap: () async {
+          print(heroTag);
           await Navigator.of(context).push(
             HeroDialogRoute(
               builder: (context) => Center(
