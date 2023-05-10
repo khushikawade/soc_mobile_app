@@ -165,12 +165,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   (_) => false);
                             } else {
                               // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePage(
-                                            isFromOcrSection: true,
-                                          )),
-                                  (_) => false);
+                              // Navigator.of(context).pushAndRemoveUntil(
+                              //     MaterialPageRoute(
+                              //         builder: (context) => HomePage(
+                              //               isFromOcrSection: true,
+                              //             )),
+                              //     (_) => false);
+                                              Navigator.of(context).popUntil((route) => route.isFirst);
+
                             }
                           }
                         },
@@ -235,12 +237,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                         (_) => false);
                                   } else {
                                     // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                                  isFromOcrSection: true,
-                                                )),
-                                        (_) => false);
+                                    // Navigator.of(context).pushAndRemoveUntil(
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) => HomePage(
+                                    //               isFromOcrSection: true,
+                                    //             )),
+                                    //     (_) => false);                
+                                    Navigator.of(context).popUntil((route) => route.isFirst);
+
                                   }
                                 }
                               },
@@ -477,12 +481,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                 (_) => false);
                           } else {
                             // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage(
-                                          isFromOcrSection: true,
-                                        )),
-                                (_) => false);
+                            // Navigator.of(context).pushAndRemoveUntil(
+                            //     MaterialPageRoute(
+                            //         builder: (context) => HomePage(
+                            //               isFromOcrSection: true,
+                            //             )),
+                            //     (_) => false);
+                                            Navigator.of(context).popUntil((route) => route.isFirst);
+
                           }
                         },
                       ),

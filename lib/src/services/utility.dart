@@ -893,12 +893,14 @@ class Utility {
                           await _localDb.addData(newUserInfo);
                           await _localDb.close();
 
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                        isFromOcrSection: true,
-                                      )),
-                              (_) => false);
+                          // Navigator.of(context).pushAndRemoveUntil(
+                          //     MaterialPageRoute(
+                          //         builder: (context) => HomePage(
+                          //               isFromOcrSection: true,
+                          //             )),
+                          //     (_) => false);
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
                         },
                       ),
                     ],

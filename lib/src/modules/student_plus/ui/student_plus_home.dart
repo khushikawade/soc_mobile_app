@@ -80,18 +80,19 @@ class _StudentPlusHomeState extends State<StudentPlusHome> {
             onItemSelected: (i) {
               //To go back to the staff screen of standard app
               if (i == 5) {
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (context) => HomePage(index: 4
-                            // widget.index,
-                            )),
-                    (_) => false);
+                // Navigator.of(context).pushAndRemoveUntil(
+                //     MaterialPageRoute(
+                //         builder: (context) => HomePage(index: 4
+                //             // widget.index,
+                //             )),
+                //     (_) => false);
                 // pushNewScreen(context,
                 //     screen: HomePage(
                 //       index: 4,
                 //     ),
                 //     withNavBar: false,
                 //     pageTransitionAnimation: PageTransitionAnimation.fade);
+                Navigator.of(context).popUntil((route) => route.isFirst);
               }
               // refreshNavBar.value = i;
             },
