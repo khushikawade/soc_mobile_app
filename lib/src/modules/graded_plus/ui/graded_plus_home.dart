@@ -11,6 +11,7 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_header_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -103,35 +104,40 @@ class _OpticalCharacterRecognitionPageState
               isBackButton:
                   true //Overrides.STANDALONE_GRADED_APP ? true : false,
               ),
+          floatingActionButton: fabButton(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.miniCenterFloat,
           body: Container(
             padding: EdgeInsets.symmetric(
               horizontal: 15,
             ),
             child: ListView(
               children: [
-                SpacerWidget(_KVertcalSpace / 4),
-                Utility.textWidget(
-                    text: 'Points Possible',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.bold)),
-                SpacerWidget(_KVertcalSpace / 4),
+                PlusScreenTitleWidget(text: 'Points Possible'),
+                // SpacerWidget(_KVertcalSpace / 4),
+                // Utility.textWidget(
+                //     text: 'Points Possible',
+                //     context: context,
+                //     textTheme: Theme.of(context)
+                //         .textTheme
+                //         .headline6!
+                //         .copyWith(fontWeight: FontWeight.bold)),
+                //  SpacerWidget(_KVertcalSpace / 4),
                 pointPossibleButton(),
-                SpacerWidget(_KVertcalSpace / 2),
+                // SpacerWidget(_KVertcalSpace / 2),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Utility.textWidget(
-                        text: 'Scoring Rubric',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    SpacerWidget(5),
+                    PlusScreenTitleWidget(text: 'Scoring Rubric'),
+                    // Utility.textWidget(
+                    //     text: 'Scoring Rubric',
+                    //     context: context,
+                    //     textTheme: Theme.of(context)
+                    //         .textTheme
+                    //         .headline6!
+                    //         .copyWith(fontWeight: FontWeight.bold)),
+                    // SpacerWidget(5),
                     BlocConsumer(
                       bloc: _bloc,
                       builder: (BuildContext context, Object? state) {
@@ -193,9 +199,6 @@ class _OpticalCharacterRecognitionPageState
 
           // ],
           // ),
-          floatingActionButton: scanButton(),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
         ),
         BlocListener<GoogleDriveBloc, GoogleDriveState>(
             bloc: _googleDriveBloc,
@@ -227,15 +230,17 @@ class _OpticalCharacterRecognitionPageState
     );
   }
 
-  Widget scanButton() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Builder(builder: (context) {
-          return OfflineBuilder(
+  Widget fabButton() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 40),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          OfflineBuilder(
             connectivityBuilder: (BuildContext context,
                 ConnectivityResult connectivity, Widget child) {
               final bool connected = connectivity != ConnectivityResult.none;
+
               return FloatingActionButton.extended(
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () async {
@@ -277,39 +282,39 @@ class _OpticalCharacterRecognitionPageState
                           .copyWith(color: Theme.of(context).backgroundColor)));
             },
             child: Container(),
-          );
-        }),
-        BlocListener<GoogleDriveBloc, GoogleDriveState>(
-            bloc: _googleDriveBloc,
-            child: Container(),
-            listener: (context, state) async {
-              if (state is GoogleDriveLoading) {
-                Utility.showLoadingDialog(context: context, isOCR: true);
-              }
-              if (state is GoogleSuccess) {
-                if (Globals.googleDriveFolderId != null &&
-                    Globals.googleDriveFolderId!.isNotEmpty) {
+          ),
+          BlocListener<GoogleDriveBloc, GoogleDriveState>(
+              bloc: _googleDriveBloc,
+              child: Container(),
+              listener: (context, state) async {
+                if (state is GoogleDriveLoading) {
+                  Utility.showLoadingDialog(context: context, isOCR: true);
+                }
+                if (state is GoogleSuccess) {
+                  if (Globals.googleDriveFolderId != null &&
+                      Globals.googleDriveFolderId!.isNotEmpty) {
+                    Navigator.of(context).pop();
+                    _beforenavigateOnCameraSection();
+                  }
+                }
+                if (state is ErrorState) {
                   Navigator.of(context).pop();
-                  _beforenavigateOnCameraSection();
-                }
-              }
-              if (state is ErrorState) {
-                Navigator.of(context).pop();
-                if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
-                      context: context,
-                      scaffoldKey: _scaffoldKey);
+                  if (state.errorMsg == 'ReAuthentication is required') {
+                    await Utility.refreshAuthenticationToken(
+                        isNavigator: true,
+                        errorMsg: state.errorMsg!,
+                        context: context,
+                        scaffoldKey: _scaffoldKey);
 
-                  _triggerDriveFolderEvent(false);
-                } else {
-                  Utility.currentScreenSnackBar(
-                      "Something Went Wrong. Please Try Again.", null);
+                    _triggerDriveFolderEvent(false);
+                  } else {
+                    Utility.currentScreenSnackBar(
+                        "Something Went Wrong. Please Try Again.", null);
+                  }
                 }
-              }
-            }),
-      ],
+              }),
+        ],
+      ),
     );
   }
 
@@ -529,6 +534,7 @@ class _OpticalCharacterRecognitionPageState
 
   showRubricList(List<RubricPdfModal>? infoPdfList) {
     showModalBottomSheet(
+      useRootNavigator: true,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       isScrollControlled: true,
       isDismissible: true,
@@ -700,6 +706,7 @@ class _OpticalCharacterRecognitionPageState
 
   customRubricBottomSheet() {
     showModalBottomSheet(
+        useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,
@@ -743,33 +750,33 @@ class _OpticalCharacterRecognitionPageState
     }
   }
 
-  _selectSectionBeforeNavigate() async {
-    String sectin = '';
-    await showModalBottomSheet(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      isScrollControlled: true,
-      isDismissible: true,
-      enableDrag: true,
-      backgroundColor: Colors.transparent,
-      elevation: 10,
-      context: context,
-      builder: (context) => BottomSheetWidget(
-        update: _update,
-        title: 'Please select section',
-        isImageField: false,
-        textFieldTitleOne: 'Score Name',
-        textFieldTitleTwo: 'Custom Score',
-        isSubjectScreen: false,
-        valueChanged: (controller) async {},
-        section: 'MCQ Assessment',
-        tileOnTap: (i) {
-          sectin = i;
-        },
-        sheetHeight: MediaQuery.of(context).size.height / 3,
-      ),
-    );
-    return sectin;
-  }
+  // _selectSectionBeforeNavigate() async {
+  //   String sectin = '';
+  //   await showModalBottomSheet(
+  //     clipBehavior: Clip.antiAliasWithSaveLayer,
+  //     isScrollControlled: true,
+  //     isDismissible: true,
+  //     enableDrag: true,
+  //     backgroundColor: Colors.transparent,
+  //     elevation: 10,
+  //     context: context,
+  //     builder: (context) => BottomSheetWidget(
+  //       update: _update,
+  //       title: 'Please select section',
+  //       isImageField: false,
+  //       textFieldTitleOne: 'Score Name',
+  //       textFieldTitleTwo: 'Custom Score',
+  //       isSubjectScreen: false,
+  //       valueChanged: (controller) async {},
+  //       section: 'MCQ Assessment',
+  //       tileOnTap: (i) {
+  //         sectin = i;
+  //       },
+  //       sheetHeight: MediaQuery.of(context).size.height / 3,
+  //     ),
+  //   );
+  //   return sectin;
+  // }
 
   void navigateToCamera() {
     Navigator.push(

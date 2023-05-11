@@ -389,6 +389,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                 isFlashOn: ValueNotifier<bool>(false),
               )),
     );
+
     if (photo != null) {
       setState(() {
         imageFile = File(photo.path);

@@ -8,6 +8,8 @@ import 'package:Soc/src/modules/graded_plus/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/graded_plus_home.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_header_widget.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -63,21 +65,22 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Utility.textWidget(
-                  text: 'Select Assignment Type',
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              SpacerWidget(MediaQuery.of(context).size.height * 0.02),
+              PlusScreenTitleWidget(text: 'Select Assignment Type'),
+
+              // Container(
+              //   alignment: Alignment.centerLeft,
+              //   padding: EdgeInsets.symmetric(horizontal: 20),
+              //   child: Utility.textWidget(
+              //     text: 'Select Assignment Type',
+              //     context: context,
+              //     textTheme: Theme.of(context)
+              //         .textTheme
+              //         .headline6!
+              //         .copyWith(fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              // SpacerWidget(MediaQuery.of(context).size.height * 0.02),
               Container(
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: ListView.builder(
@@ -90,9 +93,9 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
               ),
             ],
           ),
-          floatingActionButton: floatingActionButton(),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+          // floatingActionButton: floatingActionButton(),
+          // floatingActionButtonLocation:
+          //     FloatingActionButtonLocation.centerFloat,
         )
       ],
     );

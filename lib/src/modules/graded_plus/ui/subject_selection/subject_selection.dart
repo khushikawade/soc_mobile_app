@@ -850,6 +850,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
               return Container(
+                padding: EdgeInsets.only(bottom: 20),
                 margin:
                     const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                 child: Container(

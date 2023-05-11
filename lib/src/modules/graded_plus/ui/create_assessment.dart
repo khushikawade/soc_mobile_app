@@ -14,6 +14,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_selection/subject_selection.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_header_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -151,15 +152,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           // controller: listScrollController,
                           shrinkWrap: true,
                           children: [
-                            SpacerWidget(_KVerticalSpace * 0.50),
-                            highlightText(
-                              text: 'Create Assignment',
-                              theme: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            SpacerWidget(_KVerticalSpace / 1.8),
+                            PlusScreenTitleWidget(text: 'Create Assignment'),
+                            // SpacerWidget(_KVerticalSpace * 0.50),
+                            // highlightText(
+                            //   text: 'Create Assignment',
+                            //   theme: Theme.of(context)
+                            //       .textTheme
+                            //       .headline6!
+                            //       .copyWith(fontWeight: FontWeight.bold),
+                            // ),
+                            // SpacerWidget(_KVerticalSpace / 1.8),
                             highlightText(
                                 text: 'Assignment Name',
                                 theme: Theme.of(context)
@@ -503,20 +505,14 @@ class _CreateAssessmentState extends State<CreateAssessment>
             child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                // physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: Globals.deviceType == 'phone' ? 50 : 70,
-                    childAspectRatio: 5 / 6,
+                    maxCrossAxisExtent: Globals.deviceType == 'phone' ? 40 : 60,
+                    childAspectRatio: 6 / 7,
                     crossAxisSpacing: Globals.deviceType == 'phone' ? 15 : 50,
                     mainAxisSpacing: 5),
                 itemCount: widget.customGrades.length,
                 itemBuilder: (BuildContext ctx, index) {
                   return Bouncing(
-                    // onPress: () {
-                    //   // widget.customGrades[index] == '+'
-                    //   //     ? _addSectionBottomSheet()
-                    //   //     : selectedGrade.value = index;
-                    // },
                     child: GestureDetector(
                       onTap: () {
                         widget.customGrades[index] == '+'
@@ -678,129 +674,150 @@ class _CreateAssessmentState extends State<CreateAssessment>
       connectivityBuilder: (BuildContext context,
           ConnectivityResult connectivity, Widget child) {
         final bool connected = connectivity != ConnectivityResult.none;
-        return FloatingActionButton.extended(
-            backgroundColor: AppTheme.kButtonColor,
-            onPressed: () async {
-              // Hide keyboard
-              FocusScope.of(context).requestFocus(FocusNode());
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 40),
+          child: FloatingActionButton.extended(
+              backgroundColor: AppTheme.kButtonColor,
+              onPressed: () async {
+                // Hide keyboard
+                FocusScope.of(context).requestFocus(FocusNode());
 
-              // Check for internet connection
-              if (!connected) {
-                Utility.currentScreenSnackBar("No Internet Connection", null);
-                return;
-              }
-
-              // Check if form is valid
-              if (assessmentNameError.value.isEmpty ||
-                  assessmentNameError.value.length < 2 ||
-                  classError.value.isEmpty) {
-                return;
-              }
-
-              // Check if using standalone graded app and if student not belongs to selected classroom
-              if (Overrides.STANDALONE_GRADED_APP &&
-                  (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
-                          ?.courseId?.isEmpty ??
-                      true)) {
-                Utility.currentScreenSnackBar(
-                    "None of the scanned student available in the selected classroom course \'${classController.text}\'",
-                    null);
-                return;
-              }
-
-              // Check if all students belong to same class
-              if (Overrides.STANDALONE_GRADED_APP) {
-                Utility.showLoadingDialog(
-                  context: context,
-                  isOCR: true,
-                );
-
-                List<StudentAssessmentInfo>
-                    notPresentStudentListInSelectedClass =
-                    await OcrUtility.checkAllStudentBelongsToSameClassOrNot(
-                        title: Globals.assessmentName ?? '',
-                        isScanMore: false,
-                        studentInfoDB: _studentAssessmentInfoDb);
-
-                Navigator.of(context).pop();
-
-                //Check student and show popup modal in case of scan more
-                if ((notPresentStudentListInSelectedClass?.isNotEmpty ??
-                        true) &&
-                    (!isAlreadySelected.value)) {
-                  notPresentStudentsPopupModal(
-                      notPresentStudentsInSelectedClass:
-                          notPresentStudentListInSelectedClass);
+                // Check for internet connection
+                if (!connected) {
+                  Utility.currentScreenSnackBar("No Internet Connection", null);
                   return;
                 }
-              }
 
-              performOnTapOnNext();
-            },
-            // onPressed: () async {
-            //   FocusScope.of(context).requestFocus(FocusNode());
-            //   if (!connected) {
-            //     Utility.currentScreenSnackBar("No Internet Connection", null);
-            //   } else {
-            //     // if (_formKey.currentState!.validate()) {
-            //     if (assessmentNameError.value.isNotEmpty &&
-            //         assessmentNameError.value.length >= 2 &&
-            //         classError.value.isNotEmpty) {
-            //       if (Overrides.STANDALONE_GRADED_APP &&
-            //           (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
-            //                   ?.courseId?.isEmpty ??
-            //               true)) {
-            //         Utility.currentScreenSnackBar(
-            //             "None of the scanned student available in the selected classroom course \'${classController.text}\'",
-            //             null);
-            //       } else {
-            //         if (Overrides.STANDALONE_GRADED_APP) {
-            //           List<StudentAssessmentInfo> notPresentStudentsList =
-            //               await _checkAllStudentBelongsToSameClassOrNot();
+                // Check if form is valid
+                if (assessmentNameError.value.isEmpty ||
+                    assessmentNameError.value.length < 2 ||
+                    classError.value.isEmpty) {
+                  return;
+                }
 
-            //           if (notPresentStudentsList?.isNotEmpty ?? false) {
-            //             NonCourseGoogleClassroomNonCourseGoogleClassroomStudentPopupModal(
-            //                 notPresentStudentsList: notPresentStudentsList);
-            //           } else {
-            //             preparingexcelSheet();
-            //           }
-            //         } else {
-            //           preparingexcelSheet();
-            //         }
-            //       }
-            //     }
-            //   }
-            // },
-            label: Row(
-              children: [
-                BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                    bloc: _googleDriveBloc,
-                    child: Container(),
-                    listener: (context, state) async {
-                      // if (state is GoogleDriveLoading) {
-                      //   Utility.showLoadingDialog(
-                      //       context: context, isOCR: true);
-                      // }
-                      Globals.assessmentName =
-                          "${assessmentController.text}_${classController.text}";
+                // Check if using standalone graded app and if student not belongs to selected classroom
+                if (Overrides.STANDALONE_GRADED_APP &&
+                    (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+                            ?.courseId?.isEmpty ??
+                        true)) {
+                  Utility.currentScreenSnackBar(
+                      "None of the scanned student available in the selected classroom course \'${classController.text}\'",
+                      null);
+                  return;
+                }
 
-                      if (state is ExcelSheetCreated) {
-                        Globals.googleExcelSheetId =
-                            state.googleSpreadSheetFileObj['fileId'];
-                        //Create Google Presentation once Spreadsheet created
-                        _googleDriveBloc.add(CreateSlideToDrive(
-                            isMcqSheet: widget.isMcqSheet ?? false,
-                            fileTitle: Globals.assessmentName,
-                            // "${assessmentController.text}_${classController.text}",
-                            excelSheetId: Globals.googleExcelSheetId));
-                      }
-                      if (state is ErrorState) {
-                        if (state.errorMsg == 'ReAuthentication is required') {
-                          await Utility.refreshAuthenticationToken(
-                              isNavigator: true,
-                              errorMsg: state.errorMsg!,
-                              context: context,
-                              scaffoldKey: scaffoldKey);
+                // Check if all students belong to same class
+                if (Overrides.STANDALONE_GRADED_APP) {
+                  Utility.showLoadingDialog(
+                    context: context,
+                    isOCR: true,
+                  );
+
+                  List<StudentAssessmentInfo>
+                      notPresentStudentListInSelectedClass =
+                      await OcrUtility.checkAllStudentBelongsToSameClassOrNot(
+                          title: Globals.assessmentName ?? '',
+                          isScanMore: false,
+                          studentInfoDB: _studentAssessmentInfoDb);
+
+                  Navigator.of(context).pop();
+
+                  //Check student and show popup modal in case of scan more
+                  if ((notPresentStudentListInSelectedClass?.isNotEmpty ??
+                          true) &&
+                      (!isAlreadySelected.value)) {
+                    notPresentStudentsPopupModal(
+                        notPresentStudentsInSelectedClass:
+                            notPresentStudentListInSelectedClass);
+                    return;
+                  }
+                }
+
+                performOnTapOnNext();
+              },
+              // onPressed: () async {
+              //   FocusScope.of(context).requestFocus(FocusNode());
+              //   if (!connected) {
+              //     Utility.currentScreenSnackBar("No Internet Connection", null);
+              //   } else {
+              //     // if (_formKey.currentState!.validate()) {
+              //     if (assessmentNameError.value.isNotEmpty &&
+              //         assessmentNameError.value.length >= 2 &&
+              //         classError.value.isNotEmpty) {
+              //       if (Overrides.STANDALONE_GRADED_APP &&
+              //           (GoogleClassroomGlobals.studentAssessmentAndClassroomObj
+              //                   ?.courseId?.isEmpty ??
+              //               true)) {
+              //         Utility.currentScreenSnackBar(
+              //             "None of the scanned student available in the selected classroom course \'${classController.text}\'",
+              //             null);
+              //       } else {
+              //         if (Overrides.STANDALONE_GRADED_APP) {
+              //           List<StudentAssessmentInfo> notPresentStudentsList =
+              //               await _checkAllStudentBelongsToSameClassOrNot();
+
+              //           if (notPresentStudentsList?.isNotEmpty ?? false) {
+              //             NonCourseGoogleClassroomNonCourseGoogleClassroomStudentPopupModal(
+              //                 notPresentStudentsList: notPresentStudentsList);
+              //           } else {
+              //             preparingexcelSheet();
+              //           }
+              //         } else {
+              //           preparingexcelSheet();
+              //         }
+              //       }
+              //     }
+              //   }
+              // },
+              label: Row(
+                children: [
+                  BlocListener<GoogleDriveBloc, GoogleDriveState>(
+                      bloc: _googleDriveBloc,
+                      child: Container(),
+                      listener: (context, state) async {
+                        // if (state is GoogleDriveLoading) {
+                        //   Utility.showLoadingDialog(
+                        //       context: context, isOCR: true);
+                        // }
+                        Globals.assessmentName =
+                            "${assessmentController.text}_${classController.text}";
+
+                        if (state is ExcelSheetCreated) {
+                          Globals.googleExcelSheetId =
+                              state.googleSpreadSheetFileObj['fileId'];
+                          //Create Google Presentation once Spreadsheet created
+                          _googleDriveBloc.add(CreateSlideToDrive(
+                              isMcqSheet: widget.isMcqSheet ?? false,
+                              fileTitle: Globals.assessmentName,
+                              // "${assessmentController.text}_${classController.text}",
+                              excelSheetId: Globals.googleExcelSheetId));
+                        }
+                        if (state is ErrorState) {
+                          if (state.errorMsg ==
+                              'ReAuthentication is required') {
+                            await Utility.refreshAuthenticationToken(
+                                isNavigator: true,
+                                errorMsg: state.errorMsg!,
+                                context: context,
+                                scaffoldKey: scaffoldKey);
+                            // Globals.assessmentName =
+                            //     "${assessmentController.text}_${classController.text}";
+                            _googleDriveBloc.add(CreateExcelSheetToDrive(
+                                description: widget.isMcqSheet == true
+                                    ? "Multiple Choice Sheet"
+                                    : "Graded+",
+                                name: Globals.assessmentName,
+                                folderId: Globals.googleDriveFolderId!));
+                          } else {
+                            Navigator.of(context).pop();
+                            Utility.currentScreenSnackBar(
+                                state.errorMsg == 'NO_CONNECTION'
+                                    ? 'No Internet Connection'
+                                    : "Something Went Wrong. Please Try Again.",
+                                null);
+                          }
+                        }
+                        if (state is RecallTheEvent) {
                           // Globals.assessmentName =
                           //     "${assessmentController.text}_${classController.text}";
                           _googleDriveBloc.add(CreateExcelSheetToDrive(
@@ -809,63 +826,47 @@ class _CreateAssessmentState extends State<CreateAssessment>
                                   : "Graded+",
                               name: Globals.assessmentName,
                               folderId: Globals.googleDriveFolderId!));
-                        } else {
+                        }
+
+                        if (state is GoogleSlideCreated) {
+                          //Save Google Presentation Id
+                          Globals.googleSlidePresentationId =
+                              state.slideFiledId;
                           Navigator.of(context).pop();
-                          Utility.currentScreenSnackBar(
-                              state.errorMsg == 'NO_CONNECTION'
-                                  ? 'No Internet Connection'
-                                  : "Something Went Wrong. Please Try Again.",
-                              null);
-                        }
-                      }
-                      if (state is RecallTheEvent) {
-                        // Globals.assessmentName =
-                        //     "${assessmentController.text}_${classController.text}";
-                        _googleDriveBloc.add(CreateExcelSheetToDrive(
-                            description: widget.isMcqSheet == true
-                                ? "Multiple Choice Sheet"
-                                : "Graded+",
-                            name: Globals.assessmentName,
-                            folderId: Globals.googleDriveFolderId!));
-                      }
-
-                      if (state is GoogleSlideCreated) {
-                        //Save Google Presentation Id
-                        Globals.googleSlidePresentationId = state.slideFiledId;
-                        Navigator.of(context).pop();
-                        _navigateToSubjectSection();
-                      }
-
-                      if (state is QuestionImageSuccess) {
-                        //update Question image url in local studentDb
-                        List<StudentAssessmentInfo> studentInfoList =
-                            await _studentAssessmentInfoDb.getData();
-
-                        if (studentInfoList?.isNotEmpty ?? false) {
-                          StudentAssessmentInfo stduentObj =
-                              studentInfoList.first;
-
-                          stduentObj.questionImgUrl = state.questionImageUrl;
-                          await _studentAssessmentInfoDb.putAt(0, stduentObj);
+                          _navigateToSubjectSection();
                         }
 
-                        _callToCreateExcelSheetAndClassRoomIfStandAlone();
-                      }
-                    }),
-                textwidget(
-                    text: 'Next',
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline2!
-                        .copyWith(color: Theme.of(context).backgroundColor)),
-                SpacerWidget(5),
-                RotatedBox(
-                  quarterTurns: 90,
-                  child: Icon(Icons.arrow_back,
-                      color: Theme.of(context).backgroundColor, size: 20),
-                )
-              ],
-            ));
+                        if (state is QuestionImageSuccess) {
+                          //update Question image url in local studentDb
+                          List<StudentAssessmentInfo> studentInfoList =
+                              await _studentAssessmentInfoDb.getData();
+
+                          if (studentInfoList?.isNotEmpty ?? false) {
+                            StudentAssessmentInfo stduentObj =
+                                studentInfoList.first;
+
+                            stduentObj.questionImgUrl = state.questionImageUrl;
+                            await _studentAssessmentInfoDb.putAt(0, stduentObj);
+                          }
+
+                          _callToCreateExcelSheetAndClassRoomIfStandAlone();
+                        }
+                      }),
+                  textwidget(
+                      text: 'Next',
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Theme.of(context).backgroundColor)),
+                  SpacerWidget(5),
+                  RotatedBox(
+                    quarterTurns: 90,
+                    child: Icon(Icons.arrow_back,
+                        color: Theme.of(context).backgroundColor, size: 20),
+                  )
+                ],
+              )),
+        );
       },
       child: Container(),
     );
