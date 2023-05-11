@@ -1,5 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_bottomnavbar.dart';
+import 'package:Soc/src/overrides.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
@@ -18,8 +19,8 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
   @override
   void initState() {
     super.initState();
-    gradedPlusPersistentTabController =
-        PersistentTabController(initialIndex: 2);
+    gradedPlusPersistentTabController = PersistentTabController(
+        initialIndex: Overrides.STANDALONE_GRADED_APP ? 1 : 2);
   }
 
   @override

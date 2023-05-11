@@ -14,10 +14,45 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class GradedBottomNavBar {
   /* ------- function to return list of widget for bottom navigation bar ------ */
-  static List<Widget> gradedPlusBuildPersistentScreens() {
-    return [
+  // static List<Widget> gradedPlusBuildPersistentScreens() {
+  //   if (Overrides.STANDALONE_GRADED_APP) {
+  //     return [
+  //       PBISPlusClass(
+  //         titleIconData: const IconData(0xe825,
+  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+  //         backOnTap: (() {}),
+  //       ),
+  //       SelectAssessmentType(),
+  //       AssessmentSummary(
+  //         isFromHomeSection: true,
+  //         selectedFilterValue: 'All',
+  //       ),
+  //     ];
+  //   } else {
+  //     return [
+  //       PBISPlusClass(
+  //         titleIconData: const IconData(0xe825,
+  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+  //         backOnTap: (() {}),
+  //       ),
+  //       AssessmentSummary(
+  //         isFromHomeSection: true,
+  //         selectedFilterValue: 'All',
+  //       ),
+  //       SelectAssessmentType(),
+  //       CustomIntroWidget(),
+  //       PBISPlusStaff(
+  //         titleIconData: getStaffIconCode(),
+  //       )
+  //     ];
+  //   }
+  // }
+
+  /* ------- function to return list of widget for bottom navigation bar ------ */
+  static List<StatefulWidget> gradedPlusBuildPersistentScreens() {
+    List<StatefulWidget> screens = [
       PBISPlusClass(
-        titleIconData: IconData(0xe825,
+        titleIconData: const IconData(0xe825,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         backOnTap: (() {}),
       ),
@@ -31,12 +66,108 @@ class GradedBottomNavBar {
         titleIconData: getStaffIconCode(),
       )
     ];
+
+    return Overrides.STANDALONE_GRADED_APP
+        ? [
+            screens[0],
+            screens[2],
+            screens[1],
+          ]
+        : screens;
   }
+
+  /* ---------- function to return list of bottom navigation bar item --------- */
+  // static List<PersistentBottomNavBarItem> gradedPlusnavBarsItems(
+  //     {required BuildContext context}) {
+  //   if (Overrides.STANDALONE_GRADED_APP) {
+  //     return [
+  //       PersistentBottomNavBarItem(
+  //         icon: gardedPlusBottomNavBarIcons(
+  //             IconData(0xe825,
+  //                 fontFamily: Overrides.kFontFam,
+  //                 fontPackage: Overrides.kFontPkg),
+  //             'Class',
+  //             context),
+  //         activeColorPrimary: AppTheme.kButtonColor,
+  //         inactiveColorPrimary: CupertinoColors.systemGrey,
+  //       ),
+  //       PersistentBottomNavBarItem(
+  //         icon: gardedPlusBottomNavBarIcons(
+  //             IconData(0xe875,
+  //                 fontFamily: Overrides.kFontFam,
+  //                 fontPackage: Overrides.kFontPkg),
+  //             'Scan',
+  //             context),
+  //         activeColorPrimary: AppTheme.kButtonColor,
+  //         inactiveColorPrimary: CupertinoColors.systemGrey,
+  //       ),
+  //       PersistentBottomNavBarItem(
+  //         icon: gardedPlusBottomNavBarIcons(
+  //             IconData(0xe824,
+  //                 fontFamily: Overrides.kFontFam,
+  //                 fontPackage: Overrides.kFontPkg),
+  //             'History',
+  //             context),
+  //         activeColorPrimary: AppTheme.kButtonColor,
+  //         inactiveColorPrimary: CupertinoColors.systemGrey,
+  //       ),
+  //     ];
+  //   } else {
+  //     return [
+  //       PersistentBottomNavBarItem(
+  //         icon: gardedPlusBottomNavBarIcons(
+  //             IconData(0xe825,
+  //                 fontFamily: Overrides.kFontFam,
+  //                 fontPackage: Overrides.kFontPkg),
+  //             'Class',
+  //             context),
+  //         activeColorPrimary: AppTheme.kButtonColor,
+  //         inactiveColorPrimary: CupertinoColors.systemGrey,
+  //       ),
+  //       PersistentBottomNavBarItem(
+  //         icon: gardedPlusBottomNavBarIcons(
+  //             IconData(0xe824,
+  //                 fontFamily: Overrides.kFontFam,
+  //                 fontPackage: Overrides.kFontPkg),
+  //             'History',
+  //             context),
+  //         activeColorPrimary: AppTheme.kButtonColor,
+  //         inactiveColorPrimary: CupertinoColors.systemGrey,
+  //       ),
+  //       PersistentBottomNavBarItem(
+  //         icon: gardedPlusBottomNavBarIcons(
+  //             IconData(0xe875,
+  //                 fontFamily: Overrides.kFontFam,
+  //                 fontPackage: Overrides.kFontPkg),
+  //             'Scan',
+  //             context),
+  //         activeColorPrimary: AppTheme.kButtonColor,
+  //         inactiveColorPrimary: CupertinoColors.systemGrey,
+  //       ),
+  //       PersistentBottomNavBarItem(
+  //         icon: gardedPlusBottomNavBarIcons(
+  //             IconData(0xe849,
+  //                 fontFamily: Overrides.kFontFam,
+  //                 fontPackage: Overrides.kFontPkg),
+  //             'Help',
+  //             context),
+  //         activeColorPrimary: AppTheme.kButtonColor,
+  //         inactiveColorPrimary: CupertinoColors.systemGrey,
+  //       ),
+  //       PersistentBottomNavBarItem(
+  //         icon:
+  //             gardedPlusBottomNavBarIcons(getStaffIconCode(), 'Staff', context),
+  //         activeColorPrimary: AppTheme.kButtonColor,
+  //         inactiveColorPrimary: CupertinoColors.systemGrey,
+  //       )
+  //     ];
+  //   }
+  // }
 
   /* ---------- function to return list of bottom navigation bar item --------- */
   static List<PersistentBottomNavBarItem> gradedPlusnavBarsItems(
       {required BuildContext context}) {
-    return [
+    List<PersistentBottomNavBarItem> items = [
       PersistentBottomNavBarItem(
         icon: gardedPlusBottomNavBarIcons(
             IconData(0xe825,
@@ -81,47 +212,49 @@ class GradedBottomNavBar {
         icon: gardedPlusBottomNavBarIcons(getStaffIconCode(), 'Staff', context),
         activeColorPrimary: AppTheme.kButtonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
-      )
+      ),
     ];
+
+    return Overrides.STANDALONE_GRADED_APP
+        ? [items[0], items[2], items[1]]
+        : items;
   }
 
   /* -------------------- bottom navigation bar item widget ------------------- */
   static Widget gardedPlusBottomNavBarIcons(IconData iconData, title, context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Flexible(
-          child: Column(
+    return title == 'Scan'
+        ? Icon(iconData, size: 30)
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                iconData,
-                size: title == 'Scan' ? 30 : 22,
-              ),
-              if (title != 'Scan') SpacerWidget(2),
-              if (title != 'Scan')
-                TranslationWidget(
-                  shimmerHeight: 8,
-                  message: title,
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => Expanded(
-                    child: FittedBox(
-                      child: Text(
-                        translatedMessage.toString(),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: Theme.of(context).textTheme.headline4!,
+              Flexible(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(iconData, size: 22),
+                    SpacerWidget(2),
+                    TranslationWidget(
+                      shimmerHeight: 8,
+                      message: title,
+                      fromLanguage: "en",
+                      toLanguage: Globals.selectedLanguage,
+                      builder: (translatedMessage) => Expanded(
+                        child: FittedBox(
+                          child: Text(
+                            translatedMessage.toString(),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: Theme.of(context).textTheme.headline4!,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
+              ),
             ],
-          ),
-        ),
-      ],
-    );
+          );
   }
 
   /* --------- function to get staff icon code from main bottom navBar -------- */
