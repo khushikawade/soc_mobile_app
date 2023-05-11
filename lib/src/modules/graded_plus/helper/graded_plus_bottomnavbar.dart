@@ -223,7 +223,9 @@ class GradedBottomNavBar {
   /* -------------------- bottom navigation bar item widget ------------------- */
   static Widget gardedPlusBottomNavBarIcons(IconData iconData, title, context) {
     return title == 'Scan'
-        ? Icon(iconData, size: 30)
+        ? Icon(
+            iconData,
+          )
         : Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -232,7 +234,9 @@ class GradedBottomNavBar {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(iconData, size: 22),
+                    Icon(
+                      iconData,
+                    ),
                     SpacerWidget(2),
                     TranslationWidget(
                       shimmerHeight: 8,

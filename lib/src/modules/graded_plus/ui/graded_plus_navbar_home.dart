@@ -58,11 +58,17 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(25),
-          topLeft: Radius.circular(25),
-        ),
-      ),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(25),
+            topLeft: Radius.circular(25),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color:
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
+              blurRadius: 10.0,
+            ),
+          ]),
       onWillPop: (context) async {
         return false; // disable back button on android
       },

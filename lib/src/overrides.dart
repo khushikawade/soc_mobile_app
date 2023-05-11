@@ -31,8 +31,8 @@ class Overrides {
   static const String forgotPasswordUrl = 'https://';
 
 //true in case of graded+ stand-alone app
-  static bool STANDALONE_GRADED_APP = true;
-  static String SCHOOL_ID = 'a1f4W000008SzlXQAS'; //'a1f7h000001EjnnAAC'
+  static bool STANDALONE_GRADED_APP = false;
+  static String SCHOOL_ID = 'a1f4W000007DQaNQAW'; //'a1f7h000001EjnnAAC'
 
   //151 : 'a1f4W000007DQaNQAW' /////////////////// DBN: 07X151
   //Bronx Bears : 'a1f4W000007DR8nQAG'/////////////// DBN:BB0456
