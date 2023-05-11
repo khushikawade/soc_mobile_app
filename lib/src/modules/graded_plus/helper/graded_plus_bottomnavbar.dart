@@ -14,41 +14,6 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class GradedBottomNavBar {
   /* ------- function to return list of widget for bottom navigation bar ------ */
-  // static List<Widget> gradedPlusBuildPersistentScreens() {
-  //   if (Overrides.STANDALONE_GRADED_APP) {
-  //     return [
-  //       PBISPlusClass(
-  //         titleIconData: const IconData(0xe825,
-  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-  //         backOnTap: (() {}),
-  //       ),
-  //       SelectAssessmentType(),
-  //       AssessmentSummary(
-  //         isFromHomeSection: true,
-  //         selectedFilterValue: 'All',
-  //       ),
-  //     ];
-  //   } else {
-  //     return [
-  //       PBISPlusClass(
-  //         titleIconData: const IconData(0xe825,
-  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-  //         backOnTap: (() {}),
-  //       ),
-  //       AssessmentSummary(
-  //         isFromHomeSection: true,
-  //         selectedFilterValue: 'All',
-  //       ),
-  //       SelectAssessmentType(),
-  //       CustomIntroWidget(),
-  //       PBISPlusStaff(
-  //         titleIconData: getStaffIconCode(),
-  //       )
-  //     ];
-  //   }
-  // }
-
-  /* ------- function to return list of widget for bottom navigation bar ------ */
   static List<StatefulWidget> gradedPlusBuildPersistentScreens() {
     List<StatefulWidget> screens = [
       PBISPlusClass(
@@ -75,94 +40,6 @@ class GradedBottomNavBar {
           ]
         : screens;
   }
-
-  /* ---------- function to return list of bottom navigation bar item --------- */
-  // static List<PersistentBottomNavBarItem> gradedPlusnavBarsItems(
-  //     {required BuildContext context}) {
-  //   if (Overrides.STANDALONE_GRADED_APP) {
-  //     return [
-  //       PersistentBottomNavBarItem(
-  //         icon: gardedPlusBottomNavBarIcons(
-  //             IconData(0xe825,
-  //                 fontFamily: Overrides.kFontFam,
-  //                 fontPackage: Overrides.kFontPkg),
-  //             'Class',
-  //             context),
-  //         activeColorPrimary: AppTheme.kButtonColor,
-  //         inactiveColorPrimary: CupertinoColors.systemGrey,
-  //       ),
-  //       PersistentBottomNavBarItem(
-  //         icon: gardedPlusBottomNavBarIcons(
-  //             IconData(0xe875,
-  //                 fontFamily: Overrides.kFontFam,
-  //                 fontPackage: Overrides.kFontPkg),
-  //             'Scan',
-  //             context),
-  //         activeColorPrimary: AppTheme.kButtonColor,
-  //         inactiveColorPrimary: CupertinoColors.systemGrey,
-  //       ),
-  //       PersistentBottomNavBarItem(
-  //         icon: gardedPlusBottomNavBarIcons(
-  //             IconData(0xe824,
-  //                 fontFamily: Overrides.kFontFam,
-  //                 fontPackage: Overrides.kFontPkg),
-  //             'History',
-  //             context),
-  //         activeColorPrimary: AppTheme.kButtonColor,
-  //         inactiveColorPrimary: CupertinoColors.systemGrey,
-  //       ),
-  //     ];
-  //   } else {
-  //     return [
-  //       PersistentBottomNavBarItem(
-  //         icon: gardedPlusBottomNavBarIcons(
-  //             IconData(0xe825,
-  //                 fontFamily: Overrides.kFontFam,
-  //                 fontPackage: Overrides.kFontPkg),
-  //             'Class',
-  //             context),
-  //         activeColorPrimary: AppTheme.kButtonColor,
-  //         inactiveColorPrimary: CupertinoColors.systemGrey,
-  //       ),
-  //       PersistentBottomNavBarItem(
-  //         icon: gardedPlusBottomNavBarIcons(
-  //             IconData(0xe824,
-  //                 fontFamily: Overrides.kFontFam,
-  //                 fontPackage: Overrides.kFontPkg),
-  //             'History',
-  //             context),
-  //         activeColorPrimary: AppTheme.kButtonColor,
-  //         inactiveColorPrimary: CupertinoColors.systemGrey,
-  //       ),
-  //       PersistentBottomNavBarItem(
-  //         icon: gardedPlusBottomNavBarIcons(
-  //             IconData(0xe875,
-  //                 fontFamily: Overrides.kFontFam,
-  //                 fontPackage: Overrides.kFontPkg),
-  //             'Scan',
-  //             context),
-  //         activeColorPrimary: AppTheme.kButtonColor,
-  //         inactiveColorPrimary: CupertinoColors.systemGrey,
-  //       ),
-  //       PersistentBottomNavBarItem(
-  //         icon: gardedPlusBottomNavBarIcons(
-  //             IconData(0xe849,
-  //                 fontFamily: Overrides.kFontFam,
-  //                 fontPackage: Overrides.kFontPkg),
-  //             'Help',
-  //             context),
-  //         activeColorPrimary: AppTheme.kButtonColor,
-  //         inactiveColorPrimary: CupertinoColors.systemGrey,
-  //       ),
-  //       PersistentBottomNavBarItem(
-  //         icon:
-  //             gardedPlusBottomNavBarIcons(getStaffIconCode(), 'Staff', context),
-  //         activeColorPrimary: AppTheme.kButtonColor,
-  //         inactiveColorPrimary: CupertinoColors.systemGrey,
-  //       )
-  //     ];
-  //   }
-  // }
 
   /* ---------- function to return list of bottom navigation bar item --------- */
   static List<PersistentBottomNavBarItem> gradedPlusnavBarsItems(

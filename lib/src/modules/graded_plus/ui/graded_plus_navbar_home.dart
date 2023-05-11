@@ -42,12 +42,13 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
       context,
       controller: gradedPlusPersistentTabController,
       screens: GradedBottomNavBar.gradedPlusBuildPersistentScreens(),
-      onItemSelected: (i) {
-        if (GradedBottomNavBar.gradedPlusBuildPersistentScreens().length - 1 ==
-            i) {
-          Navigator.of(context).pop();
-        }
-      },
+      onItemSelected: (i) =>
+          GradedBottomNavBar.gradedPlusBuildPersistentScreens().length - 1 ==
+                      i &&
+                  !Overrides.STANDALONE_GRADED_APP
+              ? Navigator.of(context).pop()
+              : null,
+
       items: GradedBottomNavBar.gradedPlusnavBarsItems(context: context),
       confineInSafeArea: true,
       backgroundColor: Theme.of(context).backgroundColor,
