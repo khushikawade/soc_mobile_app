@@ -1145,8 +1145,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           localClassroomCourseworkList.removeAt(0);
         }
         //sub Join Count To Duplicates courses
-        localClassroomCourseworkList =
-            subJoinCountToDuplicates(allCourses: localClassroomCourseworkList);
+        localClassroomCourseworkList = updateSheetTabTitleForDuplicateNames(
+            allCourses: localClassroomCourseworkList);
         var isBlankSpreadsheetTabsAdded;
         var isSpreadsheetTabsUpdated;
 
@@ -3012,8 +3012,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 : 1;
 
         if (index == 0) {
-          //  change first default tab heading row text style.
-          // change every tab heading row text style.
+          //  change heading row text style for first default tab.
+
           Map<String, Map<String, dynamic>> headingRowTextStyle = {
             "repeatCell": {
               "range": {"sheetId": index, "startRowIndex": 0, "endRowIndex": 1},
@@ -3083,7 +3083,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           };
 
-          // update the textformat of all cells in sheet
+          // update the text type format of all cells in sheet
           Map<String, Map<String, dynamic>> allCellsTextFormat = {
             "repeatCell": {
               "range": {
@@ -3098,7 +3098,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           };
 
-          //now update the textstyle of all cells in sheet
+          //now update the text alignment of all cells starting from column 2(for courses sheet) and 3(for student sheets)
           Map<String, Map<String, dynamic>> allCellsTextStyle = {
             "repeatCell": {
               "range": {
@@ -3298,29 +3298,31 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  List<ClassroomCourse> subJoinCountToDuplicates(
+  List<ClassroomCourse> updateSheetTabTitleForDuplicateNames(
       {required final List<ClassroomCourse> allCourses}) {
     try {
+      // Managing the local list to make sure no record skip //Noticed sometime
       List<ClassroomCourse> localAllCourses = [];
       localAllCourses.addAll(allCourses);
 
       Map<String, int> courseCount = {};
-      List<ClassroomCourse> subJoinAllCourses = [];
+      List<ClassroomCourse> duplicateCourseListWithUpdatedTitle = [];
 
       for (ClassroomCourse course in localAllCourses) {
         String courseName = course.name ?? '';
         //check if course already present or not
         if (courseCount.containsKey(courseName)) {
-          int count = courseCount[courseName]! +
-              1; //get old count and update with new value
+          //get old count and update with new value
+          int count = courseCount[courseName]! + 1;
           courseCount[courseName] = count; // update on courseCount
-          courseName =
-              '${courseName}_$count'; //update the name with latest count
+          //update the key with latest count
+          courseName = '${courseName}_$count';
         } else {
           courseCount[courseName] = 0; // update with default count
         }
+
         //update the new list with updated news
-        subJoinAllCourses.add(ClassroomCourse(
+        duplicateCourseListWithUpdatedTitle.add(ClassroomCourse(
           id: course.id,
           name: courseName, // Use the updated courseName value
           descriptionHeading: course.descriptionHeading,
@@ -3331,7 +3333,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         ));
       }
 
-      return subJoinAllCourses;
+      return duplicateCourseListWithUpdatedTitle;
     } catch (e) {
       throw (e);
     }
