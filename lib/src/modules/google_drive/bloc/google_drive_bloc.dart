@@ -3305,6 +3305,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       List<ClassroomCourse> localAllCourses = [];
       localAllCourses.addAll(allCourses);
 
+      //Storing each course name in key-value pair to update the name of any duplicate course name
       Map<String, int> courseCount = {};
       List<ClassroomCourse> duplicateCourseListWithUpdatedTitle = [];
 
