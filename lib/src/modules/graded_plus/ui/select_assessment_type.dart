@@ -66,21 +66,21 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              PlusScreenTitleWidget(text: 'Select Assignment Type'),
+              // PlusScreenTitleWidget(text: 'Select Assignment Type'),
 
-              // Container(
-              //   alignment: Alignment.centerLeft,
-              //   padding: EdgeInsets.symmetric(horizontal: 20),
-              //   child: Utility.textWidget(
-              //     text: 'Select Assignment Type',
-              //     context: context,
-              //     textTheme: Theme.of(context)
-              //         .textTheme
-              //         .headline6!
-              //         .copyWith(fontWeight: FontWeight.bold),
-              //   ),
-              // ),
-              // SpacerWidget(MediaQuery.of(context).size.height * 0.02),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Utility.textWidget(
+                  text: 'Select Assignment Type',
+                  context: context,
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .headline6!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+              SpacerWidget(MediaQuery.of(context).size.height * 0.02),
               Container(
                 height: MediaQuery.of(context).size.height * 0.7,
                 child: ListView.builder(

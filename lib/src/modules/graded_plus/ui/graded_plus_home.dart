@@ -113,31 +113,31 @@ class _OpticalCharacterRecognitionPageState
             ),
             child: ListView(
               children: [
-                PlusScreenTitleWidget(text: 'Points Possible'),
-                // SpacerWidget(_KVertcalSpace / 4),
-                // Utility.textWidget(
-                //     text: 'Points Possible',
-                //     context: context,
-                //     textTheme: Theme.of(context)
-                //         .textTheme
-                //         .headline6!
-                //         .copyWith(fontWeight: FontWeight.bold)),
-                //  SpacerWidget(_KVertcalSpace / 4),
+                // PlusScreenTitleWidget(text: 'Points Possible'),
+                SpacerWidget(_KVertcalSpace / 4),
+                Utility.textWidget(
+                    text: 'Points Possible',
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.bold)),
+                SpacerWidget(_KVertcalSpace / 4),
                 pointPossibleButton(),
-                // SpacerWidget(_KVertcalSpace / 2),
+                SpacerWidget(_KVertcalSpace / 2),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    PlusScreenTitleWidget(text: 'Scoring Rubric'),
-                    // Utility.textWidget(
-                    //     text: 'Scoring Rubric',
-                    //     context: context,
-                    //     textTheme: Theme.of(context)
-                    //         .textTheme
-                    //         .headline6!
-                    //         .copyWith(fontWeight: FontWeight.bold)),
-                    // SpacerWidget(5),
+                    // PlusScreenTitleWidget(text: 'Scoring Rubric'),
+                    Utility.textWidget(
+                        text: 'Scoring Rubric',
+                        context: context,
+                        textTheme: Theme.of(context)
+                            .textTheme
+                            .headline6!
+                            .copyWith(fontWeight: FontWeight.bold)),
+                    SpacerWidget(5),
                     BlocConsumer(
                       bloc: _bloc,
                       builder: (BuildContext context, Object? state) {

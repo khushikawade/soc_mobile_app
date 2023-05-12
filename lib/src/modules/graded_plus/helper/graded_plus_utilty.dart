@@ -3,6 +3,7 @@ import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
+import 'package:flutter/material.dart';
 
 import '../../google_classroom/google_classroom_globals.dart';
 
@@ -165,4 +166,8 @@ class OcrUtility {
       return [];
     }
   }
+
+// To manage Graded plus bottom nav bar
+  static final ValueNotifier<bool> gradedPlusNavBarIsHide =
+      ValueNotifier<bool>(false);
 }

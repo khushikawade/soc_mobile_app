@@ -142,6 +142,7 @@ class _SuccessScreenState extends State<SuccessScreen>
 
       _controller.repeat();
     }
+    OcrUtility.gradedPlusNavBarIsHide.value = false;
   }
 
   @override

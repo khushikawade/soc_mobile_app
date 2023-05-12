@@ -152,16 +152,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           // controller: listScrollController,
                           shrinkWrap: true,
                           children: [
-                            PlusScreenTitleWidget(text: 'Create Assignment'),
-                            // SpacerWidget(_KVerticalSpace * 0.50),
-                            // highlightText(
-                            //   text: 'Create Assignment',
-                            //   theme: Theme.of(context)
-                            //       .textTheme
-                            //       .headline6!
-                            //       .copyWith(fontWeight: FontWeight.bold),
-                            // ),
-                            // SpacerWidget(_KVerticalSpace / 1.8),
+                            // PlusScreenTitleWidget(text: 'Create Assignment'),
+                            SpacerWidget(_KVerticalSpace * 0.50),
+                            highlightText(
+                              text: 'Create Assignment',
+                              theme: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            SpacerWidget(_KVerticalSpace / 1.8),
                             highlightText(
                                 text: 'Assignment Name',
                                 theme: Theme.of(context)
