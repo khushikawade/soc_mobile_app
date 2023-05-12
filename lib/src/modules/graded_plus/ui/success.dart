@@ -163,6 +163,7 @@ class _SuccessScreenState extends State<SuccessScreen>
       child: Stack(children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+          resizeToAvoidBottomInset: true,
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(

@@ -15,6 +15,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -572,7 +573,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   Widget saveAndShareFAB(
     BuildContext context,
   ) =>
-      PBISPlusCustomFloatingActionButton(
+      PlusCustomFloatingActionButton(
         onPressed: () {
           /*-------------------------User Activity Track START----------------------------*/
           Utility.updateLogs(

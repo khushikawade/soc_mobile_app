@@ -7,14 +7,17 @@ import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/edit_bottom_sheet.dart';
+import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -820,67 +823,68 @@ class studentRecordList extends State<ResultsSummary> {
                 ],
               ),
             ),
-            floatingActionButton: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (!widget.assessmentDetailPage!) _scanFloatingWidget(),
-                SpacerWidget(10),
-                !widget.assessmentDetailPage!
-                    ? _bottomButtons(context, iconsList, iconsName,
-                        webContentLink: Globals.googleDriveFolderPath ?? '')
-                    : ValueListenableBuilder(
-                        valueListenable: isSuccessStateReceived,
-                        child: Container(),
-                        builder:
-                            (BuildContext context, bool value, Widget? child) {
-                          return isSuccessStateReceived.value == true
-                              ? Column(
-                                  children: [
-                                    _scanFloatingWidget(),
-                                    SpacerWidget(10),
-                                    _bottomButtons(
-                                        context, iconsList, iconsName,
-                                        webContentLink: webContentLink!),
-                                  ],
-                                )
-                              : Container();
-                        }),
-                BlocListener(
-                  child: Container(),
-                  bloc: _driveBloc3,
-                  listener: (context, state) async {
-                    if (state is ShareLinkReceived) {
-                      //   print("LINK RECIVED -------------->");
-                      if (!widget.assessmentDetailPage!) {
-                        Globals.shareableLink = state.shareLink;
-                      }
-                      isShareLinkReceived.value = true;
-                      widget.shareLink = state.shareLink;
-                    }
+            // floatingActionButton: Column(
+            //   mainAxisAlignment: MainAxisAlignment.end,
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: [
+            //     if (!widget.assessmentDetailPage!) _scanFloatingWidget(),
+            //     SpacerWidget(10),
+            //     !widget.assessmentDetailPage!
+            //         ? _bottomButtons(context, iconsList, iconsName,
+            //             webContentLink: Globals.googleDriveFolderPath ?? '')
+            //         : ValueListenableBuilder(
+            //             valueListenable: isSuccessStateReceived,
+            //             child: Container(),
+            //             builder:
+            //                 (BuildContext context, bool value, Widget? child) {
+            //               return isSuccessStateReceived.value == true
+            //                   ? Column(
+            //                       children: [
+            //                         _scanFloatingWidget(),
+            //                         SpacerWidget(10),
+            //                         _bottomButtons(
+            //                             context, iconsList, iconsName,
+            //                             webContentLink: webContentLink!),
+            //                       ],
+            //                     )
+            //                   : Container();
+            //             }),
+            //     BlocListener(
+            //       child: Container(),
+            //       bloc: _driveBloc3,
+            //       listener: (context, state) async {
+            //         if (state is ShareLinkReceived) {
+            //           //   print("LINK RECIVED -------------->");
+            //           if (!widget.assessmentDetailPage!) {
+            //             Globals.shareableLink = state.shareLink;
+            //           }
+            //           isShareLinkReceived.value = true;
+            //           widget.shareLink = state.shareLink;
+            //         }
 
-                    if (state is ErrorState) {
-                      if (state.errorMsg == 'ReAuthentication is required') {
-                        await Utility.refreshAuthenticationToken(
-                            isNavigator: false,
-                            errorMsg: state.errorMsg!,
-                            context: context,
-                            scaffoldKey: scaffoldKey);
+            //         if (state is ErrorState) {
+            //           if (state.errorMsg == 'ReAuthentication is required') {
+            //             await Utility.refreshAuthenticationToken(
+            //                 isNavigator: false,
+            //                 errorMsg: state.errorMsg!,
+            //                 context: context,
+            //                 scaffoldKey: scaffoldKey);
 
-                        _driveBloc.add(GetShareLink(
-                            fileId: widget.fileId, slideLink: false));
-                      } else {
-                        // Navigator.of(context).pop();
-                        Utility.currentScreenSnackBar(
-                            "Something Went Wrong. Please Try Again.", null);
-                      }
-                    }
-                  },
-                )
-              ],
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
+            //             _driveBloc.add(GetShareLink(
+            //                 fileId: widget.fileId, slideLink: false));
+            //           } else {
+            //             // Navigator.of(context).pop();
+            //             Utility.currentScreenSnackBar(
+            //                 "Something Went Wrong. Please Try Again.", null);
+            //           }
+            //         }
+            //       },
+            //     )
+            //   ],
+            // ),
+            // floatingActionButtonLocation:
+            //     FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: fabButton(context),
           ),
           BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
               bloc: _googleClassroomBloc,
@@ -2234,7 +2238,7 @@ class studentRecordList extends State<ResultsSummary> {
                                 Builder(builder: (context) {
                                   String? url = getURlForBottomIcons(
                                       title: element.title ?? '');
-                                  print(url);
+
                                   return Opacity(
                                     opacity: ((url?.isEmpty ?? true) ||
                                             (url == 'NA'))
@@ -2255,7 +2259,7 @@ class studentRecordList extends State<ResultsSummary> {
                                               ? Color(0xffF7F8F9)
                                               : null),
                                       onTap: (() async {
-                                        _bottomIconsOnTap(
+                                        bottomIconsOnTap(
                                             title: element.title ?? '',
                                             url: url ?? '');
                                       }),
@@ -2269,7 +2273,7 @@ class studentRecordList extends State<ResultsSummary> {
     );
   }
 
-  _bottomIconsOnTap({required String title, required String url}) async {
+  bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
       case 'Share':
         String shareLogMsg =
@@ -2588,5 +2592,56 @@ class studentRecordList extends State<ResultsSummary> {
     };
 
     return map[title] ?? '';
+  }
+
+  Widget fabButton(
+    BuildContext context,
+  ) =>
+      !widget.assessmentDetailPage!
+          ? PlusCustomFloatingActionButton(
+              onPressed: _saveAndShareBottomSheetMenu,
+            )
+          : ValueListenableBuilder(
+              valueListenable: isSuccessStateReceived,
+              child: Container(),
+              builder: (BuildContext context, bool value, Widget? child) {
+                return isSuccessStateReceived.value == true
+                    ? PlusCustomFloatingActionButton(
+                        onPressed: _saveAndShareBottomSheetMenu,
+                      )
+                    : Container();
+              });
+
+  Future<void> _saveAndShareBottomSheetMenu() async {
+    var result = await showModalBottomSheet(
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        useRootNavigator: true,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (BuildContext context) {
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return GradedPlusResultOptionBottomSheet(
+                  height: constraints.maxHeight < 800
+                      ? MediaQuery.of(context).size.height * 0.5
+                      : MediaQuery.of(context).size.height * 0.43,
+                  title: 'Save and Share',
+                  getURlForBottomIcons: getURlForBottomIcons,
+                  bottomIconsOnTap: bottomIconsOnTap,
+                  bottomIconModalList: Overrides.STANDALONE_GRADED_APP
+                      ? widget.assessmentDetailPage!
+                          ? BottomIcon.standAloneHistoryBottomIconModalList
+                          : BottomIcon.standAloneBottomIconModalList
+                      : widget.assessmentDetailPage!
+                          ? BottomIcon.historybottomIconModalList
+                          : BottomIcon.bottomIconModalList);
+            },
+          );
+        });
   }
 }

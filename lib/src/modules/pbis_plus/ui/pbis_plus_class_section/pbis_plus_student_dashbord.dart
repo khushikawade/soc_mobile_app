@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_s
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_appbar.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/modules/student_plus/widgets/student_plus_app_bar.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -474,7 +475,7 @@ class _PBISPlusStudentDashBoardState extends State<PBISPlusStudentDashBoard> {
             if (state is PBISPlusLoading) {
               return Container();
             } else if (state is PBISPlusStudentDashboardLogSuccess) {
-              return PBISPlusCustomFloatingActionButton(
+              return PlusCustomFloatingActionButton(
                 onPressed: () {
                   _modalBottomSheetMenu(
                       pbisStudentInteractionList:
