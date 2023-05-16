@@ -335,6 +335,11 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
               //       slidePresentationId: Globals.googleSlidePresentationId));
               // }
               if (state is UpdateAssignmentDetailsOnSlideSuccess) {
+                Utility.updateLogs(
+                    activityType: 'GRADED+',
+                    activityId: '44',
+                    description: 'G-Slide Updated',
+                    operationResult: 'Success');
                 FirebaseAnalyticsService.addCustomAnalyticsEvent(
                     "assessment_detail_added_first_slide");
 
