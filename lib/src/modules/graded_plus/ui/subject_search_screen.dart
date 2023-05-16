@@ -381,6 +381,11 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
             child: Container(),
             listener: (context, state) async {
               if (state is CreateClassroomCourseWorkSuccess) {
+                Utility.updateLogs(
+                    activityType: 'GRADED+',
+                    activityId: '34',
+                    description: 'G-Classroom Created',
+                    operationResult: 'Success');
                 _navigatetoResultSection();
               }
               if (state is GoogleClassroomErrorState) {
