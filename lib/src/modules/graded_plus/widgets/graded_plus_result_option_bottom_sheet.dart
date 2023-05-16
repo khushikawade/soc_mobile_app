@@ -13,13 +13,15 @@ class GradedPlusResultOptionBottomSheet extends StatefulWidget {
   final Function({required String title}) getURlForBottomIcons;
   final Function({required String title, required String url}) bottomIconsOnTap;
   final List<BottomIcon> bottomIconModalList;
+  final ValueNotifier<bool> classroomUrlStatus;
   const GradedPlusResultOptionBottomSheet(
       {Key? key,
       required this.title,
       this.height = 200,
       required this.getURlForBottomIcons,
       required this.bottomIconsOnTap,
-      required this.bottomIconModalList});
+      required this.bottomIconModalList,
+      required this.classroomUrlStatus});
 
   @override
   State<GradedPlusResultOptionBottomSheet> createState() =>
@@ -50,7 +52,7 @@ class _GradedPlusResultOptionBottomSheetState
         padding: EdgeInsets.only(left: 16),
         child: Column(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
@@ -77,35 +79,52 @@ class _GradedPlusResultOptionBottomSheetState
                         .headline5!
                         .copyWith(fontWeight: FontWeight.bold, fontSize: 18))
                 : Container(),
-            SizedBox(height: 20),
             ...widget.bottomIconModalList
                 .map((BottomIcon element) => _listTileMenu(element: element)),
           ],
         ));
   }
 
-  Opacity _listTileMenu({required BottomIcon element}) {
-    String? url = widget.getURlForBottomIcons(title: element.title!);
-    return Opacity(
-      opacity: ((url?.isEmpty ?? true) || (url == 'NA')) ? 0.3 : 1.0,
-      child: ListTile(
-        dense: true,
-        contentPadding: EdgeInsets.zero,
-        horizontalTitleGap: 20,
-        leading: SvgPicture.asset(
-          element.svgPath!,
-          height: 30,
-          width: 30,
-        ),
-        title: Utility.textWidget(
-            text: element.title!,
-            context: context,
-            textTheme: Theme.of(context).textTheme.headline3!),
-        onTap: () {
-          widget.bottomIconsOnTap(title: element.title ?? '', url: url ?? '');
-          ;
-        },
-      ),
-    );
+  Widget _listTileMenu({required BottomIcon element}) {
+    return ValueListenableBuilder(
+        valueListenable: widget.classroomUrlStatus,
+        child: Container(),
+        builder: (BuildContext context, bool value, Widget? child) {
+          String? url = widget.getURlForBottomIcons(title: element.title!);
+          return Opacity(
+            opacity: ((url?.isEmpty ?? true) || (url == 'NA')) ? 0.3 : 1.0,
+            child: ListTile(
+              dense: true,
+              contentPadding: EdgeInsets.zero,
+              horizontalTitleGap: 20,
+              leading: (element.title == "Class" &&
+                      !widget.classroomUrlStatus.value)
+                  ? Container(
+                      padding: EdgeInsets.all(3),
+                      width: Globals.deviceType == "phone" ? 28 : 50,
+                      height: Globals.deviceType == "phone" ? 28 : 50,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        strokeWidth:
+                            MediaQuery.of(context).size.shortestSide * 0.005,
+                        color: Theme.of(context).colorScheme.primaryVariant,
+                      ))
+                  : SvgPicture.asset(
+                      element.svgPath!,
+                      height: 30,
+                      width: 30,
+                    ),
+              title: Utility.textWidget(
+                  text: element.title!,
+                  context: context,
+                  textTheme: Theme.of(context).textTheme.headline3!),
+              onTap: () {
+                widget.bottomIconsOnTap(
+                    title: element.title ?? '', url: url ?? '');
+                ;
+              },
+            ),
+          );
+        });
   }
 }

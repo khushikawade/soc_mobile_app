@@ -2627,19 +2627,21 @@ class studentRecordList extends State<ResultsSummary> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return GradedPlusResultOptionBottomSheet(
-                  height: constraints.maxHeight < 800
-                      ? MediaQuery.of(context).size.height * 0.5
-                      : MediaQuery.of(context).size.height * 0.43,
-                  title: 'Save and Share',
-                  getURlForBottomIcons: getURlForBottomIcons,
-                  bottomIconsOnTap: bottomIconsOnTap,
-                  bottomIconModalList: Overrides.STANDALONE_GRADED_APP
-                      ? widget.assessmentDetailPage!
-                          ? BottomIcon.standAloneHistoryBottomIconModalList
-                          : BottomIcon.standAloneBottomIconModalList
-                      : widget.assessmentDetailPage!
-                          ? BottomIcon.historybottomIconModalList
-                          : BottomIcon.bottomIconModalList);
+                height: constraints.maxHeight < 800
+                    ? MediaQuery.of(context).size.height * 0.5
+                    : MediaQuery.of(context).size.height * 0.43,
+                title: 'Save and Share',
+                getURlForBottomIcons: getURlForBottomIcons,
+                bottomIconsOnTap: bottomIconsOnTap,
+                bottomIconModalList: Overrides.STANDALONE_GRADED_APP
+                    ? widget.assessmentDetailPage!
+                        ? BottomIcon.standAloneHistoryBottomIconModalList
+                        : BottomIcon.standAloneBottomIconModalList
+                    : widget.assessmentDetailPage!
+                        ? BottomIcon.historybottomIconModalList
+                        : BottomIcon.bottomIconModalList,
+                classroomUrlStatus: classroomUrlStatus,
+              );
             },
           );
         });
