@@ -1144,7 +1144,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             localClassroomCourseworkList[0].name == 'All') {
           localClassroomCourseworkList.removeAt(0);
         }
-
+        //sub Join Count To Duplicates courses
+        localClassroomCourseworkList = updateSheetTabTitleForDuplicateNames(
+            allCourses: localClassroomCourseworkList);
         var isBlankSpreadsheetTabsAdded;
         var isSpreadsheetTabsUpdated;
 
@@ -3010,8 +3012,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                 : 1;
 
         if (index == 0) {
-          //  change first default tab heading row text style.
-          // change every tab heading row text style.
+          //  change heading row text style for first default tab.
+
           Map<String, Map<String, dynamic>> headingRowTextStyle = {
             "repeatCell": {
               "range": {"sheetId": index, "startRowIndex": 0, "endRowIndex": 1},
@@ -3026,6 +3028,21 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           };
 
+          // update the textformat of all cells in sheet
+          Map<String, Map<String, dynamic>> allCellsTextFormat = {
+            "repeatCell": {
+              "range": {
+                "sheetId": index,
+              },
+              "cell": {
+                "userEnteredFormat": {
+                  "numberFormat": {"type": "TEXT"}
+                }
+              },
+              "fields": "userEnteredFormat(numberFormat)"
+            }
+          };
+          //now update the textstyle of all cells in sheet
           Map<String, Map<String, dynamic>> allCellsTextStyle = {
             "repeatCell": {
               "range": {
@@ -3042,8 +3059,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
 
           /*-------------------------------------------END OF SHEET FORMATTING-----------------------------------------------------*/
 
-          tabs.add(headingRowTextStyle);
-          tabs.add(allCellsTextStyle);
+          tabs.addAll(
+              [headingRowTextStyle, allCellsTextFormat, allCellsTextStyle]);
         } else {
           // Build new tabs inside sheet for all other selected courses.
           Map<String, Map<String, dynamic>> addSheet = {
@@ -3065,6 +3082,23 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   "userEnteredFormat(textFormat,borders,backgroundColor,horizontalAlignment)"
             }
           };
+
+          // update the text type format of all cells in sheet
+          Map<String, Map<String, dynamic>> allCellsTextFormat = {
+            "repeatCell": {
+              "range": {
+                "sheetId": index,
+              },
+              "cell": {
+                "userEnteredFormat": {
+                  "numberFormat": {"type": "TEXT"}
+                }
+              },
+              "fields": "userEnteredFormat( numberFormat)"
+            }
+          };
+
+          //now update the text alignment of all cells starting from column 2(for courses sheet) and 3(for student sheets)
           Map<String, Map<String, dynamic>> allCellsTextStyle = {
             "repeatCell": {
               "range": {
@@ -3078,9 +3112,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
               "fields": "userEnteredFormat(horizontalAlignment)"
             }
           };
-          tabs.add(addSheet);
-          tabs.add(headingRowTextStyle);
-          tabs.add(allCellsTextStyle);
+
+          tabs.addAll([
+            addSheet,
+            headingRowTextStyle,
+            allCellsTextFormat,
+            allCellsTextStyle
+          ]);
         }
       });
       return tabs;
@@ -3257,6 +3295,48 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       //     .toList();
     } catch (e) {
       return [];
+    }
+  }
+
+  List<ClassroomCourse> updateSheetTabTitleForDuplicateNames(
+      {required final List<ClassroomCourse> allCourses}) {
+    try {
+      // Managing the local list to make sure no record skip //Noticed sometime
+      List<ClassroomCourse> localAllCourses = [];
+      localAllCourses.addAll(allCourses);
+
+      //Storing each course name in key-value pair to update the name of any duplicate course name
+      Map<String, int> courseCount = {};
+      List<ClassroomCourse> duplicateCourseListWithUpdatedTitle = [];
+
+      for (ClassroomCourse course in localAllCourses) {
+        String courseName = course.name ?? '';
+        //check if course already present or not
+        if (courseCount.containsKey(courseName)) {
+          //get old count and update with new value
+          int count = courseCount[courseName]! + 1;
+          courseCount[courseName] = count; // update on courseCount
+          //update the key with latest count
+          courseName = '${courseName}_$count';
+        } else {
+          courseCount[courseName] = 0; // update with default count
+        }
+
+        //update the new list with updated news
+        duplicateCourseListWithUpdatedTitle.add(ClassroomCourse(
+          id: course.id,
+          name: courseName, // Use the updated courseName value
+          descriptionHeading: course.descriptionHeading,
+          ownerId: course.ownerId,
+          enrollmentCode: course.enrollmentCode,
+          courseState: course.courseState,
+          students: course.students,
+        ));
+      }
+
+      return duplicateCourseListWithUpdatedTitle;
+    } catch (e) {
+      throw (e);
     }
   }
 }
