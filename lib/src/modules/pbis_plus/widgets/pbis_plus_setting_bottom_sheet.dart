@@ -897,7 +897,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     final uniqueStudents = <ClassroomStudents>[];
 
     for (final course in classroomCourses) {
-      for (final student in course.students!) {
+      for (final student in course?.students ?? []) {
         //Used for UI and onSubmit with different data sets required
         //-------------------------------------------------------------------------------------
         //student.profile?.name?.fullName != 'All' checking if visible on UI or not

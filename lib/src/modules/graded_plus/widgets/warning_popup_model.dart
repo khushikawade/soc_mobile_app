@@ -64,7 +64,7 @@ class _WarningPopupModelState extends State<WarningPopupModel> {
                 ),
                 content: TranslationWidget(
                     message:
-                        "Do you want to exit? You will lose all the scanned assesment sheets.",
+                        "Do you want to exit? You will lose all the scanned assessment sheets.",
                     fromLanguage: "en",
                     toLanguage: Globals.selectedLanguage,
                     builder: (translatedMessage) {
@@ -118,12 +118,14 @@ class _WarningPopupModelState extends State<WarningPopupModel> {
                             }),
                         onPressed: () {
                           //Globals.isCameraPopup = false;
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage(
-                                        isFromOcrSection: true,
-                                      )),
-                              (_) => false);
+                          // Navigator.of(context).pushAndRemoveUntil(
+                          //     MaterialPageRoute(
+                          //         builder: (context) => HomePage(
+                          //               isFromOcrSection: true,
+                          //             )),
+                          //     (_) => false);
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
                         },
                       ),
                     ],
