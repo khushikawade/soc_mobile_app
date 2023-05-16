@@ -2313,118 +2313,118 @@ class studentRecordList extends State<ResultsSummary> {
             yesActionText: 'Yes, Take Me There');
         break;
       case 'Dashboard':
-        if (Globals.isPremiumUser!) {
-          if (widget.assessmentDetailPage == true &&
-              widget.createdAsPremium == false) {
-            String dashboardLogMsgNotPremiumAccount =
-                'Non-premium assessment tried to save from premium account using scan more option from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-            FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                dashboardLogMsgNotPremiumAccount
-                        .toLowerCase()
-                        .replaceAll(" ", "_") ??
-                    '');
-            Utility.updateLogs(
-                activityType: 'GRADED+',
-                activityId: '14',
-                description: dashboardLogMsgNotPremiumAccount,
-                operationResult: 'Failed');
-            popupModal(
-                title: 'Data Not Saved',
-                message:
-                    'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
-            Globals.scanMoreStudentInfoLength =
-                await Utility.getStudentInfoListLength(
-                        tableName: 'student_info') -
-                    1;
-          } else {
-            List list =
-                await Utility.getStudentInfoList(tableName: 'student_info');
-            if (widget.isScanMore == true &&
-                widget.assessmentListLength != null &&
-                widget.assessmentListLength! < list.length) {
-              String dashboardLogMsgPremiumAccount =
-                  'Save to dashboard pressed in case for scan more from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-              FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                  dashboardLogMsgPremiumAccount
-                          .toLowerCase()
-                          .replaceAll(" ", "_") ??
-                      '');
-              Utility.updateLogs(
-                  activityType: 'GRADED+',
-                  activityId: '14',
-                  description: dashboardLogMsgPremiumAccount,
-                  operationResult: 'Success');
+        // if (Globals.isPremiumUser!) {
+        //   if (widget.assessmentDetailPage == true &&
+        //       widget.createdAsPremium == false) {
+        //     String dashboardLogMsgNotPremiumAccount =
+        //         'Non-premium assessment tried to save from premium account using scan more option from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+        //     FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        //         dashboardLogMsgNotPremiumAccount
+        //                 .toLowerCase()
+        //                 .replaceAll(" ", "_") ??
+        //             '');
+        //     Utility.updateLogs(
+        //         activityType: 'GRADED+',
+        //         activityId: '14',
+        //         description: dashboardLogMsgNotPremiumAccount,
+        //         operationResult: 'Failed');
+        //     popupModal(
+        //         title: 'Data Not Saved',
+        //         message:
+        //             'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
+        //     Globals.scanMoreStudentInfoLength =
+        //         await Utility.getStudentInfoListLength(
+        //                 tableName: 'student_info') -
+        //             1;
+        //   } else {
+        //     List list =
+        //         await Utility.getStudentInfoList(tableName: 'student_info');
+        //     if (widget.isScanMore == true &&
+        //         widget.assessmentListLength != null &&
+        //         widget.assessmentListLength! < list.length) {
+        //       String dashboardLogMsgPremiumAccount =
+        //           'Save to dashboard pressed in case for scan more from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+        //       FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        //           dashboardLogMsgPremiumAccount
+        //                   .toLowerCase()
+        //                   .replaceAll(" ", "_") ??
+        //               '');
+        //       Utility.updateLogs(
+        //           activityType: 'GRADED+',
+        //           activityId: '14',
+        //           description: dashboardLogMsgPremiumAccount,
+        //           operationResult: 'Success');
 
-              _ocrBloc.add(SaveAssessmentToDashboard(
-                  assessmentId: !widget.assessmentDetailPage!
-                      ? Globals.currentAssessmentId
-                      : historyAssessmentId ?? '',
-                  assessmentSheetPublicURL: widget.shareLink,
-                  resultList: await Utility.getStudentInfoList(
-                      tableName: widget.assessmentDetailPage == true
-                          ? 'history_student_info'
-                          : 'student_info'),
-                  previouslyAddedListLength: widget.assessmentListLength,
-                  assessmentName: widget.assessmentName!,
-                  rubricScore: widget.rubricScore ?? '',
-                  subjectId: widget.subjectId ?? '',
-                  schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                  // standardId: widget.standardId ?? '',
-                  scaffoldKey: scaffoldKey,
-                  context: context,
-                  isHistoryAssessmentSection: widget.assessmentDetailPage!));
-            } else {
-              List<StudentAssessmentInfo> _listRecord = [];
+        //       _ocrBloc.add(SaveAssessmentToDashboard(
+        //           assessmentId: !widget.assessmentDetailPage!
+        //               ? Globals.currentAssessmentId
+        //               : historyAssessmentId ?? '',
+        //           assessmentSheetPublicURL: widget.shareLink,
+        //           resultList: await Utility.getStudentInfoList(
+        //               tableName: widget.assessmentDetailPage == true
+        //                   ? 'history_student_info'
+        //                   : 'student_info'),
+        //           previouslyAddedListLength: widget.assessmentListLength,
+        //           assessmentName: widget.assessmentName!,
+        //           rubricScore: widget.rubricScore ?? '',
+        //           subjectId: widget.subjectId ?? '',
+        //           schoolId: Globals.appSetting.schoolNameC!, //Account Id
+        //           // standardId: widget.standardId ?? '',
+        //           scaffoldKey: scaffoldKey,
+        //           context: context,
+        //           isHistoryAssessmentSection: widget.assessmentDetailPage!));
+        //     } else {
+        //       List<StudentAssessmentInfo> _listRecord = [];
 
-              if (widget.assessmentDetailPage! &&
-                  savedRecordCount != null &&
-                  historyRecordList.length != savedRecordCount!) {
-                _listRecord = historyRecordList.sublist(
-                    savedRecordCount!, historyRecordList.length);
-              } else {
-                //
-                _listRecord = historyRecordList;
-              }
+        //       if (widget.assessmentDetailPage! &&
+        //           savedRecordCount != null &&
+        //           historyRecordList.length != savedRecordCount!) {
+        //         _listRecord = historyRecordList.sublist(
+        //             savedRecordCount!, historyRecordList.length);
+        //       } else {
+        //         //
+        //         _listRecord = historyRecordList;
+        //       }
 
-              _ocrBloc.add(SaveAssessmentToDashboard(
-                assessmentId: !widget.assessmentDetailPage!
-                    ? Globals.currentAssessmentId
-                    : historyAssessmentId ?? '',
-                assessmentSheetPublicURL: widget.shareLink,
-                resultList: !widget.assessmentDetailPage!
-                    ? await Utility.getStudentInfoList(
-                        tableName: 'student_info')
-                    : _listRecord,
-                assessmentName: widget.assessmentName!,
-                rubricScore: !widget.assessmentDetailPage!
-                    ? widget.rubricScore ?? ''
-                    : sheetRubricScore ?? '',
-                subjectId: widget.subjectId ?? '',
-                schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                // standardId: widget.standardId ?? '',
-                scaffoldKey: scaffoldKey,
-                context: context,
-                isHistoryAssessmentSection: widget.assessmentDetailPage!,
-                fileId: widget.fileId ?? '',
-              ));
-            }
-          }
-        } else {
-          String dashboardLogMsgForFreeUser =
-              "Free User tried to save the data to the dashboard from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
-          FirebaseAnalyticsService.addCustomAnalyticsEvent(
-              dashboardLogMsgForFreeUser.toLowerCase().replaceAll(" ", "_") ??
-                  '');
-          Utility.updateLogs(
-              activityType: 'GRADED+',
-              activityId: '14',
-              description: dashboardLogMsgForFreeUser,
-              operationResult: 'Failed');
-          popupModal(
-              title: 'Upgrade To Premium',
-              message:
-                  'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
-        }
+        //       _ocrBloc.add(SaveAssessmentToDashboard(
+        //         assessmentId: !widget.assessmentDetailPage!
+        //             ? Globals.currentAssessmentId
+        //             : historyAssessmentId ?? '',
+        //         assessmentSheetPublicURL: widget.shareLink,
+        //         resultList: !widget.assessmentDetailPage!
+        //             ? await Utility.getStudentInfoList(
+        //                 tableName: 'student_info')
+        //             : _listRecord,
+        //         assessmentName: widget.assessmentName!,
+        //         rubricScore: !widget.assessmentDetailPage!
+        //             ? widget.rubricScore ?? ''
+        //             : sheetRubricScore ?? '',
+        //         subjectId: widget.subjectId ?? '',
+        //         schoolId: Globals.appSetting.schoolNameC!, //Account Id
+        //         // standardId: widget.standardId ?? '',
+        //         scaffoldKey: scaffoldKey,
+        //         context: context,
+        //         isHistoryAssessmentSection: widget.assessmentDetailPage!,
+        //         fileId: widget.fileId ?? '',
+        //       ));
+        //     }
+        //   }
+        // } else {
+        //   String dashboardLogMsgForFreeUser =
+        //       "Free User tried to save the data to the dashboard from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
+        //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
+        //       dashboardLogMsgForFreeUser.toLowerCase().replaceAll(" ", "_") ??
+        //           '');
+        //   Utility.updateLogs(
+        //       activityType: 'GRADED+',
+        //       activityId: '14',
+        //       description: dashboardLogMsgForFreeUser,
+        //       operationResult: 'Failed');
+        //   popupModal(
+        //       title: 'Upgrade To Premium',
+        //       message:
+        //           'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
+        // }
         break;
       case 'Slides':
         String slidesLogMsg =

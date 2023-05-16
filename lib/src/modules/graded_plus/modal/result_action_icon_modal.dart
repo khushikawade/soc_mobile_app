@@ -37,10 +37,10 @@ class BottomIcon {
     //   title: 'History',
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
     // ),
-    // BottomIcon(
-    //   title: 'Dashboard',
-    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Dashboard.svg',
-    // ),
+    BottomIcon(
+      title: 'Dashboard',
+      svgPath: 'assets/ocr_result_section_bottom_button_icons/Dashboard.svg',
+    ),
   ];
 
   static List<BottomIcon> historybottomIconModalList = [
@@ -60,18 +60,18 @@ class BottomIcon {
       title: 'Slides',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
     ),
-    // BottomIcon(
-    //   title: 'Dashboard',
-    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Dashboard.svg',
-    // ),
+    BottomIcon(
+      title: 'Dashboard',
+      svgPath: 'assets/ocr_result_section_bottom_button_icons/Dashboard.svg',
+    ),
   ];
 
 //result summary screen action buttons
   static List<BottomIcon> standAloneBottomIconModalList = [
-    BottomIcon(
-      title: 'History',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
-    ),
+    // BottomIcon(
+    //   title: 'History',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
+    // ),
     // BottomIcon(
     //   title: 'Drive',
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
