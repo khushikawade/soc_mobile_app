@@ -287,23 +287,23 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                       errorMsg: state.errorMsg!,
                       context: context,
                       scaffoldKey: _scaffoldKey);
-
-                  widget.googleDriveBloc.add(
-                    UpdateDocOnDrive(
-                      isMcqSheet: widget.isMcqSheet ?? false,
-                      // questionImage: widget.questionImage == ''
-                      //     ? 'NA'
-                      //     : widget.questionImage ?? 'NA',
-                      createdAsPremium: Globals.isPremiumUser,
-                      assessmentName: Globals.assessmentName,
-                      fileId: Globals.googleExcelSheetId,
-                      isLoading: true,
-                      studentData:
-                          //list2
-                          await Utility.getStudentInfoList(
-                              tableName: 'student_info'),
-                    ),
-                  );
+                  // await saveToDrive();
+                  // widget.googleDriveBloc.add(
+                  //   UpdateDocOnDrive(
+                  //     isMcqSheet: widget.isMcqSheet ?? false,
+                  //     // questionImage: widget.questionImage == ''
+                  //     //     ? 'NA'
+                  //     //     : widget.questionImage ?? 'NA',
+                  //     createdAsPremium: Globals.isPremiumUser,
+                  //     assessmentName: Globals.assessmentName,
+                  //     fileId: Globals.googleExcelSheetId,
+                  //     isLoading: true,
+                  //     studentData:
+                  //         //list2
+                  //         await Utility.getStudentInfoList(
+                  //             tableName: 'student_info'),
+                  //   ),
+                  // );
                 } else {
                   Navigator.of(context).pop();
                   Utility.currentScreenSnackBar(
@@ -689,81 +689,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                 ? FloatingActionButton.extended(
                     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
                     onPressed: () async {
-                      LocalDatabase<CustomRubricModal> _localDb =
-                          LocalDatabase('custom_rubic');
-                      List<CustomRubricModal>? _localData =
-                          await _localDb.getData();
-                      String? rubricImgUrl;
-                      // String? rubricScore;
-                      for (int i = 0; i < _localData.length; i++) {
-                        if (_localData[i].customOrStandardRubic == "Custom" &&
-                            _localData[i].name == Globals.scoringRubric) {
-                          rubricImgUrl = _localData[i].imgUrl;
-                          break;
-                          // rubricScore = null;
-                        } else {
-                          rubricImgUrl = 'NA';
-                          // rubricScore = 'NA';
-                        }
-                      }
-
-                      //Adding blank fields to the list : Static data
-                      List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-                          await Utility.getStudentInfoList(
-                              tableName: 'student_info');
-
-                      StudentAssessmentInfo element =
-                          studentAssessmentInfoDblist[0];
-                      element.subject = widget.selectedKeyword;
-                      element.learningStandard =
-                          learningStandard == null || learningStandard == ''
-                              ? "NA"
-                              : learningStandard;
-                      element.subLearningStandard =
-                          subLearningStandard == null ||
-                                  subLearningStandard == ''
-                              ? "NA"
-                              : subLearningStandard; //standardDescription
-                      element.standardDescription =
-                          standardDescription == null ||
-                                  standardDescription == ''
-                              ? "NA"
-                              : standardDescription; //standardDescription
-
-                      element.scoringRubric = widget.isMcqSheet == true
-                          ? '0-1'
-                          : Globals.scoringRubric;
-                      element.customRubricImage = rubricImgUrl ?? "NA";
-                      element.grade = widget.grade;
-                      element.className = Globals.assessmentName!.split("_")[1];
-                      // element.questionImgUrl = widget.questionImage == ''
-                      //     ? "NA"
-                      //     : widget.questionImage;
-                      element.googleSlidePresentationURL =
-                          Globals.googleSlidePresentationLink;
-                      await _studentAssessmentInfoDb.putAt(0, element);
-
-                      GradedGlobals.loadingMessage =
-                          'Preparing Student Excel Sheet';
-
-                      Utility.showLoadingDialog(
-                          context: context,
-                          isOCR: true,
-                          state: (p0) => {showDialogSetState = p0});
-
-                      widget.googleDriveBloc.add(UpdateDocOnDrive(
-                          isMcqSheet: widget.isMcqSheet ?? false,
-                          // questionImage: widget.questionImage == ''
-                          //     ? 'NA'
-                          //     : widget.questionImage ?? 'NA',
-                          createdAsPremium: Globals.isPremiumUser,
-                          assessmentName: Globals.assessmentName!,
-                          fileId: Globals.googleExcelSheetId,
-                          isLoading: true,
-                          studentData:
-                              //list2
-                              await Utility.getStudentInfoList(
-                                  tableName: 'student_info')));
+                      await saveToDrive();
                     },
                     label: Row(
                       children: [
@@ -898,5 +824,73 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                 assessmentDetailPage: false,
               )),
     );
+  }
+
+  Future saveToDrive() async {
+    LocalDatabase<CustomRubricModal> _localDb = LocalDatabase('custom_rubic');
+    List<CustomRubricModal>? _localData = await _localDb.getData();
+    String? rubricImgUrl;
+    // String? rubricScore;
+    for (int i = 0; i < _localData.length; i++) {
+      if (_localData[i].customOrStandardRubic == "Custom" &&
+          _localData[i].name == Globals.scoringRubric) {
+        rubricImgUrl = _localData[i].imgUrl;
+        break;
+        // rubricScore = null;
+      } else {
+        rubricImgUrl = 'NA';
+        // rubricScore = 'NA';
+      }
+    }
+
+    //Adding blank fields to the list : Static data
+    List<StudentAssessmentInfo> studentAssessmentInfoDblist =
+        await Utility.getStudentInfoList(tableName: 'student_info');
+
+    StudentAssessmentInfo element = studentAssessmentInfoDblist[0];
+    element.subject = widget.selectedKeyword;
+    element.learningStandard =
+        learningStandard == null || learningStandard == ''
+            ? "NA"
+            : learningStandard;
+    element.subLearningStandard =
+        subLearningStandard == null || subLearningStandard == ''
+            ? "NA"
+            : subLearningStandard; //standardDescription
+    element.standardDescription =
+        standardDescription == null || standardDescription == ''
+            ? "NA"
+            : standardDescription; //standardDescription
+
+    element.scoringRubric =
+        widget.isMcqSheet == true ? '0-1' : Globals.scoringRubric;
+    element.customRubricImage = rubricImgUrl ?? "NA";
+    element.grade = widget.grade;
+    element.className = Globals.assessmentName!.split("_")[1];
+    // element.questionImgUrl = widget.questionImage == ''
+    //     ? "NA"
+    //     : widget.questionImage;
+    element.googleSlidePresentationURL = Globals.googleSlidePresentationLink;
+    await _studentAssessmentInfoDb.putAt(0, element);
+
+    GradedGlobals.loadingMessage = 'Preparing Student Excel Sheet';
+
+    Utility.showLoadingDialog(
+        context: context,
+        isOCR: true,
+        state: (p0) => {showDialogSetState = p0});
+
+    widget.googleDriveBloc.add(UpdateDocOnDrive(
+        isMcqSheet: widget.isMcqSheet ?? false,
+        // questionImage: widget.questionImage == ''
+        //     ? 'NA'
+        //     : widget.questionImage ?? 'NA',
+        createdAsPremium: Globals.isPremiumUser,
+        assessmentName: Globals.assessmentName!,
+        fileId: Globals.googleExcelSheetId,
+        isLoading: true,
+        studentData:
+            //list2
+            await Utility.getStudentInfoList(tableName: 'student_info')));
   }
 }

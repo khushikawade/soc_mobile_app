@@ -276,10 +276,12 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                           scaffoldKey: _scaffoldKey);
 
                       //calling API
-                      updateDocOnDrive(
-                        widget.isMcqSheet,
-                        // widget.questionImageUrl
-                      );
+
+                      // updateExcelSheetOnDriveAndNavigate(connected: ,isSkip: false)
+                      // updateDocOnDrive(
+                      //   widget.isMcqSheet,
+                      //   // widget.questionImageUrl
+                      // );
                     } else {
                       Navigator.of(context).pop();
                       Utility.currentScreenSnackBar(

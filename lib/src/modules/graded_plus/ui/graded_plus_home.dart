@@ -89,6 +89,8 @@ class _OpticalCharacterRecognitionPageState
       children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+
+         
           key: _scaffoldKey,
           backgroundColor: Color.fromRGBO(0, 0, 0, 0),
           appBar: CustomOcrAppBarWidget(
@@ -237,7 +239,7 @@ class _OpticalCharacterRecognitionPageState
                       context: context,
                       scaffoldKey: _scaffoldKey);
 
-                  _triggerDriveFolderEvent(false);
+                 // _triggerDriveFolderEvent(false);
                 } else {
                   Utility.currentScreenSnackBar(
                       "Something Went Wrong. Please Try Again.", null);
