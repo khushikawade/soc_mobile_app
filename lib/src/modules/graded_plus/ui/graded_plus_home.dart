@@ -200,7 +200,7 @@ class _OpticalCharacterRecognitionPageState
         BlocListener<GoogleDriveBloc, GoogleDriveState>(
             bloc: _googleDriveBloc,
             child: Container(),
-            listener: (BuildContext contxt, GoogleDriveState state) {
+            listener: (BuildContext contxt, GoogleDriveState state) async {
               if (state is ImageToAwsBucketSuccess) {
                 Navigator.pop(context);
                 int index = 0;
@@ -218,9 +218,30 @@ class _OpticalCharacterRecognitionPageState
                   showCustomRubricImage(RubricScoreList.scoringList[index]);
                 }
               }
+              if (state is GoogleDriveLoading) {
+                Utility.showLoadingDialog(context: context, isOCR: true);
+              }
+              if (state is GoogleSuccess) {
+                if (Globals.googleDriveFolderId != null &&
+                    Globals.googleDriveFolderId!.isNotEmpty) {
+                  Navigator.of(context).pop();
+                  _beforenavigateOnCameraSection();
+                }
+              }
               if (state is ErrorState) {
-                Navigator.pop(context);
-                Utility.currentScreenSnackBar(state.errorMsg.toString(), null);
+                Navigator.of(context).pop();
+                if (state.errorMsg == 'ReAuthentication is required') {
+                  await Utility.refreshAuthenticationToken(
+                      isNavigator: true,
+                      errorMsg: state.errorMsg!,
+                      context: context,
+                      scaffoldKey: _scaffoldKey);
+
+                  _triggerDriveFolderEvent(false);
+                } else {
+                  Utility.currentScreenSnackBar(
+                      "Something Went Wrong. Please Try Again.", null);
+                }
               }
             }),
       ],
@@ -279,36 +300,7 @@ class _OpticalCharacterRecognitionPageState
             child: Container(),
           );
         }),
-        BlocListener<GoogleDriveBloc, GoogleDriveState>(
-            bloc: _googleDriveBloc,
-            child: Container(),
-            listener: (context, state) async {
-              if (state is GoogleDriveLoading) {
-                Utility.showLoadingDialog(context: context, isOCR: true);
-              }
-              if (state is GoogleSuccess) {
-                if (Globals.googleDriveFolderId != null &&
-                    Globals.googleDriveFolderId!.isNotEmpty) {
-                  Navigator.of(context).pop();
-                  _beforenavigateOnCameraSection();
-                }
-              }
-              if (state is ErrorState) {
-                Navigator.of(context).pop();
-                if (state.errorMsg == 'ReAuthentication is required') {
-                  await Utility.refreshAuthenticationToken(
-                      isNavigator: true,
-                      errorMsg: state.errorMsg!,
-                      context: context,
-                      scaffoldKey: _scaffoldKey);
-
-                  _triggerDriveFolderEvent(false);
-                } else {
-                  Utility.currentScreenSnackBar(
-                      "Something Went Wrong. Please Try Again.", null);
-                }
-              }
-            }),
+        
       ],
     );
   }
