@@ -1104,7 +1104,7 @@ class _CreateAssessmentState extends State<CreateAssessment>
       Utility.showLoadingDialog(
           context: context,
           isOCR: true,
-          msg: 'Creating Google Classroom Assignment');
+          msg: Overrides.STANDALONE_GRADED_APP == true ? 'Creating Google Classroom Assignment':'Creating Assignment' );
       // to update question image to aws s3 bucket and get the link
       if (imageFile?.path?.isNotEmpty ?? false) {
         //  Globals.questionImgFilePath = imageFile;
