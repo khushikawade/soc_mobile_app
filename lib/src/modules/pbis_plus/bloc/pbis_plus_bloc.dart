@@ -54,7 +54,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         final clearCacheResult =
             await clearRosterCache.getBool('delete_local_Roster_cache');
 
-        if (clearCacheResult == true) {
+        if (clearCacheResult != true) {
           await _localDb.close();
           _localData.clear();
           await clearRosterCache.setBool('delete_local_Roster_cache', true);
