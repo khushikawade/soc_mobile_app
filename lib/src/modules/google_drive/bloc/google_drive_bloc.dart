@@ -222,6 +222,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         throw (e);
       }
     }
+
     // bloc to update google Slide on scan more condition
     else if (event is UpdateGoogleSlideOnScanMore) {
       try {
