@@ -87,3 +87,10 @@ class PBISPlusInitialImportRosterSuccess extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
+
+class PBISPlusClassRoomLoading extends PBISPlusState {
+  final List<ClassroomCourse> shimmerCouseseList;
+  PBISPlusClassRoomLoading({required this.shimmerCouseseList});
+  @override
+  List<Object> get props => [];
+}

@@ -14,6 +14,7 @@ import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:intl/intl.dart';
@@ -61,7 +62,9 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
 
         if (_localData.isEmpty) {
-          yield PBISPlusLoading();
+          var list = await _getShimmerData();
+          print(list);
+          yield PBISPlusClassRoomLoading(shimmerCouseseList: list);
         } else {
           sort(obj: _localData);
           yield PBISPlusImportRosterSuccess(
@@ -234,6 +237,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         LocalDatabase<PBISPlusHistoryModal> _localDb =
             LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
+
         List<PBISPlusHistoryModal>? _localData = await _localDb.getData();
 
         if (_localData.isNotEmpty) {
@@ -805,6 +809,22 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       return response.statusCode;
     } catch (e) {
       return e.toString();
+    }
+  }
+
+  Future<List<ClassroomCourse>> _getShimmerData() async {
+    try {
+      final String response = await rootBundle.loadString(
+          'assets/pbis_plus_asset/pbis_plus_classroom_loading_data.json');
+
+      final data = await json.decode(response);
+
+      return data
+          .map<ClassroomCourse>((i) => ClassroomCourse.fromJson(i))
+          .toList();
+    } catch (e) {
+      print(e);
+      return [];
     }
   }
 }
