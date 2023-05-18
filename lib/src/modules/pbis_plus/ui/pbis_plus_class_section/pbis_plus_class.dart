@@ -16,12 +16,14 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PBISPlusClass extends StatefulWidget {
   final IconData titleIconData;
@@ -212,12 +214,18 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   }
                   if (state is PBISPlusImportRosterSuccess) {
                     if (state.googleClassroomCourseList.isNotEmpty ?? false) {
-                      return buildList(state.googleClassroomCourseList);
+                      return buildList(state.googleClassroomCourseList, false);
                     } else {
                       return noClassroomFound();
                     }
                   }
-
+                  if (state is PBISPlusInitialImportRosterSuccess) {
+                    if (state.googleClassroomCourseList.isNotEmpty ?? false) {
+                      return buildList(state.googleClassroomCourseList, true);
+                    } else {
+                      return noClassroomFound();
+                    }
+                  }
                   return noClassroomFound();
                 },
                 listener: (context, state) async {
@@ -265,7 +273,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     );
   }
 
-  ListView buildList(List<ClassroomCourse> googleClassroomCourseList) {
+  ListView buildList(List<ClassroomCourse> googleClassroomCourseList,
+      final bool isStudentInteractionLoading) {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       children: [
@@ -282,7 +291,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                 scrollDirection: Axis.horizontal,
               ),
             )),
-        studentListCourseWiseView(googleClassroomCourseList)
+        studentListCourseWiseView(
+            googleClassroomCourseList, isStudentInteractionLoading)
       ],
     );
   }
@@ -353,7 +363,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     });
   }
 
-  Widget studentListCourseWiseView(googleClassroomCourseList) {
+  Widget studentListCourseWiseView(
+      googleClassroomCourseList, final bool isStudentInteractionLoading) {
     return ValueListenableBuilder(
       valueListenable: screenShotNotifier,
       builder: (context, value, child) {
@@ -376,26 +387,32 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                                     ? Color(0xffF7F8F9)
                                     : Color(0xff111C20),
                                 child: scrollableBuilder(
-                                    googleClassroomCourseList))),
+                                    googleClassroomCourseList,
+                                    isStudentInteractionLoading))),
                       )
-                    : scrollableBuilder(googleClassroomCourseList)));
+                    : scrollableBuilder(googleClassroomCourseList,
+                        isStudentInteractionLoading)));
       },
     );
   }
 
-  Widget scrollableBuilder(googleClassroomCourseList) {
+  Widget scrollableBuilder(
+      googleClassroomCourseList, final bool isStudentInteractionLoading) {
     return ScrollablePositionedList.builder(
         padding: EdgeInsets.only(bottom: 30),
         shrinkWrap: true,
         itemScrollController: _itemScrollController,
         itemCount: googleClassroomCourseList.length,
         itemBuilder: (context, index) {
-          return _buildCourseSeparationList(googleClassroomCourseList, index);
+          return _buildCourseSeparationList(
+              googleClassroomCourseList, index, isStudentInteractionLoading);
         });
   }
 
   Widget _buildCourseSeparationList(
-      List<ClassroomCourse> googleClassroomCourseList, index) {
+      List<ClassroomCourse> googleClassroomCourseList,
+      index,
+      final bool isStudentInteractionLoading) {
     return
         // courseListlist[index].studentList!.length > 0
         //     ?
@@ -421,7 +438,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       ),
       googleClassroomCourseList[index].students!.length > 0
           ? renderStudents(googleClassroomCourseList[index].students!, index,
-              googleClassroomCourseList[index].id!)
+              googleClassroomCourseList[index].id!, isStudentInteractionLoading)
           : Container(
               height: 65,
               padding: EdgeInsets.only(left: 20),
@@ -439,8 +456,8 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     ]);
   }
 
-  renderStudents(
-      List<ClassroomStudents> studentList, i, String classroomCourseId) {
+  renderStudents(List<ClassroomStudents> studentList, i,
+      String classroomCourseId, final bool isStudentInteractionLoading) {
     return GridView.count(
         padding: EdgeInsets.all(10.0),
         childAspectRatio: 7.0 / 9.0,
@@ -451,16 +468,78 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
           return _buildStudent(
               ValueNotifier<ClassroomStudents>(studentList[index]),
               index,
-              classroomCourseId);
+              classroomCourseId,
+              isStudentInteractionLoading);
         }));
   }
 
-  Widget _buildStudent(ValueNotifier<ClassroomStudents> studentValueNotifier,
-      int index, String classroomCourseId) {
+  Widget _buildStudent(
+      ValueNotifier<ClassroomStudents> studentValueNotifier,
+      int index,
+      String classroomCourseId,
+      final bool isStudentInteractionLoading) {
     String heroTag = "HeroTag_${classroomCourseId}_${index}";
 
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      Container BuildStudentCountIndicator = Container(
+        padding: EdgeInsets.all(2),
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          color: AppTheme.kButtonColor,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: ValueListenableBuilder<ClassroomStudents>(
+                  valueListenable: studentValueNotifier,
+                  builder: (BuildContext context, ClassroomStudents value,
+                      Widget? child) {
+                    return Text(
+                      PBISPlusUtility.numberAbbreviationFormat(
+                          studentValueNotifier.value!.profile!.engaged! +
+                              studentValueNotifier.value!.profile!.niceWork! +
+                              studentValueNotifier.value!.profile!.helpful!),
+                      style: TextStyle(
+                        color: Theme.of(context).backgroundColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  })),
+        ),
+      );
+
+      Container(
+        padding: EdgeInsets.all(2),
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          color: AppTheme.kButtonColor,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: ValueListenableBuilder<ClassroomStudents>(
+                  valueListenable: studentValueNotifier,
+                  builder: (BuildContext context, ClassroomStudents value,
+                      Widget? child) {
+                    return Text(
+                      PBISPlusUtility.numberAbbreviationFormat(
+                          studentValueNotifier.value!.profile!.engaged! +
+                              studentValueNotifier.value!.profile!.niceWork! +
+                              studentValueNotifier.value!.profile!.helpful!),
+                      style: TextStyle(
+                        color: Theme.of(context).backgroundColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  })),
+        ),
+      );
+
       //  print(constraints.maxHeight);
       // Set the maximum height of the bottom sheet based on the screen size
       // print(constraints.maxHeight);
@@ -532,40 +611,16 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                   ),
                 ),
                 Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Container(
-                    padding: EdgeInsets.all(2),
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: AppTheme.kButtonColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: ValueListenableBuilder<ClassroomStudents>(
-                              valueListenable: studentValueNotifier,
-                              builder: (BuildContext context,
-                                  ClassroomStudents value, Widget? child) {
-                                return Text(
-                                  PBISPlusUtility.numberAbbreviationFormat(
-                                      studentValueNotifier
-                                              .value!.profile!.engaged! +
-                                          studentValueNotifier
-                                              .value!.profile!.niceWork! +
-                                          studentValueNotifier
-                                              .value!.profile!.helpful!),
-                                  style: TextStyle(
-                                    color: Theme.of(context).backgroundColor,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                );
-                              })),
-                    ),
-                  ),
-                ),
+                    top: 0,
+                    right: 0,
+                    child: isStudentInteractionLoading
+                        ? Shimmer.fromColors(
+                            baseColor: AppTheme.kShimmerBaseColor!,
+                            highlightColor: AppTheme.kShimmerHighlightColor!,
+                            enabled: true,
+                            child: BuildStudentCountIndicator,
+                          )
+                        : BuildStudentCountIndicator),
               ],
             )),
       );

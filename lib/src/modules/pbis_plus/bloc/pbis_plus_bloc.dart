@@ -54,7 +54,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         final clearCacheResult =
             await clearRosterCache.getBool('delete_local_Roster_cache');
 
-        if (clearCacheResult != true) {
+        if (clearCacheResult == true) {
           await _localDb.close();
           _localData.clear();
           await clearRosterCache.setBool('delete_local_Roster_cache', true);
@@ -75,6 +75,13 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         if (responseList[1] == '') {
           List<ClassroomCourse> coursesList = responseList[0];
+
+          if (_localData.isEmpty) {
+            sort(obj: coursesList);
+            yield PBISPlusInitialImportRosterSuccess(
+                googleClassroomCourseList: responseList[0]);
+          }
+
           List<PBISPlusTotalInteractionModal> pbisTotalInteractionList =
               await getPBISTotalInteractionByTeacher(
                   teacherEmail: userProfileLocalData[0].userEmail!);
@@ -85,6 +92,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                   pbisTotalInteractionList, coursesList);
 
           await _localDb.clear();
+
           classroomStudentProfile.forEach((ClassroomCourse e) {
             _localDb.addData(e);
           });
