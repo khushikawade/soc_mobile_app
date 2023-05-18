@@ -801,14 +801,16 @@ class _CreateAssessmentState extends State<CreateAssessment>
                               errorMsg: state.errorMsg!,
                               context: context,
                               scaffoldKey: scaffoldKey);
+
+                      //    performOnTapOnNext();
                           // Globals.assessmentName =
                           //     "${assessmentController.text}_${classController.text}";
-                          _googleDriveBloc.add(CreateExcelSheetToDrive(
-                              description: widget.isMcqSheet == true
-                                  ? "Multiple Choice Sheet"
-                                  : "Graded+",
-                              name: Globals.assessmentName,
-                              folderId: Globals.googleDriveFolderId!));
+                          // _googleDriveBloc.add(CreateExcelSheetToDrive(
+                          //     description: widget.isMcqSheet == true
+                          //         ? "Multiple Choice Sheet"
+                          //         : "Graded+",
+                          //     name: Globals.assessmentName,
+                          //     folderId: Globals.googleDriveFolderId!));
                         } else {
                           Navigator.of(context).pop();
                           Utility.currentScreenSnackBar(
@@ -1104,7 +1106,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
       Utility.showLoadingDialog(
           context: context,
           isOCR: true,
-          msg: 'Creating Google Classroom Assignment');
+          msg: Overrides.STANDALONE_GRADED_APP == true
+              ? 'Creating Google Classroom Assignment'
+              : 'Creating Assignment');
       // to update question image to aws s3 bucket and get the link
       if (imageFile?.path?.isNotEmpty ?? false) {
         //  Globals.questionImgFilePath = imageFile;
