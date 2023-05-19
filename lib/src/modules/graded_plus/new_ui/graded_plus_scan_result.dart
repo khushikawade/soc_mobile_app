@@ -9,11 +9,13 @@ import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
-import 'package:Soc/src/modules/graded_plus/widgets/animation_button.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_next_scananimation_button.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/suggestion_chip.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -236,19 +238,20 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                                         onTap: () async {
                                           onPressSuccessFloatingButton();
                                         },
-                                        child: SuccessCustomButton(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.4,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.055,
-                                            animationDuration:
-                                                Duration(milliseconds: 4950),
-                                            animationStart:
-                                                animationStart.value),
+                                        child:
+                                            GradedPlusNextScanAnimationButton(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.4,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.055,
+                                          animationDuration:
+                                              Duration(milliseconds: 4950),
+                                          animationStart: animationStart.value,
+                                        ),
                                       );
                                     }),
                               )
@@ -260,6 +263,8 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
 
   Widget body() {
     return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: BlocConsumer<OcrBloc, OcrState>(
         bloc: _bloc, // provide the local bloc instance
         listener: (context, state) async {
@@ -592,195 +597,103 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     required String grade,
   }) {
     isStudentIdFilled.value = id;
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.8,
-      child: Form(
-        key: _formKey1,
-        child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BlocListener<OcrBloc, OcrState>(
-              bloc: _bloc2,
-              child: Container(),
-              listener: (context, state) async {
-                if (state is SuccessStudentDetails) {
-                  nameController.text = state.studentName;
-                  isStudentNameFilled.value = state.studentName;
-                  isNameUpdated.value = !isNameUpdated.value;
-                  // _formKey1.currentState!.validate();
-                }
-              },
-            ),
-            SpacerWidget(15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Utility.textWidget(
-                    text: 'Manual Entry',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline1!
-                        .copyWith(fontWeight: FontWeight.bold)),
-                SizedBox(
-                  width: 5.0,
+    return Form(
+      key: _formKey1,
+      child: ListView(
+        children: [
+          BlocListener<OcrBloc, OcrState>(
+            bloc: _bloc2,
+            child: Container(),
+            listener: (context, state) async {
+              if (state is SuccessStudentDetails) {
+                nameController.text = state.studentName;
+                isStudentNameFilled.value = state.studentName;
+                isNameUpdated.value = !isNameUpdated.value;
+                // _formKey1.currentState!.validate();
+              }
+            },
+          ),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              StudentPlusScreenTitleWidget(
+                  kLabelSpacing: 0, text: 'Manual Entry'),
+              SizedBox(
+                width: 5.0,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xffCF6679),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffCF6679),
-                  ),
-                  child: Icon(
-                      IconData(0xe838,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      size: 19,
-                      color: Colors.white),
-                ),
+                child: Icon(
+                    IconData(0xe838,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    size: 19,
+                    color: Colors.white),
+              ),
+            ],
+          ),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Utility.textWidget(
+              text: 'Student Name',
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryVariant
+                      .withOpacity(0.3))),
+          textFormField(
+              scrollController: scrollControlledName,
+              controller: nameController,
+              hintText: 'Student Name',
+              inputFormatters: <TextInputFormatter>[
+                //To capitalize first letter of the textfield
+                UpperCaseTextFormatter()
               ],
-            ),
-            SpacerWidget(_KVerticalSpace * 0.25),
-            Utility.textWidget(
-                text: 'Student Name',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.3))),
-            textFormField(
-                scrollController: scrollControlledName,
-                controller: nameController,
-                hintText: 'Student Name',
-                inputFormatters: <TextInputFormatter>[
-                  //To capitalize first letter of the textfield
-                  UpperCaseTextFormatter()
-                ],
-                // keyboardType: TextInputType.,
-                isFailure: true,
-                onSaved: (String value) {
-                  studentNameOnSaveFailure(value);
-                },
-                validator: (String? value) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    isStudentNameFilled.value = value!; //nameController.text;
-                  });
-                  // isStudentNameFilled.value = value!; //nameController.text;
+              // keyboardType: TextInputType.,
+              isFailure: true,
+              onSaved: (String value) {
+                studentNameOnSaveFailure(value);
+              },
+              validator: (String? value) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  isStudentNameFilled.value = value!; //nameController.text;
+                });
+                // isStudentNameFilled.value = value!; //nameController.text;
 
-                  return isStudentNameFilled.value.isEmpty ||
-                          isStudentNameFilled.value.length < 3
-                      ? ''
-                      : null;
-                }),
-            ValueListenableBuilder(
-                valueListenable: isStudentNameFilled,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  if (isStudentNameFilled?.value?.isEmpty ?? true) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      suggestionNameListLenght.value = 0;
-                    });
-                  }
-                  return isStudentNameFilled.value.length < 3
-                      ? Container(
-                          // padding: null,
-                          alignment: Alignment.centerLeft,
-                          child: TranslationWidget(
-                              message: Overrides.STANDALONE_GRADED_APP == true
-                                  ? (isStudentNameFilled.value == ""
-                                      ? 'Student Name is required'
-                                      : nameController.text.length < 3
-                                          ? 'Make Sure The Student Name Contains More Than 3 Character'
-                                          : '')
-                                  : isStudentNameFilled.value == ""
-                                      ? 'Please Enter The Student Name'
-                                      : nameController.text.length < 3
-                                          ? 'Make Sure The Student Name Contains More Than 3 Character'
-                                          : '',
-                              fromLanguage: "en",
-                              toLanguage: Globals.selectedLanguage,
-                              builder: (translatedMessage) {
-                                return Text(
-                                  translatedMessage,
-                                  style: TextStyle(color: Colors.red),
-                                );
-                              }),
-                        )
-                      : Container();
-                }),
-            suggestionWidget(isNameList: true),
-            SpacerWidget(_KVerticalSpace / 3),
-            Utility.textWidget(
-                text: Overrides.STANDALONE_GRADED_APP == true
-                    ? 'Student Email'
-                    : 'Student ID/Student Email',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.3))),
-            ValueListenableBuilder(
-                valueListenable: isStudentIdFilled,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  // return emailTextField();
-                  return Wrap(
-                    children: [
-                      textFormField(
-                        scrollController: scrollControllerId,
-                        controller: idController,
-                        hintText: Overrides.STANDALONE_GRADED_APP == true
-                            ? 'Student Email'
-                            : 'Student ID/Email',
-                        isFailure: true,
-                        // errormsg:
-                        //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-                        onSaved: (String value) {
-                          initialCursorPositionAtLast = false;
-                          studentIdOnSaveFailure(value);
-                        },
-                        validator: (String? value) {
-                          isStudentIdFilled.value = value!;
-                          return Overrides.STANDALONE_GRADED_APP == true
-                              ? isStudentIdFilled.value.isEmpty ||
-                                      !regex.hasMatch(isStudentIdFilled.value)
-                                  ? ''
-                                  : null
-                              : isStudentIdFilled.value.isEmpty
-                                  ? ''
-                                  : null;
-                        },
-                        inputFormatters: [],
-                        maxNineDigit: Utility.checkForInt(idController.text)
-                            ? true
-                            : false, //true
-                      ),
-                      Container(
+                return isStudentNameFilled.value.isEmpty ||
+                        isStudentNameFilled.value.length < 3
+                    ? ''
+                    : null;
+              }),
+          ValueListenableBuilder(
+              valueListenable: isStudentNameFilled,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                if (isStudentNameFilled?.value?.isEmpty ?? true) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    suggestionNameListLenght.value = 0;
+                  });
+                }
+                return isStudentNameFilled.value.length < 3
+                    ? Container(
+                        // padding: null,
                         alignment: Alignment.centerLeft,
                         child: TranslationWidget(
                             message: Overrides.STANDALONE_GRADED_APP == true
-                                ? (idController.text == ''
-                                    ? 'Student Email Is Required'
-                                    : (!regex.hasMatch(idController.text))
-                                        ? 'Please Enter valid Email'
+                                ? (isStudentNameFilled.value == ""
+                                    ? 'Student Name is required'
+                                    : nameController.text.length < 3
+                                        ? 'Make Sure The Student Name Contains More Than 3 Character'
                                         : '')
-                                : idController.text.isEmpty
-                                    ? 'Please Enter Valid Email ID or Student ID'
-                                    : Utility.checkForInt(idController.text)
-                                        ? (idController.text.length != 9
-                                            ? 'Student Id should be 9 digit'
-                                            : (idController.text[0] != '2' &&
-                                                    idController.text[0] != '1'
-                                                ? 'Student Id should be start for 1 or 2'
-                                                : ''))
-                                        : (!regex.hasMatch(idController.text))
-                                            ? 'Please Enter valid Email'
-                                            : '',
-
-                            // (isStudentIdFilled.value == ""
-                            //     ? 'Student ID/Email Is Required'
-                            //     : ''),
+                                : isStudentNameFilled.value == ""
+                                    ? 'Please Enter The Student Name'
+                                    : nameController.text.length < 3
+                                        ? 'Make Sure The Student Name Contains More Than 3 Character'
+                                        : '',
                             fromLanguage: "en",
                             toLanguage: Globals.selectedLanguage,
                             builder: (translatedMessage) {
@@ -789,37 +702,120 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                                 style: TextStyle(color: Colors.red),
                               );
                             }),
-                      ),
-                    ],
-                  );
-                }),
-            suggestionWidget(isNameList: false),
-            SpacerWidget(_KVerticalSpace / 2),
-            Center(child: imagePreviewWidget()),
-            SpacerWidget(_KVerticalSpace / 3),
-            Center(
-              child: Utility.textWidget(
-                  textAlign: TextAlign.center,
-                  text: widget.isMcqSheet == true
-                      ? 'Student Selection'
-                      : 'Points Earned',
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primaryVariant
-                          .withOpacity(0.3))),
-            ),
-            SpacerWidget(_KVerticalSpace / 4),
-            pointsEarnedButton(
-                widget.isMcqSheet == true
-                    ? grade == ''
-                        ? 'NA'
-                        : grade
-                    : (grade == '' ? 2 : int.parse(grade)),
-                isSuccessState: false),
-          ],
-        ),
+                      )
+                    : Container();
+              }),
+          suggestionWidget(isNameList: true),
+          SpacerWidget(_KVerticalSpace / 3),
+          Utility.textWidget(
+              text: Overrides.STANDALONE_GRADED_APP == true
+                  ? 'Student Email'
+                  : 'Student ID/Student Email',
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryVariant
+                      .withOpacity(0.3))),
+          ValueListenableBuilder(
+              valueListenable: isStudentIdFilled,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                // return emailTextField();
+                return Wrap(
+                  children: [
+                    textFormField(
+                      scrollController: scrollControllerId,
+                      controller: idController,
+                      hintText: Overrides.STANDALONE_GRADED_APP == true
+                          ? 'Student Email'
+                          : 'Student ID/Email',
+                      isFailure: true,
+                      // errormsg:
+                      //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+                      onSaved: (String value) {
+                        initialCursorPositionAtLast = false;
+                        studentIdOnSaveFailure(value);
+                      },
+                      validator: (String? value) {
+                        isStudentIdFilled.value = value!;
+                        return Overrides.STANDALONE_GRADED_APP == true
+                            ? isStudentIdFilled.value.isEmpty ||
+                                    !regex.hasMatch(isStudentIdFilled.value)
+                                ? ''
+                                : null
+                            : isStudentIdFilled.value.isEmpty
+                                ? ''
+                                : null;
+                      },
+                      inputFormatters: [],
+                      maxNineDigit: Utility.checkForInt(idController.text)
+                          ? true
+                          : false, //true
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: TranslationWidget(
+                          message: Overrides.STANDALONE_GRADED_APP == true
+                              ? (idController.text == ''
+                                  ? 'Student Email Is Required'
+                                  : (!regex.hasMatch(idController.text))
+                                      ? 'Please Enter valid Email'
+                                      : '')
+                              : idController.text.isEmpty
+                                  ? 'Please Enter Valid Email ID or Student ID'
+                                  : Utility.checkForInt(idController.text)
+                                      ? (idController.text.length != 9
+                                          ? 'Student Id should be 9 digit'
+                                          : (idController.text[0] != '2' &&
+                                                  idController.text[0] != '1'
+                                              ? 'Student Id should be start for 1 or 2'
+                                              : ''))
+                                      : (!regex.hasMatch(idController.text))
+                                          ? 'Please Enter valid Email'
+                                          : '',
+
+                          // (isStudentIdFilled.value == ""
+                          //     ? 'Student ID/Email Is Required'
+                          //     : ''),
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(
+                              translatedMessage,
+                              style: TextStyle(color: Colors.red),
+                            );
+                          }),
+                    ),
+                  ],
+                );
+              }),
+          suggestionWidget(isNameList: false),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Center(
+            child: Utility.textWidget(
+                textAlign: TextAlign.center,
+                text: widget.isMcqSheet == true
+                    ? 'Student Selection'
+                    : 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.3))),
+          ),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          pointsEarnedButton(
+              widget.isMcqSheet == true
+                  ? grade == ''
+                      ? 'NA'
+                      : grade
+                  : (grade == '' ? 2 : int.parse(grade)),
+              isSuccessState: false),
+        ],
       ),
     );
   }
@@ -946,153 +942,65 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
   }
 
   Widget GradedPlusScanResult({required String id, required String grade}) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
-      child: Form(
-        key: _formKey2,
-        child: ListView(
-          children: [
-            SpacerWidget(_KVerticalSpace * 0.25),
-            Utility.textWidget(
-                text: 'Student Name',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.3))),
-            textFormField(
-                scrollController: scrollControlledName,
-                controller: nameController,
-                inputFormatters: <TextInputFormatter>[
-                  //To capitalize first letter of the textfield
-                  UpperCaseTextFormatter()
-                ],
-                hintText: 'Student Name',
-                isFailure: false,
-                // errormsg: "Make sure to save the record with student name",
-                onSaved: (String value) {
-                  studentNameOnSaveSuccess(value);
-                },
-                validator: (String? value) {
+    return Form(
+      key: _formKey2,
+      child: ListView(
+        children: [
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+          StudentPlusScreenTitleWidget(kLabelSpacing: 0, text: ''),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Utility.textWidget(
+              text: 'Student Name',
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryVariant
+                      .withOpacity(0.3))),
+          textFormField(
+              scrollController: scrollControlledName,
+              controller: nameController,
+              inputFormatters: <TextInputFormatter>[
+                //To capitalize first letter of the textfield
+                UpperCaseTextFormatter()
+              ],
+              hintText: 'Student Name',
+              isFailure: false,
+              // errormsg: "Make sure to save the record with student name",
+              onSaved: (String value) {
+                studentNameOnSaveSuccess(value);
+              },
+              validator: (String? value) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  isStudentNameFilled.value = value!;
+                });
+                // isStudentNameFilled.value = value!;
+              }),
+          ValueListenableBuilder(
+              valueListenable: isStudentNameFilled,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                if (isStudentNameFilled?.value?.isEmpty ?? true) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    isStudentNameFilled.value = value!;
+                    suggestionNameListLenght.value = 0;
                   });
-                  // isStudentNameFilled.value = value!;
-                }),
-            ValueListenableBuilder(
-                valueListenable: isStudentNameFilled,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  if (isStudentNameFilled?.value?.isEmpty ?? true) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      suggestionNameListLenght.value = 0;
-                    });
-                  }
+                }
 
-                  return nameController.text.length < 3
-                      ? Container(
-                          alignment: Alignment.centerLeft,
-                          child: TranslationWidget(
-                              message: Overrides.STANDALONE_GRADED_APP == true
-                                  ? (isStudentNameFilled.value == ""
-                                      ? 'Student Name is required'
-                                      : nameController.text.length < 3
-                                          ? 'Make Sure The Student Name Contains More Than 3 Character'
-                                          : '')
-                                  : isStudentNameFilled.value == ""
-                                      ? 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name'
-                                      : nameController.text.length < 3
-                                          ? 'Make Sure The Student Name Contains More Than 3 Character'
-                                          : '',
-                              fromLanguage: "en",
-                              toLanguage: Globals.selectedLanguage,
-                              builder: (translatedMessage) {
-                                return Text(
-                                  translatedMessage,
-                                  style: TextStyle(color: Colors.red),
-                                );
-                              }),
-                        )
-                      : Container();
-                }),
-
-            suggestionWidget(isNameList: true),
-            SpacerWidget(_KVerticalSpace / 3),
-            Utility.textWidget(
-                text: Overrides.STANDALONE_GRADED_APP == true
-                    ? 'Student Email'
-                    : 'Student ID/Student Email',
-                context: context,
-                textTheme: Theme.of(context).textTheme.headline4!.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryVariant
-                        .withOpacity(0.3))),
-            ValueListenableBuilder(
-                valueListenable: isStudentIdFilled,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  // return emailTextField();
-                  return Wrap(
-                    children: [
-                      textFormField(
-                        scrollController: scrollControllerId,
-                        controller: idController,
-                        hintText: Overrides.STANDALONE_GRADED_APP == true
-                            ? 'Student Email'
-                            : 'Student ID/Email',
-                        isFailure: true,
-                        // errormsg:
-                        //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
-                        onSaved: (String value) {
-                          initialCursorPositionAtLast = false;
-                          studentIdOnSaveFailure(value);
-                        },
-                        validator: (String? value) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            isStudentIdFilled.value = value!;
-                          });
-                          //isStudentIdFilled.value = value!;
-                          return Overrides.STANDALONE_GRADED_APP == true
-                              ? isStudentIdFilled.value.isEmpty ||
-                                      !regex.hasMatch(isStudentIdFilled.value)
-                                  ? ''
-                                  : null
-                              : isStudentIdFilled.value.isEmpty
-                                  ? ''
-                                  : null;
-                        },
-                        inputFormatters: [],
-                        maxNineDigit: Utility.checkForInt(idController.text)
-                            ? true
-                            : false, //true
-                      ),
-                      Container(
+                return nameController.text.length < 3
+                    ? Container(
                         alignment: Alignment.centerLeft,
                         child: TranslationWidget(
                             message: Overrides.STANDALONE_GRADED_APP == true
-                                ? (idController.text == ''
-                                    ? 'Student Email Is Required'
-                                    : (!regex.hasMatch(idController.text))
-                                        ? 'Please Enter valid Email'
+                                ? (isStudentNameFilled.value == ""
+                                    ? 'Student Name is required'
+                                    : nameController.text.length < 3
+                                        ? 'Make Sure The Student Name Contains More Than 3 Character'
                                         : '')
-                                : idController.text.isEmpty
-                                    ? 'Please Enter Valid Email ID or Student ID'
-                                    : Utility.checkForInt(idController.text)
-                                        ? (idController.text.length != 9
-                                            ? 'Student Id should be 9 digit'
-                                            : (idController.text[0] != '2' &&
-                                                    idController.text[0] != '1'
-                                                ? 'Student Id should be start for 1 or 2'
-                                                : ''))
-                                        : (!regex.hasMatch(idController.text))
-                                            ? 'Please Enter valid Email'
-                                            : '',
-
-                            // (isStudentIdFilled.value == ""
-                            //     ? 'Student ID/Email Is Required'
-                            //     : ''),
+                                : isStudentNameFilled.value == ""
+                                    ? 'If You Would Like To Save The Student Details In The Database, Please Enter The Student Name'
+                                    : nameController.text.length < 3
+                                        ? 'Make Sure The Student Name Contains More Than 3 Character'
+                                        : '',
                             fromLanguage: "en",
                             toLanguage: Globals.selectedLanguage,
                             builder: (translatedMessage) {
@@ -1101,62 +1009,145 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                                 style: TextStyle(color: Colors.red),
                               );
                             }),
-                      ),
-                    ],
-                  );
-                }),
-
-            suggestionWidget(isNameList: false),
-            // SpacerWidget(_KVerticalSpace / 2),
-            Center(child: imagePreviewWidget()),
-            SpacerWidget(_KVerticalSpace / 3),
-            Center(
-              child: Utility.textWidget(
-                  text: widget.isMcqSheet == true
-                      ? 'Student Selection'
-                      : 'Points Earned',
-                  context: context,
-                  textTheme: Theme.of(context).textTheme.headline2!.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primaryVariant
-                          .withOpacity(0.3))),
-            ),
-            SpacerWidget(_KVerticalSpace / 4),
-            pointsEarnedButton(
-                widget.isMcqSheet == true ? grade : int.parse(grade),
-                isSuccessState: true),
-
-            Container(
-                padding: EdgeInsets.only(top: 10),
-                alignment: Alignment.center,
-                width: MediaQuery.of(context).size.width * 0.5,
-                // color: Colors.blue,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                      )
+                    : Container();
+              }),
+          suggestionWidget(isNameList: true),
+          SpacerWidget(_KVerticalSpace / 3),
+          Utility.textWidget(
+              text: Overrides.STANDALONE_GRADED_APP == true
+                  ? 'Student Email'
+                  : 'Student ID/Student Email',
+              context: context,
+              textTheme: Theme.of(context).textTheme.headline4!.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryVariant
+                      .withOpacity(0.3))),
+          ValueListenableBuilder(
+              valueListenable: isStudentIdFilled,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                // return emailTextField();
+                return Wrap(
                   children: [
-                    Utility.textWidget(
-                        text: widget.isMcqSheet == true
-                            ? 'Successful Scan '
-                            : 'All Good!',
-                        context: context,
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline5!
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    Icon(
-                      IconData(0xe878,
-                          fontFamily: Overrides.kFontFam,
-                          fontPackage: Overrides.kFontPkg),
-                      size: Globals.deviceType == 'phone' ? 24 : 34,
-                      color: AppTheme.kButtonColor,
+                    textFormField(
+                      scrollController: scrollControllerId,
+                      controller: idController,
+                      hintText: Overrides.STANDALONE_GRADED_APP == true
+                          ? 'Student Email'
+                          : 'Student ID/Email',
+                      isFailure: true,
+                      // errormsg:
+                      //     "Student Id should not be empty, must start with '2' and contains a '9' digit number.",
+                      onSaved: (String value) {
+                        initialCursorPositionAtLast = false;
+                        studentIdOnSaveFailure(value);
+                      },
+                      validator: (String? value) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          isStudentIdFilled.value = value!;
+                        });
+                        //isStudentIdFilled.value = value!;
+                        return Overrides.STANDALONE_GRADED_APP == true
+                            ? isStudentIdFilled.value.isEmpty ||
+                                    !regex.hasMatch(isStudentIdFilled.value)
+                                ? ''
+                                : null
+                            : isStudentIdFilled.value.isEmpty
+                                ? ''
+                                : null;
+                      },
+                      inputFormatters: [],
+                      maxNineDigit: Utility.checkForInt(idController.text)
+                          ? true
+                          : false, //true
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: TranslationWidget(
+                          message: Overrides.STANDALONE_GRADED_APP == true
+                              ? (idController.text == ''
+                                  ? 'Student Email Is Required'
+                                  : (!regex.hasMatch(idController.text))
+                                      ? 'Please Enter valid Email'
+                                      : '')
+                              : idController.text.isEmpty
+                                  ? 'Please Enter Valid Email ID or Student ID'
+                                  : Utility.checkForInt(idController.text)
+                                      ? (idController.text.length != 9
+                                          ? 'Student Id should be 9 digit'
+                                          : (idController.text[0] != '2' &&
+                                                  idController.text[0] != '1'
+                                              ? 'Student Id should be start for 1 or 2'
+                                              : ''))
+                                      : (!regex.hasMatch(idController.text))
+                                          ? 'Please Enter valid Email'
+                                          : '',
+
+                          // (isStudentIdFilled.value == ""
+                          //     ? 'Student ID/Email Is Required'
+                          //     : ''),
+                          fromLanguage: "en",
+                          toLanguage: Globals.selectedLanguage,
+                          builder: (translatedMessage) {
+                            return Text(
+                              translatedMessage,
+                              style: TextStyle(color: Colors.red),
+                            );
+                          }),
                     ),
                   ],
-                )),
-            // SpacerWidget(MediaQuery.of(context).size.height * 0.15),
-          ],
-          // ),
-        ),
+                );
+              }),
+          suggestionWidget(isNameList: false),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Center(child: imagePreviewWidget()),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          Center(
+            child: Utility.textWidget(
+                text: widget.isMcqSheet == true
+                    ? 'Student Selection'
+                    : 'Points Earned',
+                context: context,
+                textTheme: Theme.of(context).textTheme.headline2!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryVariant
+                        .withOpacity(0.3))),
+          ),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
+          pointsEarnedButton(
+              widget.isMcqSheet == true ? grade : int.parse(grade),
+              isSuccessState: true),
+          SpacerWidget(StudentPlusOverrides.kSymmetricPadding * 2),
+          Container(
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width * 0.5,
+              // color: Colors.blue,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Utility.textWidget(
+                      text: widget.isMcqSheet == true
+                          ? 'Successful Scan '
+                          : 'All Good!',
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(fontWeight: FontWeight.bold)),
+                  Icon(
+                    IconData(0xe878,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    size: Globals.deviceType == 'phone' ? 24 : 34,
+                    color: AppTheme.kButtonColor,
+                  ),
+                ],
+              )),
+        ],
+        // ),
       ),
     );
   }
@@ -1196,7 +1187,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       child: Container(
         //color: Colors.blue,
         alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height * 0.18,
+        // height: MediaQuery.of(context).size.height * 0.18,
         width: MediaQuery.of(context).size.width,
         child: Row(
           // scrollDirection: Axis.horizontal,
