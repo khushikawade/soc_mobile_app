@@ -626,6 +626,8 @@ class _CameraScreenState extends State<CameraScreen>
                                                       )),
                                             );
 
+                                            OcrUtility.gradedPlusNavBarIsHide
+                                                .value = true;
                                             if (flashOn == true) {
                                               try {
                                                 await controller!.value

@@ -7,6 +7,8 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -119,201 +121,201 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
               isFromResultSection:
                   widget.isFromHomeSection == false ? true : null,
             ),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SpacerWidget(_KVertcalSpace / 5),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: MediaQuery.of(context).size.width / 30),
-                        child: Utility.textWidget(
-                          text: 'Assignment History',
-                          context: context,
-                          textTheme: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                filterBottomSheet();
-                              },
-                              icon: Icon(
-                                IconData(0xe87d,
-                                    fontFamily: Overrides.kFontFam,
-                                    fontPackage: Overrides.kFontPkg),
-                                color: AppTheme.kButtonColor,
-                                size: 28,
-                              )),
-                          ValueListenableBuilder(
-                              valueListenable: selectedValue,
-                              child: Container(),
-                              builder: (BuildContext context, dynamic value,
-                                  Widget? child) {
-                                return selectedValue.value == 'All'
-                                    ? Container()
-                                    : Wrap(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                top: 6, right: 6),
-                                            height: 7,
-                                            width: 7,
-                                            decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                shape: BoxShape.circle),
-                                          ),
-                                        ],
-                                      );
-                              })
-                        ],
-                      )
-                    ]),
-                SpacerWidget(_KVertcalSpace / 3),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width / 30),
-                  child: SearchBar(
-                    stateName: '',
-                    isSearchPage: false,
-                    isSubLearningPage: false,
-                    readOnly: true,
-                    controller: searchAssessmentController,
-                    onSaved: (String value) {
-                      // if (value != null && value.isNotEmpty) {
-                      //   isSearch.value = true;
-
-                      //Calling local search only
-                      // _driveBloc2
-                      //     .add(GetAssessmentSearchDetails(keyword: value));
-                      // }
-                    },
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GoogleSearchWidget(
-                                  selectedFilterValue: selectedValue.value,
+            body: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: StudentPlusOverrides.kSymmetricPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        StudentPlusScreenTitleWidget(
+                            kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+                            text: 'Assignment History'),
+                        Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  filterBottomSheet();
+                                },
+                                icon: Icon(
+                                  IconData(0xe87d,
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg),
+                                  color: AppTheme.kButtonColor,
+                                  size: 28,
                                 )),
-                      );
-                      // print('taped');
-                    },
-                  ),
-                ),
-                SpacerWidget(_KVertcalSpace / 5),
-                Expanded(
-                  child: RefreshIndicator(
-                    color: AppTheme.kButtonColor,
-                    key: refreshKey,
-                    onRefresh: () => refreshPage(isFromPullToRefresh: true),
-                    child: ValueListenableBuilder(
-                        valueListenable: isSearch,
-                        builder:
-                            (BuildContext context, bool value, Widget? child) {
-                          return ValueListenableBuilder(
-                              valueListenable: selectedValue,
-                              builder: (BuildContext context, String value,
-                                  Widget? child) {
-                                return BlocConsumer(
-                                    bloc:
-                                        selectedValue.value == 'Multiple Choice'
-                                            ? _driveMcqBloc
-                                            : (selectedValue.value ==
-                                                    'Constructed Response'
-                                                ? _driveConstructiveBloc
-                                                : _driveBloc),
-
-                                    // : _driveBloc2,
-                                    builder: (BuildContext context,
-                                        GoogleDriveState state) {
-                                      // print(state);
-                                      if (state is GoogleDriveGetSuccess) {
-                                        nextPageUrl = state.nextPageLink;
-                                        bool isLoading = true;
-                                        if (state.nextPageLink == '') {
-                                          isLoading = false;
-                                        }
-                                        // bool isLoading
-                                        lastAssessmentHistoryListbj = state.obj;
-                                        if (nextPageUrl != '') {
-                                          isLoading = true;
-                                        }
-
-                                        return state.obj != null &&
-                                                state.obj.length > 0
-                                            ? listView(state.obj, isLoading)
-                                            : NoDataFoundErrorWidget(
-                                                isResultNotFoundMsg: true,
-                                                isNews: false,
-                                                isEvents: false);
-                                      } else if (state is GoogleDriveLoading) {
-                                        return Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.7,
-                                          child: Center(
-                                              child: CircularProgressIndicator(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                          )),
+                            ValueListenableBuilder(
+                                valueListenable: selectedValue,
+                                child: Container(),
+                                builder: (BuildContext context, dynamic value,
+                                    Widget? child) {
+                                  return selectedValue.value == 'All'
+                                      ? Container()
+                                      : Wrap(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 6, right: 6),
+                                              height: 7,
+                                              width: 7,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  shape: BoxShape.circle),
+                                            ),
+                                          ],
                                         );
-                                      }
+                                })
+                          ],
+                        )
+                      ]),
+                  SpacerWidget(_KVertcalSpace / 3),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 30),
+                    child: SearchBar(
+                      stateName: '',
+                      isSearchPage: false,
+                      isSubLearningPage: false,
+                      readOnly: true,
+                      controller: searchAssessmentController,
+                      onSaved: (String value) {
+                        // if (value != null && value.isNotEmpty) {
+                        //   isSearch.value = true;
 
-                                      return Container();
-                                    },
-                                    listener: (BuildContext contxt,
-                                        GoogleDriveState state) async {
-                                      if (state is ErrorState) {
-                                        if (state.errorMsg ==
-                                            'ReAuthentication is required') {
-                                          await Utility
-                                              .refreshAuthenticationToken(
-                                                  isNavigator: false,
-                                                  errorMsg: state.errorMsg!,
-                                                  context: context,
-                                                  scaffoldKey: _scaffoldKey);
-
-                                          _driveBloc.add(
-                                              GetHistoryAssessmentFromDrive(
-                                                  isSearchPage: false,
-                                                  filterType:
-                                                      selectedValue.value));
-                                        } else {
-                                          Navigator.of(context).pop();
-                                          Utility.currentScreenSnackBar(
-                                              "Something Went Wrong. Please Try Again.",
-                                              null);
-                                        }
-                                      } else if (state is GoogleDriveLoading) {
-                                        Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.7,
-                                          child: Center(
-                                              child: CircularProgressIndicator(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryVariant,
-                                          )),
-                                        );
-                                      }
-                                    });
-                              });
-                        }),
+                        //Calling local search only
+                        // _driveBloc2
+                        //     .add(GetAssessmentSearchDetails(keyword: value));
+                        // }
+                      },
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GoogleSearchWidget(
+                                    selectedFilterValue: selectedValue.value,
+                                  )),
+                        );
+                        // print('taped');
+                      },
+                    ),
                   ),
-                ),
-              ],
+                  SpacerWidget(_KVertcalSpace / 5),
+                  Expanded(
+                    child: RefreshIndicator(
+                      color: AppTheme.kButtonColor,
+                      key: refreshKey,
+                      onRefresh: () => refreshPage(isFromPullToRefresh: true),
+                      child: ValueListenableBuilder(
+                          valueListenable: isSearch,
+                          builder: (BuildContext context, bool value,
+                              Widget? child) {
+                            return ValueListenableBuilder(
+                                valueListenable: selectedValue,
+                                builder: (BuildContext context, String value,
+                                    Widget? child) {
+                                  return BlocConsumer(
+                                      bloc: selectedValue.value ==
+                                              'Multiple Choice'
+                                          ? _driveMcqBloc
+                                          : (selectedValue.value ==
+                                                  'Constructed Response'
+                                              ? _driveConstructiveBloc
+                                              : _driveBloc),
+
+                                      // : _driveBloc2,
+                                      builder: (BuildContext context,
+                                          GoogleDriveState state) {
+                                        // print(state);
+                                        if (state is GoogleDriveGetSuccess) {
+                                          nextPageUrl = state.nextPageLink;
+                                          bool isLoading = true;
+                                          if (state.nextPageLink == '') {
+                                            isLoading = false;
+                                          }
+                                          // bool isLoading
+                                          lastAssessmentHistoryListbj =
+                                              state.obj;
+                                          if (nextPageUrl != '') {
+                                            isLoading = true;
+                                          }
+
+                                          return state.obj != null &&
+                                                  state.obj.length > 0
+                                              ? listView(state.obj, isLoading)
+                                              : NoDataFoundErrorWidget(
+                                                  isResultNotFoundMsg: true,
+                                                  isNews: false,
+                                                  isEvents: false);
+                                        } else if (state
+                                            is GoogleDriveLoading) {
+                                          return Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.7,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            )),
+                                          );
+                                        }
+
+                                        return Container();
+                                      },
+                                      listener: (BuildContext contxt,
+                                          GoogleDriveState state) async {
+                                        if (state is ErrorState) {
+                                          if (state.errorMsg ==
+                                              'ReAuthentication is required') {
+                                            await Utility
+                                                .refreshAuthenticationToken(
+                                                    isNavigator: false,
+                                                    errorMsg: state.errorMsg!,
+                                                    context: context,
+                                                    scaffoldKey: _scaffoldKey);
+
+                                            _driveBloc.add(
+                                                GetHistoryAssessmentFromDrive(
+                                                    isSearchPage: false,
+                                                    filterType:
+                                                        selectedValue.value));
+                                          } else {
+                                            Navigator.of(context).pop();
+                                            Utility.currentScreenSnackBar(
+                                                "Something Went Wrong. Please Try Again.",
+                                                null);
+                                          }
+                                        } else if (state
+                                            is GoogleDriveLoading) {
+                                          Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.7,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primaryVariant,
+                                            )),
+                                          );
+                                        }
+                                      });
+                                });
+                          }),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         )

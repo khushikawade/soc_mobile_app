@@ -12,6 +12,8 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -500,7 +502,7 @@ class _SubjectSelectionState extends State<SubjectSelection> {
             horizontal: 20,
           ),
           children: [
-            SpacerWidget(_KVerticalSpace * 0.50),
+            SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
             titleWidget(),
             SpacerWidget(_KVerticalSpace / 3.5),
             searchWidget(),
@@ -685,11 +687,17 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     return ValueListenableBuilder(
       valueListenable: pageIndex,
       builder: (BuildContext context, dynamic value, Widget? child) {
-        return Utility.textWidget(
+        return StudentPlusScreenTitleWidget(
+            kLabelSpacing: 0,
             text: pageIndex.value == 0
                 ? 'Subject'
-                : '${widget.stateName} Learning Standard',
-            context: context);
+                : '${widget.stateName} Learning Standard');
+
+        //  Utility.textWidget(
+        //     text: pageIndex.value == 0
+        //         ? 'Subject'
+        //         : '${widget.stateName} Learning Standard',
+        //     context: context);
       },
       child: Container(),
     );

@@ -18,6 +18,8 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -252,26 +254,22 @@ class studentRecordList extends State<ResultsSummary> {
               isResultScreen: true,
             ),
             body: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                  horizontal: StudentPlusOverrides.kSymmetricPadding),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SpacerWidget(_KVerticalSpace * 0.40),
+                  SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
                   Padding(
                     padding: EdgeInsets.only(
-                      left: 5,
-                    ), //EdgeInsets.symmetric(horizontal: 20),
+                      left: 0,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Utility.textWidget(
-                            text: 'Results Summary',
-                            context: context,
-                            textTheme: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(fontWeight: FontWeight.bold)),
+                        StudentPlusScreenTitleWidget(
+                            kLabelSpacing: 0, text: 'Results Summary'),
                         ValueListenableBuilder(
                             valueListenable: isGoogleSheetStateReceived,
                             builder: (BuildContext context, bool value,
@@ -291,21 +289,6 @@ class studentRecordList extends State<ResultsSummary> {
                                             AsyncSnapshot<
                                                     List<StudentAssessmentInfo>>
                                                 snapshot) {
-                                          // if (snapshot.connectionState ==
-                                          //     ConnectionState.waiting) {
-                                          //   return Globals.isAndroid!
-                                          //       ? Container(
-                                          //           width: 10,
-                                          //           height: 10,
-                                          //           child:
-                                          //               CircularProgressIndicator(
-                                          //                   color: Theme.of(
-                                          //                           context)
-                                          //                       .colorScheme
-                                          //                       .primaryVariant,
-                                          //                   strokeWidth: 2))
-                                          //       : CupertinoActivityIndicator();
-                                          // }
                                           if (snapshot.hasData &&
                                                   widget.assessmentDetailPage ==
                                                       true
