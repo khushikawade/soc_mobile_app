@@ -1,6 +1,5 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
-import 'package:Soc/src/modules/graded_plus/ui/select_assessment_type.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
@@ -11,8 +10,9 @@ import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_type.dart';
 
-class GradedBottomNavBar {
+class GradedPlusBottomNavBar {
   /* ------- function to return list of widget for bottom navigation bar ------ */
   static List<StatefulWidget> gradedPlusBuildPersistentScreens() {
     List<StatefulWidget> screens = [
@@ -25,7 +25,7 @@ class GradedBottomNavBar {
         isFromHomeSection: true,
         selectedFilterValue: 'All',
       ),
-      SelectAssessmentType(),
+      GradedPlusSelectAssessmentTypeSection(),
       CustomIntroWidget(),
       PBISPlusStaff(
         titleIconData: getStaffIconCode(),

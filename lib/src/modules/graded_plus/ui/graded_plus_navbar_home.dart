@@ -46,16 +46,18 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
           return PersistentTabView(
             context,
             controller: gradedPlusPersistentTabController,
-            screens: GradedBottomNavBar.gradedPlusBuildPersistentScreens(),
+            screens: GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(),
             onItemSelected: (i) =>
-                GradedBottomNavBar.gradedPlusBuildPersistentScreens().length -
+                GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens()
+                                    .length -
                                 1 ==
                             i &&
                         !Overrides.STANDALONE_GRADED_APP
                     ? Navigator.of(context).pop()
                     : null,
 
-            items: GradedBottomNavBar.gradedPlusnavBarsItems(context: context),
+            items:
+                GradedPlusBottomNavBar.gradedPlusnavBarsItems(context: context),
             confineInSafeArea: true,
             backgroundColor: Theme.of(context).backgroundColor,
             handleAndroidBackButtonPress: true,

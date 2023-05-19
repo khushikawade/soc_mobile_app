@@ -8,6 +8,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_scan_result.dart';
 import 'package:Soc/src/modules/graded_plus/ui/create_assessment.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/success.dart';
@@ -141,8 +142,6 @@ class _CameraScreenState extends State<CameraScreen>
   ValueNotifier<bool>? removeLoading = ValueNotifier<bool>(false);
   @override
   void initState() {
-  
-
     // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj);
     // widget.isFlashOn!.value = widget.isFlashOn;
     Wakelock.enable();
@@ -595,7 +594,7 @@ class _CameraScreenState extends State<CameraScreen>
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      SuccessScreen(
+                                                      GradedPlusScanResult(
                                                         assessmentName: widget
                                                             .assessmentName,
                                                         lastAssessmentLength: widget
