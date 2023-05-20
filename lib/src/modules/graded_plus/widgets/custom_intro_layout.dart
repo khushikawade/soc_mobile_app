@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_content_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_type.dart';
+import 'package:Soc/src/modules/graded_plus/ui/graded_plus_navbar_home.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -181,7 +182,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                                 ? GradedLandingPage(
                                     isMultiplechoice: widget.isMcqSheet,
                                   )
-                                : GradedPlusSelectAssessmentTypeSection()));
+                                : GradedPlusNavBarHome()));
               } else {
                 // await FirebaseAnalyticsService.addCustomAnalyticsEvent(
                 //     "walkthrough_skip");

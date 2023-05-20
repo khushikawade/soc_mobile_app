@@ -21,7 +21,7 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 40),
+      padding: const EdgeInsets.only(bottom: 30),
       child: FloatingActionButton.extended(
           isExtended: true,
           extendedPadding: EdgeInsets.symmetric(horizontal: 20),

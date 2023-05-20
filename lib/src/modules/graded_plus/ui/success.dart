@@ -9,8 +9,8 @@
 // import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 // import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
 // import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
-// import 'package:Soc/src/modules/graded_plus/widgets/animation_button.dart';
 // import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
+// import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_next_scananimation_button.dart';
 // import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 // import 'package:Soc/src/modules/graded_plus/widgets/suggestion_chip.dart';
 // import 'package:Soc/src/overrides.dart';
@@ -424,7 +424,7 @@
 //                                               onTap: () async {
 //                                                 onPressSuccessFloatingButton();
 //                                               },
-//                                               child: SuccessCustomButton(
+//                                               child: GradedPlusNextScanAnimationButton(
 //                                                   width: MediaQuery.of(context)
 //                                                           .size
 //                                                           .width *
@@ -597,7 +597,6 @@
 //       child: Form(
 //         key: _formKey1,
 //         child: ListView(
-//           // crossAxisAlignment: CrossAxisAlignment.start,
 //           children: [
 //             BlocListener<OcrBloc, OcrState>(
 //               bloc: _bloc2,

@@ -92,7 +92,9 @@ class _GradedPlusResultOptionBottomSheetState
         builder: (BuildContext context, bool value, Widget? child) {
           String? url = widget.getURlForBottomIcons(title: element.title!);
           return Opacity(
-            opacity: ((url?.isEmpty ?? true) || (url == 'NA')) ? 0.3 : 1.0,
+            opacity:
+                //((url?.isEmpty ?? true) || (url == 'NA')) ? 0.3 :
+                1.0,
             child: ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,

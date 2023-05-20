@@ -26,7 +26,7 @@ class _GradedPlusNextScanAnimationButtonState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 40),
+      padding: EdgeInsets.only(bottom: 20),
       child: Stack(
         children: [
           Container(
