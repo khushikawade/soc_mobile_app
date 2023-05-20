@@ -159,19 +159,21 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                       if (filterNotifier.value ==
                           PBISPlusOverrides.pbisGoogleClassroom) {
                         return _listBuilder(state.pbisClassroomHistoryList,
-                            isLoading: false);
+                            isShimmerLoading: false);
                       } else if (filterNotifier.value ==
                           PBISPlusOverrides.pbisGoogleSheet) {
                         return _listBuilder(state.pbisSheetHistoryList,
-                            isLoading: false);
+                            isShimmerLoading: false);
                       } else {
                         return _listBuilder(state.pbisHistoryList,
-                            isLoading: false);
+                            isShimmerLoading: false);
                       }
                     }
+
+                    //Managing shimmer loading in case of initial loading
                     return _listBuilder(
                         List.generate(10, (index) => PBISPlusHistoryModal()),
-                        isLoading: true);
+                        isShimmerLoading: true);
                     // return Container(
                     //     height: MediaQuery.of(context).size.height * 0.6,
                     //     alignment: Alignment.center,
@@ -186,7 +188,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
   }
 
   Widget _listBuilder(List<PBISPlusHistoryModal> historyList,
-      {required final bool isLoading}) {
+      {required final bool isShimmerLoading}) {
     return historyList.length > 0
         ? Container(
             height: MediaQuery.of(context).size.height * 0.7,
@@ -200,14 +202,16 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                       onRefresh: refreshPage,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        physics:
-                            isLoading ? NeverScrollableScrollPhysics() : null,
+                        physics: isShimmerLoading
+                            ? NeverScrollableScrollPhysics()
+                            : null,
                         padding: EdgeInsets.only(
                           bottom: 40,
                         ),
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context, int index) {
-                          return listTile(historyList[index], index, isLoading);
+                          return listTile(
+                              historyList[index], index, isShimmerLoading);
                         },
                         itemCount: historyList.length,
                       ));
@@ -221,7 +225,8 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                 isResultNotFoundMsg: true, isNews: false, isEvents: false));
   }
 
-  Widget listTile(PBISPlusHistoryModal obj, index, final bool isLoading) {
+  Widget listTile(
+      PBISPlusHistoryModal obj, index, final bool isShimmerLoading) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -240,15 +245,15 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           height: 30,
           width: 30,
           child: ShimmerLoading(
-            isLoading: isLoading,
-            child: isLoading == true
+            isLoading: isShimmerLoading,
+            child: isShimmerLoading == true
                 ? localSimmerWidget(height: 30, width: 30)
                 : SvgPicture.asset(
                     "assets/ocr_result_section_bottom_button_icons/${obj.type == "Classroom" ? 'Classroom' : 'Spreadsheet'}.svg",
                   ),
           ),
         ),
-        title: isLoading == true
+        title: isShimmerLoading == true
             ? localSimmerWidget(height: 20, width: 30)
             : Utility.textWidget(
                 text: obj.title ?? '',
@@ -259,7 +264,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                     .copyWith(fontWeight: FontWeight.bold)),
         subtitle: Row(
           children: [
-            isLoading == true
+            isShimmerLoading == true
                 ? localSimmerWidget(height: 10, width: 30)
                 : Utility.textWidget(
                     context: context,
@@ -276,7 +281,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             ),
             SizedBox(width: 10),
             Expanded(
-              child: isLoading == true
+              child: isShimmerLoading == true
                   ? localSimmerWidget(height: 10, width: 30)
                   : Utility.textWidget(
                       context: context,
@@ -289,7 +294,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           ],
         ),
         trailing: ShimmerLoading(
-          isLoading: isLoading,
+          isLoading: isShimmerLoading,
           child: Icon(
             IconData(0xe88c,
                 fontFamily: Overrides.kFontFam,
@@ -298,7 +303,7 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
           ),
         ),
         onTap: (() {
-          if (isLoading) {
+          if (isShimmerLoading) {
             return;
           }
 
