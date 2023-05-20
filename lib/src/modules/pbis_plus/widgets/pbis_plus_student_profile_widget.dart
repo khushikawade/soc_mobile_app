@@ -65,37 +65,7 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
                 : EdgeInsets.zero,
             child: widget.isFromStudentPlus == true &&
                     widget.studentProfile != null
-                ? CachedNetworkImage(
-                    imageBuilder: (context, imageProvider) => CircleAvatar(
-                      radius: widget.profilePictureSize,
-                      backgroundImage: imageProvider,
-                    ),
-                    imageUrl: widget.studentProfile!,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
-                      highlightColor: Colors.grey[100]!,
-                      child: Container(
-                        // padding: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.grey[300]!,
-                            width: 0.5,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: widget.profilePictureSize,
-                          backgroundColor: Colors.transparent,
-                          child: Icon(
-                            Icons.person,
-                            // size: profilePictureSize,
-                            color: Colors.grey[300]!,
-                          ),
-                        ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  )
+                ? studentProfilePicture()
                 : (widget.studentValueNotifier.value!.profile!.photoUrl!
                             .contains('default-user') &&
                         !widget.studentValueNotifier.value!.profile!.photoUrl!
@@ -213,6 +183,40 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget studentProfilePicture() {
+    return CachedNetworkImage(
+      imageBuilder: (context, imageProvider) => CircleAvatar(
+        radius: widget.profilePictureSize,
+        backgroundImage: imageProvider,
+      ),
+      imageUrl: widget.studentProfile!,
+      placeholder: (context, url) => Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          // padding: EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.grey[300]!,
+              width: 0.5,
+            ),
+          ),
+          child: CircleAvatar(
+            radius: widget.profilePictureSize,
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.person,
+              // size: profilePictureSize,
+              color: Colors.grey[300]!,
+            ),
+          ),
+        ),
+      ),
+      errorWidget: (context, url, error) => Icon(Icons.error),
     );
   }
 }
