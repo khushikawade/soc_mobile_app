@@ -275,6 +275,7 @@ class _SelectAssessmentTypeState extends State<SelectAssessmentType> {
                           description: 'Start Scanning Failed',
                           operationResult: 'Failed'));
                       if (state.errorMsg == 'ReAuthentication is required') {
+                         Navigator.of(context).pop();
                         await Utility.refreshAuthenticationToken(
                             isNavigator: true,
                             errorMsg: state.errorMsg!,
