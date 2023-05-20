@@ -31,25 +31,28 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
   @override
   Widget build(BuildContext context) {
     /*----------------------To manage the user profile in case of no profile picture found--------------------------*/
-    String firstName = widget
-                .studentValueNotifier.value.profile!.name!.fullName!
-                .split(' ')
-                .length >
-            0
-        ? widget.studentValueNotifier.value.profile!.name!.fullName!
-            .split(' ')[0]
-            .substring(0, 1)
-            .toUpperCase()
-        : '';
-    String lastName = widget.studentValueNotifier.value.profile!.name!.fullName!
-                .split(' ')
-                .length >
-            1
-        ? widget.studentValueNotifier.value.profile!.name!.fullName!
-            .split(' ')[1]
-            .substring(0, 1)
-            .toUpperCase()
-        : '';
+    String firstName =
+        widget.studentValueNotifier.value.profile!.name!.fullName!.isNotEmpty &&
+                widget.studentValueNotifier.value.profile!.name!.fullName!
+                        .split(' ')
+                        .length >
+                    0
+            ? widget.studentValueNotifier.value.profile!.name!.fullName!
+                .split(' ')[0]
+                .substring(0, 1)
+                .toUpperCase()
+            : '';
+    String lastName =
+        widget.studentValueNotifier.value.profile!.name!.fullName!.isNotEmpty &&
+                widget.studentValueNotifier.value.profile!.name!.fullName!
+                        .split(' ')
+                        .length >
+                    1
+            ? widget.studentValueNotifier.value.profile!.name!.fullName!
+                .split(' ')[1]
+                .substring(0, 1)
+                .toUpperCase()
+            : '';
     /*-------------------------------------------------END--------------------------------------------------------*/
 
     return Stack(

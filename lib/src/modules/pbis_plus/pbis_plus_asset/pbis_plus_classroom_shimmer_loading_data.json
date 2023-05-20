@@ -1,0 +1,202 @@
+[
+  {
+    "id": "1",
+    "name": "    ",
+    "descriptionHeading": "Course Description",
+    "ownerId": "1",
+    "enrollmentCode": "enrollment",
+    "courseState": "Course State",
+    "students": [
+      {
+        "profile": {
+          "id": "1",
+          "name": {
+            "givenName": "Student",
+            "familyName": "1",
+            "fullName": ""
+          },
+          "emailAddress": "Student1@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "    "
+        }
+      },
+      {
+        "profile": {
+          "id": "2",
+          "name": {
+            "givenName": "Student",
+            "familyName": "2",
+            "fullName": ""
+          },
+          "emailAddress": "Student2@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "   "
+        }
+      },
+      {
+        "profile": {
+          "id": "3",
+          "name": {
+            "givenName": "Student",
+            "familyName": "3",
+            "fullName": ""
+          },
+          "emailAddress": "Student3@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "  "
+        }
+      },
+      {
+        "profile": {
+          "id": "4",
+          "name": {
+            "givenName": "Student",
+            "familyName": "4",
+            "fullName": ""
+          },
+          "emailAddress": "Student4@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "  "
+        }
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "",
+    "descriptionHeading": "Course Description",
+    "ownerId": "1",
+    "enrollmentCode": "enrollment",
+    "courseState": "Course State",
+    "students": [
+      {
+        "profile": {
+          "id": "6",
+          "name": {
+            "givenName": "Student",
+            "familyName": "6",
+            "fullName": ""
+          },
+          "emailAddress": "Student6@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "   "
+        }
+      },
+      {
+        "profile": {
+          "id": "7",
+          "name": {
+            "givenName": "Student",
+            "familyName": "7",
+            "fullName": ""
+          },
+          "emailAddress": "Student7@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "   "
+        }
+      },
+      {
+        "profile": {
+          "id": "8",
+          "name": {
+            "givenName": "Student",
+            "familyName": "8",
+            "fullName": ""
+          },
+          "emailAddress": "Student8@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "    "
+        }
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name": "    ",
+    "descriptionHeading": "Course Description",
+    "ownerId": "1",
+    "enrollmentCode": "enrollment",
+    "courseState": "Course State",
+    "students": [
+      {
+        "profile": {
+          "id": "11",
+          "name": {
+            "givenName": "Student",
+            "familyName": "11",
+            "fullName": ""
+          },
+          "emailAddress": "Student11@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "   "
+        }
+      },
+      {
+        "profile": {
+          "id": "12",
+          "name": {
+            "givenName": "Student",
+            "familyName": "12",
+            "fullName": ""
+          },
+          "emailAddress": "Student12@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "   "
+        }
+      },
+      {
+        "profile": {
+          "id": "5",
+          "name": {
+            "givenName": "Student",
+            "familyName": "5",
+            "fullName": ""
+          },
+          "emailAddress": "Student5@gmail.com",
+          "photoUrl": "https://picsum.photos/id/237/200/300",
+          "permissions": [],
+          "engaged": 0,
+          "niceWork": 0,
+          "helpful": 0,
+          "courseName": "   "
+        }
+      }
+    ]
+  }
+]
