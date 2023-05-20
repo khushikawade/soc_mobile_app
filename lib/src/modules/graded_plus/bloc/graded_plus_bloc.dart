@@ -1586,6 +1586,9 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         "Assessment_App_User__c": "true",
         "LastName": email, //.split("@")[0],
         "Email": email,
+        "DBN_for_account_lookup__c": Overrides.STANDALONE_GRADED_APP == true
+            ? "STANDALONE"
+            : "GRADEDSCHOOLS"
         //UNCOMMENT
         // "GRADED_user_type__c":
         //     "Free" //Currently free but will be dynamic later on
