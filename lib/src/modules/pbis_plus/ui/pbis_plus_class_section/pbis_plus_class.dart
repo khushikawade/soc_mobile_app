@@ -118,26 +118,20 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget headerListTile() {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(
-          horizontal: widget.isGradedPlus == true
-              ? StudentPlusOverrides.kSymmetricPadding
-              : 0),
+      contentPadding: EdgeInsets.symmetric(horizontal: 0),
       //minLeadingWidth: 70,
       title:
           StudentPlusScreenTitleWidget(kLabelSpacing: 0, text: 'All Courses'),
-      leading: widget.isGradedPlus == true
-          ? null
-          : IconButton(
-              onPressed: () {
-                widget.backOnTap();
-              },
-              icon: Icon(
-                IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kButtonColor,
-              ),
-            ),
+      leading: IconButton(
+        onPressed: () {
+          widget.backOnTap();
+        },
+        icon: Icon(
+          IconData(0xe80d,
+              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+          color: AppTheme.kButtonColor,
+        ),
+      ),
       trailing: widget.isGradedPlus == true
           ? Container(
               height: MediaQuery.of(context).size.height * 0.036,

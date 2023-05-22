@@ -27,8 +27,8 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     gradedPlusPersistentTabController!.dispose();
+    super.dispose();
   }
 
   @override
@@ -47,14 +47,16 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
           return PersistentTabView(
             context,
             controller: gradedPlusPersistentTabController,
-            screens: GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(),
+            screens: GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(
+                backOnTap: backOnTap),
             onItemSelected: (i) =>
-                GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens()
+                GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(
+                                        backOnTap: backOnTap)
                                     .length -
                                 1 ==
                             i &&
                         !Overrides.STANDALONE_GRADED_APP
-                    ? Navigator.of(context).pop()
+                    ? backOnTap()
                     : null,
 
             items:
@@ -98,5 +100,10 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
             hideNavigationBar: OcrUtility.gradedPlusNavBarIsHide.value,
           );
         });
+  }
+
+  void backOnTap() {
+    //To go back to the staff screen of standard app
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }

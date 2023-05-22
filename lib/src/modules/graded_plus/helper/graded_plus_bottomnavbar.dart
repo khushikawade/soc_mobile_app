@@ -14,20 +14,23 @@ import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment
 
 class GradedPlusBottomNavBar {
   /* ------- function to return list of widget for bottom navigation bar ------ */
-  static List<StatefulWidget> gradedPlusBuildPersistentScreens() {
+  static List<StatefulWidget> gradedPlusBuildPersistentScreens(
+      {required VoidCallback backOnTap}) {
     List<StatefulWidget> screens = [
       PBISPlusClass(
         isGradedPlus: true,
         titleIconData: const IconData(0xe825,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-        backOnTap: (() {}),
+        backOnTap: backOnTap,
       ),
       AssessmentSummary(
         isFromHomeSection: true,
         selectedFilterValue: 'All',
       ),
       GradedPlusSelectAssessmentTypeSection(),
-      CustomIntroWidget(isFromHelp: true,),
+      CustomIntroWidget(
+        isFromHelp: true,
+      ),
       PBISPlusStaff(
         titleIconData: getStaffIconCode(),
       )

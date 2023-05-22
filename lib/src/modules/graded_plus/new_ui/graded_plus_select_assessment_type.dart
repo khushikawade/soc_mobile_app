@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_constructed_response.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_mcq_choice.dart';
@@ -118,7 +119,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
         builder: (BuildContext context, dynamic value, Widget? child) {
           return Bouncing(
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
                 selectedAnswerKey.value = selectionList[index];
                 Globals.scanMoreStudentInfoLength = 0;
                 if (selectedAnswerKey.value.isEmpty) {
@@ -132,7 +133,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
                   Fluttertoast.cancel();
                   Globals.scoringRubric = '0-1';
 
-                  Navigator.of(context).push(MaterialPageRoute(
+                  await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => GradedPlusMultipleChoice()));
                 } else {
                   Utility.updateLogs(
@@ -141,9 +142,10 @@ class _GradedPlusSelectAssessmentTypeSectionState
                       description: 'Constructive Type Selection',
                       operationResult: 'Success');
                   Fluttertoast.cancel();
-                  Navigator.of(context).push(MaterialPageRoute(
+                  await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => GradedPlusConstructedResponse()));
                 }
+                OcrUtility.gradedPlusNavBarIsHide.value = false;
 
                 FirebaseAnalyticsService.addCustomAnalyticsEvent(
                     "assessment_type_selected_${selectedAnswerKey.value}");

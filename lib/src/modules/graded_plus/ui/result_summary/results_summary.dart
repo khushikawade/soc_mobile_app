@@ -142,9 +142,6 @@ class studentRecordList extends State<ResultsSummary> {
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   final ValueNotifier<bool> classroomUrlStatus = ValueNotifier<bool>(false);
-
-  PersistentBottomSheetController? controller;
-
   @override
   void initState() {
     _futureMethod();
@@ -1465,7 +1462,6 @@ class studentRecordList extends State<ResultsSummary> {
       required String answerKey,
       required String studentSelection}) {
     showModalBottomSheet(
-        useRootNavigator: true,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         isScrollControlled: true,
         isDismissible: true,
