@@ -144,7 +144,9 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
 
       _controller.repeat();
     }
-    OcrUtility.gradedPlusNavBarIsHide.value = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      OcrUtility.gradedPlusNavBarIsHide.value = false;
+    });
   }
 
   @override
