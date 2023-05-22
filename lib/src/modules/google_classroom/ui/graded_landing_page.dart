@@ -19,22 +19,19 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:Soc/src/modules/graded_plus/ui/graded_plus_navbar_home.dart';
 
 class GradedLandingPage extends StatefulWidget {
   final bool? isFromLogoutPage;
-  final bool? isMultiplechoice;
+  final bool? isMultipleChoice;
   const GradedLandingPage(
-      {Key? key, this.isFromLogoutPage, this.isMultiplechoice})
+      {Key? key, this.isFromLogoutPage, this.isMultipleChoice})
       : super(key: key);
 
   @override
@@ -670,18 +667,18 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
   //       child: Container());
   // }
 
-  popupModal({required String message, required String? title}) {
-    return showDialog(
-        context: context,
-        builder: (context) =>
-            OrientationBuilder(builder: (context, orientation) {
-              return CommonPopupWidget(
-                  orientation: orientation,
-                  context: context,
-                  message: message,
-                  title: title!);
-            }));
-  }
+  // popupModal({required String message, required String? title}) {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (context) =>
+  //           OrientationBuilder(builder: (context, orientation) {
+  //             return CommonPopupWidget(
+  //                 orientation: orientation,
+  //                 context: context,
+  //                 message: message,
+  //                 title: title!);
+  //           }));
+  // }
 
   Future<UserInformation> getUserProfile() async {
     LocalDatabase<UserInformation> _localDb = LocalDatabase('user_profile');
@@ -738,6 +735,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
 
                         Globals.sessionId =
                             "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+
                         DateTime currentDateTime = DateTime.now();
                         _ocrBlocLogs.add(LogUserActivityEvent(
                             activityType: 'GRADED+',

@@ -179,7 +179,7 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
                         builder: (BuildContext context) =>
                             Overrides.STANDALONE_GRADED_APP == true
                                 ? GradedLandingPage(
-                                    isMultiplechoice: widget.isMcqSheet,
+                                    isMultipleChoice: widget.isMcqSheet,
                                   )
                                 : SelectAssessmentType()));
               } else {
