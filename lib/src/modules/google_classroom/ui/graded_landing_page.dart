@@ -738,6 +738,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
 
                         Globals.sessionId =
                             "${Globals.teacherEmailId}_${myTimeStamp.toString()}";
+
                         DateTime currentDateTime = DateTime.now();
                         _ocrBlocLogs.add(LogUserActivityEvent(
                             activityType: 'GRADED+',
