@@ -14,6 +14,7 @@ import 'package:Soc/src/services/local_database/local_db.dart';
 import 'package:Soc/src/services/strings.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:intl/intl.dart';
@@ -61,7 +62,10 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
         }
 
         if (_localData.isEmpty) {
-          yield PBISPlusLoading();
+          //Managing dummy response for shimmer loading
+          var list = await _getShimmerData();
+          print(list);
+          yield PBISPlusClassRoomShimmerLoading(shimmerCoursesList: list);
         } else {
           sort(obj: _localData);
           yield PBISPlusImportRosterSuccess(
@@ -75,6 +79,15 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         if (responseList[1] == '') {
           List<ClassroomCourse> coursesList = responseList[0];
+
+          //Returning Google Classroom Course List from API response if local data is empty
+          //This will used to show shimmer loading on PBIS Score circle // Class Screen
+          if (_localData.isEmpty) {
+            sort(obj: coursesList);
+            yield PBISPlusInitialImportRosterSuccess(
+                googleClassroomCourseList: responseList[0]);
+          }
+
           List<PBISPlusTotalInteractionModal> pbisTotalInteractionList =
               await getPBISTotalInteractionByTeacher(
                   teacherEmail: userProfileLocalData[0].userEmail!);
@@ -85,6 +98,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
                   pbisTotalInteractionList, coursesList);
 
           await _localDb.clear();
+
           classroomStudentProfile.forEach((ClassroomCourse e) {
             _localDb.addData(e);
           });
@@ -226,6 +240,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
 
         LocalDatabase<PBISPlusHistoryModal> _localDb =
             LocalDatabase(PBISPlusOverrides.PBISPlusHistoryDB);
+
         List<PBISPlusHistoryModal>? _localData = await _localDb.getData();
 
         if (_localData.isNotEmpty) {
@@ -377,7 +392,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
           event.selectedRecords.removeAt(0);
         }
 
-        var result = await createPBISPlusResetInteractions(
+        var result = await resetPBISPlusInteractionInteractions(
           type: event.type,
           selectedCourses: event.selectedRecords,
           userProfile: userProfileLocalData[0],
@@ -736,7 +751,11 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
     }
   }
 
-  Future createPBISPlusResetInteractions(
+  /* -------------------------------------------------------------------------- */
+  /* -------------Function to reset PBIS Score for selected choice------------- */
+  /* -------------------------------------------------------------------------- */
+
+  Future resetPBISPlusInteractionInteractions(
       {required String? type,
       required List<ClassroomCourse> selectedCourses,
       required UserInformation? userProfile,
@@ -757,21 +776,14 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       } else if //if user reset student
           (type == "Students") {
         // Create a comma-separated string of student IDs for a list of selected classroom courses "('','','')"
-        // String studentIds = selectedCourses
-        //     .expand((course) => course.students ?? [])
-        //     .map((student) => student.profile?.id)
-        //     .where((id) => id != null && id.isNotEmpty)
-        //     .map((id) => "$id")
-        //     .join("', '");
         String studentIds = selectedCourses
             .expand((course) => course.students ?? [])
             .map((student) => student.profile?.id)
             .where((id) => id != null && id.isNotEmpty)
             .toSet() // Convert to Set to remove duplicates
             .map((id) => "$id")
-            .join("', '");
-
-        // Surround the string with double quotes and  (parentheses)
+            .join(
+                "', '"); // Surround the string with double quotes and  (parentheses)
 
         body.addAll({"Student_Id": "('$studentIds')"});
       }
@@ -788,7 +800,7 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       if (response.statusCode == 200) {
         return true;
       } else if (retry > 0) {
-        return await createPBISPlusResetInteractions(
+        return await resetPBISPlusInteractionInteractions(
             selectedCourses: selectedCourses,
             type: type,
             userProfile: userProfile,
@@ -797,6 +809,28 @@ class PBISPlusBloc extends Bloc<PBISPlusEvent, PBISPlusState> {
       return response.statusCode;
     } catch (e) {
       return e.toString();
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* --------Function to manage the shimmer loading for classroom courses------ */
+  /* -------------------------------------------------------------------------- */
+
+  Future<List<ClassroomCourse>> _getShimmerData() async {
+    try {
+      final String response = await rootBundle.loadString(
+          'lib/src/modules/pbis_plus/pbis_plus_asset/pbis_plus_classroom_loading_data.json'
+          // 'assets/pbis_plus_asset/pbis_plus_classroom_loading_data.json'
+          );
+
+      final data = await json.decode(response);
+
+      return data
+          .map<ClassroomCourse>((i) => ClassroomCourse.fromJson(i))
+          .toList();
+    } catch (e) {
+      print(e);
+      return [];
     }
   }
 }

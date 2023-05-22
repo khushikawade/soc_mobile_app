@@ -61,12 +61,19 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
         //  folderObject = await _getGoogleDriveFolderId(
         //     token: event.token, folderName: event.folderName);
+        
+
+        // To get updated auth toke for google login
+        await _toRefreshAuthenticationToken(event.refreshToken ?? '');
+        List<UserInformation> _userProfileLocalData =
+            await UserGoogleProfile.getUserProfile();
 
         //Get Folder Id if folder already exist
         folderObject = await _getGoogleDriveFolderId(
-            token: event.token,
+            token: _userProfileLocalData[0].authorizationToken, // event.token,
             folderName: event.folderName,
-            refreshToken: event.refreshToken);
+            refreshToken: _userProfileLocalData[0]
+                .authorizationToken); // event.refreshToken);
 
         //Condition To Create Folder In Case Of It Is Not Exist
         if (folderObject != 401 && folderObject != 500) {
@@ -74,7 +81,8 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           if (folderObject.length == 0) {
             //Create the folder now
             String? folderId = await _createFolderOnDrive(
-                token: event.token, folderName: event.folderName);
+                token: _userProfileLocalData[0].authorizationToken,
+                folderName: event.folderName);
 
             if (event.isReturnState! && (folderId?.isNotEmpty ?? false)) {
               //fromGradedPlusAssessmentSection is used to check if API call from assessment section or not //Used in Graded+ //No used in PBIS+
@@ -222,6 +230,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         throw (e);
       }
     }
+
     // bloc to update google Slide on scan more condition
     else if (event is UpdateGoogleSlideOnScanMore) {
       try {
@@ -1034,7 +1043,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         if (result == "Done") {
           yield UpdateAssignmentDetailsOnSlideSuccess();
         } else {
-          ErrorState(errorMsg: result.toString());
+          yield ErrorState(errorMsg: result.toString());
         }
       } catch (e) {
         yield ErrorState(errorMsg: e.toString());
