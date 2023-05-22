@@ -3,8 +3,8 @@ import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/material.dart';
 
-class PBISPlusCustomFloatingActionButton extends StatelessWidget {
-  const PBISPlusCustomFloatingActionButton({Key? key, required this.onPressed})
+class PlusCustomFloatingActionButton extends StatelessWidget {
+  const PlusCustomFloatingActionButton({Key? key, required this.onPressed})
       : super(key: key);
 
   final VoidCallback onPressed;

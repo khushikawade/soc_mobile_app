@@ -5,6 +5,7 @@ import 'package:Soc/src/modules/graded_plus/modal/answer_key_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_header_widget.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -59,35 +60,34 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
             key: GlobalKey(),
             isBackButton: true,
           ),
-          body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                //SpacerWidget(_KVerticalSpace * 0.05),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Utility.textWidget(
-                    text: 'Answer Key',
-                    context: context,
-                    textTheme: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SpacerWidget(_KVerticalSpace / 5),
-                //  answerKeyButtons()
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: answerKeyButtons(),
-                  ),
-                ),
-              ]),
+          body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        //    PlusScreenTitleWidget(text: 'Answer Key'),
+            SpacerWidget(_KVerticalSpace * 0.05),
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Utility.textWidget(
+                text: 'Answer Key',
+                context: context,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            SpacerWidget(_KVerticalSpace / 5),
+            //  answerKeyButtons()
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: answerKeyButtons(),
+              ),
+            ),
+          ]),
           floatingActionButton: floatingActionButton(),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+              // FloatingActionButtonLocation.centerFloat,
+              FloatingActionButtonLocation.miniCenterFloat,
         ),
         BlocListener(
             bloc: _googleDriveBloc,
@@ -146,41 +146,44 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
             valueListenable: selectedAnswerKey,
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
-              return FloatingActionButton.extended(
-                  extendedPadding: EdgeInsets.symmetric(horizontal: 20),
-                  isExtended: true,
-                  backgroundColor: selectedAnswerKey.value.isNotEmpty
-                      ? AppTheme.kButtonColor.withOpacity(1.0)
-                      : Colors.grey.shade400,
-                  onPressed: () async {
-                    if (selectedAnswerKey.value.isEmpty) {
-                      Utility.currentScreenSnackBar(
-                          "Select the Answer Key", null);
-                    } else {
-                      Fluttertoast.cancel();
-                      Globals.googleDriveFolderId?.isEmpty ?? true
-                          ? _triggerDriveFolderEvent(false)
-                          : _beforeNavigateOnCameraSection();
-                      // if (Globals.googleDriveFolderId?.isEmpty ?? true) {
-                      //   _triggerDriveFolderEvent(false);
-                      // } else {
-                      //   _beforeNavigateOnCameraSection();
-                      // }
-                      //  navigateToCamera();
-                    }
-                  },
-                  label: Container(
-                    alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width / 1.5,
-                    child: Utility.textWidget(
-                        context: context,
-                        text: 'Next',
-                        textTheme: Theme.of(context)
-                            .textTheme
-                            .headline2!
-                            .copyWith(
-                                color: Theme.of(context).backgroundColor)),
-                  ));
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: FloatingActionButton.extended(
+                    extendedPadding: EdgeInsets.symmetric(horizontal: 20),
+                    isExtended: true,
+                    backgroundColor: selectedAnswerKey.value.isNotEmpty
+                        ? AppTheme.kButtonColor.withOpacity(1.0)
+                        : Colors.grey.shade400,
+                    onPressed: () async {
+                      if (selectedAnswerKey.value.isEmpty) {
+                        Utility.currentScreenSnackBar(
+                            "Select the Answer Key", null);
+                      } else {
+                        Fluttertoast.cancel();
+                        Globals.googleDriveFolderId?.isEmpty ?? true
+                            ? _triggerDriveFolderEvent(false)
+                            : _beforeNavigateOnCameraSection();
+                        // if (Globals.googleDriveFolderId?.isEmpty ?? true) {
+                        //   _triggerDriveFolderEvent(false);
+                        // } else {
+                        //   _beforeNavigateOnCameraSection();
+                        // }
+                        //  navigateToCamera();
+                      }
+                    },
+                    label: Container(
+                      alignment: Alignment.center,
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      child: Utility.textWidget(
+                          context: context,
+                          text: 'Next',
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline2!
+                              .copyWith(
+                                  color: Theme.of(context).backgroundColor)),
+                    )),
+              );
             }),
       ],
     );
@@ -211,7 +214,8 @@ class _MultipleChoiceSectionState extends State<MultipleChoiceSection> {
         builder: (BuildContext context, dynamic value, Widget? child) {
           return LayoutBuilder(builder: (context, constraints) {
             return new GridView.count(
-                childAspectRatio: constraints.biggest.aspectRatio * 3 / 1.67,
+                // childAspectRatio: constraints.biggest.aspectRatio * 3 / 1.67,
+                childAspectRatio: constraints.biggest.aspectRatio * 3 / 1.50,
                 shrinkWrap: true,
                 crossAxisCount: 2,
                 physics: NeverScrollableScrollPhysics(),

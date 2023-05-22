@@ -1,8 +1,8 @@
-class BottomIcon {
+class ResultSummaryIcons {
   String? title;
   String? svgPath;
 
-  BottomIcon({
+  ResultSummaryIcons({
     required this.title,
     required this.svgPath,
   });
@@ -16,102 +16,103 @@ class BottomIcon {
   //     : ["Share", "Drive", "History", "Dashboard", "Slide"];
 
 // assessment result summary
-  static List<BottomIcon> bottomIconModalList = [
-    BottomIcon(
+  static List<ResultSummaryIcons> resultSummaryIconsModalList = [
+    ResultSummaryIcons(
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
-    // BottomIcon(
+    // ResultSummaryIcons(
     //   title: 'Drive',
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
     // ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Slides',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
     ),
-    BottomIcon(
-      title: 'History',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
-    ),
-    BottomIcon(
+    // ResultSummaryIcons(
+    //   title: 'History',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
+    // ),
+    ResultSummaryIcons(
       title: 'Dashboard',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Dashboard.svg',
     ),
   ];
 
-  static List<BottomIcon> historybottomIconModalList = [
-    BottomIcon(
+  static List<ResultSummaryIcons> historyResultSummaryIconsModalList = [
+    ResultSummaryIcons(
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
-    // BottomIcon(
+    // ResultSummaryIcons(
     //   title: 'Drive',
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
     // ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Slides',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Dashboard',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Dashboard.svg',
     ),
   ];
 
 //result summary screen action buttons
-  static List<BottomIcon> standAloneBottomIconModalList = [
-    BottomIcon(
-      title: 'History',
-      svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
-    ),
-    // BottomIcon(
+  static List<ResultSummaryIcons> standAloneResultSummaryIconsModalList = [
+    // ResultSummaryIcons(
+    //   title: 'History',
+    //   svgPath: 'assets/ocr_result_section_bottom_button_icons/History.svg',
+    // ),
+    // ResultSummaryIcons(
     //   title: 'Drive',
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
     // ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Class',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Slides',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),
   ];
 
-  static List<BottomIcon> standAloneHistoryBottomIconModalList = [
-    // BottomIcon(
+  static List<ResultSummaryIcons> standAloneHistoryResultSummaryIconsModalList =
+      [
+    // ResultSummaryIcons(
     //   title: 'Drive',
     //   svgPath: 'assets/ocr_result_section_bottom_button_icons/Drive.svg',
     // ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Class',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Classroom.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Sheet',
       svgPath: 'assets/images/google_sheet.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Slides',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Slide.svg',
     ),
-    BottomIcon(
+    ResultSummaryIcons(
       title: 'Share',
       svgPath: 'assets/ocr_result_section_bottom_button_icons/Share.svg',
     ),

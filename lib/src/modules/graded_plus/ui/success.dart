@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
@@ -142,6 +143,7 @@ class _SuccessScreenState extends State<SuccessScreen>
 
       _controller.repeat();
     }
+    OcrOverrides.gradedPlusNavBarIsHide.value = false;
   }
 
   @override
@@ -162,6 +164,7 @@ class _SuccessScreenState extends State<SuccessScreen>
       child: Stack(children: [
         CommonBackgroundImgWidget(),
         Scaffold(
+          resizeToAvoidBottomInset: true,
           key: _scaffoldKey,
           backgroundColor: Colors.transparent,
           appBar: CustomOcrAppBarWidget(
@@ -170,10 +173,7 @@ class _SuccessScreenState extends State<SuccessScreen>
             isSuccessState: isSuccessResult,
             isHomeButtonPopup: true,
             isBackOnSuccess: isBackFromCamera,
-            actionIcon:
-                //  failure == true
-                //     ?
-                IconButton(
+            actionIcon: IconButton(
               onPressed: () {
                 Utility.updateLogs(
                     activityType: 'GRADED+',
@@ -190,29 +190,22 @@ class _SuccessScreenState extends State<SuccessScreen>
                 color: AppTheme.kButtonColor,
               ),
             ),
-            // : null,
             key: null,
           ),
           body: Container(
             padding: EdgeInsets.only(left: 20, right: 20),
             child: BlocConsumer<OcrBloc, OcrState>(
               bloc: _bloc, // provide the local bloc instance
-
               listener: (context, state) async {
                 await Future.delayed(Duration(milliseconds: 200));
                 if (state is OcrLoading) {
-                  // isRetryButton.value = false;
-                  //updateEmailList();
                   studentInfo = [];
-                  studentInfo =
-                      await OcrUtility.getStudentList(); //studentList();
+                  studentInfo = await OcrUtility.getStudentList();
                   Timer(Duration(seconds: 5), () {
                     isRetryButton.value = true;
                   });
                 }
                 if (state is FetchTextFromImageSuccess) {
-                  //  scanFailure.value = 'Success';
-                  // Future.delayed(Duration(milliseconds: 500));
                   updateStudentDetails();
                   scanFailure.value = 'Success';
                   _performAnimation();
@@ -224,37 +217,23 @@ class _SuccessScreenState extends State<SuccessScreen>
                   if (widget.isMcqSheet == true) {
                     Globals.pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
                   } else {
-                    // widget.pointPossible == '2'
-                    //     ? Globals.pointsEarnedList = [0, 1, 2]
-                    //     :
-
-                    //In case of 2 or default value will always be [0, 1, 2]
                     widget.pointPossible == '3'
                         ? Globals.pointsEarnedList = [0, 1, 2, 3]
                         : widget.pointPossible == '4'
                             ? Globals.pointsEarnedList = [0, 1, 2, 3, 4]
                             : Globals.pointsEarnedList = [0, 1, 2];
                   }
-
                   nameController.text =
                       isStudentNameFilled.value = state.studentName!;
                   onChange == false
                       ? idController.text = state.studentId!
                       : null;
                   pointScored.value = state.grade!;
-                  //   recognizeText(pathOfImage);
-                  // });
-
-                  // if (_formKey2.currentState!.validate()) {
 
                   if (isStudentIdFilled.value.isNotEmpty &&
-                              Overrides.STANDALONE_GRADED_APP == true
-                          ? (regex.hasMatch(isStudentIdFilled.value))
-                          : isStudentIdFilled.value.isNotEmpty
-                      // (isStudentIdFilled.value.length == 9 &&
-                      //     (isStudentIdFilled.value.startsWith('2') ||
-                      //         isStudentIdFilled.value.startsWith('1')))
-                      ) {
+                          Overrides.STANDALONE_GRADED_APP == true
+                      ? (regex.hasMatch(isStudentIdFilled.value))
+                      : isStudentIdFilled.value.isNotEmpty) {
                     if (nameController.text.isNotEmpty &&
                         idController.text.isNotEmpty) {
                       timer = await Timer(Duration(seconds: 5), () async {
@@ -269,7 +248,7 @@ class _SuccessScreenState extends State<SuccessScreen>
                             imgBase64: widget.img64,
                             imgExtension: imgExtension,
                             studentId: idController.text));
-                        // }
+
                         // COMMENT below section for enabling the camera
 
                         var result = await Navigator.push(
@@ -298,33 +277,20 @@ class _SuccessScreenState extends State<SuccessScreen>
                           isBackFromCamera.value = result;
                           initialCursorPositionAtLast = true;
                         }
-
-                        //UNCOMMENT below section for enabling the camera
-
-                        // Navigator.push(context,
-                        //     MaterialPageRoute(builder: (_) => CameraScreen()));
                       });
                     }
                   } else {
-                    // setState(() {
                     isSuccessResult.value = true;
-                    // });
                   }
                 } else if (state is FetchTextFromImageFailure) {
                   updateStudentDetails();
                   scanFailure.value = 'Failure';
 
-                  // setState(() {
                   isSuccessResult.value = false;
-                  // });
+
                   if (widget.isMcqSheet == true) {
                     Globals.pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
                   } else {
-                    // widget.pointPossible == '2'
-                    //     ? Globals.pointsEarnedList = [0, 1, 2]
-                    //     :
-
-                    //In case of 2 or default value will always be [0, 1, 2]
                     widget.pointPossible == '3'
                         ? Globals.pointsEarnedList = [0, 1, 2, 3]
                         : widget.pointPossible == '4'
@@ -381,11 +347,6 @@ class _SuccessScreenState extends State<SuccessScreen>
                   if (widget.isMcqSheet == true) {
                     Globals.pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
                   } else {
-                    // widget.pointPossible == '2'
-                    //     ? Globals.pointsEarnedList = [0, 1, 2]
-                    //     :
-
-                    //In case of 2 or default value will always be [0, 1, 2]
                     widget.pointPossible == '3'
                         ? Globals.pointsEarnedList = [0, 1, 2, 3]
                         : widget.pointPossible == '4'
@@ -408,11 +369,6 @@ class _SuccessScreenState extends State<SuccessScreen>
                   if (widget.isMcqSheet == true) {
                     Globals.pointsEarnedList = ['A', 'B', 'C', 'D', 'E', 'NA'];
                   } else {
-                    // widget.pointPossible == '2'
-                    //     ? Globals.pointsEarnedList = [0, 1, 2]
-                    //     :
-
-                    //In case of 2 or default value will always be [0, 1, 2]
                     widget.pointPossible == '3'
                         ? Globals.pointsEarnedList = [0, 1, 2, 3]
                         : widget.pointPossible == '4'
@@ -1001,9 +957,7 @@ class _SuccessScreenState extends State<SuccessScreen>
       child: Form(
         key: _formKey2,
         child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //  SpacerWidget(_KVertcalSpace / 5),
             SpacerWidget(_KVerticalSpace * 0.25),
             Utility.textWidget(
                 text: 'Student Name',

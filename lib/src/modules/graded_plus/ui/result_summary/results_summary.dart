@@ -5,9 +5,9 @@ import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/graded_plus/modal/result_action_icon_modal.dart';
+import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
@@ -15,6 +15,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/local_db.dart';
@@ -334,39 +335,6 @@ class studentRecordList extends State<ResultsSummary> {
                                             width: 10,
                                             height: 10,
                                           );
-                                          // Padding(
-                                          //   padding: EdgeInsets.only(top: 10),
-                                          //   child: ShimmerLoading(
-                                          //     isLoading: true,
-                                          //     child: Container(
-                                          //       decoration: BoxDecoration(
-                                          //           color: Colors.white,
-                                          //           borderRadius:
-                                          //               BorderRadius.all(
-                                          //                   Radius.circular(
-                                          //                       40))),
-                                          //       // height: 15,
-                                          //       // width: 15,
-
-                                          //       child: CircleAvatar(
-                                          //         radius: 10,
-                                          //       ),
-                                          //     ),
-                                          //   ),
-                                          // );
-
-                                          // Globals.isAndroid!
-                                          //     ? Container(
-                                          //         width: 10,
-                                          //         height: 10,
-                                          //         child:
-                                          //             CircularProgressIndicator(
-                                          //                 color: Theme.of(
-                                          //                         context)
-                                          //                     .colorScheme
-                                          //                     .primaryVariant,
-                                          //                 strokeWidth: 2))
-                                          //     : CupertinoActivityIndicator();
                                         });
                                   });
                             }),
@@ -830,67 +798,7 @@ class studentRecordList extends State<ResultsSummary> {
                 ],
               ),
             ),
-            floatingActionButton: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (!widget.assessmentDetailPage!) _scanFloatingWidget(),
-                SpacerWidget(10),
-                !widget.assessmentDetailPage!
-                    ? _bottomButtons(context, iconsList, iconsName,
-                        webContentLink: Globals.googleDriveFolderPath ?? '')
-                    : ValueListenableBuilder(
-                        valueListenable: isSuccessStateReceived,
-                        child: Container(),
-                        builder:
-                            (BuildContext context, bool value, Widget? child) {
-                          return isSuccessStateReceived.value == true
-                              ? Column(
-                                  children: [
-                                    _scanFloatingWidget(),
-                                    SpacerWidget(10),
-                                    _bottomButtons(
-                                        context, iconsList, iconsName,
-                                        webContentLink: webContentLink!),
-                                  ],
-                                )
-                              : Container();
-                        }),
-                BlocListener(
-                  child: Container(),
-                  bloc: _driveBloc3,
-                  listener: (context, state) async {
-                    if (state is ShareLinkReceived) {
-                      //   print("LINK RECIVED -------------->");
-                      if (!widget.assessmentDetailPage!) {
-                        Globals.shareableLink = state.shareLink;
-                      }
-                      isShareLinkReceived.value = true;
-                      widget.shareLink = state.shareLink;
-                    }
-
-                    if (state is ErrorState) {
-                      if (state.errorMsg == 'ReAuthentication is required') {
-                        await Utility.refreshAuthenticationToken(
-                            isNavigator: false,
-                            errorMsg: state.errorMsg!,
-                            context: context,
-                            scaffoldKey: scaffoldKey);
-
-                        _driveBloc.add(GetShareLink(
-                            fileId: widget.fileId, slideLink: false));
-                      } else {
-                        // Navigator.of(context).pop();
-                        Utility.currentScreenSnackBar(
-                            "Something Went Wrong. Please Try Again.", null);
-                      }
-                    }
-                  },
-                )
-              ],
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: fabButton(context),
           ),
           BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
               bloc: _googleClassroomBloc,
@@ -1218,17 +1126,17 @@ class studentRecordList extends State<ResultsSummary> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: Overrides.STANDALONE_GRADED_APP
               ? widget.assessmentDetailPage!
-                  ? BottomIcon.standAloneHistoryBottomIconModalList
+                  ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList()
-                  : BottomIcon.standAloneBottomIconModalList
+                  : ResultSummaryIcons.standAloneResultSummaryIconsModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList()
               : widget.assessmentDetailPage!
-                  ? BottomIcon.historybottomIconModalList
+                  ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList()
-                  : BottomIcon.bottomIconModalList
+                  : ResultSummaryIcons.standAloneResultSummaryIconsModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList(),
         ));
@@ -2176,7 +2084,7 @@ class studentRecordList extends State<ResultsSummary> {
     );
   }
 
-  Widget bottomIcon(BottomIcon element) {
+  Widget bottomIcon(ResultSummaryIcons element) {
     return Expanded(
       child: ValueListenableBuilder(
           valueListenable: classroomUrlStatus,
@@ -2244,7 +2152,7 @@ class studentRecordList extends State<ResultsSummary> {
                                 Builder(builder: (context) {
                                   String? url = getURlForBottomIcons(
                                       title: element.title ?? '');
-                                  print(url);
+
                                   return Opacity(
                                     opacity: ((url?.isEmpty ?? true) ||
                                             (url == 'NA'))
@@ -2265,7 +2173,7 @@ class studentRecordList extends State<ResultsSummary> {
                                               ? Color(0xffF7F8F9)
                                               : null),
                                       onTap: (() async {
-                                        _bottomIconsOnTap(
+                                        bottomIconsOnTap(
                                             title: element.title ?? '',
                                             url: url ?? '');
                                       }),
@@ -2279,7 +2187,7 @@ class studentRecordList extends State<ResultsSummary> {
     );
   }
 
-  _bottomIconsOnTap({required String title, required String url}) async {
+  bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
       case 'Share':
         String shareLogMsg =
@@ -2319,118 +2227,6 @@ class studentRecordList extends State<ResultsSummary> {
             yesActionText: 'Yes, Take Me There');
         break;
       case 'Dashboard':
-        if (Globals.isPremiumUser!) {
-          if (widget.assessmentDetailPage == true &&
-              widget.createdAsPremium == false) {
-            String dashboardLogMsgNotPremiumAccount =
-                'Non-premium assessment tried to save from premium account using scan more option from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-            FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                dashboardLogMsgNotPremiumAccount
-                        .toLowerCase()
-                        .replaceAll(" ", "_") ??
-                    '');
-            Utility.updateLogs(
-                activityType: 'GRADED+',
-                activityId: '14',
-                description: dashboardLogMsgNotPremiumAccount,
-                operationResult: 'Failed');
-            popupModal(
-                title: 'Data Not Saved',
-                message:
-                    'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
-            Globals.scanMoreStudentInfoLength =
-                await Utility.getStudentInfoListLength(
-                        tableName: 'student_info') -
-                    1;
-          } else {
-            List list =
-                await Utility.getStudentInfoList(tableName: 'student_info');
-            if (widget.isScanMore == true &&
-                widget.assessmentListLength != null &&
-                widget.assessmentListLength! < list.length) {
-              String dashboardLogMsgPremiumAccount =
-                  'Save to dashboard pressed in case for scan more from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-              FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                  dashboardLogMsgPremiumAccount
-                          .toLowerCase()
-                          .replaceAll(" ", "_") ??
-                      '');
-              Utility.updateLogs(
-                  activityType: 'GRADED+',
-                  activityId: '14',
-                  description: dashboardLogMsgPremiumAccount,
-                  operationResult: 'Success');
-
-              _ocrBloc.add(SaveAssessmentToDashboard(
-                  assessmentId: !widget.assessmentDetailPage!
-                      ? Globals.currentAssessmentId
-                      : historyAssessmentId ?? '',
-                  assessmentSheetPublicURL: widget.shareLink,
-                  resultList: await Utility.getStudentInfoList(
-                      tableName: widget.assessmentDetailPage == true
-                          ? 'history_student_info'
-                          : 'student_info'),
-                  previouslyAddedListLength: widget.assessmentListLength,
-                  assessmentName: widget.assessmentName!,
-                  rubricScore: widget.rubricScore ?? '',
-                  subjectId: widget.subjectId ?? '',
-                  schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                  // standardId: widget.standardId ?? '',
-                  scaffoldKey: scaffoldKey,
-                  context: context,
-                  isHistoryAssessmentSection: widget.assessmentDetailPage!));
-            } else {
-              List<StudentAssessmentInfo> _listRecord = [];
-
-              if (widget.assessmentDetailPage! &&
-                  savedRecordCount != null &&
-                  historyRecordList.length != savedRecordCount!) {
-                _listRecord = historyRecordList.sublist(
-                    savedRecordCount!, historyRecordList.length);
-              } else {
-                //
-                _listRecord = historyRecordList;
-              }
-
-              _ocrBloc.add(SaveAssessmentToDashboard(
-                assessmentId: !widget.assessmentDetailPage!
-                    ? Globals.currentAssessmentId
-                    : historyAssessmentId ?? '',
-                assessmentSheetPublicURL: widget.shareLink,
-                resultList: !widget.assessmentDetailPage!
-                    ? await Utility.getStudentInfoList(
-                        tableName: 'student_info')
-                    : _listRecord,
-                assessmentName: widget.assessmentName!,
-                rubricScore: !widget.assessmentDetailPage!
-                    ? widget.rubricScore ?? ''
-                    : sheetRubricScore ?? '',
-                subjectId: widget.subjectId ?? '',
-                schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                // standardId: widget.standardId ?? '',
-                scaffoldKey: scaffoldKey,
-                context: context,
-                isHistoryAssessmentSection: widget.assessmentDetailPage!,
-                fileId: widget.fileId ?? '',
-              ));
-            }
-          }
-        } else {
-          String dashboardLogMsgForFreeUser =
-              "Free User tried to save the data to the dashboard from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
-          FirebaseAnalyticsService.addCustomAnalyticsEvent(
-              dashboardLogMsgForFreeUser.toLowerCase().replaceAll(" ", "_") ??
-                  '');
-          Utility.updateLogs(
-              activityType: 'GRADED+',
-              activityId: '14',
-              description: dashboardLogMsgForFreeUser,
-              operationResult: 'Failed');
-          popupModal(
-              title: 'Upgrade To Premium',
-              message:
-                  'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
-        }
         break;
       case 'Slides':
         String slidesLogMsg =
@@ -2598,5 +2394,61 @@ class studentRecordList extends State<ResultsSummary> {
     };
 
     return map[title] ?? '';
+  }
+
+  Widget fabButton(
+    BuildContext context,
+  ) =>
+      !widget.assessmentDetailPage!
+          ? PlusCustomFloatingActionButton(
+              onPressed: _saveAndShareBottomSheetMenu,
+            )
+          : ValueListenableBuilder(
+              valueListenable: isSuccessStateReceived,
+              child: Container(),
+              builder: (BuildContext context, bool value, Widget? child) {
+                return isSuccessStateReceived.value == true
+                    ? PlusCustomFloatingActionButton(
+                        onPressed: _saveAndShareBottomSheetMenu,
+                      )
+                    : Container();
+              });
+
+  Future<void> _saveAndShareBottomSheetMenu() async {
+    var result = await showModalBottomSheet(
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        useRootNavigator: true,
+        isScrollControlled: true,
+        isDismissible: true,
+        enableDrag: true,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (BuildContext context) {
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return GradedPlusResultOptionBottomSheet(
+                height: constraints.maxHeight < 800
+                    ? MediaQuery.of(context).size.height * 0.5
+                    : MediaQuery.of(context).size.height * 0.43,
+                title: 'Result Summary Actions',
+                getURlForResultSummaryIcons: getURlForBottomIcons,
+                resultSummaryIconsOnTap: bottomIconsOnTap,
+                resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP
+                    ? widget.assessmentDetailPage!
+                        ? ResultSummaryIcons
+                            .standAloneHistoryResultSummaryIconsModalList
+                        : ResultSummaryIcons
+                            .standAloneResultSummaryIconsModalList
+                    : widget.assessmentDetailPage!
+                        ? ResultSummaryIcons
+                            .standAloneHistoryResultSummaryIconsModalList
+                        : ResultSummaryIcons.resultSummaryIconsModalList,
+                classroomUrlStatus: classroomUrlStatus,
+              );
+            },
+          );
+        });
   }
 }

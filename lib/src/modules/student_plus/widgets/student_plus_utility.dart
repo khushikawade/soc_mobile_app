@@ -143,27 +143,27 @@
 //       {required BuildContext context}) {
 //     List<PersistentBottomNavBarItem> persistentBottomNavBarItemList = [];
 //     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-//       icon: bottomIcon("0xe883", '   Info', context),
+//       icon: ResultSummaryIcons("0xe883", '   Info', context),
 //       activeColorPrimary: AppTheme.kButtonColor,
 //       inactiveColorPrimary: CupertinoColors.systemGrey,
 //     ));
 //     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-//       icon: bottomIcon("0xe881", 'Exams', context),
+//       icon: ResultSummaryIcons("0xe881", 'Exams', context),
 //       activeColorPrimary: AppTheme.kButtonColor,
 //       inactiveColorPrimary: CupertinoColors.systemGrey,
 //     ));
 //     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-//       icon: bottomIcon("0xe885", 'Work', context),
+//       icon: ResultSummaryIcons("0xe885", 'Work', context),
 //       activeColorPrimary: AppTheme.kButtonColor,
 //       inactiveColorPrimary: CupertinoColors.systemGrey,
 //     ));
 //     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-//       icon: bottomIcon("0xe823", 'Grades', context),
+//       icon: ResultSummaryIcons("0xe823", 'Grades', context),
 //       activeColorPrimary: AppTheme.kButtonColor,
 //       inactiveColorPrimary: CupertinoColors.systemGrey,
 //     ));
 //     persistentBottomNavBarItemList.add(PersistentBottomNavBarItem(
-//       icon: bottomIcon(getStaffIconCode(), 'Staff', context),
+//       icon: ResultSummaryIcons(getStaffIconCode(), 'Staff', context),
 //       activeColorPrimary: AppTheme.kButtonColor,
 //       inactiveColorPrimary: CupertinoColors.systemGrey,
 //     ));
@@ -186,7 +186,7 @@
 //   }
 
 //   /* -------------------- bottom navigation bar item widget ------------------- */
-//   static Widget bottomIcon(iconData, title, context) {
+//   static Widget ResultSummaryIcons(iconData, title, context) {
 //     return Row(
 //       crossAxisAlignment: CrossAxisAlignment.center,
 //       mainAxisAlignment: MainAxisAlignment.center,
