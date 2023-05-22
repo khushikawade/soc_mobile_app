@@ -1,4 +1,5 @@
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_bottomnavbar.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/overrides.dart';
@@ -40,7 +41,7 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
 
   Widget body() {
     return ValueListenableBuilder<bool>(
-        valueListenable: OcrUtility.gradedPlusNavBarIsHide,
+        valueListenable: OcrOverrides.gradedPlusNavBarIsHide,
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
           return PersistentTabView(
@@ -92,7 +93,7 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
             ),
             navBarStyle: NavBarStyle.style6,
             navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
-            hideNavigationBar: OcrUtility.gradedPlusNavBarIsHide.value,
+            hideNavigationBar: OcrOverrides.gradedPlusNavBarIsHide.value,
           );
         });
   }

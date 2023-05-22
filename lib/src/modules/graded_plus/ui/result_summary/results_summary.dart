@@ -5,7 +5,7 @@ import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
-import 'package:Soc/src/modules/graded_plus/modal/result_action_icon_modal.dart';
+import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -1222,17 +1222,17 @@ class studentRecordList extends State<ResultsSummary> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: Overrides.STANDALONE_GRADED_APP
               ? widget.assessmentDetailPage!
-                  ? BottomIcon.standAloneHistoryBottomIconModalList
+                  ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList()
-                  : BottomIcon.standAloneBottomIconModalList
+                  : ResultSummaryIcons.standAloneResultSummaryIconsModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList()
               : widget.assessmentDetailPage!
-                  ? BottomIcon.historybottomIconModalList
+                  ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList()
-                  : BottomIcon.bottomIconModalList
+                  : ResultSummaryIcons.standAloneResultSummaryIconsModalList
                       .map<Widget>((element) => bottomIcon(element))
                       .toList(),
         ));
@@ -2180,7 +2180,7 @@ class studentRecordList extends State<ResultsSummary> {
     );
   }
 
-  Widget bottomIcon(BottomIcon element) {
+  Widget bottomIcon(ResultSummaryIcons element) {
     return Expanded(
       child: ValueListenableBuilder(
           valueListenable: classroomUrlStatus,
@@ -2627,8 +2627,8 @@ class studentRecordList extends State<ResultsSummary> {
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
-        isDismissible: false,
-        enableDrag: false,
+        isDismissible: true,
+        enableDrag: true,
         backgroundColor: Colors.transparent,
         // animationCurve: Curves.easeOutQuart,
         elevation: 10,
@@ -2640,16 +2640,19 @@ class studentRecordList extends State<ResultsSummary> {
                 height: constraints.maxHeight < 800
                     ? MediaQuery.of(context).size.height * 0.5
                     : MediaQuery.of(context).size.height * 0.43,
-                title: 'Save and Share',
-                getURlForBottomIcons: getURlForBottomIcons,
-                bottomIconsOnTap: bottomIconsOnTap,
-                bottomIconModalList: Overrides.STANDALONE_GRADED_APP
+                title: 'Result Summary Actions',
+                getURlForResultSummaryIcons: getURlForBottomIcons,
+                resultSummaryIconsOnTap: bottomIconsOnTap,
+                resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP
                     ? widget.assessmentDetailPage!
-                        ? BottomIcon.standAloneHistoryBottomIconModalList
-                        : BottomIcon.standAloneBottomIconModalList
+                        ? ResultSummaryIcons
+                            .standAloneHistoryResultSummaryIconsModalList
+                        : ResultSummaryIcons
+                            .standAloneResultSummaryIconsModalList
                     : widget.assessmentDetailPage!
-                        ? BottomIcon.historybottomIconModalList
-                        : BottomIcon.bottomIconModalList,
+                        ? ResultSummaryIcons
+                            .standAloneHistoryResultSummaryIconsModalList
+                        : ResultSummaryIcons.resultSummaryIconsModalList,
                 classroomUrlStatus: classroomUrlStatus,
               );
             },

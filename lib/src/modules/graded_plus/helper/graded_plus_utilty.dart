@@ -142,14 +142,6 @@ class OcrUtility {
         }
       }
 
-      // Retrieve the students not present in the "coogleClassroomCourses" or "Selected class"  object
-      // return studentInfo.where((student) {
-      //   return GoogleClassroomGlobals
-      //       ?.studentAssessmentAndClassroomObj.studentList!
-      //       .every((courseStudent) {
-      //     return courseStudent["profile"]["emailAddress"] != student.studentId;
-      //   });
-      // }).toList();
       return GoogleClassroomGlobals
                   ?.studentAssessmentAndClassroomObj?.studentList ==
               null
@@ -166,8 +158,4 @@ class OcrUtility {
       return [];
     }
   }
-
-// To manage Graded plus bottom nav bar
-  static final ValueNotifier<bool> gradedPlusNavBarIsHide =
-      ValueNotifier<bool>(false);
 }
