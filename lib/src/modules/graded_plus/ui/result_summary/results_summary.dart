@@ -142,6 +142,9 @@ class studentRecordList extends State<ResultsSummary> {
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   final ValueNotifier<bool> classroomUrlStatus = ValueNotifier<bool>(false);
+
+  PersistentBottomSheetController? controller;
+
   @override
   void initState() {
     _futureMethod();

@@ -121,6 +121,7 @@ class _GradedPlusResultOptionBottomSheetState
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline3!),
               onTap: () {
+                Navigator.pop(context);
                 widget.bottomIconsOnTap(
                     title: element.title ?? '', url: url ?? '');
                 ;

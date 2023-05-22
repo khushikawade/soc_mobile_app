@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/spinning_icon.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_setting_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
@@ -10,7 +11,6 @@ import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_s
 import 'package:Soc/src/modules/pbis_plus/widgets/custom_rect_tween.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_bottom_sheet.dart';
-import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -42,7 +42,8 @@ class PBISPlusClass extends StatefulWidget {
   State<PBISPlusClass> createState() => _PBISPlusClassState();
 }
 
-class _PBISPlusClassState extends State<PBISPlusClass> {
+class _PBISPlusClassState extends State<PBISPlusClass>
+    with SingleTickerProviderStateMixin {
   PBISPlusBloc pbisPlusClassroomBloc = PBISPlusBloc();
   PBISPlusBloc pbisPlusTotalInteractionBloc = PBISPlusBloc();
   final List<ClassroomCourse> googleClassroomCourseworkList =
@@ -60,7 +61,7 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
   ScreenshotController screenshotController =
       ScreenshotController(); // screenshot of whole list
   PBISPlusBloc pbisBloc = PBISPlusBloc();
-
+  AnimationController? _animationController;
   @override
   void initState() {
     super.initState();
@@ -69,10 +70,20 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("pbis_plus_class_screen");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'pbis_plus_class_screen', screenClass: 'PBISPlusClass');
+
+    if (widget.isGradedPlus == true) {
+      _animationController = AnimationController(
+          vsync: this,
+          duration: const Duration(seconds: 1),
+          animationBehavior: AnimationBehavior.normal);
+    }
   }
 
   @override
   void dispose() {
+    if (widget.isGradedPlus == true) {
+      _animationController!.dispose();
+    }
     super.dispose();
   }
 
@@ -128,7 +139,38 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
               ),
             ),
       trailing: widget.isGradedPlus == true
-          ? null
+          ? Container(
+              height: MediaQuery.of(context).size.height * 0.036,
+              // padding: EdgeInsets.only(right: 10),
+              child: FloatingActionButton.extended(
+                  backgroundColor: AppTheme.kButtonColor,
+                  onPressed: () {
+                    if (_animationController!.isAnimating == true) {
+                      Utility.currentScreenSnackBar(
+                          'Please Wait, Sync Is In Progress', null,
+                          marginFromBottom: 90);
+                    } else {
+                      _animationController!.repeat();
+                      refreshPage();
+                    }
+                  },
+                  label: Row(
+                    children: [
+                      Utility.textWidget(
+                          text: 'Sync',
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(
+                                  color: Theme.of(context).backgroundColor)),
+                    ],
+                  ),
+                  icon: SpinningIconButton(
+                    controller: _animationController,
+                    iconData: Icons.sync,
+                  )),
+            )
           : ValueListenableBuilder(
               valueListenable: courseLength,
               child: Container(),
@@ -219,6 +261,13 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
                       /*----------------------END--------------------------*/
 
+                    }
+                    if (widget.isGradedPlus == true &&
+                        _animationController!.isAnimating == true) {
+                      Utility.currentScreenSnackBar(
+                          'Classroom Synced Successfully', null,
+                          marginFromBottom: 90);
+                      _animationController!.stop();
                     }
                   }
                   if (state is PBISErrorState) {
