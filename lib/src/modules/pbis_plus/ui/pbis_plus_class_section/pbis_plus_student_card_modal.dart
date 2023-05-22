@@ -27,6 +27,7 @@ class PBISPlusStudentCardModal extends StatefulWidget {
   String classroomCourseId;
   final double constraint;
   final Function(ValueNotifier<ClassroomStudents>) onValueUpdate;
+  final String? studentProfile;
 
   //final Function(bool) onValueUpdate;
 
@@ -40,7 +41,7 @@ class PBISPlusStudentCardModal extends StatefulWidget {
       required this.scaffoldKey,
       required this.classroomCourseId,
       required this.onValueUpdate,
-      required this.constraint})
+      required this.constraint,this.studentProfile})
       : super(key: key);
 
   @override
@@ -230,6 +231,8 @@ class _PBISPlusStudentCardModalState extends State<PBISPlusStudentCardModal> {
                     shape: BoxShape.circle,
                   ),
                   child: PBISCommonProfileWidget(
+                      studentProfile:widget.studentProfile,
+                      isFromStudentPlus: widget.isFromStudentPlus,
                       isLoading: widget.isLoading,
                       valueChange: valueChange,
                       countWidget: true,

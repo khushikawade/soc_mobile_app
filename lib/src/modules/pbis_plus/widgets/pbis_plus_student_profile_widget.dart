@@ -6,21 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PBISCommonProfileWidget extends StatefulWidget {
-  PBISCommonProfileWidget({
-    Key? key,
-    required this.profilePictureSize,
-    required this.imageUrl,
-    required this.studentValueNotifier,
-    this.countWidget = false,
-    this.valueChange,
-    this.isLoading,
-  }) : super(key: key);
+  PBISCommonProfileWidget(
+      {Key? key,
+      required this.profilePictureSize,
+      required this.imageUrl,
+      required this.studentValueNotifier,
+      this.countWidget = false,
+      this.valueChange,
+      this.isLoading,
+      this.isFromStudentPlus,
+      this.studentProfile})
+      : super(key: key);
   final bool? countWidget;
   final double profilePictureSize;
   final String imageUrl;
   final ValueNotifier<ClassroomStudents> studentValueNotifier;
   var valueChange;
   final bool? isLoading;
+  final String? studentProfile;
+  final bool? isFromStudentPlus;
+
   @override
   State<PBISCommonProfileWidget> createState() =>
       _PBISCommonProfileWidgetState();
@@ -61,65 +66,69 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             margin: widget.countWidget == true
                 ? EdgeInsets.all(10)
                 : EdgeInsets.zero,
-            child: widget.studentValueNotifier.value!.profile!.photoUrl!
-                        .contains('default-user') &&
-                    !widget.studentValueNotifier.value!.profile!.photoUrl!
-                        .contains('default-user=')
-                ? CircleAvatar(
-                    radius: widget.profilePictureSize,
-                    backgroundColor:
-                        Color(0xff000000) == Theme.of(context).backgroundColor
+            child: widget.isFromStudentPlus == true &&
+                    widget.studentProfile != null
+                ? studentProfilePicture()
+                : (widget.studentValueNotifier.value!.profile!.photoUrl!
+                            .contains('default-user') &&
+                        !widget.studentValueNotifier.value!.profile!.photoUrl!
+                            .contains('default-user=')
+                    ? CircleAvatar(
+                        radius: widget.profilePictureSize,
+                        backgroundColor: Color(0xff000000) ==
+                                Theme.of(context).backgroundColor
                             ? Color(0xffF7F8F9)
                             : Color(0xff111C20),
-                    child: Text(
-                      firstName + lastName,
-                      // widget.studentValueNotifier.value.profile!.name!
-                      //         .givenName!
-                      //         .toUpperCase()
-                      //         .substring(0, 1) +
-                      //     widget.studentValueNotifier.value.profile!.name!
-                      //         .familyName!
-                      //         .toUpperCase()
-                      //         .substring(0, 1),
-                      style: Theme.of(context).textTheme.headline2!.copyWith(
-                            color: Color(0xff000000) !=
-                                    Theme.of(context).backgroundColor
-                                ? Color(0xffF7F8F9)
-                                : Color(0xff111C20),
-                          ),
-                    ),
-                  )
-                : CachedNetworkImage(
-                    imageBuilder: (context, imageProvider) => CircleAvatar(
-                      radius: widget.profilePictureSize,
-                      backgroundImage: imageProvider,
-                    ),
-                    imageUrl: widget.imageUrl!,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
-                      highlightColor: Colors.grey[100]!,
-                      child: Container(
-                        // padding: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.grey[300]!,
-                            width: 0.5,
-                          ),
+                        child: Text(
+                          firstName + lastName,
+                          // widget.studentValueNotifier.value.profile!.name!
+                          //         .givenName!
+                          //         .toUpperCase()
+                          //         .substring(0, 1) +
+                          //     widget.studentValueNotifier.value.profile!.name!
+                          //         .familyName!
+                          //         .toUpperCase()
+                          //         .substring(0, 1),
+                          style:
+                              Theme.of(context).textTheme.headline2!.copyWith(
+                                    color: Color(0xff000000) !=
+                                            Theme.of(context).backgroundColor
+                                        ? Color(0xffF7F8F9)
+                                        : Color(0xff111C20),
+                                  ),
                         ),
-                        child: CircleAvatar(
+                      )
+                    : CachedNetworkImage(
+                        imageBuilder: (context, imageProvider) => CircleAvatar(
                           radius: widget.profilePictureSize,
-                          backgroundColor: Colors.transparent,
-                          child: Icon(
-                            Icons.person,
-                            // size: profilePictureSize,
-                            color: Colors.grey[300]!,
+                          backgroundImage: imageProvider,
+                        ),
+                        imageUrl: widget.imageUrl!,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            // padding: EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.grey[300]!,
+                                width: 0.5,
+                              ),
+                            ),
+                            child: CircleAvatar(
+                              radius: widget.profilePictureSize,
+                              backgroundColor: Colors.transparent,
+                              child: Icon(
+                                Icons.person,
+                                // size: profilePictureSize,
+                                color: Colors.grey[300]!,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  )),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ))),
         if (widget.countWidget == true)
           Positioned(
             right: 0,
@@ -177,6 +186,40 @@ class _PBISCommonProfileWidgetState extends State<PBISCommonProfileWidget> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget studentProfilePicture() {
+    return CachedNetworkImage(
+      imageBuilder: (context, imageProvider) => CircleAvatar(
+        radius: widget.profilePictureSize,
+        backgroundImage: imageProvider,
+      ),
+      imageUrl: widget.studentProfile!,
+      placeholder: (context, url) => Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          // padding: EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.grey[300]!,
+              width: 0.5,
+            ),
+          ),
+          child: CircleAvatar(
+            radius: widget.profilePictureSize,
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.person,
+              // size: profilePictureSize,
+              color: Colors.grey[300]!,
+            ),
+          ),
+        ),
+      ),
+      errorWidget: (context, url, error) => Icon(Icons.error),
     );
   }
 }
