@@ -12,6 +12,7 @@ import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
 import 'package:Soc/src/widgets/no_data_found_error_widget.dart';
+import 'package:Soc/src/widgets/shimmer_loading_widget.dart';
 import 'package:Soc/src/widgets/spacer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -145,32 +146,40 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
               return BlocConsumer(
                   bloc: PBISPlusBlocInstance,
                   builder: (context, state) {
-                    if (state is PBISPlusLoading) {
-                      return Container(
-                          height: MediaQuery.of(context).size.height * 0.6,
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator.adaptive(
-                            backgroundColor: AppTheme.kButtonColor,
-                          ));
-                    }
+                    // if (state is PBISPlusLoading) {
+                    //   // return Container(
+                    //   //     height: MediaQuery.of(context).size.height * 0.6,
+                    //   //     alignment: Alignment.center,
+                    //   //     child: CircularProgressIndicator.adaptive(
+                    //   //       backgroundColor: AppTheme.kButtonColor,
+                    //   //     ));
+                    // }
                     if (state is PBISPlusHistorySuccess) {
                       //---------------------return the filter list to UI-----------//
                       if (filterNotifier.value ==
                           PBISPlusOverrides.pbisGoogleClassroom) {
-                        return _listBuilder(state.pbisClassroomHistoryList);
+                        return _listBuilder(state.pbisClassroomHistoryList,
+                            isShimmerLoading: false);
                       } else if (filterNotifier.value ==
                           PBISPlusOverrides.pbisGoogleSheet) {
-                        return _listBuilder(state.pbisSheetHistoryList);
+                        return _listBuilder(state.pbisSheetHistoryList,
+                            isShimmerLoading: false);
                       } else {
-                        return _listBuilder(state.pbisHistoryList);
+                        return _listBuilder(state.pbisHistoryList,
+                            isShimmerLoading: false);
                       }
                     }
-                    return Container(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        alignment: Alignment.center,
-                        child: CircularProgressIndicator.adaptive(
-                          backgroundColor: AppTheme.kButtonColor,
-                        ));
+
+                    //Managing shimmer loading in case of initial loading
+                    return _listBuilder(
+                        List.generate(10, (index) => PBISPlusHistoryModal()),
+                        isShimmerLoading: true);
+                    // return Container(
+                    //     height: MediaQuery.of(context).size.height * 0.6,
+                    //     alignment: Alignment.center,
+                    //     child: CircularProgressIndicator.adaptive(
+                    //       backgroundColor: AppTheme.kButtonColor,
+                    //     ));
                   },
                   listener: (context, state) {});
             }),
@@ -178,7 +187,8 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
     );
   }
 
-  Widget _listBuilder(List<PBISPlusHistoryModal> historyList) {
+  Widget _listBuilder(List<PBISPlusHistoryModal> historyList,
+      {required final bool isShimmerLoading}) {
     return historyList.length > 0
         ? Container(
             height: MediaQuery.of(context).size.height * 0.7,
@@ -192,13 +202,16 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                       onRefresh: refreshPage,
                       child: ListView.builder(
                         shrinkWrap: true,
-                        // physics: NeverScrollableScrollPhysics(),
+                        physics: isShimmerLoading
+                            ? NeverScrollableScrollPhysics()
+                            : null,
                         padding: EdgeInsets.only(
                           bottom: 40,
                         ),
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context, int index) {
-                          return listTile(historyList[index], index);
+                          return listTile(
+                              historyList[index], index, isShimmerLoading);
                         },
                         itemCount: historyList.length,
                       ));
@@ -212,7 +225,8 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                 isResultNotFoundMsg: true, isNews: false, isEvents: false));
   }
 
-  Widget listTile(PBISPlusHistoryModal obj, index) {
+  Widget listTile(
+      PBISPlusHistoryModal obj, index, final bool isShimmerLoading) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -230,26 +244,35 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
         leading: Container(
           height: 30,
           width: 30,
-          child: SvgPicture.asset(
-            "assets/ocr_result_section_bottom_button_icons/${obj.type == "Classroom" ? 'Classroom' : 'Spreadsheet'}.svg",
+          child: ShimmerLoading(
+            isLoading: isShimmerLoading,
+            child: isShimmerLoading == true
+                ? localSimmerWidget(height: 30, width: 30)
+                : SvgPicture.asset(
+                    "assets/ocr_result_section_bottom_button_icons/${obj.type == "Classroom" ? 'Classroom' : 'Spreadsheet'}.svg",
+                  ),
           ),
         ),
-        title: Utility.textWidget(
-            text: obj.title ?? '',
-            context: context,
-            textTheme: Theme.of(context)
-                .textTheme
-                .headline3!
-                .copyWith(fontWeight: FontWeight.bold)),
-        subtitle: Row(
-          children: [
-            Utility.textWidget(
+        title: isShimmerLoading == true
+            ? localSimmerWidget(height: 20, width: 30)
+            : Utility.textWidget(
+                text: obj.title ?? '',
                 context: context,
                 textTheme: Theme.of(context)
                     .textTheme
-                    .subtitle2!
-                    .copyWith(color: Colors.grey.shade500),
-                text: obj.createdAt!),
+                    .headline3!
+                    .copyWith(fontWeight: FontWeight.bold)),
+        subtitle: Row(
+          children: [
+            isShimmerLoading == true
+                ? localSimmerWidget(height: 10, width: 30)
+                : Utility.textWidget(
+                    context: context,
+                    textTheme: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(color: Colors.grey.shade500),
+                    text: obj.createdAt!),
             SizedBox(width: 10),
             Container(
               width: 1,
@@ -258,22 +281,32 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             ),
             SizedBox(width: 10),
             Expanded(
-              child: Utility.textWidget(
-                  context: context,
-                  textTheme: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(color: Colors.grey.shade500),
-                  text: obj.classroomCourse!),
+              child: isShimmerLoading == true
+                  ? localSimmerWidget(height: 10, width: 30)
+                  : Utility.textWidget(
+                      context: context,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(color: Colors.grey.shade500),
+                      text: obj.classroomCourse!),
             ),
           ],
         ),
-        trailing: Icon(
-          IconData(0xe88c,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          color: AppTheme.kButtonColor,
+        trailing: ShimmerLoading(
+          isLoading: isShimmerLoading,
+          child: Icon(
+            IconData(0xe88c,
+                fontFamily: Overrides.kFontFam,
+                fontPackage: Overrides.kFontPkg),
+            color: AppTheme.kButtonColor,
+          ),
         ),
         onTap: (() {
+          if (isShimmerLoading) {
+            return;
+          }
+
           /*-------------------------User Activity Track START----------------------------*/
           FirebaseAnalyticsService.addCustomAnalyticsEvent(
               'History record view PBIS+'.toLowerCase().replaceAll(" ", "_"));
@@ -335,5 +368,19 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                 scaffoldKey: _scaffoldKey,
               );
             }));
+  }
+
+  Widget localSimmerWidget({required double height, required double width}) {
+    return ShimmerLoading(
+      isLoading: true,
+      child: Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          color: AppTheme.kShimmerBaseColor!,
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
   }
 }

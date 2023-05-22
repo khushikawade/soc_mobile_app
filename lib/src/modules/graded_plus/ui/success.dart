@@ -174,6 +174,11 @@ class _SuccessScreenState extends State<SuccessScreen>
             isBackOnSuccess: isBackFromCamera,
             actionIcon: IconButton(
               onPressed: () {
+                Utility.updateLogs(
+                    activityType: 'GRADED+',
+                    activityId: '20',
+                    description: 'Tick tap Teacher save the record',
+                    operationResult: 'Success');
                 onPressAction();
               },
               icon: Icon(

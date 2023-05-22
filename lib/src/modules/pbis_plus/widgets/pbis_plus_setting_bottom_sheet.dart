@@ -787,6 +787,12 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                     null);
               }
               if (state is PBISPlusResetSuccess) {
+                Utility.updateLogs(
+                    activityType: 'PBIS+',
+                    activityId: '40',
+                    description: 'Save and Rest $sectionName',
+                    operationResult: 'Success');
+
                 Navigator.pop(context, sectionName);
                 Utility.currentScreenSnackBar(
                     "\'$sectionName\' have been reset successfully.", null);
