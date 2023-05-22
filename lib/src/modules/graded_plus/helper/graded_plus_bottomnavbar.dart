@@ -17,6 +17,7 @@ class GradedPlusBottomNavBar {
   static List<StatefulWidget> gradedPlusBuildPersistentScreens() {
     List<StatefulWidget> screens = [
       PBISPlusClass(
+        isGradedPlus: true,
         titleIconData: const IconData(0xe825,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         backOnTap: (() {}),
@@ -26,7 +27,7 @@ class GradedPlusBottomNavBar {
         selectedFilterValue: 'All',
       ),
       GradedPlusSelectAssessmentTypeSection(),
-      CustomIntroWidget(),
+      CustomIntroWidget(isFromHelp: true,),
       PBISPlusStaff(
         titleIconData: getStaffIconCode(),
       )

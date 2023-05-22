@@ -489,8 +489,8 @@ class _CreateAssessmentState extends State<CreateAssessment>
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: Globals.deviceType == 'phone' ? 40 : 60,
-                    childAspectRatio: 6 / 7,
+                    maxCrossAxisExtent: Globals.deviceType == 'phone' ? 50 : 70,
+                    childAspectRatio: 5 / 6,
                     crossAxisSpacing: Globals.deviceType == 'phone' ? 15 : 50,
                     mainAxisSpacing: 5),
                 itemCount: widget.customGrades.length,

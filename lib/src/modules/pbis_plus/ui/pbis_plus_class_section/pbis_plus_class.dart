@@ -13,6 +13,8 @@ import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_botto
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_fab.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
+import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -27,9 +29,13 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 class PBISPlusClass extends StatefulWidget {
   final IconData titleIconData;
   final VoidCallback backOnTap;
+  final bool? isGradedPlus;
 
   PBISPlusClass(
-      {Key? key, required this.titleIconData, required this.backOnTap})
+      {Key? key,
+      required this.titleIconData,
+      required this.backOnTap,
+      this.isGradedPlus})
       : super(key: key);
 
   @override
@@ -81,16 +87,18 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
         backgroundColor: Colors.transparent,
         appBar: PBISPlusUtility.pbisAppBar(
             context, widget.titleIconData, 'Class', _scaffoldKey),
-        floatingActionButton: ValueListenableBuilder(
-            valueListenable: courseLength,
-            child: Container(),
-            builder: (BuildContext context, dynamic value, Widget? child) {
-              return courseLength.value > 0
-                  ? saveAndShareFAB(
-                      context,
-                    )
-                  : Container();
-            }),
+        floatingActionButton: widget.isGradedPlus == true
+            ? null
+            : ValueListenableBuilder(
+                valueListenable: courseLength,
+                child: Container(),
+                builder: (BuildContext context, dynamic value, Widget? child) {
+                  return courseLength.value > 0
+                      ? saveAndShareFAB(
+                          context,
+                        )
+                      : Container();
+                }),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         body: body(),
       )
@@ -99,80 +107,53 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
   Widget headerListTile() {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 0),
+      contentPadding: EdgeInsets.symmetric(
+          horizontal: widget.isGradedPlus == true
+              ? StudentPlusOverrides.kSymmetricPadding
+              : 0),
       //minLeadingWidth: 70,
-      title: screenShotNotifier.value == true &&
-              Color(0xff000000) == Theme.of(context).backgroundColor
-          ? Container(
-              margin: EdgeInsets.only(right: 30),
-              color: Color(0xff000000) != Theme.of(context).backgroundColor
-                  ? Color(0xffF7F8F9)
-                  : Color(0xff111C20),
-              child: Utility.textWidget(
-                text: 'All Courses',
-                context: context,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .headline6!
-                    .copyWith(fontWeight: FontWeight.bold),
+      title:
+          StudentPlusScreenTitleWidget(kLabelSpacing: 0, text: 'All Courses'),
+      leading: widget.isGradedPlus == true
+          ? null
+          : IconButton(
+              onPressed: () {
+                widget.backOnTap();
+              },
+              icon: Icon(
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kButtonColor,
               ),
-            )
-          : Utility.textWidget(
-              text: 'All Courses',
-              context: context,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.bold),
             ),
-      leading: IconButton(
-        onPressed: () {
-          // pushNewScreen(context,
-          //     screen: HomePage(
-          //       index: 4,
-          //     ),
-          //     withNavBar: false,
-          //     pageTransitionAnimation: PageTransitionAnimation.cupertino);
-          //To go back to the staff screen of standard app
-          // final route = MaterialPageRoute(
-          //   builder: (context) => HomePage(
-          //     index: 4,
-          //   ),
-          // );
-          // Navigator.pushAndRemoveUntil(context, route, (route) => false);
-          widget.backOnTap();
-        },
-        icon: Icon(
-          IconData(0xe80d,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          color: AppTheme.kButtonColor,
-        ),
-      ),
-      trailing: ValueListenableBuilder(
-          valueListenable: courseLength,
-          child: Container(),
-          builder: (BuildContext context, dynamic value, Widget? child) {
-            return courseLength.value > 0
-                ? IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      //----------setting bottom sheet funtion------------//
-                      settingBottomSheet(
-                          context, pbisBloc, googleClassroomCourseworkList);
-                    },
-                    icon: Icon(
-                      IconData(
-                        0xe867,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg,
-                      ),
-                      color: AppTheme.kButtonColor,
-                    ))
-                : SizedBox(
-                    height: 0,
-                    width: 0,
-                  );
-          }),
+      trailing: widget.isGradedPlus == true
+          ? null
+          : ValueListenableBuilder(
+              valueListenable: courseLength,
+              child: Container(),
+              builder: (BuildContext context, dynamic value, Widget? child) {
+                return courseLength.value > 0
+                    ? IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          //----------setting bottom sheet funtion------------//
+                          settingBottomSheet(
+                              context, pbisBloc, googleClassroomCourseworkList);
+                        },
+                        icon: Icon(
+                          IconData(
+                            0xe867,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg,
+                          ),
+                          color: AppTheme.kButtonColor,
+                        ))
+                    : SizedBox(
+                        height: 0,
+                        width: 0,
+                      );
+              }),
     );
   }
 
@@ -467,6 +448,9 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
       // print(constraints.maxHeight);
       return GestureDetector(
         onTap: () async {
+          if (widget.isGradedPlus == true) {
+            return;
+          }
           // print(heroTag);
           await Navigator.of(context).push(
             HeroDialogRoute(
@@ -532,41 +516,42 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: Container(
-                    padding: EdgeInsets.all(2),
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: AppTheme.kButtonColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: ValueListenableBuilder<ClassroomStudents>(
-                              valueListenable: studentValueNotifier,
-                              builder: (BuildContext context,
-                                  ClassroomStudents value, Widget? child) {
-                                return Text(
-                                  PBISPlusUtility.numberAbbreviationFormat(
-                                      studentValueNotifier
-                                              .value!.profile!.engaged! +
-                                          studentValueNotifier
-                                              .value!.profile!.niceWork! +
-                                          studentValueNotifier
-                                              .value!.profile!.helpful!),
-                                  style: TextStyle(
-                                    color: Theme.of(context).backgroundColor,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                );
-                              })),
+                if (widget.isGradedPlus != true)
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.all(2),
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: AppTheme.kButtonColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: ValueListenableBuilder<ClassroomStudents>(
+                                valueListenable: studentValueNotifier,
+                                builder: (BuildContext context,
+                                    ClassroomStudents value, Widget? child) {
+                                  return Text(
+                                    PBISPlusUtility.numberAbbreviationFormat(
+                                        studentValueNotifier
+                                                .value!.profile!.engaged! +
+                                            studentValueNotifier
+                                                .value!.profile!.niceWork! +
+                                            studentValueNotifier
+                                                .value!.profile!.helpful!),
+                                    style: TextStyle(
+                                      color: Theme.of(context).backgroundColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                })),
+                      ),
                     ),
                   ),
-                ),
               ],
             )),
       );
