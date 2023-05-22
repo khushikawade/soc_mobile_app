@@ -45,7 +45,9 @@ class _GradedPlusResultOptionBottomSheetState
     return Container(
         height: widget.height,
         decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
+          color: Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Color(0xffF7F8F9)
+              : Color(0xff111C20),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         ),

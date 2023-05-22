@@ -8,7 +8,7 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
       {Key? key,
       required this.onPressed,
       this.backgroundColor = AppTheme.kButtonColor,
-      this.title = 'Click Me',
+      this.title,
       this.icon,
       this.fabWidth})
       : super(key: key);
@@ -27,18 +27,20 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
           extendedPadding: EdgeInsets.symmetric(horizontal: 20),
           backgroundColor: backgroundColor,
           onPressed: onPressed,
-          icon: icon,
-          label: Container(
-            alignment: Alignment.center,
-            width: fabWidth,
-            child: Utility.textWidget(
-                context: context,
-                text: title!,
-                textTheme: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(color: Theme.of(context).backgroundColor)),
-          )),
+          icon: title == null ? null : icon,
+          label: title == null
+              ? icon!
+              : Container(
+                  alignment: Alignment.center,
+                  width: fabWidth,
+                  child: Utility.textWidget(
+                      context: context,
+                      text: title!,
+                      textTheme: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Theme.of(context).backgroundColor)),
+                )),
     );
   }
 }

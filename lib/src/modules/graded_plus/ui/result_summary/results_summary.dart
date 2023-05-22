@@ -5,8 +5,10 @@ import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
@@ -154,6 +156,10 @@ class studentRecordList extends State<ResultsSummary> {
     FirebaseAnalyticsService.addCustomAnalyticsEvent("results_summary");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'results_summary', screenClass: 'ResultsSummary');
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      OcrUtility.gradedPlusNavBarIsHide.value = false;
+    });
   }
 
   @override
@@ -268,8 +274,25 @@ class studentRecordList extends State<ResultsSummary> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        StudentPlusScreenTitleWidget(
-                            kLabelSpacing: 0, text: 'Results Summary'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            if (widget.assessmentDetailPage == true)
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(
+                                  IconData(0xe80d,
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg),
+                                  color: AppTheme.kButtonColor,
+                                ),
+                              ),
+                            StudentPlusScreenTitleWidget(
+                                kLabelSpacing: 0, text: 'Results Summary'),
+                          ],
+                        ),
                         ValueListenableBuilder(
                             valueListenable: isGoogleSheetStateReceived,
                             builder: (BuildContext context, bool value,
@@ -878,6 +901,8 @@ class studentRecordList extends State<ResultsSummary> {
             // floatingActionButtonLocation:
             //     FloatingActionButtonLocation.centerFloat,
             floatingActionButton: fabButton(context),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.miniCenterFloat,
           ),
           BlocListener<GoogleClassroomBloc, GoogleClassroomState>(
               bloc: _googleClassroomBloc,
@@ -2591,17 +2616,13 @@ class studentRecordList extends State<ResultsSummary> {
     BuildContext context,
   ) =>
       !widget.assessmentDetailPage!
-          ? PlusCustomFloatingActionButton(
-              onPressed: _saveAndShareBottomSheetMenu,
-            )
+          ? buildScanMoreAndShareFabButton()
           : ValueListenableBuilder(
               valueListenable: isSuccessStateReceived,
               child: Container(),
               builder: (BuildContext context, bool value, Widget? child) {
                 return isSuccessStateReceived.value == true
-                    ? PlusCustomFloatingActionButton(
-                        onPressed: _saveAndShareBottomSheetMenu,
-                      )
+                    ? buildScanMoreAndShareFabButton()
                     : Container();
               });
 
@@ -2638,5 +2659,50 @@ class studentRecordList extends State<ResultsSummary> {
             },
           );
         });
+  }
+
+  Row buildScanMoreAndShareFabButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        GradedPlusCustomFloatingActionButton(
+          title: 'Scan More',
+          icon: Icon(
+              IconData(0xe875,
+                  fontFamily: Overrides.kFontFam,
+                  fontPackage: Overrides.kFontPkg),
+              color: Theme.of(context).backgroundColor,
+              size: 16),
+          onPressed: () async {
+            if (Overrides.STANDALONE_GRADED_APP) {
+              List<GoogleClassroomCourses> _localData =
+                  await _googleClassRoomlocalDb.getData();
+              if (_localData.isEmpty) {
+                Utility.currentScreenSnackBar(
+                    "You need to import roster first", null);
+                return;
+              }
+            }
+            // print('perform scan more');
+            performScanMore();
+          },
+        ),
+        SizedBox(
+          width: 50,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: GradedPlusCustomFloatingActionButton(
+            icon: Icon(
+                IconData(0xe868,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: Theme.of(context).backgroundColor),
+            backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+            onPressed: _saveAndShareBottomSheetMenu,
+          ),
+        ),
+      ],
+    );
   }
 }
