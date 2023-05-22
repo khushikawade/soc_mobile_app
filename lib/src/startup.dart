@@ -213,6 +213,7 @@ class _StartupPageState extends State<StartupPage> {
                       listener: (BuildContext contxt, HomeState state) {
                         if (state is HomeErrorReceived) {
                           setState(() {
+                            //Used to showcase the first guide
                             flag = false;
                           });
                         }
@@ -242,6 +243,7 @@ class _StartupPageState extends State<StartupPage> {
 
                               var isOldUser = await _hiveDbServices
                                   .getSingleData('new_user', 'new_user');
+                              //-------------------------------------------------------------
                               if (Overrides.STANDALONE_GRADED_APP == true) {
                                 Globals.isPremiumUser = true;
                               }
@@ -250,15 +252,16 @@ class _StartupPageState extends State<StartupPage> {
                                 builder: (context) => isOldUser == true
                                     ? Overrides.STANDALONE_GRADED_APP == true
                                         ? GradedLandingPage(
-                                            isMultiplechoice:
+                                            isMultipleChoice:
                                                 widget.isMultipleChoice)
                                         //  : SelectAssessmentType() // OpticalCharacterRecognition()
                                         : GradedPlusNavBarHome()
                                     : CustomIntroWidget(
                                         isMcqSheet: widget.isMultipleChoice),
                               ));
-                              //         );
-                            } else {
+                            }
+                            //-------------------------------------------------------------
+                            else {
                               if (Globals.appSetting.schoolNameC != null &&
                                   Globals.appSetting.schoolNameC!.isNotEmpty) {
                                 _bloc.add(VerifyUserWithDatabase(
@@ -268,7 +271,9 @@ class _StartupPageState extends State<StartupPage> {
                               Navigator.of(context)
                                   .pushReplacement(_createRoute(state.obj));
                             }
-                          } else {
+                          }
+                          //-------------------------------------------------------------
+                          else {
                             NoDataFoundErrorWidget(
                               isResultNotFoundMsg: false,
                               isNews: false,
@@ -282,34 +287,34 @@ class _StartupPageState extends State<StartupPage> {
                       child: Container(),
                     ),
                   ),
-                  Container(
-                    height: 0,
-                    width: 0,
-                    child: BlocListener<NewsBloc, NewsState>(
-                      bloc: _newsBloc,
-                      listener: (context, state) async {
-                        if (state is NewsCountLengthSuccess) {
-                          // SharedPreferences prefs =
-                          //     await SharedPreferences.getInstance();
-                          // SharedPreferences intPrefs =
-                          //     await SharedPreferences.getInstance();
-                          // String? _objectName = "${Strings.newsObjectName}";
-                          // LocalDatabase<NotificationList> _localDb =
-                          //     LocalDatabase(_objectName);
-                          // List<NotificationList> _localData =
-                          //     await _localDb.getData();
+                  // Container(
+                  //   height: 0,
+                  //   width: 0,
+                  //   child: BlocListener<NewsBloc, NewsState>(
+                  //     bloc: _newsBloc,
+                  //     listener: (context, state) async {
+                  //       if (state is NewsCountLengthSuccess) {
+                  //         // SharedPreferences prefs =
+                  //         //     await SharedPreferences.getInstance();
+                  //         // SharedPreferences intPrefs =
+                  //         //     await SharedPreferences.getInstance();
+                  //         // String? _objectName = "${Strings.newsObjectName}";
+                  //         // LocalDatabase<NotificationList> _localDb =
+                  //         //     LocalDatabase(_objectName);
+                  //         // List<NotificationList> _localData =
+                  //         //     await _localDb.getData();
 
-                          // if (_localData.length < state.obj!.length &&
-                          //     _localData.isNotEmpty) {
-                          //   // intPrefs.setInt("totalCount", Globals.notiCount!);
-                          //   // prefs.setBool("enableIndicator", true);
-                          //   Globals.indicator.value = true;
-                          // }
-                        }
-                      },
-                      child: Container(),
-                    ),
-                  ),
+                  //         // if (_localData.length < state.obj!.length &&
+                  //         //     _localData.isNotEmpty) {
+                  //         //   // intPrefs.setInt("totalCount", Globals.notiCount!);
+                  //         //   // prefs.setBool("enableIndicator", true);
+                  //         //   Globals.indicator.value = true;
+                  //         // }
+                  //       }
+                  //     },
+                  //     child: Container(),
+                  //   ),
+                  // ),
                 ],
               ));
   }

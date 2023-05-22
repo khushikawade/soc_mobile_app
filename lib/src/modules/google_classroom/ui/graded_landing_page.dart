@@ -32,9 +32,9 @@ import 'package:Soc/src/modules/graded_plus/ui/graded_plus_navbar_home.dart';
 
 class GradedLandingPage extends StatefulWidget {
   final bool? isFromLogoutPage;
-  final bool? isMultiplechoice;
+  final bool? isMultipleChoice;
   const GradedLandingPage(
-      {Key? key, this.isFromLogoutPage, this.isMultiplechoice})
+      {Key? key, this.isFromLogoutPage, this.isMultipleChoice})
       : super(key: key);
 
   @override
