@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
@@ -81,19 +83,17 @@ class _PBISPlusHomeState extends State<PBISPlusHome>
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(25),
-          topLeft: Radius.circular(25),
-        ),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color:
-        //         Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
-        //     // Colors.grey,
-        //     blurRadius: 10.0,
-        //   ),
-        // ]
-      ),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(25),
+            topLeft: Radius.circular(25),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color:
+                  Theme.of(context).colorScheme.primaryVariant.withOpacity(0.3),
+              blurRadius: 10.0,
+            ),
+          ]),
       onWillPop: (context) async {
         return false; // disable back button on android
       },
