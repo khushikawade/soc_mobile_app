@@ -113,17 +113,20 @@ class _GradedPlusResultOptionBottomSheetState
                             MediaQuery.of(context).size.shortestSide * 0.005,
                         color: Theme.of(context).colorScheme.primaryVariant,
                       ))
-                  : SvgPicture.asset(
-                      element.svgPath!,
+                  : SvgPicture.asset(element.svgPath!,
                       height: 30,
                       width: 30,
-                    ),
+                      color: element.title == "Dashboard"
+                          ? Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20)
+                          : null),
               title: Utility.textWidget(
                   text: element.title!,
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline3!),
               onTap: () {
-                Navigator.pop(context);
                 widget.bottomIconsOnTap(
                     title: element.title ?? '', url: url ?? '');
                 ;

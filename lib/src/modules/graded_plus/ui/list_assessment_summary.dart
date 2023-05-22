@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/graded_plus/modal/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/ui/google_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
+import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
@@ -549,7 +551,14 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline2),
               // subtitle:
-              trailing: trailingRowBuilder(element: list[index]),
+              trailing: IconButton(
+                icon: Icon(
+                    IconData(0xe868,
+                        fontFamily: Overrides.kFontFam,
+                        fontPackage: Overrides.kFontPkg),
+                    color: AppTheme.kButtonColor),
+                onPressed: _saveAndShareBottomSheetMenu,
+              ),
             ),
           ),
         ),
@@ -635,52 +644,87 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
             ));
   }
 
-  Widget trailingRowBuilder({required HistoryAssessment element}) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      if (element.presentationLink != null &&
-          element.presentationLink!.isNotEmpty)
-        GestureDetector(
-            onTap: () {
-              Utility.updateLogs(
-                  activityType: 'GRADED+',
-                  activityId: '31',
-                  sessionId: element.sessionId ?? '',
-                  description:
-                      'Slide Action Button Button on Assignment summery page ',
-                  operationResult: 'Success');
-              Utility.launchUrlOnExternalBrowser(element.presentationLink!);
+  _saveAndShareBottomSheetMenu() async {
+    var result = await showModalBottomSheet(
+        // clipBehavior: Clip.antiAliasWithSaveLayer,
+        useRootNavigator: true,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: Colors.transparent,
+        // animationCurve: Curves.easeOutQuart,
+        elevation: 10,
+        context: context,
+        builder: (BuildContext context) {
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return GradedPlusResultOptionBottomSheet(
+                height: constraints.maxHeight < 800
+                    ? MediaQuery.of(context).size.height * 0.5
+                    : MediaQuery.of(context).size.height * 0.43,
+                title: 'Save and Share',
+                getURlForBottomIcons: getURlForBottomIcons,
+                bottomIconsOnTap: bottomIconsOnTap,
+                bottomIconModalList: Overrides.STANDALONE_GRADED_APP
+                    ? BottomIcon.standAloneHistoryBottomIconModalList
+                    : BottomIcon.historybottomIconModalList,
+                classroomUrlStatus: ValueNotifier<bool>(true),
+              );
             },
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: SvgPicture.asset(
-                'assets/ocr_result_section_bottom_button_icons/Slide.svg',
-                width: Globals.deviceType == "phone" ? 28 : 40,
-                height: Globals.deviceType == "phone" ? 28 : 40,
-              ),
-            )),
-      GestureDetector(
-        onTap: () {
-          Utility.updateLogs(
-              activityType: 'GRADED+',
-              activityId: '13',
-              sessionId: element.sessionId != null ? element.sessionId : '',
-              description:
-                  'Teacher tap on Share Button on Assignment summery page',
-              operationResult: 'Success');
-
-          if (element.webContentLink != null && element.webContentLink != '') {
-            Share.share(element.webContentLink!);
-          }
-        },
-        child: Icon(
-          IconData(0xe876,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          color: Color(0xff000000) != Theme.of(context).backgroundColor
-              ? Color(0xff111C20)
-              : Color(0xffF7F8F9),
-          size: Globals.deviceType == 'phone' ? 28 : 38,
-        ),
-      ),
-    ]);
+          );
+        });
   }
+
+  // Widget trailingRowBuilder({required HistoryAssessment element}) {
+  //   return Row(mainAxisSize: MainAxisSize.min, children: [
+  //     if (element.presentationLink != null &&
+  //         element.presentationLink!.isNotEmpty)
+  //       GestureDetector(
+  //           onTap: () {
+  //             Utility.updateLogs(
+  //                 activityType: 'GRADED+',
+  //                 activityId: '31',
+  //                 sessionId: element.sessionId ?? '',
+  //                 description:
+  //                     'Slide Action Button Button on Assignment summery page ',
+  //                 operationResult: 'Success');
+  //             Utility.launchUrlOnExternalBrowser(element.presentationLink!);
+  //           },
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(5.0),
+  //             child: SvgPicture.asset(
+  //               'assets/ocr_result_section_bottom_button_icons/Slide.svg',
+  //               width: Globals.deviceType == "phone" ? 28 : 40,
+  //               height: Globals.deviceType == "phone" ? 28 : 40,
+  //             ),
+  //           )),
+  //     GestureDetector(
+  //       onTap: () {
+  //         Utility.updateLogs(
+  //             activityType: 'GRADED+',
+  //             activityId: '13',
+  //             sessionId: element.sessionId != null ? element.sessionId : '',
+  //             description:
+  //                 'Teacher tap on Share Button on Assignment summery page',
+  //             operationResult: 'Success');
+
+  //         if (element.webContentLink != null && element.webContentLink != '') {
+  //           Share.share(element.webContentLink!);
+  //         }
+  //       },
+  //       child: Icon(
+  //         IconData(0xe876,
+  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
+  //         color: Color(0xff000000) != Theme.of(context).backgroundColor
+  //             ? Color(0xff111C20)
+  //             : Color(0xffF7F8F9),
+  //         size: Globals.deviceType == 'phone' ? 28 : 38,
+  //       ),
+  //     ),
+  //   ]);
+  // }
+
+  getURlForBottomIcons({required String title}) {}
+
+  bottomIconsOnTap({required String title, required String url}) {}
 }
