@@ -834,6 +834,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
                       if (state is GoogleSlideCreated) {
                         //Save Google Presentation Id
                         Globals.googleSlidePresentationId = state.slideFiledId;
+
+                        Utility.updateLogs(
+                            activityType: 'GRADED+',
+                            activityId: '33',
+                            description: 'G-Slide Created',
+                            operationResult: 'Success');
+
                         Navigator.of(context).pop();
                         _navigateToSubjectSection();
                       }

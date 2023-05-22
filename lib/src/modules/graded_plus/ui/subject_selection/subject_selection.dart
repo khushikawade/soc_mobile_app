@@ -253,6 +253,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   // }
 
                   if (state is GoogleSuccess) {
+                    Utility.updateLogs(
+                        activityType: 'GRADED+',
+                        activityId: '45',
+                        description: 'G-Excel File Updated',
+                        operationResult: 'Success');
                     showDialogSetState!(() {
                       GradedGlobals.loadingMessage = 'Preparing Google Slide';
                     });
@@ -310,6 +315,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                   }
 
                   if (state is UpdateAssignmentDetailsOnSlideSuccess) {
+                    Utility.updateLogs(
+                        activityType: 'GRADED+',
+                        activityId: '44',
+                        description: 'G-Slide Updated',
+                        operationResult: 'Success');
                     FirebaseAnalyticsService.addCustomAnalyticsEvent(
                         "assessment_detail_added_first_slide");
 
@@ -361,6 +371,11 @@ class _SubjectSelectionState extends State<SubjectSelection> {
                 child: Container(),
                 listener: (context, state) async {
                   if (state is CreateClassroomCourseWorkSuccess) {
+                    Utility.updateLogs(
+                        activityType: 'GRADED+',
+                        activityId: '34',
+                        description: 'G-Classroom Created',
+                        operationResult: 'Success');
                     _navigatetoResultSection();
                   }
 

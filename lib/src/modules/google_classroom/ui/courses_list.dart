@@ -117,6 +117,12 @@ class _CoursesListScreenState extends State<CoursesListScreen>
                             _animationController!.repeat();
                             refreshPage(isFromPullToRefresh: true);
                           }
+
+                          Utility.updateLogs(
+                              activityType: 'GRADED+',
+                              activityId: '26',
+                              description: 'Sync is tapped ',
+                              operationResult: 'Progress');
                         },
                         label: Row(
                           children: [

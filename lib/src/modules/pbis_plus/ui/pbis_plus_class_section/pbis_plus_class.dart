@@ -656,6 +656,11 @@ class _PBISPlusClassState extends State<PBISPlusClass> {
 
   Future<void> _saveAndShareBottomSheetMenu(
       List<ClassroomCourse> allClassroomCourses) async {
+    Utility.updateLogs(
+        activityType: 'PBIS+',
+        activityId: '36',
+        description: 'Save and Share',
+        operationResult: 'Success');
     //Check and add 'All' option in the course list in case of not exist
     if (!allClassroomCourses[0].name!.contains('All')) {
       allClassroomCourses.insert(
