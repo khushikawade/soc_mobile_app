@@ -69,6 +69,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
   @override
   void initState() {
     initMethod();
+
     super.initState();
   }
 
@@ -916,7 +917,7 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
                 !uniqueStudents
                     .any((s) => s.profile?.id == student.profile?.id));
 
-        //Adding all objects of single student if exists multiple time in different courses
+        // //Adding all objects of single student if exists multiple time in different courses
         if (isStudentUnique) {
           student.profile!.courseName = course.name;
           uniqueStudents.add(student);
@@ -925,15 +926,21 @@ class _PBISPlusSettingBottomSheetState extends State<PBISPlusSettingBottomSheet>
     }
 
     uniqueStudents.sort((a, b) {
-      if ((isSubmitOnTap != true) &&
-          (a == uniqueStudents[0] || b == uniqueStudents[0])) {
-        return 0;
-      }
+      // if ((isSubmitOnTap != true) &&
+      //     (a == uniqueStudents[0] || b == uniqueStudents[0])) {
+      //   return 0;
+      // }
       return a.profile!.name!.fullName!
           .toLowerCase()
           .compareTo(b.profile!.name!.fullName!.toLowerCase());
     });
 
+    if (isSubmitOnTap != true) {
+      uniqueStudents
+          .removeWhere((element) => element.profile!.name!.fullName == 'All');
+      uniqueStudents.insert(
+          0, widget.googleClassroomCourseworkList[0].students![0]);
+    }
     return uniqueStudents;
   }
 
