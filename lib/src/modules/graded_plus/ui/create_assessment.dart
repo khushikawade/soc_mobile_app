@@ -14,7 +14,6 @@ import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_selection/subject_selection.dart';
-import 'package:Soc/src/modules/plus_common_widgets/plus_header_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -1088,7 +1087,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
       Utility.showLoadingDialog(
           context: context,
           isOCR: true,
-          msg: 'Creating Google Classroom Assignment');
+          msg: Overrides.STANDALONE_GRADED_APP
+              ? 'Creating Google Classroom Assignment'
+              : 'Please Wait...');
       // to update question image to aws s3 bucket and get the link
       if (imageFile?.path?.isNotEmpty ?? false) {
         //  Globals.questionImgFilePath = imageFile;
