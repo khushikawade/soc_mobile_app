@@ -2673,6 +2673,7 @@ class studentRecordList extends State<ResultsSummary> {
                   fontPackage: Overrides.kFontPkg),
               color: Theme.of(context).backgroundColor,
               size: 16),
+          isExtended: true,
           onPressed: () async {
             if (Overrides.STANDALONE_GRADED_APP) {
               List<GoogleClassroomCourses> _localData =
@@ -2688,7 +2689,7 @@ class studentRecordList extends State<ResultsSummary> {
           },
         ),
         SizedBox(
-          width: 50,
+          width: 60,
         ),
         Padding(
           padding: const EdgeInsets.only(right: 10),
@@ -2698,6 +2699,7 @@ class studentRecordList extends State<ResultsSummary> {
                     fontFamily: Overrides.kFontFam,
                     fontPackage: Overrides.kFontPkg),
                 color: Theme.of(context).backgroundColor),
+            isExtended: false,
             backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
             onPressed: _saveAndShareBottomSheetMenu,
           ),

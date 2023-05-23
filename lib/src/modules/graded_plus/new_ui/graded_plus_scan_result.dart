@@ -1519,6 +1519,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
 
   Widget retryButton({required final onPressed}) {
     return GradedPlusCustomFloatingActionButton(
+        isExtended: true,
         icon: Icon(Icons.refresh,
             color: Theme.of(context).backgroundColor,
             size: Globals.deviceType == 'phone' ? 28 : 40),

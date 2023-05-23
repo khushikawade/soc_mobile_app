@@ -148,6 +148,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
               return GradedPlusCustomFloatingActionButton(
+                isExtended: true,
                 title: 'Next',
                 backgroundColor: selectedAnswerKey.value.isNotEmpty
                     ? AppTheme.kButtonColor.withOpacity(1.0)

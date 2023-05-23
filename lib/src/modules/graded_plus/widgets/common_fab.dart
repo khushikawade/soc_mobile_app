@@ -10,26 +10,30 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
       this.backgroundColor = AppTheme.kButtonColor,
       this.title,
       this.icon,
-      this.fabWidth})
+      this.fabWidth,
+      required this.isExtended})
       : super(key: key);
 
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final String? title;
   final Widget? icon;
+  final bool isExtended;
   final double? fabWidth;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30),
       child: FloatingActionButton.extended(
-          isExtended: true,
-          extendedPadding: EdgeInsets.symmetric(horizontal: 20),
+          isExtended: isExtended,
+          extendedPadding: isExtended
+              ? EdgeInsets.symmetric(horizontal: 20)
+              : EdgeInsets.all(10),
           backgroundColor: backgroundColor,
           onPressed: onPressed,
-          icon: title == null ? null : icon,
-          label: title == null
-              ? icon!
+          icon: icon,
+          label: !isExtended
+              ? Container()
               : Container(
                   alignment: Alignment.center,
                   width: fabWidth,

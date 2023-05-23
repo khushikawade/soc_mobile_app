@@ -271,6 +271,7 @@ class _GradedPlusConstructedResponseState
 
   Widget fabButton({required final bool connected}) {
     return GradedPlusCustomFloatingActionButton(
+      isExtended: true,
       title: 'Start Scanning',
       icon: Icon(
           IconData(0xe875,
