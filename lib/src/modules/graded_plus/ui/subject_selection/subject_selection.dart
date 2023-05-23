@@ -687,11 +687,62 @@ class _SubjectSelectionState extends State<SubjectSelection> {
     return ValueListenableBuilder(
       valueListenable: pageIndex,
       builder: (BuildContext context, dynamic value, Widget? child) {
-        return StudentPlusScreenTitleWidget(
-            kLabelSpacing: 0,
-            text: pageIndex.value == 0
-                ? 'Subject'
-                : '${widget.stateName} Learning Standard');
+        return Row(
+          children: [
+            IconButton(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
+                // Change pages according to current page position on back press ..
+                if (pageIndex.value == 1) {
+                  learningStandard = '';
+                  isSkipButton.value = false;
+                  nycIndex1.value = -1;
+                  subjectIndex1.value = 0;
+                  isSubmitButton.value = false;
+
+                  fetchSubjectDetails('subject', widget.selectedClass,
+                      widget.selectedClass, widget.stateName, '', '');
+                } else if (pageIndex.value == 2) {
+                  nycSubIndex1.value = -1;
+                  nycIndex1.value = 0;
+                  learningStandard = '';
+                  standardDescription = '';
+                  subLearningStandard = '';
+                  isSubmitButton.value = false;
+                  isSkipButton.value = true;
+
+                  if (widget.isSearchPage == true) {
+                    Navigator.pop(context);
+                  } else {
+                    _ocrBloc.add(FetchSubjectDetails(
+                      type: 'nyc',
+                      selectedKeyword: selectedKeyword,
+                      grade: widget.selectedClass,
+                      stateName: widget.stateName,
+                      subjectId: subjectId,
+                      subjectSelected: subject,
+                    ));
+                  }
+                } else {
+                  Navigator.pop(context);
+                }
+              },
+              icon: Icon(
+                IconData(0xe80d,
+                    fontFamily: Overrides.kFontFam,
+                    fontPackage: Overrides.kFontPkg),
+                color: AppTheme.kButtonColor,
+              ),
+            ),
+            StudentPlusScreenTitleWidget(
+                kLabelSpacing: 0,
+                text: pageIndex.value == 0
+                    ? 'Subject'
+                    : '${widget.stateName} Learning Standard'),
+          ],
+        );
 
         //  Utility.textWidget(
         //     text: pageIndex.value == 0

@@ -130,9 +130,24 @@ class _GradedPlusConstructedResponseState
       child: ListView(
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          StudentPlusScreenTitleWidget(
-              kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-              text: 'Points Possible'),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  IconData(0xe80d,
+                      fontFamily: Overrides.kFontFam,
+                      fontPackage: Overrides.kFontPkg),
+                  color: AppTheme.kButtonColor,
+                ),
+              ),
+              StudentPlusScreenTitleWidget(
+                  kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+                  text: 'Points Possible'),
+            ],
+          ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           pointPossibleButton(),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
