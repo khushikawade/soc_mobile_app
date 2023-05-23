@@ -135,7 +135,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       trailing: widget.isGradedPlus == true
           ? Container(
               height: MediaQuery.of(context).size.height * 0.036,
-              // padding: EdgeInsets.only(right: 10),
+              padding: EdgeInsets.only(right: 10),
               child: FloatingActionButton.extended(
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () {
