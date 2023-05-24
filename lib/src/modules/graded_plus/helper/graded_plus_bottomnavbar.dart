@@ -66,6 +66,7 @@ class GradedPlusBottomNavBar {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
+        iconSize: 30,
         icon: const Icon(Icons.add),
         title: 'Scan',
         activeColorPrimary: AppTheme.kButtonColor,

@@ -153,6 +153,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                           Expanded(
                             child: IconTheme(
                               data: IconThemeData(
+                                  size: item.iconSize,
                                   color: isSelected
                                       ? item.activeColorPrimary
                                       : item.inactiveColorPrimary),

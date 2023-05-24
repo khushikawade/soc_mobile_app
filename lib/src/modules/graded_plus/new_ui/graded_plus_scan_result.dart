@@ -209,22 +209,24 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
         valueListenable: scanFailure,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
-          return scanFailure.value == "Failure"
-              ? Align(
-                  alignment: Alignment.bottomCenter,
-                  child: retryButton(
-                    onPressed: () {
-                      Utility.updateLogs(
-                          activityType: 'GRADED+',
-                          activityId: '9',
-                          description: 'Scan Failure and teacher retry scan',
-                          operationResult: 'Failure');
+          return
+              //  scanFailure.value == "Failure"
+              //     ? Align(
+              //         alignment: Alignment.bottomCenter,
+              //         child: retryButton(
+              //           onPressed: () {
+              //             Utility.updateLogs(
+              //                 activityType: 'GRADED+',
+              //                 activityId: '9',
+              //                 description: 'Scan Failure and teacher retry scan',
+              //                 operationResult: 'Failure');
 
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      Navigator.of(context).pop(widget.isFlashOn);
-                    },
-                  ))
-              : scanFailure.value == "Success"
+              //             ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              //             Navigator.of(context).pop(widget.isFlashOn);
+              //           },
+              //         ))
+              //     :
+              scanFailure.value == "Success"
                   ? ValueListenableBuilder(
                       valueListenable: isBackFromCamera,
                       child: Container(),
@@ -621,24 +623,62 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
           ),
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              PlusScreenTitleWidget(kLabelSpacing: 0, text: 'Manual Entry'),
+              Row(
+                children: [
+                  Container(
+                      child: PlusScreenTitleWidget(
+                          kLabelSpacing: 0, text: 'Manual Entry')),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xffCF6679),
+                    ),
+                    child: Icon(
+                        IconData(0xe838,
+                            fontFamily: Overrides.kFontFam,
+                            fontPackage: Overrides.kFontPkg),
+                        // size: 19,
+                        color: Colors.white),
+                  ),
+                ],
+              ),
               SizedBox(
-                width: 5.0,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xffCF6679),
+                height: MediaQuery.of(context).size.height * 0.036,
+                child: FloatingActionButton.extended(
+                  backgroundColor: AppTheme.kButtonColor,
+                  onPressed: () {
+                    Utility.updateLogs(
+                        activityType: 'GRADED+',
+                        activityId: '9',
+                        description: 'Scan Failure and teacher retry scan',
+                        operationResult: 'Failure');
+
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Navigator.of(context).pop(widget.isFlashOn);
+                  },
+                  label: Row(
+                    children: [
+                      Utility.textWidget(
+                          text: 'Retry',
+                          context: context,
+                          textTheme: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(
+                                  color: Theme.of(context).backgroundColor)),
+                    ],
+                  ),
+                  icon: Icon(
+                    Icons.refresh,
+                    color: Theme.of(context).backgroundColor,
+                  ),
                 ),
-                child: Icon(
-                    IconData(0xe838,
-                        fontFamily: Overrides.kFontFam,
-                        fontPackage: Overrides.kFontPkg),
-                    size: 19,
-                    color: Colors.white),
-              ),
+              )
             ],
           ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
@@ -1191,7 +1231,9 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     return FittedBox(
       child: Container(
         alignment: Alignment.center,
-        height: MediaQuery.of(context).size.height * 0.15,
+        height: widget.isMcqSheet == true
+            ? MediaQuery.of(context).size.height * 0.15
+            : null,
         width: MediaQuery.of(context).size.width,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

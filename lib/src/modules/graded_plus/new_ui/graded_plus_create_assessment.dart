@@ -159,9 +159,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                   SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
                   PlusScreenTitleWidget(
                       kLabelSpacing: 0, text: 'Create Assignment'),
-
                   SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
-
                   highlightText(
                       text: 'Assignment Name',
                       theme: Theme.of(context).textTheme.headline2!.copyWith(
