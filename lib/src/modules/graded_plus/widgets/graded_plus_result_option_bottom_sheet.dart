@@ -1,26 +1,25 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/graded_plus/modal/result_action_icon_modal.dart';
-
+import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class GradedPlusResultOptionBottomSheet extends StatefulWidget {
   final String? title;
   final double? height;
-  final Function({required String title}) getURlForBottomIcons;
-  final Function({required String title, required String url}) bottomIconsOnTap;
-  final List<BottomIcon> bottomIconModalList;
+  final Function({required String title}) getURlForResultSummaryIcons;
+  final Function({required String title, required String url})
+      resultSummaryIconsOnTap;
+  final List<ResultSummaryIcons> resultSummaryIconsModalList;
   final ValueNotifier<bool> classroomUrlStatus;
   const GradedPlusResultOptionBottomSheet(
       {Key? key,
       required this.title,
       this.height = 200,
-      required this.getURlForBottomIcons,
-      required this.bottomIconsOnTap,
-      required this.bottomIconModalList,
+      required this.getURlForResultSummaryIcons,
+      required this.resultSummaryIconsOnTap,
+      required this.resultSummaryIconsModalList,
       required this.classroomUrlStatus});
 
   @override
@@ -81,18 +80,20 @@ class _GradedPlusResultOptionBottomSheetState
                         .headline5!
                         .copyWith(fontWeight: FontWeight.bold, fontSize: 18))
                 : Container(),
-            ...widget.bottomIconModalList
-                .map((BottomIcon element) => _listTileMenu(element: element)),
+            ...widget.resultSummaryIconsModalList.map(
+                (ResultSummaryIcons element) =>
+                    _listTileMenu(element: element)),
           ],
         ));
   }
 
-  Widget _listTileMenu({required BottomIcon element}) {
+  Widget _listTileMenu({required ResultSummaryIcons element}) {
     return ValueListenableBuilder(
         valueListenable: widget.classroomUrlStatus,
         child: Container(),
         builder: (BuildContext context, bool value, Widget? child) {
-          String? url = widget.getURlForBottomIcons(title: element.title!);
+          String? url =
+              widget.getURlForResultSummaryIcons(title: element.title!);
           return Opacity(
             opacity:
                 //((url?.isEmpty ?? true) || (url == 'NA')) ? 0.3 :
@@ -127,7 +128,7 @@ class _GradedPlusResultOptionBottomSheetState
                   context: context,
                   textTheme: Theme.of(context).textTheme.headline3!),
               onTap: () {
-                widget.bottomIconsOnTap(
+                widget.resultSummaryIconsOnTap(
                     title: element.title ?? '', url: url ?? '');
                 ;
               },

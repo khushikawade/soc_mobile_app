@@ -2,6 +2,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_constructed_response.dart';
@@ -145,7 +146,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
                   await Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => GradedPlusConstructedResponse()));
                 }
-                OcrUtility.gradedPlusNavBarIsHide.value = false;
+                OcrOverrides.gradedPlusNavBarIsHide.value = false;
 
                 FirebaseAnalyticsService.addCustomAnalyticsEvent(
                     "assessment_type_selected_${selectedAnswerKey.value}");

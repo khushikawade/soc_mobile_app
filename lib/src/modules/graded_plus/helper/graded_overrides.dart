@@ -1,4 +1,4 @@
-import 'package:Soc/src/globals.dart';
+import 'package:flutter/material.dart';
 
 class OcrOverrides {
   static String? OCR_API_BASE_URL =
@@ -14,4 +14,8 @@ class OcrOverrides {
   static String? cameraPermissionTitle = 'Camera Required';
   static String? cameraPermissionMessage =
       'GRADED+ requires camera access to capture student work. Go to your phone\'s App Settings to enable camera access for this app';
+
+  // To manage Graded plus bottom nav bar
+  static final ValueNotifier<bool> gradedPlusNavBarIsHide =
+      ValueNotifier<bool>(false);
 }

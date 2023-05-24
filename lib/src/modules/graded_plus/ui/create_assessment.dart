@@ -814,6 +814,13 @@ class _CreateAssessmentState extends State<CreateAssessment>
                           //Save Google Presentation Id
                           Globals.googleSlidePresentationId =
                               state.slideFiledId;
+
+                          Utility.updateLogs(
+                              activityType: 'GRADED+',
+                              activityId: '33',
+                              description: 'G-Slide Created',
+                              operationResult: 'Success');
+
                           Navigator.of(context).pop();
                           _navigateToSubjectSection();
                         }
@@ -1087,9 +1094,9 @@ class _CreateAssessmentState extends State<CreateAssessment>
       Utility.showLoadingDialog(
           context: context,
           isOCR: true,
-          msg: Overrides.STANDALONE_GRADED_APP
+          msg: Overrides.STANDALONE_GRADED_APP == true
               ? 'Creating Google Classroom Assignment'
-              : 'Please Wait...');
+              : 'Creating Assignment');
       // to update question image to aws s3 bucket and get the link
       if (imageFile?.path?.isNotEmpty ?? false) {
         //  Globals.questionImgFilePath = imageFile;

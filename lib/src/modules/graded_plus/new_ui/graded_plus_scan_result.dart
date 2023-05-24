@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
@@ -145,7 +146,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       _controller.repeat();
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      OcrUtility.gradedPlusNavBarIsHide.value = false;
+      OcrOverrides.gradedPlusNavBarIsHide.value = false;
     });
   }
 

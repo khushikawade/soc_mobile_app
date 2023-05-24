@@ -230,7 +230,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       return Globals.customSetting!.map<PersistentBottomNavBarItem>(
         (item) {
           return PersistentBottomNavBarItem(
-            icon: _bottomIcon(
+            icon: _ResultSummaryIcons(
                 item.sectionTitleC, item.sectionIconC, item.systemReferenceC),
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
@@ -253,7 +253,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           /*---------------Check for red dot indicator---------------*/
 
           return PersistentBottomNavBarItem(
-            icon: _bottomIcon(item.split("_")[0], item.split("_")[1], ''),
+            icon:
+                _ResultSummaryIcons(item.split("_")[0], item.split("_")[1], ''),
             activeColorPrimary: Theme.of(context).primaryColor,
             inactiveColorPrimary: CupertinoColors.systemGrey,
           );
@@ -262,7 +263,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Widget _bottomIcon(title, iconData, section) {
+  Widget _ResultSummaryIcons(title, iconData, section) {
     //  //print(title);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,

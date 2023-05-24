@@ -162,7 +162,7 @@ class _CameraScreenState extends State<CameraScreen>
     FirebaseAnalyticsService.addCustomAnalyticsEvent("camera_screen");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'camera_screen', screenClass: 'CameraScreen');
-    OcrUtility.gradedPlusNavBarIsHide.value = true;
+    OcrOverrides.gradedPlusNavBarIsHide.value = true;
     super.initState();
   }
 
@@ -171,7 +171,7 @@ class _CameraScreenState extends State<CameraScreen>
     Wakelock.disable();
     controller?.dispose();
     setEnabledSystemUIMode();
-    OcrUtility.gradedPlusNavBarIsHide.value = false;
+    OcrOverrides.gradedPlusNavBarIsHide.value = false;
     super.dispose();
   }
 
@@ -626,7 +626,7 @@ class _CameraScreenState extends State<CameraScreen>
                                                       )),
                                             );
 
-                                            OcrUtility.gradedPlusNavBarIsHide
+                                            OcrOverrides.gradedPlusNavBarIsHide
                                                 .value = true;
                                             if (flashOn == true) {
                                               try {

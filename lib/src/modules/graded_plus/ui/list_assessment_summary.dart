@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
-import 'package:Soc/src/modules/graded_plus/modal/result_action_icon_modal.dart';
+import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/ui/google_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
@@ -663,11 +663,12 @@ class _AssessmentSummaryState extends State<AssessmentSummary> {
                     ? MediaQuery.of(context).size.height * 0.5
                     : MediaQuery.of(context).size.height * 0.43,
                 title: 'Save and Share',
-                getURlForBottomIcons: getURlForBottomIcons,
-                bottomIconsOnTap: bottomIconsOnTap,
-                bottomIconModalList: Overrides.STANDALONE_GRADED_APP
-                    ? BottomIcon.standAloneHistoryBottomIconModalList
-                    : BottomIcon.historybottomIconModalList,
+                getURlForResultSummaryIcons: getURlForBottomIcons,
+                resultSummaryIconsOnTap: bottomIconsOnTap,
+                resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP
+                    ? ResultSummaryIcons
+                        .standAloneHistoryResultSummaryIconsModalList
+                    : ResultSummaryIcons.resultSummaryIconsModalList,
                 classroomUrlStatus: ValueNotifier<bool>(true),
               );
             },

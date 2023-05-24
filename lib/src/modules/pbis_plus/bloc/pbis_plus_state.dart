@@ -80,3 +80,17 @@ class PBISPlusResetSuccess extends PBISPlusState {
   @override
   List<Object> get props => [];
 }
+
+class PBISPlusInitialImportRosterSuccess extends PBISPlusState {
+  final List<ClassroomCourse> googleClassroomCourseList;
+  PBISPlusInitialImportRosterSuccess({required this.googleClassroomCourseList});
+  @override
+  List<Object> get props => [];
+}
+
+class PBISPlusClassRoomShimmerLoading extends PBISPlusState {
+  final List<ClassroomCourse> shimmerCoursesList;
+  PBISPlusClassRoomShimmerLoading({required this.shimmerCoursesList});
+  @override
+  List<Object> get props => [];
+}
