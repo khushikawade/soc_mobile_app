@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
@@ -14,6 +15,7 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -130,23 +132,10 @@ class _GradedPlusConstructedResponseState
       child: ListView(
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(
-                  IconData(0xe80d,
-                      fontFamily: Overrides.kFontFam,
-                      fontPackage: Overrides.kFontPkg),
-                  color: AppTheme.kButtonColor,
-                ),
-              ),
-              StudentPlusScreenTitleWidget(
-                  kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-                  text: 'Points Possible'),
-            ],
+          PlusScreenTitleWidget(
+            kLabelSpacing: 0,
+            text: 'Points Possible',
+            backButton: true,
           ),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           pointPossibleButton(),
@@ -155,7 +144,7 @@ class _GradedPlusConstructedResponseState
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              StudentPlusScreenTitleWidget(
+              PlusScreenTitleWidget(
                   kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
                   text: 'Scoring Rubric'),
               BlocConsumer(
@@ -679,7 +668,7 @@ class _GradedPlusConstructedResponseState
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => AssessmentSummary(
+          builder: (context) => GradedPlusAssessmentSummary(
                 selectedFilterValue: 'Constructed Response',
                 isFromHomeSection: true,
               )),

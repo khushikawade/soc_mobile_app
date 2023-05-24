@@ -47,7 +47,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
               },
               child: index == 2
                   ? _buildSelectedMenu(
-                      item, selectedIndex == index, 140, context)
+                      item, selectedIndex == index, 50, context)
                   : _buildUnselectedMenus(
                       item, selectedIndex == index, 140, context),
             ),
@@ -115,7 +115,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Transform.translate(
-          offset: const Offset(0, -25),
+          offset: const Offset(0, -22),
           child: Center(
             child: Container(
               height: height ?? 0,
@@ -153,7 +153,6 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                           Expanded(
                             child: IconTheme(
                               data: IconThemeData(
-                                  size: item.iconSize,
                                   color: isSelected
                                       ? item.activeColorPrimary
                                       : item.inactiveColorPrimary),

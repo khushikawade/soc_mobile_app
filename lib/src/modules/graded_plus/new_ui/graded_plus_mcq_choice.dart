@@ -6,6 +6,7 @@ import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -129,23 +130,10 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-        Row(
-          children: [
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: Icon(
-                IconData(0xe80d,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: AppTheme.kButtonColor,
-              ),
-            ),
-            StudentPlusScreenTitleWidget(
-                kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
-                text: 'Answer Key'),
-          ],
+        PlusScreenTitleWidget(
+          kLabelSpacing: 0,
+          text: 'Answer Key',
+          backButton: true,
         ),
         SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
         Expanded(

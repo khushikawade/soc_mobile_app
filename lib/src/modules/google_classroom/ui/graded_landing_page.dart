@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_summary.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -456,7 +457,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => AssessmentSummary(
+          builder: (context) => GradedPlusAssessmentSummary(
                 selectedFilterValue: "All",
                 isFromHomeSection: true,
               )),

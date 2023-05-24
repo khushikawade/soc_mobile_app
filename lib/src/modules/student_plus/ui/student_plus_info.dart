@@ -1,4 +1,5 @@
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
@@ -71,7 +72,7 @@ class _StudentPlusInfoScreenState extends State<StudentPlusInfoScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          StudentPlusScreenTitleWidget(
+          PlusScreenTitleWidget(
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentInfoPageTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),

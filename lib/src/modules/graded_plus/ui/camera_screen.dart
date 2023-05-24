@@ -8,6 +8,8 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_create_assessment.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_scan_result.dart';
 import 'package:Soc/src/modules/graded_plus/ui/create_assessment.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
@@ -962,7 +964,7 @@ class _CameraScreenState extends State<CameraScreen>
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-            builder: (context) => ResultsSummary(
+            builder: (context) => GradedPlusResultsSummary(
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   obj: widget.obj,
@@ -991,7 +993,7 @@ class _CameraScreenState extends State<CameraScreen>
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ResultsSummary(
+            builder: (context) => GradedPlusResultsSummary(
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   createdAsPremium: widget.createdAsPremium,
@@ -1011,7 +1013,7 @@ class _CameraScreenState extends State<CameraScreen>
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-          builder: (context) => CreateAssessment(
+          builder: (context) => GradedPlusCreateAssessment(
               isMcqSheet: widget.isMcqSheet,
               selectedAnswer: widget.selectedAnswer,
               customGrades: classList,
@@ -1170,7 +1172,7 @@ class _CameraScreenState extends State<CameraScreen>
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => CreateAssessment(
+              builder: (context) => GradedPlusCreateAssessment(
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   customGrades: classList,

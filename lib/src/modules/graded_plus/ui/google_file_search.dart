@@ -1,6 +1,7 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/overrides.dart';
@@ -368,7 +369,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ResultsSummary(
+                    builder: (context) => GradedPlusResultsSummary(
                           createdAsPremium: reversedRecentDetailDbList[index]
                                       .isCreatedAsPremium
                                       .toLowerCase() ==
@@ -597,7 +598,7 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                ResultsSummary(
+                                                GradedPlusResultsSummary(
                                                   createdAsPremium: data
                                                               .isCreatedAsPremium
                                                               .toString()

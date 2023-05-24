@@ -13,6 +13,7 @@ import 'package:Soc/src/modules/pbis_plus/widgets/hero_dialog_route.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_save_and_share_bottom_sheet.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_student_profile_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -121,8 +122,7 @@ class _PBISPlusClassState extends State<PBISPlusClass>
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
       //minLeadingWidth: 70,
-      title:
-          StudentPlusScreenTitleWidget(kLabelSpacing: 0, text: 'All Courses'),
+      title: PlusScreenTitleWidget(kLabelSpacing: 0, text: 'All Courses'),
       leading: IconButton(
         onPressed: () {
           widget.backOnTap();

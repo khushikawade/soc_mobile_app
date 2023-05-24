@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
@@ -21,7 +21,7 @@ class GradedPlusBottomNavBar {
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
         backOnTap: backOnTap,
       ),
-      AssessmentSummary(
+      GradedPlusAssessmentSummary(
         isFromHomeSection: true,
         selectedFilterValue: 'All',
       ),

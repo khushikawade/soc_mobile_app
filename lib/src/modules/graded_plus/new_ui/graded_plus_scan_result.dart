@@ -15,6 +15,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/suggestion_chip.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -603,6 +604,8 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     return Form(
       key: _formKey1,
       child: ListView(
+        padding: EdgeInsets.symmetric(
+            vertical: 0, horizontal: StudentPlusOverrides.kLabelSpacing / 2),
         children: [
           BlocListener<OcrBloc, OcrState>(
             bloc: _bloc2,
@@ -620,8 +623,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              StudentPlusScreenTitleWidget(
-                  kLabelSpacing: 0, text: 'Manual Entry'),
+              PlusScreenTitleWidget(kLabelSpacing: 0, text: 'Manual Entry'),
               SizedBox(
                 width: 5.0,
               ),
@@ -948,9 +950,10 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     return Form(
       key: _formKey2,
       child: ListView(
+        padding: EdgeInsets.symmetric(
+            vertical: 0, horizontal: StudentPlusOverrides.kLabelSpacing / 2),
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          //  StudentPlusScreenTitleWidget(kLabelSpacing: 0, text: ''),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
           Utility.textWidget(
               text: 'Student Name',

@@ -7,12 +7,14 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_constructed_response.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_mcq_choice.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/list_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/mcq_correct_answer_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/graded_plus_home.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_header_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
@@ -88,7 +90,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          StudentPlusScreenTitleWidget(
+          PlusScreenTitleWidget(
               kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
               text: 'Select Assignment Type'),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
@@ -381,7 +383,7 @@ class _GradedPlusSelectAssessmentTypeSectionState
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => AssessmentSummary(
+          builder: (context) => GradedPlusAssessmentSummary(
                 selectedFilterValue: 'All',
                 isFromHomeSection: true,
               )),
