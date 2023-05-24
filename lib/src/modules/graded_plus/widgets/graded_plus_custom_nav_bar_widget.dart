@@ -115,7 +115,7 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Transform.translate(
-          offset: const Offset(0, -28),
+          offset: const Offset(0, -25),
           child: Center(
             child: Container(
               height: height ?? 0,

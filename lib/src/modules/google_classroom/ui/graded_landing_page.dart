@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:Soc/src/modules/graded_plus/ui/graded_plus_navbar_home.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_navbar_home.dart';
 
 class GradedLandingPage extends StatefulWidget {
   final bool? isFromLogoutPage;
