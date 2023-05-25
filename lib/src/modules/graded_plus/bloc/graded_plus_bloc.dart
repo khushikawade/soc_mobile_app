@@ -535,17 +535,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             assessmentSheetPublicURL: event.assessmentSheetPublicURL,
             userInformation: userInformation[0]);
       } on SocketException catch (e, s) {
-        e.message == 'Connection failed'
-            ? Utility.currentScreenSnackBar("No Internet Connection", null)
-            : print(e);
+        if (e.message == 'Connection failed') {
+          Utility.currentScreenSnackBar("No Internet Connection", null);
+        }
         rethrow;
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'SaveAssessmentToDashboard Event');
 
-        e == 'NO_CONNECTION'
-            ? Utility.currentScreenSnackBar("No Internet Connection", null)
-            : print(e);
+        if (e == 'NO_CONNECTION') {
+          Utility.currentScreenSnackBar("No Internet Connection", null);
+        }
+
         throw (e);
       }
     }
@@ -1829,7 +1830,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     required String assessmentId,
     required final LocalDatabase<StudentAssessmentInfo> studentInfoDb,
     required schoolId,
-    required assessmentSheetPublicURL,
+    required String assessmentSheetPublicURL,
     required UserInformation userInformation,
     int retry = 3,
   }) async {
