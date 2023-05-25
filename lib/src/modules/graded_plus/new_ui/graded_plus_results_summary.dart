@@ -2433,6 +2433,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
             // print('perform scan more');
             performScanMore();
           },
+          heroTag: 'scan_more_tag',
         ),
         SizedBox(
           width: 60,
@@ -2440,6 +2441,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: GradedPlusCustomFloatingActionButton(
+            heroTag: 'share_tag',
             icon: Icon(
                 IconData(0xe868,
                     fontFamily: Overrides.kFontFam,

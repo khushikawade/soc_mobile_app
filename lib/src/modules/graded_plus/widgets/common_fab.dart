@@ -11,7 +11,8 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
       this.title,
       this.icon,
       this.fabWidth,
-      required this.isExtended})
+      required this.isExtended,
+      this.heroTag})
       : super(key: key);
 
   final VoidCallback onPressed;
@@ -20,11 +21,13 @@ class GradedPlusCustomFloatingActionButton extends StatelessWidget {
   final Widget? icon;
   final bool isExtended;
   final double? fabWidth;
+  final String? heroTag;
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 30),
       child: FloatingActionButton.extended(
+          heroTag: heroTag,
           isExtended: isExtended,
           extendedPadding: isExtended
               ? EdgeInsets.symmetric(horizontal: 20)
