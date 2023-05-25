@@ -333,6 +333,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                     List<StudentAssessmentInfo> studentAssessmentInfoDblist =
                         await Utility.getStudentInfoList(
                             tableName: 'student_info');
+
                     _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
                         isMcqSheet: widget.isMcqSheet ?? false,
                         assessmentQueImage: studentAssessmentInfoDblist
@@ -1328,9 +1329,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                     bloc: _ocrBloc,
                                     child: Container(),
                                     listener: (context, state) {
-                                      if (state is OcrLoading) {
-                                        // Utility.showLoadingDialog(context);
-                                      }
                                       if (state is AssessmentIdSuccess) {
                                         Navigator.of(context).pop();
                                         _googleDriveBloc.close();
@@ -1422,6 +1420,39 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                                             .assessmentName ??
                                                         ''));
                                           } else {
+
+
+
+                                            GradedPlusResultsSummary(
+                                              isMcqSheet: widget.isMcqSheet,
+                                              selectedAnswer:
+                                                  widget.selectedAnswer,
+                                              subjectId: subjectId ?? '',
+                                              standardId: standardId ?? '',
+                                              assessmentName:
+                                                  Globals.assessmentName,
+                                              shareLink: Globals.shareableLink!,
+                                              assessmentDetailPage: false,
+                                            );
+
+
+                                            
+
+                                            _saveResultAssignmentsToDashboard(
+                                                assessmentId: state
+                                                        .dashboardAssignmentsId ??
+                                                    '',
+                                                googleSpreadsheetUrl:
+                                                    Globals.shareableLink??'',
+                                                subjectId: subjectId ?? '',
+                                                assessmentName:
+                                                    Globals.assessmentName ??
+                                                        '',
+                                                rubricScore: '',
+                                                fileId: '',
+                                                studentAssessmentInfoDb:
+                                                    _studentAssessmentInfoDb);
+
                                             _navigatetoResultSection();
                                           }
                                         }
@@ -1679,5 +1710,25 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 assessmentDetailPage: false,
               )),
     );
+  }
+
+  void _saveResultAssignmentsToDashboard(
+      {required String assessmentId,
+      required String googleSpreadsheetUrl,
+      required String subjectId,
+      required String assessmentName,
+      required String rubricScore,
+      required String fileId,
+      required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
+    _ocrBloc.add(SaveAssessmentToDashboard(
+      assessmentId: assessmentId,
+      assessmentSheetPublicURL: googleSpreadsheetUrl,
+      studentInfoDb: studentAssessmentInfoDb,
+      assessmentName: assessmentName,
+      rubricScore: rubricScore,
+      subjectId: subjectId,
+      schoolId: Globals.appSetting.schoolNameC!,
+      fileId: fileId,
+    ));
   }
 }

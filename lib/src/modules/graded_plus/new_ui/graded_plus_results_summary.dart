@@ -1762,25 +1762,25 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     //print(
                     // 'if     calling is scanMore -------------------------->');
                     //print(widget.assessmentListLenght);
-                    _ocrBloc.add(SaveAssessmentToDashboard(
-                        assessmentId: !widget.assessmentDetailPage!
-                            ? Globals.currentAssessmentId
-                            : historyAssessmentId ?? '',
-                        assessmentSheetPublicURL: widget.shareLink,
-                        resultList: await Utility.getStudentInfoList(
-                            tableName: widget.assessmentDetailPage == true
-                                ? 'history_student_info'
-                                : 'student_info'),
-                        previouslyAddedListLength: widget.assessmentListLength,
-                        assessmentName: widget.assessmentName!,
-                        rubricScore: widget.rubricScore ?? '',
-                        subjectId: widget.subjectId ?? '',
-                        schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                        // standardId: widget.standardId ?? '',
-                        scaffoldKey: scaffoldKey,
-                        context: context,
-                        isHistoryAssessmentSection:
-                            widget.assessmentDetailPage!));
+                    // _ocrBloc.add(SaveAssessmentToDashboard(
+                    //     assessmentId: !widget.assessmentDetailPage!
+                    //         ? Globals.currentAssessmentId
+                    //         : historyAssessmentId ?? '',
+                    //     assessmentSheetPublicURL: widget.shareLink,
+                    //     resultList: await Utility.getStudentInfoList(
+                    //         tableName: widget.assessmentDetailPage == true
+                    //             ? 'history_student_info'
+                    //             : 'student_info'),
+                    //     previouslyAddedListLength: widget.assessmentListLength,
+                    //     assessmentName: widget.assessmentName!,
+                    //     rubricScore: widget.rubricScore ?? '',
+                    //     subjectId: widget.subjectId ?? '',
+                    //     schoolId: Globals.appSetting.schoolNameC!, //Account Id
+                    //     // standardId: widget.standardId ?? '',
+                    //     scaffoldKey: scaffoldKey,
+                    //     context: context,
+                    //     isHistoryAssessmentSection:
+                    //         widget.assessmentDetailPage!));
                   } else {
                     //print(
                     // 'else      calling is noramal -------------------------->');
@@ -1797,27 +1797,28 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       _listRecord = historyRecordList;
                     }
 
-                    _ocrBloc.add(SaveAssessmentToDashboard(
-                      assessmentId: !widget.assessmentDetailPage!
-                          ? Globals.currentAssessmentId
-                          : historyAssessmentId ?? '',
-                      assessmentSheetPublicURL: widget.shareLink,
-                      resultList: !widget.assessmentDetailPage!
-                          ? await Utility.getStudentInfoList(
-                              tableName: 'student_info')
-                          : _listRecord,
-                      assessmentName: widget.assessmentName!,
-                      rubricScore: !widget.assessmentDetailPage!
-                          ? widget.rubricScore ?? ''
-                          : sheetRubricScore ?? '',
-                      subjectId: widget.subjectId ?? '',
-                      schoolId: Globals.appSetting.schoolNameC!, //Account Id
-                      // standardId: widget.standardId ?? '',
-                      scaffoldKey: scaffoldKey,
-                      context: context,
-                      isHistoryAssessmentSection: widget.assessmentDetailPage!,
-                      fileId: widget.fileId ?? '',
-                    ));
+                    // _ocrBloc.add(SaveAssessmentToDashboard(
+                    //   assessmentId: !widget.assessmentDetailPage!
+                    //       ? Globals.currentAssessmentId
+                    //       : historyAssessmentId ?? '',
+                    //   assessmentSheetPublicURL: widget.shareLink,
+                    //   resultList: !widget.assessmentDetailPage!
+                    //       ? wait Utility.getStudentInfoList(
+                    //           taableName: 'student_info')
+                    //       : _listRecord,
+                    //   assessmentName: widget.assessmentName!,
+                    //   rubricScore: !widget.assessmentDetailPage!
+                    //       ? widget.rubricScore ?? ''
+                    //       : sheetRubricScore ?? '',
+                    //   subjectId: widget.subjectId ?? '',
+                    //   schoolId: Globals.appSetting.schoolNameC!, //Account Id
+                    //   // standardId: widget.standardId ?? '',
+                    //   scaffoldKey: scaffoldKey,
+                    //   context: context,
+                    //   isHistoryAssessmentSection: widget.assessmentDetailPage!,
+                    //   fileId: widget.fileId ?? '',
+                    // )
+                    // );
                   }
                 }
               } else {

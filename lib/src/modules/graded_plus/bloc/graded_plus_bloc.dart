@@ -398,115 +398,138 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       }
     }
 
+    // if (event is SaveAssessmentToDashboard) {
+    //   try {
+    //     yield OcrLoading();
+    //     // List<UserInformation> _profileData =
+    //     //     await UserGoogleProfile.getUserProfile();
+    //     List list = await Utility.getStudentInfoList(tableName: 'student_info');
+    //     if (event.previouslyAddedListLength != null &&
+    //         event.previouslyAddedListLength! < list.length) {
+    //       List<StudentAssessmentInfo> _list =
+    //           await Utility.getStudentInfoList(tableName: 'student_info');
+
+    //       //Removing the previous scanned records to save only latest scanned sheets to the dashboard
+    //       _list.removeRange(0,
+    //           event.previouslyAddedListLength!); //+1 - To remove title as well
+
+    //       if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
+    //         bool result = await saveResultToDashboard(
+    //             assessmentId: event.assessmentId!,
+    //             studentDetails: _list,
+    //             previousListLength: event.previouslyAddedListLength ?? 0,
+    //             isHistoryDetailPage: event.isHistoryAssessmentSection,
+    //             schoolId: event.schoolId,
+    //             assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
+
+    //         if (!result) {
+    //           saveResultToDashboard(
+    //               assessmentId: event.assessmentId!,
+    //               studentDetails: _list,
+    //               previousListLength: event.previouslyAddedListLength ?? 0,
+    //               isHistoryDetailPage: event.isHistoryAssessmentSection,
+    //               schoolId: event.schoolId,
+    //               assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
+    //         } else {
+    //           // await _sendEmailToAdmin(
+    //           //   assessmentId: event.assessmentId!,
+    //           //   name: _profileData[0]
+    //           //       .userName!
+    //           //       .replaceAll("%20", " ")
+    //           //       .replaceAll("20", ""),
+    //           //   studentResultDetails: _list,
+    //           //   schoolId: event.schoolId,
+    //           //   email: _profileData[0].userEmail!,
+    //           //   assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+    //           // );
+    //           ////print("result Record is saved on DB");
+
+    //           yield AssessmentSavedSuccessfully();
+    //         }
+    //       } else {
+    //         Utility.showSnackBar(
+    //             event.scaffoldKey,
+    //             'Unable to save the result. Please try again.',
+    //             event.context,
+    //             null);
+
+    //         yield OcrErrorReceived();
+    //         throw ('something went wrong');
+    //       }
+    //     } else {
+    //       //Using for history assessment details page
+    //       String subjectId;
+    //       String standardId;
+    //       var standardObject;
+    //       if (event.isHistoryAssessmentSection == true) {
+    //         standardObject = await _getStandardIdAndsubjectId(
+    //             grade: event.resultList.first.grade ?? '',
+    //             subLearningCode:
+    //                 event.resultList.first.subLearningStandard ?? '',
+    //             subjectName: event.resultList.first.subject ?? '');
+
+    //         standardId = standardObject != null && standardObject != ''
+    //             ? standardObject['Id']
+    //             : '';
+    //         subjectId = standardObject != null && standardObject != ''
+    //             ? standardObject['Subject__c']
+    //             : '';
+    //       }
+
+    //       if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
+    //         bool result = await saveResultToDashboard(
+    //           assessmentId: event.assessmentId!,
+    //           studentDetails: event.resultList,
+    //           previousListLength: event.previouslyAddedListLength ?? 0,
+    //           isHistoryDetailPage: event.isHistoryAssessmentSection,
+    //           assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+    //           schoolId: event.schoolId,
+    //         );
+
+    //         if (!result) {
+    //           saveResultToDashboard(
+    //             assessmentId: event.assessmentId!,
+    //             studentDetails: event.resultList,
+    //             previousListLength: event.previouslyAddedListLength ?? 0,
+    //             isHistoryDetailPage: event.isHistoryAssessmentSection,
+    //             assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
+    //             schoolId: event.schoolId,
+    //           );
+    //         } else {
+    //           yield AssessmentSavedSuccessfully();
+    //         }
+    //       } else {
+    //         Utility.showSnackBar(
+    //             event.scaffoldKey,
+    //             'Unable to save the result. Please try again.',
+    //             event.context,
+    //             null);
+    //         throw ('something went wrong');
+    //       }
+    //     }
+    //   } on SocketException catch (e, s) {
+    //     e.message == 'Connection failed'
+    //         ? Utility.currentScreenSnackBar("No Internet Connection", null)
+    //         : print(e);
+    //     rethrow;
+    //   } catch (e, s) {
+    //     FirebaseAnalyticsService.firebaseCrashlytics(
+    //         e, s, 'SaveAssessmentToDashboard Event');
+
+    //     e == 'NO_CONNECTION'
+    //         ? Utility.currentScreenSnackBar("No Internet Connection", null)
+    //         : print(e);
+    //     throw (e);
+    //   }
+    // }
+
     if (event is SaveAssessmentToDashboard) {
       try {
-        yield OcrLoading();
-        // List<UserInformation> _profileData =
-        //     await UserGoogleProfile.getUserProfile();
-        List list = await Utility.getStudentInfoList(tableName: 'student_info');
-        if (event.previouslyAddedListLength != null &&
-            event.previouslyAddedListLength! < list.length) {
-          List<StudentAssessmentInfo> _list =
-              await Utility.getStudentInfoList(tableName: 'student_info');
-
-          //Removing the previous scanned records to save only latest scanned sheets to the dashboard
-          _list.removeRange(0,
-              event.previouslyAddedListLength!); //+1 - To remove title as well
-
-          if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
-            bool result = await saveResultToDashboard(
-                assessmentId: event.assessmentId!,
-                studentDetails: _list,
-                previousListLength: event.previouslyAddedListLength ?? 0,
-                isHistoryDetailPage: event.isHistoryAssessmentSection,
-                schoolId: event.schoolId,
-                assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
-
-            if (!result) {
-              saveResultToDashboard(
-                  assessmentId: event.assessmentId!,
-                  studentDetails: _list,
-                  previousListLength: event.previouslyAddedListLength ?? 0,
-                  isHistoryDetailPage: event.isHistoryAssessmentSection,
-                  schoolId: event.schoolId,
-                  assessmentSheetPublicURL: event.assessmentSheetPublicURL!);
-            } else {
-              // await _sendEmailToAdmin(
-              //   assessmentId: event.assessmentId!,
-              //   name: _profileData[0]
-              //       .userName!
-              //       .replaceAll("%20", " ")
-              //       .replaceAll("20", ""),
-              //   studentResultDetails: _list,
-              //   schoolId: event.schoolId,
-              //   email: _profileData[0].userEmail!,
-              //   assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-              // );
-              ////print("result Record is saved on DB");
-
-              yield AssessmentSavedSuccessfully();
-            }
-          } else {
-            Utility.showSnackBar(
-                event.scaffoldKey,
-                'Unable to save the result. Please try again.',
-                event.context,
-                null);
-
-            yield OcrErrorReceived();
-            throw ('something went wrong');
-          }
-        } else {
-          //Using for history assessment details page
-          String subjectId;
-          String standardId;
-          var standardObject;
-          if (event.isHistoryAssessmentSection == true) {
-            standardObject = await _getStandardIdAndsubjectId(
-                grade: event.resultList.first.grade ?? '',
-                subLearningCode:
-                    event.resultList.first.subLearningStandard ?? '',
-                subjectName: event.resultList.first.subject ?? '');
-
-            standardId = standardObject != null && standardObject != ''
-                ? standardObject['Id']
-                : '';
-            subjectId = standardObject != null && standardObject != ''
-                ? standardObject['Subject__c']
-                : '';
-          }
-
-          if (event.assessmentId != null && event.assessmentId!.isNotEmpty) {
-            bool result = await saveResultToDashboard(
-              assessmentId: event.assessmentId!,
-              studentDetails: event.resultList,
-              previousListLength: event.previouslyAddedListLength ?? 0,
-              isHistoryDetailPage: event.isHistoryAssessmentSection,
-              assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-              schoolId: event.schoolId,
-            );
-
-            if (!result) {
-              saveResultToDashboard(
-                assessmentId: event.assessmentId!,
-                studentDetails: event.resultList,
-                previousListLength: event.previouslyAddedListLength ?? 0,
-                isHistoryDetailPage: event.isHistoryAssessmentSection,
-                assessmentSheetPublicURL: event.assessmentSheetPublicURL!,
-                schoolId: event.schoolId,
-              );
-            } else {
-              yield AssessmentSavedSuccessfully();
-            }
-          } else {
-            Utility.showSnackBar(
-                event.scaffoldKey,
-                'Unable to save the result. Please try again.',
-                event.context,
-                null);
-            throw ('something went wrong');
-          }
-        }
+        await saveResultToDashboard(
+            assessmentId: event.assessmentId,
+            studentInfoDb: event.studentInfoDb,
+            schoolId: event.schoolId,
+            assessmentSheetPublicURL: event.assessmentSheetPublicURL);
       } on SocketException catch (e, s) {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
@@ -522,6 +545,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         throw (e);
       }
     }
+
     if (event is SaveAssessmentToDashboardAndGetId) {
       yield OcrLoading();
       String dashboardId = await saveAssessmentToDatabase(
@@ -544,7 +568,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
       if (dashboardId.isNotEmpty) {
         Globals.currentAssessmentId = dashboardId;
-        yield AssessmentIdSuccess(obj: dashboardId);
+        yield AssessmentIdSuccess(dashboardAssignmentsId: dashboardId);
       }
     }
     // Event call to  update assessment to DB --------
@@ -1727,18 +1751,14 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 
   Future<bool> saveResultToDashboard(
       {required String assessmentId,
-      required List<StudentAssessmentInfo> studentDetails,
-      required previousListLength,
-      required isHistoryDetailPage,
+      required final LocalDatabase<StudentAssessmentInfo> studentInfoDb,
       required schoolId,
       required assessmentSheetPublicURL}) async {
     try {
+      List<StudentAssessmentInfo> studentDetails = [];
+
       List<Map> bodyContent = [];
 
-      // studentDetails.removeAt(0);
-      // int initIndex = isHistoryDetailPage == true
-      //     ? previousListLength
-      //     : previousListLength; // + 1;
       for (int i = 0; i < studentDetails.length; i++) {
         //To bypass the titles saving in the dashboard
         if (studentDetails[i].studentId != 'Id') {
@@ -1751,6 +1771,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
               studentDetails[i].studentName ?? ''));
         }
       }
+
       final ResponseModel response = await _dbServices.postApi(
         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
         isGoogleApi: true,
