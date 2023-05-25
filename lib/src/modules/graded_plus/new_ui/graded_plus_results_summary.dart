@@ -12,10 +12,10 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_option_bottom_sheet.dart';
-import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/edit_bottom_sheet.dart';
@@ -621,7 +621,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         // await _historystudentAssessmentInfoDb.clear();
 
                         //Mark student that are already saved to google classroom
-                        state.obj.forEach((e) async {
+                        state.obj
+                            .forEach((StudentAssessmentInfo student) async {
                           if ((GoogleClassroomGlobals
                                       .studentAssessmentAndClassroomObj
                                       ?.courseId
@@ -632,9 +633,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                       ?.courseWorkId
                                       ?.isNotEmpty ??
                                   false)) {
-                            e.isgoogleClassRoomStudentProfileUpdated = true;
+                            student.isgoogleClassRoomStudentProfileUpdated =
+                                true;
                           }
-                          await _historystudentAssessmentInfoDb.addData(e);
+                          student.isStudentResultAssignmentSavedOnDashboard =
+                              true;
+                          await _historystudentAssessmentInfoDb
+                              .addData(student);
                         });
 
                         //Extract presentation url from the excel sheet
@@ -2270,7 +2275,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CameraScreen(
+            builder: (context) => GradedPlusCameraScreen(
                 lastAssessmentLength: lastAssessmentLength,
                 assessmentName: widget.assessmentName,
                 isMcqSheet: widget.isMcqSheet,

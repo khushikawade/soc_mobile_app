@@ -102,21 +102,30 @@ class SaveAssessmentToDashboard extends OcrEvent {
   final String rubricScore;
   final String subjectId;
   final String schoolId;
-
-  final LocalDatabase<StudentAssessmentInfo> studentInfoDb;
-  final String assessmentSheetPublicURL;
-  final String fileId;
-  final String assessmentId;
+  // final String standardId;
+  final int? previouslyAddedListLength;
+  final scaffoldKey;
+  final context;
+  final List<StudentAssessmentInfo> resultList;
+  final bool isHistoryAssessmentSection;
+  final String? assessmentSheetPublicURL;
+  final String? fileId;
+  final String? assessmentId;
 
   SaveAssessmentToDashboard({
     required this.assessmentName,
     required this.rubricScore,
     required this.subjectId,
     required this.schoolId,
-    required this.studentInfoDb,
+    // required this.standardId,
+    required this.scaffoldKey,
+    required this.context,
+    this.previouslyAddedListLength,
+    required this.resultList,
+    required this.isHistoryAssessmentSection,
     required this.assessmentSheetPublicURL,
     required this.assessmentId,
-    required this.fileId,
+    this.fileId,
   });
 
   @override
@@ -267,31 +276,21 @@ class LocalStateSearchEvent extends OcrEvent {
 
 class GradedPlusSaveAssessmentToDashboard extends OcrEvent {
   final String assessmentName;
-  final String rubricScore;
-  final String subjectId;
+  // final String subjectId;
   final String schoolId;
-  final int? previouslyAddedListLength;
-  final scaffoldKey;
-  final context;
-  final List<StudentAssessmentInfo> resultList;
-  final bool isHistoryAssessmentSection;
-  final String? assessmentSheetPublicURL;
-  final String? fileId;
-  final String? assessmentId;
+  final LocalDatabase<StudentAssessmentInfo> studentInfoDb;
+  final String assessmentSheetPublicURL;
+  // final String fileId;
+  final String assessmentId;
 
   GradedPlusSaveAssessmentToDashboard({
     required this.assessmentName,
-    required this.rubricScore,
-    required this.subjectId,
+    //  required this.subjectId,
     required this.schoolId,
-    required this.scaffoldKey,
-    required this.context,
-    this.previouslyAddedListLength,
-    required this.resultList,
-    required this.isHistoryAssessmentSection,
+    required this.studentInfoDb,
     required this.assessmentSheetPublicURL,
     required this.assessmentId,
-    this.fileId,
+    // required this.fileId,
   });
 
   @override

@@ -7,6 +7,7 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_subject_selection.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/state_selection_page.dart';
@@ -703,8 +704,11 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 
                         if (state is ExcelSheetCreated) {
                           Globals.googleExcelSheetId =
-                              state.googleSpreadSheetFileObj['fileId'];
-                          //Create Google Presentation once Spreadsheet created
+                              state.googleSpreadSheetFileObj['fileId'] ?? '';
+                          Globals.shareableLink =
+                              state.googleSpreadSheetFileObj['fileUrl'] ?? '';
+
+                          //Create Google Presentation once Spreadsheet createds
                           _googleDriveBloc.add(CreateSlideToDrive(
                               isMcqSheet: widget.isMcqSheet ?? false,
                               fileTitle: Globals.assessmentName,
@@ -802,7 +806,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     File? photo = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CameraScreen(
+          builder: (context) => GradedPlusCameraScreen(
                 isMcqSheet: widget.isMcqSheet,
                 selectedAnswer: widget.selectedAnswer,
                 isFromHistoryAssessmentScanMore: false,

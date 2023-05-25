@@ -523,13 +523,17 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     //   }
     // }
 
-    if (event is SaveAssessmentToDashboard) {
+    if (event is GradedPlusSaveAssessmentToDashboard) {
       try {
+        List<UserInformation> userInformation =
+            await UserGoogleProfile.getUserProfile();
+
         await saveResultToDashboard(
             assessmentId: event.assessmentId,
             studentInfoDb: event.studentInfoDb,
             schoolId: event.schoolId,
-            assessmentSheetPublicURL: event.assessmentSheetPublicURL);
+            assessmentSheetPublicURL: event.assessmentSheetPublicURL,
+            userInformation: userInformation[0]);
       } on SocketException catch (e, s) {
         e.message == 'Connection failed'
             ? Utility.currentScreenSnackBar("No Internet Connection", null)
@@ -1749,27 +1753,100 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> saveResultToDashboard(
-      {required String assessmentId,
-      required final LocalDatabase<StudentAssessmentInfo> studentInfoDb,
-      required schoolId,
-      required assessmentSheetPublicURL}) async {
+//  Future<bool> saveResultToDashboard(
+//       {required String assessmentId,
+//       required List<StudentAssessmentInfo> studentDetails,
+//       required previousListLength,
+//       required isHistoryDetailPage,
+//       required schoolId,
+//       required assessmentSheetPublicURL}) async {
+//     try {
+//       List<Map> bodyContent = [];
+
+//       // studentDetails.removeAt(0);
+//       // int initIndex = isHistoryDetailPage == true
+//       //     ? previousListLength
+//       //     : previousListLength; // + 1;
+//       for (int i = 0; i < studentDetails.length; i++) {
+//         //To bypass the titles saving in the dashboard
+//         if (studentDetails[i].studentId != 'Id') {
+//           bodyContent.add(recordToJson(
+//               assessmentId,
+//               Utility.getCurrentDate(DateTime.now()),
+//               studentDetails[i].studentGrade ?? '',
+//               studentDetails[i].studentId ?? '',
+//               studentDetails[i].assessmentImage ?? '',
+//               studentDetails[i].studentName ?? ''));
+//         }
+//       }
+//       final ResponseModel response = await _dbServices.postApi(
+//         "https://ny67869sad.execute-api.us-east-2.amazonaws.com/production/saveRecords?objectName=Result__c",
+//         isGoogleApi: true,
+//         body: bodyContent,
+//       );
+//       if (response.statusCode == 200) {
+//         // String id = response.data['body']['id'];
+
+//         List<UserInformation> _profileData =
+//             await UserGoogleProfile.getUserProfile();
+//         bool result = await _sendEmailToAdmin(
+//           assessmentId: assessmentId,
+//           name: _profileData[0]
+//               .userName!
+//               .replaceAll("%20", " ")
+//               .replaceAll("20", ""),
+//           studentResultDetails: studentDetails,
+//           schoolId: schoolId,
+//           email: _profileData[0].userEmail!,
+//           assessmentSheetPublicURL: assessmentSheetPublicURL!,
+//         );
+//         if (!result) {
+//           await _sendEmailToAdmin(
+//             assessmentId: assessmentId,
+//             name: _profileData[0]
+//                 .userName!
+//                 .replaceAll("%20", " ")
+//                 .replaceAll("20", ""),
+//             studentResultDetails: studentDetails,
+//             schoolId: schoolId,
+//             email: _profileData[0].userEmail!,
+//             assessmentSheetPublicURL: assessmentSheetPublicURL!,
+//           );
+//         }
+
+//         return true;
+//       } else {
+//         return false;
+//       }
+//     } catch (e, s) {
+//       FirebaseAnalyticsService.firebaseCrashlytics(
+//           e, s, 'saveResultToDashboard Method');
+//       throw (e);
+//     }
+//   }
+
+  Future<bool> saveResultToDashboard({
+    required String assessmentId,
+    required final LocalDatabase<StudentAssessmentInfo> studentInfoDb,
+    required schoolId,
+    required assessmentSheetPublicURL,
+    required UserInformation userInformation,
+    int retry = 3,
+  }) async {
     try {
-      List<StudentAssessmentInfo> studentDetails = [];
+      List<StudentAssessmentInfo> studentDetails =
+          await _getOnlyNonSavedStudents(studentInfoDb: studentInfoDb);
 
       List<Map> bodyContent = [];
 
       for (int i = 0; i < studentDetails.length; i++) {
-        //To bypass the titles saving in the dashboard
-        if (studentDetails[i].studentId != 'Id') {
-          bodyContent.add(recordToJson(
-              assessmentId,
-              Utility.getCurrentDate(DateTime.now()),
-              studentDetails[i].studentGrade ?? '',
-              studentDetails[i].studentId ?? '',
-              studentDetails[i].assessmentImage ?? '',
-              studentDetails[i].studentName ?? ''));
-        }
+        bodyContent.add(recordToJson(
+            assessmentId,
+            Utility.getCurrentDate(DateTime.now()),
+            studentDetails[i].studentGrade ?? '',
+            studentDetails[i].studentId ?? '',
+            studentDetails[i].assessmentImage ?? '',
+            studentDetails[i].studentName ?? ''));
       }
 
       final ResponseModel response = await _dbServices.postApi(
@@ -1778,39 +1855,36 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         body: bodyContent,
       );
       if (response.statusCode == 200) {
-        // String id = response.data['body']['id'];
+        List<StudentAssessmentInfo> assessmentData =
+            await studentInfoDb.getData();
+        // update the local-db only after assignment are updated on dashboard to manage the next scan more sheets to not repeat in the list
+        assessmentData.asMap().forEach((index, element) async {
+          element.isStudentResultAssignmentSavedOnDashboard = true;
+          //updating local database
+          await studentInfoDb.putAt(index, element);
+        });
 
-        List<UserInformation> _profileData =
-            await UserGoogleProfile.getUserProfile();
-        bool result = await _sendEmailToAdmin(
-          assessmentId: assessmentId,
-          name: _profileData[0]
-              .userName!
+        _sendEmailToAdmin(
+          name: userInformation.userName!
               .replaceAll("%20", " ")
               .replaceAll("20", ""),
-          studentResultDetails: studentDetails,
           schoolId: schoolId,
-          email: _profileData[0].userEmail!,
+          email: userInformation.userEmail!,
           assessmentSheetPublicURL: assessmentSheetPublicURL!,
+          bodyContent: bodyContent,
         );
-        if (!result) {
-          await _sendEmailToAdmin(
-            assessmentId: assessmentId,
-            name: _profileData[0]
-                .userName!
-                .replaceAll("%20", " ")
-                .replaceAll("20", ""),
-            studentResultDetails: studentDetails,
-            schoolId: schoolId,
-            email: _profileData[0].userEmail!,
-            assessmentSheetPublicURL: assessmentSheetPublicURL!,
-          );
-        }
 
         return true;
-      } else {
-        return false;
+      } else if (retry > 0) {
+        return saveResultToDashboard(
+            assessmentId: assessmentId,
+            assessmentSheetPublicURL: assessmentSheetPublicURL,
+            schoolId: schoolId,
+            studentInfoDb: studentInfoDb,
+            userInformation: userInformation,
+            retry: retry - 1);
       }
+      return false;
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, 'saveResultToDashboard Method');
@@ -1836,34 +1910,69 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
-  Future<bool> _sendEmailToAdmin(
-      {required String schoolId,
-      required String name,
-      required String email,
-      required String assessmentId,
-      required String assessmentSheetPublicURL,
-      required List<StudentAssessmentInfo> studentResultDetails}) async {
-    try {
-      List<Map> bodyContent = [];
+  // Future<bool> _sendEmailToAdmin(
+  //     {required String schoolId,
+  //     required String name,
+  //     required String email,
+  //     required String assessmentId,
+  //     required String assessmentSheetPublicURL,
+  //     required List<StudentAssessmentInfo> studentResultDetails}) async {
+  //   try {
+  //     List<Map> bodyContent = [];
 
-      // studentDetails.removeAt(0);
-      for (int i = 0; i < studentResultDetails.length; i++) {
-        if (studentResultDetails[i].studentId == "Id") {
-          studentResultDetails.remove(i);
-        }
-        bodyContent.add(recordToJson(
-            assessmentId,
-            Utility.getCurrentDate(DateTime.now()),
-            studentResultDetails[i].studentGrade ?? '',
-            studentResultDetails[i].studentId ?? '',
-            studentResultDetails[i].assessmentImage ?? '',
-            studentResultDetails[i].studentName ?? ''));
-      }
+  //     for (int i = 0; i < studentResultDetails.length; i++) {
+  //       if (studentResultDetails[i].studentId == "Id") {
+  //         studentResultDetails.remove(i);
+  //       }
+  //       bodyContent.add(recordToJson(
+  //           assessmentId,
+  //           Utility.getCurrentDate(DateTime.now()),
+  //           studentResultDetails[i].studentGrade ?? '',
+  //           studentResultDetails[i].studentId ?? '',
+  //           studentResultDetails[i].assessmentImage ?? '',
+  //           studentResultDetails[i].studentName ?? ''));
+  //     }
+  //     final body = {
+  //       "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
+  //       "to": "techadmin@solvedconsulting.com", //, appdevelopersdp7@gmail.com",
+  //       "subject": "Data Saved To The Dashboard",
+  //       // "html":
+  //       "text":
+  //           '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
+  //     };
+
+  //     final ResponseModel response = await _dbServices.postApi(
+  //       "${OcrOverrides.OCR_API_BASE_URL}sendsmtpEmail",
+  //       isGoogleApi: true,
+  //       body: body,
+  //     );
+  //     if (response.statusCode == 200) {
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   } catch (e, s) {
+  //     FirebaseAnalyticsService.firebaseCrashlytics(
+  //         e, s, '_sendEmailToAdmin Method');
+  //     throw (e);
+  //   }
+  // }
+
+  _sendEmailToAdmin({
+    required String schoolId,
+    required String name,
+    required String email,
+    required String assessmentSheetPublicURL,
+    required List<Map> bodyContent,
+    int retry = 3,
+  }) async {
+    try {
       final body = {
         "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
-        "to": "techadmin@solvedconsulting.com", //, appdevelopersdp7@gmail.com",
+        "to":
+            // "techadmin@solvedconsulting.com",
+            "appdevelopersdp7@gmail.com",
         "subject": "Data Saved To The Dashboard",
-        // "html":
         "text":
             '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
       };
@@ -1873,11 +1982,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         isGoogleApi: true,
         body: body,
       );
+
       if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
+      } else if (retry > 0) {
+        return _sendEmailToAdmin(
+            schoolId: schoolId,
+            assessmentSheetPublicURL: assessmentSheetPublicURL,
+            bodyContent: bodyContent,
+            email: email,
+            name: name,
+            retry: retry - 1);
       }
+      ;
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, '_sendEmailToAdmin Method');
@@ -2362,6 +2478,28 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
       return false;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<List<StudentAssessmentInfo>> _getOnlyNonSavedStudents(
+      {required final LocalDatabase<StudentAssessmentInfo>
+          studentInfoDb}) async {
+    try {
+      List<StudentAssessmentInfo> assessmentData =
+          await studentInfoDb.getData();
+
+      List<StudentAssessmentInfo> nonSavedStudentsOnDashboard = [];
+
+      assessmentData.forEach((student) {
+        if (student.isStudentResultAssignmentSavedOnDashboard == false &&
+            student.studentId != 'Id') {
+          nonSavedStudentsOnDashboard.add(student);
+        }
+      });
+
+      return nonSavedStudentsOnDashboard;
+    } catch (e) {
+      return [];
     }
   }
 }

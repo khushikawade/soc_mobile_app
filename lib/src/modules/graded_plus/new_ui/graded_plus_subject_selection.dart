@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_results_summary.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_subject_search_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_search_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
@@ -429,7 +430,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SearchScreenPage(
+                            builder: (context) => GradedPlusSearchScreenPage(
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
                                   // questionImage: widget.questionImageUrl ?? '',
@@ -491,7 +492,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SearchScreenPage(
+                            builder: (context) => GradedPlusSearchScreenPage(
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
                                   // questionImage: widget.questionImageUrl ?? '',
@@ -1330,6 +1331,21 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                     child: Container(),
                                     listener: (context, state) {
                                       if (state is AssessmentIdSuccess) {
+                                        _saveResultAssignmentsToDashboard(
+                                            assessmentId:
+                                                state.dashboardAssignmentsId ??
+                                                    '',
+                                            googleSpreadsheetUrl:
+                                                Globals.shareableLink ?? '',
+                                            //    subjectId: subjectId ?? '',
+                                            assessmentName:
+                                                Globals.assessmentName ?? '',
+                                            // fileId:
+                                            //     Globals.googleExcelSheetId ??
+                                            //         '',
+                                            studentAssessmentInfoDb:
+                                                _studentAssessmentInfoDb);
+
                                         Navigator.of(context).pop();
                                         _googleDriveBloc.close();
                                         Navigator.pushReplacement(
@@ -1420,36 +1436,19 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                                             .assessmentName ??
                                                         ''));
                                           } else {
-
-
-
-                                            GradedPlusResultsSummary(
-                                              isMcqSheet: widget.isMcqSheet,
-                                              selectedAnswer:
-                                                  widget.selectedAnswer,
-                                              subjectId: subjectId ?? '',
-                                              standardId: standardId ?? '',
-                                              assessmentName:
-                                                  Globals.assessmentName,
-                                              shareLink: Globals.shareableLink!,
-                                              assessmentDetailPage: false,
-                                            );
-
-
-                                            
-
                                             _saveResultAssignmentsToDashboard(
                                                 assessmentId: state
                                                         .dashboardAssignmentsId ??
                                                     '',
                                                 googleSpreadsheetUrl:
-                                                    Globals.shareableLink??'',
-                                                subjectId: subjectId ?? '',
+                                                    Globals.shareableLink ?? '',
+                                                //   subjectId: subjectId ?? '',
                                                 assessmentName:
                                                     Globals.assessmentName ??
                                                         '',
-                                                rubricScore: '',
-                                                fileId: '',
+                                                // fileId: Globals
+                                                //         .googleExcelSheetId ??
+                                                //     '',
                                                 studentAssessmentInfoDb:
                                                     _studentAssessmentInfoDb);
 
@@ -1715,20 +1714,18 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   void _saveResultAssignmentsToDashboard(
       {required String assessmentId,
       required String googleSpreadsheetUrl,
-      required String subjectId,
+      // required String subjectId,
       required String assessmentName,
-      required String rubricScore,
-      required String fileId,
+      //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    _ocrBloc.add(SaveAssessmentToDashboard(
+    _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
       studentInfoDb: studentAssessmentInfoDb,
       assessmentName: assessmentName,
-      rubricScore: rubricScore,
-      subjectId: subjectId,
+      // subjectId: subjectId,
       schoolId: Globals.appSetting.schoolNameC!,
-      fileId: fileId,
+      // fileId: fileId,
     ));
   }
 }
