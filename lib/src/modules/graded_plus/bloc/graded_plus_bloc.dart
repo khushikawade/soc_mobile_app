@@ -1970,9 +1970,8 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     try {
       final body = {
         "from": "'Tech Admin <techadmin@solvedconsulting.com>'",
-        "to":
-            // "techadmin@solvedconsulting.com",
-            "appdevelopersdp7@gmail.com",
+        "to": "techadmin@solvedconsulting.com",
+        // "appdevelopersdp7@gmail.com",
         "subject": "Data Saved To The Dashboard",
         "text":
             '''School Id : $schoolId \n\nTeacher Details : \n\tTeacher Name : $name \n\tTeacher Email : $email  \n\nAssessment Sheet URL : $assessmentSheetPublicURL  \n\nResult detail : \n${bodyContent.toString().replaceAll(',', '\n').replaceAll('{', '\n ').replaceAll('}', ', \n')}'''
