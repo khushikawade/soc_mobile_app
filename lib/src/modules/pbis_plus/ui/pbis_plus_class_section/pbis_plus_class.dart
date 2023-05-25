@@ -121,22 +121,17 @@ class _PBISPlusClassState extends State<PBISPlusClass>
   Widget headerListTile() {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      //minLeadingWidth: 70,
-      title: PlusScreenTitleWidget(kLabelSpacing: 0, text: 'All Courses'),
-      leading: IconButton(
-        onPressed: () {
+      title: PlusScreenTitleWidget(
+        kLabelSpacing: 0,
+        text: 'All Courses',
+        backButton: true,
+        backButtonOnTap: () {
           widget.backOnTap();
         },
-        icon: Icon(
-          IconData(0xe80d,
-              fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-          color: AppTheme.kButtonColor,
-        ),
       ),
       trailing: widget.isGradedPlus == true
           ? Container(
               height: MediaQuery.of(context).size.height * 0.036,
-              padding: EdgeInsets.only(right: 10),
               child: FloatingActionButton.extended(
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () {
@@ -196,11 +191,13 @@ class _PBISPlusClassState extends State<PBISPlusClass>
 
   Widget body() {
     return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          SpacerWidget(_KVerticalSpace / 4),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
           ValueListenableBuilder(
             valueListenable: screenShotNotifier,
             builder: (context, value, child) {
@@ -213,8 +210,6 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   : headerListTile();
             },
           ),
-
-          // SpacerWidget(_KVerticalSpace / 3),
           SpacerWidget(_KVerticalSpace / 5),
           Expanded(
             child: BlocConsumer(

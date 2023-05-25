@@ -136,7 +136,7 @@ class _GradedPlusAssessmentSummaryState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 15),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             PlusScreenTitleWidget(
                 kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
