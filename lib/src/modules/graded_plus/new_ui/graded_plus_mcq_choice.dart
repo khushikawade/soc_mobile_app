@@ -129,7 +129,7 @@ class _GradedPlusMultipleChoiceState extends State<GradedPlusMultipleChoice> {
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+        SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
         PlusScreenTitleWidget(
           kLabelSpacing: 0,
           text: 'Answer Key',

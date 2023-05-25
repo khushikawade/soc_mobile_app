@@ -519,7 +519,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             horizontal: 20,
           ),
           children: [
-            SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+            SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
             titleWidget(),
             SpacerWidget(_KVerticalSpace / 3.5),
             searchWidget(),

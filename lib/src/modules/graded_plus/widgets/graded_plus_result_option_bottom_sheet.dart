@@ -15,7 +15,7 @@ class GradedPlusResultOptionBottomSheet extends StatefulWidget {
   final ValueNotifier<bool> classroomUrlStatus;
   const GradedPlusResultOptionBottomSheet(
       {Key? key,
-      required this.title,
+      this.title,
       this.height = 200,
       required this.getURlForResultSummaryIcons,
       required this.resultSummaryIconsOnTap,

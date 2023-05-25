@@ -131,7 +131,7 @@ class _GradedPlusConstructedResponseState
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: ListView(
         children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
           PlusScreenTitleWidget(
             kLabelSpacing: 0,
             text: 'Points Possible',

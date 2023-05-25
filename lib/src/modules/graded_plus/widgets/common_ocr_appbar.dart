@@ -238,42 +238,43 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             ),
                           ),
                         )
-                      : widget.assessmentDetailPage == null
-                          ? IconButton(
-                              iconSize: 32,
-                              onPressed: () {
-                                if (widget.isHomeButtonPopup == true) {
-                                  _onHomePressed();
-                                } else {
-                                  Utility.setFree();
-                                  // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-                                  if (Overrides.STANDALONE_GRADED_APP) {
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                GradedLandingPage()),
-                                        (_) => false);
-                                  } else {
-                                    // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                                    // Navigator.of(context).pushAndRemoveUntil(
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => HomePage(
-                                    //               isFromOcrSection: true,
-                                    //             )),
-                                    //     (_) => false);
-                                    Navigator.of(context)
-                                        .popUntil((route) => route.isFirst);
-                                  }
-                                }
-                              },
-                              icon: Icon(
-                                IconData(0xe874,
-                                    fontFamily: Overrides.kFontFam,
-                                    fontPackage: Overrides.kFontPkg),
-                                color: AppTheme.kButtonColor,
-                              ),
-                            )
-                          : Container(),
+                      : Container(),
+          //  widget.assessmentDetailPage == null
+          //     ? IconButton(
+          //         iconSize: 32,
+          //         onPressed: () {
+          //           if (widget.isHomeButtonPopup == true) {
+          //             _onHomePressed();
+          //           } else {
+          //             Utility.setFree();
+          //             // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
+          //             if (Overrides.STANDALONE_GRADED_APP) {
+          //               Navigator.of(context).pushAndRemoveUntil(
+          //                   MaterialPageRoute(
+          //                       builder: (context) =>
+          //                           GradedLandingPage()),
+          //                   (_) => false);
+          //             } else {
+          //               // If app is running as the regular school app, it should navigate to the Home page(Staff section).
+          //               // Navigator.of(context).pushAndRemoveUntil(
+          //               //     MaterialPageRoute(
+          //               //         builder: (context) => HomePage(
+          //               //               isFromOcrSection: true,
+          //               //             )),
+          //               //     (_) => false);
+          //               Navigator.of(context)
+          //                   .popUntil((route) => route.isFirst);
+          //             }
+          //           }
+          //         },
+          //         icon: Icon(
+          //           IconData(0xe874,
+          //               fontFamily: Overrides.kFontFam,
+          //               fontPackage: Overrides.kFontPkg),
+          //           color: AppTheme.kButtonColor,
+          //         ),
+          //       )
+          //     : Container(),
           widget.assessmentDetailPage == true
               ? Container()
               : ValueListenableBuilder(
@@ -292,25 +293,25 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   : Container();
                             });
                   }),
-          widget.isOcrHome == true && Overrides.STANDALONE_GRADED_APP != true
-              ? IconButton(
-                  iconSize: 32,
-                  onPressed: () async {
-                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        "walkthrough");
-                    var result = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              customIntroLayout.CustomIntroWidget()),
-                    );
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.help,
-                    //  size: 32,
-                    color: AppTheme.kButtonColor,
-                  ))
-              : Container(),
+          // widget.isOcrHome == true && Overrides.STANDALONE_GRADED_APP != true
+          //     ? IconButton(
+          //         iconSize: 32,
+          //         onPressed: () async {
+          //           await FirebaseAnalyticsService.addCustomAnalyticsEvent(
+          //               "walkthrough");
+          //           var result = await Navigator.of(context).push(
+          //             MaterialPageRoute(
+          //                 builder: (context) =>
+          //                     customIntroLayout.CustomIntroWidget()),
+          //           );
+          //           Navigator.pop(context);
+          //         },
+          //         icon: Icon(
+          //           Icons.help,
+          //           //  size: 32,
+          //           color: AppTheme.kButtonColor,
+          //         ))
+          //     : Container(),
           widget.isProfilePage == true
               ? Container()
               : FutureBuilder(

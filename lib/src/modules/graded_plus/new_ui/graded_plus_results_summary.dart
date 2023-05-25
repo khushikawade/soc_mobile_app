@@ -315,7 +315,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: Column(
         children: [
-          SpacerWidget(StudentPlusOverrides.KVerticalSpace / (4)),
+          SpacerWidget(StudentPlusOverrides.KVerticalSpace /
+              (widget.assessmentDetailPage! ? 10 : 4)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -2380,7 +2381,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 height: constraints.maxHeight < 800
                     ? MediaQuery.of(context).size.height * 0.5
                     : MediaQuery.of(context).size.height * 0.43,
-                title: 'Result Summary Actions',
+
                 getURlForResultSummaryIcons: getURlForBottomIcons,
                 resultSummaryIconsOnTap: bottomIconsOnTap,
                 resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP

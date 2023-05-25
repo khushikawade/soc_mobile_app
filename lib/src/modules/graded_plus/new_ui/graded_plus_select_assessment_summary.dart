@@ -9,10 +9,8 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_result_option_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
-import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -23,13 +21,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:share/share.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../google_classroom/google_classroom_globals.dart';
 import '../../google_classroom/modal/google_classroom_courses.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../widgets/searchbar_widget.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class GradedPlusAssessmentSummary extends StatefulWidget {
   final bool isFromHomeSection;
@@ -644,7 +640,6 @@ class _GradedPlusAssessmentSummaryState
                 height: constraints.maxHeight < 800
                     ? MediaQuery.of(context).size.height * 0.5
                     : MediaQuery.of(context).size.height * 0.43,
-                title: 'Save and Share',
                 getURlForResultSummaryIcons: getURlForBottomIcons,
                 resultSummaryIconsOnTap: bottomIconsOnTap,
                 resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP
