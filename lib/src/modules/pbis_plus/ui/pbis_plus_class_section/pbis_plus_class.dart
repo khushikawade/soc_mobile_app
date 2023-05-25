@@ -586,7 +586,9 @@ class _PBISPlusClassState extends State<PBISPlusClass>
       Container BuildStudentCountIndicator) {
     return GestureDetector(
       onTap: () async {
-        if (isStudentInteractionLoading || isScreenShimmerLoading) {
+        if (isStudentInteractionLoading ||
+            isScreenShimmerLoading ||
+            widget.isGradedPlus == true) {
           return;
         }
         // print(heroTag);
@@ -657,13 +659,14 @@ class _PBISPlusClassState extends State<PBISPlusClass>
                   ),
                 ),
               ),
-              Positioned(
-                  top: 0,
-                  right: 0,
-                  child: ShimmerLoading(
-                      isLoading:
-                          isStudentInteractionLoading || isScreenShimmerLoading,
-                      child: BuildStudentCountIndicator)),
+              if (widget.isGradedPlus != true)
+                Positioned(
+                    top: 0,
+                    right: 0,
+                    child: ShimmerLoading(
+                        isLoading: isStudentInteractionLoading ||
+                            isScreenShimmerLoading,
+                        child: BuildStudentCountIndicator)),
             ],
           )),
     );
