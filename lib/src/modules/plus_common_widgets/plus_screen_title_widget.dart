@@ -38,13 +38,16 @@ class PlusScreenTitleWidget extends StatelessWidget {
                 color: AppTheme.kButtonColor,
               ),
             ),
-          Utility.textWidget(
-              text: text,
-              context: context,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline5!
-                  .copyWith(fontWeight: FontWeight.w700)),
+          FittedBox(
+            child: Utility.textWidget(
+                text: text,
+                context: context,
+                textAlign: TextAlign.left,
+                textTheme: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontWeight: FontWeight.w700)),
+          ),
         ],
       ),
     );

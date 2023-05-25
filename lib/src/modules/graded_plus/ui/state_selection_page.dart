@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_subject_selection.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -156,7 +156,8 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => GradedPluSubjectSelection(
+                                    builder: (context) =>
+                                        GradedPluSubjectSelection(
                                           isMcqSheet: widget.isMcqSheet,
                                           selectedAnswer: widget.selectedAnswer,
                                           // isCommonCore: selectedIndex.value == 0

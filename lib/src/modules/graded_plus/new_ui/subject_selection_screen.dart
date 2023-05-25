@@ -9,7 +9,7 @@ import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_results_summary.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_search_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
@@ -157,6 +157,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
   // back button widget on subject selection page at appBar -------
   Widget backButtonWidget() {
     return IconButton(
+      padding: EdgeInsets.all(0),
       icon: Icon(
         IconData(0xe80d,
             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),

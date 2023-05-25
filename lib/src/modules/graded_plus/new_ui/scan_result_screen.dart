@@ -648,7 +648,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                 ],
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.036,
+                height: MediaQuery.of(context).size.height * 0.05,
                 child: FloatingActionButton.extended(
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () {
