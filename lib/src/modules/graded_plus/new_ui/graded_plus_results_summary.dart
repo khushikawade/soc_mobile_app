@@ -21,6 +21,7 @@ import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/edit_bottom_sheet.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_fab.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
@@ -135,8 +136,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
   ValueNotifier<bool> isGoogleSheetStateReceived = ValueNotifier<bool>(false);
   final ScrollController _scrollController = ScrollController();
-  GoogleDriveBloc _driveBloc3 = GoogleDriveBloc();
-  final ValueNotifier<bool> isShareLinkReceived = ValueNotifier<bool>(false);
+  // GoogleDriveBloc _driveBloc3 = GoogleDriveBloc();
+  // final ValueNotifier<bool> isShareLinkReceived = ValueNotifier<bool>(false);
   LocalDatabase<GoogleClassroomCourses> _googleClassRoomlocalDb =
       LocalDatabase(Strings.googleClassroomCoursesList);
 
@@ -1035,69 +1036,69 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         });
   }
 
-  Widget _bottomButtons(context, List iconsList, List iconName,
-      {required String webContentLink}) {
-    return Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor == Color(0xff000000)
-                ? Color(0xff162429)
-                : Color(0xffF7F8F9),
-            // color: Theme.of(context).backgroundColor,
-            boxShadow: [
-              new BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.2),
-                blurRadius: 20.0,
-              ),
-            ],
-            borderRadius: BorderRadius.circular(4)),
-        margin: widget.assessmentDetailPage!
-            ? EdgeInsets.only(
-                left: MediaQuery.of(context).size.width * 0.15,
-                right: MediaQuery.of(context).size.width * 0.15)
-            : !widget.assessmentDetailPage!
-                ? EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.0,
-                    right: MediaQuery.of(context).size.width * 0.0)
-                : Globals.deviceType == 'tablet'
-                    ? EdgeInsets.only(
-                        right: MediaQuery.of(context).size.width * 0.03)
-                    : null,
-        padding: Globals.deviceType == 'tablet'
-            ? EdgeInsets.symmetric(horizontal: 20)
-            : EdgeInsets.symmetric(horizontal: 8),
-        height: MediaQuery.of(context).orientation == Orientation.portrait
-            ? MediaQuery.of(context).size.height * 0.086
-            : MediaQuery.of(context).size.width * 0.086,
-        width:
-            //  Overrides.STANDALONE_GRADED_APP == true
-            //     ? (widget.assessmentDetailPage == true
-            //         ? MediaQuery.of(context).size.width * 0.5
-            //         : MediaQuery.of(context).size.width * 0.7)
-            //  :
-            widget.assessmentDetailPage!
-                ? MediaQuery.of(context).size.width * 0.7
-                : MediaQuery.of(context).size.width * 0.9,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: Overrides.STANDALONE_GRADED_APP
-              ? widget.assessmentDetailPage!
-                  ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
-                      .map<Widget>((element) => bottomIcon(element))
-                      .toList()
-                  : ResultSummaryIcons.standAloneResultSummaryIconsModalList
-                      .map<Widget>((element) => bottomIcon(element))
-                      .toList()
-              : widget.assessmentDetailPage!
-                  ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
-                      .map<Widget>((element) => bottomIcon(element))
-                      .toList()
-                  : ResultSummaryIcons.standAloneResultSummaryIconsModalList
-                      .map<Widget>((element) => bottomIcon(element))
-                      .toList(),
-        ));
-  }
+  // Widget _bottomButtons(context, List iconsList, List iconName,
+  //     {required String webContentLink}) {
+  //   return Container(
+  //       alignment: Alignment.center,
+  //       decoration: BoxDecoration(
+  //           color: Theme.of(context).backgroundColor == Color(0xff000000)
+  //               ? Color(0xff162429)
+  //               : Color(0xffF7F8F9),
+  //           // color: Theme.of(context).backgroundColor,
+  //           boxShadow: [
+  //             new BoxShadow(
+  //               color: Color.fromRGBO(0, 0, 0, 0.2),
+  //               blurRadius: 20.0,
+  //             ),
+  //           ],
+  //           borderRadius: BorderRadius.circular(4)),
+  //       margin: widget.assessmentDetailPage!
+  //           ? EdgeInsets.only(
+  //               left: MediaQuery.of(context).size.width * 0.15,
+  //               right: MediaQuery.of(context).size.width * 0.15)
+  //           : !widget.assessmentDetailPage!
+  //               ? EdgeInsets.only(
+  //                   left: MediaQuery.of(context).size.width * 0.0,
+  //                   right: MediaQuery.of(context).size.width * 0.0)
+  //               : Globals.deviceType == 'tablet'
+  //                   ? EdgeInsets.only(
+  //                       right: MediaQuery.of(context).size.width * 0.03)
+  //                   : null,
+  //       padding: Globals.deviceType == 'tablet'
+  //           ? EdgeInsets.symmetric(horizontal: 20)
+  //           : EdgeInsets.symmetric(horizontal: 8),
+  //       height: MediaQuery.of(context).orientation == Orientation.portrait
+  //           ? MediaQuery.of(context).size.height * 0.086
+  //           : MediaQuery.of(context).size.width * 0.086,
+  //       width:
+  //           //  Overrides.STANDALONE_GRADED_APP == true
+  //           //     ? (widget.assessmentDetailPage == true
+  //           //         ? MediaQuery.of(context).size.width * 0.5
+  //           //         : MediaQuery.of(context).size.width * 0.7)
+  //           //  :
+  //           widget.assessmentDetailPage!
+  //               ? MediaQuery.of(context).size.width * 0.7
+  //               : MediaQuery.of(context).size.width * 0.9,
+  //       child: Row(
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //         children: Overrides.STANDALONE_GRADED_APP
+  //             ? widget.assessmentDetailPage!
+  //                 ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
+  //                     .map<Widget>((element) => bottomIcon(element))
+  //                     .toList()
+  //                 : ResultSummaryIcons.standAloneResultSummaryIconsModalList
+  //                     .map<Widget>((element) => bottomIcon(element))
+  //                     .toList()
+  //             : widget.assessmentDetailPage!
+  //                 ? ResultSummaryIcons.standAloneResultSummaryIconsModalList
+  //                     .map<Widget>((element) => bottomIcon(element))
+  //                     .toList()
+  //                 : ResultSummaryIcons.standAloneResultSummaryIconsModalList
+  //                     .map<Widget>((element) => bottomIcon(element))
+  //                     .toList(),
+  //       ));
+  // }
 
   _showDataSavedPopup(
       {required bool? historyAssessmentSection,
@@ -2043,108 +2044,108 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     );
   }
 
-  Widget bottomIcon(ResultSummaryIcons element) {
-    return Expanded(
-      child: ValueListenableBuilder(
-          valueListenable: classroomUrlStatus,
-          child: Container(),
-          builder: (BuildContext context, bool value, Widget? child) {
-            return ValueListenableBuilder(
-                valueListenable: isShareLinkReceived,
-                child: Container(),
-                builder: (BuildContext context, dynamic value, Widget? child) {
-                  return ValueListenableBuilder(
-                      valueListenable: dashboardState,
-                      child: Container(),
-                      builder:
-                          (BuildContext context, dynamic value, Widget? child) {
-                        return Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              //text building for all icons
-                              Utility.textWidget(
-                                  text: element.title!,
-                                  context: context,
-                                  textTheme: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2!
-                                      .copyWith(fontWeight: FontWeight.bold)),
+  // Widget bottomIcon(ResultSummaryIcons element) {
+  //   return Expanded(
+  //     child: ValueListenableBuilder(
+  //         valueListenable: classroomUrlStatus,
+  //         child: Container(),
+  //         builder: (BuildContext context, bool value, Widget? child) {
+  //           return ValueListenableBuilder(
+  //               valueListenable: isShareLinkReceived,
+  //               child: Container(),
+  //               builder: (BuildContext context, dynamic value, Widget? child) {
+  //                 return ValueListenableBuilder(
+  //                     valueListenable: dashboardState,
+  //                     child: Container(),
+  //                     builder:
+  //                         (BuildContext context, dynamic value, Widget? child) {
+  //                       return Column(
+  //                           mainAxisSize: MainAxisSize.max,
+  //                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                           children: [
+  //                             //text building for all icons
+  //                             Utility.textWidget(
+  //                                 text: element.title!,
+  //                                 context: context,
+  //                                 textTheme: Theme.of(context)
+  //                                     .textTheme
+  //                                     .subtitle2!
+  //                                     .copyWith(fontWeight: FontWeight.bold)),
 
-                              //Loading indicator dashboard
-                              if ((element.title == "Dashboard" &&
-                                      dashboardState.value == "Loading") ||
-                                  (element.title == "Share" &&
-                                      !isShareLinkReceived.value) ||
-                                  (element.title == "Class" &&
-                                      !classroomUrlStatus.value))
-                                Container(
-                                    padding: EdgeInsets.all(3),
-                                    width:
-                                        Globals.deviceType == "phone" ? 28 : 50,
-                                    height:
-                                        Globals.deviceType == "phone" ? 28 : 50,
-                                    alignment: Alignment.center,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: MediaQuery.of(context)
-                                              .size
-                                              .shortestSide *
-                                          0.005,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                    ))
+  //                             //Loading indicator dashboard
+  //                             if ((element.title == "Dashboard" &&
+  //                                     dashboardState.value == "Loading") ||
+  //                                 (element.title == "Share" &&
+  //                                     !isShareLinkReceived.value) ||
+  //                                 (element.title == "Class" &&
+  //                                     !classroomUrlStatus.value))
+  //                               Container(
+  //                                   padding: EdgeInsets.all(3),
+  //                                   width:
+  //                                       Globals.deviceType == "phone" ? 28 : 50,
+  //                                   height:
+  //                                       Globals.deviceType == "phone" ? 28 : 50,
+  //                                   alignment: Alignment.center,
+  //                                   child: CircularProgressIndicator(
+  //                                     strokeWidth: MediaQuery.of(context)
+  //                                             .size
+  //                                             .shortestSide *
+  //                                         0.005,
+  //                                     color: Theme.of(context)
+  //                                         .colorScheme
+  //                                         .primaryVariant,
+  //                                   ))
 
-                              //Tick mark icons
-                              else if (element.title == "Dashboard" &&
-                                  dashboardState.value == "Success")
-                                SvgPicture.asset(
-                                    'assets/ocr_result_section_bottom_button_icons/Done.svg',
-                                    width:
-                                        Globals.deviceType == "phone" ? 28 : 50,
-                                    height:
-                                        Globals.deviceType == "phone" ? 28 : 50,
-                                    color: AppTheme.kButtonColor)
+  //                             //Tick mark icons
+  //                             else if (element.title == "Dashboard" &&
+  //                                 dashboardState.value == "Success")
+  //                               SvgPicture.asset(
+  //                                   'assets/ocr_result_section_bottom_button_icons/Done.svg',
+  //                                   width:
+  //                                       Globals.deviceType == "phone" ? 28 : 50,
+  //                                   height:
+  //                                       Globals.deviceType == "phone" ? 28 : 50,
+  //                                   color: AppTheme.kButtonColor)
 
-                              //building all icons here
-                              else
-                                Builder(builder: (context) {
-                                  String? url = getURlForBottomIcons(
-                                      title: element.title ?? '');
+  //                             //building all icons here
+  //                             else
+  //                               Builder(builder: (context) {
+  //                                 String? url = getURlForBottomIcons(
+  //                                     title: element.title ?? '');
 
-                                  return Opacity(
-                                    opacity: ((url?.isEmpty ?? true) ||
-                                            (url == 'NA'))
-                                        ? 0.3
-                                        : 1.0,
-                                    child: InkWell(
-                                      child: SvgPicture.asset(element.svgPath!,
-                                          width: Globals.deviceType == "phone"
-                                              ? 28
-                                              : 50,
-                                          height: Globals.deviceType == "phone"
-                                              ? 28
-                                              : 50,
-                                          color: Theme.of(context)
-                                                          .backgroundColor ==
-                                                      Color(0xff000000) &&
-                                                  element.title == "Dashboard"
-                                              ? Color(0xffF7F8F9)
-                                              : null),
-                                      onTap: (() async {
-                                        bottomIconsOnTap(
-                                            title: element.title ?? '',
-                                            url: url ?? '');
-                                      }),
-                                    ),
-                                  );
-                                }),
-                            ]);
-                      });
-                });
-          }),
-    );
-  }
+  //                                 return Opacity(
+  //                                   opacity: ((url?.isEmpty ?? true) ||
+  //                                           (url == 'NA'))
+  //                                       ? 0.3
+  //                                       : 1.0,
+  //                                   child: InkWell(
+  //                                     child: SvgPicture.asset(element.svgPath!,
+  //                                         width: Globals.deviceType == "phone"
+  //                                             ? 28
+  //                                             : 50,
+  //                                         height: Globals.deviceType == "phone"
+  //                                             ? 28
+  //                                             : 50,
+  //                                         color: Theme.of(context)
+  //                                                         .backgroundColor ==
+  //                                                     Color(0xff000000) &&
+  //                                                 element.title == "Dashboard"
+  //                                             ? Color(0xffF7F8F9)
+  //                                             : null),
+  //                                     onTap: (() async {
+  //                                       bottomIconsOnTap(
+  //                                           title: element.title ?? '',
+  //                                           url: url ?? '');
+  //                                     }),
+  //                                   ),
+  //                                 );
+  //                               }),
+  //                           ]);
+  //                     });
+  //               });
+  //         }),
+  //   );
+  // }
 
   bottomIconsOnTap({required String title, required String url}) async {
     switch (title) {
@@ -2317,19 +2318,20 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           fileId: widget.fileId,
           assessmentObj:
               GoogleClassroomGlobals.studentAssessmentAndClassroomObj));
-      _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
+      // _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
     } else {
       updateAssessmentToDb();
-      if (widget.isScanMore != true) {
-        // print("Shared Link called");
-        _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
-      } else {
-        //TODO : REMOVE GLOBAL ACCESS : IMPROVE
 
-        widget.shareLink = Globals.shareableLink;
-        isShareLinkReceived.value = true;
-      }
+      // if (widget.isScanMore != true) {
+      //   // print("Shared Link called");
+      //   _driveBloc3.add(GetShareLink(fileId: widget.fileId, slideLink: true));
+      // } else {
+      //   //TODO : REMOVE GLOBAL ACCESS : IMPROVE
 
+      //   widget.shareLink = Globals.shareableLink;
+      //   // isShareLinkReceived.value = true;
+      // }
+      widget.shareLink = Globals.shareableLink;
       iconsList = Globals.ocrResultIcons;
       iconsName = Globals.ocrResultIconsName;
 
@@ -2446,18 +2448,24 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
         ),
         Padding(
           padding: const EdgeInsets.only(right: 10),
-          child: GradedPlusCustomFloatingActionButton(
-            heroTag: 'share_tag',
-            icon: Icon(
-                IconData(0xe868,
-                    fontFamily: Overrides.kFontFam,
-                    fontPackage: Overrides.kFontPkg),
-                color: Theme.of(context).backgroundColor),
-            isExtended: false,
-            backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+          child: PlusCustomFloatingActionButton(
             onPressed: _saveAndShareBottomSheetMenu,
           ),
-        ),
+        )
+        // Padding(
+        //   padding: const EdgeInsets.only(right: 10),
+        //   child: GradedPlusCustomFloatingActionButton(
+        //     heroTag: 'share_tag',
+        //     icon: Icon(
+        //         IconData(0xe868,
+        //             fontFamily: Overrides.kFontFam,
+        //             fontPackage: Overrides.kFontPkg),
+        //         color: Theme.of(context).backgroundColor),
+        //     isExtended: false,
+        //     backgroundColor: AppTheme.kButtonColor.withOpacity(1.0),
+        //     onPressed: _saveAndShareBottomSheetMenu,
+        //   ),
+        // ),
       ],
     );
   }
