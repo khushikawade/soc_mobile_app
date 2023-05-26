@@ -2,9 +2,9 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
-import 'package:Soc/src/modules/google_classroom/ui/courses_list.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -25,7 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_version/new_version.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:Soc/src/modules/graded_plus/ui/graded_plus_navbar_home.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
 
 class GradedLandingPage extends StatefulWidget {
   final bool? isFromLogoutPage;
@@ -457,7 +457,7 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => AssessmentSummary(
+          builder: (context) => GradedPlusAssessmentSummary(
                 selectedFilterValue: "All",
                 isFromHomeSection: true,
               )),

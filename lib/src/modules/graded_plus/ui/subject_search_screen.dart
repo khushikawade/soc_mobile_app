@@ -7,6 +7,8 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/subject_selection/subject_selection.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
@@ -535,7 +537,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  SubjectSelection(
+                                                  GradedPluSubjectSelection(
                                                     isMcqSheet:
                                                         widget.isMcqSheet,
                                                     selectedAnswer:
@@ -823,7 +825,7 @@ class _SearchScreenPageState extends State<SearchScreenPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => ResultsSummary(
+          builder: (context) => GradedPlusResultsSummary(
                 isMcqSheet: widget.isMcqSheet,
                 selectedAnswer: widget.selectedAnswer,
                 fileId: Globals.googleExcelSheetId,

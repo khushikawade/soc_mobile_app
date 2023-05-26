@@ -1,6 +1,7 @@
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_student_dashbord.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/model/student_plus_info_model.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/modules/student_plus/ui/student_plus_search_page.dart';
@@ -93,7 +94,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 4),
-          StudentPlusScreenTitleWidget(
+          PlusScreenTitleWidget(
               kLabelSpacing: _kLabelSpacing,
               text: StudentPlusOverrides.studentPBISPageTitle),
           SpacerWidget(StudentPlusOverrides.kSymmetricPadding),
@@ -130,7 +131,7 @@ class _StudentPlusPBISScreenState extends State<StudentPlusPBISScreen> {
   /* --------------------- widget to show pbis Dashboard --------------------- */
   Widget pbisDashboardWidget(constraint) {
     return PBISPlusStudentDashBoard(
-      studentProfile:widget.studentDetails.studentPhoto,
+      studentProfile: widget.studentDetails.studentPhoto,
       constraint: constraint,
       isValueChangeNotice: isValueChangeNotice,
       isFromStudentPlus: true,
