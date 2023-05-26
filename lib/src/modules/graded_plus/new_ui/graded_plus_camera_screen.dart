@@ -8,8 +8,10 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/create_assessment_screen.dart';
 
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/scan_result_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/student_popup.dart';
 import 'package:Soc/src/overrides.dart';
