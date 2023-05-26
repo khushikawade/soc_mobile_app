@@ -535,7 +535,9 @@ class _GradedPlusAssessmentSummaryState
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color: AppTheme.kButtonColor),
-                onPressed: _saveAndShareBottomSheetMenu,
+                onPressed: () {
+                  _saveAndShareBottomSheetMenu(assessment: list[index]);
+                },
               ),
             ),
           ),
@@ -622,8 +624,8 @@ class _GradedPlusAssessmentSummaryState
             ));
   }
 
-  _saveAndShareBottomSheetMenu() async {
-    await showModalBottomSheet(
+  _saveAndShareBottomSheetMenu({required HistoryAssessment assessment}) {
+    showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -648,7 +650,17 @@ class _GradedPlusAssessmentSummaryState
                         .standAloneHistoryResultSummaryIconsModalList
                     : ResultSummaryIcons.resultSummaryIconsModalList,
                 // classroomUrlStatus: ValueNotifier<bool>(true),
-                allUrls: {},
+                allUrls: {
+                  'Share': assessment.webContentLink ?? '',
+                  'Drive': Globals.googleDriveFolderPath ?? '',
+                  'History': 'History',
+                  'Dashboard': 'Dashboard',
+                  'Slides': assessment.presentationLink ?? '',
+                  'Sheets': assessment.webContentLink ?? '',
+                  'Class': GoogleClassroomGlobals
+                          .studentAssessmentAndClassroomObj.courseWorkURL ??
+                      '',
+                },
               );
             },
           );
