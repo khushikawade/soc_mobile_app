@@ -3,7 +3,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_results_summary.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/ui/google_search.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
@@ -652,55 +652,6 @@ class _GradedPlusAssessmentSummaryState
           );
         });
   }
-
-  // Widget trailingRowBuilder({required HistoryAssessment element}) {
-  //   return Row(mainAxisSize: MainAxisSize.min, children: [
-  //     if (element.presentationLink != null &&
-  //         element.presentationLink!.isNotEmpty)
-  //       GestureDetector(
-  //           onTap: () {
-  //             Utility.updateLogs(
-  //                 activityType: 'GRADED+',
-  //                 activityId: '31',
-  //                 sessionId: element.sessionId ?? '',
-  //                 description:
-  //                     'Slide Action Button Button on Assignment summery page ',
-  //                 operationResult: 'Success');
-  //             Utility.launchUrlOnExternalBrowser(element.presentationLink!);
-  //           },
-  //           child: Padding(
-  //             padding: const EdgeInsets.all(5.0),
-  //             child: SvgPicture.asset(
-  //               'assets/ocr_result_section_bottom_button_icons/Slide.svg',
-  //               width: Globals.deviceType == "phone" ? 28 : 40,
-  //               height: Globals.deviceType == "phone" ? 28 : 40,
-  //             ),
-  //           )),
-  //     GestureDetector(
-  //       onTap: () {
-  //         Utility.updateLogs(
-  //             activityType: 'GRADED+',
-  //             activityId: '13',
-  //             sessionId: element.sessionId != null ? element.sessionId : '',
-  //             description:
-  //                 'Teacher tap on Share Button on Assignment summery page',
-  //             operationResult: 'Success');
-
-  //         if (element.webContentLink != null && element.webContentLink != '') {
-  //           Share.share(element.webContentLink!);
-  //         }
-  //       },
-  //       child: Icon(
-  //         IconData(0xe876,
-  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-  //         color: Color(0xff000000) != Theme.of(context).backgroundColor
-  //             ? Color(0xff111C20)
-  //             : Color(0xffF7F8F9),
-  //         size: Globals.deviceType == 'phone' ? 28 : 38,
-  //       ),
-  //     ),
-  //   ]);
-  // }
 
   getURlForBottomIcons({required String title}) {}
 

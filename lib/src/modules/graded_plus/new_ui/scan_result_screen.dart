@@ -18,7 +18,6 @@ import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.d
 import 'package:Soc/src/modules/graded_plus/widgets/suggestion_chip.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
 import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
-import 'package:Soc/src/modules/student_plus/widgets/screen_title_widget.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/Strings.dart';
 import 'package:Soc/src/services/analytics.dart';
@@ -175,7 +174,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
           backgroundColor: Colors.transparent,
           appBar: appBar(),
           body: body(),
-          floatingActionButton: floatingActionButton(),
+          floatingActionButton: nextScanFloatingActionButton(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
         )
@@ -205,66 +204,45 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     );
   }
 
-  Widget floatingActionButton() {
+  Widget nextScanFloatingActionButton() {
     return ValueListenableBuilder(
         valueListenable: scanFailure,
         child: Container(),
         builder: (BuildContext context, dynamic value, Widget? child) {
-          return
-              //  scanFailure.value == "Failure"
-              //     ? Align(
-              //         alignment: Alignment.bottomCenter,
-              //         child: retryButton(
-              //           onPressed: () {
-              //             Utility.updateLogs(
-              //                 activityType: 'GRADED+',
-              //                 activityId: '9',
-              //                 description: 'Scan Failure and teacher retry scan',
-              //                 operationResult: 'Failure');
-
-              //             ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              //             Navigator.of(context).pop(widget.isFlashOn);
-              //           },
-              //         ))
-              //     :
-              scanFailure.value == "Success"
-                  ? ValueListenableBuilder(
-                      valueListenable: isBackFromCamera,
-                      child: Container(),
-                      builder:
-                          (BuildContext context, dynamic value, Widget? child) {
-                        return isBackFromCamera.value != true
-                            ? Align(
-                                alignment: Alignment.bottomCenter,
-                                child: ValueListenableBuilder(
-                                    valueListenable: animationStart,
-                                    child: Container(),
-                                    builder: (BuildContext context,
-                                        dynamic value, Widget? child) {
-                                      return InkWell(
-                                        onTap: () async {
-                                          onPressSuccessFloatingButton();
-                                        },
-                                        child:
-                                            GradedPlusNextScanAnimationButton(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.4,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
+          return scanFailure.value == "Success"
+              ? ValueListenableBuilder(
+                  valueListenable: isBackFromCamera,
+                  child: Container(),
+                  builder:
+                      (BuildContext context, dynamic value, Widget? child) {
+                    return isBackFromCamera.value != true
+                        ? Align(
+                            alignment: Alignment.bottomCenter,
+                            child: ValueListenableBuilder(
+                                valueListenable: animationStart,
+                                child: Container(),
+                                builder: (BuildContext context, dynamic value,
+                                    Widget? child) {
+                                  return InkWell(
+                                    onTap: () async {
+                                      onPressSuccessFloatingButton();
+                                    },
+                                    child: GradedPlusNextScanAnimationButton(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      height:
+                                          MediaQuery.of(context).size.height *
                                               0.055,
-                                          animationDuration:
-                                              Duration(milliseconds: 4950),
-                                          animationStart: animationStart.value,
-                                        ),
-                                      );
-                                    }),
-                              )
-                            : Container();
-                      })
-                  : Container();
+                                      animationDuration:
+                                          Duration(milliseconds: 4950),
+                                      animationStart: animationStart.value,
+                                    ),
+                                  );
+                                }),
+                          )
+                        : Container();
+                  })
+              : Container();
         });
   }
 
@@ -649,7 +627,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                 ],
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.036,
+                height: MediaQuery.of(context).size.height * 0.05,
                 child: FloatingActionButton.extended(
                   backgroundColor: AppTheme.kButtonColor,
                   onPressed: () {
@@ -1528,41 +1506,6 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
               });
         });
   }
-
-  // Widget retryButton({required final onPressed}) {
-  //   return InkWell(
-  //     onTap: onPressed,
-  //     child: FittedBox(
-  //       child: Container(
-  //         padding: EdgeInsets.symmetric(horizontal: 10),
-  //         decoration: BoxDecoration(
-  //           color: AppTheme.kButtonColor,
-  //           borderRadius: BorderRadius.all(Radius.circular(25)),
-  //         ),
-  //         height: MediaQuery.of(context).size.height * 0.055,
-  //         // width: Globals.deviceType=='phone'? MediaQuery.of(context).size.width * 0.3: MediaQuery.of(context).size.width * 0.2,
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             Icon(Icons.refresh,
-  //                 color: Theme.of(context).backgroundColor,
-  //                 size: Globals.deviceType == 'phone' ? 28 : 40),
-  //             SizedBox(width: 5),
-  //             Center(
-  //               child: Utility.textWidget(
-  //                 text: 'Retry',
-  //                 context: context,
-  //                 textTheme: Theme.of(context).textTheme.headline1!.copyWith(
-  //                       color: Theme.of(context).backgroundColor,
-  //                     ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget retryButton({required final onPressed}) {
     return GradedPlusCustomFloatingActionButton(

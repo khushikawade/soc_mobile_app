@@ -7,10 +7,8 @@ import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_results_summary.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_subject_selection.dart';
-import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
-import 'package:Soc/src/modules/graded_plus/ui/subject_selection/subject_selection.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
+
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
@@ -740,10 +738,10 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
                                           state.dashboardAssignmentsId ?? '',
                                       googleSpreadsheetUrl:
                                           Globals.shareableLink ?? '',
-                                    //  subjectId: widget.subjectId ?? '',
+                                      //  subjectId: widget.subjectId ?? '',
                                       assessmentName:
                                           Globals.assessmentName ?? '',
-                                    //  fileId: Globals.googleExcelSheetId ?? '',
+                                      //  fileId: Globals.googleExcelSheetId ?? '',
                                       studentAssessmentInfoDb:
                                           _studentAssessmentInfoDb);
                                   _navigatetoResultSection();
@@ -920,16 +918,16 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
   void _saveResultAssignmentsToDashboard(
       {required String assessmentId,
       required String googleSpreadsheetUrl,
-    //  required String subjectId,
+      //  required String subjectId,
       required String assessmentName,
-    //  required String fileId,
+      //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
     _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
       studentInfoDb: studentAssessmentInfoDb,
       assessmentName: assessmentName,
-     // subjectId: subjectId,
+      // subjectId: subjectId,
       schoolId: Globals.appSetting.schoolNameC!,
       //fileId: fileId,
     ));

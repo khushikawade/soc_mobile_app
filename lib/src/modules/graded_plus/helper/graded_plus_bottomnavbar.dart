@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_summary.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_class_section/pbis_plus_class.dart';
 import 'package:Soc/src/modules/pbis_plus/ui/pbis_plus_staff.dart';
@@ -8,7 +8,7 @@ import 'package:Soc/src/styles/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_select_assessment_type.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/select_assessment_type_screen.dart';
 
 class GradedPlusBottomNavBar {
   /* ------- function to return list of widget for bottom navigation bar ------ */
@@ -44,7 +44,7 @@ class GradedPlusBottomNavBar {
   }
 
   /* ---------- function to return list of bottom navigation bar item --------- */
-  static List<PersistentBottomNavBarItem> gradedPlusnavBarsItems(
+  static List<PersistentBottomNavBarItem> gradedPlusNavbarItems(
       {required BuildContext context}) {
     List<PersistentBottomNavBarItem> items = [
       PersistentBottomNavBarItem(

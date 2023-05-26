@@ -104,33 +104,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         leadingWidth: 110, //widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
         leading: leading,
-
-        //  Row(
-        //   // mainAxisAlignment: MainAxisAlignment.start,
-        //   children: [
-        //     widget.customBackButton != null
-        //         ? widget.customBackButton!
-        //         : widget.isBackButton == true
-        //             ? IconButton(
-        //                 onPressed: () {
-        //                   //To dispose the snackbar message before navigating back if exist
-        //                   ScaffoldMessenger.of(context).removeCurrentSnackBar();
-        //                   Navigator.pop(context, widget.navigateBack);
-        //                 },
-        //                 icon: Icon(
-        //                   IconData(0xe80d,
-        //                       fontFamily: Overrides.kFontFam,
-        //                       fontPackage: Overrides.kFontPkg),
-        //                   color: AppTheme.kButtonColor,
-        //                 ),
-        //               )
-        //             : Container(
-        //                 height: 0,
-        //                 width: 8.0,
-        //               ),
-        //     widget.fromGradedPlus == true ? commonGradedLogo() : Container()
-        //   ],
-        // ),
         title: GestureDetector(
             onTap: widget.onTap,
             child: Container(
@@ -182,13 +155,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                           GradedLandingPage()),
                                   (_) => false);
                             } else {
-                              // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                              // Navigator.of(context).pushAndRemoveUntil(
-                              //     MaterialPageRoute(
-                              //         builder: (context) => HomePage(
-                              //               isFromOcrSection: true,
-                              //             )),
-                              //     (_) => false);
                               Navigator.of(context)
                                   .popUntil((route) => route.isFirst);
                             }
@@ -239,42 +205,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                           ),
                         )
                       : Container(),
-          //  widget.assessmentDetailPage == null
-          //     ? IconButton(
-          //         iconSize: 32,
-          //         onPressed: () {
-          //           if (widget.isHomeButtonPopup == true) {
-          //             _onHomePressed();
-          //           } else {
-          //             Utility.setFree();
-          //             // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-          //             if (Overrides.STANDALONE_GRADED_APP) {
-          //               Navigator.of(context).pushAndRemoveUntil(
-          //                   MaterialPageRoute(
-          //                       builder: (context) =>
-          //                           GradedLandingPage()),
-          //                   (_) => false);
-          //             } else {
-          //               // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-          //               // Navigator.of(context).pushAndRemoveUntil(
-          //               //     MaterialPageRoute(
-          //               //         builder: (context) => HomePage(
-          //               //               isFromOcrSection: true,
-          //               //             )),
-          //               //     (_) => false);
-          //               Navigator.of(context)
-          //                   .popUntil((route) => route.isFirst);
-          //             }
-          //           }
-          //         },
-          //         icon: Icon(
-          //           IconData(0xe874,
-          //               fontFamily: Overrides.kFontFam,
-          //               fontPackage: Overrides.kFontPkg),
-          //           color: AppTheme.kButtonColor,
-          //         ),
-          //       )
-          //     : Container(),
           widget.assessmentDetailPage == true
               ? Container()
               : ValueListenableBuilder(
@@ -293,25 +223,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   : Container();
                             });
                   }),
-          // widget.isOcrHome == true && Overrides.STANDALONE_GRADED_APP != true
-          //     ? IconButton(
-          //         iconSize: 32,
-          //         onPressed: () async {
-          //           await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-          //               "walkthrough");
-          //           var result = await Navigator.of(context).push(
-          //             MaterialPageRoute(
-          //                 builder: (context) =>
-          //                     customIntroLayout.CustomIntroWidget()),
-          //           );
-          //           Navigator.pop(context);
-          //         },
-          //         icon: Icon(
-          //           Icons.help,
-          //           //  size: 32,
-          //           color: AppTheme.kButtonColor,
-          //         ))
-          //     : Container(),
           widget.isProfilePage == true
               ? Container()
               : FutureBuilder(
@@ -346,9 +257,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                         profile: snapshot.data!,
                                       )),
                             );
-
-                            // _showPopUp(snapshot.data!);
-                            //print("profile url");
                           },
                         ),
                       );
