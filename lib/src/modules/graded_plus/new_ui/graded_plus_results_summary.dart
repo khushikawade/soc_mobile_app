@@ -2388,7 +2388,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               return GradedPlusResultOptionBottomSheet(
                 height: constraints.maxHeight < 800
                     ? MediaQuery.of(context).size.height * 0.5
-                    : MediaQuery.of(context).size.height * 0.43,
+                    : MediaQuery.of(context).size.height * 0.30,
 
                 getURlForResultSummaryIcons: getURlForBottomIcons,
                 resultSummaryIconsOnTap: bottomIconsOnTap,

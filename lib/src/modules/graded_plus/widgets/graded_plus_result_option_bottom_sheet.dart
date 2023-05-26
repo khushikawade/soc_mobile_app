@@ -52,7 +52,7 @@ class _GradedPlusResultOptionBottomSheetState
         ),
         padding: EdgeInsets.only(left: 16),
         child: Column(
-          mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
