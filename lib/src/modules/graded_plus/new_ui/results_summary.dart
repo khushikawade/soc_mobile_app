@@ -2147,97 +2147,97 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   //   );
   // }
 
-  bottomIconsOnTap({required String title, required String url}) async {
-    switch (title) {
-      case 'Share':
-        String shareLogMsg =
-            'Share Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-        FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            shareLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-        Utility.updateLogs(
-            activityType: 'GRADED+',
-            activityId: '13',
-            sessionId: widget.assessmentDetailPage == true
-                ? widget.obj!.sessionId
-                : '',
-            description: shareLogMsg,
-            operationResult: 'Success');
-        if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-          Share.share(url);
-        }
-        break;
+  // bottomIconsOnTap({required String title, required String url}) async {
+  //   switch (title) {
+  //     case 'Share':
+  //       String shareLogMsg =
+  //           'Share Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+  //       FirebaseAnalyticsService.addCustomAnalyticsEvent(
+  //           shareLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+  //       Utility.updateLogs(
+  //           activityType: 'GRADED+',
+  //           activityId: '13',
+  //           sessionId: widget.assessmentDetailPage == true
+  //               ? widget.obj!.sessionId
+  //               : '',
+  //           description: shareLogMsg,
+  //           operationResult: 'Success');
+  //       if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+  //         Share.share(url);
+  //       }
+  //       break;
 
-      case 'History':
-        String historyLogMsg =
-            'History Assessment button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
-        FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            historyLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-        Utility.updateLogs(
-            activityType: 'GRADED+',
-            activityId: '15',
-            description: historyLogMsg,
-            operationResult: 'Success');
+  //     case 'History':
+  //       String historyLogMsg =
+  //           'History Assessment button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
+  //       FirebaseAnalyticsService.addCustomAnalyticsEvent(
+  //           historyLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+  //       Utility.updateLogs(
+  //           activityType: 'GRADED+',
+  //           activityId: '15',
+  //           description: historyLogMsg,
+  //           operationResult: 'Success');
 
-        _showDataSavedPopup(
-            historyAssessmentSection: true,
-            title: 'Are you sure?',
-            msg:
-                'If you exit now, you will not be able to return to this page. Continue?',
-            noActionText: 'No',
-            yesActionText: 'Yes, Take Me There');
-        break;
-      case 'Dashboard':
-        break;
-      case 'Slides':
-        String slidesLogMsg =
-            "Slide Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
+  //       _showDataSavedPopup(
+  //           historyAssessmentSection: true,
+  //           title: 'Are you sure?',
+  //           msg:
+  //               'If you exit now, you will not be able to return to this page. Continue?',
+  //           noActionText: 'No',
+  //           yesActionText: 'Yes, Take Me There');
+  //       break;
+  //     case 'Dashboard':
+  //       break;
+  //     case 'Slides':
+  //       String slidesLogMsg =
+  //           "Slide Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
 
-        FirebaseAnalyticsService.addCustomAnalyticsEvent(
-            slidesLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-        Fluttertoast.cancel();
+  //       FirebaseAnalyticsService.addCustomAnalyticsEvent(
+  //           slidesLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+  //       Fluttertoast.cancel();
 
-        Utility.updateLogs(
-            activityType: 'GRADED+',
-            activityId: '31',
-            sessionId: widget.assessmentDetailPage == true
-                ? widget.obj!.sessionId ?? ''
-                : '',
-            description: slidesLogMsg,
-            operationResult: 'Success');
+  //       Utility.updateLogs(
+  //           activityType: 'GRADED+',
+  //           activityId: '31',
+  //           sessionId: widget.assessmentDetailPage == true
+  //               ? widget.obj!.sessionId ?? ''
+  //               : '',
+  //           description: slidesLogMsg,
+  //           operationResult: 'Success');
 
-        // Globals.googleSlidePresentationLink != null &&
-        //         Globals.googleSlidePresentationLink!.isNotEmpty
-        //     ? Utility.launchUrlOnExternalBrowser(
-        //         Globals.googleSlidePresentationLink!)
-        //     : Utility.currentScreenSnackBar(
-        //         'Assessment do not have slides', null);
-        if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-          Utility.launchUrlOnExternalBrowser(url);
-        }
+  //       // Globals.googleSlidePresentationLink != null &&
+  //       //         Globals.googleSlidePresentationLink!.isNotEmpty
+  //       //     ? Utility.launchUrlOnExternalBrowser(
+  //       //         Globals.googleSlidePresentationLink!)
+  //       //     : Utility.currentScreenSnackBar(
+  //       //         'Assessment do not have slides', null);
+  //       if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+  //         Utility.launchUrlOnExternalBrowser(url);
+  //       }
 
-        break;
-      case "Sheet":
-        if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-          String sheetLogMsg =
-              "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
-          FirebaseAnalyticsService.addCustomAnalyticsEvent(
-              sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
-          await Utility.launchUrlOnExternalBrowser(url);
-        }
-        break;
-      case "Class":
-        if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
-          Utility.launchUrlOnExternalBrowser(url);
-        }
-        break;
+  //       break;
+  //     case "Sheet":
+  //       if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+  //         String sheetLogMsg =
+  //             "Sheet Action Button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}";
+  //         FirebaseAnalyticsService.addCustomAnalyticsEvent(
+  //             sheetLogMsg.toLowerCase().replaceAll(" ", "_") ?? '');
+  //         await Utility.launchUrlOnExternalBrowser(url);
+  //       }
+  //       break;
+  //     case "Class":
+  //       if ((url?.isNotEmpty ?? false) && (url != 'NA')) {
+  //         Utility.launchUrlOnExternalBrowser(url);
+  //       }
+  //       break;
 
-      default:
-        print(title);
-    }
-    if (((url?.isEmpty ?? true) || (url == 'NA'))) {
-      Utility.currentScreenSnackBar('$title is Not available ', null);
-    }
-  }
+  //     default:
+  //       print(title);
+  //   }
+  //   if (((url?.isEmpty ?? true) || (url == 'NA'))) {
+  //     Utility.currentScreenSnackBar('$title is Not available ', null);
+  //   }
+  // }
 
   void performScanMore() async {
     if ((widget.assessmentDetailPage == true) &&
@@ -2342,20 +2342,20 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
-  getURlForBottomIcons({required String title}) {
-    Map map = {
-      'Share': widget.shareLink,
-      'Drive': Globals.googleDriveFolderPath,
-      'History': 'History',
-      'Dashboard': 'Dashboard',
-      'Slides': Globals.googleSlidePresentationLink,
-      'Sheet': widget.shareLink,
-      'Class':
-          GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseWorkURL,
-    };
+  // getURlForBottomIcons({required String title}) {
+  //   Map map = {
+  //     'Share': widget.shareLink,
+  //     'Drive': Globals.googleDriveFolderPath,
+  //     'History': 'History',
+  //     'Dashboard': 'Dashboard',
+  //     'Slides': Globals.googleSlidePresentationLink,
+  //     'Sheet': widget.shareLink,
+  //     'Class':
+  //         GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseWorkURL,
+  //   };
 
-    return map[title] ?? '';
-  }
+  //   return map[title] ?? '';
+  // }
 
   Widget fabButton(
     BuildContext context,
@@ -2372,7 +2372,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               });
 
   Future<void> _saveAndShareBottomSheetMenu() async {
-    var result = await showModalBottomSheet(
+    showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -2386,12 +2386,13 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return GradedPlusResultOptionBottomSheet(
+                assessmentDetailPage: widget.assessmentDetailPage!,
                 height: constraints.maxHeight < 800
                     ? MediaQuery.of(context).size.height * 0.5
                     : MediaQuery.of(context).size.height * 0.30,
 
-                getURlForResultSummaryIcons: getURlForBottomIcons,
-                resultSummaryIconsOnTap: bottomIconsOnTap,
+                //  getURlForResultSummaryIcons: getURlForBottomIcons,
+                //  resultSummaryIconsOnTap: bottomIconsOnTap,
                 resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP
                     ? ResultSummaryIcons
                         .standAloneHistoryResultSummaryIconsModalList
@@ -2408,7 +2409,18 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 //             .standAloneHistoryResultSummaryIconsModalList
 
                 // : ResultSummaryIcons.resultSummaryIconsModalList,
-                classroomUrlStatus: classroomUrlStatus,
+                // classroomUrlStatus: classroomUrlStatus,
+                allUrls: {
+                  'Share': widget.shareLink ?? '',
+                  'Drive': Globals.googleDriveFolderPath ?? '',
+                  'History': 'History',
+                  'Dashboard': 'Dashboard',
+                  'Slides': Globals.googleSlidePresentationLink ?? '',
+                  'Sheets': widget.shareLink ?? '',
+                  'Class': GoogleClassroomGlobals
+                          .studentAssessmentAndClassroomObj.courseWorkURL ??
+                      '',
+                },
               );
             },
           );

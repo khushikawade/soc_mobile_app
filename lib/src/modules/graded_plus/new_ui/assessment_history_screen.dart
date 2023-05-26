@@ -623,7 +623,7 @@ class _GradedPlusAssessmentSummaryState
   }
 
   _saveAndShareBottomSheetMenu() async {
-    var result = await showModalBottomSheet(
+    await showModalBottomSheet(
         // clipBehavior: Clip.antiAliasWithSaveLayer,
         useRootNavigator: true,
         isScrollControlled: true,
@@ -637,23 +637,21 @@ class _GradedPlusAssessmentSummaryState
           return LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               return GradedPlusResultOptionBottomSheet(
+                assessmentDetailPage: false,
                 height: constraints.maxHeight < 800
                     ? MediaQuery.of(context).size.height * 0.5
-                    : MediaQuery.of(context).size.height * 0.43,
-                getURlForResultSummaryIcons: getURlForBottomIcons,
-                resultSummaryIconsOnTap: bottomIconsOnTap,
+                    : MediaQuery.of(context).size.height * 0.30,
+                //   getURlForResultSummaryIcons: getURlForBottomIcons,
+                // resultSummaryIconsOnTap: bottomIconsOnTap,
                 resultSummaryIconsModalList: Overrides.STANDALONE_GRADED_APP
                     ? ResultSummaryIcons
                         .standAloneHistoryResultSummaryIconsModalList
                     : ResultSummaryIcons.resultSummaryIconsModalList,
-                classroomUrlStatus: ValueNotifier<bool>(true),
+                // classroomUrlStatus: ValueNotifier<bool>(true),
+                allUrls: {},
               );
             },
           );
         });
   }
-
-  getURlForBottomIcons({required String title}) {}
-
-  bottomIconsOnTap({required String title, required String url}) {}
 }
