@@ -44,7 +44,7 @@ class GradedPlusBottomNavBar {
   }
 
   /* ---------- function to return list of bottom navigation bar item --------- */
-  static List<PersistentBottomNavBarItem> gradedPlusnavBarsItems(
+  static List<PersistentBottomNavBarItem> gradedPlusNavbarItems(
       {required BuildContext context}) {
     List<PersistentBottomNavBarItem> items = [
       PersistentBottomNavBarItem(

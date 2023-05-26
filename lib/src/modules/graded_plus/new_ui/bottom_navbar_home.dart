@@ -57,7 +57,7 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
                       (BuildContext context, dynamic value, Widget? child) {
                     return GradedPlusCustomNavBarWidget(
                       backgroundColor: Theme.of(context).colorScheme.background,
-                      items: GradedPlusBottomNavBar.gradedPlusnavBarsItems(
+                      items: GradedPlusBottomNavBar.gradedPlusNavbarItems(
                           context: context),
                       onItemSelected: ((value) {
                         gradedPlusPersistentTabController!.index = value;
@@ -100,62 +100,6 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
                 duration: Duration(milliseconds: 200),
               ),
               hideNavigationBar: OcrOverrides.gradedPlusNavBarIsHide.value);
-
-          // return PersistentTabView(
-          //   context,
-          //   controller: gradedPlusPersistentTabController,
-          //   screens: GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(
-          //       backOnTap: backOnTap),
-          //   onItemSelected: (i) =>
-          //       GradedPlusBottomNavBar.gradedPlusBuildPersistentScreens(
-          //                               backOnTap: backOnTap)
-          //                           .length -
-          //                       1 ==
-          //                   i &&
-          //               !Overrides.STANDALONE_GRADED_APP
-          //           ? backOnTap()
-          //           : null,
-
-          //   items:
-          //       GradedPlusBottomNavBar.gradedPlusnavBarsItems(context: context),
-          //   confineInSafeArea: true,
-          //   backgroundColor: Theme.of(context).backgroundColor,
-          //   handleAndroidBackButtonPress: true,
-          //   resizeToAvoidBottomInset:
-          //       true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-          //   stateManagement: false, // Default is true.
-          //   hideNavigationBarWhenKeyboardShows:
-          //       true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-          //   decoration: NavBarDecoration(
-          //       borderRadius: BorderRadius.only(
-          //         topRight: Radius.circular(25),
-          //         topLeft: Radius.circular(25),
-          //       ),
-          //       boxShadow: [
-          //         BoxShadow(
-          //           color: Theme.of(context)
-          //               .colorScheme
-          //               .primaryVariant
-          //               .withOpacity(0.3),
-          //           blurRadius: 10.0,
-          //         ),
-          //       ]),
-          //   onWillPop: (context) async {
-          //     return false; // disable back button on android
-          //   },
-          //   popAllScreensOnTapOfSelectedTab: true,
-          //   popActionScreens: PopActionScreensType.all,
-          //   itemAnimationProperties: ItemAnimationProperties(
-          //     duration: Duration(milliseconds: 200),
-          //     curve: Curves.ease,
-          //   ),
-          //   screenTransitionAnimation: ScreenTransitionAnimation(
-          //     animateTabTransition: false,
-          //   ),
-          //   navBarStyle: NavBarStyle.style15,
-          //   navBarHeight: Globals.deviceType == "phone" ? 60 : 70,
-          //   hideNavigationBar: OcrOverrides.gradedPlusNavBarIsHide.value,
-          // );
         });
   }
 

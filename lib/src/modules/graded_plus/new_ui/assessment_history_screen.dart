@@ -653,55 +653,6 @@ class _GradedPlusAssessmentSummaryState
         });
   }
 
-  // Widget trailingRowBuilder({required HistoryAssessment element}) {
-  //   return Row(mainAxisSize: MainAxisSize.min, children: [
-  //     if (element.presentationLink != null &&
-  //         element.presentationLink!.isNotEmpty)
-  //       GestureDetector(
-  //           onTap: () {
-  //             Utility.updateLogs(
-  //                 activityType: 'GRADED+',
-  //                 activityId: '31',
-  //                 sessionId: element.sessionId ?? '',
-  //                 description:
-  //                     'Slide Action Button Button on Assignment summery page ',
-  //                 operationResult: 'Success');
-  //             Utility.launchUrlOnExternalBrowser(element.presentationLink!);
-  //           },
-  //           child: Padding(
-  //             padding: const EdgeInsets.all(5.0),
-  //             child: SvgPicture.asset(
-  //               'assets/ocr_result_section_bottom_button_icons/Slide.svg',
-  //               width: Globals.deviceType == "phone" ? 28 : 40,
-  //               height: Globals.deviceType == "phone" ? 28 : 40,
-  //             ),
-  //           )),
-  //     GestureDetector(
-  //       onTap: () {
-  //         Utility.updateLogs(
-  //             activityType: 'GRADED+',
-  //             activityId: '13',
-  //             sessionId: element.sessionId != null ? element.sessionId : '',
-  //             description:
-  //                 'Teacher tap on Share Button on Assignment summery page',
-  //             operationResult: 'Success');
-
-  //         if (element.webContentLink != null && element.webContentLink != '') {
-  //           Share.share(element.webContentLink!);
-  //         }
-  //       },
-  //       child: Icon(
-  //         IconData(0xe876,
-  //             fontFamily: Overrides.kFontFam, fontPackage: Overrides.kFontPkg),
-  //         color: Color(0xff000000) != Theme.of(context).backgroundColor
-  //             ? Color(0xff111C20)
-  //             : Color(0xffF7F8F9),
-  //         size: Globals.deviceType == 'phone' ? 28 : 38,
-  //       ),
-  //     ),
-  //   ]);
-  // }
-
   getURlForBottomIcons({required String title}) {}
 
   bottomIconsOnTap({required String title, required String url}) {}
