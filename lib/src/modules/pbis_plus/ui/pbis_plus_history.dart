@@ -7,6 +7,8 @@ import 'package:Soc/src/modules/pbis_plus/modal/pibs_plus_history_modal.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_overrides.dart';
 import 'package:Soc/src/modules/pbis_plus/services/pbis_plus_utility.dart';
 import 'package:Soc/src/modules/pbis_plus/widgets/pbis_plus_filtter_bottom_sheet.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
@@ -71,28 +73,20 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
 
   Widget body(BuildContext context) {
     return ListView(
+      padding: EdgeInsets.symmetric(
+          horizontal: StudentPlusOverrides.kSymmetricPadding),
       physics: NeverScrollableScrollPhysics(),
-      // crossAxisAlignment: CrossAxisAlignment.start,
-      // mainAxisSize: MainAxisSize.max,
       children: [
-        SpacerWidget(_KVertcalSpace / 4),
+        SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width / 30),
-            child: Utility.textWidget(
-              text: 'History',
-              context: context,
-              textTheme: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
+          PlusScreenTitleWidget(
+              kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+              text: ' History'),
           Stack(
             alignment: Alignment.topRight,
             children: [
               IconButton(
+                  padding: EdgeInsets.all(0),
                   onPressed: () {
                     /*-------------------------User Activity Track START----------------------------*/
                     FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -114,7 +108,6 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
                         fontFamily: Overrides.kFontFam,
                         fontPackage: Overrides.kFontPkg),
                     color: AppTheme.kButtonColor,
-                    size: 28,
                   )),
               ValueListenableBuilder(
                   valueListenable: filterNotifier,

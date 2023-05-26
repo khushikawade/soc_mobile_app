@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
-import 'package:Soc/src/modules/graded_plus/ui/graded_plus_navbar_home.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';

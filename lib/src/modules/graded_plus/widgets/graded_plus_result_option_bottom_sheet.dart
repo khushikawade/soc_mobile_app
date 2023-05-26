@@ -15,7 +15,7 @@ class GradedPlusResultOptionBottomSheet extends StatefulWidget {
   final ValueNotifier<bool> classroomUrlStatus;
   const GradedPlusResultOptionBottomSheet(
       {Key? key,
-      required this.title,
+      this.title,
       this.height = 200,
       required this.getURlForResultSummaryIcons,
       required this.resultSummaryIconsOnTap,
@@ -44,7 +44,9 @@ class _GradedPlusResultOptionBottomSheetState
     return Container(
         height: widget.height,
         decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
+          color: Color(0xff000000) != Theme.of(context).backgroundColor
+              ? Color(0xffF7F8F9)
+              : Color(0xff111C20),
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20)),
         ),
@@ -93,7 +95,9 @@ class _GradedPlusResultOptionBottomSheetState
           String? url =
               widget.getURlForResultSummaryIcons(title: element.title!);
           return Opacity(
-            opacity: ((url?.isEmpty ?? true) || (url == 'NA')) ? 0.3 : 1.0,
+            opacity:
+                //((url?.isEmpty ?? true) || (url == 'NA')) ? 0.3 :
+                1.0,
             child: ListTile(
               dense: true,
               contentPadding: EdgeInsets.zero,
@@ -110,11 +114,15 @@ class _GradedPlusResultOptionBottomSheetState
                             MediaQuery.of(context).size.shortestSide * 0.005,
                         color: Theme.of(context).colorScheme.primaryVariant,
                       ))
-                  : SvgPicture.asset(
-                      element.svgPath!,
+                  : SvgPicture.asset(element.svgPath!,
                       height: 30,
                       width: 30,
-                    ),
+                      color: element.title == "Dashboard"
+                          ? Color(0xff000000) ==
+                                  Theme.of(context).backgroundColor
+                              ? Color(0xffF7F8F9)
+                              : Color(0xff111C20)
+                          : null),
               title: Utility.textWidget(
                   text: element.title!,
                   context: context,

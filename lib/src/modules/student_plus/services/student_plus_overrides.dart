@@ -30,4 +30,7 @@ class StudentPlusOverrides {
   static final double KVerticalSpace = 60.0;
   static final String studentPlusBaseUrl =
       "https://qlys9nyyb1.execute-api.us-east-2.amazonaws.com/production";
+
+      static const double kLabelSpacing = 20.0;
+  
 }

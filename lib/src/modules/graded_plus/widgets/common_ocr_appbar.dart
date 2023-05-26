@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
@@ -7,16 +9,21 @@ import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/custom_intro_layout.dart'
     as customIntroLayout;
 import 'package:Soc/src/modules/graded_plus/widgets/user_profile.dart';
+import 'package:Soc/src/modules/setting/ios_accessibility_guide_page.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
+import 'package:Soc/src/translator/lanuage_selector.dart';
 import 'package:Soc/src/translator/translation_widget.dart';
 import 'package:Soc/src/widgets/sharepopmenu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:open_apps_settings/open_apps_settings.dart';
+import 'package:open_apps_settings/settings_enum.dart';
 import '../../../services/local_database/local_db.dart';
 import '../../google_drive/bloc/google_drive_bloc.dart';
 import '../../google_drive/model/user_profile.dart';
@@ -82,37 +89,21 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Widget leading = Container(
+      child: Row(
+        children: [
+          _translateButton(setState, context),
+          _openAccessibility(context),
+        ],
+      ),
+    );
+
     return AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leadingWidth: 300, //widget.isSuccessState == false ? 200 : null,
+        leadingWidth: 110, //widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
-        leading: Row(
-          // mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            widget.customBackButton != null
-                ? widget.customBackButton!
-                : widget.isBackButton == true
-                    ? IconButton(
-                        onPressed: () {
-                          //To dispose the snackbar message before navigating back if exist
-                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                          Navigator.pop(context, widget.navigateBack);
-                        },
-                        icon: Icon(
-                          IconData(0xe80d,
-                              fontFamily: Overrides.kFontFam,
-                              fontPackage: Overrides.kFontPkg),
-                          color: AppTheme.kButtonColor,
-                        ),
-                      )
-                    : Container(
-                        height: 0,
-                        width: 8.0,
-                      ),
-            widget.fromGradedPlus == true ? commonGradedLogo() : Container()
-          ],
-        ),
+        leading: leading,
         title: GestureDetector(
             onTap: widget.onTap,
             child: Container(
@@ -164,15 +155,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                           GradedLandingPage()),
                                   (_) => false);
                             } else {
-                              // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                              // Navigator.of(context).pushAndRemoveUntil(
-                              //     MaterialPageRoute(
-                              //         builder: (context) => HomePage(
-                              //               isFromOcrSection: true,
-                              //             )),
-                              //     (_) => false);
-                                              Navigator.of(context).popUntil((route) => route.isFirst);
-
+                              Navigator.of(context)
+                                  .popUntil((route) => route.isFirst);
                             }
                           }
                         },
@@ -220,42 +204,7 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             ),
                           ),
                         )
-                      : widget.assessmentDetailPage == null
-                          ? IconButton(
-                              iconSize: 32,
-                              onPressed: () {
-                                if (widget.isHomeButtonPopup == true) {
-                                  _onHomePressed();
-                                } else {
-                                  Utility.setFree();
-                                  // If app is running as the standalone Graded+ app, it should navigate to the Graded+ landing page.
-                                  if (Overrides.STANDALONE_GRADED_APP) {
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                GradedLandingPage()),
-                                        (_) => false);
-                                  } else {
-                                    // If app is running as the regular school app, it should navigate to the Home page(Staff section).
-                                    // Navigator.of(context).pushAndRemoveUntil(
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => HomePage(
-                                    //               isFromOcrSection: true,
-                                    //             )),
-                                    //     (_) => false);                
-                                    Navigator.of(context).popUntil((route) => route.isFirst);
-
-                                  }
-                                }
-                              },
-                              icon: Icon(
-                                IconData(0xe874,
-                                    fontFamily: Overrides.kFontFam,
-                                    fontPackage: Overrides.kFontPkg),
-                                color: AppTheme.kButtonColor,
-                              ),
-                            )
-                          : Container(),
+                      : Container(),
           widget.assessmentDetailPage == true
               ? Container()
               : ValueListenableBuilder(
@@ -274,25 +223,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                   : Container();
                             });
                   }),
-          widget.isOcrHome == true && Overrides.STANDALONE_GRADED_APP != true
-              ? IconButton(
-                  iconSize: 32,
-                  onPressed: () async {
-                    await FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                        "walkthrough");
-                    var result = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              customIntroLayout.CustomIntroWidget()),
-                    );
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.help,
-                    //  size: 32,
-                    color: AppTheme.kButtonColor,
-                  ))
-              : Container(),
           widget.isProfilePage == true
               ? Container()
               : FutureBuilder(
@@ -327,9 +257,6 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                                         profile: snapshot.data!,
                                       )),
                             );
-
-                            // _showPopUp(snapshot.data!);
-                            //print("profile url");
                           },
                         ),
                       );
@@ -487,8 +414,8 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
                             //               isFromOcrSection: true,
                             //             )),
                             //     (_) => false);
-                                            Navigator.of(context).popUntil((route) => route.isFirst);
-
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
                           }
                         },
                       ),
@@ -520,5 +447,76 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
             isUserInfoPop: true,
           );
         });
+  }
+
+  Widget _translateButton(StateSetter setState, BuildContext context) {
+    return IconButton(
+        // key: _bshowcase,
+        onPressed: () async {
+          setState(() {});
+          LanguageSelector(context, (language) {
+            if (language != null) {
+              setState(() {
+                Globals.selectedLanguage = language;
+                Globals.languageChanged.value = language;
+              });
+              // refresh!(true);
+            }
+          });
+          /*-------------------------User Activity Track START----------------------------*/
+          FirebaseAnalyticsService.addCustomAnalyticsEvent(
+              'Google Translation PBIS+'.toLowerCase().replaceAll(" ", "_"));
+
+          Utility.updateLogs(
+              activityType: 'PBIS+',
+              activityId: '43',
+              description: 'Google Translation',
+              operationResult: 'Success');
+          /*-------------------------User Activity Track END----------------------------*/
+        },
+        icon: Container(
+          child: Image(
+            width: !Overrides.STANDALONE_GRADED_APP
+                ? Globals.deviceType == "phone"
+                    ? 26
+                    : 32
+                : 28,
+            height: !Overrides.STANDALONE_GRADED_APP
+                ? Globals.deviceType == "phone"
+                    ? 26
+                    : 32
+                : 28,
+            image: AssetImage("assets/images/gtranslate.png"),
+          ),
+        ));
+  }
+
+  Widget _openAccessibility(BuildContext context) {
+    return IconButton(
+      iconSize: 28,
+      onPressed: () async {
+        if (Platform.isAndroid) {
+          OpenAppsSettings.openAppsSettings(
+              settingsCode: SettingsCode.ACCESSIBILITY);
+        } else {
+          // AppSettings.openAccessibilitySettings(asAnotherTask: true);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      IosAccessibilityGuidePage()));
+        }
+      },
+      icon: Icon(
+        FontAwesomeIcons.universalAccess,
+        color: Colors.blue,
+        // key: _openSettingShowCaseKey,
+        size: !Overrides.STANDALONE_GRADED_APP
+            ? Globals.deviceType == "phone"
+                ? 25
+                : 32
+            : null,
+      ),
+    );
   }
 }
