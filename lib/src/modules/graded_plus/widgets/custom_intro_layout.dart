@@ -95,16 +95,18 @@ class _CustomIntroWidgetState extends State<CustomIntroWidget> {
   }
 
   PreferredSizeWidget? appBar() {
-    return CustomOcrAppBarWidget(
-      fromGradedPlus: true,
-      //Show home button in standard app and hide in standalone
-      assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
-      isOcrHome: true,
-      isSuccessState: ValueNotifier<bool>(true),
-      isBackOnSuccess: ValueNotifier<bool>(false),
-      key: GlobalKey(),
-      isBackButton: Overrides.STANDALONE_GRADED_APP ? true : false,
-    );
+    return widget.isFromHelp == true
+        ? CustomOcrAppBarWidget(
+            fromGradedPlus: true,
+            //Show home button in standard app and hide in standalone
+            assessmentDetailPage: Overrides.STANDALONE_GRADED_APP ? true : null,
+            isOcrHome: true,
+            isSuccessState: ValueNotifier<bool>(true),
+            isBackOnSuccess: ValueNotifier<bool>(false),
+            key: GlobalKey(),
+            isBackButton: Overrides.STANDALONE_GRADED_APP ? true : false,
+          )
+        : null;
   }
 
   CarouselSlider body() {
