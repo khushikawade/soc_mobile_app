@@ -2533,6 +2533,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'Teacher',
       'Grade',
       'Class',
+      'Date',
       'Rubric',
       'Domain',
       'Learning Standard',
@@ -2616,13 +2617,15 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         2: Globals.teacherEmailId ?? 'NA',
         3: studentAssessmentInfoObj.grade ?? 'NA',
         4: studentAssessmentInfoObj.className ?? "NA",
-        5: studentAssessmentInfoObj.scoringRubric ?? 'NA',
-        6: studentAssessmentInfoObj.learningStandard != null &&
+        5: Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")
+            .toString(),
+        6: studentAssessmentInfoObj.scoringRubric ?? 'NA',
+        7: studentAssessmentInfoObj.learningStandard != null &&
                 studentAssessmentInfoObj.learningStandard!.length > 30
             ? studentAssessmentInfoObj.learningStandard!.substring(0, 29) + ".."
             : studentAssessmentInfoObj.learningStandard ?? 'NA',
-        7: studentAssessmentInfoObj.subLearningStandard ?? 'NA',
-        8: studentAssessmentInfoObj.standardDescription != null &&
+        8: studentAssessmentInfoObj.subLearningStandard ?? 'NA',
+        9: studentAssessmentInfoObj.standardDescription != null &&
                 studentAssessmentInfoObj.standardDescription!.length > 30
             ? studentAssessmentInfoObj.standardDescription!.substring(0, 29) +
                 '..'
