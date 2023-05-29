@@ -104,13 +104,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         leadingWidth: 110, //widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
         leading: leading,
-        title: GestureDetector(
-            onTap: widget.onTap,
-            child: Container(
-              width: 70,
-              height: 40,
-              color: Colors.transparent,
-            )),
+        // title: GestureDetector(
+        //     onTap: widget.onTap,
+        //     child: Container(
+        //       width: 70,
+        //       height: 40,
+        //       color: Colors.transparent,
+        //     )),
+        title: commonGradedLogo(),
         actions: [
           widget.isProfilePage == true
               ? IconButton(
