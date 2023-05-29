@@ -734,19 +734,43 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
                                                   .split("_")[1] ??
                                               ''));
                                 } else {
+                                  // _saveResultAssignmentsToDashboard(
+                                  //     assessmentId:
+                                  //         state.dashboardAssignmentsId ?? '',
+                                  //     googleSpreadsheetUrl:
+                                  //         Globals.shareableLink ?? '',
+                                  //     //  subjectId: widget.subjectId ?? '',
+                                  //     assessmentName:
+                                  //         Globals.assessmentName ?? '',
+                                  //     //  fileId: Globals.googleExcelSheetId ?? '',
+                                  //     studentAssessmentInfoDb:
+                                  //         _studentAssessmentInfoDb);
+
+                                  //  _navigatetoResultSection();
+
                                   _saveResultAssignmentsToDashboard(
                                       assessmentId:
                                           state.dashboardAssignmentsId ?? '',
                                       googleSpreadsheetUrl:
                                           Globals.shareableLink ?? '',
-                                      //  subjectId: widget.subjectId ?? '',
                                       assessmentName:
                                           Globals.assessmentName ?? '',
-                                      //  fileId: Globals.googleExcelSheetId ?? '',
                                       studentAssessmentInfoDb:
                                           _studentAssessmentInfoDb);
-                                  _navigatetoResultSection();
                                 }
+                              }
+                              if (state
+                                  is GradedPlusSaveAssessmentToDashboardSuccess) {
+                                _navigatetoResultSection();
+                              }
+
+                              if (state is OcrErrorReceived) {
+                                Navigator.of(context).pop();
+                                Utility.currentScreenSnackBar(
+                                    state.err == 'NO_CONNECTION'
+                                        ? "No Internet Connection"
+                                        : 'Something went wrong' ?? "",
+                                    null);
                               }
                             }),
                         Utility.textWidget(
@@ -923,6 +947,9 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
+    showDialogSetState!(() {
+      GradedGlobals.loadingMessage = 'Result Detail is Updating';
+    });
     _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,

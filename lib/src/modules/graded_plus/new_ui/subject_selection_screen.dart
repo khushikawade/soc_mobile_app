@@ -1330,43 +1330,45 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                     child: Container(),
                                     listener: (context, state) {
                                       if (state is AssessmentIdSuccess) {
+                                        // _saveResultAssignmentsToDashboard(
+                                        //     assessmentId:
+                                        //         state.dashboardAssignmentsId ??
+                                        //             '',
+                                        //     googleSpreadsheetUrl:
+                                        //         Globals.shareableLink ?? '',
+                                        //     //    subjectId: subjectId ?? '',
+                                        //     assessmentName:
+                                        //         Globals.assessmentName ?? '',
+                                        //     // fileId:
+                                        //     //     Globals.googleExcelSheetId ??
+                                        //     //         '',
+                                        //     studentAssessmentInfoDb:
+                                        //         _studentAssessmentInfoDb);
+
                                         _saveResultAssignmentsToDashboard(
                                             assessmentId:
                                                 state.dashboardAssignmentsId ??
                                                     '',
                                             googleSpreadsheetUrl:
                                                 Globals.shareableLink ?? '',
-                                            //    subjectId: subjectId ?? '',
                                             assessmentName:
                                                 Globals.assessmentName ?? '',
-                                            // fileId:
-                                            //     Globals.googleExcelSheetId ??
-                                            //         '',
                                             studentAssessmentInfoDb:
                                                 _studentAssessmentInfoDb);
+                                      }
 
+                                      if (state
+                                          is GradedPlusSaveAssessmentToDashboardSuccess) {
+                                        _navigatetoResultSectionOnSkipButton();
+                                      }
+
+                                      if (state is OcrErrorReceived) {
                                         Navigator.of(context).pop();
-                                        _googleDriveBloc.close();
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  GradedPlusResultsSummary(
-                                                    isMcqSheet:
-                                                        widget.isMcqSheet,
-                                                    selectedAnswer:
-                                                        widget.selectedAnswer,
-                                                    fileId: Globals
-                                                        .googleExcelSheetId,
-                                                    subjectId: subjectId ?? '',
-                                                    standardId:
-                                                        standardId ?? '',
-                                                    assessmentName:
-                                                        Globals.assessmentName,
-                                                    shareLink: '',
-                                                    assessmentDetailPage: false,
-                                                  )),
-                                        );
+                                        Utility.currentScreenSnackBar(
+                                            state.err == 'NO_CONNECTION'
+                                                ? "No Internet Connection"
+                                                : 'Something went wrong' ?? "",
+                                            null);
                                       }
                                     }),
                                 Utility.textWidget(
@@ -1435,24 +1437,51 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                                             .assessmentName ??
                                                         ''));
                                           } else {
+                                            // _saveResultAssignmentsToDashboard(
+                                            //     assessmentId: state
+                                            //             .dashboardAssignmentsId ??
+                                            //         '',
+                                            //     googleSpreadsheetUrl:
+                                            //         Globals.shareableLink ?? '',
+                                            //     //   subjectId: subjectId ?? '',
+                                            //     assessmentName:
+                                            //         Globals.assessmentName ??
+                                            //             '',
+                                            //     // fileId: Globals
+                                            //     //         .googleExcelSheetId ??
+                                            //     //     '',
+                                            //     studentAssessmentInfoDb:
+                                            //         _studentAssessmentInfoDb);
+
+                                            //  _navigatetoResultSection();
+
                                             _saveResultAssignmentsToDashboard(
                                                 assessmentId: state
                                                         .dashboardAssignmentsId ??
                                                     '',
                                                 googleSpreadsheetUrl:
                                                     Globals.shareableLink ?? '',
-                                                //   subjectId: subjectId ?? '',
                                                 assessmentName:
                                                     Globals.assessmentName ??
                                                         '',
-                                                // fileId: Globals
-                                                //         .googleExcelSheetId ??
-                                                //     '',
                                                 studentAssessmentInfoDb:
                                                     _studentAssessmentInfoDb);
-
-                                            _navigatetoResultSection();
                                           }
+                                        }
+
+                                        if (state
+                                            is GradedPlusSaveAssessmentToDashboardSuccess) {
+                                          _navigatetoResultSection();
+                                        }
+
+                                        if (state is OcrErrorReceived) {
+                                          Navigator.of(context).pop();
+                                          Utility.currentScreenSnackBar(
+                                              state.err == 'NO_CONNECTION'
+                                                  ? "No Internet Connection"
+                                                  : 'Something went wrong' ??
+                                                      "",
+                                              null);
                                         }
                                       }),
                                   Utility.textWidget(
@@ -1717,6 +1746,10 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
+    showDialogSetState!(() {
+      GradedGlobals.loadingMessage = 'Result Detail is Updating';
+    });
+
     _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
@@ -1726,5 +1759,24 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       schoolId: Globals.appSetting.schoolNameC!,
       // fileId: fileId,
     ));
+  }
+
+  void _navigatetoResultSectionOnSkipButton() {
+    Navigator.of(context).pop();
+    _googleDriveBloc.close();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => GradedPlusResultsSummary(
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
+                fileId: Globals.googleExcelSheetId,
+                subjectId: subjectId ?? '',
+                standardId: standardId ?? '',
+                assessmentName: Globals.assessmentName,
+                shareLink: '',
+                assessmentDetailPage: false,
+              )),
+    );
   }
 }

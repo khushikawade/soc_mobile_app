@@ -528,25 +528,27 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
         List<UserInformation> userInformation =
             await UserGoogleProfile.getUserProfile();
 
-        await saveResultToDashboard(
+        List isResultSaved = await saveResultToDashboard(
             assessmentId: event.assessmentId,
             studentInfoDb: event.studentInfoDb,
             schoolId: event.schoolId,
             assessmentSheetPublicURL: event.assessmentSheetPublicURL,
             userInformation: userInformation[0]);
-      } on SocketException catch (e, s) {
-        if (e.message == 'Connection failed') {
-          Utility.currentScreenSnackBar("No Internet Connection", null);
+
+        if (isResultSaved[0] == true) {
+          yield GradedPlusSaveAssessmentToDashboardSuccess();
+        } else {
+          yield OcrErrorReceived(err: isResultSaved[1]?.toString() ?? '');
         }
-        rethrow;
       } catch (e, s) {
         FirebaseAnalyticsService.firebaseCrashlytics(
             e, s, 'SaveAssessmentToDashboard Event');
 
-        if (e == 'NO_CONNECTION') {
-          Utility.currentScreenSnackBar("No Internet Connection", null);
-        }
+        // if (e == 'NO_CONNECTION') {
+        //   Utility.currentScreenSnackBar("No Internet Connection", null);
 
+        // }
+        yield OcrErrorReceived(err: e.toString());
         throw (e);
       }
     }
@@ -1826,7 +1828,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
 //     }
 //   }
 
-  Future<bool> saveResultToDashboard({
+  Future<List> saveResultToDashboard({
     required String assessmentId,
     required final LocalDatabase<StudentAssessmentInfo> studentInfoDb,
     required schoolId,
@@ -1835,12 +1837,18 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     int retry = 3,
   }) async {
     try {
+      //Get all students for localDb
+      List<StudentAssessmentInfo> assessmentData =
+          await studentInfoDb.getData();
+
+//get only non saved students on dashboard
       List<StudentAssessmentInfo> studentDetails =
-          await _getOnlyNonSavedStudents(studentInfoDb: studentInfoDb);
+          await _getOnlyNonSavedStudents(studentList: assessmentData);
 
       List<Map> bodyContent = [];
 
       for (int i = 0; i < studentDetails.length; i++) {
+        //convert dart objects to json
         bodyContent.add(recordToJson(
             assessmentId,
             Utility.getCurrentDate(DateTime.now()),
@@ -1875,7 +1883,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
           bodyContent: bodyContent,
         );
 
-        return true;
+        return [true, response.statusCode];
       } else if (retry > 0) {
         return saveResultToDashboard(
             assessmentId: assessmentId,
@@ -1885,7 +1893,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             userInformation: userInformation,
             retry: retry - 1);
       }
-      return false;
+      return [false, response.statusCode];
     } catch (e, s) {
       FirebaseAnalyticsService.firebaseCrashlytics(
           e, s, 'saveResultToDashboard Method');
@@ -2482,15 +2490,11 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
   }
 
   Future<List<StudentAssessmentInfo>> _getOnlyNonSavedStudents(
-      {required final LocalDatabase<StudentAssessmentInfo>
-          studentInfoDb}) async {
+      {required final List<StudentAssessmentInfo> studentList}) async {
     try {
-      List<StudentAssessmentInfo> assessmentData =
-          await studentInfoDb.getData();
-
       List<StudentAssessmentInfo> nonSavedStudentsOnDashboard = [];
 
-      assessmentData.forEach((student) {
+      studentList.forEach((student) {
         if (student.isStudentResultAssignmentSavedOnDashboard == false &&
             student.studentId != 'Id') {
           nonSavedStudentsOnDashboard.add(student);

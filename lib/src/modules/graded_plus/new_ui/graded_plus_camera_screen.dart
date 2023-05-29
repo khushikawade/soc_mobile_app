@@ -281,7 +281,29 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                                 : _studentAssessmentInfoDb,
                       ));
                     } else {
-                      _navigatetoResultSection();
+                      // _navigatetoResultSection();
+
+// Trigger this when user scaning more records on history assignment section
+                      if (widget.isFromHistoryAssessmentScanMore == true) {
+                        _saveResultAssignmentsToDashboard(
+                            assessmentId: GoogleClassroomGlobals
+                                    .studentAssessmentAndClassroomObj
+                                    .assessmentCId ??
+                                '',
+                            googleSpreadsheetUrl: Globals.shareableLink ?? '',
+                            assessmentName: Globals.historyAssessmentName ?? '',
+                            studentAssessmentInfoDb:
+                                _historystudentAssessmentInfoDb);
+                      } else {
+                        // Trigger this when user scaning more on new assignment on result summary
+                        _saveResultAssignmentsToDashboard(
+                            assessmentId: Globals.currentAssessmentId ?? '',
+                            googleSpreadsheetUrl: Globals.shareableLink ?? '',
+                            //subjectId: '',
+                            assessmentName: Globals.assessmentName ?? '',
+                            // fileId: Globals.googleExcelSheetId ?? '',
+                            studentAssessmentInfoDb: _studentAssessmentInfoDb);
+                      }
                     }
                   }
                   if (state is ErrorState) {
@@ -365,6 +387,26 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         fileId: Globals.historyAssessmentFileId,
                         isLoading: true,
                         studentData: state.list));
+                  }
+                }),
+        widget.onlyForPicture
+            ? Container()
+            : BlocListener<OcrBloc, OcrState>(
+                bloc: _ocrBloc,
+                child: Container(),
+                listener: (context, state) {
+                  print("state ------------------$state");
+                  if (state is GradedPlusSaveAssessmentToDashboardSuccess) {
+                    _navigatetoResultSection();
+                  }
+
+                  if (state is OcrErrorReceived) {
+                    Navigator.of(context).pop();
+                    Utility.currentScreenSnackBar(
+                        state.err == 'NO_CONNECTION'
+                            ? "No Internet Connection"
+                            : 'Something went wrong' ?? "",
+                        null);
                   }
                 }),
         widget.onlyForPicture
@@ -937,17 +979,17 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
         ..pop()
         ..pop();
 
-      if (!Overrides.STANDALONE_GRADED_APP) {
-        _saveResultAssignmentsToDashboard(
-            assessmentId: GoogleClassroomGlobals
-                    .studentAssessmentAndClassroomObj.assessmentCId ??
-                '',
-            googleSpreadsheetUrl: Globals.shareableLink ?? '',
-            //subjectId: '',
-            assessmentName: Globals.historyAssessmentName ?? '',
-            //fileId: Globals.googleExcelSheetId ?? '',
-            studentAssessmentInfoDb: _historystudentAssessmentInfoDb);
-      }
+      // if (!Overrides.STANDALONE_GRADED_APP) {
+      //   _saveResultAssignmentsToDashboard(
+      //       assessmentId: GoogleClassroomGlobals
+      //               .studentAssessmentAndClassroomObj.assessmentCId ??
+      //           '',
+      //       googleSpreadsheetUrl: Globals.shareableLink ?? '',
+      //       //subjectId: '',
+      //       assessmentName: Globals.historyAssessmentName ?? '',
+      //       //fileId: Globals.googleExcelSheetId ?? '',
+      //       studentAssessmentInfoDb: _historystudentAssessmentInfoDb);
+      // }
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
@@ -975,15 +1017,15 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
           await _studentAssessmentInfoDb.putAt(i, object);
         },
       );
-      if (!Overrides.STANDALONE_GRADED_APP) {
-        _saveResultAssignmentsToDashboard(
-            assessmentId: Globals.currentAssessmentId ?? '',
-            googleSpreadsheetUrl: Globals.shareableLink ?? '',
-            //subjectId: '',
-            assessmentName: Globals.assessmentName ?? '',
-            // fileId: Globals.googleExcelSheetId ?? '',
-            studentAssessmentInfoDb: _studentAssessmentInfoDb);
-      }
+      // if (!Overrides.STANDALONE_GRADED_APP) {
+      //   _saveResultAssignmentsToDashboard(
+      //       assessmentId: Globals.currentAssessmentId ?? '',
+      //       googleSpreadsheetUrl: Globals.shareableLink ?? '',
+      //       //subjectId: '',
+      //       assessmentName: Globals.assessmentName ?? '',
+      //       // fileId: Globals.googleExcelSheetId ?? '',
+      //       studentAssessmentInfoDb: _studentAssessmentInfoDb);
+      // }
 
       setEnabledSystemUIMode();
       Navigator.push(

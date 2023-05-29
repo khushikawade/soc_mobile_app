@@ -252,3 +252,10 @@ class LocalStateSearchResult extends OcrState {
 
 //LocalStateSearchEvent
 class NoRubricAvailable extends OcrState {}
+
+class GradedPlusSaveAssessmentToDashboardSuccess extends OcrState {
+  GradedPlusSaveAssessmentToDashboardSuccess();
+
+  @override
+  List<Object> get props => [];
+}
