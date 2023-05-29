@@ -21,12 +21,17 @@ class PBISPlusUtility {
         : Color(0xffF7F8F9);
   }
 
-  static PreferredSizeWidget pbisAppBar(BuildContext context,
-      IconData titleIconData, title, GlobalKey<ScaffoldState> scaffoldKey) {
+  static PreferredSizeWidget pbisAppBar(
+      {required BuildContext context,
+      required IconData titleIconData,
+      required title,
+      required GlobalKey<ScaffoldState> scaffoldKey,
+      bool? isGradedPlus}) {
     return PBISPlusAppBar(
       scaffoldKey: scaffoldKey,
       title: title,
       titleIconData: titleIconData,
+      isGradedPlus: isGradedPlus,
     );
   }
 

@@ -21,12 +21,14 @@ class PBISPlusAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final bool? backButton;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final bool? isGradedPlus;
   PBISPlusAppBar(
       {Key? key,
       this.titleIconData,
       this.backButton,
       required this.title,
-      required this.scaffoldKey})
+      required this.scaffoldKey,
+      this.isGradedPlus = false})
       : preferredSize = Size.fromHeight(60.0),
         super(key: key);
   @override
@@ -53,7 +55,7 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
           builder: (context, AsyncSnapshot<UserInformation> snapshot) {
             if (snapshot.hasData) {
               return Container(
-                padding: EdgeInsets.only(right: 5.0),
+                // padding: EdgeInsets.only(right: 5.0),
                 child: IconButton(
                   icon: ClipRRect(
                     borderRadius: BorderRadius.all(
@@ -98,7 +100,9 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
       actions: actions,
       centerTitle: true,
       leading: leading,
-      title: titleBuilder(context, widget.titleIconData),
+      title: widget.isGradedPlus == true
+          ? gradedLogoBuilder(context)
+          : titleBuilder(context, widget.titleIconData),
       backgroundColor: Colors.transparent,
       elevation: 0,
       automaticallyImplyLeading: false,
@@ -184,12 +188,23 @@ class _PBISPlusAppBarState extends State<PBISPlusAppBar> {
     );
   }
 }
+
 Widget titleBuilder(BuildContext context, IconData? iconData) {
-  final bool isDarkMode =
-      Theme.of(context).colorScheme.background == Color(0xff000000);
-  return Icon(
-    iconData,
-    color: AppTheme.kButtonColor
-   
+  return Icon(iconData, color: AppTheme.kButtonColor);
+}
+
+Widget gradedLogoBuilder(
+  BuildContext context,
+) {
+  return Image.asset(
+    Color(0xff000000) == Theme.of(context).backgroundColor
+        ? "assets/images/graded+_light.png"
+        : "assets/images/graded+_dark.png",
+    height: Globals.deviceType == "phone"
+        ? AppTheme.kIconSize * 2
+        : AppTheme.kTabIconSize * 2,
+    width: Globals.deviceType == "phone"
+        ? AppTheme.kIconSize * 2
+        : AppTheme.kTabIconSize * 2,
   );
 }
