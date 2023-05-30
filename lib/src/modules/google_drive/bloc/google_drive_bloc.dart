@@ -2557,13 +2557,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             "pageObjectId": "Slide1",
             "size": {
               "width": {"magnitude": 6000000, "unit": "EMU"},
-              "height": {"magnitude": 4500000, "unit": "EMU"}
+              "height": {"magnitude": 3500000, "unit": "EMU"}
             },
             "transform": {
               "scaleX": 1,
               "scaleY": 1,
               "translateX": isQuestionImgUrlUpdate ? 3005000 : 1505000,
-              "translateY": 280000,
+              "translateY": 250000,
               "unit": "EMU",
             }
           },
@@ -2601,6 +2601,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           },
         );
+        //update the textstyle and fontsize of table cells
+        body.add({
+          "updateTextStyle": {
+            "objectId": "123456",
+            "style": {
+              "fontSize": {"magnitude": 10, "unit": "PT"},
+              "bold": columnIndex == 0
+            },
+            "fields": "*",
+            "cellLocation": {"columnIndex": columnIndex, "rowIndex": rowIndex}
+          }
+        });
       }
     });
 
@@ -2620,16 +2632,21 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         5: Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")
             .toString(),
         6: studentAssessmentInfoObj.scoringRubric ?? 'NA',
-        7: studentAssessmentInfoObj.learningStandard != null &&
-                studentAssessmentInfoObj.learningStandard!.length > 30
-            ? studentAssessmentInfoObj.learningStandard!.substring(0, 29) + ".."
-            : studentAssessmentInfoObj.learningStandard ?? 'NA',
+        7:
+            //  studentAssessmentInfoObj.learningStandard != null &&
+            //         studentAssessmentInfoObj.learningStandard!.length > 30
+            //     ? studentAssessmentInfoObj.learningStandard!.substring(0, 29) + ".."
+            //     :
+            studentAssessmentInfoObj.learningStandard ?? 'NA',
         8: studentAssessmentInfoObj.subLearningStandard ?? 'NA',
-        9: studentAssessmentInfoObj.standardDescription != null &&
-                studentAssessmentInfoObj.standardDescription!.length > 30
-            ? studentAssessmentInfoObj.standardDescription!.substring(0, 29) +
-                '..'
-            : studentAssessmentInfoObj.standardDescription ?? 'NA',
+        9:
+            // studentAssessmentInfoObj.standardDescription != null &&
+            //         studentAssessmentInfoObj.standardDescription!.length > 30
+            //     ? studentAssessmentInfoObj.standardDescription!.substring(0, 29) +
+            //         '..'
+
+            //     :
+            studentAssessmentInfoObj.standardDescription ?? 'NA',
       };
 
       return map[index] ?? 'NA';
