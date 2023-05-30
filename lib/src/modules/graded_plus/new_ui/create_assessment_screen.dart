@@ -89,6 +89,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'create_assessment', screenClass: 'CreateAssessment');
+
+    sortStudents();
+
     super.initState();
   }
 
@@ -1093,5 +1096,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
           title: Globals.assessmentName ?? '',
           pointPossible: Globals.pointPossible ?? "0"));
     }
+  }
+
+  void sortStudents() async {
+    await OcrUtility.sortStudents(tableName: Strings.studentInfoDbName);
   }
 }

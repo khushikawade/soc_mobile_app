@@ -2762,6 +2762,10 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           };
 
+          //to insert the slide in order for scan more
+          if (isScanMore == true && index < assessmentData.length) {
+            slideObject["createSlide"]["insertionIndex"] = index + 1;
+          }
           slideRequiredObjectsList.add(slideObject);
 
 // Preparing to update assignment sheet images - students

@@ -1098,6 +1098,11 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
   }
 
   Future<void> preparingGoogleSlideFiles() async {
+    await OcrUtility.sortStudents(
+        tableName: widget.isFromHistoryAssessmentScanMore == true
+            ? Strings.historyStudentInfoDbName
+            : Strings.studentInfoDbName);
+
     if (widget.isFromHistoryAssessmentScanMore == true) {
       _driveBloc.add(UpdateGoogleSlideOnScanMore(
           studentInfoDb: LocalDatabase(Strings.historyStudentInfoDbName),

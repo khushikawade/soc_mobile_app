@@ -158,4 +158,48 @@ class OcrUtility {
       return [];
     }
   }
+
+  static Future sortStudents({required tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+
+//get all students
+    List<StudentAssessmentInfo> students = await _studentInfoDb.getData();
+
+    // Sort by marks (descending) first, then by last name
+    students.sort((a, b) {
+      // Sort by marks in descending order
+      int marksComparison = b.studentGrade!.compareTo(a.studentGrade!);
+      if (marksComparison != 0) {
+        return marksComparison;
+      }
+
+      String lastNameA = '';
+      String lastNameB = '';
+      // Sort by last name in alphabetical order
+      if (a.studentName != null && a.studentName!.isNotEmpty) {
+        if (a.studentName!.contains(' ')) {
+          lastNameA = a.studentName!.split(' ').last.toLowerCase();
+        } else {
+          lastNameA = a.studentName!.toLowerCase();
+        }
+      }
+      if (b.studentName != null && b.studentName!.isNotEmpty) {
+        if (b.studentName!.contains(' ')) {
+          lastNameB = b.studentName!.split(' ').last.toLowerCase();
+        } else {
+          lastNameB = b.studentName!.toLowerCase();
+        }
+      }
+      return lastNameA.compareTo(lastNameB);
+    });
+
+//clean the Local DB
+    await _studentInfoDb.clear();
+
+//Ading the sorted list
+    students.forEach((element) async {
+      await _studentInfoDb.addData(element);
+    });
+  }
 }
