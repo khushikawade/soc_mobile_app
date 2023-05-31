@@ -95,14 +95,14 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: Theme.of(context).textTheme.headline4!.copyWith(
-                          fontSize: isSelected
-                              ? Theme.of(context)
-                                      .textTheme
-                                      .headline4!
-                                      .fontSize! +
-                                  3
-                              : null,
-                          color: isSelected ? item.activeColorPrimary : null),
+                            fontSize: isSelected
+                                ? Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .fontSize! +
+                                    3
+                                : null,
+                          ),
                     ),
                   ),
                 ),
@@ -197,14 +197,14 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: Theme.of(context).textTheme.headline4!.copyWith(
-                          fontSize: isSelected
-                              ? Theme.of(context)
-                                      .textTheme
-                                      .headline4!
-                                      .fontSize! +
-                                  3
-                              : null,
-                          color: isSelected ? item.activeColorPrimary : null),
+                            fontSize: isSelected
+                                ? Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .fontSize! +
+                                    3
+                                : null,
+                          ),
                     ),
                   ),
                 ),
