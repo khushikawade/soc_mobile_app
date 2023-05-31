@@ -349,13 +349,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
           }
         } else {
           //Execute when presentation already exist and we need to add only new slides for new scans
-          for (int index = 0;
-              index < event.lastAssessmentLength &&
-                  index < assessmentDataList.length;
-              index++) {
-            assessmentDataList[index].isSlideObjUpdated = true;
-            await event.studentInfoDb.putAt(index, assessmentDataList[index]);
-          }
+          // for (int index = 0;
+          //     index < event.lastAssessmentLength &&
+          //         index < assessmentDataList.length;
+          //     index++) {
+          //   assessmentDataList[index].isSlideObjUpdated = true;
+          //   await event.studentInfoDb.putAt(index, assessmentDataList[index]);
+          // }
           // print(assessmentDataList);
           // //To create Google Presentation
           // await createBlankSlidesInGooglePresentation(
@@ -2724,8 +2724,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     required bool? isScanMore,
   }) async {
     List<StudentAssessmentInfo> assessmentData = await studentInfoDb.getData();
-    // print(studentInfoDb);
-    // print(assessmentData);
+    print(assessmentData);
     List<String> listOfFields = [
       'Student Name',
       'Student ID',

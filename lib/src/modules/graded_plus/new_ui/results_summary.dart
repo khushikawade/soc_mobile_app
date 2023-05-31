@@ -639,6 +639,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           }
                           student.isStudentResultAssignmentSavedOnDashboard =
                               true;
+                          //Mark student that are already saved to google Slides
+                          student.isSlideObjUpdated = true;
                           await _historystudentAssessmentInfoDb
                               .addData(student);
                         });
@@ -2240,17 +2242,17 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   // }
 
   void performScanMore() async {
-    if ((widget.assessmentDetailPage == true) &&
-        ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
-            (widget.createdAsPremium == false &&
-                Globals.isPremiumUser == true))) {
-      popupModal(
-          title: 'Alert!',
-          message: Globals.isPremiumUser == true
-              ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-              : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
-      return;
-    }
+    // if ((widget.assessmentDetailPage == true) &&
+    //     ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
+    //         (widget.createdAsPremium == false &&
+    //             Globals.isPremiumUser == true))) {
+    //   popupModal(
+    //       title: 'Alert!',
+    //       message: Globals.isPremiumUser == true
+    //           ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
+    //           : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
+    //   return;
+    // }
     String scanMoreLogMsg =
         'Scan more button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
 
