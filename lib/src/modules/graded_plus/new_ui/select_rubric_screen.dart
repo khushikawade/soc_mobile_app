@@ -130,6 +130,7 @@ class _GradedPlusConstructedResponseState
       padding: EdgeInsets.symmetric(
           horizontal: StudentPlusOverrides.kSymmetricPadding),
       child: ListView(
+        physics: NeverScrollableScrollPhysics(),
         children: [
           SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
           PlusScreenTitleWidget(

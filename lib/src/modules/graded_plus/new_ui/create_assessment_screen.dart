@@ -148,6 +148,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
               return ListView(
+                physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.symmetric(
                     vertical: 0,
                     horizontal: StudentPlusOverrides.kLabelSpacing / 2),
