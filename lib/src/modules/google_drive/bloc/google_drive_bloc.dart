@@ -2269,131 +2269,131 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> updateAssessmentImageToSlidesOnDrive(
-      String? presentationId,
-      String? accessToken,
-      String? refreshToken,
-      List<StudentAssessmentInfo> assessmentData,
-      LocalDatabase<StudentAssessmentInfo> _studentInfoDb) async {
-    try {
-      Map body = {
-        "requests": prepareStudentAssessmentImageRequestBody(
-          assessmentData: assessmentData,
-          studentInfoDb: _studentInfoDb,
-        )
-      };
+  // Future<String> updateAssessmentImageToSlidesOnDrive(
+  //     String? presentationId,
+  //     String? accessToken,
+  //     String? refreshToken,
+  //     List<StudentAssessmentInfo> assessmentData,
+  //     LocalDatabase<StudentAssessmentInfo> _studentInfoDb) async {
+  //   try {
+  //     Map body = {
+  //       "requests": prepareStudentAssessmentImageRequestBody(
+  //         assessmentData: assessmentData,
+  //         studentInfoDb: _studentInfoDb,
+  //       )
+  //     };
 
-      Map<String, String> headers = {
-        'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json'
-      };
+  //     Map<String, String> headers = {
+  //       'Authorization': 'Bearer $accessToken',
+  //       'Content-Type': 'application/json'
+  //     };
 
-      final ResponseModel response = await _dbServices.postApi(
-          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
-          body: body,
-          headers: headers,
-          isGoogleApi: true);
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
-        return 'Done';
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        if (result == true) {
-          List<UserInformation> _userProfileLocalData =
-              await UserGoogleProfile.getUserProfile();
-          String result = await updateAssessmentImageToSlidesOnDrive(
-              presentationId,
-              _userProfileLocalData[0].authorizationToken,
-              _userProfileLocalData[0].refreshToken,
-              assessmentData,
-              _studentInfoDb);
-          return result;
-        } else {
-          return 'ReAuthentication is required';
-        }
-      }
-      return response.data['statusCode'].toString();
-    } catch (e) {
-      return e.toString();
-    }
-  }
+  //     final ResponseModel response = await _dbServices.postApi(
+  //         '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
+  //         body: body,
+  //         headers: headers,
+  //         isGoogleApi: true);
+  //     if (response.statusCode != 401 &&
+  //         response.statusCode == 200 &&
+  //         response.data['statusCode'] != 500) {
+  //       return 'Done';
+  //     } else if ((response.statusCode == 401 ||
+  //             response.data['statusCode'] == 500) &&
+  //         _totalRetry < 3) {
+  //       var result = await _toRefreshAuthenticationToken(refreshToken!);
+  //       if (result == true) {
+  //         List<UserInformation> _userProfileLocalData =
+  //             await UserGoogleProfile.getUserProfile();
+  //         String result = await updateAssessmentImageToSlidesOnDrive(
+  //             presentationId,
+  //             _userProfileLocalData[0].authorizationToken,
+  //             _userProfileLocalData[0].refreshToken,
+  //             assessmentData,
+  //             _studentInfoDb);
+  //         return result;
+  //       } else {
+  //         return 'ReAuthentication is required';
+  //       }
+  //     }
+  //     return response.data['statusCode'].toString();
+  //   } catch (e) {
+  //     return e.toString();
+  //   }
+  // }
 
-  List<Map> prepareStudentAssessmentImageRequestBody(
-      {required List<StudentAssessmentInfo> assessmentData,
-      required LocalDatabase<StudentAssessmentInfo> studentInfoDb}) {
-    List<String> listOfFields = [
-      'Student Name',
-      'Student ID',
-      'Points Earned',
-      'Points Possible'
-    ];
+  // List<Map> prepareStudentAssessmentImageRequestBody(
+  //     {required List<StudentAssessmentInfo> assessmentData,
+  //     required LocalDatabase<StudentAssessmentInfo> studentInfoDb}) {
+  //   List<String> listOfFields = [
+  //     'Student Name',
+  //     'Student ID',
+  //     'Points Earned',
+  //     'Points Possible'
+  //   ];
 
-    List<Map> body = [];
-    assessmentData.asMap().forEach((index, element) {
-      if (!element.isSlideObjUpdated!) {
-        Map obj = {
-          "createImage": {
-            "url": element.assessmentImage,
-            "elementProperties": {
-              "pageObjectId": element.slideObjectId,
-            },
-            "objectId": DateTime.now().microsecondsSinceEpoch.toString()
-          }
-        };
-        String tableObjectuniqueId =
-            DateTime.now().microsecondsSinceEpoch.toString();
-        Map table = {
-          "createTable": {
-            "rows": listOfFields.length, //pass no. of names
-            "columns": 2, //key:value
-            "objectId": tableObjectuniqueId,
-            "elementProperties": {
-              "pageObjectId": element.slideObjectId,
-              "size": {
-                "width": {"magnitude": 4000000, "unit": "EMU"},
-                "height": {"magnitude": 3000000, "unit": "EMU"}
-              },
-              "transform": {
-                "scaleX": 1,
-                "scaleY": 1,
-                "translateX": 3480600,
-                "translateY": 1167820,
-                "unit": "EMU"
-              }
-            },
-          }
-        };
-        body.add(obj);
-        body.add(table);
-        listOfFields.asMap().forEach((rowIndex, value) {
-          for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
-            body.add(
-              {
-                "insertText": {
-                  "objectId": tableObjectuniqueId,
-                  "cellLocation": {
-                    "rowIndex": rowIndex,
-                    "columnIndex": columnIndex
-                  },
-                  "text": columnIndex == 0
-                      ? listOfFields[rowIndex] //Keys
-                      : prepareAssignmentTableCellValue(element, rowIndex,
-                          assessmentData[0].pointPossible) //Values
-                }
-              },
-            );
-          }
-        });
-        element.isSlideObjUpdated = true;
-        element.slideTableObjId = tableObjectuniqueId;
-        studentInfoDb.putAt(index, element);
-      }
-    });
-    return body;
-  }
+  //   List<Map> body = [];
+  //   assessmentData.asMap().forEach((index, element) {
+  //     if (!element.isSlideObjUpdated!) {
+  //       Map obj = {
+  //         "createImage": {
+  //           "url": element.assessmentImage,
+  //           "elementProperties": {
+  //             "pageObjectId": element.slideObjectId,
+  //           },
+  //           "objectId": DateTime.now().microsecondsSinceEpoch.toString()
+  //         }
+  //       };
+  //       String tableObjectuniqueId =
+  //           DateTime.now().microsecondsSinceEpoch.toString();
+  //       Map table = {
+  //         "createTable": {
+  //           "rows": listOfFields.length, //pass no. of names
+  //           "columns": 2, //key:value
+  //           "objectId": tableObjectuniqueId,
+  //           "elementProperties": {
+  //             "pageObjectId": element.slideObjectId,
+  //             "size": {
+  //               "width": {"magnitude": 4000000, "unit": "EMU"},
+  //               "height": {"magnitude": 3000000, "unit": "EMU"}
+  //             },
+  //             "transform": {
+  //               "scaleX": 1,
+  //               "scaleY": 1,
+  //               "translateX": 3480600,
+  //               "translateY": 1167820,
+  //               "unit": "EMU"
+  //             }
+  //           },
+  //         }
+  //       };
+  //       body.add(obj);
+  //       body.add(table);
+  //       listOfFields.asMap().forEach((rowIndex, value) {
+  //         for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
+  //           body.add(
+  //             {
+  //               "insertText": {
+  //                 "objectId": tableObjectuniqueId,
+  //                 "cellLocation": {
+  //                   "rowIndex": rowIndex,
+  //                   "columnIndex": columnIndex
+  //                 },
+  //                 "text": columnIndex == 0
+  //                     ? listOfFields[rowIndex] //Keys
+  //                     : prepareAssignmentTableCellValue(element, rowIndex,
+  //                         assessmentData[0].pointPossible) //Values
+  //               }
+  //             },
+  //           );
+  //         }
+  //       });
+  //       element.isSlideObjUpdated = true;
+  //       element.slideTableObjId = tableObjectuniqueId;
+  //       studentInfoDb.putAt(index, element);
+  //     }
+  //   });
+  //   return body;
+  // }
 
   Future<List<Map>> prepareEachSlideObjects(
       {List<StudentAssessmentInfo>? list,
@@ -2770,10 +2770,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       assessmentData.asMap().forEach((index, element) async {
         if (!element.isSlideObjUpdated!) {
           String pageObjectuniqueId =
-              DateTime.now().microsecondsSinceEpoch.toString();
+              DateTime.now().microsecondsSinceEpoch.toString() + "$index";
 
           String tableObjectuniqueId =
-              DateTime.now().microsecondsSinceEpoch.toString();
+              DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+          print(pageObjectuniqueId);
+          print(tableObjectuniqueId);
           // Preparing all other blank slide (based on student detail length) type to add assessment images
           Map slideObject = {
             "createSlide": {
