@@ -116,98 +116,103 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
 
   Widget _buildSelectedMenu(final PersistentBottomNavBarItem item,
       final bool isSelected, final double? height, BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Transform.translate(
-          offset: const Offset(0, -22),
-          child: Center(
-            child: Container(
-              height: height, // Increase height for selected item
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isSelected
-                    ? item.activeColorPrimary
-                    : Color(0xff000000) != Theme.of(context).backgroundColor
-                        ? Colors.grey.shade200
-                        : Colors.grey.shade800,
-                border: Border.all(color: Colors.transparent, width: 4),
-                // boxShadow: navBarDecoration!.boxShadow,
-              ),
+    final bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
+    return Visibility(
+      visible: !isKeyboardVisible,
+      child: Stack(
+        children: <Widget>[
+          Transform.translate(
+            offset: const Offset(0, -22),
+            child: Center(
               child: Container(
-                width: 170,
-                height: height,
-                margin: const EdgeInsets.only(top: 0),
+                height: height, // Increase height for selected item
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: backgroundColor, // item.activeColorPrimary,
-                  border: Border.all(color: Colors.transparent, width: 5),
+                  color: isSelected
+                      ? item.activeColorPrimary
+                      : Color(0xff000000) != Theme.of(context).backgroundColor
+                          ? Colors.grey.shade200
+                          : Colors.grey.shade800,
+                  border: Border.all(color: Colors.transparent, width: 4),
                   // boxShadow: navBarDecoration!.boxShadow,
                 ),
                 child: Container(
-                  alignment: Alignment.center,
+                  width: 170,
                   height: height,
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: IconTheme(
-                              data: IconThemeData(
-                                  size: item.iconSize,
-                                  color: isSelected
-                                      ? item.activeColorPrimary
-                                      : item.inactiveColorPrimary),
-                              child: item.icon,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                  margin: const EdgeInsets.only(top: 0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: backgroundColor, // item.activeColorPrimary,
+                    border: Border.all(color: Colors.transparent, width: 5),
+                    // boxShadow: navBarDecoration!.boxShadow,
                   ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        if (item.title == null)
-          const SizedBox.shrink()
-        else
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Material(
-                type: MaterialType.transparency,
-                child: TranslationWidget(
-                  shimmerHeight: 8,
-                  message: item.title!,
-                  fromLanguage: "en",
-                  toLanguage: Globals.selectedLanguage,
-                  builder: (translatedMessage) => FittedBox(
-                    child: Text(
-                      translatedMessage.toString(),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: Theme.of(context).textTheme.headline4!.copyWith(
-                          fontSize: isSelected
-                              ? Theme.of(context)
-                                      .textTheme
-                                      .headline4!
-                                      .fontSize! +
-                                  3
-                              : null,
-                          color: isSelected ? item.activeColorPrimary : null),
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: height,
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              child: IconTheme(
+                                data: IconThemeData(
+                                    size: item.iconSize,
+                                    color: isSelected
+                                        ? item.activeColorPrimary
+                                        : item.inactiveColorPrimary),
+                                child: item.icon,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
-          )
-      ],
+          ),
+          if (item.title == null)
+            const SizedBox.shrink()
+          else
+            Padding(
+              padding: const EdgeInsets.only(bottom: 5),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: TranslationWidget(
+                    shimmerHeight: 8,
+                    message: item.title!,
+                    fromLanguage: "en",
+                    toLanguage: Globals.selectedLanguage,
+                    builder: (translatedMessage) => FittedBox(
+                      child: Text(
+                        translatedMessage.toString(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: Theme.of(context).textTheme.headline4!.copyWith(
+                            fontSize: isSelected
+                                ? Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .fontSize! +
+                                    3
+                                : null,
+                            color: isSelected ? item.activeColorPrimary : null),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+        ],
+      ),
     );
   }
 }
