@@ -1669,8 +1669,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 context: context,
                 scaffoldKey: scaffoldKey);
 
-            _driveBloc
-                .add(GetShareLink(fileId: widget.fileId, slideLink: false));
+            // _driveBloc
+            //     .add(GetShareLink(fileId: widget.fileId, slideLink: false));
           } else {
             Navigator.of(context).pop();
             Utility.currentScreenSnackBar(
