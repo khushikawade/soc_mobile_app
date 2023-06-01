@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
@@ -143,6 +144,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   final ValueNotifier<bool> classroomUrlStatus = ValueNotifier<bool>(false);
+
+  ValueNotifier<bool> isEdit = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     _futureMethod();
@@ -336,7 +340,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         builder:
                             (BuildContext context, int value, Widget? child) {
                           return FutureBuilder(
-                              future: Utility.getStudentInfoList(
+                              future: OcrUtility.getStudentInfoList(
                                   tableName: widget.assessmentDetailPage == true
                                       ? 'history_student_info'
                                       : 'student_info'),
@@ -423,7 +427,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           builder: (BuildContext context, int listCount,
                               Widget? child) {
                             return FutureBuilder(
-                                future: Utility.getStudentInfoList(
+                                future: OcrUtility.getStudentInfoList(
                                     tableName:
                                         widget.assessmentDetailPage == true
                                             ? 'history_student_info'
@@ -492,7 +496,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                   isLoading: true,
                                   studentData:
                                       //list2
-                                      await Utility.getStudentInfoList(
+                                      await OcrUtility.getStudentInfoList(
                                           tableName:
                                               widget.assessmentDetailPage ==
                                                       true
@@ -543,7 +547,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             children: [
                               resultTitle(),
                               FutureBuilder(
-                                  future: Utility.getStudentInfoList(
+                                  future: OcrUtility.getStudentInfoList(
                                       tableName:
                                           widget.assessmentDetailPage == true
                                               ? 'history_student_info'
@@ -725,7 +729,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         description: 'Save to dashboard success',
                         operationResult: 'Success');
                     List<StudentAssessmentInfo> studentInfo =
-                        await Utility.getStudentInfoList(
+                        await OcrUtility.getStudentInfoList(
                             tableName: widget.assessmentDetailPage == true
                                 ? 'history_student_info'
                                 : 'student_info');
@@ -739,7 +743,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       await _studentAssessmentInfoDb.putAt(index, element);
                     });
 
-                    List list = await Utility.getStudentInfoList(
+                    List list = await OcrUtility.getStudentInfoList(
                         tableName: 'student_info');
                     assessmentCount.value = list.length;
 
@@ -758,7 +762,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   if (state is AssessmentDashboardStatus) {
                     if (state.assessmentObj?.assessmentCId?.isNotEmpty ??
                         false) {
-                      List list = await Utility.getStudentInfoList(
+                      List list = await OcrUtility.getStudentInfoList(
                           tableName: 'history_student_info');
 
                       if (isGoogleSheetStateReceived.value == true) {
@@ -1289,7 +1293,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
   performEditAndDelete(BuildContext context, int index, bool? edit) async {
     List<StudentAssessmentInfo> studentInfo =
-        await Utility.getStudentInfoList(tableName: 'student_info');
+        await OcrUtility.getStudentInfoList(tableName: 'student_info');
     if (edit!) {
       String editingLogMsg = "Teacher edited the record";
 
@@ -1380,7 +1384,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   required TextEditingController score,
                   String? studentResonance}) async {
                 List<StudentAssessmentInfo> _list =
-                    await Utility.getStudentInfoList(tableName: 'student_info');
+                    await OcrUtility.getStudentInfoList(
+                        tableName: 'student_info');
                 StudentAssessmentInfo studentInfo = _list[index];
 
                 studentInfo.studentName = name.text;
@@ -1405,7 +1410,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   isLoading: true,
                   studentData:
                       //list2
-                      await Utility.getStudentInfoList(
+                      await OcrUtility.getStudentInfoList(
                           tableName: 'student_info'),
                 ));
 
@@ -1414,9 +1419,9 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     slidePresentationId: Globals.googleSlidePresentationId,
                     studentAssessmentInfo: studentInfo));
 
-                // assessmentCount.value = await Utility.getStudentInfoListLength(
+                // assessmentCount.value = await OcrUtility.getStudentInfoListLength(
                 //           tableName: 'student_info');
-                // studentRecordList.value = Utility.getStudentInfoList(
+                // studentRecordList.value = OcrUtility.getStudentInfoList(
                 //           tableName: 'student_info');
               },
             ));
@@ -1523,7 +1528,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                             }),
                         onPressed: () async {
                           List<StudentAssessmentInfo> _list =
-                              await Utility.getStudentInfoList(
+                              await OcrUtility.getStudentInfoList(
                                   tableName: 'student_info');
 
                           await _studentAssessmentInfoDb.deleteAt(index);
@@ -1563,7 +1568,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               description: deleteRecordLogMsg,
                               operationResult: 'Success');
 
-                          // List _list = await Utility.getStudentInfoList(
+                          // List _list = await OcrUtility.getStudentInfoList(
                           //     tableName: 'student_info');
                           assessmentCount.value = _list.length - 1;
                           await _futureMethod();
@@ -1581,7 +1586,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
-                              studentData: await Utility.getStudentInfoList(
+                              studentData: await OcrUtility.getStudentInfoList(
                                   tableName: 'student_info')));
 
                           _driveBloc.add(DeleteSlideFromPresentation(
@@ -1613,7 +1618,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   }
 
   Future _method() async {
-    List list = await Utility.getStudentInfoList(tableName: 'student_info');
+    List list = await OcrUtility.getStudentInfoList(tableName: 'student_info');
     assessmentCount.value = list.length;
 
     if (Globals.scanMoreStudentInfoLength != null) {
@@ -1625,7 +1630,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
   Future<void> _futureMethod() async {
     _listCount.value =
-        await Utility.getStudentInfoListLength(tableName: 'student_info');
+        await OcrUtility.getStudentInfoListLength(tableName: 'student_info');
   }
 
   Widget detailsPageActionWithDashboard(index) {
@@ -1752,11 +1757,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       message:
                           'Oops! You cannot save the Assignment to the dashboard which was scanned before the premium account. If you still want to save this to the Dashboard, Please rescan the Assignment.');
                   Globals.scanMoreStudentInfoLength =
-                      await Utility.getStudentInfoListLength(
+                      await OcrUtility.getStudentInfoListLength(
                               tableName: 'student_info') -
                           1;
                 } else {
-                  List list = await Utility.getStudentInfoList(
+                  List list = await OcrUtility.getStudentInfoList(
                       tableName: 'student_info');
                   if (widget.isScanMore == true &&
                       widget.assessmentListLength != null &&
@@ -1775,7 +1780,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     //         ? Globals.currentAssessmentId
                     //         : historyAssessmentId ?? '',
                     //     assessmentSheetPublicURL: widget.shareLink,
-                    //     resultList: await Utility.getStudentInfoList(
+                    //     resultList: await OcrUtility.getStudentInfoList(
                     //         tableName: widget.assessmentDetailPage == true
                     //             ? 'history_student_info'
                     //             : 'student_info'),
@@ -1811,7 +1816,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     //       : historyAssessmentId ?? '',
                     //   assessmentSheetPublicURL: widget.shareLink,
                     //   resultList: !widget.assessmentDetailPage!
-                    //       ? wait Utility.getStudentInfoList(
+                    //       ? wait OcrUtility.getStudentInfoList(
                     //           taableName: 'student_info')
                     //       : _listRecord,
                     //   assessmentName: widget.assessmentName!,
@@ -1937,7 +1942,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     return IconButton(
       padding: EdgeInsets.only(top: 2),
       onPressed: () async {
-        List<StudentAssessmentInfo> list = await Utility.getStudentInfoList(
+        List<StudentAssessmentInfo> list = await OcrUtility.getStudentInfoList(
             tableName: widget.assessmentDetailPage == true
                 ? 'history_student_info'
                 : 'student_info');
@@ -1957,7 +1962,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
   Future<String> _getpointPossible({required String tableName}) async {
     List<StudentAssessmentInfo> studentInfo =
-        await Utility.getStudentInfoList(tableName: tableName);
+        await OcrUtility.getStudentInfoList(tableName: tableName);
     return studentInfo.first.pointPossible ?? '2';
   }
 
@@ -2038,7 +2043,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
   updateAssessmentToDb() async {
     Utility.updateAssessmentToDb(
-      studentInfoList: await Utility.getStudentInfoList(
+      studentInfoList: await OcrUtility.getStudentInfoList(
           tableName: widget.assessmentDetailPage == true
               ? 'history_student_info'
               : 'student_info'),

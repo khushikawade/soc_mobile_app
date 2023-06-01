@@ -1622,7 +1622,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       }
     } else {
       List<StudentAssessmentInfo> studentInfo =
-          await Utility.getStudentInfoList(tableName: 'student_info');
+          await OcrUtility.getStudentInfoList(tableName: 'student_info');
 
       if (studentInfo.length > 0 && studentInfo[0].studentId == "Id") {
         studentInfo.remove(0);

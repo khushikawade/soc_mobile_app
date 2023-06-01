@@ -202,4 +202,42 @@ class OcrUtility {
       await _studentInfoDb.addData(element);
     });
   }
+
+  static Future<List<StudentAssessmentInfo>> getStudentInfoList(
+      {required String tableName, bool? isEdit}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    if (isEdit == true) {
+      await sortStudents(tableName: tableName);
+    }
+
+    List<StudentAssessmentInfo> _studentInfoListDb = [];
+    _studentInfoListDb = await _studentInfoDb.getData();
+    if (_studentInfoListDb.isNotEmpty) {
+      if (_studentInfoListDb[0].studentId == 'Id' ||
+          _studentInfoListDb[0].studentId == 'Name') {
+        _studentInfoListDb.removeAt(0);
+      }
+    }
+
+    return _studentInfoListDb;
+  }
+
+  static Future<int> getStudentInfoListLength(
+      {required String tableName}) async {
+    LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
+        LocalDatabase(tableName);
+    List<StudentAssessmentInfo> _studentInfoListDb =
+        await _studentInfoDb.getData();
+
+    if (_studentInfoListDb.isNotEmpty) {
+      if (_studentInfoListDb[0].studentId == 'Id' ||
+          _studentInfoListDb[0].studentId == 'Name') {
+        _studentInfoListDb.removeAt(0);
+        await _studentInfoDb.deleteAt(0);
+      }
+    }
+
+    return _studentInfoListDb.length;
+  }
 }

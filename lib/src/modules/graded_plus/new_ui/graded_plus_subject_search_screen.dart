@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
@@ -350,7 +351,7 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
                       'Assignment Detail is Updating';
                 });
                 List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-                    await Utility.getStudentInfoList(tableName: 'student_info');
+                    await OcrUtility.getStudentInfoList(tableName: 'student_info');
                 Globals.currentAssessmentId = '';
                 //Save Assessment To  Postgres Database
                 _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
@@ -867,7 +868,7 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
 
     //Adding blank fields to the list : Static data
     List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-        await Utility.getStudentInfoList(tableName: 'student_info');
+        await OcrUtility.getStudentInfoList(tableName: 'student_info');
 
     StudentAssessmentInfo element = studentAssessmentInfoDblist[0];
     element.subject = widget.selectedKeyword;
@@ -913,7 +914,7 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
         isLoading: true,
         studentData:
             //list2
-            await Utility.getStudentInfoList(tableName: 'student_info')));
+            await OcrUtility.getStudentInfoList(tableName: 'student_info')));
   }
 
   void _saveResultAssignmentsToDashboard(

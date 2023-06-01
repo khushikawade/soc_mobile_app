@@ -989,7 +989,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 /////--------
 
     List<StudentAssessmentInfo> studentInfo =
-        await Utility.getStudentInfoList(tableName: Strings.studentInfoDbName);
+        await OcrUtility.getStudentInfoList(tableName: Strings.studentInfoDbName);
 
     if (studentInfo.isNotEmpty) {
       for (GoogleClassroomCourses classroom in _localData) {

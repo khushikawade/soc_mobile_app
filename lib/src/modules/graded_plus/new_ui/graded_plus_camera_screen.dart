@@ -299,7 +299,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                           assessmentName: Globals.historyAssessmentName,
                           fileId: Globals.historyAssessmentFileId,
                           isLoading: true,
-                          studentData: await Utility.getStudentInfoList(
+                          studentData: await OcrUtility.getStudentInfoList(
                               tableName:
                                   widget.isFromHistoryAssessmentScanMore == true
                                       ? Strings.historyStudentInfoDbName
@@ -314,7 +314,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                   if (state
                       is AddAndUpdateStudentAssessmentDetailsToSlideSuccess) {
                     List<StudentAssessmentInfo> studentAssessmentInfoDb =
-                        await Utility.getStudentInfoList(
+                        await OcrUtility.getStudentInfoList(
                             tableName:
                                 widget.isFromHistoryAssessmentScanMore == true
                                     ? Strings.historyStudentInfoDbName
@@ -352,7 +352,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         assessmentName: Globals.assessmentName!,
                         fileId: Globals.googleExcelSheetId,
                         isLoading: true,
-                        studentData: await Utility.getStudentInfoList(
+                        studentData: await OcrUtility.getStudentInfoList(
                             tableName: Strings.studentInfoDbName)));
                   }
                   if (state is GoogleSheetUpdateOnScanMoreSuccess) {
@@ -436,7 +436,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
                         operationResult: 'Success');
 
                     List<StudentAssessmentInfo> studentAssessmentInfoDb =
-                        await Utility.getStudentInfoList(
+                        await OcrUtility.getStudentInfoList(
                             tableName:
                                 widget.isFromHistoryAssessmentScanMore == true
                                     ? Strings.historyStudentInfoDbName
@@ -870,7 +870,7 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
     try {
       List<StudentAssessmentInfo> studentInfo =
-          await Utility.getStudentInfoList(
+          await OcrUtility.getStudentInfoList(
               tableName: Strings.studentInfoDbName);
 
       LocalDatabase<GoogleClassroomCourses> _localDb =

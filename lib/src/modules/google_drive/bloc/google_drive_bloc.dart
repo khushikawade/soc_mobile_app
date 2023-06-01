@@ -10,6 +10,7 @@ import 'package:Soc/src/modules/google_drive/model/assessment_detail_modal.dart'
 import 'package:Soc/src/modules/google_drive/model/spreadsheet_model.dart';
 import 'package:Soc/src/modules/google_drive/overrides.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/pbis_plus/bloc/pbis_plus_bloc.dart';
 import 'package:Soc/src/modules/pbis_plus/modal/pbis_course_modal.dart';
@@ -909,7 +910,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   : 'student_info');
 
           List<StudentAssessmentInfo> studentInfo =
-              await Utility.getStudentInfoList(
+              await OcrUtility.getStudentInfoList(
                   tableName: event.isHistoryAssessmentSection == true
                       ? 'history_student_info'
                       : 'student_info');
