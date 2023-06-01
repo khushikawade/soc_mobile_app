@@ -497,14 +497,13 @@ class _GradedLandingPageState extends State<GradedLandingPage> {
                             // await UserGoogleProfile.clearUserProfile();
                             List<UserInformation> _profileData =
                                 await UserGoogleProfile.getUserProfile();
+
                             Utility.updateLogs(
                                 activityType: 'GRADED+',
                                 activityId: '1',
-                                // sessionId: widget.assessmentDetailPage == true
-                                //     ? widget.obj!.sessionId
-                                //     : '',
                                 description: 'user move to scan assessment',
                                 operationResult: 'Success');
+
                             await Utility.clearStudentInfo(
                                 tableName: 'student_info');
                             await Utility.clearStudentInfo(
