@@ -1,5 +1,6 @@
 import 'package:Soc/login_soc.dart';
 import 'package:Soc/src/globals.dart';
+import 'package:Soc/src/modules/auth_dummy/sign_in_screen.dart';
 import 'package:Soc/src/modules/schedule/modal/calender_list.dart';
 import 'package:Soc/src/modules/schedule/modal/event.dart';
 import 'package:Soc/src/overrides.dart';
@@ -111,10 +112,11 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           title: 'Solved',
           theme: theme,
           darkTheme: darkTheme,
-          home: StartupPage(
-              isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
-              //false,  /For standard app
-              ),
+          home: SignInScreen(),
+          // home: StartupPage(
+          //     isOcrSection: Overrides.STANDALONE_GRADED_APP //Standalone app
+          //     //false,  /For standard app
+          //     ),
           //  home: SchoolIDLogin(),
           navigatorObservers: [
             FirebaseAnalyticsService().appAnalyticsObserver()

@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -49,22 +46,31 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyA1jukRhRF-jLyxbHpGosIJIlInbGRCHXU',
+    appId: '1:675468736684:web:60a211c77d7fb0e9abc709',
+    messagingSenderId: '675468736684',
+    projectId: 'app-07x151',
+    authDomain: 'app-07x151.firebaseapp.com',
+    storageBucket: 'app-07x151.appspot.com',
+    measurementId: 'G-3CRCRXCXDC',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAm04JzrdSJR7K9dU-LfLqBw2NMcqe9pMs',
-    appId: '1:789027884162:android:b74fdc336355b825a3789b',
-    messagingSenderId: '789027884162',
-    projectId: 'graded-plus-standalone',
-    storageBucket: 'graded-plus-standalone.appspot.com',
+    apiKey: 'AIzaSyB2SQfdLM2JY5Yx-HaCE-Ue6LzUMzuXvI8',
+    appId: '1:675468736684:android:82adfd00138402c8abc709',
+    messagingSenderId: '675468736684',
+    projectId: 'app-07x151',
+    storageBucket: 'app-07x151.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAPQCCMdKPFedr4VWj1b_P8sSWJF_58Ylk',
-    appId: '1:789027884162:ios:009b627e401c34fca3789b',
-    messagingSenderId: '789027884162',
-    projectId: 'graded-plus-standalone',
-    storageBucket: 'graded-plus-standalone.appspot.com',
-    iosClientId:
-        '789027884162-i7i04sf17custt7medidefqsebdcrcc9.apps.googleusercontent.com',
+    apiKey: 'AIzaSyD0xlNYl1ELDV3SYe_IBhR6KOjQmCIYt0o',
+    appId: '1:675468736684:ios:e4f8e48602f1bf4aabc709',
+    messagingSenderId: '675468736684',
+    projectId: 'app-07x151',
+    storageBucket: 'app-07x151.appspot.com',
+    iosClientId: '675468736684-3c0vfd6pun6ohr0s8d6u0bod81f7m4oe.apps.googleusercontent.com',
     iosBundleId: 'com.jhs151hh6432q',
   );
 }
