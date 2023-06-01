@@ -1,6 +1,6 @@
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
-import 'package:Soc/src/modules/graded_plus/modal/custom_content_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/custom_intro_content_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/bottom_navbar_home.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
