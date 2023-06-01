@@ -523,7 +523,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     //   }
     // }
 
-    if (event is GradedPlusSaveAssessmentToDashboard) {
+    if (event is GradedPlusSaveResultToDashboard) {
       try {
         List<UserInformation> userInformation =
             await UserGoogleProfile.getUserProfile();
@@ -536,7 +536,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
             userInformation: userInformation[0]);
 
         if (isResultSaved[0] == true) {
-          yield GradedPlusSaveAssessmentToDashboardSuccess();
+          yield GradedPlusSaveResultToDashboardSuccess();
         } else {
           yield OcrErrorReceived(err: isResultSaved[1]?.toString() ?? '');
         }

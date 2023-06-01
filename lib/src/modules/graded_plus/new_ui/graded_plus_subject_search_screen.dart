@@ -9,7 +9,6 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
-
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
@@ -760,7 +759,7 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
                                 }
                               }
                               if (state
-                                  is GradedPlusSaveAssessmentToDashboardSuccess) {
+                                  is GradedPlusSaveResultToDashboardSuccess) {
                                 _navigatetoResultSection();
                               }
 
@@ -921,11 +920,13 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
 
     GradedGlobals.loadingMessage = 'Preparing Student Excel Sheet';
 
+    //Managing Loading dialog to show current progress status
     Utility.showLoadingDialog(
         context: context,
         isOCR: true,
         state: (p0) => {showDialogSetState = p0});
 
+    //Updating Spreadsheet to drive
     widget.googleDriveBloc.add(UpdateDocOnDrive(
         isMcqSheet: widget.isMcqSheet ?? false,
         // questionImage: widget.questionImage == ''
@@ -950,7 +951,7 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
     showDialogSetState!(() {
       GradedGlobals.loadingMessage = 'Result Detail is Updating';
     });
-    _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
+    _ocrBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
       studentInfoDb: studentAssessmentInfoDb,
