@@ -761,7 +761,10 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                         studentIdOnSaveFailure(value);
                       },
                       validator: (String? value) {
-                        isStudentIdFilled.value = value!;
+                        // isStudentIdFilled.value = value!;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          isStudentIdFilled.value = value!;
+                        });
                         return Overrides.STANDALONE_GRADED_APP == true
                             ? isStudentIdFilled.value.isEmpty ||
                                     !regex.hasMatch(isStudentIdFilled.value)

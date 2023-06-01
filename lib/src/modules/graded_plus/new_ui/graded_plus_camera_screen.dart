@@ -162,7 +162,10 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     FirebaseAnalyticsService.addCustomAnalyticsEvent("camera_screen");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'camera_screen', screenClass: 'CameraScreen');
-    OcrOverrides.gradedPlusNavBarIsHide.value = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      OcrOverrides.gradedPlusNavBarIsHide.value = true;
+    });
+
     super.initState();
   }
 
@@ -171,7 +174,10 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
     Wakelock.disable();
     controller?.dispose();
     setEnabledSystemUIMode();
-    OcrOverrides.gradedPlusNavBarIsHide.value = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      OcrOverrides.gradedPlusNavBarIsHide.value = false;
+    });
+
     super.dispose();
   }
 
@@ -1099,9 +1105,10 @@ class _CameraScreenState extends State<GradedPlusCameraScreen>
 
   Future<void> preparingGoogleSlideFiles() async {
     await OcrUtility.sortStudents(
-        tableName: widget.isFromHistoryAssessmentScanMore == true
-            ? Strings.historyStudentInfoDbName
-            : Strings.studentInfoDbName);
+      tableName: widget.isFromHistoryAssessmentScanMore == true
+          ? Strings.historyStudentInfoDbName
+          : Strings.studentInfoDbName,
+    );
 
     if (widget.isFromHistoryAssessmentScanMore == true) {
       _driveBloc.add(UpdateGoogleSlideOnScanMore(

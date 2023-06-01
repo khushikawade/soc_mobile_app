@@ -159,13 +159,29 @@ class OcrUtility {
     }
   }
 
-  static Future sortStudents({required tableName}) async {
+  static Future sortStudents({
+    required tableName,
+  }) async {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase(tableName);
 
-//get all students
+    //get all students
     List<StudentAssessmentInfo> students = await _studentInfoDb.getData();
 
+//remove id and name demo object for list and DB
+    if (students.isNotEmpty) {
+      if (students[0].studentId == 'Id' || students[0].studentId == 'Name') {
+        students.removeAt(0);
+        await _studentInfoDb.deleteAt(0);
+      }
+    }
+
+//IF LIST IS EMPTY RETURN THE FUNCTION
+    if (students == null || students.isEmpty) {
+      return;
+    }
+
+    StudentAssessmentInfo firstStudent = students[0];
     // Sort by marks (descending) first, then by last name
     students.sort((a, b) {
       // Sort by marks in descending order
@@ -198,8 +214,25 @@ class OcrUtility {
     await _studentInfoDb.clear();
 
 //Ading the sorted list
-    students.forEach((element) async {
-      await _studentInfoDb.addData(element);
+    students.asMap().forEach((int index, StudentAssessmentInfo element) async {
+      StudentAssessmentInfo studentObj = element;
+      // TO make sure all comman data is available on first index on edit or scan more
+      if (index == 0) {
+        studentObj
+          ..className = firstStudent.className
+          ..subject = firstStudent.subject
+          ..learningStandard = firstStudent.learningStandard
+          ..subLearningStandard = firstStudent.subLearningStandard
+          ..scoringRubric = firstStudent.scoringRubric
+          ..customRubricImage = firstStudent.customRubricImage
+          ..grade = firstStudent.grade
+          ..questionImgUrl = firstStudent.questionImgUrl
+          ..googleSlidePresentationURL = firstStudent.googleSlidePresentationURL
+          ..standardDescription = firstStudent.standardDescription
+          ..questionImgFilePath = firstStudent.questionImgFilePath;
+      }
+
+      await _studentInfoDb.addData(studentObj);
     });
   }
 
@@ -208,7 +241,9 @@ class OcrUtility {
     LocalDatabase<StudentAssessmentInfo> _studentInfoDb =
         LocalDatabase(tableName);
     if (isEdit == true) {
-      await sortStudents(tableName: tableName);
+      await sortStudents(
+        tableName: tableName,
+      );
     }
 
     List<StudentAssessmentInfo> _studentInfoListDb = [];

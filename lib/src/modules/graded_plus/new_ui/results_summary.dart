@@ -145,11 +145,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   GoogleClassroomBloc _googleClassroomBloc = new GoogleClassroomBloc();
   final ValueNotifier<bool> classroomUrlStatus = ValueNotifier<bool>(false);
 
-  ValueNotifier<bool> isEdit = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isEditPerform = ValueNotifier<bool>(false);
 
   @override
   void initState() {
-    _futureMethod();
+    updateCount();
     _initState();
 
     _scrollController.addListener(_scrollListener);
@@ -298,7 +298,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
 
                 if (state is GetClassroomCourseWorkURLSuccess) {
                   if (!state.isLinkAvailable!) {
-                    print(state.classroomCouseWorkURL);
+                 
                     Utility.currentScreenSnackBar(
                         "Please check your internet connection and try again",
                         null);
@@ -337,8 +337,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   builder: (BuildContext context, bool value, Widget? child) {
                     return ValueListenableBuilder(
                         valueListenable: assessmentCount,
-                        builder:
-                            (BuildContext context, int value, Widget? child) {
+                        builder: (BuildContext context, int listCount,
+                            Widget? child) {
                           return FutureBuilder(
                               future: OcrUtility.getStudentInfoList(
                                   tableName: widget.assessmentDetailPage == true
@@ -347,34 +347,21 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                               builder: (BuildContext context,
                                   AsyncSnapshot<List<StudentAssessmentInfo>>
                                       snapshot) {
-                                if (snapshot.hasData &&
-                                        widget.assessmentDetailPage == true
-                                    ? isGoogleSheetStateReceived.value
-                                    : !isGoogleSheetStateReceived.value) {
-                                  lastAssessmentLength =
-                                      snapshot?.data?.length ?? 0;
-                                  return snapshot.data != null
-                                      ? Tooltip(
-                                          message:
-                                              "Total Scanned ${lastAssessmentLength == 0 ? 'Sheet' : 'Sheets'}",
-                                          child: IconButton(
-                                            onPressed: (() {}),
-                                            icon: Text(
-                                                '${snapshot.data!.length}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline3),
-                                          ),
-                                        )
-                                      : Container(
-                                          width: 10,
-                                          height: 10,
-                                        );
+                                if (snapshot.hasData) {
+                                  if (snapshot.data!.length != 0) {
+                                    questionImageUrl =
+                                        snapshot.data![0].questionImgUrl;
+                                  }
+
+                                  return listView(
+                                    snapshot.data!,
+                                  );
                                 }
-                                return Container(
-                                  width: 10,
-                                  height: 10,
-                                );
+                                return Globals.isAndroid!
+                                    ? CircularProgressIndicator()
+                                    : CupertinoActivityIndicator(
+                                        //color: Colors.white,
+                                        );
                               });
                         });
                   }),
@@ -423,33 +410,40 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     children: [
                       resultTitle(),
                       ValueListenableBuilder(
-                          valueListenable: assessmentCount,
-                          builder: (BuildContext context, int listCount,
+                          valueListenable: isEditPerform,
+                          builder: (BuildContext context, bool value,
                               Widget? child) {
-                            return FutureBuilder(
-                                future: OcrUtility.getStudentInfoList(
-                                    tableName:
-                                        widget.assessmentDetailPage == true
-                                            ? 'history_student_info'
-                                            : 'student_info'),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<List<StudentAssessmentInfo>>
-                                        snapshot) {
-                                  if (snapshot.hasData) {
-                                    if (snapshot.data!.length != 0) {
-                                      questionImageUrl =
-                                          snapshot.data![0].questionImgUrl;
-                                    }
+                            return ValueListenableBuilder(
+                                valueListenable: assessmentCount,
+                                builder: (BuildContext context, int listCount,
+                                    Widget? child) {
+                                  return FutureBuilder(
+                                      future: OcrUtility.getStudentInfoList(
+                                          tableName:
+                                              widget.assessmentDetailPage ==
+                                                      true
+                                                  ? 'history_student_info'
+                                                  : 'student_info'),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<
+                                                  List<StudentAssessmentInfo>>
+                                              snapshot) {
+                                        if (snapshot.hasData) {
+                                          if (snapshot.data!.length != 0) {
+                                            questionImageUrl = snapshot
+                                                .data![0].questionImgUrl;
+                                          }
 
-                                    return listView(
-                                      snapshot.data!,
-                                    );
-                                  }
-                                  return Globals.isAndroid!
-                                      ? CircularProgressIndicator()
-                                      : CupertinoActivityIndicator(
-                                          //color: Colors.white,
+                                          return listView(
+                                            snapshot.data!,
                                           );
+                                        }
+                                        return Globals.isAndroid!
+                                            ? CircularProgressIndicator()
+                                            : CupertinoActivityIndicator(
+                                                //color: Colors.white,
+                                                );
+                                      });
                                 });
                           }),
                       BlocListener<GoogleDriveBloc, GoogleDriveState>(
@@ -1388,6 +1382,22 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                         tableName: 'student_info');
                 StudentAssessmentInfo studentInfo = _list[index];
 
+                if (studentInfo.studentName == name.text &&
+                    studentInfo.studentId == id.text &&
+                    studentInfo.studentGrade == score.text &&
+                    studentInfo.studentResponseKey == studentResonance) {
+                  Navigator.pop(context, false);
+
+                  return;
+                }
+
+                bool isEditScoreOrName = false;
+                if (studentInfo.studentName != name.text ||
+                    studentInfo.studentGrade != score.text) {
+               
+                  isEditScoreOrName = true;
+                }
+
                 studentInfo.studentName = name.text;
                 studentInfo.studentId = id.text;
                 studentInfo.studentGrade = score.text;
@@ -1396,33 +1406,32 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 _studentAssessmentInfoDb.putAt(index, studentInfo);
                 assessmentCount.value = _list.length;
 
-                await _futureMethod();
+                await updateCount();
                 _method();
                 disableSlidableAction.value = true;
                 Navigator.pop(context, false);
                 Utility.showLoadingDialog(context: context, isOCR: true);
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
-                  // questionImage: questionImageUrl ?? "NA",
                   createdAsPremium: Globals.isPremiumUser,
                   assessmentName: Globals.assessmentName!,
                   fileId: Globals.googleExcelSheetId,
                   isLoading: true,
-                  studentData:
-                      //list2
-                      await OcrUtility.getStudentInfoList(
-                          tableName: 'student_info'),
+                  studentData: await OcrUtility.getStudentInfoList(
+                      isEdit: isEditScoreOrName,
+                      tableName: Strings.studentInfoDbName),
                 ));
+             
 
-//to update the slides details .
+                //to update the slides details .
                 _driveBloc.add(EditSlideFromPresentation(
                     slidePresentationId: Globals.googleSlidePresentationId,
-                    studentAssessmentInfo: studentInfo));
-
-                // assessmentCount.value = await OcrUtility.getStudentInfoListLength(
-                //           tableName: 'student_info');
-                // studentRecordList.value = OcrUtility.getStudentInfoList(
-                //           tableName: 'student_info');
+                    studentAssessmentInfo: studentInfo,
+                    oldSlideIndex: isEditScoreOrName ? index : null));
+                if (isEditScoreOrName) {
+           
+                  isEditPerform.value = !isEditPerform.value;
+                }
               },
             ));
   }
@@ -1571,7 +1580,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           // List _list = await OcrUtility.getStudentInfoList(
                           //     tableName: 'student_info');
                           assessmentCount.value = _list.length - 1;
-                          await _futureMethod();
+                          await updateCount();
                           _method();
                           // studentRecordList.value = Globals.studentInfo!;
                           Navigator.pop(
@@ -1628,7 +1637,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
     }
   }
 
-  Future<void> _futureMethod() async {
+  Future<void> updateCount() async {
     _listCount.value =
         await OcrUtility.getStudentInfoListLength(tableName: 'student_info');
   }
