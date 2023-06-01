@@ -64,7 +64,11 @@ class _PBISPlusHistoryState extends State<PBISPlusHistory> {
             key: _scaffoldKey,
             backgroundColor: Colors.transparent,
             appBar: PBISPlusUtility.pbisAppBar(
-                context, widget.titleIconData, 'Class', _scaffoldKey),
+              context: context,
+              titleIconData: widget.titleIconData,
+              title: 'Class',
+              scaffoldKey: _scaffoldKey,
+            ),
             extendBody: true,
             body: body(context)),
       )

@@ -2,7 +2,6 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
-import 'package:Soc/src/modules/graded_plus/ui/result_summary/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
