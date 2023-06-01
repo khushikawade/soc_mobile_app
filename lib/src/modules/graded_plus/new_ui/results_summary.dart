@@ -9,7 +9,9 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/helper/graded_overrides.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/helper/result_action_icon_modal.dart';
+import 'package:Soc/src/modules/graded_plus/modal/result_summery_detail_model.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/assessment_history_screen.dart';
@@ -375,9 +377,11 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                   }),
             ],
           ),
+
           // SpacerWidget(_KVerticalSpace / 5),
           Container(
-            height: MediaQuery.of(context).size.height * 0.09,
+            //color: Colors.amber,
+            //height: MediaQuery.of(context).size.height * 0.09,
             child: ValueListenableBuilder(
               valueListenable: infoIconValue,
               builder: (BuildContext context, bool value, Widget? child) {
@@ -411,7 +415,25 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               child: Container(),
             ),
           ),
-          // SpacerWidget(_KVerticalSpace / 5),
+
+          !widget.assessmentDetailPage!
+              ? resultDetailLineWidget()
+              : BlocBuilder<GoogleDriveBloc, GoogleDriveState>(
+                  bloc: _driveBloc,
+                  builder: (context, state) {
+                    if (state is AssessmentDetailSuccess) {
+                      if (state.obj.length > 0 &&
+                          state.obj[0].answerKey != '' &&
+                          state.obj[0].answerKey != 'NA' &&
+                          state.obj[0].answerKey != null) {
+                        widget.isMcqSheet = true;
+                      }
+                      return resultDetailLineWidget(list: state.obj);
+                    }
+                    return Container();
+                  },
+                ),
+          SpacerWidget(_KVerticalSpace / 5),
           !widget.assessmentDetailPage!
               ? Expanded(
                   child: ListView(
@@ -986,6 +1008,73 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                       .copyWith(fontWeight: FontWeight.bold)),
             ),
           );
+  }
+
+  Widget resultDetailLineWidget({List<StudentAssessmentInfo>? list}) {
+    return ValueListenableBuilder(
+      valueListenable: disableSlidableAction,
+      builder: (context, value, child) {
+        return FutureBuilder(
+          future: OcrUtility.getDetailsByValue(
+              isMcqSheet: widget.isMcqSheet ?? false,
+              assessmentDetailPage: widget.assessmentDetailPage ?? false,
+              width: MediaQuery.of(context).size.width * 0.9,
+              assessmentList: list),
+          builder: (context,
+              AsyncSnapshot<List<ResultSummeryDetailModel>> snapshot) {
+            if (snapshot.hasData) {
+              return Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Row(
+                  children: snapshot.data!
+                      .map((item) => Container(
+                            width: item.width,
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: item.color,
+                                      border: Border.all(
+                                          color: Color(0xff000000) !=
+                                                  Theme.of(context)
+                                                      .backgroundColor
+                                              ? Color(0xffF7F8F9)
+                                              : Color(0xff111C20),
+                                          width: 2)),
+                                  width: item.width,
+                                  height: 25,
+                                  child: Center(
+                                    child: Utility.textWidget(
+                                        text: "${item.count}",
+                                        context: context,
+                                        textTheme: Theme.of(context)
+                                            .textTheme
+                                            .displaySmall!),
+                                  ),
+                                ),
+                                FittedBox(
+                                  child: Utility.textWidget(
+                                      text: widget.isMcqSheet == true
+                                          ? "${item.value}"
+                                          : "${item.value}/${item.pointPossible}",
+                                      context: context,
+                                      textTheme: Theme.of(context)
+                                          .textTheme
+                                          .displaySmall!
+                                          .copyWith(fontSize: 10)),
+                                )
+                              ],
+                            ),
+                          ))
+                      .toList(),
+                ),
+              );
+            }
+            return Container();
+          },
+        );
+      },
+    );
   }
 
   Widget _scanFloatingWidget() {
@@ -1706,7 +1795,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
               Utility.updateLogs(
                   activityType: 'GRADED+',
                   activityId: '15',
-                  description: 'History Assesment button pressed',
+                  description: 'History Assessment button pressed',
                   operationResult: 'Success');
 
               _showDataSavedPopup(
@@ -2455,4 +2544,97 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
       ],
     );
   }
+
+  // Future<List<ResultSummeryDetailModel>> getDetailsByValue(
+  //     {required double width,
+  //     List<StudentAssessmentInfo>? assessmentList}) async {
+  //   List<StudentAssessmentInfo> studentAssessmentList = assessmentList != null
+  //       ? assessmentList
+  //       : await Utility.getStudentInfoList(
+  //           tableName: widget.assessmentDetailPage == true
+  //               ? 'history_student_info'
+  //               : 'student_info');
+
+  //   if (studentAssessmentList[0].answerKey != '' &&
+  //       studentAssessmentList[0].answerKey != 'NA' &&
+  //       studentAssessmentList[0].answerKey != null) {
+  //     widget.isMcqSheet = true;
+  //   }
+  //   List<ResultSummeryDetailModel> list = [];
+  //   List<String> rubricList = [];
+  //   for (var i = 0; i < studentAssessmentList.length; i++) {
+  //     if (rubricList.contains(widget.isMcqSheet == true
+  //         ? studentAssessmentList[i].studentResponseKey
+  //         : studentAssessmentList[i].studentGrade)) {
+  //       for (var j = 0; j < list.length; j++) {
+  //         if (list[j].value ==
+  //             (widget.isMcqSheet == true
+  //                 ? studentAssessmentList[i].studentResponseKey
+  //                 : studentAssessmentList[i].studentGrade)) {
+  //           list[j].count = list[j].count! + 1;
+  //         }
+  //       }
+  //     } else {
+  //       rubricList.add(widget.isMcqSheet == true
+  //           ? studentAssessmentList[i].studentResponseKey!
+  //           : studentAssessmentList[i].studentGrade!);
+  //       list.add(ResultSummeryDetailModel(
+  //           value: widget.isMcqSheet == true
+  //               ? studentAssessmentList[i].studentResponseKey
+  //               : studentAssessmentList[i].studentGrade,
+  //           count: 1,
+  //           pointPossible: widget.isMcqSheet == true
+  //               ? studentAssessmentList[i].answerKey
+  //               : studentAssessmentList[i].pointPossible));
+  //     }
+  //   }
+
+  //   for (var i = 0; i < list.length; i++) {
+  //     list[i].width = width / (studentAssessmentList.length / list[i].count!);
+  //     Color color = AppTheme.kPrimaryColor;
+  //     if (widget.isMcqSheet == true) {
+  //       color = studentAssessmentList[i].answerKey == list[i].value
+  //           ? Color(0xAA7ac36a)
+  //           : Color(0xAAe57373);
+  //     } else {
+  //       switch (list[i].value) {
+  //         case '0':
+  //           {
+  //             color = Color(0xAAe57373);
+  //             break;
+  //           }
+  //         case '1':
+  //           {
+  //             color =
+  //                 list[i].pointPossible == '2' || list[i].pointPossible == '3'
+  //                     ? Color(0xAAffd54f)
+  //                     : Color(0xAAe57373);
+  //             break;
+  //           }
+  //         case '2':
+  //           {
+  //             color = list[i].pointPossible == '2'
+  //                 ? Color(0xAA7ac36a)
+  //                 : Color(0xAAffd54f);
+  //             break;
+  //           }
+  //         case '3':
+  //           {
+  //             color = list[i].pointPossible == '3'
+  //                 ? Color(0xAA7ac36a)
+  //                 : Color(0xAAffd54f);
+  //             break;
+  //           }
+  //         case '4':
+  //           {
+  //             color = Color(0xAA7ac36a);
+  //             break;
+  //           }
+  //       }
+  //     }
+  //     list[i].color = color;
+  //   }
+  //   list.sort((a, b) => a.value!.compareTo(b.value!));
+  //   return list;
+  // }
 }
