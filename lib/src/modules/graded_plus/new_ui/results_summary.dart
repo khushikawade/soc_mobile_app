@@ -4,7 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_courses.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
@@ -1669,8 +1669,8 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 context: context,
                 scaffoldKey: scaffoldKey);
 
-            _driveBloc
-                .add(GetShareLink(fileId: widget.fileId, slideLink: false));
+            // _driveBloc
+            //     .add(GetShareLink(fileId: widget.fileId, slideLink: false));
           } else {
             Navigator.of(context).pop();
             Utility.currentScreenSnackBar(

@@ -2489,6 +2489,7 @@ class OcrBloc extends Bloc<OcrEvent, OcrState> {
     }
   }
 
+//Used to update the student result to dashboard // Checking only non-saved records
   Future<List<StudentAssessmentInfo>> _getOnlyNonSavedStudents(
       {required final List<StudentAssessmentInfo> studentList}) async {
     try {
