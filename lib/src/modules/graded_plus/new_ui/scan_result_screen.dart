@@ -9,6 +9,7 @@ import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/individualStudentModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_details_standard_modal.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/graded_plus_next_scananimation_button.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_fab.dart';
@@ -307,7 +308,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
                   var result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CameraScreen(
+                        builder: (context) => GradedPlusCameraScreen(
                               assessmentName: widget.assessmentName,
                               lastAssessmentLength: widget.lastAssessmentLength,
                               isMcqSheet: widget.isMcqSheet,
@@ -525,7 +526,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
       var result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => CameraScreen(
+            builder: (context) => GradedPlusCameraScreen(
                   assessmentName: widget.assessmentName,
                   lastAssessmentLength: widget.lastAssessmentLength,
                   isMcqSheet: widget.isMcqSheet,
@@ -1751,7 +1752,7 @@ class _GradedPlusScanResultState extends State<GradedPlusScanResult>
     var result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (_) => CameraScreen(
+            builder: (_) => GradedPlusCameraScreen(
                   assessmentName: widget.assessmentName,
                   lastAssessmentLength: widget.lastAssessmentLength,
                   isMcqSheet: widget.isMcqSheet,

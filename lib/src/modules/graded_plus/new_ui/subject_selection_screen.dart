@@ -2,15 +2,14 @@ import 'dart:async';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart';
 import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
-import 'package:Soc/src/modules/google_classroom/modal/classroom_student_profile_modal.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_subject_search_screen.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
-import 'package:Soc/src/modules/graded_plus/ui/subject_search_screen.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/bottom_sheet_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
@@ -334,6 +333,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                     List<StudentAssessmentInfo> studentAssessmentInfoDblist =
                         await Utility.getStudentInfoList(
                             tableName: 'student_info');
+
                     _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
                         isMcqSheet: widget.isMcqSheet ?? false,
                         assessmentQueImage: studentAssessmentInfoDblist
@@ -429,7 +429,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SearchScreenPage(
+                            builder: (context) => GradedPlusSearchScreenPage(
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
                                   // questionImage: widget.questionImageUrl ?? '',
@@ -491,7 +491,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SearchScreenPage(
+                            builder: (context) => GradedPlusSearchScreenPage(
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
                                   // questionImage: widget.questionImageUrl ?? '',
@@ -1329,10 +1329,22 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                     bloc: _ocrBloc,
                                     child: Container(),
                                     listener: (context, state) {
-                                      if (state is OcrLoading) {
-                                        // Utility.showLoadingDialog(context);
-                                      }
                                       if (state is AssessmentIdSuccess) {
+                                        _saveResultAssignmentsToDashboard(
+                                            assessmentId:
+                                                state.dashboardAssignmentsId ??
+                                                    '',
+                                            googleSpreadsheetUrl:
+                                                Globals.shareableLink ?? '',
+                                            //    subjectId: subjectId ?? '',
+                                            assessmentName:
+                                                Globals.assessmentName ?? '',
+                                            // fileId:
+                                            //     Globals.googleExcelSheetId ??
+                                            //         '',
+                                            studentAssessmentInfoDb:
+                                                _studentAssessmentInfoDb);
+
                                         Navigator.of(context).pop();
                                         _googleDriveBloc.close();
                                         Navigator.pushReplacement(
@@ -1423,6 +1435,22 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                                             .assessmentName ??
                                                         ''));
                                           } else {
+                                            _saveResultAssignmentsToDashboard(
+                                                assessmentId: state
+                                                        .dashboardAssignmentsId ??
+                                                    '',
+                                                googleSpreadsheetUrl:
+                                                    Globals.shareableLink ?? '',
+                                                //   subjectId: subjectId ?? '',
+                                                assessmentName:
+                                                    Globals.assessmentName ??
+                                                        '',
+                                                // fileId: Globals
+                                                //         .googleExcelSheetId ??
+                                                //     '',
+                                                studentAssessmentInfoDb:
+                                                    _studentAssessmentInfoDb);
+
                                             _navigatetoResultSection();
                                           }
                                         }
@@ -1680,5 +1708,23 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 assessmentDetailPage: false,
               )),
     );
+  }
+
+  void _saveResultAssignmentsToDashboard(
+      {required String assessmentId,
+      required String googleSpreadsheetUrl,
+      // required String subjectId,
+      required String assessmentName,
+      //  required String fileId,
+      required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
+    _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
+      assessmentId: assessmentId,
+      assessmentSheetPublicURL: googleSpreadsheetUrl,
+      studentInfoDb: studentAssessmentInfoDb,
+      assessmentName: assessmentName,
+      // subjectId: subjectId,
+      schoolId: Globals.appSetting.schoolNameC!,
+      // fileId: fileId,
+    ));
   }
 }

@@ -273,3 +273,26 @@ class LocalStateSearchEvent extends OcrEvent {
   @override
   List<Object> get props => [];
 }
+
+class GradedPlusSaveAssessmentToDashboard extends OcrEvent {
+  final String assessmentName;
+  // final String subjectId;
+  final String schoolId;
+  final LocalDatabase<StudentAssessmentInfo> studentInfoDb;
+  final String assessmentSheetPublicURL;
+  // final String fileId;
+  final String assessmentId;
+
+  GradedPlusSaveAssessmentToDashboard({
+    required this.assessmentName,
+    //  required this.subjectId,
+    required this.schoolId,
+    required this.studentInfoDb,
+    required this.assessmentSheetPublicURL,
+    required this.assessmentId,
+    // required this.fileId,
+  });
+
+  @override
+  List<Object> get props => [];
+}
