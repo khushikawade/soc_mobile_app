@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_classroom/modal/google_classroom_list.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/google_drive/model/user_profile.dart';
 import 'package:Soc/src/modules/home/ui/home.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
@@ -143,18 +143,18 @@ class _CommonPopupWidgetState extends State<CommonPopupWidget> {
                                 tableName: 'history_student_info');
 
                             //Log Activity to database
-                            _ocrBlocLogs.add(LogUserActivityEvent(
-                                activityType: 'GRADED+',
-                                sessionId: '',
-                                teacherId: Globals.teacherId,
-                                activityId: '2',
-                                accountId: Globals.appSetting.schoolNameC,
-                                accountType: Globals.isPremiumUser == true
-                                    ? "Premium"
-                                    : "Free",
-                                dateTime: currentDateTime.toString(),
-                                description: 'Logout',
-                                operationResult: 'Success'));
+                            // _ocrBlocLogs.add(LogUserActivityEvent(
+                            //     activityType: 'GRADED+',
+                            //     sessionId: '',
+                            //     teacherId: Globals.teacherId,
+                            //     activityId: '2',
+                            //     accountId: Globals.appSetting.schoolNameC,
+                            //     accountType: Globals.isPremiumUser == true
+                            //         ? "Premium"
+                            //         : "Free",
+                            //     dateTime: currentDateTime.toString(),
+                            //     description: 'Logout',
+                            //     operationResult: 'Success'));
 
                             Utility.updateLogs(
                                 activityType: 'GRADED+',
