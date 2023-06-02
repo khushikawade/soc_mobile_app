@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
-import 'package:Soc/src/modules/home/ui/home.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/graded_plus/modal/user_info.dart';
 import 'package:Soc/src/modules/plus_common_widgets/profile_page.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/Common_popup.dart';
@@ -104,13 +103,14 @@ class _CustomOcrAppBarWidgetState extends State<CustomOcrAppBarWidget> {
         leadingWidth: 110, //widget.isSuccessState == false ? 200 : null,
         automaticallyImplyLeading: false,
         leading: leading,
-        title: GestureDetector(
-            onTap: widget.onTap,
-            child: Container(
-              width: 70,
-              height: 40,
-              color: Colors.transparent,
-            )),
+        // title: GestureDetector(
+        //     onTap: widget.onTap,
+        //     child: Container(
+        //       width: 70,
+        //       height: 40,
+        //       color: Colors.transparent,
+        //     )),
+        title: commonGradedLogo(),
         actions: [
           widget.isProfilePage == true
               ? IconButton(

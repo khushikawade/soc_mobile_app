@@ -61,7 +61,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         }
         //  folderObject = await _getGoogleDriveFolderId(
         //     token: event.token, folderName: event.folderName);
-        
 
         // To get updated auth toke for google login
         await _toRefreshAuthenticationToken(event.refreshToken ?? '');

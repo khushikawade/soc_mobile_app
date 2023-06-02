@@ -1,5 +1,5 @@
 import 'package:Soc/src/globals.dart';
-import 'package:Soc/src/modules/google_classroom/ui/graded_landing_page.dart';
+import 'package:Soc/src/modules/google_classroom/ui/graded_standalone_landing_page.dart';
 import 'package:Soc/src/modules/home/bloc/home_bloc.dart';
 import 'package:Soc/src/modules/home/models/app_setting.dart';
 import 'package:Soc/src/modules/home/ui/app_bar_widget.dart';
@@ -291,7 +291,7 @@ class _StaffPageState extends State<StaffPage> {
     if (_profileData.isEmpty) {
       // await _launchURL('Google Authentication');
       var value = await GoogleLogin.launchURL(
-          'Google Authentication', context, _scaffoldKey, '', '');
+          'Google Authentication', context, _scaffoldKey, '', actionName);
       if (value == true) {
         navigatorToScreen(actionName: actionName);
       }

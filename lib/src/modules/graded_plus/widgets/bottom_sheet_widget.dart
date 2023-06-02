@@ -4,6 +4,7 @@ import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/modal/RubricPdfModal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
+import 'package:Soc/src/modules/graded_plus/new_ui/graded_plus_camera_screen.dart';
 import 'package:Soc/src/modules/graded_plus/ui/camera_screen.dart';
 import 'package:Soc/src/services/utility.dart';
 import 'package:Soc/src/styles/theme.dart';
@@ -379,7 +380,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
     File? photo = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => CameraScreen(
+          builder: (context) => GradedPlusCameraScreen(
                 isMcqSheet: false,
                 selectedAnswer: '',
                 isFromHistoryAssessmentScanMore: false,

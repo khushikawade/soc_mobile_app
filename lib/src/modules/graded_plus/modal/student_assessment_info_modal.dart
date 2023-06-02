@@ -68,6 +68,8 @@ class StudentAssessmentInfo {
   String? questionImgFilePath;
   @HiveField(27)
   bool? isScanMore;
+  @HiveField(28)
+  bool? isStudentResultAssignmentSavedOnDashboard;
   StudentAssessmentInfo(
       {this.studentName,
       this.studentId,
@@ -96,7 +98,8 @@ class StudentAssessmentInfo {
       this.isgoogleClassRoomStudentProfileUpdated = false,
       this.isSlideObjUpdated = false,
       this.slideTableObjId,
-      this.isScanMore = false});
+      this.isScanMore = false,
+      this.isStudentResultAssignmentSavedOnDashboard = false});
 
   factory StudentAssessmentInfo.fromJson(Map<String, dynamic> json) =>
       StudentAssessmentInfo(

@@ -72,7 +72,6 @@ class _GradedPlusNavBarHomeState extends State<GradedPlusNavBarHome> {
                             !Overrides.STANDALONE_GRADED_APP) {
                           backOnTap();
                         }
-                        ;
                       }),
                       selectedIndex: gradedPlusPersistentTabController!.index,
                     );
