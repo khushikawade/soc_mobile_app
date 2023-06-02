@@ -147,6 +147,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     } else {
       if (!Overrides.STANDALONE_GRADED_APP) {
         // get state subject list if school or default new york state
+
         _ocrBloc.add(FetchStateListEvent(
             fromCreateAssessment: false, stateName: widget.stateName));
       } else {
@@ -260,7 +261,28 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
             excelBlocListener(),
             slideBlocListener(),
             classRoomBlocListener(),
-            ocrAssessmentBlocListener()
+            ocrAssessmentBlocListener(),
+            BlocListener(
+              bloc: _ocrBloc,
+              listener: (context, state) async {
+                if (state is SubjectDataSuccess) {
+                  pageIndex.value = 0;
+                } else if (state is NycDataSuccess) {
+                  // AnimationController?.dispose();
+                  pageIndex.value = 1;
+                  if (state.obj.length == 0) {
+                    isSkipButton.value = false;
+                    isSubmitButton.value = true;
+                  }
+                } else if (state is NycSubDataSuccess) {
+                  pageIndex.value = 2;
+                } else if (state is StateListFetchSuccessfully) {
+                  fetchSubjectDetails('subject', widget.selectedClass,
+                      widget.selectedClass, widget.stateName, '', '');
+                }
+              },
+              child: Container(),
+            ),
           ],
         ),
       ),
@@ -395,27 +417,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 }),
             SpacerWidget(_KVerticalSpace / 4),
             blocBuilderWidget(),
-            BlocListener(
-              bloc: _ocrBloc,
-              listener: (context, state) async {
-                if (state is SubjectDataSuccess) {
-                  pageIndex.value = 0;
-                } else if (state is NycDataSuccess) {
-                  // AnimationController?.dispose();
-                  pageIndex.value = 1;
-                  if (state.obj.length == 0) {
-                    isSkipButton.value = false;
-                    isSubmitButton.value = true;
-                  }
-                } else if (state is NycSubDataSuccess) {
-                  pageIndex.value = 2;
-                } else if (state is StateListFetchSuccessfully) {
-                  fetchSubjectDetails('subject', widget.selectedClass,
-                      widget.selectedClass, widget.stateName, '', '');
-                }
-              },
-              child: Container(),
-            ),
           ],
         ));
   }

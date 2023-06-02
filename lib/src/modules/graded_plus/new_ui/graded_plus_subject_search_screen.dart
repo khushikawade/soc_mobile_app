@@ -225,6 +225,7 @@ class _GradedPlusSearchScreenPageState
                       listLength.value = searchList.length;
                       isRecentList.value = false;
                     }
+
                     // do stuff here based on BlocA's state
                   },
                   child: Container(),

@@ -816,7 +816,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
                   localQuestionImage: imageFile,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
-                  stateName: selectedState,
+                  stateName: Overrides.STANDALONE_GRADED_APP == true
+                      ? "New York"
+                      : selectedState,
                   // questionImageUrl: questionImageUrl ?? '',
                   selectedClass: widget.customGrades[selectedGrade.value],
                 )),
