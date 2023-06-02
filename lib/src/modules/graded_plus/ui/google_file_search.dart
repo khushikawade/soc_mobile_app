@@ -3,6 +3,8 @@ import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/google_drive/model/assessment.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/filter_bottom_sheet.dart';
+import 'package:Soc/src/modules/plus_common_widgets/plus_screen_title_widget.dart';
+import 'package:Soc/src/modules/student_plus/services/student_plus_overrides.dart';
 import 'package:Soc/src/overrides.dart';
 import 'package:Soc/src/services/analytics.dart';
 import 'package:Soc/src/services/local_database/hive_db_services.dart';
@@ -730,69 +732,111 @@ class _GoogleFileSearchPageState extends State<GoogleFileSearchPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: ValueListenableBuilder(
-          valueListenable: updateTheUi,
-          child: Container(),
-          builder: (BuildContext context, dynamic value, Widget? child) {
-            return OfflineBuilder(
-                connectivityBuilder: (
-                  BuildContext context,
-                  ConnectivityResult connectivity,
-                  Widget child,
-                ) {
-                  final bool connected =
-                      connectivity != ConnectivityResult.none;
-
-                  if (connected) {
-                    if (isErrorState == true) {
-                      isErrorState = false;
-                    }
-                  } else if (!connected) {
-                    isErrorState = true;
-                  }
-
-                  return
-                      //  connected
-                      //     ?
-                      Container(
-                    child: Column(mainAxisSize: MainAxisSize.max, children: [
-                      SpacerWidget(_kLabelSpacing / 4),
-                      _buildHeading(
-                        "Google File Search",
-                        Theme.of(context)
-                            .textTheme
-                            .headline6!
-                            .copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SpacerWidget(_kLabelSpacing / 2),
-                      _buildSearchbar(),
-                      issuggestionList
-                          ? _buildissuggestionList()
-                          : SizedBox(height: 0),
-                      SpacerWidget(_kLabelSpacing / 2),
-                      issuggestionList == false
-                          ? _buildHeading(
-                              "Recent Search",
-                              Theme.of(context)
-                                  .appBarTheme
-                                  .titleTextStyle!
-                                  .copyWith(
-                                      fontSize: 18,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryVariant,
-                                      fontWeight: FontWeight.w500),
-                            ) //_buildHeading2()
-                          : SizedBox(height: 0),
-                      issuggestionList == false
-                          ? _buildRecentItemList()
-                          : SizedBox(height: 0),
-                    ]),
-                  );
-                },
-                child: Container());
-          }),
+      body: body(),
     );
+  }
+
+  Widget body() {
+    return ValueListenableBuilder(
+        valueListenable: updateTheUi,
+        child: Container(),
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return OfflineBuilder(
+              connectivityBuilder: (
+                BuildContext context,
+                ConnectivityResult connectivity,
+                Widget child,
+              ) {
+                final bool connected = connectivity != ConnectivityResult.none;
+
+                if (connected) {
+                  if (isErrorState == true) {
+                    isErrorState = false;
+                  }
+                } else if (!connected) {
+                  isErrorState = true;
+                }
+
+                return Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: StudentPlusOverrides.kSymmetricPadding),
+                  child: Column(mainAxisSize: MainAxisSize.max, children: [
+                    SpacerWidget(StudentPlusOverrides.KVerticalSpace / 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        PlusScreenTitleWidget(
+                          kLabelSpacing: StudentPlusOverrides.kLabelSpacing,
+                          text: 'Google File Search',
+                          backButton: true,
+                        ),
+                        Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  filterBottomSheet();
+                                },
+                                icon: Icon(
+                                  IconData(0xe87d,
+                                      fontFamily: Overrides.kFontFam,
+                                      fontPackage: Overrides.kFontPkg),
+                                  color: AppTheme.kButtonColor,
+                                  size: 28,
+                                )),
+                            ValueListenableBuilder(
+                                valueListenable: selectedValue,
+                                child: Container(),
+                                builder: (BuildContext context, dynamic value,
+                                    Widget? child) {
+                                  return selectedValue.value == 'All'
+                                      ? Container()
+                                      : Wrap(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 6, right: 6),
+                                              height: 7,
+                                              width: 7,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  shape: BoxShape.circle),
+                                            ),
+                                          ],
+                                        );
+                                })
+                          ],
+                        )
+                      ],
+                    ),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    _buildSearchbar(),
+                    issuggestionList
+                        ? _buildissuggestionList()
+                        : SizedBox(height: 0),
+                    SpacerWidget(_kLabelSpacing / 2),
+                    issuggestionList == false
+                        ? _buildHeading(
+                            "Recent Search",
+                            Theme.of(context)
+                                .appBarTheme
+                                .titleTextStyle!
+                                .copyWith(
+                                    fontSize: 18,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryVariant,
+                                    fontWeight: FontWeight.w500),
+                          ) //_buildHeading2()
+                        : SizedBox(height: 0),
+                    issuggestionList == false
+                        ? _buildRecentItemList()
+                        : SizedBox(height: 0),
+                  ]),
+                );
+              },
+              child: Container());
+        });
   }
 
   Future _setFree() async {

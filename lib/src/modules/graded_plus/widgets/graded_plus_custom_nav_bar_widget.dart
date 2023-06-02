@@ -72,15 +72,14 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
           Flexible(
             child: IconTheme(
               data: IconThemeData(
-                  size: 26.0,
+                  size: isSelected ? 28 : 22.0,
                   color: isSelected
                       ? item.activeColorPrimary
                       : item.inactiveColorPrimary),
               child: item.icon,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5),
+          Container(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Material(
@@ -96,9 +95,14 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: Theme.of(context).textTheme.headline4!.copyWith(
-                          color: isSelected
-                              ? item.activeColorPrimary
-                              : item.inactiveColorPrimary),
+                            fontSize: isSelected
+                                ? Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .fontSize! +
+                                    3
+                                : null,
+                          ),
                     ),
                   ),
                 ),
@@ -112,13 +116,16 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
 
   Widget _buildSelectedMenu(final PersistentBottomNavBarItem item,
       final bool isSelected, final double? height, BuildContext context) {
+    //Managing the '+' icon visibility on keyboard appear
+    final bool isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Stack(
       children: <Widget>[
         Transform.translate(
           offset: const Offset(0, -22),
           child: Center(
             child: Container(
-              height: height ?? 0,
+              height: height, // Increase height for selected item
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isSelected
@@ -157,7 +164,9 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                                   color: isSelected
                                       ? item.activeColorPrimary
                                       : item.inactiveColorPrimary),
-                              child: item.icon,
+                              child: Visibility(
+                                  visible: !isKeyboardVisible,
+                                  child: item.icon),
                             ),
                           ),
                         ],
@@ -189,9 +198,14 @@ class GradedPlusCustomNavBarWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: Theme.of(context).textTheme.headline4!.copyWith(
-                          color: isSelected
-                              ? item.activeColorPrimary
-                              : item.inactiveColorPrimary),
+                            fontSize: isSelected
+                                ? Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .fontSize! +
+                                    3
+                                : null,
+                          ),
                     ),
                   ),
                 ),
