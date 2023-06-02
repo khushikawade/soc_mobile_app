@@ -151,6 +151,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
               return ListView(
+                // physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.symmetric(
                     vertical: 0,
                     horizontal: StudentPlusOverrides.kLabelSpacing / 2),
@@ -1017,9 +1018,6 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         }
       }
     }
-    // print(_localData);
-    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name);
-    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
   }
 
   _checkFieldEditable({required String msg}) {

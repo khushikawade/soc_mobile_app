@@ -243,18 +243,6 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                 bloc: _googleDriveBloc,
                 child: Container(),
                 listener: (context, state) async {
-                  // print(
-                  //     "subject section ui drive state ---------------->$state");
-
-                  // if (state is AddBlankSlidesOnDriveSuccess) {
-                  //   FirebaseAnalyticsService.addCustomAnalyticsEvent(
-                  //       "blank_slide_added");
-
-                  //   _googleDriveBloc.add(UpdateAssessmentImageToSlidesOnDrive(
-                  //       slidePresentationId:
-                  //           Globals.googleSlidePresentationId));
-                  // }
-
                   if (state is GoogleSuccess) {
                     Utility.updateLogs(
                         activityType: 'GRADED+',
@@ -380,7 +368,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                         activityId: '34',
                         description: 'G-Classroom Created',
                         operationResult: 'Success');
-                    _navigatetoResultSection();
+                    _navigateToResultSection();
                   }
 
                   if (state is GoogleClassroomErrorState) {
@@ -411,6 +399,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   // Search Bar widget with there conditions -----------
   Widget searchWidget() {
     return ValueListenableBuilder(
@@ -510,6 +499,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         });
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   // main body structure of the page----------------
   Widget mainBodyWidget() {
     return Container(
@@ -560,6 +550,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         ));
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Widget blocBuilderWidget() {
     return BlocBuilder<OcrBloc, OcrState>(
         bloc: _ocrBloc,
@@ -702,6 +693,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         });
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Widget titleWidget() {
     return ValueListenableBuilder(
       valueListenable: pageIndex,
@@ -755,6 +747,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Widget searchDomainText() {
     return Utility.textWidget(
         text: 'Select Domain',
@@ -764,6 +757,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         context: context);
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   // widget to show list view on Sub-learning page  -------
   Widget buttonListWidget({required List<SubjectDetailList> list}) {
     return ValueListenableBuilder(
@@ -897,6 +891,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Widget progressIndicatorBar() {
     return ValueListenableBuilder(
       valueListenable: pageIndex,
@@ -944,6 +939,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   // Widget to show details in grid view on subject selection page and learning page
   // Using Dynamic list because subject page have different modal list and sub learning have different list
   Widget gridButtonsWidget(
@@ -1248,6 +1244,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   //  To Open bottom sheet by which user can add new subjects to screen
   addCustomSubjectBottomSheet() {
     showModalBottomSheet(
@@ -1297,6 +1294,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   // Widget from save to drive by which teacher can save data to google drive
   Widget saveToDriveButton() {
     return Wrap(
@@ -1337,37 +1335,24 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                                     '',
                                             googleSpreadsheetUrl:
                                                 Globals.shareableLink ?? '',
-                                            //    subjectId: subjectId ?? '',
                                             assessmentName:
                                                 Globals.assessmentName ?? '',
-                                            // fileId:
-                                            //     Globals.googleExcelSheetId ??
-                                            //         '',
                                             studentAssessmentInfoDb:
                                                 _studentAssessmentInfoDb);
+                                      }
 
+                                      if (state
+                                          is GradedPlusSaveResultToDashboardSuccess) {
+                                        _navigateToResultSectionOnSkipButton();
+                                      }
+
+                                      if (state is OcrErrorReceived) {
                                         Navigator.of(context).pop();
-                                        _googleDriveBloc.close();
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  GradedPlusResultsSummary(
-                                                    isMcqSheet:
-                                                        widget.isMcqSheet,
-                                                    selectedAnswer:
-                                                        widget.selectedAnswer,
-                                                    fileId: Globals
-                                                        .googleExcelSheetId,
-                                                    subjectId: subjectId ?? '',
-                                                    standardId:
-                                                        standardId ?? '',
-                                                    assessmentName:
-                                                        Globals.assessmentName,
-                                                    shareLink: '',
-                                                    assessmentDetailPage: false,
-                                                  )),
-                                        );
+                                        Utility.currentScreenSnackBar(
+                                            state.err == 'NO_CONNECTION'
+                                                ? "No Internet Connection"
+                                                : 'Something went wrong' ?? "",
+                                            null);
                                       }
                                     }),
                                 Utility.textWidget(
@@ -1442,18 +1427,27 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                                                     '',
                                                 googleSpreadsheetUrl:
                                                     Globals.shareableLink ?? '',
-                                                //   subjectId: subjectId ?? '',
                                                 assessmentName:
                                                     Globals.assessmentName ??
                                                         '',
-                                                // fileId: Globals
-                                                //         .googleExcelSheetId ??
-                                                //     '',
                                                 studentAssessmentInfoDb:
                                                     _studentAssessmentInfoDb);
-
-                                            _navigatetoResultSection();
                                           }
+                                        }
+
+                                        if (state
+                                            is GradedPlusSaveResultToDashboardSuccess) {
+                                          _navigateToResultSection();
+                                        }
+
+                                        if (state is OcrErrorReceived) {
+                                          Navigator.of(context).pop();
+                                          Utility.currentScreenSnackBar(
+                                              state.err == 'NO_CONNECTION'
+                                                  ? "No Internet Connection"
+                                                  : 'Something went wrong' ??
+                                                      "",
+                                              null);
                                         }
                                       }),
                                   Utility.textWidget(
@@ -1494,7 +1488,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
-  // Fuction to update custom(subject added by teacher) subjects to local db --
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  // Function to update custom(subject added by teacher) subjects to local db --
   Future<void> updateList(
       {required String subjectName, required String classNo}) async {
     List<StateListObject> subjectList = [];
@@ -1546,17 +1541,9 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
 
     fetchSubjectDetails('subject', widget.selectedClass, widget.selectedClass,
         widget.stateName, '', '');
-
-    // _ocrBloc.add(FetchSubjectDetails(
-    //     type: 'subject',
-    //     grade: widget.selectedClass,
-    //     // empty because no subject selected yet
-    //     subjectId: '',
-    //     subjectSelected: '',
-    //     selectedKeyword: widget.selectedClass,
-    //     stateName: widget.stateName));
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   Future<void> searchList(
       {required String searchKeyword, required String classNo}) async {
     LocalDatabase<String> _localDb = LocalDatabase(widget.isCommonCore == true
@@ -1571,6 +1558,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     }
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   // Function to update sheet to drive and navigate to assessment summery -------------
   void updateExcelSheetOnDriveAndNavigate(
       {required bool isSkip, required bool connected}) async {
@@ -1641,6 +1629,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     }
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   fetchSubjectDetails(String? type, String? grade, String? selectedKeyword,
       String? stateName, String? subjectSelected, String? subjectId) {
     _ocrBloc.add(FetchSubjectDetails(
@@ -1653,6 +1642,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         stateName: stateName));
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void updateDocOnDrive(
     bool? isMCQSheet,
     // String? questionImageURL,
@@ -1674,6 +1664,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   googleSlidesPreparation() {
     if (Globals.googleSlidePresentationId!.isNotEmpty &&
         (Globals.googleSlidePresentationLink == null ||
@@ -1683,7 +1674,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     }
   }
 
-  void _navigatetoResultSection() {
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  void _navigateToResultSection() {
     GradedGlobals.loadingMessage = null;
     Navigator.of(context).pop();
     FirebaseAnalyticsService.addCustomAnalyticsEvent(
@@ -1693,6 +1685,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         activityId: '12',
         description: 'Save to drive',
         operationResult: 'Success');
+
     _googleDriveBloc.close();
 
     Navigator.pushReplacement(
@@ -1711,6 +1704,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
     );
   }
 
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
   void _saveResultAssignmentsToDashboard(
       {required String assessmentId,
       required String googleSpreadsheetUrl,
@@ -1718,7 +1712,11 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
+    showDialogSetState!(() {
+      GradedGlobals.loadingMessage = 'Result Detail is Updating';
+    });
+
+    _ocrBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
       studentInfoDb: studentAssessmentInfoDb,
@@ -1727,5 +1725,25 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
       schoolId: Globals.appSetting.schoolNameC!,
       // fileId: fileId,
     ));
+  }
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+  void _navigateToResultSectionOnSkipButton() {
+    Navigator.of(context).pop();
+    _googleDriveBloc.close();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => GradedPlusResultsSummary(
+                isMcqSheet: widget.isMcqSheet,
+                selectedAnswer: widget.selectedAnswer,
+                fileId: Globals.googleExcelSheetId,
+                subjectId: subjectId ?? '',
+                standardId: standardId ?? '',
+                assessmentName: Globals.assessmentName,
+                shareLink: '',
+                assessmentDetailPage: false,
+              )),
+    );
   }
 }

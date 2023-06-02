@@ -2293,131 +2293,131 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     }
   }
 
-  Future<String> updateAssessmentImageToSlidesOnDrive(
-      String? presentationId,
-      String? accessToken,
-      String? refreshToken,
-      List<StudentAssessmentInfo> assessmentData,
-      LocalDatabase<StudentAssessmentInfo> _studentInfoDb) async {
-    try {
-      Map body = {
-        "requests": prepareStudentAssessmentImageRequestBody(
-          assessmentData: assessmentData,
-          studentInfoDb: _studentInfoDb,
-        )
-      };
+  // Future<String> updateAssessmentImageToSlidesOnDrive(
+  //     String? presentationId,
+  //     String? accessToken,
+  //     String? refreshToken,
+  //     List<StudentAssessmentInfo> assessmentData,
+  //     LocalDatabase<StudentAssessmentInfo> _studentInfoDb) async {
+  //   try {
+  //     Map body = {
+  //       "requests": prepareStudentAssessmentImageRequestBody(
+  //         assessmentData: assessmentData,
+  //         studentInfoDb: _studentInfoDb,
+  //       )
+  //     };
 
-      Map<String, String> headers = {
-        'Authorization': 'Bearer $accessToken',
-        'Content-Type': 'application/json'
-      };
+  //     Map<String, String> headers = {
+  //       'Authorization': 'Bearer $accessToken',
+  //       'Content-Type': 'application/json'
+  //     };
 
-      final ResponseModel response = await _dbServices.postApi(
-          '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
-          body: body,
-          headers: headers,
-          isGoogleApi: true);
-      if (response.statusCode != 401 &&
-          response.statusCode == 200 &&
-          response.data['statusCode'] != 500) {
-        return 'Done';
-      } else if ((response.statusCode == 401 ||
-              response.data['statusCode'] == 500) &&
-          _totalRetry < 3) {
-        var result = await _toRefreshAuthenticationToken(refreshToken!);
-        if (result == true) {
-          List<UserInformation> _userProfileLocalData =
-              await UserGoogleProfile.getUserProfile();
-          String result = await updateAssessmentImageToSlidesOnDrive(
-              presentationId,
-              _userProfileLocalData[0].authorizationToken,
-              _userProfileLocalData[0].refreshToken,
-              assessmentData,
-              _studentInfoDb);
-          return result;
-        } else {
-          return 'ReAuthentication is required';
-        }
-      }
-      return response.data['statusCode'].toString();
-    } catch (e) {
-      return e.toString();
-    }
-  }
+  //     final ResponseModel response = await _dbServices.postApi(
+  //         '${GoogleOverrides.Google_API_BRIDGE_BASE_URL}https://slides.googleapis.com/v1/presentations/$presentationId:batchUpdate',
+  //         body: body,
+  //         headers: headers,
+  //         isGoogleApi: true);
+  //     if (response.statusCode != 401 &&
+  //         response.statusCode == 200 &&
+  //         response.data['statusCode'] != 500) {
+  //       return 'Done';
+  //     } else if ((response.statusCode == 401 ||
+  //             response.data['statusCode'] == 500) &&
+  //         _totalRetry < 3) {
+  //       var result = await _toRefreshAuthenticationToken(refreshToken!);
+  //       if (result == true) {
+  //         List<UserInformation> _userProfileLocalData =
+  //             await UserGoogleProfile.getUserProfile();
+  //         String result = await updateAssessmentImageToSlidesOnDrive(
+  //             presentationId,
+  //             _userProfileLocalData[0].authorizationToken,
+  //             _userProfileLocalData[0].refreshToken,
+  //             assessmentData,
+  //             _studentInfoDb);
+  //         return result;
+  //       } else {
+  //         return 'ReAuthentication is required';
+  //       }
+  //     }
+  //     return response.data['statusCode'].toString();
+  //   } catch (e) {
+  //     return e.toString();
+  //   }
+  // }
 
-  List<Map> prepareStudentAssessmentImageRequestBody(
-      {required List<StudentAssessmentInfo> assessmentData,
-      required LocalDatabase<StudentAssessmentInfo> studentInfoDb}) {
-    List<String> listOfFields = [
-      'Student Name',
-      'Student ID',
-      'Points Earned',
-      'Points Possible'
-    ];
+  // List<Map> prepareStudentAssessmentImageRequestBody(
+  //     {required List<StudentAssessmentInfo> assessmentData,
+  //     required LocalDatabase<StudentAssessmentInfo> studentInfoDb}) {
+  //   List<String> listOfFields = [
+  //     'Student Name',
+  //     'Student ID',
+  //     'Points Earned',
+  //     'Points Possible'
+  //   ];
 
-    List<Map> body = [];
-    assessmentData.asMap().forEach((index, element) {
-      if (!element.isSlideObjUpdated!) {
-        Map obj = {
-          "createImage": {
-            "url": element.assessmentImage,
-            "elementProperties": {
-              "pageObjectId": element.slideObjectId,
-            },
-            "objectId": DateTime.now().microsecondsSinceEpoch.toString()
-          }
-        };
-        String tableObjectuniqueId =
-            DateTime.now().microsecondsSinceEpoch.toString();
-        Map table = {
-          "createTable": {
-            "rows": listOfFields.length, //pass no. of names
-            "columns": 2, //key:value
-            "objectId": tableObjectuniqueId,
-            "elementProperties": {
-              "pageObjectId": element.slideObjectId,
-              "size": {
-                "width": {"magnitude": 4000000, "unit": "EMU"},
-                "height": {"magnitude": 3000000, "unit": "EMU"}
-              },
-              "transform": {
-                "scaleX": 1,
-                "scaleY": 1,
-                "translateX": 3480600,
-                "translateY": 1167820,
-                "unit": "EMU"
-              }
-            },
-          }
-        };
-        body.add(obj);
-        body.add(table);
-        listOfFields.asMap().forEach((rowIndex, value) {
-          for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
-            body.add(
-              {
-                "insertText": {
-                  "objectId": tableObjectuniqueId,
-                  "cellLocation": {
-                    "rowIndex": rowIndex,
-                    "columnIndex": columnIndex
-                  },
-                  "text": columnIndex == 0
-                      ? listOfFields[rowIndex] //Keys
-                      : prepareAssignmentTableCellValue(element, rowIndex,
-                          assessmentData[0].pointPossible) //Values
-                }
-              },
-            );
-          }
-        });
-        element.isSlideObjUpdated = true;
-        element.slideTableObjId = tableObjectuniqueId;
-        studentInfoDb.putAt(index, element);
-      }
-    });
-    return body;
-  }
+  //   List<Map> body = [];
+  //   assessmentData.asMap().forEach((index, element) {
+  //     if (!element.isSlideObjUpdated!) {
+  //       Map obj = {
+  //         "createImage": {
+  //           "url": element.assessmentImage,
+  //           "elementProperties": {
+  //             "pageObjectId": element.slideObjectId,
+  //           },
+  //           "objectId": DateTime.now().microsecondsSinceEpoch.toString()
+  //         }
+  //       };
+  //       String tableObjectuniqueId =
+  //           DateTime.now().microsecondsSinceEpoch.toString();
+  //       Map table = {
+  //         "createTable": {
+  //           "rows": listOfFields.length, //pass no. of names
+  //           "columns": 2, //key:value
+  //           "objectId": tableObjectuniqueId,
+  //           "elementProperties": {
+  //             "pageObjectId": element.slideObjectId,
+  //             "size": {
+  //               "width": {"magnitude": 4000000, "unit": "EMU"},
+  //               "height": {"magnitude": 3000000, "unit": "EMU"}
+  //             },
+  //             "transform": {
+  //               "scaleX": 1,
+  //               "scaleY": 1,
+  //               "translateX": 3480600,
+  //               "translateY": 1167820,
+  //               "unit": "EMU"
+  //             }
+  //           },
+  //         }
+  //       };
+  //       body.add(obj);
+  //       body.add(table);
+  //       listOfFields.asMap().forEach((rowIndex, value) {
+  //         for (int columnIndex = 0; columnIndex < 2; columnIndex++) {
+  //           body.add(
+  //             {
+  //               "insertText": {
+  //                 "objectId": tableObjectuniqueId,
+  //                 "cellLocation": {
+  //                   "rowIndex": rowIndex,
+  //                   "columnIndex": columnIndex
+  //                 },
+  //                 "text": columnIndex == 0
+  //                     ? listOfFields[rowIndex] //Keys
+  //                     : prepareAssignmentTableCellValue(element, rowIndex,
+  //                         assessmentData[0].pointPossible) //Values
+  //               }
+  //             },
+  //           );
+  //         }
+  //       });
+  //       element.isSlideObjUpdated = true;
+  //       element.slideTableObjId = tableObjectuniqueId;
+  //       studentInfoDb.putAt(index, element);
+  //     }
+  //   });
+  //   return body;
+  // }
 
   Future<List<Map>> prepareEachSlideObjects(
       {List<StudentAssessmentInfo>? list,
@@ -2557,6 +2557,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       'Teacher',
       'Grade',
       'Class',
+      'Date',
       'Rubric',
       'Domain',
       'Learning Standard',
@@ -2580,13 +2581,13 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             "pageObjectId": "Slide1",
             "size": {
               "width": {"magnitude": 6000000, "unit": "EMU"},
-              "height": {"magnitude": 4500000, "unit": "EMU"}
+              "height": {"magnitude": 3500000, "unit": "EMU"}
             },
             "transform": {
               "scaleX": 1,
               "scaleY": 1,
               "translateX": isQuestionImgUrlUpdate ? 3005000 : 1505000,
-              "translateY": 280000,
+              "translateY": 250000,
               "unit": "EMU",
             }
           },
@@ -2624,6 +2625,18 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             }
           },
         );
+        //update the textstyle and fontsize of table cells
+        body.add({
+          "updateTextStyle": {
+            "objectId": "123456",
+            "style": {
+              "fontSize": {"magnitude": 10, "unit": "PT"},
+              "bold": columnIndex == 0
+            },
+            "fields": "*",
+            "cellLocation": {"columnIndex": columnIndex, "rowIndex": rowIndex}
+          }
+        });
       }
     });
 
@@ -2640,17 +2653,24 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         2: Globals.teacherEmailId ?? 'NA',
         3: studentAssessmentInfoObj.grade ?? 'NA',
         4: studentAssessmentInfoObj.className ?? "NA",
-        5: studentAssessmentInfoObj.scoringRubric ?? 'NA',
-        6: studentAssessmentInfoObj.learningStandard != null &&
-                studentAssessmentInfoObj.learningStandard!.length > 30
-            ? studentAssessmentInfoObj.learningStandard!.substring(0, 29) + ".."
-            : studentAssessmentInfoObj.learningStandard ?? 'NA',
-        7: studentAssessmentInfoObj.subLearningStandard ?? 'NA',
-        8: studentAssessmentInfoObj.standardDescription != null &&
-                studentAssessmentInfoObj.standardDescription!.length > 30
-            ? studentAssessmentInfoObj.standardDescription!.substring(0, 29) +
-                '..'
-            : studentAssessmentInfoObj.standardDescription ?? 'NA',
+        5: Utility.convertTimestampToDateFormat(DateTime.now(), "MM/dd/yy")
+            .toString(),
+        6: studentAssessmentInfoObj.scoringRubric ?? 'NA',
+        7:
+            //  studentAssessmentInfoObj.learningStandard != null &&
+            //         studentAssessmentInfoObj.learningStandard!.length > 30
+            //     ? studentAssessmentInfoObj.learningStandard!.substring(0, 29) + ".."
+            //     :
+            studentAssessmentInfoObj.learningStandard ?? 'NA',
+        8: studentAssessmentInfoObj.subLearningStandard ?? 'NA',
+        9:
+            // studentAssessmentInfoObj.standardDescription != null &&
+            //         studentAssessmentInfoObj.standardDescription!.length > 30
+            //     ? studentAssessmentInfoObj.standardDescription!.substring(0, 29) +
+            //         '..'
+
+            //     :
+            studentAssessmentInfoObj.standardDescription ?? 'NA',
       };
 
       return map[index] ?? 'NA';
@@ -2774,10 +2794,12 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
       assessmentData.asMap().forEach((index, element) async {
         if (!element.isSlideObjUpdated!) {
           String pageObjectuniqueId =
-              DateTime.now().microsecondsSinceEpoch.toString();
+              DateTime.now().microsecondsSinceEpoch.toString() + "$index";
 
           String tableObjectuniqueId =
-              DateTime.now().microsecondsSinceEpoch.toString();
+              DateTime.now().microsecondsSinceEpoch.toString() + "$index";
+          print(pageObjectuniqueId);
+          print(tableObjectuniqueId);
           // Preparing all other blank slide (based on student detail length) type to add assessment images
           Map slideObject = {
             "createSlide": {
@@ -2806,7 +2828,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
             slideRequiredObjectsList.add(obj);
           }
           // print(slideRequiredObjectsList);
-// Preparing table and structure for each student slide
+          // Preparing table and structure for each student slide
           Map table = {
             "createTable": {
               "rows": listOfFields.length, //pass no. of names
@@ -3299,14 +3321,9 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
     required final List<ClassroomCourse> classroomCourseworkList,
   }) {
     try {
-      // print(classroomCourseworkList.length);
-      // classroomCourseworkList.forEach((element) {
-      //   print(element.name);
-      // });
       return classroomCourseworkList.map((course) {
         return {
           // 'range': '${course.name}!A1:E${course.students!.length + 1}',
-
           //Checking the tab is either for Student or for Courses and adding the columns accordingly
           'range':
               '${course.name}!A1:${(course.name == 'Students' && classroomCourseworkList.length == 1) ? 'F' : 'E'}${course.students!.length + 1}',
@@ -3320,12 +3337,7 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         };
       }).toList();
     } catch (e) {
-      // print("errorr ------------------->>");
-      // print(classroomCourseworkList.length);
-      // classroomCourseworkList.forEach((element) {
-      //   print(element.name);
-      // });
-      // print("errorr ------------------->>");
+      print("errorr ------------------->> $e");
       return [];
     }
   }
@@ -3344,21 +3356,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
         headingRowName.insert(1, 'Course');
       }
 
-      // return [
-      //   // always first row for the Headings
-      //   ['Name', 'Engaged', 'Nice Work', 'Helpful', 'Total'],
-
-      //   //stduent information
-      //   ...students.map((student) => [
-      //         student.profile!.name!.fullName,
-      //         student.profile!.engaged,
-      //         student.profile!.niceWork,
-      //         student.profile!.helpful,
-      //         student.profile!.engaged! +
-      //             student.profile!.niceWork! +
-      //             student.profile!.helpful!,
-      //       ]),
-      // ];
       return [
         // always first row for the Headings
         headingRowName,
@@ -3375,20 +3372,6 @@ class GoogleDriveBloc extends Bloc<GoogleDriveEvent, GoogleDriveState> {
                   student.profile!.helpful!,
             ]),
       ];
-
-      // students
-      //     .map((ClassroomStudents student) => [
-      //           student.profile!.name!.fullName,
-      //           student.profile!.engaged,
-      //           student.profile!.niceWork,
-      //           student.profile!.helpful,
-      //           student.profile!.engaged! +
-      //               student.profile!.niceWork! +
-      //               student.profile!.helpful!,
-      //           if (course == true)
-      //             student.profile!.courseName, // Add this line
-      //         ])
-      //     .toList();
     } catch (e) {
       return [];
     }

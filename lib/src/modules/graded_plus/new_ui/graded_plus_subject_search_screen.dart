@@ -10,7 +10,6 @@ import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.
 import 'package:Soc/src/modules/graded_plus/modal/subject_details_modal.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/results_summary.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
-
 import 'package:Soc/src/modules/graded_plus/widgets/common_ocr_appbar.dart';
 import 'package:Soc/src/modules/plus_common_widgets/plus_background_img_widget.dart';
 import 'package:Soc/src/modules/graded_plus/widgets/searchbar_widget.dart';
@@ -735,19 +734,43 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
                                                   .split("_")[1] ??
                                               ''));
                                 } else {
+                                  // _saveResultAssignmentsToDashboard(
+                                  //     assessmentId:
+                                  //         state.dashboardAssignmentsId ?? '',
+                                  //     googleSpreadsheetUrl:
+                                  //         Globals.shareableLink ?? '',
+                                  //     //  subjectId: widget.subjectId ?? '',
+                                  //     assessmentName:
+                                  //         Globals.assessmentName ?? '',
+                                  //     //  fileId: Globals.googleExcelSheetId ?? '',
+                                  //     studentAssessmentInfoDb:
+                                  //         _studentAssessmentInfoDb);
+
+                                  //  _navigatetoResultSection();
+
                                   _saveResultAssignmentsToDashboard(
                                       assessmentId:
                                           state.dashboardAssignmentsId ?? '',
                                       googleSpreadsheetUrl:
                                           Globals.shareableLink ?? '',
-                                      //  subjectId: widget.subjectId ?? '',
                                       assessmentName:
                                           Globals.assessmentName ?? '',
-                                      //  fileId: Globals.googleExcelSheetId ?? '',
                                       studentAssessmentInfoDb:
                                           _studentAssessmentInfoDb);
-                                  _navigatetoResultSection();
                                 }
+                              }
+                              if (state
+                                  is GradedPlusSaveResultToDashboardSuccess) {
+                                _navigatetoResultSection();
+                              }
+
+                              if (state is OcrErrorReceived) {
+                                Navigator.of(context).pop();
+                                Utility.currentScreenSnackBar(
+                                    state.err == 'NO_CONNECTION'
+                                        ? "No Internet Connection"
+                                        : 'Something went wrong' ?? "",
+                                    null);
                               }
                             }),
                         Utility.textWidget(
@@ -898,11 +921,13 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
 
     GradedGlobals.loadingMessage = 'Preparing Student Excel Sheet';
 
+    //Managing Loading dialog to show current progress status
     Utility.showLoadingDialog(
         context: context,
         isOCR: true,
         state: (p0) => {showDialogSetState = p0});
 
+    //Updating Spreadsheet to drive
     widget.googleDriveBloc.add(UpdateDocOnDrive(
         isMcqSheet: widget.isMcqSheet ?? false,
         // questionImage: widget.questionImage == ''
@@ -924,7 +949,10 @@ class _SearchScreenPageState extends State<GradedPlusSearchScreenPage> {
       required String assessmentName,
       //  required String fileId,
       required LocalDatabase<StudentAssessmentInfo> studentAssessmentInfoDb}) {
-    _ocrBloc.add(GradedPlusSaveAssessmentToDashboard(
+    showDialogSetState!(() {
+      GradedGlobals.loadingMessage = 'Result Detail is Updating';
+    });
+    _ocrBloc.add(GradedPlusSaveResultToDashboard(
       assessmentId: assessmentId,
       assessmentSheetPublicURL: googleSpreadsheetUrl,
       studentInfoDb: studentAssessmentInfoDb,
