@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:Soc/src/globals.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/new_ui/subject_selection_screen.dart';
@@ -24,13 +25,14 @@ class StateSelectionPage extends StatefulWidget {
   final bool? isFromCreateAssessmentScreen;
   // final String questionImageUrl;
   final String selectedClass;
+   final File? localQuestionImage;
   const StateSelectionPage(
       {Key? key,
       this.isMcqSheet,
       this.selectedAnswer,
       // required this.questionImageUrl,
       required this.selectedClass,
-      this.isFromCreateAssessmentScreen})
+      this.isFromCreateAssessmentScreen,required this.localQuestionImage})
       : super(key: key);
 
   @override
@@ -158,6 +160,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         GradedPluSubjectSelection(
+                                          localQuestionImage: widget.localQuestionImage,
                                           isMcqSheet: widget.isMcqSheet,
                                           selectedAnswer: widget.selectedAnswer,
                                           // isCommonCore: selectedIndex.value == 0
@@ -268,6 +271,7 @@ class _StateSelectionPageState extends State<StateSelectionPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => GradedPluSubjectSelection(
+                              localQuestionImage: widget.localQuestionImage,
                                   isMcqSheet: widget.isMcqSheet,
                                   selectedAnswer: widget.selectedAnswer,
                                   stateName: list[index],

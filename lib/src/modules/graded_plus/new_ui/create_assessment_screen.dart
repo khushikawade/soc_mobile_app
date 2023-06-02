@@ -59,7 +59,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
   final classController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
+  // GoogleDriveBloc _googleDriveBloc = new GoogleDriveBloc();
   final ValueNotifier<int> selectedGrade = ValueNotifier<int>(0);
   final ValueNotifier<bool> isBackFromCamera = ValueNotifier<bool>(false);
   ValueNotifier<bool> isImageFilePicked = ValueNotifier<bool>(
@@ -83,9 +83,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     //Managing suggestion chips // course name // class name
     updateClassName();
 
-    Globals.googleExcelSheetId = '';
-    Globals.googleSlidePresentationId = '';
-    Globals.googleSlidePresentationLink = '';
+    // Globals.googleExcelSheetId = '';
+    // Globals.googleSlidePresentationId = '';
+    // Globals.googleSlidePresentationLink = '';
 
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
@@ -704,97 +704,6 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
               },
               label: Row(
                 children: [
-                  BlocListener<GoogleDriveBloc, GoogleDriveState>(
-                      bloc: _googleDriveBloc,
-                      child: Container(),
-                      listener: (context, state) async {
-                        // if (state is GoogleDriveLoading) {
-                        //   Utility.showLoadingDialog(
-                        //       context: context, isOCR: true);
-                        // }
-                        Globals.assessmentName =
-                            "${assessmentController.text}_${classController.text}";
-
-                        if (state is ExcelSheetCreated) {
-                          Globals.googleExcelSheetId =
-                              state.googleSpreadSheetFileObj['fileId'] ?? '';
-                          Globals.shareableLink =
-                              state.googleSpreadSheetFileObj['fileUrl'] ?? '';
-
-                          //Create Google Presentation once Spreadsheet createds
-                          _googleDriveBloc.add(CreateSlideToDrive(
-                              isMcqSheet: widget.isMcqSheet ?? false,
-                              fileTitle: Globals.assessmentName,
-                              // "${assessmentController.text}_${classController.text}",
-                              excelSheetId: Globals.googleExcelSheetId));
-                        }
-                        if (state is ErrorState) {
-                          if (state.errorMsg ==
-                              'ReAuthentication is required') {
-                            await Utility.refreshAuthenticationToken(
-                                isNavigator: true,
-                                errorMsg: state.errorMsg!,
-                                context: context,
-                                scaffoldKey: scaffoldKey);
-                            // Globals.assessmentName =
-                            //     "${assessmentController.text}_${classController.text}";
-                            _googleDriveBloc.add(CreateExcelSheetToDrive(
-                                description: widget.isMcqSheet == true
-                                    ? "Multiple Choice Sheet"
-                                    : "Graded+",
-                                name: Globals.assessmentName,
-                                folderId: Globals.googleDriveFolderId!));
-                          } else {
-                            Navigator.of(context).pop();
-                            Utility.currentScreenSnackBar(
-                                state.errorMsg == 'NO_CONNECTION'
-                                    ? 'No Internet Connection'
-                                    : "Something Went Wrong. Please Try Again.",
-                                null);
-                          }
-                        }
-                        if (state is RecallTheEvent) {
-                          // Globals.assessmentName =
-                          //     "${assessmentController.text}_${classController.text}";
-                          _googleDriveBloc.add(CreateExcelSheetToDrive(
-                              description: widget.isMcqSheet == true
-                                  ? "Multiple Choice Sheet"
-                                  : "Graded+",
-                              name: Globals.assessmentName,
-                              folderId: Globals.googleDriveFolderId!));
-                        }
-
-                        if (state is GoogleSlideCreated) {
-                          //Save Google Presentation Id
-                          Globals.googleSlidePresentationId =
-                              state.slideFiledId;
-
-                          Utility.updateLogs(
-                              activityType: 'GRADED+',
-                              activityId: '33',
-                              description: 'G-Slide Created',
-                              operationResult: 'Success');
-
-                          Navigator.of(context).pop();
-                          _navigateToSubjectSection();
-                        }
-
-                        if (state is QuestionImageSuccess) {
-                          //update Question image url in local studentDb
-                          List<StudentAssessmentInfo> studentInfoList =
-                              await _studentAssessmentInfoDb.getData();
-
-                          if (studentInfoList?.isNotEmpty ?? false) {
-                            StudentAssessmentInfo stduentObj =
-                                studentInfoList.first;
-
-                            stduentObj.questionImgUrl = state.questionImageUrl;
-                            await _studentAssessmentInfoDb.putAt(0, stduentObj);
-                          }
-
-                          _callToCreateExcelSheetAndClassRoomIfStandAlone();
-                        }
-                      }),
                   textwidget(
                       text: 'Next',
                       textTheme: Theme.of(context)
@@ -904,6 +813,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         context,
         MaterialPageRoute(
             builder: (context) => GradedPluSubjectSelection(
+                  localQuestionImage: imageFile,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   stateName: selectedState,
@@ -916,6 +826,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         context,
         MaterialPageRoute(
             builder: (context) => StateSelectionPage(
+                  localQuestionImage: imageFile,
                   isMcqSheet: widget.isMcqSheet,
                   selectedAnswer: widget.selectedAnswer,
                   isFromCreateAssessmentScreen: true,
@@ -1042,26 +953,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         "${assessmentController.text}_${classController.text}";
     //Create excel sheet if not created already for current assessment
 
-    if (Globals.googleExcelSheetId?.isEmpty ?? true) {
-      Utility.showLoadingDialog(
-          context: context,
-          isOCR: true,
-          msg: Overrides.STANDALONE_GRADED_APP == true
-              ? 'Creating Google Classroom Assignment'
-              : 'Creating Assignment');
-      // to update question image to aws s3 bucket and get the link
-      if (imageFile?.path?.isNotEmpty ?? false) {
-        //  Globals.questionImgFilePath = imageFile;
-
-        _googleDriveBloc.add(QuestionImgToAwsBucket(
-          imageFile: imageFile,
-        ));
-      } else {
-        _callToCreateExcelSheetAndClassRoomIfStandAlone();
-      }
-    } else {
-      _navigateToSubjectSection();
-    }
+    _performGoogleRelatedActions();
   }
 
   notPresentStudentsPopupModal(
@@ -1087,14 +979,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
             ));
   }
 
-  void _callToCreateExcelSheetAndClassRoomIfStandAlone() {
+  void _performGoogleRelatedActions() {
     Globals.assessmentName =
         "${assessmentController.text}_${classController.text}";
-    _googleDriveBloc.add(CreateExcelSheetToDrive(
-        description:
-            widget.isMcqSheet == true ? "Multiple Choice Sheet" : "Graded+",
-        name: Globals.assessmentName,
-        folderId: Globals.googleDriveFolderId!));
 
 //Create google classroom assignment in case of standalone only
     if (Overrides.STANDALONE_GRADED_APP) {
@@ -1104,6 +991,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
               GoogleClassroomGlobals.studentAssessmentAndClassroomObj,
           title: Globals.assessmentName ?? '',
           pointPossible: Globals.pointPossible ?? "0"));
+    } else {
+      _navigateToSubjectSection();
     }
   }
 
