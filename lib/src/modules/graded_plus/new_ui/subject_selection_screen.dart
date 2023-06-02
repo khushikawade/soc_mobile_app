@@ -4,6 +4,7 @@ import 'package:Soc/src/modules/google_classroom/bloc/google_classroom_bloc.dart
 import 'package:Soc/src/modules/google_classroom/google_classroom_globals.dart';
 import 'package:Soc/src/modules/google_drive/bloc/google_drive_bloc.dart';
 import 'package:Soc/src/modules/graded_plus/bloc/graded_plus_bloc.dart';
+import 'package:Soc/src/modules/graded_plus/helper/graded_plus_utilty.dart';
 import 'package:Soc/src/modules/graded_plus/modal/custom_rubic_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/state_object_modal.dart';
 import 'package:Soc/src/modules/graded_plus/modal/student_assessment_info_modal.dart';
@@ -252,8 +253,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                       GradedGlobals.loadingMessage = 'Preparing Google Slide';
                     });
 
-                    List<StudentAssessmentInfo> getStudentInfoList =
-                        await Utility.getStudentInfoList(
+                    List<StudentAssessmentInfo> getSortedStudentInfoList =
+                        await OcrUtility.getSortedStudentInfoList(
                             tableName: 'student_info');
 
                     //Updating very first slide with the assignment details
@@ -319,7 +320,7 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
                           'Assignment Detail is Updating';
                     });
                     List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-                        await Utility.getStudentInfoList(
+                        await OcrUtility.getSortedStudentInfoList(
                             tableName: 'student_info');
 
                     _ocrBloc.add(SaveAssessmentToDashboardAndGetId(
@@ -1583,7 +1584,8 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
         }
 
         List<StudentAssessmentInfo> studentAssessmentInfoDblist =
-            await Utility.getStudentInfoList(tableName: 'student_info');
+            await OcrUtility.getSortedStudentInfoList(
+                tableName: 'student_info');
 
         //Updating remaining common details of assignment
         StudentAssessmentInfo element = studentAssessmentInfoDblist.first;
@@ -1651,12 +1653,12 @@ class _SubjectSelectionState extends State<GradedPluSubjectSelection> {
           isMcqSheet: isMCQSheet ?? false,
           // questionImage:
           //     questionImageURL == '' ? 'NA' : questionImageURL ?? 'NA',
-          createdAsPremium: Globals.isPremiumUser,
+          
           assessmentName: Globals.assessmentName,
           fileId: Globals.googleExcelSheetId,
           isLoading: true,
-          studentData:
-              await Utility.getStudentInfoList(tableName: 'student_info')
+          studentData: await OcrUtility.getSortedStudentInfoList(
+              tableName: 'student_info')
           //list2
           //Globals.studentInfo!
           ),

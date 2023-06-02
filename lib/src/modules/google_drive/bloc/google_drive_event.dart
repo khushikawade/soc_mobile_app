@@ -45,8 +45,7 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
   final int? selectedRubric;
   // final String questionImage;
   final String? assessmentName;
-  final bool? createdAsPremium;
-
+ 
   UpdateDocOnDrive(
       {this.studentData,
       required this.fileId,
@@ -55,7 +54,7 @@ class UpdateDocOnDrive extends GoogleDriveEvent {
       this.isCustomRubricSelected,
       this.selectedRubric,
       required this.assessmentName,
-      required this.createdAsPremium,
+    
       required this.isMcqSheet});
   @override
   List<Object> get props => [];
@@ -249,11 +248,14 @@ class DeleteSlideFromPresentation extends GoogleDriveEvent {
   List<Object> get props => [];
 }
 
-class EditSlideFromPresentation extends GoogleDriveEvent {
+class EditSlideDetailsToGooglePresentation extends GoogleDriveEvent {
   final String? slidePresentationId;
   final StudentAssessmentInfo studentAssessmentInfo;
-  EditSlideFromPresentation(
-      {required this.slidePresentationId, required this.studentAssessmentInfo});
+  final oldSlideIndex;
+  EditSlideDetailsToGooglePresentation(
+      {required this.slidePresentationId,
+      required this.studentAssessmentInfo,
+      required this.oldSlideIndex});
 
   @override
   List<Object> get props => [];
