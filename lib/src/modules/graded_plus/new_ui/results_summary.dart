@@ -486,7 +486,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                                   isMcqSheet: widget.isMcqSheet ?? false,
                                   // questionImage:
                                   //     questionImageUrl ?? "NA",
-                                  createdAsPremium: createdAsPremium,
+                             
                                   assessmentName: Globals.assessmentName!,
                                   fileId: Globals.googleExcelSheetId,
                                   isLoading: true,
@@ -1397,7 +1397,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 _driveBloc2.add(UpdateDocOnDrive(
                   isMcqSheet: widget.isMcqSheet ?? false,
                   // questionImage: questionImageUrl ?? "NA",
-                  createdAsPremium: Globals.isPremiumUser,
+                 
                   assessmentName: Globals.assessmentName!,
                   fileId: Globals.googleExcelSheetId,
                   isLoading: true,
@@ -1575,7 +1575,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                           _driveBloc2.add(UpdateDocOnDrive(
                               isMcqSheet: widget.isMcqSheet,
                               // questionImage: questionImageUrl ?? "NA",
-                              createdAsPremium: Globals.isPremiumUser,
+                           
                               assessmentName: Globals.assessmentName!,
                               fileId: Globals.googleExcelSheetId,
                               isLoading: true,
@@ -1736,7 +1736,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 return;
               }
 
-              if (Globals.isPremiumUser) {
+            
                 if (widget.assessmentDetailPage == true &&
                     widget.createdAsPremium == false) {
                   Utility.updateLogs(
@@ -1827,18 +1827,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                     // );
                   }
                 }
-              } else {
-                Utility.updateLogs(
-                    activityType: 'GRADED+',
-                    activityId: '14',
-                    description:
-                        'Free User tried to save the data to the dashboard',
-                    operationResult: 'Failed');
-                popupModal(
-                    title: 'Upgrade To Premium',
-                    message:
-                        'This is a premium feature. To view a sample dashboard, click here: \nhttps://datastudio.google.com/u/0/reporting/75743c2d-5749-45e7-9562-58d0928662b2/page/p_79velk1hvc \n\nTo speak to SOLVED about obtaining the premium version of GRADED+, including a custom data Dashboard, email admin@solvedconsulting.com');
-              }
+           
               // }
             } else if (dashboardState.value == 'Success') {
               if (Overrides.STANDALONE_GRADED_APP == true) {
@@ -2240,17 +2229,17 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
   // }
 
   void performScanMore() async {
-    if ((widget.assessmentDetailPage == true) &&
-        ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
-            (widget.createdAsPremium == false &&
-                Globals.isPremiumUser == true))) {
-      popupModal(
-          title: 'Alert!',
-          message: Globals.isPremiumUser == true
-              ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
-              : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
-      return;
-    }
+    // if ((widget.assessmentDetailPage == true) &&
+    //     ((widget.createdAsPremium == true && Globals.isPremiumUser != true) ||
+    //         (widget.createdAsPremium == false &&
+    //             Globals.isPremiumUser == true))) {
+    //   popupModal(
+    //       title: 'Alert!',
+    //       message: Globals.isPremiumUser == true
+    //           ? 'Oops! You are currently a "Premium" user. You cannot update the Assignment that you created as a "Free" user. You can start with a fresh scan as a Premium user.'
+    //           : 'Oops! You are currently a "Free" user. You cannot update the Assignment that you created as a "Premium" user. If you still want to edit this Assignment then please upgrade to Premium. You can still create new Assignments as Free user.');
+    //   return;
+    // }
     String scanMoreLogMsg =
         'Scan more button pressed from ${widget.assessmentDetailPage == true ? "Assessment History Detail Page" : "Result Summary"}';
 
@@ -2284,9 +2273,7 @@ class studentRecordList extends State<GradedPlusResultsSummary> {
                 isFlashOn: ValueNotifier<bool>(false),
                 questionImageLink: questionImageUrl,
                 obj: widget.obj,
-                createdAsPremium: widget.assessmentDetailPage == true
-                    ? createdAsPremium
-                    : Globals.isPremiumUser,
+               
                 oneTimeCamera: widget.assessmentDetailPage!,
                 isFromHistoryAssessmentScanMore: widget.assessmentDetailPage!,
                 onlyForPicture: false,

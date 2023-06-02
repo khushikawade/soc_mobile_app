@@ -73,7 +73,7 @@ class FirebaseAnalyticsService {
             .toLowerCase(),
         parameters: {
           'appId': Globals.appSetting.schoolNameC,
-          'premiumUser': Globals.isPremiumUser.toString(),
+          'premiumUser': "true", //Globals.isPremiumUser.toString(),
           'teacherId': Globals.teacherId,
           'deviceId': Globals.deviceID ?? 'Virtual Device',
           'platform': Globals.isAndroid! ? 'Android' : 'iOS',
