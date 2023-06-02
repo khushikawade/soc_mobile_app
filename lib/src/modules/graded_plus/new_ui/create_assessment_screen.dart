@@ -90,6 +90,9 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     FirebaseAnalyticsService.addCustomAnalyticsEvent("create_assessment");
     FirebaseAnalyticsService.setCurrentScreen(
         screenTitle: 'create_assessment', screenClass: 'CreateAssessment');
+
+    sortStudents();
+
     super.initState();
   }
 
@@ -149,6 +152,7 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
             child: Container(),
             builder: (BuildContext context, dynamic value, Widget? child) {
               return ListView(
+                // physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.symmetric(
                     vertical: 0,
                     horizontal: StudentPlusOverrides.kLabelSpacing / 2),
@@ -987,7 +991,8 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
 /////--------
 
     List<StudentAssessmentInfo> studentInfo =
-        await Utility.getStudentInfoList(tableName: Strings.studentInfoDbName);
+        await OcrUtility.getSortedStudentInfoList(
+            tableName: Strings.studentInfoDbName);
 
     if (studentInfo.isNotEmpty) {
       for (GoogleClassroomCourses classroom in _localData) {
@@ -1014,9 +1019,6 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
         }
       }
     }
-    // print(_localData);
-    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.name);
-    // print(GoogleClassroomGlobals.studentAssessmentAndClassroomObj.courseId);
   }
 
   _checkFieldEditable({required String msg}) {
@@ -1096,5 +1098,13 @@ class _CreateAssessmentState extends State<GradedPlusCreateAssessment>
     }
   }
 
+<<<<<<< HEAD
   
+=======
+  void sortStudents() async {
+    await OcrUtility.sortStudents(
+      tableName: Strings.studentInfoDbName,
+    );
+  }
+>>>>>>> dev_quarter2_2k23
 }

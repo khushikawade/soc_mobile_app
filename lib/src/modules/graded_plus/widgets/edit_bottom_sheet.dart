@@ -57,7 +57,7 @@ class EditBottomSheet extends StatefulWidget {
       {required TextEditingController name,
       required TextEditingController id,
       required TextEditingController score,
-      String? studentResonance}) update;
+      String? studentResponse}) update;
   @override
   State<EditBottomSheet> createState() => _BottomSheetWidgetState();
 }
@@ -542,7 +542,7 @@ class _BottomSheetWidgetState extends State<EditBottomSheet> {
                                   name: widget.studentNameController,
                                   id: widget.studentEmailIdController,
                                   score: widget.studentGradeController,
-                                  studentResonance: widget.isMcqSheet == true
+                                  studentResponse: widget.isMcqSheet == true
                                       ? indexColor.value.toString()
                                       : 'NA');
                             }
